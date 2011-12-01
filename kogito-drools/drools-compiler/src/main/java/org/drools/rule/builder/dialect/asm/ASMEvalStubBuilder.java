@@ -48,7 +48,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
             public void body(MethodVisitor mv) {
                 Label l1 = new Label();
                 mv.visitVarInsn(ALOAD, 0);
-                getField("eval", EvalExpression.class);
+                getFieldFromThis("eval", EvalExpression.class);
                 mv.visitJumpInsn(IFNONNULL, l1);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 1);
@@ -57,7 +57,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
                 mv.visitVarInsn(ALOAD, 0);
-                getField("eval", EvalExpression.class);
+                getFieldFromThis("eval", EvalExpression.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
@@ -69,7 +69,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
             public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 1);
-                putField("eval", EvalExpression.class);
+                putFieldInThis("eval", EvalExpression.class);
                 mv.visitInsn(RETURN);
             }
         });

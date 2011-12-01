@@ -1,11 +1,13 @@
 package org.drools.rule.constraint;
 
 import org.mvel2.Operator;
+import org.mvel2.ParserContext;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.BinaryOperation;
 import org.mvel2.ast.Contains;
 import org.mvel2.ast.LiteralNode;
 import org.mvel2.ast.Negation;
+import org.mvel2.ast.NewObjectNode;
 import org.mvel2.ast.RegExMatch;
 import org.mvel2.ast.Substatement;
 import org.mvel2.compiler.Accessor;
@@ -14,12 +16,25 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
+import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.mvel2.optimizers.dynamic.DynamicGetAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ConstructorAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.FieldAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.GetterAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ListAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ListAccessorNest;
+import org.mvel2.optimizers.impl.refl.nodes.MapAccessorNest;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.StaticReferenceAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -31,9 +46,16 @@ public class AnalyzedCondition {
     private Expression left;
     private BooleanOperator operation;
     private Expression right;
+    private ParserContext parserContext;
 
     public AnalyzedCondition(ExecutableStatement stmt) {
-        ASTNode node = stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
+        ASTNode node;
+        if (stmt instanceof CompiledExpression) {
+            parserContext = ((CompiledExpression)stmt).getParserContext();
+            node = ((CompiledExpression)stmt).getFirstNode();
+        } else {
+            node = ((ExecutableAccessor)stmt).getNode();
+        }
         analyzeExpression(node);
     }
 
@@ -86,7 +108,7 @@ public class AnalyzedCondition {
             left = analyzeNode(node);
             operation = BooleanOperator.MATCHES;
             Pattern pattern = getFieldValue(RegExMatch.class, "p", (RegExMatch)node);
-            right = new FixedExpression(new TypedValue(String.class, pattern.pattern()));
+            right = new FixedExpression(String.class, pattern.pattern());
         } else if (node instanceof Contains) {
             left = analyzeNode((ASTNode)getFieldValue(Contains.class, "stmt", (Contains)node));
             operation = BooleanOperator.CONTAINS;
@@ -121,49 +143,155 @@ public class AnalyzedCondition {
 
         if (node instanceof LiteralNode) {
             LiteralNode literalNode = (LiteralNode)node;
-            return new FixedExpression(new TypedValue(literalNode.getEgressType(), literalNode.getLiteralValue()));
+            return new FixedExpression(literalNode.getEgressType(), literalNode.getLiteralValue());
+        }
+
+        if (node instanceof BinaryOperation) {
+            BinaryOperation binaryOperation = (BinaryOperation)node;
+            Object value = binaryOperation.getReducedValue(parserContext, null, new ImmutableDefaultFactory());
+            return new FixedExpression(binaryOperation.getEgressType(), value);
         }
 
         Accessor accessor = node.getAccessor();
-        EvaluatedExpression expression = new EvaluatedExpression();
+        if (accessor == null && node instanceof NewObjectNode) {
+            accessor = getFieldValue(NewObjectNode.class, "newObjectOptimizer", (NewObjectNode)node);
+        }
+
         AccessorNode accessorNode = null;
 
         if (accessor instanceof DynamicGetAccessor) {
             accessorNode = getFieldValue(DynamicGetAccessor.class, "_accessor", (DynamicGetAccessor)accessor);
         } else if (accessor instanceof AccessorNode) {
             accessorNode = (AccessorNode)accessor;
+        } else if (accessor instanceof CompiledExpression) {
+            return analyzeNode(((CompiledExpression)accessor).getFirstNode());
         } else {
             throw new RuntimeException("Unknown expression type: " + node);
         }
 
+        while (accessorNode != null && accessorNode instanceof VariableAccessor) {
+            accessorNode = accessorNode.getNextNode();
+        }
+
+        while (accessorNode instanceof StaticReferenceAccessor) {
+            StaticReferenceAccessor staticReferenceAccessor = ((StaticReferenceAccessor)accessorNode);
+            Object literal = staticReferenceAccessor.getLiteral();
+            accessorNode = accessorNode.getNextNode();
+            if (accessorNode == null) return new FixedExpression(literal.getClass(), literal);
+        }
+
+        EvaluatedExpression expression = new EvaluatedExpression();
+        Invocation invocation = null;
         while (accessorNode != null) {
-            expression.addInvocation(analyzeAccessor(accessorNode));
+            invocation = analyzeAccessor(accessorNode, invocation);
+            if (invocation != null) expression.addInvocation(invocation);
             accessorNode = accessorNode.getNextNode();
         }
 
         return expression;
     }
 
-    private Invocation analyzeAccessor(AccessorNode accessorNode) {
-        Invocation invocation = new Invocation();
+    private Invocation analyzeAccessor(AccessorNode accessorNode, Invocation formerInvocation) {
         if (accessorNode instanceof GetterAccessor) {
-            invocation.method = ((GetterAccessor)accessorNode).getMethod();
-        } else if (accessorNode instanceof MethodAccessor) {
+            return new MethodInvocation(((GetterAccessor)accessorNode).getMethod());
+        }
+
+        if (accessorNode instanceof MethodAccessor) {
             MethodAccessor methodAccessor = (MethodAccessor)accessorNode;
-            invocation.method = methodAccessor.getMethod();
+            MethodInvocation invocation = new MethodInvocation(methodAccessor.getMethod());
             ExecutableStatement[] params = methodAccessor.getParms();
-            if (params != null) {
-                int i = 0;
-                Class[] paramTypes = getFieldValue(MethodAccessor.class, "parameterTypes", methodAccessor);
-                for (ExecutableStatement param : params) {
-                    if (param instanceof ExecutableLiteral) {
-                        Object literal = ((ExecutableLiteral)param).getLiteral();
-                        invocation.addArgument(new FixedExpression(new TypedValue(paramTypes[i++], literal)));
-                    }
+            Class[] paramTypes = getFieldValue(MethodAccessor.class, "parameterTypes", methodAccessor);
+            readInvocationParams(invocation, params, paramTypes);
+            return invocation;
+        }
+
+        if (accessorNode instanceof ConstructorAccessor) {
+            ConstructorAccessor constructorAccessor = (ConstructorAccessor)accessorNode;
+            Constructor constructor = getFieldValue(ConstructorAccessor.class, "constructor", constructorAccessor);
+            ConstructorInvocation invocation = new ConstructorInvocation(constructor);
+            ExecutableStatement[] params = getFieldValue(ConstructorAccessor.class, "parms", constructorAccessor);
+            Class[] paramTypes = getFieldValue(ConstructorAccessor.class, "parmTypes", constructorAccessor);
+            readInvocationParams(invocation, params, paramTypes);
+            return invocation;
+        }
+
+        if (accessorNode instanceof ListAccessor) {
+            Class<?> listType = getListType(formerInvocation);
+            ListAccessor listAccessor = (ListAccessor)accessorNode;
+            return new ListAccessInvocation(listType, new FixedExpression(int.class, listAccessor.getIndex()));
+        }
+
+        if (accessorNode instanceof ListAccessorNest) {
+            Class<?> listType = getListType(formerInvocation);
+            ListAccessorNest listAccessorNest = (ListAccessorNest)accessorNode;
+            ExecutableAccessor index = (ExecutableAccessor)listAccessorNest.getIndex();
+            return new ListAccessInvocation(listType, analyzeNode(index.getNode()));
+        }
+
+        if (accessorNode instanceof MapAccessorNest) {
+            Class<?> keyType = Object.class;
+            Class<?> valueType = Object.class;
+            Type[] generics = getGenerics(formerInvocation);
+            if (generics != null && generics.length == 2 && generics[0] instanceof Class) {
+                if (generics[0] instanceof Class) keyType = (Class<?>)generics[0];
+                if (generics[1] instanceof Class) valueType = (Class<?>)generics[1];
+            }
+            MapAccessorNest mapAccessor = (MapAccessorNest)accessorNode;
+            ExecutableStatement statement = mapAccessor.getProperty();
+            if (statement instanceof ExecutableLiteral) {
+                return new MapAccessInvocation(keyType, valueType, new FixedExpression(keyType, ((ExecutableLiteral)statement).getLiteral()));
+            } else {
+                return new MapAccessInvocation(keyType, valueType, analyzeNode(((ExecutableAccessor)statement).getNode()));
+            }
+        }
+
+        if (accessorNode instanceof FieldAccessor) {
+            return new FieldAccessInvocation(((FieldAccessor)accessorNode).getField());
+        }
+
+        if (accessorNode instanceof StaticVarAccessor) {
+            StaticVarAccessor staticVarAccessor = ((StaticVarAccessor)accessorNode);
+            Field field = getFieldValue(StaticVarAccessor.class, "field", staticVarAccessor);
+            return new FieldAccessInvocation(field);
+        }
+
+        if (accessorNode instanceof ThisValueAccessor) {
+            return new MethodInvocation(null);
+        }
+
+        throw new RuntimeException("Unknown AccessorNode type: " + accessorNode.getClass().getName());
+    }
+
+    private Class<?> getListType(Invocation formerInvocation) {
+        Class<?> listType = Object.class;
+        Type[] generics = getGenerics(formerInvocation);
+        if (generics != null && generics.length == 1 && generics[0] instanceof Class) {
+            listType = (Class<?>)generics[0];
+        }
+        return listType;
+    }
+
+    private Type[] getGenerics(Invocation invocation) {
+        if (invocation != null && invocation instanceof MethodInvocation) {
+            Type returnType = ((MethodInvocation) invocation).getMethod().getGenericReturnType();
+            if (returnType instanceof ParameterizedType) {
+                return ((ParameterizedType)returnType).getActualTypeArguments();
+            }
+        }
+        return null;
+    }
+
+    private void readInvocationParams(Invocation invocation, ExecutableStatement[] params, Class[] paramTypes) {
+        if (params != null) {
+            for (int i = 0; i < params.length; i++) {
+                ExecutableStatement param = params[i];
+                if (param instanceof ExecutableLiteral) {
+                    invocation.addArgument(new FixedExpression(paramTypes[i], ((ExecutableLiteral)param).getLiteral()));
+                } else if (param instanceof ExecutableAccessor) {
+                    invocation.addArgument(analyzeNode(((ExecutableAccessor)param).getNode()));
                 }
             }
         }
-        return invocation;
     }
 
     private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {
@@ -189,6 +317,10 @@ public class AnalyzedCondition {
 
         FixedExpression(TypedValue value) {
             this.typedValue = value;
+        }
+
+        FixedExpression(Class<?> type, Object value) {
+            this(new TypedValue(type, value));
         }
 
         public String toString() {
@@ -238,22 +370,128 @@ public class AnalyzedCondition {
         }
     }
 
-    public static class Invocation {
-        Method method;
-        List<Expression> arguments;
+    public static abstract class Invocation {
+        private final List<Expression> arguments = new ArrayList<Expression>();
 
-        void addArgument(Expression argument) {
-            if (arguments == null) arguments = new ArrayList<Expression>();
+        public List<Expression> getArguments() {
+            return arguments;
+        }
+
+        public void addArgument(Expression argument) {
             arguments.add(argument);
+        }
+
+        public abstract Class<?> getReturnType();
+    }
+
+    public static class MethodInvocation extends Invocation {
+        private final Method method;
+
+        public MethodInvocation(Method method) {
+            this.method = method;
+        }
+
+        public Method getMethod() {
+            return method;
         }
 
         public String toString() {
             if (method == null) return "this";
-            return method + (arguments != null ? " with " + arguments : "");
+            return method + (!getArguments().isEmpty() ? " with " + getArguments() : "");
         }
 
         public Class<?> getReturnType() {
             return method != null ? method.getReturnType() : Object.class;
+        }
+    }
+
+    public static class ConstructorInvocation extends Invocation {
+        private final Constructor constructor;
+
+        public ConstructorInvocation(Constructor constructor) {
+            this.constructor = constructor;
+        }
+
+        public Constructor getConstructor() {
+            return constructor;
+        }
+
+        public String toString() {
+            return "new " + getReturnType() + (!getArguments().isEmpty() ? " with " + getArguments() : "");
+        }
+
+        public Class<?> getReturnType() {
+            return constructor.getDeclaringClass();
+        }
+    }
+
+    public static class ListAccessInvocation extends Invocation {
+        private final Class<?> listType;
+        private final Expression index;
+
+        public ListAccessInvocation(Class<?> listType, Expression index) {
+            this.listType = listType;
+            this.index = index;
+        }
+
+        public Expression getIndex() {
+            return index;
+        }
+
+        public String toString() {
+            return "[" + index + "]";
+        }
+
+        public Class<?> getReturnType() {
+            return listType;
+        }
+    }
+
+    public static class MapAccessInvocation extends Invocation {
+        private final Class<?> keyType;
+        private final Class<?> valueType;
+        private final Expression key;
+
+        public MapAccessInvocation(Class<?> keyType, Class<?> valueType, Expression key) {
+            this.keyType = keyType;
+            this.valueType = valueType;
+            this.key = key;
+        }
+
+        public Expression getKey() {
+            return key;
+        }
+
+        public String toString() {
+            return "[\"" + key + "\"]";
+        }
+
+        public Class<?> getKeyType() {
+            return keyType;
+        }
+
+        public Class<?> getReturnType() {
+            return valueType;
+        }
+    }
+
+    public static class FieldAccessInvocation extends Invocation {
+        private final Field field;
+
+        public FieldAccessInvocation(Field field) {
+            this.field = field;
+        }
+
+        public Field getField() {
+            return field;
+        }
+
+        public String toString() {
+            return field.getName();
+        }
+
+        public Class<?> getReturnType() {
+            return field.getType();
         }
     }
 

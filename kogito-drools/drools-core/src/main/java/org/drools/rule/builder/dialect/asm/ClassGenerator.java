@@ -6,6 +6,7 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import static org.mvel2.asm.Opcodes.AASTORE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ACC_STATIC;
 import static org.mvel2.asm.Opcodes.ACC_SUPER;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
 import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ANEWARRAY;
 import static org.mvel2.asm.Opcodes.ARETURN;
@@ -153,6 +155,10 @@ public class ClassGenerator {
         if (args != null) for (Class<?> arg : args) desc.append(descriptorOf(arg));
         desc.append(")").append(type == null ? "V" : descriptorOf(type));
         return desc.toString();
+    }
+
+    private Type toType(Class<?> clazz) {
+        return toType(clazz.getName());
     }
 
     private Type toType(String typeName) {
@@ -441,12 +447,74 @@ public class ClassGenerator {
         }
 
         public void push(Object obj) {
-            if (obj instanceof Boolean) push((Boolean)obj);
-            else mv.visitLdcInsn(obj);
+            if (obj instanceof Boolean) {
+                mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", (Boolean)obj ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
+            } else {
+                mv.visitLdcInsn(obj);
+            }
         }
 
-        public void push(Boolean b) {
-            mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", b ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
+        public void push(Object obj, Class<?> type) {
+            if (obj == null) {
+                mv.visitInsn(ACONST_NULL);
+                return;
+            }
+
+            if (type == String.class || type == Object.class) {
+                mv.visitLdcInsn(obj);
+            } else if (type.isPrimitive()) {
+                if (obj instanceof String) {
+                    obj = coerceStringToPrimitive(type, (String)obj);
+                } else {
+                    obj = coercePrimitiveToPrimitive(type, obj);
+                }
+                mv.visitLdcInsn(obj);
+            } else if (type == Class.class) {
+                mv.visitLdcInsn(cg.toType((Class<?>)obj));
+            } else {
+                invokeConstructor(type, new Object[]{ obj.toString() }, String.class);
+            }
+        }
+
+        private Object coercePrimitiveToPrimitive(Class<?> primitiveType, Object value) {
+            if (primitiveType == long.class) {
+                return new Long(value.toString());
+            }
+            if (primitiveType == float.class) {
+                return new Float(value.toString());
+            }
+            if (primitiveType == double.class) {
+                return new Double(value.toString());
+            }
+            return value;
+        }
+
+        private Object coerceStringToPrimitive(Class<?> primitiveType, String value) {
+            if (primitiveType == boolean.class) {
+                return Boolean.valueOf(value);
+            }
+            if (primitiveType == int.class) {
+                return Integer.valueOf(value);
+            }
+            if (primitiveType == long.class) {
+                return Long.valueOf(value);
+            }
+            if (primitiveType == float.class) {
+                return Float.valueOf(value);
+            }
+            if (primitiveType == double.class) {
+                return Double.valueOf(value);
+            }
+            if (primitiveType == char.class) {
+                return Character.valueOf(value.charAt(0));
+            }
+            if (primitiveType == short.class) {
+                return Short.valueOf(value);
+            }
+            if (primitiveType == byte.class) {
+                return Byte.valueOf(value);
+            }
+            throw new RuntimeException("Unexpected type: " + primitiveType);
         }
 
         public void cast(Class<?> clazz) {
@@ -498,12 +566,17 @@ public class ClassGenerator {
             mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
         }
 
-        public void putField(String name, Class<?> type) {
+        public void putFieldInThis(String name, Class<?> type) {
             mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
-        public void getField(String name, Class<?> type) {
+        public void getFieldFromThis(String name, Class<?> type) {
             mv.visitFieldInsn(GETFIELD, classDescriptor(), name, cg.descriptorOf(type));
+        }
+
+        public void readField(Field field) {
+            boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
+            mv.visitFieldInsn(isStatic ? GETSTATIC : GETFIELD, field.getDeclaringClass().getName().replace('.', '/'), field.getName(), cg.descriptorOf(field.getType()));
         }
 
         // ClassGenerator delegates

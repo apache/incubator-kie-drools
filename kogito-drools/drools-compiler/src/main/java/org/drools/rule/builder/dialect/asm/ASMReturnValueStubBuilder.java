@@ -47,7 +47,7 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
             public void body(MethodVisitor mv) {
                 Label l1 = new Label();
                 mv.visitVarInsn(ALOAD, 0);
-                getField("returnValue", ReturnValueExpression.class);
+                getFieldFromThis("returnValue", ReturnValueExpression.class);
                 mv.visitJumpInsn(IFNONNULL, l1);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 2);
@@ -57,7 +57,7 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
                 invokeStatic(ReturnValueGenerator.class, "generate", null, ReturnValueStub.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
                 mv.visitVarInsn(ALOAD, 0);
-                getField("returnValue", ReturnValueExpression.class);
+                getFieldFromThis("returnValue", ReturnValueExpression.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
@@ -71,7 +71,7 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
             public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 1);
-                putField("returnValue", ReturnValueExpression.class);
+                putFieldInThis("returnValue", ReturnValueExpression.class);
                 mv.visitInsn(RETURN);
             }
         });

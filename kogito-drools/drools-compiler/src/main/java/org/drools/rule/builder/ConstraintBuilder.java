@@ -60,15 +60,16 @@ public class ConstraintBuilder {
                                           String operator,
                                           String rightValue,
                                           LiteralRestrictionDescr restrictionDescr) {
+        String packageName = context.getPkg().getName();
         MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
         ParserConfiguration conf = data.getParserConfiguration();
 
         if (operator.equals("soundslike")) {
-            return new SoundexLiteralContraint(conf, leftValue, operator, rightValue);
+            return new SoundexLiteralContraint(conf, packageName, leftValue, operator, rightValue);
         }
 
         String mvelExpr = normalizeMVELExpression(vtype, field, expr, leftValue, operator, rightValue, restrictionDescr);
-        return new MvelLiteralConstraint(conf, vtype, mvelExpr, leftValue, operator, rightValue);
+        return new MvelLiteralConstraint(conf, packageName, vtype, mvelExpr, leftValue, operator, rightValue);
     }
 
     private static String normalizeMVELExpression(ValueType vtype,

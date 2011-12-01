@@ -31,8 +31,8 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
 
     public MvelLiteralConstraint() {}
 
-    public MvelLiteralConstraint(ParserConfiguration conf, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
-        super(conf, leftValue, operator, rightValue);
+    public MvelLiteralConstraint(ParserConfiguration conf, String packageName, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
+        super(conf, packageName, leftValue, operator, rightValue);
         this.type = type;
         this.mvelExp = mvelExp;
     }
@@ -82,6 +82,8 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
             asmValue = conditionEvaluator.evaluate(handle.getObject());
         } catch (ClassCastException cce) {
             return false;
+        } catch (NumberFormatException nfe) {
+            return false;
         }
 
 //        System.out.println(mvelExp + " => mvel = " + mvelValue + "; asm = " + asmValue);
@@ -103,7 +105,7 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
     }
 
     public Object clone() {
-        return new MvelLiteralConstraint(conf, type, mvelExp, leftValue, operator, rightValue);
+        return new MvelLiteralConstraint(conf, packageName, type, mvelExp, leftValue, operator, rightValue);
     }
 
     public int hashCode() {
