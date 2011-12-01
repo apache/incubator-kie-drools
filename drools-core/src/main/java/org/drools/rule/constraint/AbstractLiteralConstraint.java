@@ -16,13 +16,15 @@ import java.io.ObjectOutput;
 public abstract class AbstractLiteralConstraint implements AlphaNodeFieldConstraint, Externalizable {
 
     protected transient ParserConfiguration conf;
+    protected String packageName;
     protected String leftValue;
     protected String operator;
     protected String rightValue;
 
     protected AbstractLiteralConstraint() { }
 
-    protected AbstractLiteralConstraint(ParserConfiguration conf, String leftValue, String operator, String rightValue) {
+    protected AbstractLiteralConstraint(ParserConfiguration conf, String packageName, String leftValue, String operator, String rightValue) {
+        this.packageName = packageName;
         this.conf = conf;
         this.leftValue = leftValue;
         this.operator = operator;
@@ -41,12 +43,14 @@ public abstract class AbstractLiteralConstraint implements AlphaNodeFieldConstra
     // Externalizable
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(packageName);
         out.writeObject(leftValue);
         out.writeObject(operator);
         out.writeObject(rightValue);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        packageName = (String)in.readObject();
         leftValue = (String)in.readObject();
         operator = (String)in.readObject();
         rightValue = (String)in.readObject();
@@ -66,8 +70,10 @@ public abstract class AbstractLiteralConstraint implements AlphaNodeFieldConstra
     public abstract Object clone();
 
     protected ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {
-        if (conf != null) return conf;
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData)workingMemory.getRuleBase().getPackages()[0].getDialectRuntimeRegistry().getDialectData( "mvel" );
-        return data.getParserConfiguration();
+        if (conf == null) {
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData)workingMemory.getRuleBase().getPackage(packageName).getDialectRuntimeRegistry().getDialectData( "mvel" );
+            conf = data.getParserConfiguration();
+        }
+        return conf;
     }
 }

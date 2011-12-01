@@ -18,12 +18,12 @@ public class SoundexLiteralContraint extends AbstractLiteralConstraint {
 
     public SoundexLiteralContraint() { }
 
-    public SoundexLiteralContraint(ParserConfiguration conf, String leftValue, String operator, String rightValue) {
-        super(conf, leftValue, operator, rightValue);
+    public SoundexLiteralContraint(ParserConfiguration conf, String packageName, String leftValue, String operator, String rightValue) {
+        super(conf, packageName, leftValue, operator, rightValue);
     }
 
     public Object clone() {
-        return new SoundexLiteralContraint(conf, leftValue, operator, rightValue);
+        return new SoundexLiteralContraint(conf, packageName, leftValue, operator, rightValue);
     }
 
     private void compile(InternalWorkingMemory workingMemory) {

@@ -46,7 +46,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
             public void body(MethodVisitor mv) {
                 Label l1 = new Label();
                 mv.visitVarInsn(ALOAD, 0);
-                getField("predicate", PredicateExpression.class);
+                getFieldFromThis("predicate", PredicateExpression.class);
                 mv.visitJumpInsn(IFNONNULL, l1);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 2);
@@ -56,7 +56,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
                 invokeStatic(PredicateGenerator.class, "generate", null, PredicateStub.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
                 mv.visitVarInsn(ALOAD, 0);
-                getField("predicate", PredicateExpression.class);
+                getFieldFromThis("predicate", PredicateExpression.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
@@ -70,7 +70,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
             public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 1);
-                putField("predicate", PredicateExpression.class);
+                putFieldInThis("predicate", PredicateExpression.class);
                 mv.visitInsn(RETURN);
             }
         });

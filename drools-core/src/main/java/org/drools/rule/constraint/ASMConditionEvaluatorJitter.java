@@ -5,11 +5,15 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.compiler.ExecutableStatement;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.mvel2.asm.Opcodes.*;
@@ -39,7 +43,6 @@ public class ASMConditionEvaluatorJitter {
 
         public EvaluateMethodGenerator(AnalyzedCondition analyzedCondition) {
             this.analyzedCondition = analyzedCondition;
-//            System.out.println("analyzedCondition = " + analyzedCondition);
         }
 
         public void body(MethodVisitor mv) {
@@ -75,6 +78,11 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitPrimitiveBinary(MethodVisitor mv, AnalyzedCondition.Expression left, AnalyzedCondition.Expression right, Class<?> type) {
+            if (right.isFixed() && right.canBeNull()) {
+                // a primitive cannot be null
+                mv.visitInsn(analyzedCondition.getOperation() == AnalyzedCondition.BooleanOperator.NE ? ICONST_1 : ICONST_0);
+                return;
+            }
             jitTopExpression(mv, left, type);
             jitTopExpression(mv, right, type);
             jitPrimitiveOperation(mv, analyzedCondition.getOperation(), type);
@@ -116,12 +124,20 @@ public class ASMConditionEvaluatorJitter {
             } else if (operation == AnalyzedCondition.BooleanOperator.MATCHES) {
                 invokeVirtual(type, "matches", boolean.class, String.class);
             } else if (operation.isEquality()) {
-                invokeVirtual(type, "equals", boolean.class, Object.class);
+                if (type.isInterface()) {
+                    invokeInterface(type, "equals", boolean.class, Object.class);
+                } else {
+                    invokeVirtual(type, "equals", boolean.class, Object.class);
+                }
                 if (operation == AnalyzedCondition.BooleanOperator.NE) {
                      analyzedCondition.toggleNegation();
                 }
             } else {
-                invokeVirtual(type, "compareTo", int.class, type);
+                if (type.isInterface()) {
+                    invokeInterface(type, "compareTo", int.class, type);
+                } else {
+                    invokeVirtual(type, "compareTo", int.class, type);
+                }
                 mv.visitInsn(ICONST_0);
                 jitPrimitiveOperation(mv, operation, int.class);
             }
@@ -190,7 +206,7 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitTopExpression(MethodVisitor mv, AnalyzedCondition.Expression exp, Class<?> requiredClass) {
             if (exp.isFixed()) {
-                jitFixedExpression(mv, (AnalyzedCondition.FixedExpression) exp, requiredClass);
+                push(((AnalyzedCondition.FixedExpression) exp).typedValue.value, requiredClass);
             } else {
                 jitEvaluatedExpression(mv, (AnalyzedCondition.EvaluatedExpression) exp);
             }
@@ -198,22 +214,9 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitExpression(MethodVisitor mv, AnalyzedCondition.Expression exp) {
             if (exp.isFixed()) {
-                jitFixedExpression(mv, (AnalyzedCondition.FixedExpression) exp, exp.getType());
+                push(((AnalyzedCondition.FixedExpression)exp).typedValue.value, exp.getType());
             } else {
                 jitEvaluatedExpression(mv, (AnalyzedCondition.EvaluatedExpression) exp);
-            }
-        }
-
-        private void jitFixedExpression(MethodVisitor mv, AnalyzedCondition.FixedExpression exp, Class<?> type) {
-            if (exp.typedValue.value == null) {
-                mv.visitInsn(ACONST_NULL);
-                return;
-            }
-
-            if (type.isPrimitive() || type == String.class) {
-                mv.visitLdcInsn(exp.typedValue.value);
-            } else {
-                invokeConstructor(type, new Object[]{ exp.typedValue.value.toString() }, String.class);
             }
         }
 
@@ -225,13 +228,28 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private Class<?> jitInvocation(MethodVisitor mv, AnalyzedCondition.Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
-            Method method = invocation.method;
+            if (invocation instanceof AnalyzedCondition.MethodInvocation) {
+                jitMethodInvocation(mv, (AnalyzedCondition.MethodInvocation)invocation, currentClass, firstInvocation);
+            } else if (invocation instanceof AnalyzedCondition.ConstructorInvocation) {
+                jitConstructorInvocation(mv, (AnalyzedCondition.ConstructorInvocation) invocation);
+            } else if (invocation instanceof AnalyzedCondition.ListAccessInvocation) {
+                jitListAccessInvocation(mv, (AnalyzedCondition.ListAccessInvocation) invocation);
+            } else if (invocation instanceof AnalyzedCondition.MapAccessInvocation) {
+                jitMapAccessInvocation(mv, (AnalyzedCondition.MapAccessInvocation) invocation);
+            } else {
+                jitFieldAccessInvocation(mv, (AnalyzedCondition.FieldAccessInvocation)invocation, currentClass, firstInvocation);
+            }
+            return invocation.getReturnType();
+        }
+
+        private void jitMethodInvocation(MethodVisitor mv, AnalyzedCondition.MethodInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
+            Method method = invocation.getMethod();
             if (firstInvocation && (method == null || (method.getModifiers() & Modifier.STATIC) == 0)) {
                 mv.visitVarInsn(ALOAD, 1);
             }
 
             if (method == null) {
-                if (firstInvocation) return invocation.getReturnType(); // this...
+                if (firstInvocation) return; // this...
                 else throw new RuntimeException("access to this not in first position");
             }
 
@@ -239,16 +257,54 @@ public class ASMConditionEvaluatorJitter {
                 cast(method.getDeclaringClass());
             }
 
-            if (invocation.arguments != null) {
-                for (AnalyzedCondition.Expression argument : invocation.arguments) {
-                    jitExpression(mv, argument);
-                }
+            for (AnalyzedCondition.Expression argument : invocation.getArguments()) {
+                jitExpression(mv, argument);
             }
 
             invoke(method);
-            return invocation.getReturnType();
         }
 
+        private void jitConstructorInvocation(MethodVisitor mv, AnalyzedCondition.ConstructorInvocation invocation) {
+            Constructor constructor = invocation.getConstructor();
+            Class<?> clazz = invocation.getReturnType();
+
+            mv.visitTypeInsn(NEW, internalName(clazz));
+            mv.visitInsn(DUP);
+            for (AnalyzedCondition.Expression argument : invocation.getArguments()) {
+                jitExpression(mv, argument);
+            }
+            invokeSpecial(clazz, "<init>", null, constructor.getParameterTypes());
+        }
+
+        private void jitListAccessInvocation(MethodVisitor mv, AnalyzedCondition.ListAccessInvocation invocation) {
+            jitTopExpression(mv, invocation.getIndex(), int.class);
+            invokeInterface(List.class, "get", Object.class, int.class);
+            if (invocation.getReturnType() != Object.class) {
+                cast(invocation.getReturnType());
+            }
+        }
+
+        private void jitMapAccessInvocation(MethodVisitor mv, AnalyzedCondition.MapAccessInvocation invocation) {
+            jitTopExpression(mv, invocation.getKey(), invocation.getKeyType());
+            invokeInterface(Map.class, "get", Object.class, Object.class);
+            if (invocation.getReturnType() != Object.class) {
+                cast(invocation.getReturnType());
+            }
+        }
+
+        private void jitFieldAccessInvocation(MethodVisitor mv, AnalyzedCondition.FieldAccessInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
+            Field field = invocation.getField();
+            boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
+
+            if (firstInvocation && !isStatic) {
+                mv.visitVarInsn(ALOAD, 1);
+            }
+            if (!isStatic && !field.getDeclaringClass().isAssignableFrom(currentClass)) {
+                cast(field.getDeclaringClass());
+            }
+            readField(field);
+        }
+        
         private void jitPrimitiveOperation(MethodVisitor mv, AnalyzedCondition.BooleanOperator op, Class<?> type) {
             jitPrimitiveCompare(mv, toOpCode(op, type), type);
         }
@@ -256,9 +312,14 @@ public class ASMConditionEvaluatorJitter {
         private void jitPrimitiveCompare(MethodVisitor mv, int opCode, Class<?> type) {
             Label trueBranchLabel = new Label();
             Label returnLabel = new Label();
-            if (type == double.class || type == long.class) {
+            if (type == double.class) {
                 mv.visitInsn(DCMPL);
+            } else if (type == long.class) {
+                mv.visitInsn(LCMP);
+            } else if (type == float.class) {
+                mv.visitInsn(FCMPL);
             }
+
             mv.visitJumpInsn(opCode, trueBranchLabel);
             mv.visitInsn(ICONST_0);
             mv.visitJumpInsn(GOTO, returnLabel);
@@ -279,7 +340,7 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private static int toOpCode(AnalyzedCondition.BooleanOperator op, Class<?> type) {
-            if (type == double.class || type == long.class) {
+            if (type == double.class || type == long.class || type == float.class) {
                 switch (op) {
                     case EQ: return IFEQ;
                     case NE: return IFNE;
@@ -326,7 +387,7 @@ public class ASMConditionEvaluatorJitter {
             if (class2 == Boolean.class) return canBePrimitive ? boolean.class : Boolean.class;
         }
 
-        if (class1 == int.class) {
+        if (class1 == int.class || class1 == short.class || class1 == byte.class) {
             if (class2 == Integer.class) return canBePrimitive ? int.class : Integer.class;
             if (class2 == long.class) return long.class;
             if (class2 == Long.class) return canBePrimitive ? long.class : Long.class;

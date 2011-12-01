@@ -5,7 +5,6 @@ import org.mvel2.asm.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mvel2.asm.Opcodes.*;
-import static org.mvel2.asm.Type.*;
 
 public class ClassGeneratorTest {
 
@@ -20,13 +19,13 @@ public class ClassGeneratorTest {
             public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0);// read local variable 0 (initialized to this) and push it on the stack
                 mv.visitLdcInsn(MY_NAME); // push the String MY_NAME on the stack
-                putField("name", String.class);
+                putFieldInThis("name", String.class);
                 mv.visitInsn(RETURN);
             }
         }).addMethod(ACC_PUBLIC, "toString", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0); // read local variable 0 (initialized to this) and push it on the stack
-                getField("name", String.class);
+                getFieldFromThis("name", String.class);
                 mv.visitInsn(ARETURN); // return the first object on the stack
             }
         });
