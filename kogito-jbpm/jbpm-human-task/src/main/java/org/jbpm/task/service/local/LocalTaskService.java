@@ -250,4 +250,10 @@ public class LocalTaskService implements TaskService {
             return remove;
         }
     }
+    
+    public void dispose() { 
+        if( taskServiceSession.getEntityManager().isOpen() ) { 
+            taskServiceSession.dispose();
+        }
+    }
 }

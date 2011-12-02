@@ -244,6 +244,9 @@ public class TaskServiceSession {
 
                         commands(command, task, user, targetEntity);
                     }
+                    else { 
+                        logger.debug( "No match on status for task " + task.getId() + ": status " + taskData.getStatus() + " != " + status);
+                    }
                 }
             }
 
@@ -259,6 +262,9 @@ public class TaskServiceSession {
                         }
 
                         commands(command, task, user, targetEntity);
+                    }
+                    else { 
+                        logger.debug( "No match on previous status for task " + task.getId() + ": status " + taskData.getStatus() + " != " + status);
                     }
                 }
             }
