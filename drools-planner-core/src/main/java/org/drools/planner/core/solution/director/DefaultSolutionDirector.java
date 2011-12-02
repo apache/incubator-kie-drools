@@ -170,14 +170,6 @@ public class DefaultSolutionDirector implements SolutionDirector {
         }
     }
 
-    public String buildScoreCorruptionAnalysis() {
-        DefaultSolutionDirector uncorruptedSolutionDirector = buildUncorruptedSolutionDirector();
-        uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
-        String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
-        uncorruptedSolutionDirector.dispose();
-        return scoreCorruptionAnalysis;
-    }
-
     private DefaultSolutionDirector buildUncorruptedSolutionDirector() {
         DefaultSolutionDirector uncorruptedSolutionDirector = new DefaultSolutionDirector();
         uncorruptedSolutionDirector.setSolutionDescriptor(solutionDescriptor);
