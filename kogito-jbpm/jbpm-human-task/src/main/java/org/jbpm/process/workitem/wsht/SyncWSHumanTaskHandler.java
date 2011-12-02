@@ -302,7 +302,6 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 					}
 				}
 			} else {
-				System.out.println("Notification of aborted task " + workItemId);
 				if (session != null) {
 					session.getWorkItemManager().abortWorkItem(workItemId);
 				} else {

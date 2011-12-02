@@ -248,7 +248,6 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 		public void execute(Task task) {
 			long workItemId = task.getTaskData().getWorkItemId();
 			if (task.getTaskData().getStatus() == Status.Completed) {
-				System.out.println("Notification of completed task " + workItemId);
 				String userId = task.getTaskData().getActualOwner().getId();
 				Map<String, Object> results = new HashMap<String, Object>();
 				results.put("ActorId", userId);
@@ -261,7 +260,6 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 					session.getWorkItemManager().completeWorkItem(workItemId, results);
 				}
 			} else {
-				System.out.println("Notification of aborted task " + workItemId);
 				session.getWorkItemManager().abortWorkItem(workItemId);
 			}
 		}

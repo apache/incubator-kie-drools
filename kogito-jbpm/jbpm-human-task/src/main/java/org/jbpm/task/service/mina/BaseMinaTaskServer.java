@@ -60,6 +60,9 @@ public class BaseMinaTaskServer extends TaskServer {
                 Thread.sleep( 100 );
             }
         } catch ( Exception e ) {
+        	if (e instanceof java.net.BindException) {
+        		throw new RuntimeException("Could not start human task server, address already in use, is it possible that another instance of the task server is already running?");
+        	}
             throw new RuntimeException( "Server Exception with class " + getClass() + " using port " + port,
                                         e );
         }

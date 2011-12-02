@@ -45,7 +45,6 @@
     <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
     <class>org.jbpm.task.User</class>
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.show_sql" value="false" />	
