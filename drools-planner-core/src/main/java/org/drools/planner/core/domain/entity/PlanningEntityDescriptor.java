@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
@@ -114,7 +115,7 @@ public class PlanningEntityDescriptor {
 
     private void processPropertyAnnotations() {
         int mapSize = planningEntityBeanInfo.getPropertyDescriptors().length;
-        planningVariableDescriptorMap = new HashMap<String, PlanningVariableDescriptor>(mapSize);
+        planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(mapSize);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
