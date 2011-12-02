@@ -112,9 +112,15 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public Collection<ProcessInstance> getProcessInstances() {
 		return null;
 	}
+	
+	private WorkItemManager workItemManager;
+	
+	public void setWorkItemManager(WorkItemManager workItemManager) {
+		this.workItemManager = workItemManager;
+	}
 
 	public WorkItemManager getWorkItemManager() {
-		return null;
+		return workItemManager;
 	}
 
 	public void signalEvent(String arg0, Object arg1, long arg2) {

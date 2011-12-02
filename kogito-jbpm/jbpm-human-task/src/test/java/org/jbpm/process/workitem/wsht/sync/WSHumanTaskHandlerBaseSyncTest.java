@@ -45,6 +45,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     private static final int MANAGER_ABORT_WAIT_TIME = DEFAULT_WAIT_TIME;
     private TaskService client;
     private WorkItemHandler handler;
+    protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
 
     public void setClient(TaskService client) {
         this.client = client;
@@ -56,6 +57,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void FIXME_testTask() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -89,6 +91,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void FIXME_testTaskMultipleActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -127,6 +130,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskGroupActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -169,6 +173,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void FIXME_testTaskSingleAndGroupActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task One");
         workItem.setParameter("TaskName", "TaskNameOne");
@@ -196,6 +201,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskFail() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -232,6 +238,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskSkip() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -262,6 +269,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskAbortSkippable() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -280,6 +288,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskAbortNotSkippable() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -302,6 +311,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskData() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -361,6 +371,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
     public void testTaskDataAutomaticMapping() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
         workItem.setParameter("TaskName", "TaskName");
@@ -436,6 +447,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         //Create the parent task
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
@@ -571,6 +583,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
     public void TODOtestOnParentAbortAllSubTasksEndStrategy() throws Exception {
 
         TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
         //Create the parent task
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");

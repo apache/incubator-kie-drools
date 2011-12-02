@@ -103,8 +103,6 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-        MyWorkItemManager manager = new MyWorkItemManager();
-
         Task task = (Task) eval(new StringReader(str), vars);
         client.addTask(task, null);
         long taskId = task.getId();
@@ -158,8 +156,6 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         task2 = client.getTask(taskId2);
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
-        
-        assertEquals(2, manager.getCompleted().size());
     }
 
     private static class MyWorkItemManager implements WorkItemManager {

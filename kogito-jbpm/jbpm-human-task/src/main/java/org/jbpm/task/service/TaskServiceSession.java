@@ -448,11 +448,32 @@ public class TaskServiceSession {
         		}
         	}
         }
+        switch (operation) {
+	        case Claim: {
+	            postTaskClaimOperation(task);
+	            break;
+	        }
+	        case Complete: {
+	            postTaskCompleteOperation(task);
+	            break;
+	        }
+	        case Fail: {
+	            postTaskFailOperation(task);
+	            break;
+	        }
+	        case Skip: {
+	            postTaskSkipOperation(task, userId);
+	            break;
+	        }
+        }
     }
 
     private void taskClaimOperation(final Task task) {
         // Task was reserved so owner should get icals
         SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
+    }
+    
+    private void postTaskClaimOperation(final Task task) {
         // trigger event support
         service.getEventSupport().fireTaskClaimed(task.getId(), task.getTaskData().getActualOwner().getId());
     }
@@ -461,10 +482,13 @@ public class TaskServiceSession {
         if (data != null) {
         	setOutput(task.getId(), task.getTaskData().getActualOwner().getId(), data);
         }
-
+        checkSubTaskStrategy(task);
+    }
+    
+    
+    private void postTaskCompleteOperation(final Task task) {
         // trigger event support
         service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId());
-        checkSubTaskStrategy(task);
     }
 
     private void taskFailOperation(final Task task, final ContentData data) {
@@ -472,17 +496,22 @@ public class TaskServiceSession {
         if (data != null) {
         	setFault(task.getId(), task.getTaskData().getActualOwner().getId(), (FaultData) data);
         }
-
-        // trigger event support
+    }
+    
+    private void postTaskFailOperation(final Task task) {
+    	// trigger event support
         service.getEventSupport().fireTaskFailed(task.getId(), task.getTaskData().getActualOwner().getId());
     }
 
     private void taskSkipOperation(final Task task, final String userId) {
-        // trigger event support
-        service.getEventSupport().fireTaskSkipped(task.getId(), userId);
         checkSubTaskStrategy(task);
     }
 
+    private void postTaskSkipOperation(final Task task, final String userId) {
+        // trigger event support
+        service.getEventSupport().fireTaskSkipped(task.getId(), userId);
+    }
+    
     public Task getTask(final long taskId) {
         return getEntity(Task.class, taskId);
     }

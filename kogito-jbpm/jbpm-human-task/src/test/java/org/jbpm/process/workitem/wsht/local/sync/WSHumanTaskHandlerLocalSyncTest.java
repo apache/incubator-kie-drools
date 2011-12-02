@@ -31,7 +31,7 @@ public class WSHumanTaskHandlerLocalSyncTest extends WSHumanTaskHandlerBaseSyncT
        
         setClient(new LocalTaskService(taskSession));
         
-        setHandler(new SyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession()));
+        setHandler(new SyncWSHumanTaskHandler(getClient(), ksession));
     }
 
     protected void tearDown() throws Exception {
