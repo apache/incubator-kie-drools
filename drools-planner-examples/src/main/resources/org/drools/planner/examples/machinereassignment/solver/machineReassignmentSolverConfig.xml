@@ -22,10 +22,10 @@
     </termination>
     <selector>
       <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
       </selector>
       <selector>
-        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
       </selector>
     </selector>
     <acceptor>

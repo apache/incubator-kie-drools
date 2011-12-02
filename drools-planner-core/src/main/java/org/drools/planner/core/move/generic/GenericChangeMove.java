@@ -28,7 +28,7 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 
-public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
+public class GenericChangeMove implements Move, TabuPropertyEnabled {
 
     private final Object planningEntity;
     private final FactHandle planningEntityFactHandle;
@@ -36,7 +36,7 @@ public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final Object toPlanningValue;
 
-    public GenericChangeValueMove(Object planningEntity, FactHandle planningEntityFactHandle,
+    public GenericChangeMove(Object planningEntity, FactHandle planningEntityFactHandle,
             PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue) {
         this.planningEntity = planningEntity;
         this.planningEntityFactHandle = planningEntityFactHandle;
@@ -51,7 +51,7 @@ public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
 
     public Move createUndoMove(WorkingMemory workingMemory) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChangeValueMove(planningEntity, planningEntityFactHandle,
+        return new GenericChangeMove(planningEntity, planningEntityFactHandle,
                 planningVariableDescriptor, oldPlanningValue);
     }
 
@@ -67,8 +67,8 @@ public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof GenericChangeValueMove) {
-            GenericChangeValueMove other = (GenericChangeValueMove) o;
+        } else if (o instanceof GenericChangeMove) {
+            GenericChangeMove other = (GenericChangeMove) o;
             return new EqualsBuilder()
                     .append(planningEntity, other.planningEntity)
                     .append(planningVariableDescriptor.getVariablePropertyName(),

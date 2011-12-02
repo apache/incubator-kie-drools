@@ -17,7 +17,9 @@
 package org.drools.planner.core.move.generic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.FactHandle;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
@@ -29,7 +31,7 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
-public class GenericChangeValueMoveFactory extends CachedMoveFactory {
+public class GenericSwapMoveFactory extends CachedMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
     private SolutionDirector solutionDirector;
@@ -51,16 +53,26 @@ public class GenericChangeValueMoveFactory extends CachedMoveFactory {
     @Override
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
-        for (Object planningEntity : solutionDescriptor.getPlanningEntityList(solution)) {
-            FactHandle planningEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(planningEntity);
-            PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                    planningEntity.getClass());
-            for (PlanningVariableDescriptor planningVariableDescriptor
-                    : planningEntityDescriptor.getPlanningVariableDescriptors()) {
-                for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
-                        solutionDirector.getWorkingSolution(), planningEntity)) {
-                    moveList.add(new GenericChangeValueMove(planningEntity, planningEntityFactHandle,
-                            planningVariableDescriptor, toPlanningValue));
+        List<Object> planningEntityList = solutionDescriptor.getPlanningEntityList(solution);
+        for (ListIterator<Object> leftIt = planningEntityList.listIterator(); leftIt.hasNext();) {
+            Object leftPlanningEntity = leftIt.next();
+            FactHandle leftPlanningEntityFactHandle = solutionDirector.getWorkingMemory()
+                    .getFactHandle(leftPlanningEntity);
+            PlanningEntityDescriptor leftPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+                    leftPlanningEntity.getClass());
+            Collection<PlanningVariableDescriptor> planningVariableDescriptors
+                    = leftPlanningEntityDescriptor.getPlanningVariableDescriptors();
+            for (ListIterator<Object> rightIt = planningEntityList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                Object rightPlanningEntity = rightIt.next();
+                PlanningEntityDescriptor rightPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+                        leftPlanningEntity.getClass());
+                if (leftPlanningEntityDescriptor.getPlanningEntityClass().equals(
+                        rightPlanningEntityDescriptor.getPlanningEntityClass())) {
+                    FactHandle rightPlanningEntityFactHandle = solutionDirector.getWorkingMemory()
+                            .getFactHandle(rightPlanningEntity);
+                    moveList.add(new GenericSwapMove(planningVariableDescriptors,
+                            leftPlanningEntity, leftPlanningEntityFactHandle,
+                            rightPlanningEntity, rightPlanningEntityFactHandle));
                 }
             }
         }

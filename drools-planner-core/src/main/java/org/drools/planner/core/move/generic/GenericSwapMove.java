@@ -18,7 +18,6 @@ package org.drools.planner.core.move.generic;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -29,7 +28,7 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 
-public class GenericSwitchAllValuesMove implements Move, TabuPropertyEnabled {
+public class GenericSwapMove implements Move, TabuPropertyEnabled {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
@@ -39,7 +38,7 @@ public class GenericSwitchAllValuesMove implements Move, TabuPropertyEnabled {
     private final Object rightPlanningEntity;
     private final FactHandle rightPlanningEntityFactHandle;
 
-    public GenericSwitchAllValuesMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
+    public GenericSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
             Object leftPlanningEntity, FactHandle leftPlanningEntityFactHandle,
             Object rightPlanningEntity, FactHandle rightPlanningEntityFactHandle) {
         this.planningVariableDescriptors = planningVariableDescriptors;
@@ -61,7 +60,7 @@ public class GenericSwitchAllValuesMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new GenericSwitchAllValuesMove(planningVariableDescriptors,
+        return new GenericSwapMove(planningVariableDescriptors,
                 rightPlanningEntity, rightPlanningEntityFactHandle,
                 leftPlanningEntity, leftPlanningEntityFactHandle);
     }
@@ -86,8 +85,8 @@ public class GenericSwitchAllValuesMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof GenericSwitchAllValuesMove) {
-            GenericSwitchAllValuesMove other = (GenericSwitchAllValuesMove) o;
+        } else if (o instanceof GenericSwapMove) {
+            GenericSwapMove other = (GenericSwapMove) o;
             return new EqualsBuilder()
                     .append(leftPlanningEntity, other.leftPlanningEntity)
                     .append(rightPlanningEntity, other.rightPlanningEntity)
