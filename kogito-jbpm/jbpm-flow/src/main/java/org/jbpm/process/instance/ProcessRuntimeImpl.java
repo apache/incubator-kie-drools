@@ -381,8 +381,10 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	public void dispose() {
         this.processEventSupport.reset();
         this.timerManager.dispose();
-        kruntime.getKnowledgeBase().removeEventListener(knowledgeBaseListener);
-        kruntime = null;
+        if( kruntime != null ) { 
+            kruntime.getKnowledgeBase().removeEventListener(knowledgeBaseListener);
+            kruntime = null;
+        }
         workingMemory = null;
 	}
 

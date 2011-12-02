@@ -1,5 +1,7 @@
 package org.jbpm.test;
 
+import static org.drools.runtime.EnvironmentName.TRANSACTION_MANAGER;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -20,6 +22,7 @@ import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public final class JBPMHelper {
@@ -113,6 +116,7 @@ public final class JBPMHelper {
 			    Persistence.createEntityManagerFactory(properties.getProperty("persistence.persistenceunit.name", "org.jbpm.persistence.jpa"), map);
 			Environment env = KnowledgeBaseFactory.newEnvironment();
 			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+	        env.set( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
 			// create a new knowledge session that uses JPA to store the runtime state
 			StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");

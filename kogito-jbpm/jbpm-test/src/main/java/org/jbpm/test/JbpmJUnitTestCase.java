@@ -7,9 +7,14 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.Transaction;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.antlr.stringtemplate.StringTemplate.STAttributeList;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListenerFactory;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
@@ -121,6 +126,16 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     			ds = null;
     		}
     		server.stop();
+    		Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
+    		if( tx != null ) { 
+    		    int testTxState = tx.getStatus();
+    		    if(  testTxState != Status.STATUS_NO_TRANSACTION && 
+    		         testTxState != Status.STATUS_ROLLEDBACK &&
+    		         testTxState != Status.STATUS_COMMITTED ) { 
+    		        tx.rollback();
+    		        Assert.fail("Transaction had status " + JbpmJUnitTestCase.txState[testTxState] + " at the end of the test.");
+    		    }
+    		}
     		DeleteDbFiles.execute("~", "jbpm-db", true);
     	}
     }
@@ -212,13 +227,30 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		KnowledgeBase kbase = createKnowledgeBase(process);
 		return createKnowledgeSession(kbase);
 	}
-		
-	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
+	
+	protected static String [] txState = { "ACTIVE",
+                                           "MARKED_ROLLBACK", 
+	                                       "PREPARED",
+	                                       "COMMITTED",
+          	                               "ROLLEDBACK", 
+          	                               "UNKNOWN", 
+          	                               "NO_TRANSACTION",
+          	                               "PREPARING",
+          	                               "COMMITTING",
+          	                               "ROLLING_BACK" };
+	
+	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) throws SystemException {
 		if (sessionPersistence) {
 			int id = ksession.getId();
 			KnowledgeBase kbase = ksession.getKnowledgeBase();
+			Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
+			if( tx != null ) { 
+			    int txStatus = tx.getStatus();
+			    assertTrue("Current transaction state is " + txState[txStatus], tx.getStatus() == Status.STATUS_NO_TRANSACTION );
+			}
 			Environment env = null;
 			if (noCache) {
+			    ksession.dispose();
 				emf.close();
 			    env = EnvironmentFactory.newEnvironment();
 			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
@@ -498,7 +530,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
         }
         public void stop() {
             if (server != null) {
-                server.stop();
+                server.shutdown();
                 DeleteDbFiles.execute("~", "jbpm-db", true);
                 server = null;
             }
