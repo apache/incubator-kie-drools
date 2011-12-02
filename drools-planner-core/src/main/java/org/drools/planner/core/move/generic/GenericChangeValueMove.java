@@ -32,6 +32,7 @@ public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
 
     private final Object planningEntity;
     private final FactHandle planningEntityFactHandle;
+
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final Object toPlanningValue;
 

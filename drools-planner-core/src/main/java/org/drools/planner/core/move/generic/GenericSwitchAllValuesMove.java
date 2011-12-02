@@ -32,8 +32,10 @@ import org.drools.planner.core.move.Move;
 public class GenericSwitchAllValuesMove implements Move, TabuPropertyEnabled {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
+
     private final Object leftPlanningEntity;
     private final FactHandle leftPlanningEntityFactHandle;
+
     private final Object rightPlanningEntity;
     private final FactHandle rightPlanningEntityFactHandle;
 
