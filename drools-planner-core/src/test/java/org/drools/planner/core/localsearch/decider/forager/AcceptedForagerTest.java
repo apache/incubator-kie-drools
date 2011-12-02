@@ -50,7 +50,7 @@ public class AcceptedForagerTest {
         MoveScope b = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
         MoveScope c = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), false);
         MoveScope d = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-300), true);
-        MoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), true);
+        MoveScope e = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-2), true);
         // Do stuff
         forager.addMove(a);
         assertFalse(forager.isQuitEarly());
