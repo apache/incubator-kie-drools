@@ -16,10 +16,14 @@
 
 package org.drools.planner.core.solution.director;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.drools.ClassObjectFilter;
@@ -141,117 +145,109 @@ public class DefaultSolutionDirector implements SolutionDirector {
         return score;
     }
 
+    public void dispose() {
+        // TODO call from Solver too
+        if (workingMemory != null) {
+            workingMemory.dispose();
+        }
+    }
+
     /**
      * @param presumedScore never null
      */
     public void assertWorkingScore(Score presumedScore) {
-        StatefulSession tmpWorkingMemory = ruleBase.newStatefulSession();
-        ScoreCalculator tmpScoreCalculator = workingScoreCalculator.clone();
-        tmpWorkingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, tmpScoreCalculator);
-        for (Object fact : getWorkingFacts()) {
-            tmpWorkingMemory.insert(fact);
-        }
-        tmpWorkingMemory.fireAllRules();
-        Score realScore = tmpScoreCalculator.calculateScore();
-        tmpWorkingMemory.dispose();
-        if (!presumedScore.equals(realScore)) {
+        DefaultSolutionDirector uncorruptedSolutionDirector = buildUncorruptedSolutionDirector();
+        Score uncorruptedScore = uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
+        if (!presumedScore.equals(uncorruptedScore)) {
+            String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
+            uncorruptedSolutionDirector.dispose();
             throw new IllegalStateException(
-                    "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
-                            + realScore + ").\n"
-                            + "Presumed workingMemory:\n" + buildConstraintOccurrenceSummary(workingMemory)
-                            + "Real workingMemory:\n" + buildConstraintOccurrenceSummary(tmpWorkingMemory));
+                    "Score corruption: the presumedScore (" + presumedScore + ") is not the uncorruptedScore  ("
+                            + uncorruptedScore + "):\n"
+                            + scoreCorruptionAnalysis);
+        } else {
+            uncorruptedSolutionDirector.dispose();
         }
     }
 
-    /**
-     * Calls {@link #buildConstraintOccurrenceSummary(WorkingMemory)} with the current {@link #workingMemory}.
-     * @return never null
-     */
-    public String buildConstraintOccurrenceSummary() {
-        return buildConstraintOccurrenceSummary(workingMemory);
+    public String buildScoreCorruptionAnalysis() {
+        DefaultSolutionDirector uncorruptedSolutionDirector = buildUncorruptedSolutionDirector();
+        uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
+        String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
+        uncorruptedSolutionDirector.dispose();
+        return scoreCorruptionAnalysis;
     }
 
-    /**
-     * TODO Refactor this with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
-     * @param summaryWorkingMemory sometimes null
-     * @return never null
-     */
-    public String buildConstraintOccurrenceSummary(WorkingMemory summaryWorkingMemory) {
-        logger.trace("Building ConstraintOccurrence summary");
-        if (summaryWorkingMemory == null) {
-            return "  The workingMemory is null.";
-        }
-        Map<String, SummaryLine> summaryLineMap = new TreeMap<String, SummaryLine>();
-        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) summaryWorkingMemory.iterateObjects(
+    private DefaultSolutionDirector buildUncorruptedSolutionDirector() {
+        DefaultSolutionDirector uncorruptedSolutionDirector = new DefaultSolutionDirector();
+        uncorruptedSolutionDirector.setSolutionDescriptor(solutionDescriptor);
+        uncorruptedSolutionDirector.setRuleBase(ruleBase);
+        uncorruptedSolutionDirector.setScoreDefinition(scoreDefinition);
+        uncorruptedSolutionDirector.setWorkingSolution(workingSolution);
+        return uncorruptedSolutionDirector;
+    }
+
+    private String buildScoreCorruptionAnalysis(DefaultSolutionDirector uncorruptedSolutionDirector) {
+        Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
+        Iterator<ConstraintOccurrence> workingIt = (Iterator<ConstraintOccurrence>)
+                workingMemory.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
-        while (it.hasNext()) {
-            ConstraintOccurrence occurrence = it.next();
-            logger.trace("    Adding ConstraintOccurrence ({})", occurrence);
-            SummaryLine summaryLine = summaryLineMap.get(occurrence.getRuleId());
-            if (summaryLine == null) {
-                summaryLine = new SummaryLine();
-                summaryLineMap.put(occurrence.getRuleId(), summaryLine);
+        while (workingIt.hasNext()) {
+            workingConstraintOccurrenceSet.add(workingIt.next());
+        }
+        Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
+        Iterator<ConstraintOccurrence> uncorruptedIt = (Iterator<ConstraintOccurrence>)
+                uncorruptedSolutionDirector.getWorkingMemory().iterateObjects(
+                        new ClassObjectFilter(ConstraintOccurrence.class));
+        while (uncorruptedIt.hasNext()) {
+            uncorruptedConstraintOccurrenceSet.add(uncorruptedIt.next());
+        };
+        Set<Object> excessSet = new LinkedHashSet<Object>(workingConstraintOccurrenceSet);
+        excessSet.removeAll(uncorruptedConstraintOccurrenceSet);
+        Set<Object> lackingSet = new LinkedHashSet<Object>(uncorruptedConstraintOccurrenceSet);
+        lackingSet.removeAll(workingConstraintOccurrenceSet);
+
+        int CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT = 10;
+        StringBuilder analysis = new StringBuilder();
+        if (!excessSet.isEmpty()) {
+            analysis.append("  The workingMemory has ").append(excessSet.size())
+                    .append(" ConstraintOccurrence(s) in excess:\n");
+            int count = 0;
+            for (Object o : excessSet) {
+                if (count >= CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT) {
+                    analysis.append("    ... ").append(excessSet.size() - CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT)
+                            .append(" more\n");
+                    break;
+                }
+                analysis.append("    ").append(o.toString()).append("\n");
+                count++;
             }
-            summaryLine.increment();
-            if (occurrence instanceof IntConstraintOccurrence) {
-                summaryLine.addWeight(((IntConstraintOccurrence) occurrence).getWeight());
-            } else if (occurrence instanceof DoubleConstraintOccurrence) {
-                summaryLine.addWeight(((DoubleConstraintOccurrence) occurrence).getWeight());
-            } else if (occurrence instanceof LongConstraintOccurrence) {
-                summaryLine.addWeight(((LongConstraintOccurrence) occurrence).getWeight());
-            } else if (occurrence instanceof UnweightedConstraintOccurrence) {
-                summaryLine.addWeight(1);
-            } else {
-                throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
-                        + occurrence.getClass());
+        }
+        if (!lackingSet.isEmpty()) {
+            analysis.append("  The workingMemory has ").append(excessSet.size())
+                    .append(" ConstraintOccurrence(s) lacking:\n");
+            int count = 0;
+            for (Object o : lackingSet) {
+                if (count >= CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT) {
+                    analysis.append("    ... ").append(lackingSet.size() - CONSTRAINT_OCCURRENCE_DISPLAY_LIMIT)
+                            .append(" more\n");
+                    break;
+                }
+                analysis.append("    ").append(o.toString()).append("\n");
+                count++;
             }
         }
-        StringBuilder summary = new StringBuilder();
-        for (Map.Entry<String, SummaryLine> summaryLineEntry : summaryLineMap.entrySet()) {
-            SummaryLine summaryLine = summaryLineEntry.getValue();
-            summary.append("  Score rule (").append(summaryLineEntry.getKey()).append(") has count (")
-                    .append(summaryLine.getCount()).append(") and weight total (")
-                    .append(summaryLine.getWeightTotal()).append(").\n");
-        }
-        return summary.toString();
-    }
+        if (excessSet.isEmpty() && lackingSet.isEmpty()) {
+            analysis.append("  Check the score rules. No ConstraintOccurrence(s) in excess or lacking." +
+                    "  Possibly some logically inserted score rules do not extend ConstraintOccurrence.\n" +
+                    "  Consider making them extend ConstraintOccurrence" +
+                    " or just reuse the build-in ConstraintOccurrence implementations.");
 
-    private static class SummaryLine {
-        private int count = 0;
-        private Number weightTotal = null;
-
-        public int getCount() {
-            return count;
+        } else {
+            analysis.append("  Check the score rules who created those ConstraintOccurrences." +
+                    " Verify that each ConstraintOccurrence's causes and weight is correct.");
         }
-
-        public Number getWeightTotal() {
-            return weightTotal;
-        }
-
-        public void increment() {
-            count++;
-        }
-
-        public void addWeight(Integer weight) {
-            if (weightTotal == null) {
-                weightTotal = 0;
-            }
-            weightTotal = ((Integer) weightTotal) + weight;
-        }
-
-        public void addWeight(Double weight) {
-            if (weightTotal == null) {
-                weightTotal = 0.0;
-            }
-            weightTotal = ((Double) weightTotal) + weight;
-        }
-
-        public void addWeight(Long weight) {
-            if (weightTotal == null) {
-                weightTotal = 0L;
-            }
-            weightTotal = ((Long) weightTotal) + weight;
-        }
+        return analysis.toString();
     }
 
 }

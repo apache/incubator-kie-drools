@@ -147,15 +147,17 @@ public class DefaultDecider implements Decider {
             Score undoScore = localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
             Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
+                // First assert that are probably no corrupted score rules.
+                localSearchSolverPhaseScope.getSolverScope().getSolutionDirector()
+                        .assertWorkingScore(undoScore);
                 throw new IllegalStateException(
-                        "The moveClass (" + move.getClass() + ")'s move (" + move + ") has a corrupted undoMove ("
-                                + undoMove + ") or there is general score corruption.\n"
-                                + "Check the Move.createUndoMove(...) method" +
-                                " and enable EnvironmentMode TRACE to fail-faster on general score corruption.\n"
-                                + "The lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
-                                + undoScore + ") are not equal.\n"
-                                + localSearchSolverPhaseScope.getSolverScope()
-                                        .getSolutionDirector().buildConstraintOccurrenceSummary());
+                        "The moveClass (" + move.getClass() + ")'s move (" + move
+                                + ") probably has a corrupted undoMove (" + undoMove + ")." +
+                                " Or maybe there are corrupted score rules.\n"
+                                + "Check the Move.createUndoMove(...) method of that Move class" +
+                                " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
+                                + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+                                + ") is not the undoScore (" + undoScore + ").");
             }
         }
         logger.trace("        Move score ({}), accepted ({}) for move ({}).",
