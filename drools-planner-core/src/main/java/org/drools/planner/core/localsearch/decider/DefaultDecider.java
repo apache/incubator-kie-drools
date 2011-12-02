@@ -142,15 +142,19 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(workingMemory);
         if (assertUndoMoveIsUncorrupted) {
-            Score undoScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScoreFromWorkingMemory();
-            Score lastCompletedStepScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope()
-                    .getLastCompletedLocalSearchStepScope().getScore();
+            LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope()
+                    .getLocalSearchSolverPhaseScope();
+            Score undoScore = localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 throw new IllegalStateException(
-                        "Corrupted undo move (" + undoMove + ") received from move (" + move + ").\n"
-                                + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
-                                + undoScore + ").\n"
-                                + moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getSolverScope()
+                        "The moveClass (" + move.getClass() + ")'s move (" + move + ") has a corrupted undoMove ("
+                                + undoMove + ") or there is general score corruption.\n"
+                                + "Check the Move.createUndoMove(...) method" +
+                                " and enable EnvironmentMode TRACE to fail-faster on general score corruption.\n"
+                                + "The lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
+                                + undoScore + ") are not equal.\n"
+                                + localSearchSolverPhaseScope.getSolverScope()
                                         .getSolutionDirector().buildConstraintOccurrenceSummary());
             }
         }
