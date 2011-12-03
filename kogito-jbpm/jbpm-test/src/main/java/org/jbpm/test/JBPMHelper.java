@@ -108,6 +108,10 @@ public final class JBPMHelper {
 	}
 	
 	public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
+		return loadStatefulKnowledgeSession(kbase, -1);
+	}
+	
+	public static StatefulKnowledgeSession loadStatefulKnowledgeSession(KnowledgeBase kbase, int sessionId) {
 		Properties properties = getProperties();
 		String persistenceEnabled = properties.getProperty("persistence.enabled", "false");
 		StatefulKnowledgeSession ksession;
@@ -121,7 +125,11 @@ public final class JBPMHelper {
 			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 	        env.set( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
 			// create a new knowledge session that uses JPA to store the runtime state
-			ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+	        if (sessionId == -1) {
+	        	ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+	        } else {
+	        	ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env);
+	        }
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
 			if ("true".equals(humanTaskEnabled)) {
 				String transport = properties.getProperty("taskservice.transport", "mina");

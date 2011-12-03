@@ -59,7 +59,7 @@ public class DelayTimerEventProcessTest {
     
     // Test specific
     private static long processId = -1;
-
+    private static int sessionId = -1;
     
     @BeforeClass
     public static void beforeClass() {
@@ -71,39 +71,17 @@ public class DelayTimerEventProcessTest {
     @Before
     public void before() throws IOException { 
         KnowledgeBase kbase = createKnowledgeBase();
-        this.ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
+        this.ksession = JBPMHelper.loadStatefulKnowledgeSession(kbase, sessionId);
+        sessionId = ksession.getId();
         
         //Console log
         KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
     }
 
-    /**
-     * Creates a ksession from a kbase containing process definition
-     * @return 
-     */
     public KnowledgeBase createKnowledgeBase(){
-        //Create the kbuilder
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-    
-        //Add simpleProcess.bpmn to kbuilder
         kbuilder.add(new ClassPathResource(PROCESS_FILE_NAME), ResourceType.BPMN2);
-        logger.debug("Compiling resources");
-        
-        //Check for errors
-        if (kbuilder.hasErrors()) {
-            if (kbuilder.getErrors().size() > 0) {
-                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-                    logger.error("Error building kbase: " + error.getMessage());
-                }
-            }
-            throw new RuntimeException("Error building kbase!");
-        }
-    
-        //Create a knowledge base and add the generated package
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    
-        return kbase;
+        return kbuilder.newKnowledgeBase();
     }
 
     @AfterClass
@@ -131,6 +109,7 @@ public class DelayTimerEventProcessTest {
     @Test
     public void finishTimerProcess() throws InterruptedException {
         assertTrue("Process id has not been saved in previous test!", processId > 0);
+        assertTrue("Session id has not been saved in previous test!", sessionId > 0);
         ProcessInstance process = ksession.getProcessInstance(processId);
        
         assertNotNull("Could not retrieve process " + processId, process);
