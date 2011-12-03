@@ -527,6 +527,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 		taskServiceSession.setTransactionType("local-JTA");
 		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
 			new LocalTaskService(taskServiceSession), ksession);
+		humanTaskHandler.setLocal(true);
 		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return new LocalTaskService(taskServiceSession);

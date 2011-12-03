@@ -63,6 +63,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private TaskService client;
     private WorkItemManager manager = null;
     private KnowledgeRuntime session;
+    private boolean local = false;
     
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
 	private boolean initialized = false;
@@ -102,6 +103,10 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 	        registerTaskEvents();
 	        initialized = true;
     	}
+    }
+    
+    public void setLocal(boolean local) {
+    	this.local = local;
     }
 
     private void registerTaskEvents() {
@@ -260,63 +265,72 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
         	final long taskId = event.getTaskId();
-        	Runnable runnable = new Runnable() {
-        		public void run() {
-		        	Task task = client.getTask(taskId);
-					long workItemId = task.getTaskData().getWorkItemId();
-					if (task.getTaskData().getStatus() == Status.Completed) {
-						String userId = task.getTaskData().getActualOwner().getId();
-						Map<String, Object> results = new HashMap<String, Object>();
-						results.put("ActorId", userId);
-						long contentId = task.getTaskData().getOutputContentId();
-						if (contentId != -1) {
-							Content content = client.getContent(contentId);
-							ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
-							ObjectInputStream in;
-							try {
-								in = new ObjectInputStream(bis);
-								Object result = in.readObject();
-								in.close();
-								results.put("Result", result);
-								if (result instanceof Map) {
-									Map<?, ?> map = (Map) result;
-									for (Map.Entry<?, ?> entry: map.entrySet()) {
-										if (entry.getKey() instanceof String) {
-											results.put((String) entry.getKey(), entry.getValue());
-										}
-									}
-								}
-								if (session != null) {
-									session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
-								} else {
-									manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
-								}
-							} catch (IOException e) {
-								e.printStackTrace();
-							} catch (ClassNotFoundException e) {
-								e.printStackTrace();
-							}
-						} else {
-							if (session != null) {
-								session.getWorkItemManager().completeWorkItem(workItemId, results);
-							} else {
-								manager.completeWorkItem(workItemId, results);
-							}
-						}
-					} else {
-						if (session != null) {
-							session.getWorkItemManager().abortWorkItem(workItemId);
-						} else {
-							manager.abortWorkItem(workItemId);
-						}
-					}
-        		}
-        	};
-        	new Thread(runnable).start();
+        	if (local) {
+        		handleCompletedTask(taskId);
+        	} else {
+	        	Runnable runnable = new Runnable() {
+	        		public void run() {
+	        			handleCompletedTask(taskId);
+	        		}
+	        	};
+	        	new Thread(runnable).start();
+        	}
         }
         
         public boolean isRemove() {
         	return false;
+        }
+        
+        public void handleCompletedTask(long taskId) {
+        	Task task = client.getTask(taskId);
+			long workItemId = task.getTaskData().getWorkItemId();
+			if (task.getTaskData().getStatus() == Status.Completed) {
+				String userId = task.getTaskData().getActualOwner().getId();
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("ActorId", userId);
+				long contentId = task.getTaskData().getOutputContentId();
+				if (contentId != -1) {
+					Content content = client.getContent(contentId);
+					ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+					ObjectInputStream in;
+					try {
+						in = new ObjectInputStream(bis);
+						Object result = in.readObject();
+						in.close();
+						results.put("Result", result);
+						if (result instanceof Map) {
+							Map<?, ?> map = (Map) result;
+							for (Map.Entry<?, ?> entry: map.entrySet()) {
+								if (entry.getKey() instanceof String) {
+									results.put((String) entry.getKey(), entry.getValue());
+								}
+							}
+						}
+						if (session != null) {
+							session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
+						} else {
+							manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				} else {
+					if (session != null) {
+						session.getWorkItemManager().completeWorkItem(workItemId, results);
+					} else {
+						manager.completeWorkItem(workItemId, results);
+					}
+				}
+			} else {
+				if (session != null) {
+					session.getWorkItemManager().abortWorkItem(workItemId);
+				} else {
+					manager.abortWorkItem(workItemId);
+				}
+			}
+
         }
     }
 }
