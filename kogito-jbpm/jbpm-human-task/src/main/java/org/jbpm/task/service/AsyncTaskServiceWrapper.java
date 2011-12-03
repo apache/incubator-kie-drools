@@ -598,7 +598,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
 
     public void setPriority(long taskId, String userId, int priority) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        taskService.setPriority(taskId, userId, priority, null);
+        taskService.setPriority(taskId, userId, priority, responseHandler);
         try {
             responseHandler.waitTillDone(timeout);
         } catch (Exception e) {
