@@ -18,7 +18,6 @@ package org.jbpm.process.workitem.wsht.hornetq.sync;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
@@ -44,7 +43,7 @@ public class WSHumanTaskHandlerHornetQSyncTest extends WSHumanTaskHandlerBaseSyn
         setClient(new AsyncTaskServiceWrapper(new TaskClient(new HornetQTaskClientConnector("client 1",
                 new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())))));
         
-        SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession());
+        SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(getClient(), ksession);
         handler.setConnection("127.0.0.1", 5446);
         setHandler(handler);
     }
