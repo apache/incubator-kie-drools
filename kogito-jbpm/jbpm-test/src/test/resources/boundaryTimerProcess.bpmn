@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+
+    <itemDefinition id="_emailServiceItem" structureRef="java.util.List" />         
+
+    <process processType="Private" 
+      id="BoundaryTimerEventProcess" 
+      name="Boundary Timer Event Example" >
+
+    <!-- process variables -->
+        <property id="emailService" itemSubjectRef="_emailServiceItem"/>
+
+    <!-- nodes -->
+        <startEvent id="_1" name="StartProcess" g:x="16" g:y="16" g:width="48" g:height="48" />
+        <endEvent id="_4" name="End" g:x="228" g:y="16" g:width="48" g:height="48" >
+            <terminateEventDefinition/>
+        </endEvent>
+    
+    
+        <subProcess id="_5" name="Do Some Urgent Task!" >
+            <startEvent id="_5-1" name="StartSubProcess"/>
+            <sequenceFlow sourceRef="_5-1" targetRef="_5-2"/>
+            <userTask id="_5-2" name="Stop Service Usage" >
+                <ioSpecification>
+                    <dataInput id="_12_CommentInput" name="Comment" />
+                    <dataInput id="_12_SkippableInput" name="Skippable" />
+                    <dataInput id="_12_TaskNameInput" name="TaskName" />
+                    <dataInput id="_12_PriorityInput" name="Priority" />
+                    <inputSet>
+                        <dataInputRefs>_12_CommentInput</dataInputRefs>
+                        <dataInputRefs>_12_SkippableInput</dataInputRefs>
+                        <dataInputRefs>_12_TaskNameInput</dataInputRefs>
+                        <dataInputRefs>_12_PriorityInput</dataInputRefs>
+                    </inputSet>
+                    <outputSet>
+                    </outputSet>
+                </ioSpecification>
+                <dataInputAssociation>
+                    <targetRef>_12_CommentInput</targetRef>
+                    <assignment>
+                        <from xsi:type="tFormalExpression">Stop Service Usage</from>
+                        <to xsi:type="tFormalExpression">_12_CommentInput</to>
+                    </assignment>
+                </dataInputAssociation>
+                <dataInputAssociation>
+                    <targetRef>_12_SkippableInput</targetRef>
+                    <assignment>
+                        <from xsi:type="tFormalExpression">false</from>
+                        <to xsi:type="tFormalExpression">_12_SkippableInput</to>
+                    </assignment>
+                </dataInputAssociation>
+                <dataInputAssociation>
+                    <targetRef>_12_TaskNameInput</targetRef>
+                    <assignment>
+                        <from xsi:type="tFormalExpression">Stop Service Usage</from>
+                        <to xsi:type="tFormalExpression">_12_TaskNameInput</to>
+                    </assignment>
+                </dataInputAssociation>
+                <dataInputAssociation>
+                    <targetRef>_12_PriorityInput</targetRef>
+                    <assignment>
+                        <from xsi:type="tFormalExpression"></from>
+                        <to xsi:type="tFormalExpression">_12_PriorityInput</to>
+                    </assignment>
+                </dataInputAssociation>
+                <potentialOwner>
+                    <resourceAssignmentExpression>
+                        <formalExpression>user</formalExpression>
+                    </resourceAssignmentExpression>
+                </potentialOwner>
+            </userTask>
+            <sequenceFlow sourceRef="_5-2" targetRef="_5-3"/>
+            <endEvent id="_5-3" name="EscalationEvent"/>
+        </subProcess>
+    
+    
+        <boundaryEvent id="_6" name="TimerEvent" attachedToRef="_5" cancelActivity="false">
+            <timerEventDefinition>
+                <timeCycle xsi:type="tFormalExpression">1500ms</timeCycle>
+            </timerEventDefinition>
+        </boundaryEvent>
+    
+        <scriptTask id="_7" name="Notify Superior" scriptFormat="http://www.java.com/java" >
+            <script>
+                System.out.println("Your Superior was notified!");
+                emailService.add("Dear Boss, ...");
+            </script>
+        </scriptTask>
+    
+        <endEvent id="_8" name="TimerInstanceEnd" >
+            
+        </endEvent>
+
+    <!-- connections -->
+        <sequenceFlow sourceRef="_1" targetRef="_5" />
+        <sequenceFlow sourceRef="_5" targetRef="_4" />
+    
+        <sequenceFlow sourceRef="_6" targetRef="_7"/>
+        <sequenceFlow sourceRef="_7" targetRef="_8"/>
+    </process>
+
+</definitions>
