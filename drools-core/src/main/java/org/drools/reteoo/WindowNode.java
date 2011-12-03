@@ -42,10 +42,9 @@ import org.drools.spi.PropagationContext;
  * sliding windows, tumbling windows, etc.
  *
  */
-public class WindowNode extends ObjectSource
-                                            implements
-                                            ObjectSinkNode,
-                                            NodeMemory {
+public class WindowNode extends ObjectSource 
+                        implements ObjectSinkNode,
+                                   NodeMemory {
 
     private static final long              serialVersionUID = 540l;
 
