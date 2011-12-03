@@ -16,8 +16,8 @@
 
 package org.drools.rule;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.RightTuple;
 import org.drools.spi.RuleComponent;
 
 /**
@@ -61,36 +61,36 @@ public interface Behavior extends RuleComponent, Cloneable {
      * Makes the behavior aware of the new fact entering behavior's scope
      * 
      * @param context The behavior context object
-     * @param tuple The new fact entering behavior's scope
+     * @param fact The new fact entering behavior's scope
      * @param workingMemory The working memory session reference
      * 
      * @return true if the propagation should continue, false otherwise. I.e., 
      *         the behaviour has veto power over the fact propagation, and prevents
      *         the propagation to continue if returns false on this method. 
      */
-    public boolean assertRightTuple(Object context,
-                                 RightTuple tuple,
-                                 InternalWorkingMemory workingMemory);
+    public boolean assertFact(Object context,
+                              InternalFactHandle fact,
+                              InternalWorkingMemory workingMemory);
 
     /**
      * Removes a right tuple from the behavior's scope
      * 
      * @param context The behavior context object
-     * @param rightTuple The tuple leaving the behavior's scope
+     * @param fact The fact leaving the behavior's scope
      * @param workingMemory The working memory session reference
      */
-    public void retractRightTuple(Object context,
-                                  RightTuple rightTuple,
-                                  InternalWorkingMemory workingMemory);
+    public void retractFact(Object context,
+                            InternalFactHandle fact,
+                            InternalWorkingMemory workingMemory);
 
     /**
-     * A callback method that allows behaviors to expire tuples
+     * A callback method that allows behaviors to expire facts
      * 
      * @param context The behavior context object
      * @param workingMemory The working memory session reference
      */
-    public void expireTuples(Object context, 
-                             InternalWorkingMemory workingMemory);
+    public void expireFacts(Object context, 
+                            InternalWorkingMemory workingMemory);
 
     /**
      * Some behaviors might change the expiration offset for the 
