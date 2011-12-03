@@ -7,6 +7,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.Test;
 
 /**
  * This is a sample file to test a process.
@@ -17,6 +18,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 		super(true);
 	}
 
+	@Test
 	public void testProcess() {
 		StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
 		TaskService taskService = getTaskService(ksession);
@@ -44,8 +46,6 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 
 		assertNodeTriggered(processInstance.getId(), "End");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		
-		ksession.dispose();
 	}
 
 }

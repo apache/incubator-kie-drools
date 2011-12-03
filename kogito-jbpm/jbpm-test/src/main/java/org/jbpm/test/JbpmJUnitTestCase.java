@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -12,9 +13,7 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
-import org.antlr.stringtemplate.StringTemplate.STAttributeList;
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListenerFactory;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
@@ -48,6 +47,12 @@ import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -58,7 +63,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * Please keep this test class in the org.jbpm.bpmn2 package or otherwise give it a unique name. 
  *
  */
-public abstract class JbpmJUnitTestCase extends TestCase {
+public abstract class JbpmJUnitTestCase extends Assert {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
@@ -74,7 +79,16 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	
 	private WorkingMemoryInMemoryLogger logger;
 	private JPAProcessInstanceDbLog log;
+	private Logger testLogger = null;
 
+    @Rule
+    public KnowledgeSessionCleanup ksessionCleanupRule = new KnowledgeSessionCleanup();	
+	protected static ThreadLocal<Set<StatefulKnowledgeSession>> knowledgeSessionSetLocal 
+	    = KnowledgeSessionCleanup.knowledgeSessionSetLocal;
+   
+	@Rule
+	public TestName testName = new TestName();
+	
 	public JbpmJUnitTestCase() {
 		this(false);
 	}
@@ -105,8 +119,12 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	public boolean isPersistence() {
 		return sessionPersistence;
 	}
-    
-    protected void setUp() throws Exception {
+  
+	@Before
+    public void setUp() throws Exception {
+        if( testLogger == null ) { 
+            testLogger = LoggerFactory.getLogger(getClass());
+        }
         if (setupDataSource) {
             server.start();
         	ds = setupPoolingDataSource();
@@ -114,7 +132,8 @@ public abstract class JbpmJUnitTestCase extends TestCase {
         }
     }
 
-    protected void tearDown() throws Exception {
+	@After
+    public void tearDown() throws Exception {
     	if (setupDataSource) {
     		taskService = null;
     		if (emf != null) {
@@ -132,8 +151,13 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     		    if(  testTxState != Status.STATUS_NO_TRANSACTION && 
     		         testTxState != Status.STATUS_ROLLEDBACK &&
     		         testTxState != Status.STATUS_COMMITTED ) { 
-    		        tx.rollback();
-    		        Assert.fail("Transaction had status " + JbpmJUnitTestCase.txState[testTxState] + " at the end of the test.");
+    		        try { 
+    		            tx.rollback();
+    		        }
+    		        catch( Throwable t ) { 
+    		            // do nothing..
+    		        }
+    		        Assert.fail("Transaction had status " + JbpmJUnitTestCase.txStateName[testTxState] + " at the end of the test.");
     		    }
     		}
     		DeleteDbFiles.execute("~", "jbpm-db", true);
@@ -204,23 +228,24 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+	    StatefulKnowledgeSession result;
 		if (sessionPersistence) {
 		    Environment env = EnvironmentFactory.newEnvironment();
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 		    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+		    result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 		    new JPAWorkingMemoryDbLogger(result);
 		    if (log == null) {
 		    	log = new JPAProcessInstanceDbLog(result.getEnvironment());
 		    }
-		    return result;
 		} else {
 		    Environment env = EnvironmentFactory.newEnvironment();
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-			StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(null, env);
+			result = kbase.newStatefulKnowledgeSession(null, env);
 			logger = new WorkingMemoryInMemoryLogger(result);
-			return result;
 		}
+		knowledgeSessionSetLocal.get().add(result);
+		return result;
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(String... process) {
@@ -228,7 +253,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		return createKnowledgeSession(kbase);
 	}
 	
-	protected static String [] txState = { "ACTIVE",
+	protected static String [] txStateName = { "ACTIVE",
                                            "MARKED_ROLLBACK", 
 	                                       "PREPARED",
 	                                       "COMMITTED",
@@ -246,7 +271,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
 			if( tx != null ) { 
 			    int txStatus = tx.getStatus();
-			    assertTrue("Current transaction state is " + txState[txStatus], tx.getStatus() == Status.STATUS_NO_TRANSACTION );
+			    assertTrue("Current transaction state is " + txStateName[txStatus], tx.getStatus() == Status.STATUS_NO_TRANSACTION );
 			}
 			Environment env = null;
 			if (noCache) {

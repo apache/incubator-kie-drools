@@ -27,6 +27,8 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public final class JBPMHelper {
 	
+    public static String [] processStateName = { "PENDING", "ACTIVE", "COMPLETED", "ABORTED", "SUSPENDED" };
+    
 	private JBPMHelper() {
 	}
 	
@@ -108,6 +110,7 @@ public final class JBPMHelper {
 	public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
 		Properties properties = getProperties();
 		String persistenceEnabled = properties.getProperty("persistence.enabled", "false");
+		StatefulKnowledgeSession ksession;
 		if ("true".equals(persistenceEnabled)) {
 			String dialect = properties.getProperty("persistence.persistenceunit.dialect", "org.hibernate.dialect.H2Dialect");
 			Map<String, String> map = new HashMap<String, String>();
@@ -118,7 +121,7 @@ public final class JBPMHelper {
 			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 	        env.set( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
 			// create a new knowledge session that uses JPA to store the runtime state
-			StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+			ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
 			if ("true".equals(humanTaskEnabled)) {
 				String transport = properties.getProperty("taskservice.transport", "mina");
@@ -129,9 +132,8 @@ public final class JBPMHelper {
 		        	throw new RuntimeException("Unknown task service transport " + transport);
 		        }
 			}
-			return ksession;
 		} else {
-			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+			ksession = kbase.newStatefulKnowledgeSession();
 			String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
 			if ("true".equals(humanTaskEnabled)) {
 				String transport = properties.getProperty("taskservice.transport", "mina");
@@ -142,8 +144,9 @@ public final class JBPMHelper {
 		        	throw new RuntimeException("Unknown task service transport " + transport);
 		        }	
 			}
-			return ksession;
 		}
+		KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
+		return ksession;
 	}
 	
 	private static Properties getProperties() {

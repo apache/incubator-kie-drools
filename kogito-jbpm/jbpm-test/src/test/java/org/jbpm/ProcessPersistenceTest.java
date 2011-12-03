@@ -7,6 +7,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.test.JbpmJUnitTestCase;
+import org.junit.Test;
 
 /**
  * This is a sample file to test a process.
@@ -18,15 +19,16 @@ public class ProcessPersistenceTest extends JbpmJUnitTestCase {
 		setPersistence(true);
 	}
 
+	@Test
 	public void testProcess() {
 		StatefulKnowledgeSession ksession = createKnowledgeSession("hello.bpmn");
 		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 		// check whether the process instance has completed successfully
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		assertNodeTriggered(processInstance.getId(), "StartProcess", "Hello", "EndProcess");
-		ksession.dispose();
 	}
 
+	@Test
 	public void testTransactions() throws Exception {
 		StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
@@ -37,7 +39,6 @@ public class ProcessPersistenceTest extends JbpmJUnitTestCase {
 		ut.rollback();
 
 		assertNull(ksession.getProcessInstance(processInstance.getId()));
-		ksession.dispose();
 	}
 	
 }
