@@ -105,7 +105,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                     schedule.getLectureList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("CurriculumCourseSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+            logger.info("CurriculumCourseSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
             return schedule;
         }

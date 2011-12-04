@@ -84,7 +84,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 //            BigInteger possibleSolutionSize = BigInteger.valueOf(trainDesign.getBedList().size()).pow(
 //                    trainDesign.getAdmissionPartList().size());
 //            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-//            logger.info("TrainDesign with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+//            logger.info("TrainDesign with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
 //                    flooredPossibleSolutionSize, possibleSolutionSize);
             return trainDesign;
         }

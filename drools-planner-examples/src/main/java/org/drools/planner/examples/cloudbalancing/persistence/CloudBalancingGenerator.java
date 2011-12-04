@@ -147,7 +147,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
                 cloudBalance.getCloudProcessList().size());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-        logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+        logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                 flooredPossibleSolutionSize, possibleSolutionSize);
         return cloudBalance;
     }

@@ -67,7 +67,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                     travelingSalesmanTour.getCityList().size());
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("TravelingSalesmanTour with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+            logger.info("TravelingSalesmanTour with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
             return travelingSalesmanTour;
         }

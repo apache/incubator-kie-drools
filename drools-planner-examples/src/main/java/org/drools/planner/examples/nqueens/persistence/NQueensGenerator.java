@@ -92,7 +92,7 @@ public class NQueensGenerator extends LoggingMain {
         logger.info("NQueens with {} queens.", nQueens.getN());
         BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-        logger.info("NQueens with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+        logger.info("NQueens with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                 flooredPossibleSolutionSize, possibleSolutionSize);
         return nQueens;
     }

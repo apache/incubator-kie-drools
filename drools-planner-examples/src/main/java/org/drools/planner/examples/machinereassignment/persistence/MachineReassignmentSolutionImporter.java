@@ -97,7 +97,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             BigInteger possibleSolutionSize = BigInteger.valueOf(machineReassignment.getMachineList().size()).pow(
                     machineReassignment.getProcessList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("MachineReassignment with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+            logger.info("MachineReassignment with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
             return machineReassignment;
         }

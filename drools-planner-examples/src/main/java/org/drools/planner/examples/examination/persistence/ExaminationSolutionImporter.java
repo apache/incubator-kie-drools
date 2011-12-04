@@ -104,7 +104,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
                     examination.getTopicList().size());
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("Examination with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+            logger.info("Examination with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
             return examination;
         }
