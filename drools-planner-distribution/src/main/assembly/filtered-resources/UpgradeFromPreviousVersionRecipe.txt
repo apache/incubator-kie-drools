@@ -1264,3 +1264,6 @@ After in *ScoreDefinition.java:
 
 [MINOR] If you implemented a custom Acceptor or Forager:
 double acceptanceChance has been replaced by boolean accepted.
+
+[MINOR] The examples switched from log4j to logback. This does not affect you.
+Drools Planner still uses slf4j, so log4j is  still supported too.

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %l lowers performance -->
+      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
+      <pattern>%d [%t] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+  <!--<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--<file>local/log/droolsPlannerBenchmarker.log</file>-->
+    <!--<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">-->
+      <!--<fileNamePattern>local/log/droolsPlannerBenchmarker.%i.log.zip</fileNamePattern>-->
+      <!--<minIndex>1</minIndex>-->
+      <!--<maxIndex>3</maxIndex>-->
+    <!--</rollingPolicy>-->
+    <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">-->
+      <!--<maxFileSize>5MB</maxFileSize>-->
+    <!--</triggeringPolicy>-->
+    <!--<encoder>-->
+      <!--&lt;!&ndash; %l lowers performance &ndash;&gt;-->
+      <!--&lt;!&ndash;<pattern>%d [%t] %-5p %l%n  %m%n</pattern>&ndash;&gt;-->
+      <!--<pattern>%d [%t] %-5p %m%n</pattern>-->
+    <!--</encoder>-->
+  <!--</appender>-->
+
+  <logger name="org.drools.planner" level="debug"/>
+
+  <root level="warn">
+    <appender-ref ref="consoleAppender" />
+    <!--<appender-ref ref="fileAppender" />-->
+  </root>
+
+</configuration>
