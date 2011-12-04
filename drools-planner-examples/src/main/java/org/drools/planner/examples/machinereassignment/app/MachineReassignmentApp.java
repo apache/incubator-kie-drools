@@ -19,9 +19,13 @@ package org.drools.planner.examples.machinereassignment.app;
 import org.drools.planner.config.XmlSolverConfigurer;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.CommonApp;
+import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
+import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentDaoImpl;
+import org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentSolutionExporter;
+import org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentSolutionImporter;
 import org.drools.planner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 
 public class MachineReassignmentApp extends CommonApp {
@@ -48,6 +52,16 @@ public class MachineReassignmentApp extends CommonApp {
     @Override
     protected SolutionDao createSolutionDao() {
         return new MachineReassignmentDaoImpl();
+    }
+
+    @Override
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new MachineReassignmentSolutionImporter();
+    }
+
+    @Override
+    protected AbstractSolutionExporter createSolutionExporter() {
+        return new MachineReassignmentSolutionExporter();
     }
 
 }
