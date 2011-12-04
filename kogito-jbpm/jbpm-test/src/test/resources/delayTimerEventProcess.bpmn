@@ -17,12 +17,12 @@
 
   <process processType="Private" isExecutable="true" 
            id="DelayTimerEventProcess" 
-           name="Delay Timer Event Process" 
+           name="Delay Timer Event" 
            tns:packageName="org.jbpm.persistence.timer" >
 
     <!-- process variables -->
     <property id="timeBeforeTimer" itemSubjectRef="_timeBeforeTimerItem"/>
-    <property id="timerExecutionTime" itemSubjectRef="_timerExecutionTimeItem"/>
+    <property id="timeAfterTimer" itemSubjectRef="_timeAfterTimerItem"/>
 
     <!-- nodes -->
     <startEvent id="_1" name="Start" />
@@ -31,21 +31,26 @@
     </endEvent>
     
     <scriptTask id="_5" name="Before Timer" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("Before Timer");
-timeBeforeTimer = System.currentTimeMillis();
-kcontext.setVariable("timeBeforeTimer", timeBeforeTimer);</script>
+      <script>System.out.println("Before Timer");</script>
+<!-- timeBeforeTimer = kcontext.getKnowledgeRuntime().getSessionClock().getCurrentTime();
+kcontext.setVariable("timeBeforeTimer", timeBeforeTimer); -->
     </scriptTask>
 
     <intermediateCatchEvent id="_4" name="Timer" >
       <timerEventDefinition>
-        <timeCycle>5000</timeCycle>
+        <timeCycle>500</timeCycle>
       </timerEventDefinition>
     </intermediateCatchEvent>
 
     <scriptTask id="_3" name="After Timer" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("After Timer");
-timerExecutionTime = System.currentTimeMillis() - (Long) timeBeforeTimer;
-kcontext.setVariable("timerExecutionTime", timerExecutionTime);</script>
+       <script>System.out.println("After timer");
+System.setProperty("afterTimerTime", String.valueOf(System.currentTimeMillis()));
+String val = System.getProperty("timerFired");
+int valInt = 1;
+if( val != null ) {
+  valInt = Integer.parseInt(val) + 1;
+}
+System.setProperty("timerFired", String.valueOf(valInt));</script>
     </scriptTask>
  
 

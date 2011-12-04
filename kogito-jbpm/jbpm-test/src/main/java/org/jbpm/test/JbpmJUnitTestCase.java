@@ -1,5 +1,7 @@
 package org.jbpm.test;
 
+import static org.jbpm.test.JBPMHelper.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +16,15 @@ import javax.transaction.Transaction;
 
 import junit.framework.Assert;
 
+import org.drools.ClockType;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.process.Node;
@@ -30,6 +35,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.runtime.process.ProcessInstance;
@@ -75,7 +81,6 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	private org.jbpm.task.service.TaskService taskService;
 
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-	public StatefulKnowledgeSession ksession;
 	
 	private WorkingMemoryInMemoryLogger logger;
 	private JPAProcessInstanceDbLog log;
@@ -145,6 +150,9 @@ public abstract class JbpmJUnitTestCase extends Assert {
     			ds = null;
     		}
     		server.stop();
+    		DeleteDbFiles.execute("~", "jbpm-db", true);
+    		
+    		// Clean up possible transactions
     		Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
     		if( tx != null ) { 
     		    int testTxState = tx.getStatus();
@@ -157,20 +165,31 @@ public abstract class JbpmJUnitTestCase extends Assert {
     		        catch( Throwable t ) { 
     		            // do nothing..
     		        }
-    		        Assert.fail("Transaction had status " + JbpmJUnitTestCase.txStateName[testTxState] + " at the end of the test.");
+    		        Assert.fail("Transaction had status " + txStateName[testTxState] + " at the end of the test.");
     		    }
     		}
-    		DeleteDbFiles.execute("~", "jbpm-db", true);
     	}
     }
     
-	protected KnowledgeBase createKnowledgeBase(String... process) {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		for (String p: process) {
-			kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
-		}
-		return kbuilder.newKnowledgeBase();
-	}
+    protected KnowledgeBase createKnowledgeBase(String... process) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for (String p: process) {
+            kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+        }
+        
+        // Check for errors
+        if (kbuilder.hasErrors()) {
+            if (kbuilder.getErrors().size() > 0) {
+                boolean errors = false;
+                for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                    testLogger.warn(error.toString());
+                    errors = true;
+                }
+                assertFalse("Could not build knowldge base.", errors);
+            }
+        }
+        return kbuilder.newKnowledgeBase();
+    }
 	
 	protected KnowledgeBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -229,11 +248,13 @@ public abstract class JbpmJUnitTestCase extends Assert {
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
 	    StatefulKnowledgeSession result;
+        final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+	    // Do NOT use the Pseudo clock yet.. 
+        // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        
 		if (sessionPersistence) {
-		    Environment env = EnvironmentFactory.newEnvironment();
-		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-		    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-		    result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+		    Environment env = createEnvironment(emf);
+		    result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
 		    new JPAWorkingMemoryDbLogger(result);
 		    if (log == null) {
 		    	log = new JPAProcessInstanceDbLog(result.getEnvironment());
@@ -241,7 +262,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 		} else {
 		    Environment env = EnvironmentFactory.newEnvironment();
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-			result = kbase.newStatefulKnowledgeSession(null, env);
+			result = kbase.newStatefulKnowledgeSession(conf, env);
 			logger = new WorkingMemoryInMemoryLogger(result);
 		}
 		knowledgeSessionSetLocal.get().add(result);
@@ -252,17 +273,6 @@ public abstract class JbpmJUnitTestCase extends Assert {
 		KnowledgeBase kbase = createKnowledgeBase(process);
 		return createKnowledgeSession(kbase);
 	}
-	
-	protected static String [] txStateName = { "ACTIVE",
-                                           "MARKED_ROLLBACK", 
-	                                       "PREPARED",
-	                                       "COMMITTED",
-          	                               "ROLLEDBACK", 
-          	                               "UNKNOWN", 
-          	                               "NO_TRANSACTION",
-          	                               "PREPARING",
-          	                               "COMMITTING",
-          	                               "ROLLING_BACK" };
 	
 	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) throws SystemException {
 		if (sessionPersistence) {
@@ -275,7 +285,6 @@ public abstract class JbpmJUnitTestCase extends Assert {
 			}
 			Environment env = null;
 			if (noCache) {
-			    ksession.dispose();
 				emf.close();
 			    env = EnvironmentFactory.newEnvironment();
 			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
@@ -289,14 +298,31 @@ public abstract class JbpmJUnitTestCase extends Assert {
 			}
 			KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
 			ksession.dispose();
-			StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
-			new JPAWorkingMemoryDbLogger(result);
-			return result;
+			
+			// reload knowledge session 
+			ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+			KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
+			new JPAWorkingMemoryDbLogger(ksession);
+			return ksession;
 		} else {
 			return ksession;
 		}
 	}
     
+	public StatefulKnowledgeSession loadSession(int id, String... process) { 
+	    KnowledgeBase kbase = createKnowledgeBase(process);
+	       
+        final KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        config.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        
+	    StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, createEnvironment(emf));
+        KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
+        new JPAWorkingMemoryDbLogger(ksession);
+        
+        return ksession;
+	}
+	
+	
 	public Object getVariableValue(String name, long processInstanceId, StatefulKnowledgeSession ksession) {
 		return ((WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId)).getVariable(name);
 	}
@@ -556,6 +582,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
         }
         public void stop() {
             if (server != null) {
+                server.stop();
                 server.shutdown();
                 DeleteDbFiles.execute("~", "jbpm-db", true);
                 server = null;

@@ -72,19 +72,14 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
         TaskService taskService = getTaskService(ksession);
 
-        try {
-            UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
-            ut.begin();
-            ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
-            ut.rollback();
+        UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        ut.begin();
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+        ut.rollback();
 
-            assertNull(ksession.getProcessInstance(processInstance.getId()));
-            List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
-            assertEquals(0, list.size());
-        } finally {
-            ksession.dispose();
-        }
-
+        assertNull(ksession.getProcessInstance(processInstance.getId()));
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(0, list.size());
     }
 
 }

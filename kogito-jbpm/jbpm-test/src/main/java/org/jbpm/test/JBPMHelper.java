@@ -1,7 +1,5 @@
 package org.jbpm.test;
 
-import static org.drools.runtime.EnvironmentName.TRANSACTION_MANAGER;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -10,8 +8,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -28,6 +26,17 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public final class JBPMHelper {
 	
     public static String [] processStateName = { "PENDING", "ACTIVE", "COMPLETED", "ABORTED", "SUSPENDED" };
+    
+    public static String [] txStateName = { "ACTIVE",
+        "MARKED_ROLLBACK", 
+        "PREPARED",
+        "COMMITTED",
+        "ROLLEDBACK", 
+        "UNKNOWN", 
+        "NO_TRANSACTION",
+        "PREPARING",
+        "COMMITTING",
+        "ROLLING_BACK" };
     
 	private JBPMHelper() {
 	}
@@ -106,7 +115,14 @@ public final class JBPMHelper {
         	throw new RuntimeException("Unknown task service transport " + transport);
         }	
 	}
-	
+	   
+    protected static Environment createEnvironment(EntityManagerFactory emf) { 
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+        return env;
+    }
+    
 	public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
 		return loadStatefulKnowledgeSession(kbase, -1);
 	}
@@ -121,9 +137,14 @@ public final class JBPMHelper {
 			map.put("hibernate.dialect", dialect);
 			EntityManagerFactory emf =
 			    Persistence.createEntityManagerFactory(properties.getProperty("persistence.persistenceunit.name", "org.jbpm.persistence.jpa"), map);
-			Environment env = KnowledgeBaseFactory.newEnvironment();
-			env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-	        env.set( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
+			Environment env = createEnvironment(emf);
+			
+			/** At the moment, we still need a real Thread.sleep() to test things, 
+			 * since the pseudo clock is attached to the ksession 
+			 */
+	        // final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+	        // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+			
 			// create a new knowledge session that uses JPA to store the runtime state
 	        if (sessionId == -1) {
 	        	ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
@@ -156,9 +177,9 @@ public final class JBPMHelper {
 		KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
 		return ksession;
 	}
-	
-	private static Properties getProperties() {
-		Properties properties = new Properties();
+
+	public static Properties getProperties() {
+	    Properties properties = new Properties();
 		try {
 			properties.load(JBPMHelper.class.getResourceAsStream("/jBPM.properties"));
 		} catch (Throwable t) {
