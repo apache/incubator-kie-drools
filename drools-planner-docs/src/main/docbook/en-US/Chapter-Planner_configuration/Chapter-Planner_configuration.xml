@@ -1092,17 +1092,27 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         </listitem>
       </itemizedlist>
 
-      <para>Set the logging level on the category <literal>org.drools.planner</literal>, for example with log4j:</para>
+      <para>Set the logging level on the category <literal>org.drools.planner</literal>, for example with Log4J:</para>
 
       <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
 
-    &lt;category name="org.drools.planner"&gt;
-        &lt;priority value="debug" /&gt;
-    &lt;/category&gt;
+  &lt;category name="org.drools.planner"&gt;
+    &lt;priority value="debug" /&gt;
+  &lt;/category&gt;
 
-    ...
+  ...
 
 &lt;/log4j:configuration&gt;</programlisting>
+
+      <para>Or with Logback:</para>
+
+      <programlisting>&lt;configuration&gt;
+
+  &lt;logger name="org.drools.planner" level="debug"/&gt;
+
+  ...
+
+&lt;configuration&gt;</programlisting>
 
       <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
