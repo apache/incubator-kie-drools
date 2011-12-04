@@ -41,7 +41,6 @@
           </selector>
         </selector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
           <propertyTabuSize>5</propertyTabuSize>
         </acceptor>
         <forager>
