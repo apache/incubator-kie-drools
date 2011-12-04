@@ -16,25 +16,11 @@
 
 package org.drools.planner.examples.common.app;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class LoggingTest {
 
-    public static final String DEFAULT_LOGGING_CONFIG = "/org/drools/planner/examples/common/app/logback-test.xml";
-
-    protected transient Logger logger;
-
-    @BeforeClass
-    public static void configureLogging() {
-        LoggingMain.configureLogback(LoggingTest.class.getResource(DEFAULT_LOGGING_CONFIG));
-    }
-
-    @Before
-    public void initializeLogger() {
-        logger = LoggerFactory.getLogger(getClass());
-    }
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
 }
