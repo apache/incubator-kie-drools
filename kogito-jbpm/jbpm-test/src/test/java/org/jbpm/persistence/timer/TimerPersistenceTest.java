@@ -137,9 +137,8 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         completeWork(ksession, humanTaskMockHandler);
     
         // The process reaches the end node
-        int processState = process.getState();
-        assertTrue("Expected process state to be " + processStateName[2] + " not " + processStateName[processState],
-                ProcessInstance.STATE_COMPLETED == process.getState());
+        process = ksession.getProcessInstance(process.getId());
+        assertNull("Expected process to have been completed and removed", process);
     }
 
     @Test
