@@ -8,6 +8,9 @@
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
   </scoreDefinition>
+  <termination>
+    <maximumMinutesSpend>5</maximumMinutesSpend>
+  </termination>
   
   <!--<constructionHeuristic>-->
     <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
@@ -17,9 +20,6 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <termination>
-      <maximumMinutesSpend>5</maximumMinutesSpend>
-    </termination>
     <selector>
       <selector>
         <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
