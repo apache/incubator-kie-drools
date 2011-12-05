@@ -1,0 +1,9 @@
+groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
+           'crusaders' : new Group( "Crusaders" ),
+           'HR' : new Group( "HR" ),
+           'PM' : new Group( "PM" ),
+           'sales' : new Group( "sales" )
+         ];
+
+return groups;
+        

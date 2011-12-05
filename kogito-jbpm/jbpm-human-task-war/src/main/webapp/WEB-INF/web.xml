@@ -1,0 +1,12 @@
+<web-app>
+  <display-name>Human Task Service WAR</display-name>
+  <servlet>
+    <servlet-name>HumanTaskServiceServlet</servlet-name>
+      <servlet-class>org.jbpm.task.servlet.HumanTaskServiceServlet</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HumanTaskServiceServlet</servlet-name>
+    <url-pattern>/HumanTaskServiceServlet/*</url-pattern>
+  </servlet-mapping>
+</web-app>
