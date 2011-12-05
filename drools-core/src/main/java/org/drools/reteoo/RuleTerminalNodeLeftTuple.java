@@ -685,8 +685,12 @@ public class RuleTerminalNodeLeftTuple
      * @see org.drools.reteoo.LeftTuple#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {
-        // we know the object is never null and always of the  type ReteTuple    
-        return equals( (LeftTuple) object );
+        if( object instanceof LeftTuple ) { 
+            return equals( (LeftTuple) object );
+        }
+        else { 
+            return false;
+        }
     }
 
     /* (non-Javadoc)
