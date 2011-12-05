@@ -30,6 +30,7 @@ public class ProcessTest {
 			params.put("employee", "krisv");
 			params.put("reason", "Yearly performance evaluation");
 			ksession.startProcess("com.sample.evaluation", params);
+			System.out.println("Process started ...");
 			logger.close();
 		} catch (Throwable t) {
 			t.printStackTrace();
