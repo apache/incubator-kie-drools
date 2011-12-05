@@ -17,6 +17,7 @@ import org.jbpm.test.JBPMHelper;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,56 +50,6 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
     public void setup() { 
         System.clearProperty(TIMER_FIRED_PROP);
         System.clearProperty(TIMER_FIRED_TIME_PROP);
-    }
-    
-    @Test
-    public void timerEventOutsideOfKnowledgeSessionTest() throws InterruptedException {
-        /**
-         * First we set up everything and start the process
-         */
-        KnowledgeBase kbase = createKnowledgeBase(DELAY_TIMER_FILE);
-        StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
-        int ksessionId = ksession.getId();
-
-        // Start the process
-        ProcessInstance process = ksession.startProcess(DELAY_TIMER_PROCESS);
-        long processId = process.getId();
-        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
-
-        /**
-         * Then we close down the session (imagine that the timer is for a week,
-         * for example.)
-         */
-        EntityManagerFactory emf = (EntityManagerFactory) ksession.getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-        ksession.dispose();
-        ksession = null;
-        emf.close();
-        emf = null;
-
-        assertTrue("sesssion id has not been saved", ksessionId > 0);
-        assertTrue("process id has not been saved", processId > 0);
-        kbase = null;
-        process = null;
-
-        // The timer fires..
-        int sleep = 2000;
-        testLogger.debug("Sleeping " + sleep / 1000 + " seconds.");
-        Thread.sleep(sleep);
-        testLogger.debug("Awake!");
-
-        assertTrue("The timer has not fired!", timerHasFired());
-        assertTrue("The did not fire at the right time!", System.currentTimeMillis() > timerFiredTime());
-        
-        /**
-         * Now we recreate a knowledge base and sesion and retrieve the process
-         * to see what has happened
-         */
-        kbase = createKnowledgeBase(DELAY_TIMER_FILE);
-        ksession = JBPMHelper.loadStatefulKnowledgeSession(kbase, ksessionId);
-        assertNotNull("Could not retrieve session " + ksessionId, ksession);
-
-        process = ksession.getProcessInstance(processId);
-        assertNotNull("Process " + processId + "should have completed and been deleted", process);
     }
     
     @Test
@@ -136,12 +87,64 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         sleepAndVerifyTimerRuns(process.getState());
         completeWork(ksession, humanTaskMockHandler);
     
-        // The process reaches the end node
+        // The process completes
         process = ksession.getProcessInstance(process.getId());
         assertNull("Expected process to have been completed and removed", process);
     }
 
     @Test
+    @Ignore
+    public void timerEventOutsideOfKnowledgeSessionTest() throws InterruptedException {
+        /**
+         * First we set up everything and start the process
+         */
+        KnowledgeBase kbase = createKnowledgeBase(DELAY_TIMER_FILE);
+        StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
+        int ksessionId = ksession.getId();
+    
+        // Start the process
+        ProcessInstance process = ksession.startProcess(DELAY_TIMER_PROCESS);
+        long processId = process.getId();
+        Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
+    
+        /**
+         * Then we close down the session (imagine that the timer is for a week,
+         * for example.)
+         */
+        EntityManagerFactory emf = (EntityManagerFactory) ksession.getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        ksession.dispose();
+        ksession = null;
+        emf.close();
+        emf = null;
+    
+        assertTrue("sesssion id has not been saved", ksessionId > 0);
+        assertTrue("process id has not been saved", processId > 0);
+        kbase = null;
+        process = null;
+    
+        // The timer fires..
+        int sleep = 2000;
+        testLogger.debug("Sleeping " + sleep / 1000 + " seconds.");
+        Thread.sleep(sleep);
+        testLogger.debug("Awake!");
+    
+        assertTrue("The timer has not fired!", timerHasFired());
+        assertTrue("The did not fire at the right time!", System.currentTimeMillis() > timerFiredTime());
+        
+        /**
+         * Now we recreate a knowledge base and sesion and retrieve the process
+         * to see what has happened
+         */
+        kbase = createKnowledgeBase(DELAY_TIMER_FILE);
+        ksession = JBPMHelper.loadStatefulKnowledgeSession(kbase, ksessionId);
+        assertNotNull("Could not retrieve session " + ksessionId, ksession);
+    
+        process = ksession.getProcessInstance(processId);
+        assertNotNull("Process " + processId + "should have completed and been deleted", process);
+    }
+
+    @Test
+    @Ignore
     public void boundaryEventTimerFiresAndCompleteHumanTaskWithoutKSession() throws InterruptedException {
         /**
          * First we set up everything and start the process
@@ -171,6 +174,10 @@ public class TimerPersistenceTest extends JbpmJUnitTestCase {
         ksession = loadStatefulKnowledgeSession(kbase, ksessionId);
         
         completeWork(ksession, humanTaskMockHandler);
+        
+        // The process completes
+        process = ksession.getProcessInstance(process.getId());
+        assertNull("Expected process to have been completed and removed", process);
     }
 
     private ProcessInstance registerHTHandlerAndStartProcess(StatefulKnowledgeSession ksession, HumanTaskMockHandler humanTaskMockHandler) { 
