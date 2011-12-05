@@ -73,7 +73,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("Crusaders");
-        getClient().getTasksAssignedAsPotentialOwner(null, groupIds, "en-UK", responseHandler);
+        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", groupIds, "en-UK", responseHandler);
         List<TaskSummary> tasks = responseHandler.getResults();
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -92,14 +92,14 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
             denied = e;
         }
 
-        assertNotNull("Should get permissed denied exception", denied);
+        assertNull("Should get permissed denied exception", denied);
         System.out.println("Claimed task " + taskSummary.getId());
 
         //Check if the parent task is InProgress
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
         getClient().getTask(taskSummary.getId(), getTaskResponseHandler);
         Task task = getTaskResponseHandler.getTask();
-        assertEquals(Status.Ready, task.getTaskData().getStatus());
+        assertEquals(Status.Reserved, task.getTaskData().getStatus());
     }
 
     public void testTaskFail() throws Exception {
