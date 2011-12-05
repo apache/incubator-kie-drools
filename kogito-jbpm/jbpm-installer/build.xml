@@ -277,6 +277,11 @@
     <copy file="${install.home}/lib/designer-${designer.version}.war"
           tofile="${jboss.server.deploy.dir}/designer.war"
           overwrite="true" />
+  	<antcall target="created.designer.deployment.as7" />
+  </target>
+	
+  <target name="created.designer.deployment.as7" depends="check.jboss.version" if="jboss.version.is.7">
+  	<touch file="${jboss.server.deploy.dir}/designer.war.dodeploy"/>
   </target>
   			
   <!-- Install gwt-console -->
