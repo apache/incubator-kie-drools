@@ -22,13 +22,11 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 
-public class ProcessFactoryTest extends JbpmTestCase {
+public class ProcessFactoryTest extends JbpmJUnitTestCase {
 	
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
@@ -44,13 +42,11 @@ public class ProcessFactoryTest extends JbpmTestCase {
 			.connection(1, 2)
 			.connection(2, 3);
 		RuleFlowProcess process = factory.validate().getProcess();
-		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(process));
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		kbuilder.add(ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
 		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		ProcessInstance processInstance = ksession.startProcess("org.jbpm.process");
-		assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+		ksession.startProcess("org.jbpm.process");
 	}
 
 }
