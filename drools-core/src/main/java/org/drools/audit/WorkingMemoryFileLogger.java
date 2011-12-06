@@ -126,11 +126,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             for ( LogEvent event : eventsToWrite ) {
                 fileWriter.write( xstream.toXML( event ) + "\n" );
             }
-            if ( split ) {
-                fileWriter.write( "</object-stream>" );
-                this.nbOfFile++;
-                initialized = false;
-            }
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
@@ -144,7 +139,12 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             }
         }
         if ( terminate ) {
-            terminateLog();
+            closeLog();
+            terminate = true;
+        } else if ( split ) {
+            closeLog();
+            this.nbOfFile++;
+            initialized = false;
         }
     }
 
@@ -162,15 +162,14 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         }
     }
 
-    private void terminateLog() {
+    private void closeLog() {
         try {
             FileWriter writer = new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
                                                 true );
             writer.append( "</object-stream>\n" );
             writer.close();
-            terminate = false;
         } catch ( final FileNotFoundException exc ) {
-            throw new RuntimeException( "Could not terminate the log file.  Please make sure that directory that the log file should be placed in does exist." );
+            throw new RuntimeException( "Could not close the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
         }
@@ -213,6 +212,9 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     }
 
     public void stop() {
+        if ( terminate ) {
+            throw new IllegalStateException( "Logger has already been closed." );
+        }
         terminate = true;
         writeToDisk();
     }
