@@ -51,7 +51,7 @@
         <exclude>.*/**</exclude>
         <exclude>nbproject/**</exclude>
         <exclude>*.ipr</exclude>
-        <exclude>.*.iws</exclude>
+        <exclude>*.iws</exclude>
         <exclude>*.iml</exclude>
         <exclude>.git/**</exclude>
       </excludes>
