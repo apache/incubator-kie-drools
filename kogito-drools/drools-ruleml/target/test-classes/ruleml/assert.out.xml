@@ -1,3 +1,0 @@
-own(I,"Tisho"):-
-	buy("Tisho",I,VAR1),
-	keep("Tisho",I).
