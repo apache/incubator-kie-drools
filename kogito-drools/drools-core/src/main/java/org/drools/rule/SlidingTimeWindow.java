@@ -135,9 +135,9 @@ public class SlidingTimeWindow
      *
      * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void retractRightTuple(final Object context,
-                                  final InternalFactHandle fact,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractFact(final Object context,
+                            final InternalFactHandle fact,
+                            final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
@@ -163,7 +163,7 @@ public class SlidingTimeWindow
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         EventFactHandle handle = queue.queue.peek();
         while ( handle != null && isExpired( currentTime,
-                                           handle ) ) {
+                                             handle ) ) {
             queue.expiringHandle = handle;
             queue.queue.remove();
             if( handle.isValid()) {
@@ -173,26 +173,27 @@ public class SlidingTimeWindow
                                                                                           null,
                                                                                           null,
                                                                                           handle );
-                tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                             propagationContext,
-                                                             workingMemory );
+                // TODO: expire previous handle
+//                tuple.getRightTupleSink().retractRightTuple( tuple,
+//                                                             propagationContext,
+//                                                             workingMemory );
                 propagationContext.evaluateActionQueue( workingMemory );
             }
-            tuple.unlinkFromRightParent();
+//            tuple.unlinkFromRightParent();
             queue.expiringHandle = null;
             handle = queue.queue.peek();
         }
 
         // update next expiration time 
-        updateNextExpiration( fact,
+        updateNextExpiration( handle,
                               workingMemory,
                               this,
                               queue );
     }
 
     private boolean isExpired(final long currentTime,
-                              final RightTuple rightTuple) {
-        return ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size <= currentTime;
+                              final EventFactHandle handle) {
+        return handle.getStartTimestamp() + this.size <= currentTime;
     }
 
     /**
@@ -248,6 +249,7 @@ public class SlidingTimeWindow
                                                              new SlidingTimeWindowComparator() );
         }
 
+        @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             this.queue = (PriorityQueue<EventFactHandle>) in.readObject();
@@ -290,17 +292,17 @@ public class SlidingTimeWindow
             EventFactHandle handle = slCtx.getQueue().peek();
             //outputCtx.writeInt( rightTuple.getFactHandle().getId() );
             
-            BetaNode node = (BetaNode) handle.getRightTupleSink();
-            outputCtx.writeInt( node.getId() );
-            
-            Behavior[] behaviors = node.getBehaviors();
-            int i = 0;
-            for ( ; i < behaviors.length; i++ ) {     
-                if ( behaviors[i] == bjobCtx.behavior ) {
-                    break;
-                }
-            }
-            outputCtx.writeInt( i );           
+//            BetaNode node = (BetaNode) handle.getRightTupleSink();
+//            outputCtx.writeInt( node.getId() );
+//            
+//            Behavior[] behaviors = node.getBehaviors();
+//            int i = 0;
+//            for ( ; i < behaviors.length; i++ ) {     
+//                if ( behaviors[i] == bjobCtx.behavior ) {
+//                    break;
+//                }
+//            }
+//            outputCtx.writeInt( i );           
         }
     }
     
@@ -321,7 +323,7 @@ public class SlidingTimeWindow
             int i = inCtx.readInt();
             SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
                        
-            updateNextExpiration( ( RightTuple) stwCtx.queue.peek(),
+            updateNextExpiration( stwCtx.queue.peek(),
                                   inCtx.wm,
                                   (SlidingTimeWindow) betaNode.getBehaviors()[i],
                                   stwCtx );
@@ -421,8 +423,8 @@ public class SlidingTimeWindow
         }
         
         public void execute(InternalWorkingMemory workingMemory) {
-            this.behavior.expireTuples( context,
-                                        workingMemory );
+            this.behavior.expireFacts( context,
+                                       workingMemory );
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
@@ -434,21 +436,22 @@ public class SlidingTimeWindow
             
             // write out SlidingTimeWindowContext
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
+            //TODO
   
-            RightTuple rightTuple = slCtx.getQueue().peek();
+            //RightTuple rightTuple = slCtx.getQueue().peek();
             //outputCtx.writeInt( rightTuple.getFactHandle().getId() );
             
-            BetaNode node = (BetaNode) rightTuple.getRightTupleSink();
-            outputCtx.writeInt( node.getId() );
+            //BetaNode node = (BetaNode) rightTuple.getRightTupleSink();
+            //outputCtx.writeInt( node.getId() );
             
-            Behavior[] behaviors = node.getBehaviors();
-            int i = 0;
-            for ( ; i < behaviors.length; i++ ) {     
-                if ( behaviors[i] == behavior ) {
-                    break;
-                }
-            }
-            outputCtx.writeInt( i );   
+            //Behavior[] behaviors = node.getBehaviors();
+//            int i = 0;
+//            for ( ; i < behaviors.length; i++ ) {     
+//                if ( behaviors[i] == behavior ) {
+//                    break;
+//                }
+//            }
+//            outputCtx.writeInt( i );   
         }
 
         public void readExternal(ObjectInput in) throws IOException,

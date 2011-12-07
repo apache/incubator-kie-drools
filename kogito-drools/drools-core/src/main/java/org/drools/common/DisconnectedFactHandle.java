@@ -154,22 +154,7 @@ public class DisconnectedFactHandle
     public RightTuple getLastRightTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
-
     
-    public void setFirstRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
-    }
-
-    
-    public void setLastLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
-    }
-
-    
-    public void setLastRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
-    }
-
     public String toTupleTree(int indent) {
         return null;
     }
@@ -180,6 +165,34 @@ public class DisconnectedFactHandle
 
     public void disconnect() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void addLastLeftTuple( LeftTuple leftTuple ) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void removeLeftTuple( LeftTuple leftTuple ) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void clearLeftTuples() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void clearRightTuples() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void addFirstRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void addLastRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void removeRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
 }

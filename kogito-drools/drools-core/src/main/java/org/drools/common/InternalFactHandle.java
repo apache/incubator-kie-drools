@@ -59,17 +59,9 @@ public interface InternalFactHandle
     
     public RightTuple getFirstRightTuple();
 
-    public void setFirstRightTuple(RightTuple rightTuple);
-
     public RightTuple getLastRightTuple();
 
-    public void setLastRightTuple(RightTuple rightTuple);
-        
-    public void setFirstLeftTuple(LeftTuple leftTuple);
-    
     public LeftTuple getFirstLeftTuple();
-    
-    public void setLastLeftTuple(LeftTuple leftTuple);
     
     public LeftTuple getLastLeftTuple();
     
@@ -84,5 +76,19 @@ public interface InternalFactHandle
     public String toTupleTree( int indent );
     
     public void disconnect();
+
+    public void addLastLeftTuple( LeftTuple leftTuple );
+
+    public void removeLeftTuple( LeftTuple leftTuple );
+
+    public void clearLeftTuples();
+
+    public void clearRightTuples();
+
+    public void addFirstRightTuple( RightTuple rightTuple );
+
+    public void addLastRightTuple( RightTuple rightTuple );
+
+    public void removeRightTuple( RightTuple rightTuple );
     
 }

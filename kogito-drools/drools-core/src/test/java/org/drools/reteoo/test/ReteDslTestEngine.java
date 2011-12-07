@@ -44,17 +44,13 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleMemory;
@@ -97,9 +93,9 @@ import org.drools.reteoo.test.dsl.WithStep;
 import org.drools.reteoo.test.parser.NodeTestDSLLexer;
 import org.drools.reteoo.test.parser.NodeTestDSLParser;
 import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
+import org.drools.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
-import org.drools.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -804,15 +800,13 @@ public class ReteDslTestEngine {
                                                                                       pContext,
                                                                                       wm );
                                 }
-                                handle.setFirstRightTuple( null );
-                                handle.setLastRightTuple( null );
+                                handle.clearRightTuples();
                                 for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                                     leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                                                    pContext,
                                                                                    wm );
                                 }
-                                handle.setFirstLeftTuple( null );
-                                handle.setLastLeftTuple( null );
+                                handle.clearLeftTuples();
                             }
                             pContext.evaluateActionQueue( wm );
                         } else {
@@ -886,10 +880,8 @@ public class ReteDslTestEngine {
                                                                                       handle );
                             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.getFirstLeftTuple(),
                                                                                                   handle.getFirstRightTuple() );
-                            handle.setFirstLeftTuple( null );
-                            handle.setFirstRightTuple( null );
-                            handle.setLastLeftTuple( null );
-                            handle.setLastRightTuple( null );
+                            handle.clearRightTuples();
+                            handle.clearLeftTuples();
                             ((ObjectSink) sink).modifyObject( handle,
                                                               modifyPreviousTuples,
                                                               pContext,

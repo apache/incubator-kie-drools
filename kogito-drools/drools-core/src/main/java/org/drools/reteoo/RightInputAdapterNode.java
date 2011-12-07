@@ -157,17 +157,14 @@ public class RightInputAdapterNode extends ObjectSource
                                                               context,
                                                               workingMemory );
         }
-        factHandle.setFirstRightTuple( null );
+        factHandle.clearRightTuples();
 
         for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                            context,
                                                            workingMemory );
         }
-        factHandle.setFirstLeftTuple( null );
-
-        // destroy dummy handle
-        //workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
+        factHandle.clearLeftTuples();
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -249,9 +246,6 @@ public class RightInputAdapterNode extends ObjectSource
                     LeftTuple leftTuple = (LeftTuple) entry.getKey();
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
-
-                    InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                    //workingMemory.getFactHandleFactory().destroyFactHandle( handle );
                 }
                 workingMemory.clearNodeMemory( this );
             }

@@ -21,9 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.common.EventFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -92,30 +93,29 @@ public class SlidingLengthWindow
 
     /**
      * @inheritDoc
-     *
-     * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public boolean assertRightTuple(final Object context,
-                                    final RightTuple rightTuple,
-                                    final InternalWorkingMemory workingMemory) {
+    public boolean assertFact(final Object context,
+                              final InternalFactHandle handle,
+                              final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
-        window.pos = (window.pos + 1) % window.rightTuples.length;
-        if ( window.rightTuples[window.pos] != null ) {
-            final RightTuple tuple = window.rightTuples[window.pos];
+        window.pos = (window.pos + 1) % window.handles.length;
+        if ( window.handles[window.pos] != null ) {
+            final EventFactHandle previous = window.handles[window.pos];
             // retract previous
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.EXPIRATION,
                                                                                       null,
                                                                                       null,
-                                                                                      tuple.getFactHandle() );
-            tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                         propagationContext,
-                                                         workingMemory );
+                                                                                      previous );
+            // TODO: retract previous handle
+//            tuple.getRightTupleSink().retractRightTuple( tuple,
+//                                                         propagationContext,
+//                                                         workingMemory );
             propagationContext.evaluateActionQueue( workingMemory );
-            tuple.unlinkFromRightParent();
+//            tuple.unlinkFromRightParent();
 
         }
-        window.rightTuples[window.pos] = rightTuple;
+        window.handles[window.pos] = (EventFactHandle) handle;
         return true;
     }
 
@@ -124,25 +124,25 @@ public class SlidingLengthWindow
      *
      * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void retractRightTuple(final Object context,
-                                  final RightTuple rightTuple,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractFact(final Object context,
+                            final InternalFactHandle handle,
+                            final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
-        final int last = (window.pos == 0) ? window.rightTuples.length - 1 : window.pos - 1;
+        final int last = (window.pos == 0) ? window.handles.length - 1 : window.pos - 1;
         // we start the loop on current pos because the most common scenario is to retract the
         // right tuple referenced by the current "pos" position, causing this loop to only execute
         // the first iteration
-        for ( int i = window.pos; i != last; i = (i + 1) % window.rightTuples.length ) {
-            if ( window.rightTuples[i] == rightTuple ) {
-                window.rightTuples[i] = null;
+        for ( int i = window.pos; i != last; i = (i + 1) % window.handles.length ) {
+            if ( window.handles[i] == handle ) {
+                window.handles[i] = null;
                 break;
             }
         }
     }
 
-    public void expireTuples(Object context,
-                             InternalWorkingMemory workingMemory) {
-        // do nothing
+    public void expireFacts(Object context,
+                            InternalWorkingMemory workingMemory) {
+        // do nothing?
     }
 
     /**
@@ -164,23 +164,23 @@ public class SlidingLengthWindow
         implements
         Externalizable {
 
-        public RightTuple[] rightTuples;
-        public int          pos = 0;
+        public EventFactHandle[] handles;
+        public int               pos = 0;
 
         public SlidingLengthWindowContext(final int size) {
-            this.rightTuples = new RightTuple[size];
+            this.handles = new EventFactHandle[size];
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             this.pos = in.readInt();
-            this.rightTuples = (RightTuple[]) in.readObject();
+            this.handles = (EventFactHandle[]) in.readObject();
 
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt( this.pos );
-            out.writeObject( this.rightTuples );
+            out.writeObject( this.handles );
         }
     }
 

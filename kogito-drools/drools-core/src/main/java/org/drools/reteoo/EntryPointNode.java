@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -169,10 +168,8 @@ public class EntryPointNode extends ObjectSource
          
          if ( queryNode != null ) {
              ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
-             factHandle.setFirstLeftTuple( null );
-             factHandle.setFirstRightTuple( null );
-             factHandle.setLastLeftTuple( null );
-             factHandle.setLastRightTuple( null );
+             factHandle.clearLeftTuples();
+             factHandle.clearRightTuples();
              
              // There may be no queries defined
              this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -215,10 +212,8 @@ public class EntryPointNode extends ObjectSource
          
          if ( activationNode != null ) {
              ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
-             factHandle.setFirstLeftTuple( null );
-             factHandle.setFirstRightTuple( null );
-             factHandle.setLastLeftTuple( null );
-             factHandle.setLastRightTuple( null );
+             factHandle.clearLeftTuples();
+             factHandle.clearRightTuples();
              
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -262,10 +257,8 @@ public class EntryPointNode extends ObjectSource
         
         // make a reference to the previous tuples, then null then on the handle
         ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple() );
-        handle.setFirstLeftTuple( null );
-        handle.setFirstRightTuple( null );
-        handle.setLastLeftTuple( null );
-        handle.setLastRightTuple( null );
+        handle.clearLeftTuples();
+        handle.clearRightTuples();
         
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,

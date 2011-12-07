@@ -254,16 +254,14 @@ public class ObjectTypeNode extends ObjectSource
                                                               context,
                                                               workingMemory );
         }
-        factHandle.setFirstRightTuple( null );
-        factHandle.setLastRightTuple( null );
+        factHandle.clearRightTuples();
 
         for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                            context,
                                                            workingMemory );
         }
-        factHandle.setFirstLeftTuple( null );
-        factHandle.setLastLeftTuple( null );
+        factHandle.clearLeftTuples();
     }
 
     public void modifyObject(InternalFactHandle factHandle,

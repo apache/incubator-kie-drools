@@ -81,9 +81,9 @@ public class BehaviorManager
                                     final InternalWorkingMemory workingMemory) {
         boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            result = result && behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
-                                                              rightTuple,
-                                                              workingMemory );
+            //result = result && behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
+            //                                                  rightTuple,
+            //                                                  workingMemory );
         }
         return result;
     }
@@ -98,9 +98,9 @@ public class BehaviorManager
                                   final RightTuple rightTuple,
                                   final InternalWorkingMemory workingMemory) {
         for ( int i = 0; i < behaviors.length; i++ ) {
-            behaviors[i].retractRightTuple( ((Object[]) behaviorContext)[i],
-                                            rightTuple,
-                                            workingMemory );
+//            behaviors[i].retractRightTuple( ((Object[]) behaviorContext)[i],
+//                                            rightTuple,
+//                                            workingMemory );
         }
     }
 

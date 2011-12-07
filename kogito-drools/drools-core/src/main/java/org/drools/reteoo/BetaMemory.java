@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.ObjectHashMap;
 import org.drools.rule.ContextEntry;
 
 public class BetaMemory

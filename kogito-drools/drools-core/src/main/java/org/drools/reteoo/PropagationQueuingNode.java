@@ -410,14 +410,14 @@ public class PropagationQueuingNode extends ObjectSource
                                                                   context,
                                                                   workingMemory );
             }
-            this.handle.setFirstRightTuple( null );
+            this.handle.clearRightTuples();
 
             for ( LeftTuple leftTuple = this.handle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                 leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                                context,
                                                                workingMemory );
             }
-            this.handle.setFirstLeftTuple( null );
+            this.handle.clearLeftTuples();
             context.evaluateActionQueue( workingMemory );
         }
     }
