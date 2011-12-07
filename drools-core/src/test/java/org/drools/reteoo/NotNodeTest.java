@@ -194,7 +194,7 @@ public class NotNodeTest extends DroolsTestCase {
                       this.memory.getRightTupleMemory().size() );
 
         // When this is retracted both tuples should assert
-        this.node.retractRightTuple( f1.firstRightTuple,
+        this.node.retractRightTuple( f1.getFirstRightTuple(),
                                      this.context,
                                      this.workingMemory );
 
@@ -318,7 +318,7 @@ public class NotNodeTest extends DroolsTestCase {
                           this.memory.getRightTupleMemory().size() );
 
             // simulate modify
-            this.node.retractRightTuple( f1.firstRightTuple,
+            this.node.retractRightTuple( f1.getFirstRightTuple(),
                                          this.context,
                                          this.workingMemory );
             this.node.assertObject( f1,
@@ -329,7 +329,7 @@ public class NotNodeTest extends DroolsTestCase {
                           this.memory.getRightTupleMemory().size() );
 
             // When this is retracter both tuples should assert
-            this.node.retractRightTuple( f1.firstRightTuple,
+            this.node.retractRightTuple( f1.getFirstRightTuple(),
                                          this.context,
                                          this.workingMemory );
             assertEquals( 0,

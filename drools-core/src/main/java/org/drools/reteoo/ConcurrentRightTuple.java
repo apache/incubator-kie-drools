@@ -33,20 +33,14 @@ public class ConcurrentRightTuple extends RightTuple {
     }
 
     public ConcurrentRightTuple(InternalFactHandle handle,
-                      RightTupleSink sink) {
+                                RightTupleSink sink) {
         this.handle = handle;
         this.sink = sink;
         
         this.previous = new AtomicReference<Entry>();
         this.next = new AtomicReference<Entry>();
-
-        RightTuple currentFirst = handle.getFirstRightTuple();
-        if ( currentFirst != null ) {
-            currentFirst.setHandlePrevious( this );
-            setHandleNext( currentFirst );
-        }
-
-        handle.setFirstRightTuple( this );
+        
+        handle.addFirstRightTuple( this );
     }
 
     public RightTupleList getMemory() {

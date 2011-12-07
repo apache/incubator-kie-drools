@@ -138,33 +138,20 @@ public class QueryElementFactHandle
 
     
     public LeftTuple getFirstLeftTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     
     public RightTuple getFirstRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     
     public RightTuple getLastRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     
-    public void setFirstRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
-    }
-
-    
-    public void setLastLeftTuple(LeftTuple leftTuple) {
-    }
-
-    
-    public void setLastRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
-    }
-
     public String toTupleTree(int indent) {
         return null;
     }
@@ -178,7 +165,35 @@ public class QueryElementFactHandle
     }
 
     public void disconnect() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
+    public void addLastLeftTuple( LeftTuple leftTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void removeLeftTuple( LeftTuple leftTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void clearLeftTuples() {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void clearRightTuples() {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void addFirstRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void addLastRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+
+    public void removeRightTuple( RightTuple rightTuple ) {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    }
+    
 }

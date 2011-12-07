@@ -57,13 +57,10 @@ public class RightTuple
         RightTuple last = handle.getLastRightTuple();
         if ( last == null ) {
             // no other RightTuples, just add.
-            handle.setFirstRightTuple( this );
-            handle.setLastRightTuple( this );
+            handle.addFirstRightTuple( this );
         } else {
             // add to end of RightTuples on handle
-            this.handlePrevious = last;
-            last.setHandleNext( this );
-            this.handle.setLastRightTuple( this );
+            handle.addLastRightTuple( this );
         }
     }
 
@@ -72,42 +69,11 @@ public class RightTuple
     }
     
     public void reAdd() {
-        RightTuple last = handle.getLastRightTuple();
-        if ( last == null ) {
-            // node other RightTuples, just add.
-            handle.setFirstRightTuple( this );
-            handle.setLastRightTuple( this );
-        } else {
-            this.handleNext = null; // null this in case it was set when this RightTuple was last used
-            // add to end of RightTuples on handle
-            this.handlePrevious = last;
-            last.setHandleNext( this );
-            this.handle.setLastRightTuple( this );
-        }
+        handle.addLastRightTuple( this );
     }
 
     public void unlinkFromRightParent() {
-        RightTuple previousParent = this.handlePrevious;
-        RightTuple nextParent = this.handleNext;
-
-        if ( previousParent != null && nextParent != null ) {
-            // remove  from middle
-            this.handlePrevious.handleNext = nextParent;
-            this.handleNext.handlePrevious = previousParent;
-        } else if ( nextParent != null ) {
-            // remove from first
-            this.handleNext.handlePrevious = null;
-            this.handle.setFirstRightTuple( this.handleNext );
-        } else if ( previousParent != null ) {
-            // remove from end
-            this.handlePrevious.handleNext = null;
-            this.handle.setLastRightTuple( this.handlePrevious );
-        } else {
-            // single remaining item, no previous or next
-            this.handle.setFirstRightTuple( null );
-            this.handle.setLastRightTuple( null );
-        }
-
+        this.handle.removeRightTuple( this );
         this.handle = null;
         this.handlePrevious = null;
         this.handleNext = null;
