@@ -922,7 +922,7 @@ public class InputMarshaller {
                                                    sink );
             RightTuple rightTuple = inCtx.rightTuples.get( key );
 
-            stwCtx.expiringTuple = rightTuple;
+            //FIXME: stwCtx.expiringTuple = rightTuple;
         }
 
         if (inCtx.readBoolean()) {
@@ -936,7 +936,7 @@ public class InputMarshaller {
                                                        sink );
                 RightTuple rightTuple = inCtx.rightTuples.get( key );
 
-                stwCtx.queue.add( rightTuple );
+                //FIXME: stwCtx.queue.add( rightTuple );
             }
         }
     }
@@ -950,7 +950,7 @@ public class InputMarshaller {
         int length = inCtx.readInt();
 
         slwCtx.pos = pos;
-        slwCtx.rightTuples = new RightTuple[length];
+        //FIXME: slwCtx.rightTuples = new RightTuple[length];
         for (int i = 0; i < length; i++) {
             int factId = inCtx.readInt();
 
@@ -962,7 +962,7 @@ public class InputMarshaller {
                                                        sink );
                 RightTuple rightTuple = inCtx.rightTuples.get( key );
 
-                slwCtx.rightTuples[i] = rightTuple;
+                //FIXME: slwCtx.rightTuples[i] = rightTuple;
             }
 
         }
