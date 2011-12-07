@@ -22,7 +22,7 @@ jBPM:
   jbpm-#{jbpm.version}-gwt-console.zip
 
 Drools:
-  guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war
+  guvnor-distribution-wars-${drools.guvnor.version}-jboss-eap-5.1.war
   org.drools.updatesite-${drools.eclipse.version}-assembly.zip
 
 Designer:
