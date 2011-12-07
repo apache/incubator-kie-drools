@@ -870,42 +870,44 @@ public class OutputMarshaller {
                                                        SlidingTimeWindowContext slCtx,
                                                        MarshallerWriteContext outputCtx) throws IOException {
         // It's timers are restored by writeTimers
-        if ( slCtx.expiringTuple != null ) {
-            outputCtx.writeBoolean( true );
-
-            outputCtx.writeInt( slCtx.expiringTuple.getRightTupleSink().getId() );
-            outputCtx.writeInt( slCtx.expiringTuple.getFactHandle().getId() );
-        } else {
-            outputCtx.writeBoolean( false );
-        }
-
-        if ( slCtx.getQueue() != null ) {
-            outputCtx.writeBoolean( true );
-            outputCtx.writeInt( slCtx.getQueue().size() );
-            for ( RightTuple rightTuple : slCtx.getQueue() ) {
-                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );
-                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
-            }
-        } else {
-            outputCtx.writeBoolean( false );
-        }
+        // FIXME
+//        if ( slCtx.expiringTuple != null ) {
+//            outputCtx.writeBoolean( true );
+//
+//            outputCtx.writeInt( slCtx.expiringTuple.getRightTupleSink().getId() );
+//            outputCtx.writeInt( slCtx.expiringTuple.getFactHandle().getId() );
+//        } else {
+//            outputCtx.writeBoolean( false );
+//        }
+//
+//        if ( slCtx.getQueue() != null ) {
+//            outputCtx.writeBoolean( true );
+//            outputCtx.writeInt( slCtx.getQueue().size() );
+//            for ( RightTuple rightTuple : slCtx.getQueue() ) {
+//                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );
+//                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+//            }
+//        } else {
+//            outputCtx.writeBoolean( false );
+//        }
     }
 
     public static void writeSlidingLengthWindowBehaviour(SlidingLengthWindow stw,
                                                          SlidingLengthWindowContext slCtx,
                                                          MarshallerWriteContext outputCtx) throws IOException {
-        outputCtx.writeInt( slCtx.pos );
-        
-        outputCtx.writeInt( slCtx.rightTuples.length );
-        
-        for ( RightTuple rightTuple : slCtx.rightTuples ) {
-            if ( rightTuple == null ) {
-                outputCtx.writeInt( -1 );
-            } else {
-                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
-                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );                
-            }
-        }
+        // FIXME
+//        outputCtx.writeInt( slCtx.pos );
+//        
+//        outputCtx.writeInt( slCtx.rightTuples.length );
+//        
+//        for ( RightTuple rightTuple : slCtx.rightTuples ) {
+//            if ( rightTuple == null ) {
+//                outputCtx.writeInt( -1 );
+//            } else {
+//                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+//                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );                
+//            }
+//        }
     }
     
     public static void writeActivations(MarshallerWriteContext context) throws IOException {
