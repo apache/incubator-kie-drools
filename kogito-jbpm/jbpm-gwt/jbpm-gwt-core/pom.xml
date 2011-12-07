@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>org.jboss.bpm</groupId>
 			<artifactId>gwt-console-server-integration</artifactId>
-      		<version>2.3.0.Final</version>
+      		<version>2.3.1.Final</version>
 		</dependency>
 		<dependency>
   			<groupId>org.jboss.bpm</groupId>
