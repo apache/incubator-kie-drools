@@ -408,9 +408,6 @@
    <copy file="${install.home}/report/${birt.version.as7}/overall_activity.rptdesign"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/reports/overall_activity.rptdesign"
           overwrite="true"/>
-   <copy file="${install.home}/report/${birt.version.as7}/process_summary.rptdesign"
-          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/reports/process_summary.rptdesign"
-          overwrite="true"/>
    <delete dir="${install.home}/birt"/>
   </target>
 
