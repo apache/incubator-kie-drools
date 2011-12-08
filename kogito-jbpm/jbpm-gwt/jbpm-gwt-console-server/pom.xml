@@ -22,7 +22,7 @@
       <classifier>jbpm</classifier>
       <type>war</type>
       <!-- overwrite parent pom version -->
-      <version>2.3.1.Final</version>
+      <version>2.3.2.Final</version>
     </dependency>
     <dependency>
   		<groupId>org.jboss.bpm</groupId>
@@ -33,7 +33,7 @@
 		<groupId>org.jboss.bpm</groupId>
 		<artifactId>gwt-console-server-integration</artifactId>
 		<!-- overwrite parent pom version -->
-      	<version>2.3.1.Final</version>
+      	<version>2.3.2.Final</version>
 		</dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
