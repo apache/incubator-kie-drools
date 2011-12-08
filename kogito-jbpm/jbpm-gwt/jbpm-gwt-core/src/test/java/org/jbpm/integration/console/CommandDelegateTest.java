@@ -47,7 +47,7 @@ public class CommandDelegateTest extends JbpmTestCase{
 	@Test
 	public void testGetProcessInstanceLog() {
 		ProcessInstanceLog instance = delegate.startProcess("Minimal", null);
-		assertEquals(instance.getId(), delegate.getProcessInstanceLog(instance.getId() + "").getId());
+		assertEquals(instance.getId(), delegate.getProcessInstanceLog(instance.getProcessInstanceId() + "").getId());
 	}
 	
 	

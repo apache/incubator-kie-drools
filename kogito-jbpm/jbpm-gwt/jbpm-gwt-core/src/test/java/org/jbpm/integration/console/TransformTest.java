@@ -26,7 +26,7 @@ public class TransformTest extends JbpmTestCase {
 	
 	@Test
 	public void testProcessInstance(){
-		String instanceID = Long.toString(delegate.startProcess("UserTask", null).getId());
+		String instanceID = Long.toString(delegate.startProcess("UserTask", null).getProcessInstanceId());
 		ProcessInstanceLog instanceLog =delegate.getProcessInstanceLog(instanceID);
 		ProcessInstanceRef processInstanceRef = Transform.processInstance(instanceLog);
 		
