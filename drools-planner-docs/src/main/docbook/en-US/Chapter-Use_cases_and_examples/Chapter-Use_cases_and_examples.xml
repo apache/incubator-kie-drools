@@ -13,12 +13,13 @@
     example. So it's advisable to read at least the section about that example. For advanced users, the following
     examples are recommended: curriculum course and nurse rostering.</para>
 
-    <para>You can find the source code of all these examples in the drools source distribution and also in git under
+    <para>You can find the source code of all these examples in the distribution zip under
+    <filename>examples/sources</filename> and also in git under
     <filename>drools-planner/drools-planner-examples</filename>.</para>
   </section>
 
   <section>
-    <title>The n queens example</title>
+    <title>N queens example</title>
 
     <section>
       <title>Problem statement</title>
@@ -341,18 +342,18 @@
   </section>
 
   <section>
-    <title>Cloud balancing</title>
+    <title>Cloud balancing example</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>There are a number of computers available. Assign a list of processes on those computers.</para>
+      <para>Assign each process to a server.</para>
 
       <para>Hard constraints:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Every computer should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
+          <para>Every server should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
           network bandwidth) of all its processes.</para>
         </listitem>
       </itemizedlist>
@@ -361,7 +362,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>Each computer that has one or more processes assigned, has a fixed cost. Minimize the total cost.</para>
+          <para>Each server that has one or more processes assigned, has a fixed maintenance cost. Minimize the total
+          cost.</para>
         </listitem>
       </itemizedlist>
 
@@ -386,7 +388,72 @@
   </section>
 
   <section>
-    <title>The Manners 2009 example</title>
+    <title>Machine reassignment example (ROADEF 2012)</title>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. This is
+      more complex version of the Cloud balancing example.</para>
+
+      <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
+      Challenge 2012</link>.</para>
+
+      <para>Hard constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.</para>
+        </listitem>
+
+        <listitem>
+          <para>Conflict: Processes of the same service must run on distinct machines.</para>
+        </listitem>
+
+        <listitem>
+          <para>Spread: Processes of the same service must be spread across locations.</para>
+        </listitem>
+
+        <listitem>
+          <para>Dependency: The processes of a service depending on another service must run in the neighborhood of a
+          process of the other service.</para>
+        </listitem>
+
+        <listitem>
+          <para>Transient usage: Some resources are transient and count towards the maximum capacity of both the
+          original machine as the newly assigned machine.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Soft constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Load: The safety capacity for each resource for each machine should not be exceeded.</para>
+        </listitem>
+
+        <listitem>
+          <para>Balance: Leave room for future assignments by balancing the available resources on each machine.</para>
+        </listitem>
+
+        <listitem>
+          <para>Process move cost: A process has a move cost.</para>
+        </listitem>
+
+        <listitem>
+          <para>Service move cost: A service has a move cost.</para>
+        </listitem>
+
+        <listitem>
+          <para>Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Manners 2009 example</title>
 
     <section>
       <title>Problem statement</title>
@@ -417,13 +484,13 @@
       </itemizedlist>
 
       <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
-      heurstic to solve it. Drools Planner's implementation employs far more scalable heuristics while still using
+      heuristic to solve it. Drools Planner's implementation employs far more scalable heuristics while still using
       Drools Expert to calculate the score..</para>
     </section>
   </section>
 
   <section>
-    <title>The Traveling Salesman Problem (TSP) example</title>
+    <title>Traveling Salesman Problem example (TSP)</title>
 
     <section>
       <title>Problem statement</title>
@@ -439,12 +506,12 @@
   </section>
 
   <section>
-    <title>The Traveling Tournament Problem (TTP) example</title>
+    <title>Traveling Tournament Problem example (TTP)</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule matches between N teams with the following hard constraints:</para>
+      <para>Schedule matches between <emphasis>n</emphasis> teams with the following hard constraints:</para>
 
       <itemizedlist>
         <listitem>
@@ -472,8 +539,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">this webpage (which contains
-      several world records too)</link>.</para>
+      <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">Michael Trick's website (which
+      contains several world records too)</link>.</para>
 
       <mediaobject>
         <imageobject>
@@ -659,12 +726,12 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The ITC 2007 curriculum course example</title>
+    <title>Curriculum course scheduling example (ITC 2007 track 3)</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule lectures into rooms and time periods.</para>
+      <para>Schedule each lecture into a timeslot and into a room.</para>
 
       <para>The problem is defined by <link
       xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
@@ -673,7 +740,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The ITC 2007 examination example</title>
+    <title>Examination timetabling example (ITC 2007 track 1)</title>
 
     <section>
       <title>Problem statement</title>
@@ -971,7 +1038,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
     </section>
 
     <section>
-      <title>Domain class diagram</title>
+      <title>Domain model</title>
 
       <para>Below you can see the main examination domain classes:</para>
 
@@ -994,14 +1061,14 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The patient admission scheduling (PAS) example (hospital bed planning)</title>
+    <title>Patient admission scheduling (hospital bed planning) example (PAS) </title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>In this problem, we have to assign each patient (that will come to the hospital) a bed for each night that
-      the patient will stay in the hospital. Each bed belongs to a room and each room belongs to a department. The
-      arrival and departure dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
+      <para>Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay in
+      the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure dates of
+      the patients is fixed: only a bed needs to be assigned for each night.</para>
 
       <para>There are a couple of hard constraints:</para>
 
@@ -1056,12 +1123,12 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>The INRC 2010 nurse rostering example</title>
+    <title>Nurse rostering example (INRC 2010)</title>
 
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule nurses into shifts.</para>
+      <para>For each shift, assign a nurse to work that shift.</para>
 
       <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
       International Nurse Rostering Competition 2010</link>.</para>
