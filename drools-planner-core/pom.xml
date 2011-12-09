@@ -63,7 +63,7 @@
     </dependency>
     <!-- Benchmarker statistic graphs -->
     <dependency>
-      <groupId>jfree</groupId>
+      <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
       <optional>true</optional>
     </dependency>

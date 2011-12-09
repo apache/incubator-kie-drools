@@ -1267,3 +1267,18 @@ double acceptanceChance has been replaced by boolean accepted.
 
 [MINOR] The examples switched from log4j to logback. This does not affect you.
 Drools Planner still uses slf4j, so log4j is  still supported too.
+
+[MAJOR] If you use the Benchmarker: JFreeChart has been upgraded and it's GAV changed.
+Upgrade the JFreeChart's groupId in your poms.
+After in pom.xml:
+    <dependency>
+      <groupId>jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      ...
+    </dependency>
+After in pom.xml:
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      ...
+    </dependency>
