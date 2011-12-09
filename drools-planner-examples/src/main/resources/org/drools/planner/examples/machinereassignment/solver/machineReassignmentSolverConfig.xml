@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>DEBUG</environmentMode>
+  <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
   <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
