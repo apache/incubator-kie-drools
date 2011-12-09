@@ -393,8 +393,9 @@
     <section>
       <title>Problem statement</title>
 
-      <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. This is
-      more complex version of the Cloud balancing example.</para>
+      <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
+      process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
+      balancing example.</para>
 
       <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
       Challenge 2012</link>.</para>
@@ -445,10 +446,25 @@
         </listitem>
 
         <listitem>
-          <para>Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
-          </para>
+          <para>Machine move cost: Moving a process from machine A to machine B has another A-B specific move
+          cost.</para>
         </listitem>
       </itemizedlist>
+    </section>
+
+    <section>
+      <title>Problem size</title>
+
+      <programlisting>model_a1_1: 2 resources, 1 neighborhoods, 4 locations, 4 machines, 79 services, 100 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^60).
+model_a1_2: 4 resources, 2 neighborhoods, 4 locations, 100 machines, 980 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
+model_a1_3: 3 resources, 5 neighborhoods, 25 locations, 100 machines, 216 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
+model_a1_4: 3 resources, 50 neighborhoods, 50 locations, 50 machines, 142 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
+model_a1_5: 4 resources, 2 neighborhoods, 4 locations, 12 machines, 981 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1079).
+model_a2_1: 3 resources, 1 neighborhoods, 1 locations, 100 machines, 1000 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
+model_a2_2: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 170 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
+model_a2_3: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 129 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
+model_a2_4: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 180 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
+model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^1698).</programlisting>
     </section>
   </section>
 
@@ -1061,7 +1077,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
   </section>
 
   <section>
-    <title>Patient admission scheduling (hospital bed planning) example (PAS) </title>
+    <title>Patient admission scheduling (hospital bed planning) example (PAS)</title>
 
     <section>
       <title>Problem statement</title>
