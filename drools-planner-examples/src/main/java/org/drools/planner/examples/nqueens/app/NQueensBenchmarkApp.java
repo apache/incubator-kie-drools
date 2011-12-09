@@ -23,11 +23,25 @@ import org.drools.planner.examples.nqueens.domain.NQueens;
 
 public class NQueensBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String SOLVER_BENCHMARK_CONFIG
+    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nqueens/benchmark/nqueensStepLimitSolverBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        new NQueensBenchmarkApp(SOLVER_BENCHMARK_CONFIG).process();
+        String solverConfig;
+        if (args.length > 0) {
+            if (args[0].equals("default")) {
+                solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+            } else if (args[0].equals("stepLimit")) {
+                solverConfig = STEP_LIMIT_SOLVER_BENCHMARK_CONFIG;
+            } else {
+                throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
+            }
+        } else {
+            solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+        }
+        new NQueensBenchmarkApp(solverConfig).process();
     }
 
     public NQueensBenchmarkApp(String solverBenchmarkConfig) {
