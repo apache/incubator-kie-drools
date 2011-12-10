@@ -37,11 +37,9 @@ import org.drools.template.parser.DataListener;
 import org.junit.Test;
 
 /**
- *
- * Some basic unit tests for converter utility.
- * Note that some of this may still use the drools 2.x syntax, as it is not compiled,
- * only tested that it generates DRL in the correct structure (not that the DRL itself
- * is correct).
+ * Some basic unit tests for converter utility. Note that some of this may still
+ * use the drools 2.x syntax, as it is not compiled, only tested that it
+ * generates DRL in the correct structure (not that the DRL itself is correct).
  */
 public class SpreadsheetCompilerUnitTest {
 
@@ -56,18 +54,19 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "rule \"How cool am I_12\"" ) > drl.indexOf( "rule \"How cool am I_11\"" ) );
         assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
         assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
-        assertTrue( drl.indexOf("package ") > -1);
-        InputStream ins = this.getClass().getResourceAsStream("/data/MultiSheetDST.xls");
+        assertTrue( drl.indexOf( "package " ) > -1 );
+        InputStream ins = this.getClass().getResourceAsStream( "/data/MultiSheetDST.xls" );
 
-        drl = converter.compile( false, ins,
-                InputType.XLS );
+        drl = converter.compile( false,
+                                 ins,
+                                 InputType.XLS );
 
         assertNotNull( drl );
 
         assertTrue( drl.indexOf( "rule \"How cool am I_12\"" ) > 0 );
         assertTrue( drl.indexOf( "import example.model.User;" ) > -1 );
         assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
-        assertTrue( drl.indexOf("package ") == -1);
+        assertTrue( drl.indexOf( "package " ) == -1 );
 
     }
 
@@ -102,7 +101,7 @@ public class SpreadsheetCompilerUnitTest {
                                               InputType.CSV );
         assertNotNull( drl );
 
-//        System.out.println( drl );
+        //        System.out.println( drl );
 
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
         assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );
@@ -119,7 +118,7 @@ public class SpreadsheetCompilerUnitTest {
 
         assertNotNull( drl );
 
-        System.out.println(drl);
+        System.out.println( drl );
         Pattern p = Pattern.compile( ".*setIsValid\\(Y\\).*setIsValid\\(Y\\).*setIsValid\\(Y\\).*",
                                      Pattern.DOTALL | Pattern.MULTILINE );
         Matcher m = p.matcher( drl );
@@ -136,7 +135,6 @@ public class SpreadsheetCompilerUnitTest {
 
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) < drl.indexOf( "b: Bar() eval(myObject.size() < 3)" ) );
 
-
         assertTrue( drl.indexOf( "myObject.setIsValid(\"19-Jul-1992\")" ) > -1 );
 
     }
@@ -148,18 +146,18 @@ public class SpreadsheetCompilerUnitTest {
                                         InputType.XLS );
 
         assertNotNull( drl );
-        
+
         assertTrue( drl.indexOf( "declare Smurf name : String end" ) > -1 );
     }
-    
+
     @Test
     public void testDeclaresCSV() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         String drl = converter.compile( "DeclaresWorkbook.csv",
                                         InputType.CSV );
-        
+
         assertNotNull( drl );
-        
+
         assertTrue( drl.indexOf( "declare Smurf name : String end" ) > -1 );
     }
 
@@ -355,5 +353,23 @@ public class SpreadsheetCompilerUnitTest {
                       escapeQuotesFlag );
 
     }
-    
+
+    @Test
+    public void testProcessSheetForExtremeLowNumbers() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream( "/data/BasicWorkbook_with_low_values.xls" );
+        final String drl = converter.compile( stream,
+                                              InputType.XLS );
+        assertNotNull( drl );
+        System.out.println( drl );
+
+        // Should parse the correct number
+        assertTrue( drl.indexOf( "myObject.size() < 0" ) == -1 );
+
+        assertTrue( drl.indexOf( "myObject.size() < 8.0E-11" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.size() < 9.0E-7" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.size() < 3.0E-4" ) > -1 );
+
+    }
+
 }
