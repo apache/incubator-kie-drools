@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import jxl.Cell;
+import jxl.CellType;
+import jxl.NumberCell;
 import jxl.Range;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -110,6 +112,7 @@ public class ExcelParser
                     row.length );
             for ( int cellNum = 0; cellNum < row.length; cellNum++ ) {
                 Cell cell = row[cellNum];
+                double num = 0;
 
                 Range merged = getRangeIfMerged( cell,
                                                  mergedRanges );
@@ -120,13 +123,21 @@ public class ExcelParser
                              i,
                              cellNum,
                              topLeft.getContents(),
-                             topLeft.getColumn() );
+                             topLeft.getColumn() );                		
                 } else {
-                    newCell( listeners,
-                             i,
-                             cellNum,
-                             cell.getContents(),
-                             DataListener.NON_MERGED );
+                	if (cell.getType() == CellType.NUMBER) {
+                		NumberCell nc = (NumberCell) cell; 
+                		num = nc.getValue();
+                	}                	
+                	if ( Math.abs(num) - Math.ceil(num) != 0 ) {
+                		newCell(listeners, i, cellNum, String.valueOf(num), DataListener.NON_MERGED );	
+                	} else {
+                        newCell( listeners,
+                                i,
+                                cellNum,
+                                cell.getContents(),
+                                DataListener.NON_MERGED );               		
+                	}
                 }
             }
         }
@@ -146,14 +157,7 @@ public class ExcelParser
         return null;
     }
 
-    static String removeTrailingZero(String stringVal) {
-        if ( stringVal.endsWith( ".0" ) ) {
-            stringVal = stringVal.substring( 0,
-                                             stringVal.length() - 2 );
-        }
-        return stringVal;
-    }
-
+    
     private void finishSheet(List< ? extends DataListener> listeners) {
         for ( DataListener listener : listeners ) {
             listener.finishSheet();

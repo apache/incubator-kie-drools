@@ -16,19 +16,19 @@
 
 package org.drools.decisiontable.parser.xls;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import jxl.Cell;
 import jxl.CellType;
 import jxl.Range;
 import jxl.format.CellFormat;
 
 import org.drools.template.parser.DataListener;
+import org.junit.Test;
 
 /**
  *
@@ -36,23 +36,6 @@ import org.drools.template.parser.DataListener;
  * covered by integration tests.
  */
 public class ExcelParserTest {
-
-    @Test
-    public void testRemoveTrailingZero() {
-        String test = "1.0";
-        assertEquals( "1",
-                      ExcelParser.removeTrailingZero( test ) );
-
-        test = "42.0";
-        assertEquals( "42",
-                      ExcelParser.removeTrailingZero( test ) );
-
-        test = "42";
-        assertEquals( "42",
-                      ExcelParser.removeTrailingZero( test ) );
-
-    }
-    
     /**
      * This should test to see if a cell is in a certain range or not. 
      * If it is in a merged range, then it should return the top left cell.
