@@ -16,7 +16,7 @@
 package org.drools.marshalling.util;
 
 import static org.drools.marshalling.util.MarshallingDBUtil.*;
-import static org.drools.persistence.util.PersistenceUtil.tearDown;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
 
@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.TransactionManager;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -51,7 +52,6 @@ import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -60,12 +60,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
+
 
 public class MarshallingTestUtil {
 
     private static Logger logger = LoggerFactory.getLogger(MarshallingTestUtil.class);
   
-    protected static boolean DO_NOT_COMPARE_MAKING_BASE_DB = false;
     protected static boolean STORE_KNOWLEDGE_BASE = false;
     
     protected final static String PROCESS_INSTANCE_INFO_CLASS_NAME = "org.jbpm.persistence.processinstance.ProcessInstanceInfo";
@@ -84,100 +85,6 @@ public class MarshallingTestUtil {
        }
     }
     
-    public static String byteArrayHashCode(byte [] byteArray) { 
-        StringBuilder hashCode = new StringBuilder();
-        try {
-            byte messageDigest[];
-            synchronized (algorithm) {
-                algorithm.reset();
-                algorithm.update(byteArray);
-                messageDigest = algorithm.digest();
-            }
-    
-            for (int i=0;i<messageDigest.length;i++) {
-                hashCode.append(Integer.toHexString(0xFF & messageDigest[i]));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } 
-        return hashCode.toString();
-    }
-
-    /**
-     * Retrieve the name of the actual method running the test, via reflection magic. 
-     * @return The method of the (Junit) test running at this moment.
-     */
-    protected static String getTestMethodName() { 
-        String testMethodName = null;
-        
-        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-        // 0: getStackTrace
-        // 1: getTestMethodName (this method)
-        // 2: this.persist() or this.merge().. etc.
-        FINDTESTMETHOD: for( int i = 3; i < ste.length; ++i ) { 
-            Class<?> steClass = getSTEClass(ste[i]);
-            if( steClass == null ) { 
-                continue;
-            }
-            
-            Method [] classMethods = steClass.getMethods();
-            String methodName = ste[i].getMethodName();
-            for( int m = 0; m < classMethods.length; ++m ) { 
-                if( classMethods[m].getName().equals(methodName) ) { 
-                   Annotation [] annos = classMethods[m].getAnnotations(); 
-                   for( int a = 0; a < annos.length; ++a ) { 
-                       if( annos[a] instanceof Test ) { 
-                           testMethodName = steClass.getName() + "." + methodName;
-                           break FINDTESTMETHOD;
-                       }
-                   }
-                }
-            }
-        }
-        
-        for( int i = 0; testMethodName == null && i < ste.length; ++i ) { 
-            Class<?> steClass = getSTEClass(ste[i]);
-            if( "runTest".equals(ste[i].getMethodName()) ) { 
-                do { 
-                    if( TestCase.class.equals(steClass) ) { 
-                        StackTraceElement testMethodSTE = ste[i-5];
-                        testMethodName = getSTEClass(testMethodSTE).getName() + "." + testMethodSTE.getMethodName();
-                    }
-                    steClass = steClass.getSuperclass();
-                } while( testMethodName == null && steClass != null );
-            }
-        }
-        
-        if( testMethodName == null ) { 
-            for( int i = 0; testMethodName == null && i < ste.length; ++i ) { 
-                Class<?> steClass = getSTEClass(ste[i]);
-                if( "call".equals(ste[i].getMethodName()) ) { 
-                    do { 
-                        if( DefaultTimerJobInstance.class.equals(steClass) ) { 
-                            StackTraceElement testMethodSTE = ste[i-5];
-                            testMethodName = getSTEClass(testMethodSTE).getName() + "." + testMethodSTE.getMethodName();
-                        }
-                    } while(true);
-                }
-            }
-        }
-
-        return testMethodName;
-    }
-            
-        
-    private static Class<?> getSTEClass(StackTraceElement ste) { 
-        Class<?> steClass = null;
-        try { 
-            steClass =  Class.forName(ste.getClassName());
-        }
-        catch( ClassNotFoundException cnfe ) { 
-            // do nothing.. 
-        }
-          
-        return steClass; 
-    }
-
     public static void compareMarshallingDataFromTest(String persistenceUnitName) { 
         Class<?> testClass = null;
         try {
@@ -188,7 +95,7 @@ public class MarshallingTestUtil {
         }
         compareMarshallingDataFromTest(testClass, persistenceUnitName);
     }
-    
+
     /**
      * 
      * @param testClass The class that this method is being called from. Because this class might be located within 
@@ -197,36 +104,17 @@ public class MarshallingTestUtil {
      * @param persistenceUnitName The name of the persistence unit being used. 
      */
     public static void compareMarshallingDataFromTest(Class<?> testClass, String persistenceUnitName) { 
-        HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, DO_NOT_COMPARE_MAKING_BASE_DB);
+        Object makeBaseDb = getDatasourceProperties().getProperty("makeBaseDb"); 
+
+        boolean baseDBCreationOngoing = false;
+        if( "true".equals(makeBaseDb) ) { 
+            baseDBCreationOngoing = true;
+        }
         
-        if( DO_NOT_COMPARE_MAKING_BASE_DB ) { 
-            logger.info( "Checking MarshalledData objects saved in base db." );
-            List<MarshalledData> baseDataList = null;
-            try { 
-                EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
-                baseDataList  = retrieveMarshallingData(testEMF);
-            }
-            finally { 
-                tearDown(testContext); 
-            }
-            
-            assertNotNull("Could not rerieve list of MarshalledData from base db.", baseDataList);
-            assertTrue("List of MarshalledData from base db is empty.", ! baseDataList.isEmpty() );
-            
-            for( MarshalledData marshalledData : baseDataList ) { 
-                try { 
-                    logger.debug( "Unmarshalling snapshot: " + marshalledData.getTestMethodAndSnapshotNum() );
-                    unmarshallObject(marshalledData);
-                } catch( Exception e ) { 
-                    e.printStackTrace();
-                    fail( "Exception thrown while unmarshalling [" + marshalledData.getTestMethodAndSnapshotNum() + "] data stored in base database" );
-                }
-                
-            }
-            logger.debug( "MarshalledData objects saved in base db:" );
-            for( MarshalledData marshalledData : baseDataList ) { 
-               logger.debug( "- " + marshalledData); 
-            }
+        HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, baseDBCreationOngoing);
+        
+        if( baseDBCreationOngoing ) { 
+            checkMarshalledSnapshots(testContext);
             return;
         }
         
@@ -243,7 +131,7 @@ public class MarshallingTestUtil {
                 testDataList != null && ! testDataList.isEmpty() );
     
         String [] baseDbVersions = getListOfBaseDbVers(testClass);
-
+    
         for( int v = 0; v < baseDbVersions.length; ++v ) { 
             logger.info("Loading marshalled data from base DB version: [" + baseDbVersions[v] + "]");
             // Retrieve the base data
@@ -257,17 +145,56 @@ public class MarshallingTestUtil {
                 tearDown(baseContext);
             }
             assertTrue("No base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
-
+    
             // Compare!
             compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
         }
     }
 
+    private static void checkMarshalledSnapshots(HashMap<String, Object> testContext) {
+        logger.trace( "Checking MarshalledData objects saved in base db." );
+        List<MarshalledData> baseDataList = null;
+        try { 
+            EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
+            baseDataList  = retrieveMarshallingData(testEMF);
+        }
+        finally { 
+            tearDown(testContext); 
+        }
+        
+        assertNotNull("Could not rerieve list of MarshalledData from base db.", baseDataList);
+        assertTrue("List of MarshalledData from base db is empty.", ! baseDataList.isEmpty() );
+        
+        for( MarshalledData marshalledData : baseDataList ) { 
+            try { 
+                logger.debug( "Unmarshalling snapshot: " + marshalledData.getTestMethodAndSnapshotNum() );
+                unmarshallObject(marshalledData);
+            } catch( Exception e ) { 
+//                e.printStackTrace();
+                logger.error( e.getClass().getSimpleName() + " thrown while unmarshalling [" 
+                        + marshalledData.getTestMethodAndSnapshotNum() + "] data stored in base database" );
+            }
+            
+        }
+        logger.trace( "MarshalledData objects saved in base db:" );
+        for( MarshalledData marshalledData : baseDataList ) { 
+           logger.trace( "- " + marshalledData); 
+        }
+    }
+    
     public static ArrayList<MarshalledData> retrieveMarshallingData(EntityManagerFactory emf) { 
         ArrayList<MarshalledData> marshalledDataList = new ArrayList<MarshalledData>();
-        
-        JtaTransactionManager txm = new JtaTransactionManager(null, null, null);
-        boolean txOwner = txm.begin();
+       
+        TransactionManager txm = null;
+        try { 
+            txm = TransactionManagerServices.getTransactionManager();
+            txm.begin();
+        }
+        catch( Exception e ) { 
+            logger.warn("Unable to retrieve marshalled snapshots from marshalling database.");
+            e.printStackTrace();
+            return marshalledDataList;
+        }
     
         EntityManager em = emf.createEntityManager();
         @SuppressWarnings("unchecked")
@@ -281,7 +208,12 @@ public class MarshallingTestUtil {
             logger.trace("> " + marshalledData);
         }
         
-        txm.commit(txOwner);
+        try {
+            txm.commit();
+        } catch (Exception e) {
+            logger.warn(e.getClass().getSimpleName() + " thrown when retrieving marshalled snapshots.");
+            e.printStackTrace();
+        } 
         
         return marshalledDataList;
     }
@@ -364,6 +296,31 @@ public class MarshallingTestUtil {
     }
 
     /**
+     * This class extracts the following data structure: 
+     * - For every test method in the given test class: 
+     *   - make a list of the MarshalledData snapshots saved in that test method (testMethodMarshalledDataList). 
+     * @param testClass The testClass that we're comparing marshalled data for. 
+     * @param marshalledDataList A list of MarshalledData objects retrieved (from the test or a base (version) database).
+     * @return A HashMap<String (testMethod), List<MarshalledData>> (testMethodMarshalledDataList)> object, described above. 
+     */
+    private static HashMap<String, List<MarshalledData>> extractSnapshotsPerTestMethodMap(Class<?> testClass, List<MarshalledData> marshalledDataList) { 
+        String testClassName = testClass.getName();
+        HashMap<String, List<MarshalledData>> snapshotsPerTestMethod = new HashMap<String, List<MarshalledData>>();
+        for( MarshalledData marshalledData : marshalledDataList ) {
+            if( ! marshalledData.testMethodName.startsWith(testClassName) ) { 
+                continue;
+            }
+            List<MarshalledData> testMethodMarshalledDataList = snapshotsPerTestMethod.get(marshalledData.testMethodName);
+            if( testMethodMarshalledDataList == null ) { 
+                testMethodMarshalledDataList = new ArrayList<MarshalledData>();
+                snapshotsPerTestMethod.put(marshalledData.testMethodName, testMethodMarshalledDataList); 
+            }
+            testMethodMarshalledDataList.add(marshalledData);  
+        }
+        return snapshotsPerTestMethod;
+    }
+
+    /**
      * We check three things: <ol>
      * <li>Do the snapshots for a test method from this (test) class exist 
      *     in the data saved from this test run?</li>
@@ -407,8 +364,11 @@ public class MarshallingTestUtil {
                        baseSnapshotsPerTestMap.get(baseTestMethod));
                
                // 2. This means that the test has changed somehow (between when the base db was made and this test run).
-               if( baseSnapshotsPerTestMap.get(baseTestMethod).size() != testSnapshotsPerTestMap.get(baseTestMethod).size() ) { 
-                   logger.error("Test has changed: unequal number of marshalled data snapshots for test " + baseTestMethod );
+               int numBaseSnapshotsForTestMethod = baseSnapshotsPerTestMap.get(baseTestMethod).size(); 
+               int numTestSnapshotsForTestMethod = testSnapshotsPerTestMap.get(baseTestMethod).size();
+               if( numBaseSnapshotsForTestMethod != numTestSnapshotsForTestMethod ) { 
+                   logger.error("Has test changed? Unequal number [" + baseSnapshotsPerTestMap.get(baseTestMethod).size() + "/" 
+                           + testSnapshotsPerTestMap.get(baseTestMethod).size() + "] of for test " + baseTestMethod );
                    if( testSnapshotsPerTestMap.remove(baseTestMethod) != null ) { 
                        logger.warn( "Removing data and NOT comparing data for test " + baseTestMethod );
                        untestableTestMethods.add(baseTestMethod);
@@ -429,31 +389,6 @@ public class MarshallingTestUtil {
         }
     }
     
-    /**
-     * This class extracts the following data structure: 
-     * - For every test method in the given test class: 
-     *   - make a list of the MarshalledData snapshots saved in that test method (testMethodMarshalledDataList). 
-     * @param testClass The testClass that we're comparing marshalled data for. 
-     * @param marshalledDataList A list of MarshalledData objects retrieved (from the test or a base (version) database).
-     * @return A HashMap<String (testMethod), List<MarshalledData>> (testMethodMarshalledDataList)> object, described above. 
-     */
-    private static HashMap<String, List<MarshalledData>> extractSnapshotsPerTestMethodMap(Class<?> testClass, List<MarshalledData> marshalledDataList) { 
-        String testClassName = testClass.getName();
-        HashMap<String, List<MarshalledData>> snapshotsPerTestMethod = new HashMap<String, List<MarshalledData>>();
-        for( MarshalledData marshalledData : marshalledDataList ) {
-            if( ! marshalledData.testMethodName.startsWith(testClassName) ) { 
-                continue;
-            }
-            List<MarshalledData> testMethodMarshalledDataList = snapshotsPerTestMethod.get(marshalledData.testMethodName);
-            if( testMethodMarshalledDataList == null ) { 
-                testMethodMarshalledDataList = new ArrayList<MarshalledData>();
-                snapshotsPerTestMethod.put(marshalledData.testMethodName, testMethodMarshalledDataList); 
-            }
-            testMethodMarshalledDataList.add(marshalledData);  
-        }
-        return snapshotsPerTestMethod;
-    }
-   
     /**
      * Unmarshall the marshalled data saved during a test.
      * @param marshalledData 
@@ -535,7 +470,7 @@ public class MarshallingTestUtil {
             Object byteArrayObject = getByteArrayMethod.invoke(processInstanceInfo, ((Object []) null));
             byteArray = (byte []) byteArrayObject;
         } catch (Exception e) {
-            fail( "Unable to retrieve byte array from " + processInstanceInfoClass.getSimpleName() + " object." );
+            fail( e.getClass().getSimpleName() + ": unable to retrieve byte array from " + processInstanceInfoClass.getSimpleName() );
         }
         
         return byteArray;
@@ -578,6 +513,99 @@ public class MarshallingTestUtil {
         return byteArray;
     }
     
+    public static String byteArrayHashCode(byte [] byteArray) { 
+        StringBuilder hashCode = new StringBuilder();
+        try {
+            byte messageDigest[];
+            synchronized (algorithm) {
+                algorithm.reset();
+                algorithm.update(byteArray);
+                messageDigest = algorithm.digest();
+            }
+    
+            for (int i=0;i<messageDigest.length;i++) {
+                hashCode.append(Integer.toHexString(0xFF & messageDigest[i]));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
+        return hashCode.toString();
+    }
+
+    /**
+     * Retrieve the name of the actual method running the test, via reflection magic. 
+     * @return The method of the (Junit) test running at this moment.
+     */
+    protected static String getTestMethodName() { 
+        String testMethodName = null;
+        
+        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
+        // 0: getStackTrace
+        // 1: getTestMethodName (this method)
+        // 2: this.persist() or this.merge().. etc.
+        FINDTESTMETHOD: for( int i = 3; i < ste.length; ++i ) { 
+            Class<?> steClass = getSTEClass(ste[i]);
+            if( steClass == null ) { 
+                continue;
+            }
+            
+            Method [] classMethods = steClass.getMethods();
+            String methodName = ste[i].getMethodName();
+            for( int m = 0; m < classMethods.length; ++m ) { 
+                if( classMethods[m].getName().equals(methodName) ) { 
+                   Annotation [] annos = classMethods[m].getAnnotations(); 
+                   for( int a = 0; a < annos.length; ++a ) { 
+                       if( annos[a] instanceof Test ) { 
+                           testMethodName = steClass.getName() + "." + methodName;
+                           break FINDTESTMETHOD;
+                       }
+                   }
+                }
+            }
+        }
+        
+        for( int i = 0; testMethodName == null && i < ste.length; ++i ) { 
+            Class<?> steClass = getSTEClass(ste[i]);
+            if( "runTest".equals(ste[i].getMethodName()) ) { 
+                do { 
+                    if( TestCase.class.equals(steClass) ) { 
+                        StackTraceElement testMethodSTE = ste[i-5];
+                        testMethodName = getSTEClass(testMethodSTE).getName() + "." + testMethodSTE.getMethodName();
+                    }
+                    steClass = steClass.getSuperclass();
+                } while( testMethodName == null && steClass != null );
+            }
+        }
+        
+        if( testMethodName == null ) { 
+            for( int i = 0; testMethodName == null && i < ste.length; ++i ) { 
+                Class<?> steClass = getSTEClass(ste[i]);
+                if( "call".equals(ste[i].getMethodName()) ) { 
+                    do { 
+                        if( DefaultTimerJobInstance.class.equals(steClass) ) { 
+                            StackTraceElement testMethodSTE = ste[i-5];
+                            testMethodName = getSTEClass(testMethodSTE).getName() + "." + testMethodSTE.getMethodName();
+                        }
+                    } while(true);
+                }
+            }
+        }
+    
+        return testMethodName;
+    }
+
+    private static Class<?> getSTEClass(StackTraceElement ste) { 
+        Class<?> steClass = null;
+        try { 
+            steClass =  Class.forName(ste.getClassName());
+        }
+        catch( ClassNotFoundException cnfe ) { 
+            // do nothing.. 
+        }
+          
+        return steClass; 
+    }
+
     private static ObjectMarshallingStrategy [] addProcessInstanceResolverStrategyIfAvailable(
             ObjectMarshallingStrategy [] strategies ) { 
      

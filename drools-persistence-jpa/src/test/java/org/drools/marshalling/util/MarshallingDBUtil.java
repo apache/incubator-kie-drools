@@ -20,11 +20,7 @@ import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -39,14 +35,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Table;
 
-import org.drools.persistence.util.PersistenceUtil;
-
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class MarshallingDBUtil {
 
-    protected static String MARSHALLING_TEST_DB = "marshalling/testData";
-    protected static final String MARSHALLING_BASE_DB = "marshalling/baseData-current";
+    protected static String MARSHALLING_TEST_DB = "testData";
+    protected static final String MARSHALLING_BASE_DB = "baseData-current";
 
     protected static boolean clearMarshallingTestDb = true;
     
@@ -69,7 +63,7 @@ public class MarshallingDBUtil {
         Object makeBaseDb = jdbcProps.getProperty("makeBaseDb"); 
         if( "true".equals(makeBaseDb) ) { 
             MARSHALLING_TEST_DB = MARSHALLING_BASE_DB;
-            MarshallingTestUtil.DO_NOT_COMPARE_MAKING_BASE_DB = true;
+            clearMarshallingTestDb = false;
         }
         
         String dbPath = generatePathToTestDb(testClass);
@@ -94,13 +88,24 @@ public class MarshallingDBUtil {
     protected static String generatePathToTestDb(Class<?> testClass) { 
         URL classUrl = testClass.getResource(testClass.getSimpleName() + ".class");
         String projectPath = classUrl.getPath().replaceFirst("target.*", "");
-        String resourcesPath = projectPath + "src/test/resources/";
+        String resourcesPath = projectPath + "target/test-classes/marshalling/";
         new File(resourcesPath).mkdirs();
-        new File(resourcesPath + "marshalling").mkdir();
         String dbPath = resourcesPath + MARSHALLING_TEST_DB;
         return dbPath;
     }
     
+    /**
+     * This method deletes the test database file.
+     * @param dbUrl 
+     * @param dbPath
+     */
+    private static void deleteTestDatabase(URL dbUrl, String dbPath) { 
+        if( dbUrl != null ) { 
+            new File(dbUrl.getPath()).delete();
+        }
+        new File(dbPath + ".h2.db").delete();
+    }
+
     /**
      * This method quickly creates a H2 database: a direct JDBC connection is used for this.
      * <p/>
@@ -125,19 +130,6 @@ public class MarshallingDBUtil {
         }
     }
 
-    /**
-     * This method deletes the test database file.
-     * @param dbUrl 
-     * @param dbPath
-     */
-    private static void deleteTestDatabase(URL dbUrl, String dbPath) { 
-        if( dbUrl != null ) { 
-            new File(dbUrl.getPath()).delete();
-        }
-        new File(dbPath + ".h2.db").delete();
-    }
-    
-    
     /**
      * This method uses reflection to get the name of the table used for an entity.
      * @param dataClass The class for which we want the table name. 
@@ -175,12 +167,64 @@ public class MarshallingDBUtil {
         return initializeMarshalledDataEMF(persistenceUnitName, testClass, useBaseDb, null );
     }
     
+    /**
+     * This method initializes an EntityManagerFactory with a connection to the base (marshalled) data DB. 
+     * This database stores the marshalled data that we expect (for a given drools/jbpm version).
+     * @param persistenceUnitName The persistence unit name.
+     * @param testClass The class of the (local) unit test running.
+     * @return A HashMap<String, Object> containg the datasource and entity manager factory.
+     */
+    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, 
+            boolean useBaseDb, String baseDbVer ) { 
+        HashMap<String, Object> context = new HashMap<String, Object>();
+        
+        Properties dsProps = getDatasourceProperties();
+        String driverClass = dsProps.getProperty("driverClassName");
+        if ( ! driverClass.startsWith("org.h2")) {
+            return null;
+        }
+    
+        String dbFilePath = generatePathToTestDb(testClass);
+        if( useBaseDb ) { 
+            dbFilePath = dbFilePath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+            if( baseDbVer != null && baseDbVer.length() > 0) { 
+                dbFilePath = dbFilePath.replace("current", baseDbVer);
+            }
+        }
+        
+        String jdbcURLBase = dsProps.getProperty("url");
+        // trace level file = 0 means that modifying the inode of the db file will _not_ cause a "corrupted" exception
+        String jdbcUrl =  jdbcURLBase + dbFilePath;
+        
+        // Setup the datasource
+        PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
+        ds1.getDriverProperties().setProperty("url", jdbcUrl );
+        ds1.init();
+        context.put(DATASOURCE, ds1);
+    
+        // Setup persistence
+        Properties overrideProperties = new Properties();
+        overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
+        context.put(ENTITY_MANAGER_FACTORY, emf);
+        
+        return context;
+    }
+
     protected static String [] getListOfBaseDbVers(Class<?> testClass) { 
         String [] versions;
         ArrayList<String> versionList = new ArrayList<String>();
         
         String path = generatePathToTestDb(testClass);
-        path = path.replace(File.separatorChar + "testData", "");
+        path = path.replace("target" + File.separatorChar + 
+                "test-classes" + File.separatorChar + 
+                "marshalling" + File.separatorChar + 
+                "testData",
+                "src" + File.separatorChar + 
+                "test" + File.separatorChar + 
+                "resources" + File.separatorChar + 
+                "marshalling" + File.separatorChar
+                );
         File marshallingDir = new File(path);
         
         FilenameFilter baseDatafilter = new FilenameFilter() {
@@ -190,7 +234,7 @@ public class MarshallingDBUtil {
         };
         String [] dbFiles = marshallingDir.list(baseDatafilter);
         
-        assertTrue("No files found in marshalling directory!", dbFiles != null && dbFiles.length > 0 );
+        assertTrue("No files found in marshalling directory [" + marshallingDir + "]!", dbFiles != null && dbFiles.length > 0 );
         for(int i = 0; i < dbFiles.length; ++i ) { 
             String ver = dbFiles[i];
             ver = ver.replace(".h2.db", "");
@@ -204,73 +248,5 @@ public class MarshallingDBUtil {
         }
         return versions;
     }
-
-    /**
-     * This method initializes an EntityManagerFactory with a connection to the base (marshalled) data DB. 
-     * This database stores the marshalled data that we expect (for a given drools/jbpm version).
-     * @param persistenceUnitName The persistence unit name.
-     * @param testClass The class of the (local) unit test running.
-     * @return A HashMap<String, Object> containg the datasource and entity manager factory.
-     */
-    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, 
-            boolean useBaseDb, String baseDbVer ) { 
-        HashMap<String, Object> context = new HashMap<String, Object>();
-        
-        Properties dsProps = PersistenceUtil.getDatasourceProperties();
-        String driverClass = dsProps.getProperty("driverClassName");
-        if ( ! driverClass.startsWith("org.h2")) {
-            return null;
-        }
     
-        String tempDbPath = generatePathToTestDb(testClass);
-        if( useBaseDb ) { 
-            tempDbPath = tempDbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
-            String thisDbPath = tempDbPath;
-            if( baseDbVer != null && baseDbVer.length() > 0) { 
-                thisDbPath = thisDbPath.replace("current", baseDbVer);
-            }
-            tempDbPath = tempDbPath.replace("-current", "");
-            copyH2DbFile(thisDbPath, tempDbPath );
-        }
-        
-        String jdbcURLBase = dsProps.getProperty("url");
-        String jdbcUrl =  jdbcURLBase + tempDbPath;
-    
-        // Setup the datasource
-        PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
-        ds1.getDriverProperties().setProperty("url", jdbcUrl);
-        ds1.init();
-        context.put(DATASOURCE, ds1);
-    
-        // Setup persistence
-        Properties overrideProperties = new Properties();
-        overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
-        context.put(ENTITY_MANAGER_FACTORY, emf);
-        
-        return context;
-    }
-    
-    
-    private static void copyH2DbFile(String source, String dest) {
-        source += ".h2.db";
-        dest += ".h2.db";
-        try {
-            File sourceFile = new File(source);
-            File destFile = new File(dest);
-            InputStream in = new FileInputStream(sourceFile);
-        
-            OutputStream out = new FileOutputStream(destFile);
-
-            byte[] buf = new byte[1024];
-            for( int len = in.read(buf); len  > 0; len = in.read(buf) ){
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        }
-        catch( Exception e ){
-            fail("Unable to copy " + source + " to " + dest + ": " + e.getMessage() );
-        }
-    } 
 }

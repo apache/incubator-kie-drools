@@ -41,6 +41,7 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -70,7 +71,7 @@ public class PersistenceUtil {
      * @return test context
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName) {
-        return setupWithPoolingDataSource(persistenceUnitName, TEST_MARSHALLING);
+        return setupWithPoolingDataSource(persistenceUnitName, true);
     }
     
     /**
@@ -90,18 +91,22 @@ public class PersistenceUtil {
         String jdbcUrl = dsProps.getProperty("url");
         String driverClass = dsProps.getProperty("driverClassName");
 
-        TEST_MARSHALLING = testMarshalling;
         // only save marshalling data if the dialect is H2..
         if( ! driverClass.startsWith("org.h2") ) { 
            TEST_MARSHALLING = false; 
         }
         Object testMarshallingProperty = dsProps.get("testMarshalling"); 
-        if( ! "true".equals(testMarshallingProperty) ) { 
+        if( "true".equals(testMarshallingProperty) ) { 
+            TEST_MARSHALLING = true;
+           if( !testMarshalling ) { 
+               TEST_MARSHALLING = false;
+           }
+        } 
+        else { 
             TEST_MARSHALLING = false;
         }
 
         if( TEST_MARSHALLING ) {
-            System.setProperty("h2.lobInDatabase", "true");
             Class<?> testClass = null;
             StackTraceElement [] ste = Thread.currentThread().getStackTrace();
                 int i = 1;
@@ -159,6 +164,11 @@ public class PersistenceUtil {
     public static void tearDown(HashMap<String, Object> context) {
         if (context != null) {
             
+            BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
+            if( txm != null ) { 
+                txm.shutdown();
+            }
+            
             Object emfObject = context.remove(ENTITY_MANAGER_FACTORY);
             if (emfObject != null) {
                 try {
@@ -205,7 +215,9 @@ public class PersistenceUtil {
 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2")) {
-            h2Server.start();
+            if( ! TEST_MARSHALLING ) { 
+                h2Server.start();
+            }
             for (String propertyName : new String[] { "url", "driverClassName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
@@ -285,6 +297,9 @@ public class PersistenceUtil {
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
         boolean propertiesNotFound = false;
 
+        // Central place to set additional H2 properties
+        System.setProperty("h2.lobInDatabase", "true");
+        
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         assertNotNull(propertiesNotFoundMessage, propsInputStream);
         Properties props = new Properties();

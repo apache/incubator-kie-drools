@@ -60,6 +60,10 @@ public class MarshalledData {
     @Transient
     private static HashMap<String, AtomicInteger> testMethodSnapshotNumMap = new HashMap<String, AtomicInteger>();
     
+    public MarshalledData() { 
+        // for the ORM/persistence which requires a default constructor to initialize entity classes
+    }
+    
     public MarshalledData(Object marshalledClassInstance) { 
         this.testMethodName = getTestMethodName();
         initializeObject(marshalledClassInstance);
@@ -133,10 +137,6 @@ public class MarshalledData {
           return testMethodSnapshotNumMap.get(testMethodName).intValue(); 
        }
        return null;
-    }
-    
-    public MarshalledData() { 
-        // default constructor
     }
     
     public String getTestMethodAndSnapshotNum() { 
