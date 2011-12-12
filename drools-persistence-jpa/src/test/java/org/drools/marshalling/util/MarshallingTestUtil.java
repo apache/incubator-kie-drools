@@ -147,7 +147,7 @@ public class MarshallingTestUtil {
             assertTrue("No base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
     
             // Compare!
-            compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
+            compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList, baseDbVersions[v]);
         }
     }
 
@@ -237,7 +237,7 @@ public class MarshallingTestUtil {
      * @param baseData A list of the marshalled data created during the base run (or whichever version of the project)
      */
     private static void compareTestAndBaseMarshallingData(Class<?> testClass, List<MarshalledData> testData, 
-            List<MarshalledData> baseData ) { 
+            List<MarshalledData> baseData, String baseDbVersion ) { 
    
         // Extract the marshalled data info for all methods from THIS test (testClass)
         HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, testData);
@@ -260,7 +260,8 @@ public class MarshallingTestUtil {
                 baseMarshalledDataSnapshotMap.put(baseMarshalledData.getTestMethodAndSnapshotNum(), baseMarshalledData);
             }
          }
-         
+
+        List<String> errors = new ArrayList<String>();
         for( String testMethodVer : testMarshalledDataSnapshotMap.keySet() ) { 
             logger.info("Comparing marshalled info for " + testMethodVer);
             Object baseObject = null;
@@ -270,8 +271,9 @@ public class MarshallingTestUtil {
                 baseObject = unmarshallObject(baseMarshalledData);
             }
             catch( Exception e) {
-                e.printStackTrace();
-                fail("Unable to unmarshall base data [" + testMethodVer +  "]: " + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
+                logger.info("Unable to unmarshall " + baseDbVersion + " data [" + testMethodVer +  "]: " 
+                        + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
+                continue;
             }
            
             Object testObject = null;
@@ -281,15 +283,26 @@ public class MarshallingTestUtil {
                 testObject = unmarshallObject(testMarshalledData);
             }
             catch( Exception e) {
-                fail("Unable to unmarshall test data: [" + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
+                fail("Unable to unmarshall " + baseDbVersion + " data: [" + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
             }
             
             assertNotNull("Unmarshalled test data resulted in null object!", testObject);
             assertNotNull("Unmarshalled base data resulted in null object!", baseObject);
             
-            assertTrue( "Unmarshalled " + baseObject.getClass().getSimpleName() 
-                    + " objects are not equal [" + baseMarshalledData.getTestMethodAndSnapshotNum() + "]",
-                    CompareViaReflectionUtil.compareInstances(baseObject, testObject) );
+            if( ! CompareViaReflectionUtil.compareInstances(baseObject, testObject) ) { 
+                String errorMsg =  "Unmarshalled " + baseObject.getClass().getSimpleName() 
+                    + " object from " + baseDbVersion + " data is not equal to test unmarshalled object [" 
+                    + baseMarshalledData.getTestMethodAndSnapshotNum() + "]";
+                errors.add(errorMsg);
+            }
+        }
+        
+        if( errors.size() > 0 ) { 
+            int i = errors.size()-1;
+            for( ; i > 0; --i ) { 
+                logger.warn(errors.get(i));
+            }
+            fail(errors.get(1));
         }
         
         

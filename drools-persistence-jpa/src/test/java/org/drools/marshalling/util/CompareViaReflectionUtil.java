@@ -44,9 +44,9 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.time.impl.JDKTimerService;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -105,6 +105,7 @@ public class CompareViaReflectionUtil {
             doNotCompareFieldsMap.add(ClassFieldAccessorCache.class.getDeclaredField("classLoader"));
             doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("globalResolver"));
             doNotCompareFieldsMap.add(JDKTimerService.class.getDeclaredField("scheduler"));
+            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("classFieldAccessorCache"));
         } catch (Exception e) {
             logger.error(e.getClass().getSimpleName() + ": " + e.getMessage());
             // do nothing
@@ -241,9 +242,11 @@ public class CompareViaReflectionUtil {
                 same = comparePrimitiveBasedOrCollectionInstances(context, objA, objB);
             }
             else if( objA instanceof AbstractHashTable ) { 
+                primitiveBasedObjectOrCollection = true;
                 same = compareDroolsSets(context, objA, objB);
             }
             else if( objA.getClass().isArray() ) { 
+                primitiveBasedObjectOrCollection = true;
                 same = compareArrays(context, objA, objB);
             }
             else {
@@ -450,7 +453,6 @@ public class CompareViaReflectionUtil {
         try {
             arrayA = (Object []) toArrayMethod.invoke(objA, (Object []) null);
             arrayB = (Object []) toArrayMethod.invoke(objB, (Object []) null);
-            
         } catch (Exception e) {
             same = false;
             fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
@@ -466,8 +468,17 @@ public class CompareViaReflectionUtil {
         for( int a = 0; a < length; ++a ) { 
             boolean elementIsSame = false;
             for( int b = 0; b < length; ++b ) { 
-                Object subObjA = ((ObjectHashSet.ObjectEntry) arrayA[a]).getValue();
-                Object subObjB = ((ObjectHashSet.ObjectEntry) arrayA[b]).getValue();
+                Object subObjA = arrayA[a];
+                Object subObjB = arrayA[b];
+                try { 
+                    Method getValueMethod = subObjA.getClass().getMethod("getValue", (Class []) null);
+                    subObjA = getValueMethod.invoke(subObjA, (Object [])null);
+                    subObjB = getValueMethod.invoke(subObjB, (Object [])null);
+                }
+                catch( Exception e ) { 
+                    e.printStackTrace();
+                    fail("Could not retrieve getValue() method for " + subObjA.getClass().getName());
+                }
                 
                 DebugContext entryContext = context.clone();
                 String name = context.name + ": ";
