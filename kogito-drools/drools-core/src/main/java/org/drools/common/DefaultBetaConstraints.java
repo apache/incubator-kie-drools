@@ -38,6 +38,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.IndexableConstraint;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
@@ -167,15 +168,8 @@ public class DefaultBetaConstraints
     }
 
     public static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint instanceof VariableConstraint ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            if( variableConstraint.getRestriction() instanceof VariableRestriction ||variableConstraint.getRestriction() instanceof UnificationRestriction ){
-                return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
-             }
-        }
-        return false;
+        return constraint instanceof IndexableConstraint ? ((IndexableConstraint)constraint).isIndexable() : false;
     }
-    
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
@@ -274,10 +268,10 @@ public class DefaultBetaConstraints
 
             for ( int pos = 0; pos <= this.indexed; pos++ ) {
                 final Constraint constraint = (Constraint) entry.getObject();
-                final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-                final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                         variableConstraint.getRequiredDeclarations()[0],
-                                                         variableConstraint.getEvaluator() );
+                final IndexableConstraint indexableConstraint = (IndexableConstraint) constraint;
+                final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                         indexableConstraint.getRequiredDeclarations()[0],
+                                                         indexableConstraint.getIndexEvaluator() );
                 list.add( index );
                 entry = (LinkedListEntry) entry.getNext();
             }

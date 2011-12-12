@@ -47,6 +47,7 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
+import org.drools.rule.IndexableConstraint;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -178,7 +179,7 @@ public abstract class BetaNode extends LeftTupleSource
         LinkedList list = this.constraints.getConstraints();
         if ( !list.isEmpty() ) {
             BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject();
-            if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
+            if ( DefaultBetaConstraints.isIndexable( c ) && ((IndexableConstraint) c).isUnification()) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
                     this.constraints = new SingleNonIndexSkipBetaConstraints( ( SingleBetaConstraints ) this.constraints );
                 }else if ( this.constraints instanceof DoubleBetaConstraints ) {

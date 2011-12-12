@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -32,13 +33,16 @@ import org.drools.time.Interval;
 
 public class VariableConstraint extends MutableTypeConstraint
     implements
-    AcceptsReadAccessor,    
+    AcceptsReadAccessor,
+    IndexableConstraint,
     Externalizable {
 
     private static final long    serialVersionUID = 510l;
 
     private InternalReadAccessor fieldExtractor;
     private Restriction          restriction;
+
+    private transient IndexEvaluator indexEvaluator;
 
     public VariableConstraint() {
     }
@@ -97,6 +101,13 @@ public class VariableConstraint extends MutableTypeConstraint
         return this.restriction.getEvaluator();
     }
     
+    public IndexEvaluator getIndexEvaluator() {
+        if (indexEvaluator == null) {
+            indexEvaluator = new WrapperIndexEvaluator(getEvaluator());
+        }
+        return indexEvaluator;
+    }
+
     public Restriction getRestriction() {
         return this.restriction;
     }
@@ -142,6 +153,17 @@ public class VariableConstraint extends MutableTypeConstraint
         return this.restriction.createContextEntry();
     }
 
+    public boolean isIndexable() {
+        if (restriction instanceof VariableRestriction || restriction instanceof UnificationRestriction ){
+            return (getEvaluator().getOperator() == Operator.EQUAL);
+        }
+        return false;
+    }
+
+    public boolean isUnification() {
+        return restriction instanceof UnificationRestriction;
+    }
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -167,6 +189,19 @@ public class VariableConstraint extends MutableTypeConstraint
     public Object clone() {
         return new VariableConstraint( this.fieldExtractor,
                                        (Restriction) this.restriction.clone() );
+    }
+
+    public static class WrapperIndexEvaluator implements IndexEvaluator {
+
+        private Evaluator evaluator;
+
+        private WrapperIndexEvaluator(Evaluator evaluator) {
+            this.evaluator = evaluator;
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor leftExtractor, Object left, InternalReadAccessor rightExtractor, Object right) {
+            return evaluator.evaluate(workingMemory, leftExtractor, left, rightExtractor, right);
+        }
     }
 
 }

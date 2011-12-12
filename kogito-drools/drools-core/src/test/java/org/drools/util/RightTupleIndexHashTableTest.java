@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.rule.constraint.MvelConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,8 +72,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -128,8 +128,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -193,8 +192,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -257,8 +255,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -318,8 +315,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -393,8 +389,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( 16,
                                                                            0.75f,
@@ -622,8 +617,7 @@ public class RightTupleIndexHashTableTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE,
-                                                                           Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
 
         final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
 

@@ -99,28 +99,28 @@ public class IndexingTest {
         JoinNode j11 = ( JoinNode ) j10.getSinkPropagator().getSinks()[0];  // $p11
         
         SingleBetaConstraints c = ( SingleBetaConstraints ) j2.getRawConstraints();
-        assertEquals( "$name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "$name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );        
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( j2 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j3.getRawConstraints();
-        assertEquals( "name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+//        assertEquals( "name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j3 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j4.getRawConstraints();
-        assertEquals( "$p1", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j4 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );
         
         c = ( SingleBetaConstraints ) j5.getRawConstraints();
-        assertEquals( "name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j5 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
@@ -135,35 +135,35 @@ public class IndexingTest {
 //        assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );   
         
         c = ( SingleBetaConstraints ) j7.getRawConstraints();
-        assertEquals( "name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j7 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );   
         
         c = ( SingleBetaConstraints ) j8.getRawConstraints();
-        assertEquals( "name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j8 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );     
         
         c = ( SingleBetaConstraints ) j9.getRawConstraints();
-        assertEquals( "$p1", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j9 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );  
         
         c = ( SingleBetaConstraints ) j10.getRawConstraints();
-        assertEquals( "name", ((VariableConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "name", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j10 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );  
         
         c = ( SingleBetaConstraints ) j11.getRawConstraints();
-        assertEquals( "$p1", ((PredicateConstraint)c.getConstraint()).getRequiredDeclarations()[0].getIdentifier() );
+        assertEquals( "$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier() );
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j11 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );

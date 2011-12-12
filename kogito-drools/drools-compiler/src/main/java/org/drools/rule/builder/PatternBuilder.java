@@ -88,7 +88,6 @@ import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.AcceptsReadAccessor;
@@ -627,7 +626,7 @@ public class PatternBuilder
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr);
             if (field != null) {
-                Constraint constraint = buildConstraint(context, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
+                Constraint constraint = buildLiteralConstraint(context, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
                 if (constraint != null) {
                     pattern.addConstraint(constraint);
                     return true;
@@ -636,11 +635,11 @@ public class PatternBuilder
         }
 
         Restriction restriction = null;
+        Declaration[] declarations = null;
         Declaration declr = null;
 
         if ( value2.indexOf( '(' ) < 0 && value2.indexOf( '.' ) < 0 && value2.indexOf( '[' ) < 0 ) {
-            declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                     value2 );
+            declr = context.getDeclarationResolver().getDeclaration( context.getRule(), value2 );
 
             if ( declr == null ) {
                 // trying to create implicit declaration
@@ -688,6 +687,8 @@ public class PatternBuilder
                     // if a declaration exists, then it may be a variable direct property access
                     if ( declr != null ) {
                         if ( declr.isPatternDeclaration() ) {
+                            // TODO: no need to extract inner declaration when using mvel constraint
+                            declarations = new Declaration[] { declr };
                             declr = this.createDeclarationObject( context,
                                                                   parts[1].trim(),
                                                                   declr.getPattern() );
@@ -757,8 +758,33 @@ public class PatternBuilder
             // something failed and an error should already have been reported
             return false;
         }
-        pattern.addConstraint( new VariableConstraint( extractor,
-                                                       restriction ) );
+
+        if (declr == null) {
+            ReturnValueRestriction returnValueRestriction = (ReturnValueRestriction)restriction;
+            Declaration[] requiredDeclarations = restriction.getRequiredDeclarations();
+            String[] requiredGlobals = returnValueRestriction.getRequiredGlobals();
+            declarations = new Declaration[(requiredDeclarations != null ? requiredDeclarations.length : 0) + (requiredGlobals != null ? requiredGlobals.length : 0)];
+            int i = 0;
+            if (requiredDeclarations != null) {
+                for (Declaration requiredDeclaration : requiredDeclarations)
+                    declarations[i++] = requiredDeclaration;
+            }
+            if (requiredGlobals != null) {
+                for (String requiredGlobal : requiredGlobals)
+                    declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), requiredGlobal);
+            }
+        } else {
+            if (declarations == null) declarations = new Declaration[] { declr };
+/*
+            else {
+                Declaration[] redefinedDeclaration = new Declaration[declarations.length+1];
+                for (int i = 0; i < declarations.length; i++) redefinedDeclaration[i] = declarations[i];
+                redefinedDeclaration[declarations.length] = declr;
+                declarations = redefinedDeclaration;
+            }
+*/
+        }
+        pattern.addConstraint(buildVariableConstraint(context, expr, declarations, operator, extractor, restriction));
         return true;
     }
 

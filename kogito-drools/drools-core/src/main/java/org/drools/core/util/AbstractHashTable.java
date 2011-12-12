@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.rule.IndexEvaluator;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
@@ -405,9 +406,9 @@ public abstract class AbstractHashTable
 
         private static final long serialVersionUID = 510l;
 
-        InternalReadAccessor      extractor;
-        Declaration               declaration;
-        public Evaluator          evaluator;
+        InternalReadAccessor    extractor;
+        Declaration             declaration;
+        IndexEvaluator          evaluator;
 
         public FieldIndex() {
 
@@ -415,7 +416,7 @@ public abstract class AbstractHashTable
 
         public FieldIndex(final InternalReadAccessor extractor,
                           final Declaration declaration,
-                          final Evaluator evaluator) {
+                          final IndexEvaluator evaluator) {
             super();
             this.extractor = extractor;
             this.declaration = declaration;
@@ -426,7 +427,7 @@ public abstract class AbstractHashTable
                                                 ClassNotFoundException {
             extractor = (InternalReadAccessor) in.readObject();
             declaration = (Declaration) in.readObject();
-            evaluator = (Evaluator) in.readObject();
+            evaluator = (IndexEvaluator) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -441,10 +442,6 @@ public abstract class AbstractHashTable
 
         public ReadAccessor getExtractor() {
             return this.extractor;
-        }
-
-        public Evaluator getEvaluator() {
-            return this.evaluator;
         }
     }
 
@@ -475,7 +472,7 @@ public abstract class AbstractHashTable
 
         private InternalReadAccessor extractor;
         private Declaration          declaration;
-        private Evaluator            evaluator;
+        private IndexEvaluator       evaluator;
 
         private int                  startResult;
 
@@ -496,7 +493,7 @@ public abstract class AbstractHashTable
                                                 ClassNotFoundException {
             extractor = (InternalReadAccessor) in.readObject();
             declaration = (Declaration) in.readObject();
-            evaluator = (Evaluator) in.readObject();
+            evaluator = (IndexEvaluator) in.readObject();
             startResult = in.readInt();
         }
 

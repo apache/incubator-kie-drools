@@ -1,6 +1,7 @@
 #created on: 27-Mar-2006
 package org.drools.test
 
+import org.drools.Cheese;
 import org.drools.Person;
 import java.math.BigDecimal;
 
@@ -9,8 +10,8 @@ global java.util.List list;
 rule "BigDec"
 
     when
-        Person($b : bigDecimal )
-        p : Person(bigDecimal < $b)
+        Cheese($price : price)
+        p : Person(bigDecimal < $price)
     then
         list.add( p );
 end
