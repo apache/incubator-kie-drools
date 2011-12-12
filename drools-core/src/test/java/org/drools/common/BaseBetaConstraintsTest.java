@@ -154,8 +154,6 @@ public abstract class BaseBetaConstraintsTest {
                                                FieldIndex fieldIndex) {
         assertSame( constraint.getRequiredDeclarations()[0],
                     fieldIndex.getDeclaration() );
-        assertSame( constraint.getEvaluator(),
-                    fieldIndex.getEvaluator() );
         assertSame( constraint.getFieldExtractor(),
                     fieldIndex.getExtractor() );
     }

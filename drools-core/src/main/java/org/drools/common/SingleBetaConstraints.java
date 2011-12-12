@@ -33,6 +33,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.IndexableConstraint;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -152,10 +153,10 @@ public class SingleBetaConstraints
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         BetaMemory memory;
         if ( this.indexed ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator() );
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint;
+            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                     indexableConstraint.getRequiredDeclarations()[0],
+                                                     indexableConstraint.getIndexEvaluator() );
             LeftTupleMemory tupleMemory;
             if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new LeftTupleIndexHashTable( new FieldIndex[]{index} );

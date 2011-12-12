@@ -7,6 +7,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -384,12 +385,12 @@ public class MVELDialect
 
     public void addStaticImport(String staticImportEntry) {
         if ( staticImportEntry.endsWith( "*" ) ) {
+            addStaticPackageImport(staticImportEntry);
             return;
         }
 
         int index = staticImportEntry.lastIndexOf( '.' );
-        String className = staticImportEntry.substring( 0,
-                                                        index );
+        String className = staticImportEntry.substring( 0, index );
         String methodName = staticImportEntry.substring( index + 1 );
 
         try {
@@ -399,8 +400,7 @@ public class MVELDialect
                 // First try and find a matching method
                 for ( Method method : cls.getDeclaredMethods() ) {
                     if ( method.getName().equals( methodName ) ) {
-                        this.data.addImport( methodName,
-                                             method );
+                        this.data.addImport( methodName, method );
                         return;
                     }
                 }
@@ -408,8 +408,7 @@ public class MVELDialect
                 //no matching method, so now try and find a matching public property
                 for ( Field field : cls.getFields() ) {
                     if ( field.isAccessible() && field.getName().equals( methodName ) ) {
-                        this.data.addImport( methodName,
-                                             field  );
+                        this.data.addImport( methodName, field  );
                         return;
                     }
                 }
@@ -417,8 +416,30 @@ public class MVELDialect
         } catch ( ClassNotFoundException e ) {
         }
         // we never managed to make the import, so log an error
-        this.results.add( new ImportError( staticImportEntry,
-                                           -1 ) );
+        this.results.add( new ImportError( staticImportEntry, -1 ) );
+    }
+
+    public void addStaticPackageImport(String staticImportEntry) {
+        int index = staticImportEntry.lastIndexOf( '.' );
+        String className = staticImportEntry.substring(0, index);
+        Class cls = null;
+        try {
+            cls = pkgBuilder.getRootClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) { }
+        if (cls == null) results.add( new ImportError( staticImportEntry, -1 ) );
+
+        for (Method method : cls.getDeclaredMethods()) {
+            if ((method.getModifiers() | Modifier.STATIC) > 0) {
+                this.data.addImport(method.getName(), method);
+            }
+        }
+
+        for (Field field : cls.getFields()) {
+            if (field.isAccessible() && (field.getModifiers() | Modifier.STATIC) > 0) {
+                this.data.addImport(field.getName(), field);
+                return;
+            }
+        }
     }
 
     //    private Map staticFieldImports = new HashMap();

@@ -17,7 +17,6 @@
 package org.drools.rule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +29,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.util.ArrayUtils;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.DeclarationScopeResolver;
@@ -176,7 +176,14 @@ class LogicTransformer {
                             // to the same tree that has already been rewritten before.
                             ((VariableConstraint)constraint).setRestriction( restriction.getVariableRestriction() );
                         }
-                    }                    
+                    } else if (constraint instanceof MvelConstraint && ((MvelConstraint)constraint).isUnification()) {
+                        if( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
+                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint)constraint).getFieldExtractor(), pattern, false );
+                            pattern.addDeclaration(redeclaredDeclr);
+                        } else {
+                            throw new RuntimeException("???");
+                        }
+                    }
                     
                     if ( resolved != null && resolved != decl[i] && resolved.getPattern() != pattern ) {
                         constraint.replaceDeclaration( decl[i],

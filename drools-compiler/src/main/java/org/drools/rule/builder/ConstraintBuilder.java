@@ -5,21 +5,22 @@ import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.VariableConstraint;
 import org.drools.rule.constraint.BooleanConversionHandler;
-import org.drools.rule.constraint.MvelLiteralConstraint;
-import org.drools.rule.constraint.SoundexLiteralContraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.Restriction;
 import org.mvel2.DataConversion;
 import org.mvel2.ParserConfiguration;
 
 import java.util.Date;
-import java.util.Set;
 
 public class ConstraintBuilder {
 
@@ -32,15 +33,30 @@ public class ConstraintBuilder {
         }
     }
 
-    public static Constraint buildConstraint(RuleBuildContext context,
-                                             ValueType vtype,
-                                             FieldValue field,
-                                             String expr,
-                                             String value1,
-                                             String operator,
-                                             String value2,
-                                             InternalReadAccessor extractor,
-                                             LiteralRestrictionDescr restrictionDescr) {
+    public static Constraint buildVariableConstraint(RuleBuildContext context,
+                                                     String expr,
+                                                     Declaration[] declrations,
+                                                     String operator,
+                                                     InternalReadAccessor extractor,
+                                                     Restriction restriction) {
+        if (USE_MVEL_EXPRESSION) {
+            String packageName = context.getPkg().getName();
+            ParserConfiguration conf = getParserConfiguration(context);
+            return new MvelConstraint(conf, packageName, expr, operator, declrations, extractor);
+        } else {
+            return new VariableConstraint(extractor, restriction);
+        }
+    }
+
+    public static Constraint buildLiteralConstraint(RuleBuildContext context,
+                                                    ValueType vtype,
+                                                    FieldValue field,
+                                                    String expr,
+                                                    String value1,
+                                                    String operator,
+                                                    String value2,
+                                                    InternalReadAccessor extractor,
+                                                    LiteralRestrictionDescr restrictionDescr) {
         if (USE_MVEL_EXPRESSION) {
             return buildMVELConstraint(context, vtype, field, expr, value1, operator, value2, restrictionDescr);
         } else {
@@ -61,15 +77,16 @@ public class ConstraintBuilder {
                                           String rightValue,
                                           LiteralRestrictionDescr restrictionDescr) {
         String packageName = context.getPkg().getName();
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-        ParserConfiguration conf = data.getParserConfiguration();
-
-        if (operator.equals("soundslike")) {
-            return new SoundexLiteralContraint(conf, packageName, leftValue, operator, rightValue);
-        }
+        ParserConfiguration conf = getParserConfiguration(context);
 
         String mvelExpr = normalizeMVELExpression(vtype, field, expr, leftValue, operator, rightValue, restrictionDescr);
-        return new MvelLiteralConstraint(conf, packageName, vtype, mvelExpr, leftValue, operator, rightValue);
+
+        return new MvelConstraint(conf, packageName, mvelExpr, operator, null, null);
+    }
+
+    private static ParserConfiguration getParserConfiguration(RuleBuildContext context) {
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        return data.getParserConfiguration();
     }
 
     private static String normalizeMVELExpression(ValueType vtype,
@@ -89,6 +106,12 @@ public class ConstraintBuilder {
                 return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
             }
             return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
+        }
+        if (operator.equals("soundslike")) {
+            return "if (" + leftValue + " == null || " + rightValue + " == null) return false;\n" +
+                   "String soundex1 = soundex(" + leftValue + ");\n" +
+                   "if (soundex1 == null) return false;\n" +
+                   "return soundex1.equals(soundex(" + rightValue + "));";
         }
         return expr;
     }

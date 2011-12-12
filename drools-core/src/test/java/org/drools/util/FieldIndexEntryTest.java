@@ -16,6 +16,7 @@
 
 package org.drools.util;
 
+import org.drools.rule.constraint.MvelConstraint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,7 +55,7 @@ public class FieldIndexEntryTest {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
@@ -99,7 +100,7 @@ public class FieldIndexEntryTest {
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
@@ -155,7 +156,7 @@ public class FieldIndexEntryTest {
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
+                                                      MvelConstraint.INDEX_EVALUATOR );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 

@@ -1992,15 +1992,16 @@ public class MiscTest {
 
         final PersonInterface bill = new Person( "bill",
                                                  null,
-                                                 12 );
+                                                 42 );
         bill.setBigDecimal( new BigDecimal( "42" ) );
 
         final PersonInterface ben = new Person( "ben",
                                                 null,
-                                                13 );
+                                                43 );
         ben.setBigDecimal( new BigDecimal( "43" ) );
 
         session.insert( bill );
+        session.insert(new Cheese("gorgonzola", 43));
         session.insert( ben );
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
@@ -2992,7 +2993,9 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
-            e.getCause().getMessage().contains( "this should throw an exception" );
+            Throwable root = e;
+            while (root.getCause() != null) root = root.getCause();
+            root.getMessage().contains( "this should throw an exception" );
         }
     }
 

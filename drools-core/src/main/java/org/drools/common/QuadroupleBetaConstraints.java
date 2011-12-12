@@ -36,6 +36,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.IndexableConstraint;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -285,35 +286,35 @@ public class QuadroupleBetaConstraints
 
         final List list = new ArrayList( 2 );
         if ( this.indexed0 ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint0;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator() );
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint0;
+            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                     indexableConstraint.getRequiredDeclarations()[0],
+                                                     indexableConstraint.getIndexEvaluator() );
             list.add( index );
 
         }
 
         if ( this.indexed1 ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint1;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator() );
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint1;
+            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                     indexableConstraint.getRequiredDeclarations()[0],
+                                                     indexableConstraint.getIndexEvaluator() );
             list.add( index );
         }
 
         if ( this.indexed2 ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint2;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator() );
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint2;
+            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                     indexableConstraint.getRequiredDeclarations()[0],
+                                                     indexableConstraint.getIndexEvaluator() );
             list.add( index );
         }
 
         if ( this.indexed3 ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) this.constraint3;
-            final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
-                                                     variableConstraint.getRequiredDeclarations()[0],
-                                                     variableConstraint.getEvaluator() );
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint3;
+            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
+                                                     indexableConstraint.getRequiredDeclarations()[0],
+                                                     indexableConstraint.getIndexEvaluator() );
             list.add( index );
         }
 
