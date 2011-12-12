@@ -17,11 +17,21 @@
 
   <build>
     <testResources>
+      <!--  for marshalling tests -->
         <testResource>
-            <!-- neccesary in order to apply database/H2 properties -->
             <directory>src/test/resources</directory>
             <filtering>true</filtering>
+        <excludes>
+            <exclude>**/*.h2.db</exclude>
+        </excludes>
         </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+            <include>**/*.h2.db</include>
+        </includes>
+      </testResource>
     </testResources>
   
     <plugins>

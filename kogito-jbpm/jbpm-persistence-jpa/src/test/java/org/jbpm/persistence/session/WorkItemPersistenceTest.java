@@ -6,9 +6,7 @@ import static org.junit.Assert.*;
 
 import java.io.Reader;
 import java.io.StringReader;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +25,7 @@ import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.PersistenceUtil;
@@ -52,6 +51,7 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.StartNode;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -80,7 +80,12 @@ public class WorkItemPersistenceTest {
     public void tearDown() throws Exception {
        PersistenceUtil.tearDown(context); 
     }
-    
+   
+    @AfterClass
+    public static void compareMarshalledData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
+    }
+
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );
     }

@@ -2,7 +2,6 @@ package org.jbpm.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +24,6 @@ import junit.framework.Assert;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -52,7 +50,6 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.map.impl.JpaBasedPersistenceTest;
 import org.jbpm.persistence.session.objects.MyEntity;
 import org.jbpm.persistence.session.objects.MyEntityMethods;
 import org.jbpm.persistence.session.objects.MyEntityOnlyFields;
@@ -79,8 +76,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-
 public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
     private static Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
@@ -97,6 +92,11 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
     @After
     public void tearDown() throws Exception {
         PersistenceUtil.tearDown(context);
+    }
+
+    @AfterClass
+    public static void compareMarshalledData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @Test

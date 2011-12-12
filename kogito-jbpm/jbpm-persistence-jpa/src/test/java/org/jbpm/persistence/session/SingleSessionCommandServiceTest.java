@@ -1,7 +1,6 @@
 package org.jbpm.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
-import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +23,7 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
@@ -55,6 +55,7 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 public class SingleSessionCommandServiceTest extends JbpmTestCase {
@@ -80,6 +81,11 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
     @After
     public void tearDown() {
         PersistenceUtil.tearDown(context);
+    }
+
+    @AfterClass
+    public static void compareMarshallingData() throws Exception {
+       MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @Test

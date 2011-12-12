@@ -16,10 +16,18 @@
 		<level value="DEBUG"/>
 	</logger>
 	
-	<logger name="org.drools">
-		<level value="INFO"/>
+    <!-- bitronix -->	
+    <logger name="bitronix.tm.twopc.Preparer">
+        <level value="ERROR"/>
 	</logger>
 	
+    <!--  hibernate  -->	
+    <logger name="org.hibernate">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.search">
+        <level value="WARN"/>
+    </logger>
     <logger name="org.hibernate.cfg.annotations">
         <level value="WARN"/>
     </logger>
@@ -33,11 +41,6 @@
         <level value="WARN"/>
     </logger>
 
-    <!--  bitronix -->
-    <logger name="bitronix.twm.twopc.Preparer">
-        <level value="ERROR"/>
-    </logger>
-    
 	<root>
 		<priority value="INFO"/>
 		<appender-ref ref="CONSOLE"/>
