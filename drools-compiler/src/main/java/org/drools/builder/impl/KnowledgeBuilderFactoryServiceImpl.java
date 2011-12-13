@@ -39,12 +39,20 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        return new KnowledgeBuilderImpl( new PackageBuilder( ((KnowledgeBaseImpl) kbase).ruleBase ) );
+        if ( kbase != null ) {
+            return new KnowledgeBuilderImpl( new PackageBuilder( ((KnowledgeBaseImpl) kbase).ruleBase ) );
+        } else {
+            return new KnowledgeBuilderImpl( new PackageBuilder() );
+        }
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase,
                                                 KnowledgeBuilderConfiguration conf) {
-        return new KnowledgeBuilderImpl( new PackageBuilder( ((KnowledgeBaseImpl) kbase).ruleBase, (PackageBuilderConfiguration) conf ) );
+        if ( kbase != null ) {
+            return new KnowledgeBuilderImpl( new PackageBuilder( ((KnowledgeBaseImpl) kbase).ruleBase, (PackageBuilderConfiguration) conf ) );
+        } else {
+            return new KnowledgeBuilderImpl(new PackageBuilder( (PackageBuilderConfiguration) conf ) );            
+        }        
     }
 
     public JaxbConfiguration newJaxbConfiguration(Options xjcOpts,

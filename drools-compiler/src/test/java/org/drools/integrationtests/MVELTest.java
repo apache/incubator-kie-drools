@@ -54,6 +54,7 @@ import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.type.DateFormatsImpl;
 import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 
 public class MVELTest {
     @Test
@@ -867,5 +868,17 @@ public class MVELTest {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             null );
+    }
+    
+    @Test
+    public void test1() {
+    	ParserContext pc = new ParserContext();
+    	pc.addInput("x", String.class);
+    	pc.setStrongTyping(true);
+    	Object o = MVEL.compileExpression("x.startsWith('d')", pc);
+    	Map vars = new HashMap();
+    	vars.put("x", "d");
+    	MVEL.executeExpression(o, vars);
+    	System.out.println( o );
     }
 }

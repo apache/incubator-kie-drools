@@ -67,6 +67,7 @@ public class JavaConsequenceBuilder
             return;
         }
         fixedConsequence = KnowledgeHelperFixer.fix( fixedConsequence );
+        
 
         Map<String, Object> map = createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
 

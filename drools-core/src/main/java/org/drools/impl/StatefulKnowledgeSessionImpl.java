@@ -32,6 +32,7 @@ import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.common.AbstractWorkingMemory;
@@ -770,7 +771,7 @@ public class StatefulKnowledgeSessionImpl
                                                                      arguments ) );
     }
 
-    private KnowledgeCommandContext commandContext = new KnowledgeCommandContext( new ContextImpl( "ksession",
+    private KnowledgeCommandContext commandContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
                                                                                                    null ),
                                                                                   null,
                                                                                   this.kbase,
@@ -795,7 +796,7 @@ public class StatefulKnowledgeSessionImpl
         }
 
         if ( !(command instanceof BatchExecutionCommandImpl) ) {
-            return (T) ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
+            return (T) ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
                                                                                         null,
                                                                                         this.kbase,
                                                                                         this,
@@ -806,7 +807,7 @@ public class StatefulKnowledgeSessionImpl
 
         try {
             session.startBatchExecution( results );
-            ((GenericCommand) command).execute( new KnowledgeCommandContext( context,
+            ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
                                                                              null,
                                                                              this.kbase,
                                                                              this,
