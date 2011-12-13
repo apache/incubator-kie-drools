@@ -34,9 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This object 
- * 
- *
+ * This object serves as a proxy for the EntityManagerFactory and the EntityManager instances.
+ * </p>
+ * It ensures that when objects that contain marshalled data are persisted, a new MarshalledData
+ * object is also persisted with the most recent snapshot of the marshalled data. A new MarshalledData
+ * is only made when the marshalled data has changed.  
  */
 public class EntityManagerFactoryProxy implements InvocationHandler {
 
@@ -44,14 +46,15 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
     
     private EntityManagerFactory emf;
     private EntityManager em;
+   
+    // ensure that Hibernate does not proxy the Map implementation objects
+    protected transient static ThreadLocal<Map<SessionInfo, byte []>> managedSessionInfoDataMap;
+    protected transient static ThreadLocal<Map<WorkItemInfo, byte []>> managedWorkItemInfoDataMap;
+    protected transient static ThreadLocal<Map<Object, byte []>> managedProcessInstanceInfoDataMap;
     
-    protected static ThreadLocal<HashMap<SessionInfo, byte []>> managedSessionInfoDataMap;
-    protected static ThreadLocal<HashMap<WorkItemInfo, byte []>> managedWorkItemInfoDataMap;
-    protected static ThreadLocal<HashMap<Object, byte []>> managedProcessInstanceInfoDataMap;
-    
-    protected static ThreadLocal<HashMap<Integer, byte[]>> sessionMarshalledDataMap;
-    protected static ThreadLocal<HashMap<Long, byte[]>> workItemMarshalledDataMap;
-    protected static ThreadLocal<HashMap<Long, byte[]>> processInstanceInfoMarshalledDataMap;
+    protected transient static ThreadLocal<Map<Integer, byte[]>> sessionMarshalledDataMap;
+    protected transient static ThreadLocal<Map<Long, byte[]>> workItemMarshalledDataMap;
+    protected transient static ThreadLocal<Map<Long, byte[]>> processInstanceInfoMarshalledDataMap;
         
     /**
      * This method creates a proxy for either a {@link EntityManagerFactory} or a {@link EntityManager} instance. 
@@ -118,8 +121,8 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         
         if( args[0] instanceof SessionInfo ) { 
             if( managedSessionInfoDataMap == null ) { 
-                managedSessionInfoDataMap = new ThreadLocal<HashMap<SessionInfo, byte[]>>();
-                sessionMarshalledDataMap = new ThreadLocal<HashMap<Integer, byte[]>>();
+                managedSessionInfoDataMap = new ThreadLocal<Map<SessionInfo, byte[]>>();
+                sessionMarshalledDataMap = new ThreadLocal<Map<Integer, byte[]>>();
             }
             if( managedSessionInfoDataMap.get() == null ) {
                 managedSessionInfoDataMap.set(new HashMap<SessionInfo, byte[]>());
@@ -128,8 +131,8 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
         else if( args[0] instanceof WorkItemInfo ) { 
            if( managedWorkItemInfoDataMap == null ) {  
-               managedWorkItemInfoDataMap = new ThreadLocal<HashMap<WorkItemInfo, byte[]>>();
-               workItemMarshalledDataMap = new ThreadLocal<HashMap<Long, byte[]>>();
+               managedWorkItemInfoDataMap = new ThreadLocal<Map<WorkItemInfo, byte[]>>();
+               workItemMarshalledDataMap = new ThreadLocal<Map<Long, byte[]>>();
            }
            if( managedWorkItemInfoDataMap.get() == null ) { 
                managedWorkItemInfoDataMap.set(new HashMap<WorkItemInfo, byte[]>());
@@ -138,8 +141,8 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
         else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(args[0].getClass().getName()) ) { 
             if( managedProcessInstanceInfoDataMap == null ) { 
-                managedProcessInstanceInfoDataMap = new ThreadLocal<HashMap<Object, byte[]>>();
-                processInstanceInfoMarshalledDataMap = new ThreadLocal<HashMap<Long, byte[]>>();
+                managedProcessInstanceInfoDataMap = new ThreadLocal<Map<Object, byte[]>>();
+                processInstanceInfoMarshalledDataMap = new ThreadLocal<Map<Long, byte[]>>();
             }
             if( managedProcessInstanceInfoDataMap.get() == null ) { 
                 managedProcessInstanceInfoDataMap.set(new HashMap<Object, byte[]>());
@@ -173,14 +176,6 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             String testMethodName = MarshallingTestUtil.getTestMethodName();
             if( testMethodName != null ) { 
                 merge(testMethodName, result);
-            }
-            return result;
-        }
-        else if( "joinTransaction".equals(methodName) && args == null) { 
-            em.joinTransaction();
-            String testMethodName = MarshallingTestUtil.getTestMethodName();
-            if( testMethodName != null ) { 
-                updateManagedObjects(testMethodName, em); 
             }
             return result;
         }
@@ -306,6 +301,10 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
     }
 
+    /**
+     * Add the object to the internal map of managed objects. 
+     * @param result The objec
+     */
     private void find(Object result) { 
         if( result == null ) { 
             return;
@@ -334,6 +333,14 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
     }
 
+    /**
+     * This is the method that checks whether or not (managed) objects that (can) contain
+     * marshalled data, have marshalled data fields that have been updated. If so, this method
+     * (and the methods it calls) create a new MarshalledData object to store a snapshot of
+     * the new marshalled data and persist it. 
+     * @param testMethodName The name of the test method in which the marshalled data has been created.
+     * @param em An EntityManager in order to persist the MarshalledData object. 
+     */
     protected static void updateManagedObjects(String testMethodName, EntityManager em) {
         // Update the marshalled data belonging to managed SessionInfo objects
         if( managedSessionInfoDataMap != null ) {  

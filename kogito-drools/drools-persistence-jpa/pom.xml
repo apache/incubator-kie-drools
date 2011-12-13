@@ -19,6 +19,16 @@
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
+        <excludes>
+            <exclude>**/*.h2.db</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+        <includes>
+            <include>**/*.h2.db</include>
+        </includes>
       </testResource>
     </testResources>
     

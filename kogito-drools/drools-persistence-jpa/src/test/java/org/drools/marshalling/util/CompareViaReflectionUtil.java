@@ -20,27 +20,44 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLongArray;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.common.AbstractRuleBase;
+import org.drools.common.AbstractWorkingMemory;
+import org.drools.core.util.AbstractHashTable;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.time.impl.JDKTimerService;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class CompareViaReflectionUtil {
 
     private static Logger logger = LoggerFactory.getLogger(CompareViaReflectionUtil.class);
 
-    public static HashSet<Object> seenObjects = new HashSet<Object>();
+    public static IdentityHashMap<Object, Object> seenObjects = null;
     private static Class<?> OBJECT_ARRAY_CLASS = (new Object[0]).getClass();
 
     private static int TO_ARRAY = 0;
@@ -57,8 +74,70 @@ public class CompareViaReflectionUtil {
         javaPackages.add(BlockingQueue.class.getPackage());
         // java.util.concurrent.atomic
         javaPackages.add(AtomicInteger.class.getPackage());
+        // java.util.concurrent.atomic
+//        javaPackages.add(ReentrantLock.class.getPackage());
         javaPackages.add(Long.class.getPackage());
-        javaPackages.add(BlockingQueue.class.getPackage());
+    }
+
+    private static HashMap<Class<?>, Integer> arrClassMap = new HashMap<Class<?>, Integer>();
+    {
+        arrClassMap.put((new byte[0]).getClass(), BYTE);
+        arrClassMap.put((new short[0]).getClass(), SHORT);
+        arrClassMap.put((new int[0]).getClass(), INT);
+        arrClassMap.put((new long[0]).getClass(), LONG);
+        arrClassMap.put((new float[0]).getClass(), FLOAT);
+        arrClassMap.put((new double[0]).getClass(), DOUBLE);
+        arrClassMap.put((new boolean[0]).getClass(), BOOLEAN);
+        arrClassMap.put((new char[0]).getClass(), CHAR);
+        arrClassMap.put((new Object[0]).getClass(), OBJECT);
+    }
+
+
+    private static HashSet<Field> doNotCompareFieldsMap = new HashSet<Field>();
+    static {
+        try {
+            doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(KnowledgeBaseImpl.class.getDeclaredField("mappedKnowledgeBaseListeners"));
+            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("workingMemoryCounter"));
+            doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("id"));
+            doNotCompareFieldsMap.add(WorkItemImpl.class.getDeclaredField("processInstanceId"));
+            doNotCompareFieldsMap.add(ClassFieldAccessorCache.class.getDeclaredField("classLoader"));
+            doNotCompareFieldsMap.add(AbstractWorkingMemory.class.getDeclaredField("globalResolver"));
+            doNotCompareFieldsMap.add(JDKTimerService.class.getDeclaredField("scheduler"));
+            doNotCompareFieldsMap.add(AbstractRuleBase.class.getDeclaredField("classFieldAccessorCache"));
+        } catch (Exception e) {
+            logger.error(e.getClass().getSimpleName() + ": " + e.getMessage());
+            // do nothing
+        }
+    }
+
+    private final static int BYTE    = 0;
+    private final static int SHORT   = 1;
+    private final static int INT     = 2;
+    private final static int LONG    = 3;
+    private final static int FLOAT   = 4;
+    private final static int DOUBLE  = 5;
+    private final static int BOOLEAN = 6;
+    private final static int CHAR    = 7;
+    private final static int OBJECT  = 8;
+    private final static int NULL    = 9;
+
+    @SuppressWarnings("rawtypes")
+    private static HashSet<Class> atomicPrimitiveClasses = new HashSet<Class>();
+    static { 
+        atomicPrimitiveClasses.add(AtomicBoolean.class);
+        atomicPrimitiveClasses.add(AtomicInteger.class);
+        atomicPrimitiveClasses.add(AtomicLong.class);
+        atomicPrimitiveClasses.add(AtomicReference.class);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static HashSet<Class> atomicArrayClasses = new HashSet<Class>();
+    static { 
+        atomicArrayClasses.add(AtomicIntegerArray.class);
+        atomicArrayClasses.add(AtomicLongArray.class);
+        atomicArrayClasses.add(AtomicReferenceArray.class);
     }
 
     /**
@@ -69,7 +148,8 @@ public class CompareViaReflectionUtil {
      * @return Whether or not the two objects are equal.
      */
     public static boolean compareInstances(Object objA, Object objB  ) { 
-       return compareInstances(null, objA, objB); 
+        seenObjects = new IdentityHashMap<Object, Object>();
+        return compareInstances(null, objA, objB); 
     }
     
     /**
@@ -97,10 +177,20 @@ public class CompareViaReflectionUtil {
      *      </ul>
      * </ul>
      * And that is exactly what we do in this method! We recursively step through the object tree which 
-     * has as it's root node, the class defined by the initial objects given to this method.<br/>
-     * <br/>
-     * <b>Note</b>: This method as a few weaknesses:<ul>
-     * <li>If the object tree contains objects that extend collection objects (HashMap, List, etc.), this method might not compare them 
+     * has, as its root node, the class defined by the initial objects given to this method.
+     * </p>
+     * Lastly, you might see the following output if the TRACE level is set for logging out of this object:
+     * <pre>
+     *  0   : objA and objB are both null
+     *  X   : objA and objB are unequal
+     *  =   : objA and objB are equal
+     *  ==  : objA and objB are the <i>same</i> instance (of the same object)
+     *  (=) : objA and objB are class objects and thus both equal and the same
+     *  %   : objA and objB are not being compared
+     *  !   : objA has already been compared and will not be compared again 
+     *         in order to avoid cycles in the object tree</pre>
+     * <b>Note</b>: This method has a few weaknesses:<ul>
+     * <li>If the object tree contains objects that <i>extend</i> collection objects (HashMap, List, etc.), this method might not compare them 
      * correctly or efficiently. The logic to do this fairly trivial but just hasn't been added yet.</li>
      * <li>If the object tree contains objects that are "home made" collection objects, this method might
      * also not compare these correctly or efficiently. The logic to do this is non-trivial and to some degree 
@@ -149,11 +239,15 @@ public class CompareViaReflectionUtil {
             boolean primitiveBasedObjectOrCollection = false;
             if( javaPackages.contains(objClass.getPackage()) ) { 
                 primitiveBasedObjectOrCollection = true;
-                // OCRAM: Al die stomme drools impl's ook hier behandelen.. 
                 same = comparePrimitiveBasedOrCollectionInstances(context, objA, objB);
             }
+            else if( objA instanceof AbstractHashTable ) { 
+                primitiveBasedObjectOrCollection = true;
+                same = compareDroolsSets(context, objA, objB);
+            }
             else if( objA.getClass().isArray() ) { 
-                same = compareArrays(objA, objB);
+                primitiveBasedObjectOrCollection = true;
+                same = compareArrays(context, objA, objB);
             }
             else {
                 // Check if it's an enum
@@ -169,7 +263,7 @@ public class CompareViaReflectionUtil {
             }
 
             if( ! primitiveBasedObjectOrCollection ) { 
-                if( seenObjects.add(objA) ) { 
+                if( seenObjects.put(objA, objA) == null ) { 
                     same = compareInstancesOfSameClass(context, objA, objB);
                     if( !same ) { 
                         seenObjects.remove(objA);
@@ -191,31 +285,7 @@ public class CompareViaReflectionUtil {
         return same;
     }
 
-    private final static int BYTE    = 0;
-    private final static int SHORT   = 1;
-    private final static int INT     = 2;
-    private final static int LONG    = 3;
-    private final static int FLOAT   = 4;
-    private final static int DOUBLE  = 5;
-    private final static int BOOLEAN = 6;
-    private final static int CHAR    = 7;
-    private final static int OBJECT  = 8;
-    private final static int NULL    = 9;
-    
-    private static HashMap<Class<?>, Integer> arrClassMap = new HashMap<Class<?>, Integer>();
-    {
-        arrClassMap.put((new byte[0]).getClass(), BYTE);
-        arrClassMap.put((new short[0]).getClass(), SHORT);
-        arrClassMap.put((new int[0]).getClass(), INT);
-        arrClassMap.put((new long[0]).getClass(), LONG);
-        arrClassMap.put((new float[0]).getClass(), FLOAT);
-        arrClassMap.put((new double[0]).getClass(), DOUBLE);
-        arrClassMap.put((new boolean[0]).getClass(), BOOLEAN);
-        arrClassMap.put((new char[0]).getClass(), CHAR);
-        arrClassMap.put((new Object[0]).getClass(), OBJECT);
-    }
-    
-    public static boolean compareArrays(Object objA, Object objB) { 
+    public static boolean compareArrays(DebugContext context, Object objA, Object objB) { 
         
         // Determine array type class
         Object classTypeValue = arrClassMap.get(objA.getClass());
@@ -269,7 +339,10 @@ public class CompareViaReflectionUtil {
             else { 
                 same = true;
                 for( int i = 0; same && i < lengthA; ++i ) { 
-                    same = compareInstances(Array.get(objA, i), Array.get(objB, i));
+                    DebugContext subContext = context.clone();
+                    subContext.level = context.level + 1;
+                    subContext.name = context.name + ": (" + i + ") ";
+                    same = compareInstances(subContext, Array.get(objA, i), Array.get(objB, i));
                 }
             }
             break;
@@ -298,30 +371,134 @@ public class CompareViaReflectionUtil {
     private static boolean compareInstancesOfSameClass(DebugContext context, Object objA, Object objB) { 
         boolean same = false;
         try { 
-            Field [] fields = objA.getClass().getDeclaredFields();
-            if( fields.length == 0 ) { 
-                same = true;
-            }
-            else { 
-                same = true;
-                int i = 0;
-                for( ; same && i < fields.length; ++i ) { 
-                    DebugContext subContext = context.clone();
-                    subContext.level = context.level + 1;
-                    subContext.name = context.name + ": " + fields[i].getName() + " > ";
-
-                    fields[i].setAccessible(true);
-                    Object subObjA = fields[i].get(objA);
-                    Object subObjB = fields[i].get(objB);
-                    same = compareInstances(subContext, subObjA, subObjB);
+            Class<?> objClass = objA.getClass();
+            do {
+                Field [] fields = objClass.getDeclaredFields();
+                if( fields.length == 0 ) { 
+                    same = true;
                 }
-            }
+                else { 
+                    same = true;
+                    for( int i = 0; same && i < fields.length; ++i ) { 
+                        DebugContext subContext = context.clone();
+                        subContext.level = context.level + 1;
+                        subContext.name = context.name + ": " + fields[i].getName() + " > ";
+
+                        if( Modifier.isTransient(fields[i].getModifiers()) ||
+                            doNotCompareFieldsMap.contains(fields[i]) ) {   
+                            if( context.print ) { 
+                                logger.trace( context.name + ": " + fields[i].getName() + " %" );
+                            }
+                            continue; 
+                        }
+
+                        fields[i].setAccessible(true);
+                        Object subObjA = fields[i].get(objA);
+                        Object subObjB = fields[i].get(objB);
+                        same = compareInstances(subContext, subObjA, subObjB);
+                    }
+                }
+                objClass = objClass.getSuperclass();
+            } while( objClass != null && same);
             context.name += ": " + (same == true ? "=" : "X");
         }
         catch( Exception e ) { 
             same = false;
-            Assert.fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
+            e.printStackTrace();
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
         }
+        return same;
+    }
+
+
+    private static boolean compareDroolsSets(DebugContext context, Object objA, Object objB) { 
+        boolean same = true;
+
+        int length = 0;
+        try { 
+            Method sizeMethod = AbstractHashTable.class.getDeclaredMethod("size", (Class []) null);
+            Integer sizeA = (Integer) sizeMethod.invoke(objA, (Object []) null);
+            Integer sizeB = (Integer) sizeMethod.invoke(objB, (Object []) null);
+        
+            if( ! sizeA.equals(sizeB) ) { 
+                return false;
+            }
+            length = sizeA.intValue();
+        }
+        catch( Exception e ) { 
+            same = false;
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+       
+        if( length == 0 ) { 
+            return true;
+        }
+       
+        Method toArrayMethod = null;
+        try { 
+            toArrayMethod = AbstractHashTable.class.getDeclaredMethod("toArray", (Class []) null);
+        }
+        catch( Exception e ) { 
+            same = false;
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+        
+        if( toArrayMethod == null ) { 
+            fail("Could not retrieve toArray() method for " + objA.getClass().getName());
+        }
+        
+        Object [] arrayA = null;
+        Object [] arrayB = null;
+        
+        try {
+            arrayA = (Object []) toArrayMethod.invoke(objA, (Object []) null);
+            arrayB = (Object []) toArrayMethod.invoke(objB, (Object []) null);
+        } catch (Exception e) {
+            same = false;
+            fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+
+        if( arrayA == null && arrayB == null ) { 
+            return true;
+        }
+        else if( arrayA == null || arrayB == null ) { 
+            return false; 
+        }
+
+        for( int a = 0; a < length; ++a ) { 
+            boolean elementIsSame = false;
+            for( int b = 0; b < length; ++b ) { 
+                Object subObjA = arrayA[a];
+                Object subObjB = arrayA[b];
+                try { 
+                    Method getValueMethod = subObjA.getClass().getMethod("getValue", (Class []) null);
+                    subObjA = getValueMethod.invoke(subObjA, (Object [])null);
+                    subObjB = getValueMethod.invoke(subObjB, (Object [])null);
+                }
+                catch( Exception e ) { 
+                    e.printStackTrace();
+                    fail("Could not retrieve getValue() method for " + subObjA.getClass().getName());
+                }
+                
+                DebugContext entryContext = context.clone();
+                String name = context.name + ": ";
+                entryContext.level = context.level + 1;
+                entryContext.name = name + "<entry> ";
+                entryContext.print = false;
+                if( compareInstances(entryContext, subObjA, subObjB) ) { 
+                    logger.trace(entryContext.name);
+                    elementIsSame = true;
+                    break;
+                }
+            }
+
+            if( ! elementIsSame ) { 
+                // a matching element was not found in arrayB
+                same = false;
+                break;
+            } 
+        }
+
         return same;
     }
 
@@ -338,7 +515,8 @@ public class CompareViaReflectionUtil {
     private static boolean comparePrimitiveBasedOrCollectionInstances(DebugContext context, Object objA, Object objB) { 
         boolean same = false;
 
-        Method [] methods = getMethodToRetrieveCollection(objA);
+        Class<?> objClass = objA.getClass();
+        Method [] methods = getMethodToRetrieveCollection(objClass);
         try { 
             if( methods[TO_ARRAY] != null ) { 
                 same = compareArrayBasedObjects(context, methods[TO_ARRAY], objA, objB);
@@ -346,22 +524,90 @@ public class CompareViaReflectionUtil {
             else if( methods[ENTRY_SET] != null) {
                 same = compareEntrySetBasedObjects(context, methods[ENTRY_SET], objA, objB);
             }
-            else if( objA.getClass().isArray() ) { 
-                same = compareArrays(objA, objB);
+            else if( objClass.isArray() ) { 
+                same = compareArrays(context, objA, objB);
             }
-            else { 
+            else if( atomicPrimitiveClasses.contains(objClass) ) { 
+                same = compareAtomicPrimitives(objA, objB);
+            }
+            else if( atomicArrayClasses.contains(objClass) ) { 
+                same = compareAtomicArrays(context, objA, objB);
+            }
+            else {
                 same = objA.equals(objB);
             }
             context.name += ": " + (same == true ? "=" : "X");
         }
         catch( Exception e ) { 
+            e.printStackTrace();
             same = false;
-            Assert.fail(e.getClass().getSimpleName() + ":" + e.getMessage() );
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
         }
 
         return same;
     }
 
+    protected static boolean compareAtomicPrimitives(Object objA, Object objB) { 
+        boolean same = false;
+        try {
+            Method getMethod = objA.getClass().getMethod("get", new Class[0]);
+            Object valA = getMethod.invoke(objA, (Object []) null);
+            Object valB = getMethod.invoke(objB, (Object []) null);
+            if( valA.equals(valB) ) { 
+                same = true;
+            }
+        }
+        catch( Exception e ) { 
+            e.printStackTrace();
+            same = false;
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+        return same;
+    }
+   
+    protected static boolean compareAtomicArrays(DebugContext context, Object objA, Object objB) { 
+        boolean same = false;
+        int length = 0;
+        try {
+            Method lengthMethod = objA.getClass().getMethod("length", new Class[0]);
+            Object valA = lengthMethod.invoke(objA, (Object []) null);
+            Object valB = lengthMethod.invoke(objB, (Object []) null);
+            if( valA.equals(valB) ) { 
+                same = true;
+                length = (Integer) valA;
+            }
+            else { 
+                return false;
+            }
+        }
+        catch( Exception e ) { 
+            same = false;
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+
+        try {
+            Method getMethod = objA.getClass().getMethod("get", new Class[] { int.class } );
+            for( int i = 0; i < length && same; ++i ) { 
+                Object subObjA = getMethod.invoke(objA, i);
+                Object subObjB = getMethod.invoke(objB, i);
+
+                if( subObjA == null && subObjB == null ) { 
+                    continue;
+                }
+
+                DebugContext subContext = context.clone();
+                subContext.level = context.level + 1;
+                subContext.name = context.name + ": (" + i + ") ";
+                same = compareInstances(subContext, subObjA, subObjB);
+            }
+        } catch (Exception e) {
+            same = false;
+            Assert.fail(e.getClass().getSimpleName() + ": " + e.getMessage() );
+        }
+
+        return same;
+    }
+    
     /**
      * Collection based objects (Array based or Set based), should basically always implement
      * one of two methods:<ul>
@@ -374,27 +620,30 @@ public class CompareViaReflectionUtil {
      * @param objA The object that we want to retrieve this method for.
      * @return The requested Method.
      */
-    private static Method [] getMethodToRetrieveCollection(Object objA) { 
+    private static Method [] getMethodToRetrieveCollection(Class<?> objClass) { 
         Method [] methods = new Method[2];
 
-        Class<?> objClass = objA.getClass(); 
-        Method [] objMethods = objClass.getDeclaredMethods();
-        for( int m = 0; m < objMethods.length; ++m ) {
-            if(objMethods[m].getName().equals("toArray") 
-                    && objMethods[m].getParameterTypes().length == 0 
-                    && objMethods[m].getReturnType().equals(OBJECT_ARRAY_CLASS) ) {
-                methods[TO_ARRAY] = objMethods[m];
-                methods[TO_ARRAY].setAccessible(true);
-                break;
+        do { 
+            Method [] objMethods = objClass.getDeclaredMethods();
+            for( int m = 0; m < objMethods.length; ++m ) {
+                if(objMethods[m].getName().equals("toArray") 
+                        && objMethods[m].getParameterTypes().length == 0 
+                        && objMethods[m].getReturnType().equals(OBJECT_ARRAY_CLASS) ) {
+                    methods[TO_ARRAY] = objMethods[m];
+                    methods[TO_ARRAY].setAccessible(true);
+                    break;
+                }
+                else if(objMethods[m].getName().equals("entrySet") 
+                        && objMethods[m].getParameterTypes().length == 0 
+                        && objMethods[m].getReturnType().equals(Set.class) ) {
+                    methods[ENTRY_SET] = objMethods[m];
+                    methods[ENTRY_SET].setAccessible(true);
+                    break;
+                }
             }
-            else if(objMethods[m].getName().equals("entrySet") 
-                    && objMethods[m].getParameterTypes().length == 0 
-                    && objMethods[m].getReturnType().equals(Set.class) ) {
-                methods[ENTRY_SET] = objMethods[m];
-                methods[ENTRY_SET].setAccessible(true);
-                break;
-            }
-        }
+            objClass = objClass.getSuperclass();
+        } while( objClass != null && methods[TO_ARRAY] == null && methods[ENTRY_SET] == null );
+        
         return methods;
     }
 
@@ -436,14 +685,22 @@ public class CompareViaReflectionUtil {
                 if( ! isSet ) { 
                     // order matters, compare element a from both arrays
                     Object subObjB = arrayB[a];
-                    same = compareInstances(context, subObjA, subObjB);
+                    
+                    DebugContext subContext = context.clone();
+                    subContext.level = context.level + 1;
+                    subContext.name = context.name + ": " + "<elem> ";
+                    same = compareInstances(subContext, subObjA, subObjB);
                 }
                 else { 
                     // order doesn't matter, check if a matching element exists in arrayB
                     boolean elementIsSame = false;
                     for( int b = 0; ! elementIsSame && b < arrayB.length; ++b ) { 
                         Object subObjB = arrayB[b];
-                        elementIsSame = compareInstances(context, subObjA, subObjB);
+                        
+                        DebugContext subContext = context.clone();
+                        subContext.level = context.level + 1;
+                        subContext.name = context.name + ": " + "<elem> ";
+                        elementIsSame = compareInstances(subContext, subObjA, subObjB);
                     }
                     if( elementIsSame == false ) { 
                        same = false; 
@@ -471,41 +728,40 @@ public class CompareViaReflectionUtil {
         else if( entrySetA == null || entrySetB == null ) { 
             return false;
         }
-        else { 
-            if( entrySetA.size() != entrySetB.size() ) { 
-                return false;
-            }
-            if( entrySetA.size() == 0 ) { 
-                return true;
-            }
+        
+        if( entrySetA.size() != entrySetB.size() ) { 
+            return false;
+        }
+        if( entrySetA.size() == 0 ) { 
+            return true;
+        }
 
-            // Check content
-            for( Entry<?, ?> entryA : entrySetA ) { 
-                boolean elementIsSame = false;
+        // Check content
+        for( Entry<?, ?> entryA : entrySetA ) { 
+            boolean elementIsSame = false;
 
-                Object keyA = entryA.getKey();
-                for( Entry<?, ?> entryB : entrySetB ) { 
-                    Object keyB = entryB.getKey();
-                    DebugContext entryContext = context.clone();
+            Object keyA = entryA.getKey();
+            for( Entry<?, ?> entryB : entrySetB ) { 
+                Object keyB = entryB.getKey();
+                DebugContext entryContext = context.clone();
 
-                    String name = context.name + ": ";
-                    entryContext.level = context.level + 1;
-                    entryContext.name = name + "<key> ";
-                    entryContext.print = false;
-                    if( compareInstances(entryContext, keyA, keyB) ) { 
-                        logger.trace( entryContext.name );
-                        entryContext.name = name + "<entry> ";
-                        entryContext.print = true;
-                        elementIsSame = compareInstances(entryContext, entryA.getValue(), entryB.getValue());
-                        break;
-                    }
-                }
-
-                if( ! elementIsSame ) { 
-                    // a matching element was not found in arrayB
-                    same = false;
+                String name = context.name + ": ";
+                entryContext.level = context.level + 1;
+                entryContext.name = name + "<key> ";
+                entryContext.print = false;
+                if( compareInstances(entryContext, keyA, keyB) ) { 
+                    logger.trace( entryContext.name );
+                    entryContext.name = name + "<entry> ";
+                    entryContext.print = true;
+                    elementIsSame = compareInstances(entryContext, entryA.getValue(), entryB.getValue());
                     break;
                 }
+            }
+
+            if( ! elementIsSame ) { 
+                // a matching element was not found in arrayB
+                same = false;
+                break;
             }
         }
 

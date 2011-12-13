@@ -6,15 +6,21 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Iterator;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.transaction.Status;
+import javax.transaction.Synchronization;
 import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import bitronix.tm.BitronixTransaction;
+import bitronix.tm.BitronixTransactionManager;
 
 public class UserTransactionProxy implements InvocationHandler {
 
@@ -66,6 +72,20 @@ public class UserTransactionProxy implements InvocationHandler {
 
         logger.trace(methodName);
         if( "commit".equals(methodName) && args == null) { 
+            BitronixTransaction bt = ((BitronixTransactionManager) ut).getCurrentTransaction();
+            // Ensure that all actions have occurred so that we get what is _really_ commited to the db
+            // (This code is straight from bitronix)
+            Iterator<?> iter = bt.getSynchronizationScheduler().reverseIterator();
+            while (iter.hasNext()) {
+                Synchronization synchronization = (Synchronization) iter.next();
+                try {
+                    synchronization.beforeCompletion();
+                } catch (RuntimeException ex) {
+                    bt.setStatus(Status.STATUS_MARKED_ROLLBACK);
+                    throw ex;
+                }
+            }
+            
             String testMethodName = MarshallingTestUtil.getTestMethodName();
             if( testMethodName != null ) { 
                 EntityManager em = emf.createEntityManager();
