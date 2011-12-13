@@ -27,7 +27,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.command.Command;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
 import org.drools.common.InternalFactHandle;
@@ -251,7 +251,7 @@ public class StatelessKnowledgeSessionImpl
     public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
 
-        KnowledgeCommandContext context = new KnowledgeCommandContext( new ContextImpl( "ksession",
+        FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
                                                                                         null ),
                                                                        null,
                                                                        null,

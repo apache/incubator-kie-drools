@@ -22,6 +22,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
+import org.drools.core.util.StringUtils;
 
 public class NewKnowledgeBuilderCommand
     implements
@@ -30,11 +31,17 @@ public class NewKnowledgeBuilderCommand
     private KnowledgeBuilderConfiguration kbuilderConf;
     
     private KnowledgeBase attachedKnowledgeBase;
+    
+    private String kbaseId;
 
     public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf) {
         this.kbuilderConf = kbuilderConf;
     }
     
+    public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf, String kbaseId) {
+        this.kbuilderConf = kbuilderConf;
+        setAttachedKnowledgeBase( kbaseId );
+    }    
 
     public KnowledgeBase getAttachedKnowledgeBase() {
         return attachedKnowledgeBase;
@@ -43,11 +50,21 @@ public class NewKnowledgeBuilderCommand
     public void setAttachedKnowledgeBase(KnowledgeBase attachedKnowledgeBase) {
         this.attachedKnowledgeBase = attachedKnowledgeBase;
     }
+    
+    public void setAttachedKnowledgeBase(String kbaseId) {
+        this.kbaseId = kbaseId;
+    }
+
 
 
 
     public KnowledgeBuilder execute(Context context) {
         KnowledgeBuilder kbuilder = null;
+        
+        if ( !StringUtils.isEmpty( kbaseId )) {
+            attachedKnowledgeBase = ( KnowledgeBase ) context.get( kbaseId );
+        }
+        
         if ( this.kbuilderConf == null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase );
         } else {

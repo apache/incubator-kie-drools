@@ -16,34 +16,59 @@
 
 package org.drools.command;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.FactHandle;
 import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
+import org.drools.common.InternalFactHandle;
 
 public class SetVariableCommand
     implements
-    GenericCommand<Void> {
+    GenericCommand<Object> {
     private String  identifier;
     private String  contextName;
-    private Command cmd;
+    
+    public SetVariableCommand(String identifier) {
+        this.identifier = identifier;
+    }    
 
     public SetVariableCommand(String contextName,
-                              String identifier,
-                              Command cmd) {
+                              String identifier) {
         this.identifier = identifier;
         this.contextName = contextName;
-        this.cmd = cmd;
     }
 
-    public Void execute(Context context) {
+    public Object execute(Context context) {
+        GetDefaultValue sim = ( GetDefaultValue ) context.get( "simulator" );
+        
+        Context targetCtx;
         if ( this.contextName == null ) {
-            context.set( this.identifier,
-                         ((GenericCommand) this.cmd).execute( context ) );
+            targetCtx = context;
         } else {
-            context.getContextManager().getContext( this.contextName ).set( this.identifier,
-                                                                            ((GenericCommand) this.cmd).execute( context ) );
+            targetCtx = context.getContextManager().getContext( this.contextName );
         }
-        return null;
+        
+        Object o = sim.getObject();
+        // for FactHandle's we store the handle on a map and the actual object as
+        if ( o instanceof FactHandle ) {
+            Map<String, FactHandle> handles = (  Map<String, FactHandle> ) targetCtx.get( "h" );
+            if ( handles == null ) {
+                handles = new HashMap<String, FactHandle>();
+                context.set( "h", handles );
+            }            
+            handles.put( identifier, ( FactHandle ) o );
+            
+            o = (( InternalFactHandle )o).getObject();
+            
+        }
+        
+        targetCtx.set( identifier, o );
+
+        return o;
     }
 
 }

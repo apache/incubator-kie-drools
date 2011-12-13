@@ -32,12 +32,9 @@ public class NewKnowledgeBuilderConfigurationCommand implements GenericCommand<V
     
     
     public Void execute(Context context) {
-        System.out.println("default Context.get -> "+context.getContextManager()
-                                    .getDefaultContext().get(kbuilderConfId));
         
-        context.getContextManager()
-                  .getDefaultContext().set(kbuilderConfId, 
-                            KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
+        context.set(kbuilderConfId, 
+                    KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration());
         
         return null;
     }

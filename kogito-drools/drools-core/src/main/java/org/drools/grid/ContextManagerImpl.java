@@ -5,21 +5,27 @@ import java.util.Map;
 
 import org.drools.command.Context;
 import org.drools.command.ContextManager;
+import org.drools.command.impl.ContextImpl;
 
 public class ContextManagerImpl
     implements
     ContextManager {
     private Map<String, Context> contexts;
-    private Context              defaultContext;
+
+
+    private Context              root;
 
     public ContextManagerImpl() {
         this.contexts = new HashMap<String, Context>();
+        
+        this.root = new ContextImpl( ROOT,
+                                     this );
+        
+        this.contexts.put( ROOT,
+                           this.root );        
     }
 
     public synchronized void addContext(Context context) {
-        if ( this.contexts.isEmpty() ) {
-            this.defaultContext = context;
-        }
         this.contexts.put( context.getName(),
                            context );
     }
@@ -28,7 +34,7 @@ public class ContextManagerImpl
         return this.contexts.get( identifier );
     }
 
-    public Context getDefaultContext() {
-        return this.defaultContext;
+    public Context getRootContext() {
+        return this.root;
     }
 }

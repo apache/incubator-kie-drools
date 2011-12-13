@@ -38,9 +38,7 @@ public class KBuilderSetPropertyCommand implements GenericCommand<Void>{
     
     
     public Void execute(Context context) {
-       KnowledgeBuilderConfiguration kconf = 
-                (KnowledgeBuilderConfiguration) context.getContextManager()
-                                        .getDefaultContext().get(kbuilderConfId);
+       KnowledgeBuilderConfiguration kconf = (KnowledgeBuilderConfiguration) context.get(kbuilderConfId);
        kconf.setProperty(this.name, this.value);
        return null;
     }

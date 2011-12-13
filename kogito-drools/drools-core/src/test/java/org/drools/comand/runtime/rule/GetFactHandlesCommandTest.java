@@ -14,7 +14,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
-import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.common.InternalFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -34,8 +34,8 @@ public class GetFactHandlesCommandTest {
     public void setup() { 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newStatefulKnowledgeSession();
-        KnowledgeCommandContext kContext 
-            = new KnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, this.ksession, null );
+        FixedKnowledgeCommandContext kContext 
+            = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, this.ksession, null );
         commandService = new DefaultCommandService(kContext);
         
     }
