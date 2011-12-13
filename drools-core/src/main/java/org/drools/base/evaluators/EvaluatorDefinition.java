@@ -17,7 +17,6 @@
 package org.drools.base.evaluators;
 
 import java.io.Externalizable;
-import java.util.List;
 
 import org.drools.base.ValueType;
 import org.drools.spi.Evaluator;

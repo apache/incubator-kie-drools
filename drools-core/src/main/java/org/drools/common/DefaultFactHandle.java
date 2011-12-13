@@ -348,11 +348,14 @@ public class DefaultFactHandle
     public void addFirstRightTuple( RightTuple rightTuple ) {
         RightTuple previousFirst = getFirstRightTuple();
         setFirstRightTuple( rightTuple );
-        if ( previousFirst != null ) {
-            previousFirst.setHandlePrevious( rightTuple );
-            rightTuple.setHandleNext( previousFirst );
-        } else {
+        if ( previousFirst == null ) {
+            rightTuple.setHandlePrevious( null );
+            rightTuple.setHandleNext( null );
             setLastRightTuple( rightTuple );
+        } else {
+            rightTuple.setHandlePrevious( null );
+            rightTuple.setHandleNext( previousFirst );
+            previousFirst.setHandlePrevious( rightTuple );
         }
     }
 

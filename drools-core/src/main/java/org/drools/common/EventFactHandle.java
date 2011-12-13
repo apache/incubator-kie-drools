@@ -27,6 +27,8 @@ public class EventFactHandle extends DefaultFactHandle {
     private long              duration;
     private boolean           expired;
     private long              activationsCount;
+    
+    
 
     // ----------------------------------------------------------------------
     // Constructors
