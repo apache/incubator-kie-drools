@@ -54,14 +54,8 @@ public class RightTuple
         this.handle = handle;
         this.sink = sink;
 
-        RightTuple last = handle.getLastRightTuple();
-        if ( last == null ) {
-            // no other RightTuples, just add.
-            handle.addFirstRightTuple( this );
-        } else {
-            // add to end of RightTuples on handle
-            handle.addLastRightTuple( this );
-        }
+        // add to end of RightTuples on handle
+        handle.addLastRightTuple( this );
     }
 
     public RightTupleSink getRightTupleSink() {
