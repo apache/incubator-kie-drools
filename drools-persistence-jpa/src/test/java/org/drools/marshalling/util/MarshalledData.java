@@ -18,7 +18,6 @@ package org.drools.marshalling.util;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,6 +60,10 @@ public class MarshalledData {
     @Transient
     private static HashMap<String, AtomicInteger> testMethodSnapshotNumMap = new HashMap<String, AtomicInteger>();
     
+    public MarshalledData() { 
+        // for the ORM/persistence which requires a default constructor to initialize entity classes
+    }
+    
     public MarshalledData(Object marshalledClassInstance) { 
         this.testMethodName = getTestMethodName();
         initializeObject(marshalledClassInstance);
@@ -93,11 +96,13 @@ public class MarshalledData {
             SessionInfo sessionInfo = (SessionInfo) marshalledClassInstance;
             this.byteArray = sessionInfo.getData();
             this.marshalledObjectId = sessionInfo.getId().longValue();
-            try { 
-                storeAssociatedKnowledgeBase(sessionInfo);
-            } catch(IOException ioe ) { 
-                Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: [" 
-                        + ioe.getClass().getSimpleName() + ", " + ioe.getMessage() );
+            if( STORE_KNOWLEDGE_BASE ) { 
+                try { 
+                    storeAssociatedKnowledgeBase(sessionInfo);
+                } catch(IOException ioe ) { 
+                    Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: [" 
+                            + ioe.getClass().getSimpleName() + ", " + ioe.getMessage() );
+                }
             }
         }
         else if( className.equals(WorkItemInfo.class.getName()) ) { 
@@ -132,10 +137,6 @@ public class MarshalledData {
           return testMethodSnapshotNumMap.get(testMethodName).intValue(); 
        }
        return null;
-    }
-    
-    public MarshalledData() { 
-        // default constructor
     }
     
     public String getTestMethodAndSnapshotNum() { 

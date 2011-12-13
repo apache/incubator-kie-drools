@@ -15,8 +15,7 @@
  */
 package org.drools.marshalling.util;
 
-import static java.lang.System.out;
-import static org.drools.marshalling.util.CompareViaReflectionUtil.*;
+import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
 import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
@@ -26,6 +25,9 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -43,140 +45,184 @@ import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestMarshallingUtilsTest {
 
+    private static Logger logger = LoggerFactory.getLogger(TestMarshallingUtilsTest.class);
+    
     private static boolean debug = false;
 
     @Test
     @Ignore
-    public void testUnmarshallingMarshalledData() { 
+    public void testUnmarshallingMarshalledData() {
         HashMap<String, Object> testContext = null;
         List<MarshalledData> marshalledDataList = null;
-        try { 
+        try {
             testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
             EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
             marshalledDataList = retrieveMarshallingData(emf);
-        }
-        finally { 
+        } finally {
             tearDown(testContext);
         }
 
-        for( MarshalledData marshalledData : marshalledDataList ) { 
-            String className = marshalledData.marshalledObjectClassName.substring(marshalledData.marshalledObjectClassName.lastIndexOf('.')+1);
-            try { 
+        for (MarshalledData marshalledData : marshalledDataList) {
+            String className = marshalledData.marshalledObjectClassName.substring(marshalledData.marshalledObjectClassName
+                    .lastIndexOf('.') + 1);
+            try {
                 unmarshallObject(marshalledData);
-                out.println("- " + className + ": " + marshalledData.getTestMethodAndSnapshotNum() );
+                logger.debug("- " + className + ": " + marshalledData.getTestMethodAndSnapshotNum());
+            } catch (Exception e) {
+                logger.debug("X " + className + ": " + marshalledData.getTestMethodAndSnapshotNum());
             }
-            catch( Exception e ) { 
-                out.println("X " + className + ": " + marshalledData.getTestMethodAndSnapshotNum() );
-            }
-        } 
+        }
     }
-    
+
     @Test
     @Ignore
-    public void testUnmarshallingSpecificMarshalledData() { 
-        String testMethodAndSnapNum 
-            = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
-//            = "org.drools.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
-        HashMap<String, Object> testContext
-            = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
+    public void testUnmarshallingSpecificMarshalledData() {
+        String testMethodAndSnapNum = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
+        // =
+        // "org.drools.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
+        HashMap<String, Object> testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
         EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
         List<MarshalledData> marshalledDataList = retrieveMarshallingData(emf);
         MarshalledData marshalledData = null;
-        for( MarshalledData marshalledDataElement : marshalledDataList ) { 
-           if( testMethodAndSnapNum.equals(marshalledDataElement.getTestMethodAndSnapshotNum()) ) { 
-               marshalledData = marshalledDataElement;
-           }
+        for (MarshalledData marshalledDataElement : marshalledDataList) {
+            if (testMethodAndSnapNum.equals(marshalledDataElement.getTestMethodAndSnapshotNum())) {
+                marshalledData = marshalledDataElement;
+            }
         }
     
-        try { 
-            StatefulKnowledgeSession ksession = unmarshallSession(marshalledData); 
-            assertNotNull(ksession);
-        } 
-        catch( Exception e ) { 
+        try {
+            Object unmarshalledObject = unmarshallObject(marshalledData);
+            assertNotNull(unmarshalledObject);
+        } catch (Exception e) {
             e.printStackTrace();
-            fail( "[" + e.getClass().getSimpleName() + "]: " + e.getMessage() );
-        }
-        finally { 
+            fail("[" + e.getClass().getSimpleName() + "]: " + e.getMessage());
+        } finally {
             tearDown(testContext);
         }
     }
 
     @Test
-    public void testCompareArrays() { 
-       
-        int [] testA = { 1, 3 };
-        int [] testB = { 1, 3 };
-        
-        boolean same = compareArrays(testA, testB);
+    @Ignore
+    public void testCompareArrays() {
+
+        int[] testA = { 1, 3 };
+        int[] testB = { 1, 3 };
+
+        boolean same = compareInstances(testA, testA);
         assertTrue(same);
-         printResult(same, testA, testB);
-        
+        printResult(same, testA, testB);
+
         // setup for test
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeBase [] testArrA = { kbase };
-        KnowledgeBase [] testArrB = { kbase, null };
-        
-        same = compareArrays(testArrA, testArrB);
-        assertTrue(! same);
-         printResult(same, testArrA, testArrB);
-       
-        Environment [] testEnvA = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
-        Environment [] testEnvB = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
-       
+
+        KnowledgeBase[] testArrA = { kbase };
+        KnowledgeBase[] testArrB = { kbase, null };
+
+        same = compareInstances(testArrA, testArrB);
+        assertTrue(!same);
+        printResult(same, testArrA, testArrB);
+
+        Environment[] testEnvA = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
+        Environment[] testEnvB = { EnvironmentFactory.newEnvironment(), EnvironmentFactory.newEnvironment() };
+
         testEnvA[0].set(DROOLS_PERSISTENCE_UNIT_NAME, DROOLS_PERSISTENCE_UNIT_NAME);
-        
-        same = compareArrays(testEnvA, testEnvB);
-        assertTrue(! same);
-         printResult(same, testEnvA, testEnvB);
+
+        same = compareInstances(testEnvA, testEnvB);
+        assertTrue(!same);
+        printResult(same, testEnvA, testEnvB);
+
+        PriorityQueue<Short> priShortA = new PriorityQueue<Short>();
+        PriorityQueue<Short> priShortB = new PriorityQueue<Short>();
+
+        short[] shortList = { (short) 6, (short) 8, (short) 6, (short) 1, (short) 8, (short) 5, (short) 9 };
+        for (int i = 0; i < shortList.length; ++i) {
+            priShortA.add(shortList[i]);
+            priShortB.add(shortList[i]);
+        }
+        priShortB.add((short) 0);
+
+        assertFalse("Should be unequal", compareInstances(priShortA, priShortB));
+
+        assertEquals(new Short((short) 0), priShortB.poll());
+        assertTrue("Should be equal", compareInstances(priShortA, priShortB));
+
     }
-    
-    private static void printResult(boolean same, Object objA, Object objB) { 
-        if( ! debug ) { return; }
-        
-        out.println( "Same: " + same );
-        String outLine =  "a: {";
-        for( int i = 0; i < Array.getLength(objA); ++i ) { 
+
+    private static void printResult(boolean same, Object objA, Object objB) {
+        if (!debug) {
+            return;
+        }
+
+        logger.debug("Same: " + same);
+        String outLine = "a: {";
+        for (int i = 0; i < Array.getLength(objA); ++i) {
             outLine += Array.get(objA, i) + ",";
         }
         outLine = outLine.substring(0, outLine.lastIndexOf(",")) + "}";
-        out.println(outLine);
+        logger.debug(outLine);
         outLine = "b: {";
-        for( int i = 0; i < Array.getLength(objB); ++i ) { 
+        for (int i = 0; i < Array.getLength(objB); ++i) {
             outLine += Array.get(objB, i) + ",";
         }
         outLine = outLine.substring(0, outLine.lastIndexOf(",")) + "}";
-        out.println(outLine); 
+        logger.debug(outLine);
     }
-    
+
     @Test
-    public void testCompareInstances() throws Exception { 
+    @Ignore
+    public void testCompareAtomicPrimitives() {
+        AtomicInteger objA = new AtomicInteger(-1);
+        AtomicInteger objB = new AtomicInteger(-1);
+
+        int a = objA.get();
+        int b = objB.get();
+        assertFalse("objs?", objA.equals(objB));
+        assertTrue("ints?", a == b);
+        assertTrue("compare a?", CompareViaReflectionUtil.compareAtomicPrimitives(objA, objB));
+
+        AtomicBoolean objC = new AtomicBoolean(false);
+        AtomicBoolean objD = new AtomicBoolean(false);
+
+        boolean c = objC.get();
+        boolean d = objD.get();
+
+        assertFalse("objs?", objC.equals(objD));
+        assertTrue("bools?", c == d);
+        assertTrue("compare c?", CompareViaReflectionUtil.compareAtomicPrimitives(objC, objD));
+    }
+
+    @Test
+    @Ignore
+    public void testCompareInstances() throws Exception {
 
         StatefulKnowledgeSession ksessionA = null;
         {
             KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            config.setOption( EventProcessingOption.STREAM );
-            KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase( config );
+            config.setOption(EventProcessingOption.STREAM);
+            KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase(config);
             KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+            ksconf.setOption(ClockTypeOption.get("pseudo"));
+            ((SessionConfiguration) ksconf).setTimerJobFactoryManager(new TrackableTimeJobFactoryManager());
             ksessionA = knowledgeBaseA.newStatefulKnowledgeSession(ksconf, null);
         }
 
         StatefulKnowledgeSession ksessionB = null;
         {
-            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(); 
-            config.setOption( EventProcessingOption.STREAM );
-            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            config.setOption(EventProcessingOption.STREAM);
+            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
             KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+            ksconf.setOption(ClockTypeOption.get("pseudo"));
+            ((SessionConfiguration) ksconf).setTimerJobFactoryManager(new TrackableTimeJobFactoryManager());
             ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
         }
 
-        Assert.assertTrue(CompareViaReflectionUtil.class.getSimpleName() + " is broken!", 
-                compareInstances(ksessionA, ksessionB) );
+        Assert.assertTrue(CompareViaReflectionUtil.class.getSimpleName() + " is broken!", compareInstances(ksessionA, ksessionB));
     }
+
 }
