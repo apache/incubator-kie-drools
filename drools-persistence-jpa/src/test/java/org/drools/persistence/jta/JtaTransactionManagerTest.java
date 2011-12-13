@@ -44,6 +44,7 @@ import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -144,8 +145,13 @@ public class JtaTransactionManagerTest {
             tx.commit();
         }
         catch( Exception e ) { 
-            if( e instanceof BitronixRollbackException ) { 
+            if( e instanceof BitronixRollbackException || e.getCause() instanceof TransientObjectException ) { 
                 rollBackExceptionthrown = true;
+                
+                // Depends on JTA version (and thus BTM version)
+                if( tx.getStatus() == 1 ) {
+                    tx.rollback();
+                }
             }
         }           
         assertTrue( "A rollback exception should have been thrown because of foreign key violations.", rollBackExceptionthrown );
