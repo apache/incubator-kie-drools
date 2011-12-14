@@ -30,4 +30,5 @@ public class NodeTypeEnums {
     public static final short ForallNotNode        = 10;
     public static final short UnificationNode      = 11;
     public static final short QueryRiaFixerNode    = 12;
+    public static final short WindowNode           = 13;
 }

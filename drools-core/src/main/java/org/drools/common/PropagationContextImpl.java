@@ -25,8 +25,7 @@ import org.drools.FactHandle;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
-import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
+import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -66,6 +65,8 @@ public class PropagationContextImpl
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
     private long modificationMask = Long.MAX_VALUE;
+
+    private WindowTupleList windowTupleList;
 
     public PropagationContextImpl() {
 
@@ -301,6 +302,14 @@ public class PropagationContextImpl
 
     public long getModificationMask() {
         return modificationMask;
+    }
+
+    public WindowTupleList getActiveWindowTupleList() {
+        return windowTupleList;
+    }
+
+    public void setActiveWindowTupleList( WindowTupleList list ) {
+        this.windowTupleList = list;
     }
 
 

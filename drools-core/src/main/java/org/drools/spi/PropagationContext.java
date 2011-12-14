@@ -25,6 +25,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 
@@ -82,7 +83,11 @@ public interface PropagationContext
 
     LinkedList<WorkingMemoryAction> getQueue2();
 
-    void evaluateActionQueue(InternalWorkingMemory workingMemory);
+    public void evaluateActionQueue(InternalWorkingMemory workingMemory); 
+    
+    public WindowTupleList getActiveWindowTupleList();
+    
+    public void setActiveWindowTupleList( WindowTupleList list );
 
     long getModificationMask();
 }

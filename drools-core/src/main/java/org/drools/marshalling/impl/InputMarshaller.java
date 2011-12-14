@@ -29,7 +29,30 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.*;
+import org.drools.common.AgendaItem;
+import org.drools.common.BaseNode;
+import org.drools.common.BinaryHeapQueueAgendaGroup;
+import org.drools.common.DefaultAgenda;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.EqualityKey;
+import org.drools.common.EventFactHandle;
+import org.drools.common.InternalAgenda;
+import org.drools.common.InternalAgendaGroup;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalRuleFlowGroup;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.NamedEntryPoint;
+import org.drools.common.NodeMemory;
+import org.drools.common.ObjectStore;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.QueryElementFactHandle;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.common.RuleFlowGroupImpl;
+import org.drools.common.ScheduledAgendaItem;
+import org.drools.common.TruthMaintenanceSystem;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
@@ -53,14 +76,15 @@ import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.WindowNode;
+import org.drools.reteoo.WindowNode.WindowMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -597,9 +621,6 @@ public class InputMarshaller {
         switch (sink.getType()) {
             case NodeTypeEnums.JoinNode: {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                readBehaviors( (BetaNode) sink,
-                               memory,
-                               context );
                 addToLeftMemory( parentLeftTuple,
                                  memory );
 
@@ -636,9 +657,6 @@ public class InputMarshaller {
             case NodeTypeEnums.NotNode:
             case NodeTypeEnums.ForallNotNode: {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                readBehaviors( (BetaNode) sink,
-                               memory,
-                               context );
                 int type = stream.readShort();
                 if (type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED) {
                     addToLeftMemory( parentLeftTuple,
@@ -666,9 +684,6 @@ public class InputMarshaller {
             }
             case NodeTypeEnums.ExistsNode: {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                readBehaviors( (BetaNode) sink,
-                               memory,
-                               context );
                 int type = stream.readShort();
                 if (type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED) {
                     addToLeftMemory( parentLeftTuple,
@@ -697,10 +712,6 @@ public class InputMarshaller {
                 // accumulate nodes generate new facts on-demand and need special procedures when de-serializing from persistent storage
                 AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
-
-                readBehaviors( (BetaNode) sink,
-                               memory.betaMemory,
-                               context );
 
                 AccumulateContext accctx = new AccumulateContext();
                 parentLeftTuple.setObject( accctx );
@@ -878,26 +889,26 @@ public class InputMarshaller {
         }
     }
 
-    public static void readBehaviors( BetaNode betaNode,
-            BetaMemory betaMemory,
-            MarshallerReaderContext inCtx ) throws IOException {
+    public static void readBehaviors( WindowNode windowNode,
+                                      WindowMemory memory,
+                                      MarshallerReaderContext inCtx ) throws IOException {
         short token = -1;
         while (( token = inCtx.readShort() ) != PersisterEnums.END) {
             int i = inCtx.readInt();
-            Object object = ( (Object[]) betaMemory.getBehaviorContext() )[i];
+            Object object = ( (Object[]) memory.behaviorContext )[i];
             switch (token) {
                 case PersisterEnums.SLIDING_TIME_WIN: {
-                    readSlidingTimeWindowBehaviour( betaNode,
-                                                    betaMemory,
-                                                    (SlidingTimeWindow) betaNode.getBehaviors()[i],
+                    readSlidingTimeWindowBehaviour( windowNode,
+                                                    memory,
+                                                    (SlidingTimeWindow) windowNode.getBehaviors()[i],
                                                     (SlidingTimeWindowContext) object,
                                                     inCtx );
                     break;
                 }
                 case PersisterEnums.SLIDING_LENGTH_WIN: {
-                    readSlidingLengthWindowBehaviour( betaNode,
-                                                      betaMemory,
-                                                      (SlidingLengthWindow) betaNode.getBehaviors()[i],
+                    readSlidingLengthWindowBehaviour( windowNode,
+                                                      memory,
+                                                      (SlidingLengthWindow) windowNode.getBehaviors()[i],
                                                       (SlidingLengthWindowContext) object,
                                                       inCtx );
                     break;
@@ -907,8 +918,8 @@ public class InputMarshaller {
         }
     }
 
-    public static void readSlidingTimeWindowBehaviour( BetaNode betaNode,
-            BetaMemory betaMemory,
+    public static void readSlidingTimeWindowBehaviour( WindowNode windowNode,
+            WindowMemory memory,
             SlidingTimeWindow stw,
             SlidingTimeWindowContext stwCtx,
             MarshallerReaderContext inCtx ) throws IOException {
@@ -941,8 +952,8 @@ public class InputMarshaller {
         }
     }
 
-    public static void readSlidingLengthWindowBehaviour( BetaNode betaNode,
-            BetaMemory betaMemory,
+    public static void readSlidingLengthWindowBehaviour( WindowNode windowNode,
+            WindowMemory memory,
             SlidingLengthWindow slw,
             SlidingLengthWindowContext slwCtx,
             MarshallerReaderContext inCtx ) throws IOException {

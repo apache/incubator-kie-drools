@@ -29,7 +29,6 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooBuilder;
-import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
@@ -81,9 +80,6 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
 
-    // behaviors from the last pattern attached
-    private List<Behavior>                   behaviors;
-
     // the current entry point
     private EntryPoint                       currentEntryPoint;
 
@@ -106,11 +102,6 @@ public class BuildContext {
     private TemporalDependencyMatrix         temporal;
 
     private ObjectTypeNode rootObjectTypeNode;
-
-    /** a flag for pattern builders to attach the alpha constraints to alpha nodes (true) 
-     *  or save them in the context alpha constraints list
-     */
-    private boolean attachAlphaNodes;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -139,8 +130,6 @@ public class BuildContext {
         this.partitionId = null;
         
         this.ruleComponent = new Stack<RuleComponent>();
-        
-        this.attachAlphaNodes = true;
     }
 
     /**
@@ -389,20 +378,6 @@ public class BuildContext {
     }
 
     /**
-     * @return the behaviours
-     */
-    public List<Behavior> getBehaviors() {
-        return behaviors;
-    }
-
-    /**
-     * @param behaviors the behaviours to set
-     */
-    public void setBehaviors(List<Behavior> behaviors) {
-        this.behaviors = behaviors;
-    }
-
-    /**
      * @return the nodes
      */
     public List<BaseNode> getNodes() {
@@ -495,14 +470,6 @@ public class BuildContext {
     
     public ObjectTypeNode getRootObjectTypeNode() {
         return rootObjectTypeNode;
-    }
-
-    public void setAttachAlphaNodes( boolean attachAlphaNodes ) {
-        this.attachAlphaNodes = attachAlphaNodes;
-    }
-    
-    public boolean isAttachAlphaNodes() { 
-        return this.attachAlphaNodes;
     }
 
 }

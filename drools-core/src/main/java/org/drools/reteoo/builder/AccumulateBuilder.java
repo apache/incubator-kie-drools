@@ -17,7 +17,6 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
@@ -28,7 +27,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -49,7 +47,6 @@ public class AccumulateBuilder
 
         final List resultBetaConstraints = context.getBetaconstraints();
         final List resultAlphaConstraints = context.getAlphaConstraints();
-        final List resultBehaviors = context.getBehaviors();
 
         RuleConditionElement source = accumulate.getSource();
         if( source instanceof GroupElement ) {
@@ -103,11 +100,6 @@ public class AccumulateBuilder
                                                                              context.getBetaconstraints(),
                                                                              false );
         
-        Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
-        if( ! context.getBehaviors().isEmpty() ) {
-            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
-        }              
-
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     new AccumulateNode( context.getNextId(),
                                                                                         context.getTupleSource(),
@@ -115,7 +107,6 @@ public class AccumulateBuilder
                                                                                         (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
                                                                                         sourceBinder,
                                                                                         resultsBinder,
-                                                                                        behaviors,
                                                                                         accumulate,
                                                                                         existSubNetwort,
                                                                                         context ) ) );
@@ -123,7 +114,6 @@ public class AccumulateBuilder
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );
-        context.setBehaviors( Collections.EMPTY_LIST );
         context.popRuleComponent();
     }
 

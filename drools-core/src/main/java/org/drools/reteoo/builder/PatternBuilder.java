@@ -36,6 +36,7 @@ import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropagationQueuingNode;
+import org.drools.reteoo.WindowNode;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -109,10 +110,6 @@ public class PatternBuilder
         // Create BetaConstraints object
         context.setBetaconstraints( betaConstraints );
 
-        // set behaviors list
-        behaviors.addAll( pattern.getBehaviors() );
-        context.setBehaviors( behaviors );
-
         if ( pattern.getSource() != null ) {
             context.setAlphaConstraints( alphaConstraints );
             final int currentOffset = context.getCurrentPatternOffset();
@@ -135,6 +132,24 @@ public class PatternBuilder
             PatternSource source = EntryPoint.DEFAULT;
             ReteooComponentBuilder builder = utils.getBuilderFor( source );
             builder.build( context, utils, source );
+        }
+
+        attachObjectTypeNode( context,
+                              utils,
+                              pattern );
+        
+        if( ! behaviors.isEmpty() ) {
+            // build the window node:
+            WindowNode wn = new WindowNode( context.getNextId(),
+                                            alphaConstraints,
+                                            behaviors,
+                                            context.getObjectSource(),
+                                            context );
+            utils.attachNode( context, 
+                              wn );
+            
+            // alpha constraints added to the window node already
+            alphaConstraints.clear();
         }
 
         if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
@@ -303,9 +318,34 @@ public class PatternBuilder
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
 
-        boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         boolean alphaMemory = context.isAlphaMemoryAllowed();
 
+        for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
+            context.pushRuleComponent( constraint );
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      new AlphaNode( context.getNextId(),
+                                                                                     (AlphaNodeFieldConstraint) constraint,
+                                                                                     context.getObjectSource(),
+                                                                                     context ) ) );
+            context.popRuleComponent();
+        }        
+        
+        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      new PropagationQueuingNode( context.getNextId(),
+                                                                                                  context.getObjectSource(),
+                                                                                                  context ) ) );
+            // the entry-point specific network nodes are attached, so, set context to default entry-point 
+            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+        }
+
+        // now restore back to original values
+        context.setAlphaNodeMemoryAllowed( alphaMemory );
+
+    }
+
+    private void attachObjectTypeNode( final BuildContext context, final BuildUtils utils, final Pattern pattern ) {
+        boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         ObjectType objectType = pattern.getObjectType();
         
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
@@ -351,35 +391,7 @@ public class PatternBuilder
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   otn ) );
-
-        if( context.isAttachAlphaNodes() ) {
-            for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
-                context.pushRuleComponent( constraint );
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new AlphaNode( context.getNextId(),
-                                                                                         (AlphaNodeFieldConstraint) constraint,
-                                                                                         context.getObjectSource(),
-                                                                                         context ) ) );
-                context.popRuleComponent();
-            }        
-            
-            if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new PropagationQueuingNode( context.getNextId(),
-                                                                                                      context.getObjectSource(),
-                                                                                                      context ) ) );
-                // the entry-point specific network nodes are attached, so, set context to default entry-point 
-                context.setCurrentEntryPoint( EntryPoint.DEFAULT );
-            }
-            
-        } else {
-            context.setAlphaConstraints( alphaConstraints );
-        }
-
-        // now restore back to original values
         context.setObjectTypeNodeMemoryEnabled( objectMemory );
-        context.setAlphaNodeMemoryAllowed( alphaMemory );
-
     }
 
     /**

@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import org.drools.FactHandle;
+import org.drools.reteoo.WindowTupleList;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle {
@@ -28,7 +29,8 @@ public class EventFactHandle extends DefaultFactHandle {
     private boolean           expired;
     private long              activationsCount;
     
-    
+    private WindowTupleList   firstWindowTuple;
+    private WindowTupleList   lastWindowTuple;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -68,8 +70,6 @@ public class EventFactHandle extends DefaultFactHandle {
      * 1: is used for EventFactHandle
      */
     public String toExternalForm() {
-        //return "[event fid:" + getId() + ":" + getRecency() + ":" + getObject() + "]";
-        //return "1:" + this.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
         return  "1:" + super.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ((super.getEntryPoint() != null) ? super.getEntryPoint().getEntryPointId() : "null" );
     }
 
@@ -141,6 +141,63 @@ public class EventFactHandle extends DefaultFactHandle {
         this.activationsCount--;
     }
 
+    public void addFirstWindowTupleList( WindowTupleList window ) {
+        WindowTupleList previous = this.firstWindowTuple;
+        if ( previous == null ) {
+            // no other WindowTuples, just add.
+            window.setListPrevious( null );
+            window.setListNext( null );
+            firstWindowTuple = window;
+            lastWindowTuple = window;
+        } else {
+            window.setListPrevious( null );
+            window.setListNext( previous );
+            previous.setListPrevious( window );
+            firstWindowTuple = window;
+        }
+    }
+    
+    public void addLastWindowTupleList( WindowTupleList window ) {
+        WindowTupleList previous = this.lastWindowTuple;
+        if ( previous == null ) {
+            // no other WindowTuples, just add.
+            window.setListPrevious( null );
+            window.setListNext( null );
+            firstWindowTuple = window;
+            lastWindowTuple = window;
+        } else {
+            window.setListPrevious( previous );
+            window.setListNext( null );
+            previous.setListNext( window );
+            lastWindowTuple = window;
+        }
+    }
+    
+    public void removeWindowTupleList( WindowTupleList window ) {
+        WindowTupleList previous = window.getListPrevious();
+        WindowTupleList next = window.getListNext();
+        
+        if ( previous != null && next != null ) {
+            // remove  from middle
+            previous.setListNext( next );
+            next.setListPrevious( previous );
+        } else if ( next != null ) {
+            // remove from first
+            next.setListPrevious( null );
+            firstWindowTuple = next;
+        } else if ( previous != null ) {
+            // remove from end
+            previous.setListNext( null );
+            lastWindowTuple = previous;
+        } else {
+            // single remaining item, no previous or next
+            firstWindowTuple = null;
+            lastWindowTuple = null;
+        }
+        window.setListPrevious( null );
+        window.setListNext( null );
+    }
+    
     public EventFactHandle clone() {
         EventFactHandle clone = new EventFactHandle( getId(),
                                                       getObject(),
@@ -157,6 +214,8 @@ public class EventFactHandle extends DefaultFactHandle {
         clone.setFirstRightTuple( getFirstRightTuple() );
         clone.setLastRightTuple( getLastRightTuple() );
         clone.setObjectHashCode( getObjectHashCode() );
+        clone.firstWindowTuple = firstWindowTuple;
+        clone.lastWindowTuple = lastWindowTuple;
         return clone;
     }
 }

@@ -16,17 +16,18 @@
 
 package org.drools.reteoo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
@@ -43,11 +44,12 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.PredicateConstraint;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
+import org.junit.Before;
+import org.junit.Test;
 
 public class CompositeObjectSinkAdapterTest {
     private ReteooRuleBase               ruleBase;
@@ -695,8 +697,7 @@ public class CompositeObjectSinkAdapterTest {
                    false,
                    leftInput,
                    rightInput,
-                   EmptyBetaConstraints.getInstance(),
-                   Behavior.EMPTY_BEHAVIOR_LIST );
+                   EmptyBetaConstraints.getInstance() );
             //  Auto-generated constructor stub
         }
 

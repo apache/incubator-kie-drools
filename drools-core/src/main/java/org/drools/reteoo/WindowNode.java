@@ -23,15 +23,17 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.BehaviorManager;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -42,14 +44,14 @@ import org.drools.spi.PropagationContext;
  * sliding windows, tumbling windows, etc.
  *
  */
-public class WindowNode extends ObjectSource 
-                        implements ObjectSinkNode,
-                                   NodeMemory {
+public class WindowNode extends ObjectSource
+                                            implements ObjectSinkNode,
+                                            NodeMemory {
 
     private static final long              serialVersionUID = 540l;
 
     private List<AlphaNodeFieldConstraint> constraints;
-    private List<Behavior>                 behaviors;
+    private BehaviorManager                behavior;
 
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
@@ -68,7 +70,7 @@ public class WindowNode extends ObjectSource
      */
     public WindowNode(final int id,
             final List<AlphaNodeFieldConstraint> constraints,
-            final List<Behavior> behaviors, 
+            final List<Behavior> behaviors,
             final ObjectSource objectSource,
             final BuildContext context) {
         super( id,
@@ -77,7 +79,7 @@ public class WindowNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraints = constraints;
-        this.behaviors = behaviors;
+        this.behavior = new BehaviorManager( behaviors );
     }
 
     @SuppressWarnings("unchecked")
@@ -85,13 +87,13 @@ public class WindowNode extends ObjectSource
             ClassNotFoundException {
         super.readExternal( in );
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
-        behaviors = (List<Behavior>) in.readObject();
+        behavior = (BehaviorManager) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeObject( constraints );
-        out.writeObject( behaviors );
+        out.writeObject( behavior );
     }
 
     /**
@@ -107,8 +109,8 @@ public class WindowNode extends ObjectSource
      * Returns the list of behaviors for this window node
      * @return
      */
-    public List<Behavior> getBehaviors() {
-        return behaviors;
+    public Behavior[] getBehaviors() {
+        return behavior.getBehaviors();
     }
 
     /*
@@ -151,9 +153,17 @@ public class WindowNode extends ObjectSource
             }
         }
         // process the behavior
+        if (!behavior.assertFact( memory.behaviorContext,
+                                  factHandle,
+                                  workingMemory )) {
+            return;
+        }
 
         // propagate
-        memory.facts.add( factHandle );
+        WindowTupleList list = new WindowTupleList( (EventFactHandle) factHandle, this );
+        context.setActiveWindowTupleList( list );
+        memory.events.put( factHandle,
+                           list );
         this.sink.propagateAssertObject( factHandle,
                                          context,
                                          workingMemory );
@@ -179,20 +189,27 @@ public class WindowNode extends ObjectSource
         // behavior modify
 
         // propagate
+        WindowTupleList list = (WindowTupleList) memory.events.get( factHandle );
         if (isAllowed) {
-            if (memory.facts.contains( factHandle )) {
+            if (list != null) {
+                context.setActiveWindowTupleList( list );
                 this.sink.propagateModifyObject( factHandle,
                                                  modifyPreviousTuples,
                                                  context,
                                                  workingMemory );
+                context.setActiveWindowTupleList( null );
             } else {
-                memory.facts.add( factHandle );
+                list = new WindowTupleList( (EventFactHandle) factHandle, this );
+                context.setActiveWindowTupleList( list );
+                memory.events.put( factHandle,
+                                   list );
                 this.sink.propagateAssertObject( factHandle,
                                                  context,
                                                  workingMemory );
+                context.setActiveWindowTupleList( null );
             }
         } else {
-            memory.facts.remove( factHandle );
+            memory.events.remove( factHandle );
             // no need to propagate retract if it is no longer allowed
             // because the algorithm will automatically retract facts
             // based on the ModifyPreviousTuples parameters 
@@ -209,16 +226,19 @@ public class WindowNode extends ObjectSource
      * @param context       The propagation context
      * @param workingMemory The working memory session.
      */
-    public void retractObject(final InternalFactHandle factHandle,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
+    public void retractObject( final InternalFactHandle factHandle,
+            final PropagationContext context,
+            final InternalWorkingMemory workingMemory ) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory( this );
-        
+
         // behavior retract
-        
+        behavior.assertFact( memory.behaviorContext,
+                             factHandle,
+                             workingMemory );
+
         // memory retract
-        memory.facts.remove( factHandle );
-        
+        memory.events.remove( factHandle );
+
         // as noted in the javadoc, this node will not propagate retracts, relying
         // on the standard algorithm to do it instead.
     }
@@ -228,7 +248,7 @@ public class WindowNode extends ObjectSource
             final InternalWorkingMemory workingMemory ) {
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory( this );
 
-        Iterator it = memory.facts.iterator();
+        Iterator it = memory.events.iterator();
         for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
             sink.assertObject( (InternalFactHandle) entry.getValue(),
                                context,
@@ -247,6 +267,7 @@ public class WindowNode extends ObjectSource
         for (AlphaNodeFieldConstraint alpha : constraints) {
             memory.context[index++] = alpha.createContextEntry();
         }
+        memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;
     }
 
@@ -274,7 +295,7 @@ public class WindowNode extends ObjectSource
 
         final WindowNode other = (WindowNode) object;
 
-        return this.source.equals( other.source ) && this.constraints.equals( other.constraints );
+        return this.source.equals( other.source ) && this.constraints.equals( other.constraints ) && behavior.equals( other.behavior );
     }
 
     /**
@@ -317,18 +338,20 @@ public class WindowNode extends ObjectSource
 
         private static final long serialVersionUID = 540l;
 
-        public ObjectHashSet      facts            = new ObjectHashSet();
+        public ObjectHashMap      events           = new ObjectHashMap();
         public ContextEntry[]     context;
+        public Object             behaviorContext;
 
         public void readExternal( ObjectInput in ) throws IOException,
                 ClassNotFoundException {
             context = (ContextEntry[]) in.readObject();
-            facts = (ObjectHashSet) in.readObject();
+            events = (ObjectHashMap) in.readObject();
         }
 
         public void writeExternal( ObjectOutput out ) throws IOException {
             out.writeObject( context );
-            out.writeObject( facts );
+            out.writeObject( behaviorContext );
+            out.writeObject( events );
         }
     }
 }

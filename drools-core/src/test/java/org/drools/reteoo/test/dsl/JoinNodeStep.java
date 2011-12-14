@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.ClassObjectType;
-import org.drools.base.TypeResolver;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DoubleBetaConstraints;
@@ -37,7 +36,6 @@ import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.BehaviorManager;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -141,7 +139,6 @@ public class JoinNodeStep
                                               leftTupleSource,
                                               rightObjectSource,
                                               constraints,
-                                              BehaviorManager.NO_BEHAVIORS,
                                               buildContext );
             joinNode.attach();
             context.put( name,

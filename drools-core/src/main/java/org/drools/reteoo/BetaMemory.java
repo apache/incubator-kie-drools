@@ -32,7 +32,6 @@ public class BetaMemory
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
     private ContextEntry[]    context;
-    private Object            behaviorContext;
     
     /* Let's start with only right unlinked. */
     private boolean           isLeftUnlinked = false;
@@ -54,7 +53,6 @@ public class BetaMemory
         leftTupleMemory = (LeftTupleMemory) in.readObject();
         rightTupleMemory = (RightTupleMemory) in.readObject();
         context = (ContextEntry[]) in.readObject();
-        behaviorContext = (Object) in.readObject();
         isLeftUnlinked = in.readBoolean();
         isRightUnlinked = in.readBoolean();
     }
@@ -63,7 +61,6 @@ public class BetaMemory
         out.writeObject( leftTupleMemory );
         out.writeObject( rightTupleMemory );
         out.writeObject( context );
-        out.writeObject( behaviorContext );
         out.writeBoolean( isLeftUnlinked );
         out.writeBoolean( isRightUnlinked );
     }
@@ -83,14 +80,6 @@ public class BetaMemory
         return context;
     }
 
-    public Object getBehaviorContext() {
-        return behaviorContext;
-    }
-
-    public void setBehaviorContext(Object behaviorContext) {
-        this.behaviorContext = behaviorContext;
-    }
-    
     public boolean isLeftUnlinked() {
         return this.isLeftUnlinked;
     }

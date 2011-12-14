@@ -24,7 +24,6 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
 
@@ -42,15 +41,13 @@ public class NotNode extends BetaNode {
                    final LeftTupleSource leftInput,
                    final ObjectSource rightInput,
                    final BetaConstraints joinNodeBinder,
-                   final Behavior[] behaviors,
                    final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               joinNodeBinder,
-               behaviors );
+               joinNodeBinder );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
@@ -108,16 +105,10 @@ public class NotNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final RightTuple rightTuple = createRightTuple( factHandle,
-                                                        this );
+                                                        this,
+                                                        context );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
-                                         rightTuple,
-                                         workingMemory ) ) {
-            // destroy right tuple
-            rightTuple.unlinkFromRightParent();
-            return;
-        }
 
         memory.getRightTupleMemory().add( rightTuple );
 
@@ -166,9 +157,6 @@ public class NotNode extends BetaNode {
         // assign now, so we can remove from memory before doing any possible propagations
         final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
-        behavior.retractRightTuple( memory.getBehaviorContext(),
-                                    rightTuple,
-                                    workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.getBlocked() == null ) {

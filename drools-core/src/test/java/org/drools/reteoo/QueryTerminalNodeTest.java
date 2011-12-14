@@ -16,14 +16,13 @@
 
 package org.drools.reteoo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.QueryResult;
@@ -41,11 +40,12 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
+import org.junit.Before;
+import org.junit.Test;
 
 public class QueryTerminalNodeTest {
     private ReteooRuleBase   ruleBase;
@@ -131,7 +131,6 @@ public class QueryTerminalNodeTest {
                                                 liaNode,
                                                 alphaNode,
                                                 EmptyBetaConstraints.getInstance(),
-                                                Behavior.EMPTY_BEHAVIOR_LIST,
                                                 buildContext );
         joinNode.attach();
 

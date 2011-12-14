@@ -20,9 +20,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.RightTuple;
 
 /**
  * A class to encapsulate behavior management for a given beta node
@@ -37,6 +38,14 @@ public class BehaviorManager
 
     public BehaviorManager() {
         this( NO_BEHAVIORS );
+    }
+
+    /**
+     * @param behaviors
+     */
+    public BehaviorManager(List<Behavior> behaviors) {
+        super();
+        this.behaviors = behaviors.toArray( new Behavior[behaviors.size()] );
     }
 
     /**
@@ -73,34 +82,34 @@ public class BehaviorManager
      * Register a newly asserted right tuple into the behaviors' context
      *  
      * @param context
-     * @param tuple
+     * @param factHandle
      * @return
      */
-    public boolean assertRightTuple(final Object behaviorContext,
-                                    final RightTuple rightTuple,
-                                    final InternalWorkingMemory workingMemory) {
+    public boolean assertFact(final Object behaviorContext,
+                              final InternalFactHandle factHandle,
+                              final InternalWorkingMemory workingMemory) {
         boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            //result = result && behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
-            //                                                  rightTuple,
-            //                                                  workingMemory );
+            result = result && behaviors[i].assertFact( ((Object[]) behaviorContext)[i],
+                                                        factHandle,
+                                                        workingMemory );
         }
         return result;
     }
 
     /**
-     * Removes a newly asserted right tuple from the behaviors' context
+     * Removes a newly asserted fact handle from the behaviors' context
      * @param behaviorContext
-     * @param rightTuple
+     * @param factHandle
      * @param workingMemory
      */
-    public void retractRightTuple(final Object behaviorContext,
-                                  final RightTuple rightTuple,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractFact(final Object behaviorContext,
+                            final InternalFactHandle factHandle,
+                            final InternalWorkingMemory workingMemory) {
         for ( int i = 0; i < behaviors.length; i++ ) {
-//            behaviors[i].retractRightTuple( ((Object[]) behaviorContext)[i],
-//                                            rightTuple,
-//                                            workingMemory );
+            behaviors[i].retractFact( ((Object[]) behaviorContext)[i],
+                                      factHandle,
+                                      workingMemory );
         }
     }
 

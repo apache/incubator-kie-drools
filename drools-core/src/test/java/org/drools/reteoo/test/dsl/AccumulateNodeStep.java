@@ -45,7 +45,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
@@ -54,7 +53,6 @@ import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.KnowledgeHelper;
-import org.mockito.Mockito;
 
 public class AccumulateNodeStep
     implements
@@ -236,7 +234,6 @@ public class AccumulateNodeStep
                                                          alphaResultConstraint,
                                                          betaSourceConstraints,
                                                          new EmptyBetaConstraints(),
-                                                         new Behavior[]{},
                                                          accumulate,
                                                          false,
                                                          buildContext );

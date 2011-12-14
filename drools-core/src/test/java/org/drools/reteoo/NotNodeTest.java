@@ -16,6 +16,9 @@
 
 package org.drools.reteoo;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,15 +37,12 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class NotNodeTest extends DroolsTestCase {
     Rule                    rule;
@@ -89,7 +89,6 @@ public class NotNodeTest extends DroolsTestCase {
                                  new MockObjectSource( 8 ),
                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
                                                              configuration ),
-                                 Behavior.EMPTY_BEHAVIOR_LIST,
                                  buildContext );
 
         this.sink = new MockLeftTupleSink();
@@ -373,7 +372,6 @@ public class NotNodeTest extends DroolsTestCase {
                                              this.tupleSource,
                                              this.objectSource,
                                              nullConstraints,
-                                             Behavior.EMPTY_BEHAVIOR_LIST,
                                              buildContext );
         final BetaNodeFieldConstraint[] constraints = notNode.getConstraints();
         assertEquals( 0,
@@ -410,7 +408,6 @@ public class NotNodeTest extends DroolsTestCase {
                                  this.objectSource,
                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
                                                              conf ),
-                                 Behavior.EMPTY_BEHAVIOR_LIST,
                                  buildContext );
 
         this.node.addTupleSink( this.sink );

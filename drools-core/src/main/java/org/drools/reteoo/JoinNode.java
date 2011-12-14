@@ -20,18 +20,10 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.SingleBetaConstraints;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.MutableTypeConstraint;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
 public class JoinNode extends BetaNode {
@@ -46,15 +38,13 @@ public class JoinNode extends BetaNode {
                     final LeftTupleSource leftInput,
                     final ObjectSource rightInput,
                     final BetaConstraints binder,
-                    final Behavior[] behaviors,
                     final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               binder,
-               behaviors );
+               binder );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
     }
@@ -132,15 +122,8 @@ public class JoinNode extends BetaNode {
         }
 
         RightTuple rightTuple = createRightTuple( factHandle,
-                                                  this );
-
-        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
-                                         rightTuple,
-                                         workingMemory ) ) {
-            // destroy right tuple
-            rightTuple.unlinkFromRightParent();
-            return;
-        }
+                                                  this,
+                                                  context );
 
         memory.getRightTupleMemory().add( rightTuple );
         if ( memory.getLeftTupleMemory() == null || memory.getLeftTupleMemory().size() == 0 ) {
@@ -180,9 +163,6 @@ public class JoinNode extends BetaNode {
             return;
         }
 
-        behavior.retractRightTuple( memory.getBehaviorContext(),
-                                    rightTuple,
-                                    workingMemory );
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.firstChild != null ) {
