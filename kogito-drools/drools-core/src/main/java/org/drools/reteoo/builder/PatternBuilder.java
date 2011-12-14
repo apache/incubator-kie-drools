@@ -99,7 +99,7 @@ public class PatternBuilder
 
         final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
         final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
-        final List<Behavior> behaviors = new LinkedList<Behavior>();
+        final List<Behavior> behaviors = pattern.getBehaviors();
 
         this.createConstraints( context,
                                 utils,
@@ -134,9 +134,11 @@ public class PatternBuilder
             builder.build( context, utils, source );
         }
 
-        attachObjectTypeNode( context,
-                              utils,
-                              pattern );
+        if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT || ! behaviors.isEmpty() ) {
+            attachObjectTypeNode( context,
+                                  utils,
+                                  pattern );
+        }
         
         if( ! behaviors.isEmpty() ) {
             // build the window node:

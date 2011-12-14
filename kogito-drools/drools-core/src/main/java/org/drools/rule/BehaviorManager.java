@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.WindowNode.WindowMemory;
 
 /**
  * A class to encapsulate behavior management for a given beta node
@@ -85,12 +86,13 @@ public class BehaviorManager
      * @param factHandle
      * @return
      */
-    public boolean assertFact(final Object behaviorContext,
+    public boolean assertFact(final WindowMemory memory,
                               final InternalFactHandle factHandle,
                               final InternalWorkingMemory workingMemory) {
         boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            result = result && behaviors[i].assertFact( ((Object[]) behaviorContext)[i],
+            result = result && behaviors[i].assertFact( memory,
+                                                        ((Object[]) memory.behaviorContext)[i],
                                                         factHandle,
                                                         workingMemory );
         }
@@ -103,11 +105,12 @@ public class BehaviorManager
      * @param factHandle
      * @param workingMemory
      */
-    public void retractFact(final Object behaviorContext,
+    public void retractFact(final WindowMemory memory,
                             final InternalFactHandle factHandle,
                             final InternalWorkingMemory workingMemory) {
         for ( int i = 0; i < behaviors.length; i++ ) {
-            behaviors[i].retractFact( ((Object[]) behaviorContext)[i],
+            behaviors[i].retractFact( memory,
+                                      ((Object[]) memory.behaviorContext)[i],
                                       factHandle,
                                       workingMemory );
         }

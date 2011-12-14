@@ -129,6 +129,14 @@ public class WindowTupleList {
         windowTuple.setWindowPrevious( null );
         windowTuple.setWindowNext( null );
     }
+    
+    public WindowTuple getFirstWindowTuple() {
+        return firstWindowTuple;
+    }
+    
+    public WindowTuple getLastWindowTuple() {
+        return lastWindowTuple;
+    }
 
     public int hashCode() {
         return this.handle.hashCode();

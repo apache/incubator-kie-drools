@@ -212,6 +212,9 @@ public class AccumulateTest extends CommonTestMethodBase {
                                150 ) );
 
         wm.fireAllRules();
+        
+        assertEquals( 5, 
+                      results.size() );
 
         assertEquals( new Integer( 165 ),
                              results.get( 0 ) );

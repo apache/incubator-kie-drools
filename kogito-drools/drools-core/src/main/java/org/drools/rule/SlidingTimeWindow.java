@@ -35,7 +35,9 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterEnums;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
+import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.WindowNode;
+import org.drools.reteoo.WindowTupleList;
 import org.drools.reteoo.WindowNode.WindowMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.time.Job;
@@ -111,7 +113,8 @@ public class SlidingTimeWindow
      *
      * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public boolean assertFact(final Object context,
+    public boolean assertFact(final WindowMemory memory,
+                              final Object context,
                               final InternalFactHandle fact,
                               final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
@@ -121,6 +124,7 @@ public class SlidingTimeWindow
             // update next expiration time 
             updateNextExpiration( handle,
                                   workingMemory,
+                                  memory, 
                                   this,
                                   queue );
         }
@@ -132,7 +136,8 @@ public class SlidingTimeWindow
      *
      * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void retractFact(final Object context,
+    public void retractFact(final WindowMemory memory,
+                            final Object context,
                             final InternalFactHandle fact,
                             final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
@@ -145,6 +150,7 @@ public class SlidingTimeWindow
                 // update next expiration time 
                 updateNextExpiration( queue.queue.peek(),
                                       workingMemory,
+                                      memory,
                                       this,
                                       queue );
             } else {
@@ -153,8 +159,9 @@ public class SlidingTimeWindow
         }
     }
 
-    public void expireFacts(final Object context,
-                             final InternalWorkingMemory workingMemory) {
+    public void expireFacts(final WindowMemory memory,
+                            final Object context,
+                            final InternalWorkingMemory workingMemory) {
         TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
@@ -170,13 +177,15 @@ public class SlidingTimeWindow
                                                                                           null,
                                                                                           null,
                                                                                           handle );
-                // TODO: expire previous handle
-//                tuple.getRightTupleSink().retractRightTuple( tuple,
-//                                                             propagationContext,
-//                                                             workingMemory );
-                propagationContext.evaluateActionQueue( workingMemory );
+                WindowTupleList list = (WindowTupleList) memory.events.get( handle );
+                for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                    tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                                 propagationContext,
+                                                                 workingMemory );
+                    propagationContext.evaluateActionQueue( workingMemory );
+                    tuple.unlinkFromRightParent();
+                }
             }
-//            tuple.unlinkFromRightParent();
             queue.expiringHandle = null;
             handle = queue.queue.peek();
         }
@@ -184,6 +193,7 @@ public class SlidingTimeWindow
         // update next expiration time 
         updateNextExpiration( handle,
                               workingMemory,
+                              memory,
                               this,
                               queue );
     }
@@ -199,6 +209,7 @@ public class SlidingTimeWindow
      */
     private static void updateNextExpiration(final InternalFactHandle fact,
                                       final InternalWorkingMemory workingMemory,
+                                      final WindowMemory memory,
                                       final SlidingTimeWindow stw,
                                       final Object context) {
         TimerService clock = workingMemory.getTimerService();
@@ -206,6 +217,7 @@ public class SlidingTimeWindow
             long nextTimestamp = ((EventFactHandle) fact).getStartTimestamp() + stw.getSize();
             JobContext jobctx = new BehaviorJobContext( workingMemory,
                                                         stw,
+                                                        memory,
                                                         context );
             JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
@@ -287,7 +299,7 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
   
             EventFactHandle handle = slCtx.getQueue().peek();
-            //outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+            outputCtx.writeInt( handle.getId() );
             
 //            BetaNode node = (BetaNode) handle.getRightTupleSink();
 //            outputCtx.writeInt( node.getId() );
@@ -313,12 +325,13 @@ public class SlidingTimeWindow
             Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
             
             int i = inCtx.readInt();
-            SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
-                       
-            updateNextExpiration( stwCtx.queue.peek(),
-                                  inCtx.wm,
-                                  (SlidingTimeWindow) windowNode.getBehaviors()[i],
-                                  stwCtx );
+//            SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
+//                       
+//            updateNextExpiration( stwCtx.queue.peek(),
+//                                  inCtx.wm,
+//                                  memory, 
+//                                  (SlidingTimeWindow) windowNode.getBehaviors()[i],
+//                                  stwCtx );
         }
     }    
     
@@ -330,6 +343,7 @@ public class SlidingTimeWindow
         public InternalWorkingMemory workingMemory;
         public Behavior              behavior;
         public Object                behaviorContext;
+        public WindowMemory          memory;
         public JobHandle             handle;
 
         /**
@@ -339,10 +353,12 @@ public class SlidingTimeWindow
          */
         public BehaviorJobContext(InternalWorkingMemory workingMemory,
                                   Behavior behavior,
+                                  WindowMemory memory,
                                   Object behaviorContext) {
             super();
             this.workingMemory = workingMemory;
             this.behavior = behavior;
+            this.memory = memory;
             this.behaviorContext = behaviorContext;
         }
 
@@ -373,6 +389,7 @@ public class SlidingTimeWindow
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
             context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.behavior,
+                                                                                        context.memory,
                                                                                         context.behaviorContext ) );
         }
 
@@ -383,15 +400,18 @@ public class SlidingTimeWindow
         WorkingMemoryAction {
         private final Behavior behavior;
         private final Object   context;
+        private final WindowMemory memory;
 
         /**
          * @param behavior
          * @param context
          */
         public BehaviorExpireWMAction(Behavior behavior,
+                                      WindowMemory memory,
                                       Object context) {
             super();
             this.behavior = behavior;
+            this.memory = memory;
             this.context = context;
         }
 
@@ -399,7 +419,7 @@ public class SlidingTimeWindow
             int sinkId = inCtx.readInt();
             WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
             
-            WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );       
+            memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );       
             
             Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
             
@@ -410,7 +430,8 @@ public class SlidingTimeWindow
         }
         
         public void execute(InternalWorkingMemory workingMemory) {
-            this.behavior.expireFacts( context,
+            this.behavior.expireFacts( memory,
+                                       context,
                                        workingMemory );
         }
 
@@ -423,15 +444,14 @@ public class SlidingTimeWindow
             
             // write out SlidingTimeWindowContext
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
-            //TODO
   
-            //RightTuple rightTuple = slCtx.getQueue().peek();
-            //outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+            EventFactHandle handle = slCtx.getQueue().peek();
+            outputCtx.writeInt( handle.getId() );
             
-            //BetaNode node = (BetaNode) rightTuple.getRightTupleSink();
-            //outputCtx.writeInt( node.getId() );
-            
-            //Behavior[] behaviors = node.getBehaviors();
+//            BetaNode node = (BetaNode) rightTuple.getRightTupleSink();
+//            outputCtx.writeInt( node.getId() );
+//            
+//            Behavior[] behaviors = node.getBehaviors();
 //            int i = 0;
 //            for ( ; i < behaviors.length; i++ ) {     
 //                if ( behaviors[i] == behavior ) {

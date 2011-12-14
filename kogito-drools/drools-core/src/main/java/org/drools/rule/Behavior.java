@@ -18,6 +18,7 @@ package org.drools.rule;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.WindowNode.WindowMemory;
 import org.drools.spi.RuleComponent;
 
 /**
@@ -60,6 +61,7 @@ public interface Behavior extends RuleComponent, Cloneable {
     /**
      * Makes the behavior aware of the new fact entering behavior's scope
      * 
+     * @param memory The window node memory
      * @param context The behavior context object
      * @param fact The new fact entering behavior's scope
      * @param workingMemory The working memory session reference
@@ -68,28 +70,33 @@ public interface Behavior extends RuleComponent, Cloneable {
      *         the behaviour has veto power over the fact propagation, and prevents
      *         the propagation to continue if returns false on this method. 
      */
-    public boolean assertFact(Object context,
+    public boolean assertFact(WindowMemory memory,
+                              Object context,
                               InternalFactHandle fact,
                               InternalWorkingMemory workingMemory);
 
     /**
      * Removes a right tuple from the behavior's scope
      * 
+     * @param memory The window node memory
      * @param context The behavior context object
      * @param fact The fact leaving the behavior's scope
      * @param workingMemory The working memory session reference
      */
-    public void retractFact(Object context,
+    public void retractFact(WindowMemory memory,
+                            Object context,
                             InternalFactHandle fact,
                             InternalWorkingMemory workingMemory);
 
     /**
      * A callback method that allows behaviors to expire facts
      * 
+     * @param memory The window node memory
      * @param context The behavior context object
      * @param workingMemory The working memory session reference
      */
-    public void expireFacts(Object context, 
+    public void expireFacts(WindowMemory memory,
+                            Object context, 
                             InternalWorkingMemory workingMemory);
 
     /**
