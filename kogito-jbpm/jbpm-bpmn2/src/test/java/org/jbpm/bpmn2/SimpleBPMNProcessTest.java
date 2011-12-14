@@ -89,6 +89,20 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+	public void testMinimalProcessImplicit() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessImplicit.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("Minimal");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
+	public void testImplicitEndParallel() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ParallelSplit.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
 	public void testMinimalProcessWithGraphical() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

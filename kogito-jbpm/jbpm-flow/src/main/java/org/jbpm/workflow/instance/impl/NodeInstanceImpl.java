@@ -142,26 +142,22 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         	((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
         		.nodeInstanceCompleted(this, type);
         } else {
-	        for (Connection connection: connections) {
+        	Map<org.jbpm.workflow.instance.NodeInstance, String> nodeInstances = 
+        		new HashMap<org.jbpm.workflow.instance.NodeInstance, String>();
+        	for (Connection connection: connections) {
+        		nodeInstances.put(followConnection(connection), connection.getToType());
+        	}
+        	for (Map.Entry<org.jbpm.workflow.instance.NodeInstance, String> nodeInstance: nodeInstances.entrySet()) {
 	        	// stop if this process instance has been aborted / completed
 	        	if (getProcessInstance().getState() != ProcessInstance.STATE_ACTIVE) {
 	        		return;
 	        	}
-	    		triggerConnection(connection);
+	    		triggerNodeInstance(nodeInstance.getKey(), nodeInstance.getValue());
 	        }
         }
     }
     
-    protected void triggerConnection(Connection connection) {
-    	boolean hidden = false;
-    	if (getNode().getMetaData().get("hidden") != null) {
-    		hidden = true;
-    	}
-    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-    	if (!hidden) {
-    		((InternalProcessRuntime) kruntime.getProcessRuntime())
-    			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
-    	}
+    protected org.jbpm.workflow.instance.NodeInstance followConnection(Connection connection) {
     	// check for exclusive group first
     	NodeInstanceContainer parent = getNodeInstanceContainer();
     	if (parent instanceof ContextInstanceContainer) {
@@ -181,13 +177,31 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     			}
     		}
     	}
+    	return (org.jbpm.workflow.instance.NodeInstance)
+    		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
+            	.getNodeInstance(connection.getTo());
+    }
+    
+    protected void triggerNodeInstance(org.jbpm.workflow.instance.NodeInstance nodeInstance, String type) {
+    	boolean hidden = false;
+    	if (getNode().getMetaData().get("hidden") != null) {
+    		hidden = true;
+    	}
+    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+    	if (!hidden) {
+    		((InternalProcessRuntime) kruntime.getProcessRuntime())
+    			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
+    	}
     	// trigger next node
-        ((org.jbpm.workflow.instance.NodeInstance) ((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
-        	.getNodeInstance(connection.getTo())).trigger(this, connection.getToType());
+        nodeInstance.trigger(this, type);
         if (!hidden) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
         		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         }
+    }
+    
+    protected void triggerConnection(Connection connection) {
+    	triggerNodeInstance(followConnection(connection), connection.getToType());
     }
     
     public Context resolveContext(String contextId, Object param) {
