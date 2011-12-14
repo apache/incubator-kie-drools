@@ -29,7 +29,7 @@
     required at runtime. In many cases, people will simply want to include all the dependencies at runtime, and this is
     fine. It allows you to have the most flexibility. However, some may prefer to have their "runtime" stripped down to
     the bare minimum, as they will be deploying rules in binary form - this is also possible. The core runtime engine
-    can be quite compact, and only require a few 100 kilobytes across 2 jar files.</para>
+    can be quite compact, and only requires a few 100 kilobytes across 3 jar files.</para>
 
     <para>The following is a description of the important libraries that make up JBoss Drools</para>
 
@@ -37,6 +37,10 @@
       <listitem>
         <para>knowledge-api.jar - this provides the interfaces and factories. It also helps clearly show what is
         intended as a user api and what is just an engine api.</para>
+      </listitem>
+
+      <listitem>
+        <para>knowledge-internal-api.jar - this provides internal interfaces and factories.</para>
       </listitem>
 
       <listitem>
@@ -48,7 +52,7 @@
       <listitem>
         <para>drools-compiler.jar - this contains the compiler/builder components to take rule source, and build
         executable rule bases. This is often a runtime dependency of your application, but it need not be if you are
-        pre-compiling your rules. This depends on drools-core</para>
+        pre-compiling your rules. This depends on drools-core.</para>
       </listitem>
 
       <listitem>
