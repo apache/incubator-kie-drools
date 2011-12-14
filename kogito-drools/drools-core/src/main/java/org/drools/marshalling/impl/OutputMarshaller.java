@@ -52,10 +52,8 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItem;
-import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.LeftTuple;
@@ -66,6 +64,8 @@ import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.WindowNode;
+import org.drools.reteoo.WindowNode.WindowMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -575,7 +575,6 @@ public class OutputMarshaller {
 
         switch ( sink.getType() ) {
             case NodeTypeEnums.JoinNode : {
-                writeBehaviours( (BetaNode) sink, context);
                 //context.out.println( "JoinNode" );
                 for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     stream.writeShort( PersisterEnums.RIGHT_TUPLE );
@@ -607,7 +606,6 @@ public class OutputMarshaller {
             }
             case NodeTypeEnums.NotNode :
             case NodeTypeEnums.ForallNotNode : {
-                writeBehaviours( (BetaNode) sink, context);
                 if ( leftTuple.getBlocker() == null ) {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
@@ -628,7 +626,6 @@ public class OutputMarshaller {
                 break;
             }
             case NodeTypeEnums.ExistsNode : {
-                writeBehaviours( (BetaNode) sink, context);
                 if ( leftTuple.getBlocker() == null ) {
                     // is blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
@@ -648,7 +645,6 @@ public class OutputMarshaller {
                 break;
             }
             case NodeTypeEnums.AccumulateNode : {
-                writeBehaviours( (BetaNode) sink, context);
                 //context.out.println( ".... AccumulateNode" );
                 // accumulate nodes generate new facts on-demand and need special procedures when serializing to persistent storage
                 AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
@@ -835,30 +831,25 @@ public class OutputMarshaller {
         }
     }
     
-    public static void writeBehaviours(BetaNode betaNode,
+    public static void writeBehaviours(WindowNode windowNode,
                                        MarshallerWriteContext outCtx) throws IOException {
-        Behavior[] behaviors = betaNode.getBehaviors();
+        Behavior[] behaviors = windowNode.getBehaviors();
         
-        BetaMemory betaMemory = null;       
-        if ( betaNode instanceof AccumulateNode ) {
-            betaMemory = (( AccumulateMemory ) outCtx.wm.getNodeMemory( betaNode )).betaMemory;
-        } else {
-            betaMemory = ( BetaMemory ) outCtx.wm.getNodeMemory( betaNode );
-        }
+        WindowMemory memory = (WindowMemory) outCtx.wm.getNodeMemory( windowNode );       
         
-        Object[] behaviorContexts = ( Object[] ) betaMemory.getBehaviorContext();
+        Object[] behaviorContexts = ( Object[] ) memory.behaviorContext;
         
         for ( int i = 0; i < behaviors.length; i++ ) {
-            if ( betaNode.getBehaviors()[i] instanceof SlidingTimeWindow) {
+            if ( windowNode.getBehaviors()[i] instanceof SlidingTimeWindow) {
                 outCtx.writeShort( PersisterEnums.SLIDING_TIME_WIN );
                 outCtx.writeInt( i );
-                writeSlidingTimeWindowBehaviour( ( SlidingTimeWindow) betaNode.getBehaviors()[i], 
+                writeSlidingTimeWindowBehaviour( ( SlidingTimeWindow) windowNode.getBehaviors()[i], 
                                                  ( SlidingTimeWindowContext ) behaviorContexts[i], 
                                                  outCtx);
-            } else if ( betaNode.getBehaviors()[i] instanceof SlidingLengthWindow) {
+            } else if ( windowNode.getBehaviors()[i] instanceof SlidingLengthWindow) {
                 outCtx.writeShort( PersisterEnums.SLIDING_LENGTH_WIN );
                 outCtx.writeInt( i );
-                writeSlidingLengthWindowBehaviour( ( SlidingLengthWindow) betaNode.getBehaviors()[i], 
+                writeSlidingLengthWindowBehaviour( ( SlidingLengthWindow) windowNode.getBehaviors()[i], 
                                                  ( SlidingLengthWindowContext ) behaviorContexts[i], 
                                                  outCtx);                
             }

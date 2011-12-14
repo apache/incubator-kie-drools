@@ -35,11 +35,8 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterEnums;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
-import org.drools.reteoo.AccumulateNode;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.WindowNode;
+import org.drools.reteoo.WindowNode.WindowMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -309,23 +306,18 @@ public class SlidingTimeWindow
     public static class BehaviorJobContextTimerInputMarshaller implements TimersInputMarshaller {
         public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
             int sinkId = inCtx.readInt();
-            BetaNode betaNode = (BetaNode) inCtx.sinks.get( sinkId );
+            WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
             
-            BetaMemory betaMemory = null;       
-            if ( betaNode instanceof AccumulateNode ) {
-                betaMemory = (( AccumulateMemory ) inCtx.wm.getNodeMemory( betaNode )).betaMemory;
-            } else {
-                betaMemory = ( BetaMemory ) inCtx.wm.getNodeMemory( betaNode );
-            }
+            WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );       
             
-            Object[] behaviorContext = ( Object[]  ) betaMemory.getBehaviorContext();
+            Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
             
             int i = inCtx.readInt();
             SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
                        
             updateNextExpiration( stwCtx.queue.peek(),
                                   inCtx.wm,
-                                  (SlidingTimeWindow) betaNode.getBehaviors()[i],
+                                  (SlidingTimeWindow) windowNode.getBehaviors()[i],
                                   stwCtx );
         }
     }    
@@ -405,20 +397,15 @@ public class SlidingTimeWindow
 
         public BehaviorExpireWMAction(MarshallerReaderContext inCtx) throws IOException {
             int sinkId = inCtx.readInt();
-            BetaNode betaNode = (BetaNode) inCtx.sinks.get( sinkId );
+            WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
             
-            BetaMemory betaMemory = null;       
-            if ( betaNode instanceof AccumulateNode ) {
-                betaMemory = (( AccumulateMemory ) inCtx.wm.getNodeMemory( betaNode )).betaMemory;
-            } else {
-                betaMemory = ( BetaMemory ) inCtx.wm.getNodeMemory( betaNode );
-            }
+            WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );       
             
-            Object[] behaviorContext = ( Object[]  ) betaMemory.getBehaviorContext();
+            Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
             
             int i = inCtx.readInt();
             
-            this.behavior = (SlidingTimeWindow) betaNode.getBehaviors()[i];
+            this.behavior = (SlidingTimeWindow) windowNode.getBehaviors()[i];
             this.context =  ( SlidingTimeWindowContext ) behaviorContext[i];           
         }
         

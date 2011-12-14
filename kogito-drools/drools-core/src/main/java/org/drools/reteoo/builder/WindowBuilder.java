@@ -16,16 +16,9 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.List;
-
-import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.WindowNode;
-import org.drools.rule.Behavior;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.WindowDeclaration;
-import org.drools.spi.AlphaNodeFieldConstraint;
 
 /**
  * A builder for patterns
@@ -45,27 +38,11 @@ public class WindowBuilder implements ReteooComponentBuilder {
 
         final ReteooComponentBuilder builder = utils.getBuilderFor( pattern );
 
-        context.setAttachAlphaNodes( false );
-
         builder.build( context,
                        utils,
                        pattern );
 
-        context.setAttachAlphaNodes( true );
-        
-        final List<AlphaNodeFieldConstraint> alphaConstraints = context.getAlphaConstraints();
-        final List<Behavior> behaviors = context.getBehaviors();
-        
-        // build the window node:
-        WindowNode wn = new WindowNode( context.getNextId(),
-                                        alphaConstraints,
-                                        behaviors,
-                                        context.getObjectSource(),
-                                        context );
-        utils.attachNode( context, 
-                          wn );
-        
-
+        // TODO: register named window
     }
 
     /**

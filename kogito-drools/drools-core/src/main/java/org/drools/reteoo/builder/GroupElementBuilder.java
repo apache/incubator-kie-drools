@@ -17,7 +17,6 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +34,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElement.Type;
 import org.drools.rule.RuleConditionElement;
@@ -92,16 +90,6 @@ public class GroupElementBuilder
                                                rce );
     }
     
-    @SuppressWarnings("unchecked")
-    private static Behavior[] createBehaviorArray(final BuildContext context) {
-        Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
-        if( ! context.getBehaviors().isEmpty() ) {
-            behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
-        }
-        context.setBehaviors( Collections.EMPTY_LIST );
-        return behaviors;
-    }
-
     private static class AndBuilder
         implements
         ReteooComponentBuilder {
@@ -155,14 +143,11 @@ public class GroupElementBuilder
                                                                                             context.getBetaconstraints(),
                                                                                             false );
 
-                    Behavior[] behaviors = createBehaviorArray( context );
-
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                                 new JoinNode( context.getNextId(),
                                                                                               context.getTupleSource(),
                                                                                               context.getObjectSource(),
                                                                                               betaConstraints,
-                                                                                              behaviors,
                                                                                               context ) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
@@ -269,8 +254,6 @@ public class GroupElementBuilder
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
                                                                                     false );
-            Behavior[] behaviors = createBehaviorArray( context );
-
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
@@ -279,7 +262,6 @@ public class GroupElementBuilder
                                 context.getTupleSource(),
                                 context.getObjectSource(),
                                 betaConstraints,
-                                behaviors,
                                 context );
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                         node ) );
@@ -359,8 +341,6 @@ public class GroupElementBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
-            Behavior[] behaviors = createBehaviorArray( context );
-
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
@@ -369,7 +349,6 @@ public class GroupElementBuilder
                                                                                         context.getTupleSource(),
                                                                                         context.getObjectSource(),
                                                                                         betaConstraints,
-                                                                                        behaviors,
                                                                                         context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );

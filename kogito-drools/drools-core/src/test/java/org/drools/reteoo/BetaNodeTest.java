@@ -16,15 +16,13 @@
 
 package org.drools.reteoo;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.drools.RuleBaseFactory;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.Behavior;
+import org.junit.Test;
 
 public class BetaNodeTest {
 
@@ -43,25 +41,21 @@ public class BetaNodeTest {
                                           ts,
                                           os,
                                           EmptyBetaConstraints.getInstance(),
-                                          Behavior.EMPTY_BEHAVIOR_LIST,
                                           buildContext );
         final BetaNode j2 = new JoinNode( 2,
                                           ts,
                                           os,
                                           EmptyBetaConstraints.getInstance(),
-                                          Behavior.EMPTY_BEHAVIOR_LIST,
                                           buildContext );
         final BetaNode n1 = new NotNode( 3,
                                          ts,
                                          os,
                                          EmptyBetaConstraints.getInstance(),
-                                         Behavior.EMPTY_BEHAVIOR_LIST,
                                          buildContext );
         final BetaNode n2 = new NotNode( 4,
                                          ts,
                                          os,
                                          EmptyBetaConstraints.getInstance(),
-                                         Behavior.EMPTY_BEHAVIOR_LIST,
                                          buildContext );
 
         assertEquals( j1,

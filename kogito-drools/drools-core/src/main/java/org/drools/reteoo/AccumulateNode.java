@@ -35,7 +35,6 @@ import org.drools.core.util.Iterator;
 import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -66,7 +65,6 @@ public class AccumulateNode extends BetaNode {
                           final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
-                          final Behavior[] behaviors,
                           final Accumulate accumulate,
                           final boolean unwrapRightObject,
                           final BuildContext context) {
@@ -75,8 +73,7 @@ public class AccumulateNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               sourceBinder,
-               behaviors );
+               sourceBinder );
         this.resultBinder = resultBinder;
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
@@ -244,15 +241,9 @@ public class AccumulateNode extends BetaNode {
 
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
-        final RightTuple rightTuple = new RightTuple( factHandle,
-                                                      this );
-        if ( !behavior.assertRightTuple( memory.betaMemory.getBehaviorContext(),
-                                         rightTuple,
-                                         workingMemory ) ) {
-            // destroy right tuple
-            rightTuple.unlinkFromRightParent();
-            return;
-        }
+        final RightTuple rightTuple = createRightTuple( factHandle, 
+                                                        this, 
+                                                        context );
 
         memory.betaMemory.getRightTupleMemory().add( rightTuple );
 
@@ -318,9 +309,6 @@ public class AccumulateNode extends BetaNode {
             ((PropagationContextImpl) context).setFactHandle( null );
         }
 
-        behavior.retractRightTuple( memory.betaMemory.getBehaviorContext(),
-                                    rightTuple,
-                                    workingMemory );
         memory.betaMemory.getRightTupleMemory().remove( rightTuple );
 
         removePreviousMatchesForRightTuple( rightTuple,
@@ -646,8 +634,9 @@ public class AccumulateNode extends BetaNode {
                                                                                                   workingMemory,
                                                                                                   null ); // so far, result is not an event
 
-            accctx.result = new RightTuple( handle,
-                                            this );
+            accctx.result = createRightTuple( handle,
+                                              this,
+                                              context );
         } else {
             accctx.result.getFactHandle().setObject( result );
         }
@@ -801,7 +790,6 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < this.resultConstraints.length; i++ ) {
             memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
         }
-        memory.betaMemory.setBehaviorContext( this.behavior.createBehaviorContext() );
         return memory;
     }
 

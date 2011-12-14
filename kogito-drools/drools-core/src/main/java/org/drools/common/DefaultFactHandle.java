@@ -304,10 +304,26 @@ public class DefaultFactHandle
         this.entryPoint = sourceNode;
     }
     
+    public void addFirstLeftTuple( LeftTuple leftTuple ) {
+        LeftTuple previous = this.getFirstLeftTuple();
+        if ( previous == null ) {
+            // no other LeftTuples, just add.
+            leftTuple.setLeftParentPrevious( null );
+            leftTuple.setLeftParentNext( null );
+            setFirstLeftTuple( leftTuple );
+            setLastLeftTuple( leftTuple );
+        } else {
+            leftTuple.setLeftParentPrevious( null );
+            leftTuple.setLeftParentNext( previous );
+            previous.setLeftParentPrevious( leftTuple );
+            setFirstLeftTuple( leftTuple );
+        }
+    }
+    
     public void addLastLeftTuple( LeftTuple leftTuple ) {
         LeftTuple previous = this.getLastLeftTuple();
         if ( previous == null ) {
-            // node other LeftTuples, just add.
+            // no other LeftTuples, just add.
             leftTuple.setLeftParentPrevious( null );
             leftTuple.setLeftParentNext( null );
             setFirstLeftTuple( leftTuple );

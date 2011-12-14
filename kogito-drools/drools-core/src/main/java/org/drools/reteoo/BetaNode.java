@@ -49,6 +49,8 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.IndexableConstraint;
+import org.drools.rule.UnificationRestriction;
+import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -82,8 +84,6 @@ public abstract class BetaNode extends LeftTupleSource
     protected ObjectSource    rightInput;
 
     protected BetaConstraints constraints;
-
-    protected BehaviorManager behavior;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -123,15 +123,13 @@ public abstract class BetaNode extends LeftTupleSource
              final boolean partitionsEnabled,
              final LeftTupleSource leftInput,
              final ObjectSource rightInput,
-             final BetaConstraints constraints,
-             final Behavior[] behaviors) {
+             final BetaConstraints constraints ) {
         super( id,
                partitionId,
                partitionsEnabled );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
-        this.behavior = new BehaviorManager( behaviors );
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
@@ -142,7 +140,6 @@ public abstract class BetaNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         constraints = (BetaConstraints) in.readObject();
-        behavior = (BehaviorManager) in.readObject();
         leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
         objectMemory = in.readBoolean();
@@ -163,7 +160,6 @@ public abstract class BetaNode extends LeftTupleSource
         }
         
         out.writeObject( constraints );
-        out.writeObject( behavior );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
         out.writeBoolean( objectMemory );
@@ -267,10 +263,6 @@ public abstract class BetaNode extends LeftTupleSource
     
     public BetaConstraints getRawConstraints() {
         return this.constraints;
-    }
-
-    public Behavior[] getBehaviors() {
-        return this.behavior.getBehaviors();
     }
 
     /* (non-Javadoc)
@@ -561,7 +553,6 @@ public abstract class BetaNode extends LeftTupleSource
      */
     public Object createMemory(final RuleBaseConfiguration config) {
         BetaMemory memory = this.constraints.createBetaMemory( config );
-        memory.setBehaviorContext( this.behavior.createBehaviorContext() );
         return memory;
     }
 
@@ -638,10 +629,17 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public RightTuple createRightTuple(InternalFactHandle handle,
-                                       RightTupleSink sink) {
+                                       RightTupleSink sink,
+                                       PropagationContext context) {
         if ( !this.concurrentRightTupleMemory ) {
-            return new RightTuple( handle,
-                                   sink );
+            if( context.getActiveWindowTupleList() == null ) {
+                return new RightTuple( handle,
+                                       sink );
+            } else {
+                return new WindowTuple( handle,
+                                        sink,
+                                        context.getActiveWindowTupleList() );
+            }
         } else {
             return new ConcurrentRightTuple( handle,
                                              sink );

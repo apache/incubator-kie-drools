@@ -141,7 +141,6 @@ public class NotNodeStep
                                            leftTupleSource,
                                            rightObjectSource,
                                            constraints,
-                                           BehaviorManager.NO_BEHAVIORS,
                                            buildContext );
             notNode.attach();
             context.put( name,

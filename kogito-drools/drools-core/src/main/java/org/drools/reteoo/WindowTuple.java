@@ -38,8 +38,11 @@ public class WindowTuple extends RightTuple {
     }
 
     public WindowTuple(InternalFactHandle handle,
-                       RightTupleSink sink) {
+                       RightTupleSink sink,
+                       WindowTupleList list ) {
         super( handle, sink );
+        this.windowList = list;
+        list.addLastWindowTuple( this );
     }
 
     public void unlinkFromRightParent() {
