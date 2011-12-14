@@ -25,6 +25,9 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.WindowNode.WindowMemory;
+import org.drools.reteoo.WindowTupleList;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -94,7 +97,8 @@ public class SlidingLengthWindow
     /**
      * @inheritDoc
      */
-    public boolean assertFact(final Object context,
+    public boolean assertFact(final WindowMemory memory,
+                              final Object context,
                               final InternalFactHandle handle,
                               final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
@@ -107,13 +111,14 @@ public class SlidingLengthWindow
                                                                                       null,
                                                                                       null,
                                                                                       previous );
-            // TODO: retract previous handle
-//            tuple.getRightTupleSink().retractRightTuple( tuple,
-//                                                         propagationContext,
-//                                                         workingMemory );
-            propagationContext.evaluateActionQueue( workingMemory );
-//            tuple.unlinkFromRightParent();
-
+            WindowTupleList list = (WindowTupleList) memory.events.get( previous );
+            for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
+                tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                             propagationContext,
+                                                             workingMemory );
+                propagationContext.evaluateActionQueue( workingMemory );
+                tuple.unlinkFromRightParent();
+            }
         }
         window.handles[window.pos] = (EventFactHandle) handle;
         return true;
@@ -124,7 +129,8 @@ public class SlidingLengthWindow
      *
      * @see org.drools.rule.Behavior#retractRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public void retractFact(final Object context,
+    public void retractFact(final WindowMemory memory,
+                            final Object context,
                             final InternalFactHandle handle,
                             final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;
@@ -140,8 +146,9 @@ public class SlidingLengthWindow
         }
     }
 
-    public void expireFacts(Object context,
-                            InternalWorkingMemory workingMemory) {
+    public void expireFacts(final WindowMemory memory,
+                            final Object context,
+                            final InternalWorkingMemory workingMemory) {
         // do nothing?
     }
 

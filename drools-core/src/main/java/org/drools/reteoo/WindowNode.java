@@ -153,7 +153,7 @@ public class WindowNode extends ObjectSource
             }
         }
         // process the behavior
-        if (!behavior.assertFact( memory.behaviorContext,
+        if (!behavior.assertFact( memory,
                                   factHandle,
                                   workingMemory )) {
             return;
@@ -232,9 +232,9 @@ public class WindowNode extends ObjectSource
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory( this );
 
         // behavior retract
-        behavior.assertFact( memory.behaviorContext,
-                             factHandle,
-                             workingMemory );
+        behavior.retractFact( memory,
+                              factHandle,
+                              workingMemory );
 
         // memory retract
         memory.events.remove( factHandle );
