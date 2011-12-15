@@ -118,7 +118,7 @@
     
     <para>Do the following:
       <itemizedlist>
-        <listitem>Once Eclipse has opened, simple import (using "File -> Import ..." and then under
+        <listitem>Once Eclipse has opened, simply import (using "File -> Import ..." and then under
         the General category, select "Existing Projects into Workspace") the existing sample project
         (in the jbpm-installer/sample/evaluation directory).  This should add the sample project,
         including a simple BPMN2 process and a Java file to start the process.</listitem>
@@ -150,7 +150,7 @@
 
     <para>You could also create a new project using the jBPM project wizard.  This sample project
     contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.
-    Simple select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project"
+    Simply select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project"
     and click "Next".  Give the project a name and click "Finish".  You should see a new project
     containing a "sample.bpmn" process and a "com.sample.ProcessTest" Java class.  You can open the
     BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java
@@ -191,17 +191,17 @@
         <listitem>To manage your process instances, click on the "Processes" tab at the left an select "Process Overview".  
 After a slight delay (if you are using the application for the first time, due to session initalization
 etc.), the "Process" list should show all the known processes.  The jbpm-console in the demo setup 
-currently loads all the process in the "src/main/resources" folder of the evaluation sample in 
+currently loads all the processes in the "src/main/resources" folder of the evaluation sample in
 "jbpm-installer/sample/evaluation".  If you click the process, it will show you all current running 
 instances.  Since there are no running instances at this point, the "Instance" table will remain 
 empty.</listitem>
 
-  <listitem>You can start a new process instance by click on the "Start" button.  After confirming that you want to 
+  <listitem>You can start a new process instance by clicking on the "Start" button.  After confirming that you want to
 start a new execution of this process, you will see a process form where you need to fill in the 
 necessary information to start the process.  In this case, you need to fill in your username "krisv",
 after which you can complete the form and close the window.  A new instance should show up in the 
 "Instance" table.  If you click the process instance, you can check its details below and the diagram 
-and instance data by click on the "Diagram" and "Instance Data" buttons respectively.  The process 
+and instance data by clicking on the "Diagram" and "Instance Data" buttons respectively.  The process
 instance that you just started is first requiring a self-evaluation of the user and is waiting until 
 the user has completed this task.</listitem>
 
@@ -216,7 +216,7 @@ perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" 
 tasks.</listitem>
 
   <listitem>After starting and/or completing a few process instances and human tasks, you can generate a report of 
-what happened so far.  Under "Reporting", select "Report Templates".  By default, the console has two 
+what has happened so far.  Under "Reporting", select "Report Templates".  By default, the console has two
 report templates, one for generating a generic overview for all processes and one for inspecting once 
 specific process definition.  If you select the latter, make sure to enter "com.sample.evaluation" as 
 the process definition id to see the activity related to the evaluation process.  Click the "Create 
