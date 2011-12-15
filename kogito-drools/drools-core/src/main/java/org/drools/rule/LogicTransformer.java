@@ -181,7 +181,7 @@ class LogicTransformer {
                             Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), ((MvelConstraint)constraint).getFieldExtractor(), pattern, false );
                             pattern.addDeclaration(redeclaredDeclr);
                         } else {
-                            throw new RuntimeException("???");
+                            ((MvelConstraint)constraint).unsetUnification();
                         }
                     }
                     

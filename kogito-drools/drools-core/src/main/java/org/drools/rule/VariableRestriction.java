@@ -163,36 +163,36 @@ public class VariableRestriction
                                                                                                                           other.requiredDeclarations );
     }
 
-    private final VariableContextEntry createContextEntry(final Evaluator eval,
-                                                          final InternalReadAccessor fieldExtractor) {
-        ValueType coerced = eval.getCoercedValueType();
+    public static VariableContextEntry createContextEntry(InternalReadAccessor fieldExtractor,
+                                                          Declaration declaration,
+                                                          Evaluator evaluator) {
+        ValueType coerced = evaluator.getCoercedValueType();
 
         if ( coerced.isBoolean() ) {
             return new BooleanVariableContextEntry( fieldExtractor,
-                                                    this.declaration,
-                                                    this.evaluator );
+                                                    declaration,
+                                                    evaluator );
         } else if ( coerced.isFloatNumber() ) {
             return new DoubleVariableContextEntry( fieldExtractor,
-                                                   this.declaration,
-                                                   this.evaluator );
+                                                   declaration,
+                                                   evaluator );
         } else if ( coerced.isIntegerNumber() || coerced.isEvent() ) {
             return new LongVariableContextEntry( fieldExtractor,
-                                                 this.declaration,
-                                                 this.evaluator );
+                                                 declaration,
+                                                 evaluator );
         } else if ( coerced.isChar() ) {
             return new CharVariableContextEntry( fieldExtractor,
-                                                 this.declaration,
-                                                 this.evaluator );
+                                                 declaration,
+                                                 evaluator );
         } else {
             return new ObjectVariableContextEntry( fieldExtractor,
-                                                   this.declaration,
-                                                   this.evaluator );
+                                                   declaration,
+                                                   evaluator );
         }
     }
 
     public ContextEntry createContextEntry() {
-        return this.createContextEntry( this.evaluator,
-                                        this.readAccessor );
+        return createContextEntry(readAccessor, declaration, evaluator);
     }
 
     public Object clone() {

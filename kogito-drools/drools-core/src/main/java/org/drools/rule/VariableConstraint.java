@@ -35,6 +35,7 @@ public class VariableConstraint extends MutableTypeConstraint
     implements
     AcceptsReadAccessor,
     IndexableConstraint,
+    IntervalProviderConstraint,
     Externalizable {
 
     private static final long    serialVersionUID = 510l;
@@ -85,6 +86,10 @@ public class VariableConstraint extends MutableTypeConstraint
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
+    }
+
+    public Declaration getIndexingDeclaration() {
+        return getRequiredDeclarations()[0];
     }
 
     public void replaceDeclaration(Declaration oldDecl,

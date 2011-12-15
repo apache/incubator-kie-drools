@@ -784,7 +784,7 @@ public class PatternBuilder
             }
 */
         }
-        pattern.addConstraint(buildVariableConstraint(context, expr, declarations, operator, extractor, restriction));
+        pattern.addConstraint(buildVariableConstraint(context, expr, declarations, value1, operator, value2, extractor, restriction));
         return true;
     }
 

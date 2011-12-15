@@ -14,10 +14,12 @@ import java.util.Map;
 public class MvelConditionEvaluator implements ConditionEvaluator {
 
     private ExecutableStatement stmt;
+    private String expression;
     private String operator;
     private boolean needMvelVars;
 
     MvelConditionEvaluator(ParserConfiguration conf, String expression, String operator) {
+        this.expression = expression;
         this.operator = operator;
         this.needMvelVars = operator.equals("soundslike");
         stmt = (ExecutableStatement)MVEL.compileExpression(expression, getParserContext(conf));

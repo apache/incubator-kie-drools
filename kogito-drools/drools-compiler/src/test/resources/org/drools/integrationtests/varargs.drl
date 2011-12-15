@@ -1,0 +1,14 @@
+package org.drools.test
+
+import org.drools.integrationtests.VarargsTest.B;
+import org.drools.integrationtests.VarargsTest.Invoker;
+
+global Invoker invoker;
+
+rule invokeVarargs dialect "mvel"
+when
+then
+    invoker.invoke("test", 2, new String("abc"), "xyz");
+    invoker.invoke("test", 3, null, new B(), new B(1));
+    invoker.invoke(42, new B("39"), new B(3));
+end

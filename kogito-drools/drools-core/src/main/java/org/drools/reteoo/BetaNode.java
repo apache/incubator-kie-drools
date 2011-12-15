@@ -155,7 +155,7 @@ public abstract class BetaNode extends LeftTupleSource
         LinkedList list = this.constraints.getConstraints();
         if ( !list.isEmpty() ) {
             BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject();
-            if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
+            if ( DefaultBetaConstraints.isIndexable( c ) && ((IndexableConstraint) c).isUnification()) {
                 this.constraints = this.constraints.getOriginalConstraint();
             }
         }
