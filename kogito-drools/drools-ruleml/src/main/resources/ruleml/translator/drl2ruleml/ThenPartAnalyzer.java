@@ -10,6 +10,7 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
+import org.drools.core.util.StringUtils;
 
 import reactionruleml.AtomType;
 import reactionruleml.IndType;
@@ -112,7 +113,7 @@ public class ThenPartAnalyzer {
 		}
 
 		// get the properties of the relation from the java class
-		if (relName.isEmpty()) {
+		if (StringUtils.isEmpty(relName)) {
 			throw new IllegalStateException("The relation name is empty: "
 					+ relName);
 		} else {
