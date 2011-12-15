@@ -16,7 +16,7 @@
   A session needs to have a reference to a knowledge base, which contains a reference
   to all the relevant process definitions.  This knowledge base is used to look up 
   the process definitions whenever necessary.  To create a session, you first need to create
-  a knowledge base, load all the necessary process definition (this can be from various
+  a knowledge base, load all the necessary process definitions (this can be from various
   sources, like from classpath, file system or process repository) and then instantiate a
   session.</para>
   
@@ -31,7 +31,7 @@
        </imageobject>
     </mediaobject>
     
-  <para>For example, image you are writing an application to process sales orders.  You
+  <para>For example, imagine you are writing an application to process sales orders.  You
   could then define one or more process definitions that define how the order should be
   processed.  When starting up your application, you first need to create a knowledge base
   that contains those process definitions.  You can then create a session based on this
@@ -53,7 +53,7 @@
   all processes from one customer to be completely independent from processes for another customer,
   you could create an independent session for each customer) or if you need multiple
   sessions for scalability reasons.  If you don't know what to do, simply start by having
-  one knowledge base that contains all your process definitions and one create session that
+  one knowledge base that contains all your process definitions and create one session that
   you then use to execute all your processes.</para>
   
   <section>
@@ -76,7 +76,7 @@
     knowledge base should include all your process definitions that might need to
     be executed by that session.  To create a knowledge base, use a knowledge builder
     to load processes from various resources (for example from the classpath or from
-    file system), and then create a new knowledge base from that builder. The following
+    the file system), and then create a new knowledge base from that builder. The following
     code snippet shows how to create a knowledge base consisting of only one process 
     definition (using in this case a resource from the classpath).</para>
 
@@ -97,7 +97,7 @@ KnowledgeBase kbase = kbuilder.newKnowledgeBase();
     <para>Once you've loaded your knowledge base, you should create a session to 
     interact with the engine.  This session can then be used to start new processes,
     signal events, etc.  The following code snippet shows how easy it is to create
-    a session based on the earlier created knowledge base, and to start a process (by id).</para>
+    a session based on the previously created knowledge base, and to start a process (by id).</para>
 
 <programlisting language="java">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -290,7 +290,7 @@ logger.close();</programlisting>
     <title>Knowledge-based API</title>
     
     <para>As you might have noticed, the API as exposed by the jBPM project is
-    a knowledge API.  That means that it doesn't only focus on processes, but
+    a knowledge API.  That means that it doesn't just focus on processes, but
     potentially also allows other types of knowledge to be loaded. The impact for
     users that are only interested in processes however is very small.  It just
     means that, instead of having a ProcessBase or a ProcessSession, you are using
