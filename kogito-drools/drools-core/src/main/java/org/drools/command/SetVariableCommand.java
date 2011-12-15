@@ -58,7 +58,7 @@ public class SetVariableCommand
             Map<String, FactHandle> handles = (  Map<String, FactHandle> ) targetCtx.get( "h" );
             if ( handles == null ) {
                 handles = new HashMap<String, FactHandle>();
-                context.set( "h", handles );
+                targetCtx.set( "h", handles );
             }            
             handles.put( identifier, ( FactHandle ) o );
             

@@ -45,8 +45,7 @@ public class NewStatefulKnowledgeSessionCommand
 
     public StatefulKnowledgeSession execute(Context context) {
         KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase
-                            .newStatefulKnowledgeSession( this.ksessionConf, environment );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( this.ksessionConf, environment );
         
         return ksession;
     }

@@ -34,7 +34,7 @@ import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Void> {
+    GenericCommand<Object> {
 
     @XmlAttribute(required=true)
     private String  identifier;
@@ -58,7 +58,7 @@ public class SetGlobalCommand
         this.object = object;
     }
 
-    public Void execute(Context context) {
+    public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
         if ( this.out ) {
@@ -68,7 +68,7 @@ public class SetGlobalCommand
 
         ksession.setGlobal( this.identifier,
                             this.object );
-        return null;
+        return object;
     }
 
     public String getIdentifier() {
