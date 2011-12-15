@@ -130,10 +130,12 @@ public class JavaDialectTest {
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
-         
-        ReturnValueRestriction r = ( ReturnValueRestriction ) (( VariableConstraint )constraint[1]).getRestriction();
-        assertTrue( r.getExpression() instanceof ReturnValueExpression );
-        assertTrue( r.getExpression() instanceof CompiledInvoker );
-        assertTrue( !(r.getExpression() instanceof MVELReturnValueExpression ) );        
+
+        if (constraint[1] instanceof VariableConstraint) {
+            ReturnValueRestriction r = ( ReturnValueRestriction ) (( VariableConstraint )constraint[1]).getRestriction();
+            assertTrue( r.getExpression() instanceof ReturnValueExpression );
+            assertTrue( r.getExpression() instanceof CompiledInvoker );
+            assertTrue( !(r.getExpression() instanceof MVELReturnValueExpression ) );
+        }
     }
 }

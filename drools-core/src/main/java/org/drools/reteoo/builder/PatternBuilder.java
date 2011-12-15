@@ -40,6 +40,7 @@ import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
+import org.drools.rule.IntervalProviderConstraint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
@@ -189,11 +190,11 @@ public class PatternBuilder
 
     private void checkDelaying(final BuildContext context,
                                final Constraint constraint) {
-        if ( constraint instanceof VariableConstraint ) {
+        if ( constraint instanceof IntervalProviderConstraint ) {
             // variable constraints always require a single declaration
             Declaration target = constraint.getRequiredDeclarations()[0];
             if ( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
-                long uplimit = ((VariableConstraint) constraint).getInterval().getUpperBound();
+                long uplimit = ((IntervalProviderConstraint) constraint).getInterval().getUpperBound();
 
                 Timer timer = context.getRule().getTimer();
                 DurationTimer durationTimer = new DurationTimer( uplimit );

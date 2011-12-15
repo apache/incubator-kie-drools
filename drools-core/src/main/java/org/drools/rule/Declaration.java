@@ -68,6 +68,8 @@ public class Declaration
     /** The identifier for the variable. */
     private String               identifier;
 
+    private String               bindingName;
+
     private InternalReadAccessor readAccessor;
 
     private Pattern              pattern;
@@ -149,6 +151,7 @@ public class Declaration
         readAccessor = (InternalReadAccessor) in.readObject();
         pattern = (Pattern) in.readObject();
         internalFact = in.readBoolean();
+        bindingName = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -156,6 +159,7 @@ public class Declaration
         out.writeObject( readAccessor );
         out.writeObject( pattern );
         out.writeBoolean( internalFact );
+        out.writeObject( bindingName );
     }
 
     public void setReadAccessor(InternalReadAccessor readAccessor) {
@@ -173,6 +177,14 @@ public class Declaration
      */
     public String getIdentifier() {
         return this.identifier;
+    }
+
+    public String getBindingName() {
+        return bindingName != null ? bindingName : identifier;
+    }
+
+    public void setBindingName(String bindingName) {
+        this.bindingName = bindingName;
     }
 
     /**
@@ -333,5 +345,4 @@ public class Declaration
                                 this.readAccessor,
                                 this.pattern );
     }
-
 }

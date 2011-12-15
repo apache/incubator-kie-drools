@@ -31,22 +31,11 @@ public class FactPopulatorTest {
         m.put("val", "44");
         MVEL.eval("obj.number = val", m);
 
-        m = new HashMap();
-        m.put("obj", q);
-        m.put("val", "true");
-        MVEL.eval("obj.enabled = val", m);
-
         DumbFact d = (DumbFact) q;
 
         assertEquals("mike", d.getName());
         assertEquals(42, d.getAge());
         assertEquals(new Long(44), d.getNumber());
-        assertEquals(true, d.isEnabled());
-
-
-
-
-
     }
 
     @Test

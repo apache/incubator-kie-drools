@@ -40,28 +40,35 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private String expression;
     private String operator;
     private Declaration[] declarations;
+    private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
+    private boolean isUnification;
 
     private transient boolean isJittable;
-    private transient boolean isUnification;
 
     private transient ParserConfiguration conf;
     private transient ConditionEvaluator conditionEvaluator;
 
     public MvelConstraint() {}
 
-    public MvelConstraint(ParserConfiguration conf, String packageName, String expression, String operator, Declaration[] declarations, InternalReadAccessor extractor) {
+    public MvelConstraint(ParserConfiguration conf, String packageName, String expression, String operator) {
+        this(conf, packageName, expression, operator, null, null, null);
+    }
+
+    public MvelConstraint(ParserConfiguration conf, String packageName, String expression, String operator,
+                          Declaration[] declarations, Declaration indexingDeclaration, InternalReadAccessor extractor) {
         this.packageName = packageName;
         this.conf = conf;
         this.expression = expression;
         this.operator = operator;
         this.declarations = declarations == null ? new Declaration[0] : declarations;
+        this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
+        isUnification = initUnification();
         init();
     }
 
     private void init() {
-        isUnification = initUnification();
         isJittable = initJittable();
     }
 
@@ -69,8 +76,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return isUnification;
     }
 
+    public void unsetUnification() {
+        isUnification = false;
+    }
+
     public boolean isIndexable() {
-        return operator.equals("==");
+        return indexingDeclaration != null && operator.equals("==");
     }
 
     public IndexEvaluator getIndexEvaluator() {
@@ -85,8 +96,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private boolean initJittable() {
-//        return getType() == ConstraintType.ALPHA && !operator.equals("soundslike");
-        return !operator.equals("soundslike");
+        return getType() == ConstraintType.ALPHA;
     }
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
@@ -201,9 +211,17 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return declarations;
     }
 
+    public Declaration getIndexingDeclaration() {
+        indexingDeclaration.getPattern().setOffset(declarations[0].getPattern().getOffset());
+        return indexingDeclaration;
+    }
+
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
-        if ( declarations[0].equals( oldDecl ) ) {
+        if (declarations[0].equals(oldDecl)) {
             declarations[0] = newDecl;
+        }
+        if (indexingDeclaration != null && indexingDeclaration.equals(oldDecl)) {
+            indexingDeclaration = newDecl;
         }
     }
 
@@ -215,7 +233,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         out.writeObject(expression);
         out.writeObject(operator);
         out.writeObject(declarations);
+        out.writeObject(indexingDeclaration);
         out.writeObject(extractor);
+        out.writeBoolean(isUnification);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -224,17 +244,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         expression = (String)in.readObject();
         operator = (String)in.readObject();
         declarations = (Declaration[]) in.readObject();
+        indexingDeclaration = (Declaration) in.readObject();
         extractor = (InternalReadAccessor) in.readObject();
+        isUnification = in.readBoolean();
         init();
     }
 
     public boolean isTemporal() {
-        // todo
         return false;
     }
 
     public Object clone() {
-        return new MvelConstraint(conf, packageName, expression, operator, declarations, extractor);
+        return new MvelConstraint(conf, packageName, expression, operator, declarations, indexingDeclaration, extractor);
     }
 
     public int hashCode() {
@@ -306,7 +327,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         Map<String, Object> getRightVars(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
             if (declarations.length == 0) return null;
             for (Declaration declaration : declarations) {
-                vars.put(declaration.getIdentifier(), declaration.getExtractor().getValue(workingMemory, handle.getObject()));
+                vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, handle.getObject()));
             }
             return vars;
         }
@@ -357,7 +378,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         public ArrayElementReader getReader() {
             return reader;
         }
-
 
         public ContextEntry getNext() {
             return this.contextEntry.getNext();
@@ -419,8 +439,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
+            if (value1 == null) {
                 return value2 == null;
+            }
+            if (value1 instanceof String) {
+                return value1.equals(value2.toString());
             }
             return value1.equals( value2 );
         }

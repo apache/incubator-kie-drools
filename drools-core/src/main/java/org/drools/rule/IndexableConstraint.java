@@ -12,4 +12,6 @@ public interface IndexableConstraint extends Constraint {
     InternalReadAccessor getFieldExtractor();
 
     IndexEvaluator getIndexEvaluator();
+
+    Declaration getIndexingDeclaration();
 }

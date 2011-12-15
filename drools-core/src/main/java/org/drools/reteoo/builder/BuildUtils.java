@@ -43,6 +43,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
+import org.drools.rule.IntervalProviderConstraint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
@@ -322,8 +323,8 @@ public class BuildUtils {
     private void gatherTemporalRelationships(List< ? > constraints,
                                              Map<Declaration, Interval> temporal) {
         for ( Object obj : constraints ) {
-            if ( obj instanceof VariableConstraint ) {
-                VariableConstraint constr = (VariableConstraint) obj;
+            if ( obj instanceof IntervalProviderConstraint) {
+                IntervalProviderConstraint constr = (IntervalProviderConstraint) obj;
                 if ( constr.isTemporal() ) {
                     // if a constraint already exists, calculate the intersection
                     Declaration target = constr.getRequiredDeclarations()[0];

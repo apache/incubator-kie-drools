@@ -74,7 +74,7 @@ public class DefaultBetaConstraints
         int firstNonUnification = -1;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             if ( DefaultBetaConstraints.isIndexable( constraints[i] ) ) {
-                final boolean isUnification = ((VariableConstraint) constraints[i]).getRestriction() instanceof UnificationRestriction ;
+                final boolean isUnification = ((IndexableConstraint) constraints[i]).isUnification();
                 if ( isUnification && firstUnification == -1 ) {
                     firstUnification = i;
                 } else if ( !isUnification &&firstNonUnification == -1 ) {
@@ -270,7 +270,7 @@ public class DefaultBetaConstraints
                 final Constraint constraint = (Constraint) entry.getObject();
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) constraint;
                 final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                         indexableConstraint.getRequiredDeclarations()[0],
+                                                         indexableConstraint.getIndexingDeclaration(),
                                                          indexableConstraint.getIndexEvaluator() );
                 list.add( index );
                 entry = (LinkedListEntry) entry.getNext();
