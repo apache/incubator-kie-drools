@@ -1,0 +1,52 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.workitemconsequence
+
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1.PersonLocation;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1.Email;
+
+dialect "mvel"
+
+rule "Display people and their proximity"
+    salience 100
+    when
+        PersonLocation( $name : name, $distance : distance )
+    then
+        System.out.println( $name + " is " + $distance + " units away." );
+end
+
+rule "Check if Gargamel is closer than 10 units"
+    salience 100
+    when
+        PersonLocation( name == "Gargamel", distance < 10 )
+    then
+        Email email = new Email( "pupa@smurf.org", "Gargamel is nearby" );
+        insert( email );
+end
+
+rule "Email alerts"
+    salience 10
+    when
+        Email( $emailAddress : emailAddress, $message : message ) 
+    then
+        org.drools.process.instance.WorkItemManager wiManager = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();
+        org.drools.process.instance.impl.WorkItemImpl wiEmail = new org.drools.process.instance.impl.WorkItemImpl();
+        wiEmail.setName( "EmailWorkItemHandler" );
+        wiEmail.getParameters().put( "emailAddress", $emailAddress );
+        wiEmail.getParameters().put( "message", $message );
+        wiManager.internalExecuteWorkItem( wiEmail );
+end
