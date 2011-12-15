@@ -230,7 +230,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
   
   <para>The following chapters will describe the different constructs that you can use
   to model your processes (and their properties) in detail.  Executable processes in BPMN consist
-  of a different types of nodes being connected to each other using sequence flows.
+  of different types of nodes being connected to each other using sequence flows.
   The BPMN 2.0 specification defines three main types of nodes:</para>
   <itemizedlist>
     <listitem><emphasis>Events</emphasis>: They are used to model the occurrence of a particular
@@ -987,7 +987,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             be iterated over.  The collection variable should be an array or
             of type <code>java.util.Collection</code>.  If the collection
             expression evaluates to null or an empty collection, the multiple
-            instances sub-process will be completed immediate and follow its
+            instances sub-process will be completed immediately and follow its
             outgoing connection.</para>
           </listitem>
           <listitem>
@@ -1486,14 +1486,14 @@ System.out.println( person.name );
     to be followed when executing this process instance (this clear separation of definition
     and runtime state allows reuse of the definition across all process instances based
     on this process and minimizes runtime state).  As a result, updating a running process
-    instance to a newer version so it used the new process logic instead of the old one is
+    instance to a newer version so it uses the new process logic instead of the old one is
     simply a matter of changing the referenced process id from the old to the new id.</para>
 
     <para>However, this does not take into account that the state of the process instance (the
     variable instances and the node instances) might need to be migrated as well.  In cases
     where the process is only extended and all existing wait states are kept, this is pretty
     straightforward, the runtime state of the process instance does not need to change at all.
-    However, it is also possible that a more sofisticated mapping is necessary.  For example,
+    However, it is also possible that a more sophisticated mapping is necessary.  For example,
     when an existing wait state is removed, or split into multiple wait states, an existing 
     process instance that is waiting in that state cannot simply be updated.  Or when a new
     process variable is introduced, that variable might need to be initiated correctly so it
@@ -1504,7 +1504,7 @@ System.out.println( person.name );
     and the new process id. By default, jBPM will automatically map old node instances
     to new node instances with the same id.  But you can provide a mapping of the old (unique)
     node id to the new node id.  The unique node id is the node id, preceded by the node ids
-    of its parents (with a colon inbetween), to allow to uniquely identify a node when composite
+    of its parents (with a colon inbetween), to uniquely identify a node when composite
     nodes are used (as a node id is only unique within its node container.  The new node id
     is simply the new node id in the node container (so no unique node id here, simply the new
     node id).  The following code snippet shows a simple example.</para>
@@ -1559,20 +1559,20 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
     script and wait for it to complete before continuing execution.  Similarly, if a process
     encounters a parallel gateway, it will sequentially trigger each of the outgoing
     branches, one after the other.  This is possible since execution is almost always
-    instantaneous, meaning that it is extremely fast and almost produces no overhead.  
+    instantaneous, meaning that it is extremely fast and produces almost no overhead.
     As a result, the user usually doesn't even notice this.</para>
     
     <para>When a service task is reached in the process, the engine will also invoke the
     handler of this service synchronously.  This means that the engine will wait for
     the completeWorkItem(..) method to return before continuing execution.  Therefore,
     it is important that your service handler executes your service asynchronously if
-    its execution is not instantaneous.  Image for example you want to invoke an external
+    its execution is not instantaneous.  Imagine for example you want to invoke an external
     service.  Since the delay of invoking this service remotely and waiting for the results
     might be too high, it might be a good idea to invoke this service asynchronously.  This
     means that the handler will only invoke the service asynchronously and will notify
     the engine if the results are available.  In the mean time, the process engine can
-    then continue execution elsewhere.  Similarly, your action scripts also be
-    instantaneous, as the engine will be waiting for it to execute.  For example, doing
+    then continue execution elsewhere.  Similarly, your action scripts should also be
+    instantaneous, as the engine will be waiting for them to execute.  For example, doing
     Thread.sleep(..) as part of a script will not make the engine continue execution
     elsewhere but will block the engine thread during that period.</para>
     
@@ -1584,7 +1584,7 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
     process (if necessary) and the handler will notify the engine asynchronously when the
     user has completed the task.</para>
     
-    <para>Image for example that you have a process that executes three service in
+    <para>Imagine for example that you have a process that executes three services in
     parallel using a parallel gateway.  The engine will first trigger the first service
     when executing this process, in which case the first service will be invoked.  Since
     the handler will invoke this service asynchronously, this service will be executing
