@@ -30,6 +30,7 @@ import org.drools.command.Context;
 import org.drools.command.Interceptor;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
+import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.DisposeCommand;
@@ -54,29 +55,29 @@ import org.slf4j.LoggerFactory;
 public class SingleSessionCommandService
     implements
     org.drools.command.SingleSessionCommandService {
-    
-    Logger                               logger                                            = LoggerFactory.getLogger( getClass() );
 
-    private SessionInfo                 sessionInfo;
-    private SessionMarshallingHelper marshallingHelper;
+    Logger                             logger           = LoggerFactory.getLogger( getClass() );
 
-    private StatefulKnowledgeSession    ksession;
-    private Environment                 env;
-    private KnowledgeCommandContext     kContext;
-    private CommandService              commandService;
+    private SessionInfo                sessionInfo;
+    private SessionMarshallingHelper   marshallingHelper;
 
-    private TransactionManager          txm;
-    private PersistenceContextManager                  jpm;
-    
-    private volatile boolean  doRollback;
-    
+    private StatefulKnowledgeSession   ksession;
+    private Environment                env;
+    private KnowledgeCommandContext    kContext;
+    private CommandService             commandService;
+
+    private TransactionManager         txm;
+    private PersistenceContextManager  jpm;
+
+    private volatile boolean           doRollback;
+
     private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
-    
-    public static Map<Object, Object> txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+
+    public static Map<Object, Object>  txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
-             env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null  ) {
+             env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null ) {
             throw new IllegalArgumentException( "Environment must have an EntityManagerFactory " +
                                                 "or a PersistenceContextManager instance" );
         }
@@ -107,58 +108,61 @@ public class SingleSessionCommandService
             conf = new SessionConfiguration();
         }
         this.env = env;
-        
+
         checkEnvironment( this.env );
-        
+
         this.sessionInfo = new SessionInfo();
 
         initTransactionManager( this.env );
-        
-        // create session but bypass command service
-        this.ksession = kbase.newStatefulKnowledgeSession(conf, this.env);
-        
-        this.kContext = new KnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                      null ),
-                                                     null,
-                                                     null,
-                                                     this.ksession,
-                                                     null );
 
-        this.commandService = new DefaultCommandService(kContext);
-        
+        // create session but bypass command service
+        this.ksession = kbase.newStatefulKnowledgeSession( conf,
+                                                           this.env );
+
+        this.kContext = new FixedKnowledgeCommandContext( null,
+                                                          null,
+                                                          null,
+                                                          this.ksession,
+                                                          null );
+
+        this.commandService = new DefaultCommandService( kContext );
+
         ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
-        
+
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
-                                                                  conf );
-        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) 
-        	((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
-        config.setMarshallProcessInstances(false);
-        config.setMarshallWorkItems(false);
-        
+                                                               conf );
+        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl)
+                ((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
+        config.setMarshallProcessInstances( false );
+        config.setMarshallWorkItems( false );
+
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
-        
+
         // Use the App scoped EntityManager if the user has provided it, and it is open.
         // - open the entity manager before the transaction begins. 
         PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
-        
+
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
- 
+
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
             persistenceContext.persist( this.sessionInfo );
 
-            txm.commit(transactionOwner);
-        } catch (RuntimeException re){
-            rollbackTransaction(re, transactionOwner);
+            txm.commit( transactionOwner );
+        } catch ( RuntimeException re ) {
+            rollbackTransaction( re,
+                                 transactionOwner );
             throw re;
         } catch ( Exception t1 ) {
-            rollbackTransaction(t1, transactionOwner);
-            throw new RuntimeException("Wrapped exception see cause", t1);
-        } 
+            rollbackTransaction( t1,
+                                 transactionOwner );
+            throw new RuntimeException( "Wrapped exception see cause",
+                                        t1 );
+        }
 
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
@@ -171,50 +175,56 @@ public class SingleSessionCommandService
         if ( conf == null ) {
             conf = new SessionConfiguration();
         }
-                
+
         this.env = env;
-        
+
         checkEnvironment( this.env );
-        
+
         initTransactionManager( this.env );
 
         // Open the entity manager before the transaction begins. 
         PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
-        
+
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-            
-            registerRollbackSync();            
-           
+
+            registerRollbackSync();
+
             persistenceContext.joinTransaction();
-            initKsession( sessionId, kbase, conf, persistenceContext);
-            
-            txm.commit(transactionOwner);
-        }catch (RuntimeException re){
-            rollbackTransaction(re, transactionOwner);
+            initKsession( sessionId,
+                          kbase,
+                          conf,
+                          persistenceContext );
+
+            txm.commit( transactionOwner );
+        } catch ( RuntimeException re ) {
+            rollbackTransaction( re,
+                                 transactionOwner );
             throw re;
         } catch ( Exception t1 ) {
-            rollbackTransaction(t1, transactionOwner);
-            throw new RuntimeException("Wrapped exception see cause", t1);
+            rollbackTransaction( t1,
+                                 transactionOwner );
+            throw new RuntimeException( "Wrapped exception see cause",
+                                        t1 );
         }
     }
 
     protected void initKsession(Integer sessionId,
-                             KnowledgeBase kbase,
-                             KnowledgeSessionConfiguration conf,
-                             PersistenceContext persistenceContext) {
+                                KnowledgeBase kbase,
+                                KnowledgeSessionConfiguration conf,
+                                PersistenceContext persistenceContext) {
         if ( !doRollback && this.ksession != null ) {
             return;
             // nothing to initialise
         }
-        
+
         this.doRollback = false;
-        try{
+        try {
             this.sessionInfo = persistenceContext.findSessionInfo( sessionId );
         } catch ( Exception e ) {
             throw new RuntimeException( "Could not find session data for id " + sessionId,
-                    e );
+                                        e );
         }
 
         if ( sessionInfo == null ) {
@@ -224,12 +234,12 @@ public class SingleSessionCommandService
         if ( this.marshallingHelper == null ) {
             // this should only happen when this class is first constructed
             this.marshallingHelper = new SessionMarshallingHelper( kbase,
-                                                                      conf,
-                                                                      env );
-            MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) 
-	        	((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
-	        config.setMarshallProcessInstances(false);
-	        config.setMarshallWorkItems(false);
+                                                                   conf,
+                                                                   env );
+            MarshallingConfigurationImpl config = (MarshallingConfigurationImpl)
+                    ((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
+            config.setMarshallProcessInstances( false );
+            config.setMarshallWorkItems( false );
         }
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
@@ -237,27 +247,26 @@ public class SingleSessionCommandService
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
         this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
                                                              this.ksession );
-        
+
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );       
-        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
-            this.kContext = new KnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                          null ),
-                                                         null,
-                                                         null,
-                                                         this.ksession,
-                                                         null );
+            this.kContext = new FixedKnowledgeCommandContext( null,
+                                                              null,
+                                                              null,
+                                                              this.ksession,
+                                                              null );
         }
 
-        this.commandService = new DefaultCommandService(kContext);
-        
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );        
+        this.commandService = new DefaultCommandService( kContext );
+
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
     }
-    
+
     public void initTransactionManager(Environment env) {
         Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
         if ( env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) != null &&
@@ -267,22 +276,23 @@ public class SingleSessionCommandService
         } else {
             if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
                 try {
-                    Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
-                    Constructor<?> con = cls.getConstructors()[0];
+                    Class< ? > cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+                    Constructor< ? > con = cls.getConstructors()[0];
                     this.txm = (TransactionManager) con.newInstance( tm );
                     logger.debug( "Instantiating  DroolsSpringTransactionManager" );
-                    
-//                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
-                        // configure spring for JPA and local transactions
-                        cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
-                        con = cls.getConstructors()[0];
-                        this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
-//                    } else {
-//                        // configure spring for JPA and distributed transactions 
-//                    }
+
+                    //                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
+                    // configure spring for JPA and local transactions
+                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
+                    con = cls.getConstructors()[0];
+                    this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
+                    //                    } else {
+                    //                        // configure spring for JPA and distributed transactions 
+                    //                    }
                 } catch ( Exception e ) {
                     logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
-                    throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
+                    throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager",
+                                                e );
                 }
             } else {
                 logger.debug( "Instantiating  JtaTransactionManager" );
@@ -290,17 +300,20 @@ public class SingleSessionCommandService
                                                       env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
                                                       tm );
                 try {
-                    Class<?> jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
-                    Constructor<?> jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
-                    this.jpm =  ( PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( new Object[] { this.env } );
+                    Class< ? > jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
+                    Constructor< ? > jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
+                    this.jpm = (PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( new Object[]{this.env} );
                 } catch ( ClassNotFoundException e ) {
-                    this.jpm = new JpaPersistenceContextManager(this.env);
+                    this.jpm = new JpaPersistenceContextManager( this.env );
                 } catch ( Exception e ) {
-                    throw new RuntimeException("Error creating JpaProcessPersistenceContextManager", e);
+                    throw new RuntimeException( "Error creating JpaProcessPersistenceContextManager",
+                                                e );
                 }
             }
-            env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, this.jpm );
-            env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
+            env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,
+                     this.jpm );
+            env.set( EnvironmentName.TRANSACTION_MANAGER,
+                     this.txm );
         }
     }
 
@@ -328,48 +341,55 @@ public class SingleSessionCommandService
 
         boolean transactionOwner = false;
         try {
-            transactionOwner = txm.begin();            
+            transactionOwner = txm.begin();
 
             persistenceContext.joinTransaction();
             initKsession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
                           this.marshallingHelper.getConf(),
-                          persistenceContext);
-            
+                          persistenceContext );
+
             this.jpm.beginCommandScopedEntityManager();
 
             registerRollbackSync();
 
             T result = null;
-            if ( !( command instanceof DisposeCommand) ) {
-                result = commandService.execute((GenericCommand<T>) command);
+            if ( !(command instanceof DisposeCommand) ) {
+                result = commandService.execute( (GenericCommand<T>) command );
             }
 
-            txm.commit(transactionOwner);
+            txm.commit( transactionOwner );
 
             return result;
 
-        }catch (RuntimeException re){
-            rollbackTransaction(re, transactionOwner);
+        } catch ( RuntimeException re ) {
+            rollbackTransaction( re,
+                                 transactionOwner );
             throw re;
         } catch ( Exception t1 ) {
-            rollbackTransaction(t1, transactionOwner);
-            throw new RuntimeException("Wrapped exception see cause", t1);
+            rollbackTransaction( t1,
+                                 transactionOwner );
+            throw new RuntimeException( "Wrapped exception see cause",
+                                        t1 );
         } finally {
             if ( command instanceof DisposeCommand ) {
-                commandService.execute((GenericCommand<T>) command);
+                commandService.execute( (GenericCommand<T>) command );
                 this.jpm.dispose();
-            }            
+            }
         }
     }
 
-    private void rollbackTransaction(Exception t1, boolean transactionOwner) {
+    private void rollbackTransaction(Exception t1,
+                                     boolean transactionOwner) {
         try {
-            logger.error( "Could not commit session", t1 );
-            txm.rollback(transactionOwner);
+            logger.error( "Could not commit session",
+                          t1 );
+            txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
-            logger.error( "Could not rollback", t2 );
-            throw new RuntimeException( "Could not commit session or rollback", t2 );
+            logger.error( "Could not rollback",
+                          t2 );
+            throw new RuntimeException( "Could not commit session or rollback",
+                                        t2 );
         }
     }
 
@@ -409,14 +429,14 @@ public class SingleSessionCommandService
 
             // always cleanup thread local whatever the result
             Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
-            
+
             this.service.jpm.endCommandScopedEntityManager();
 
             StatefulKnowledgeSession ksession = this.service.ksession;
             // clean up cached process and work item instances
             if ( ksession != null ) {
                 InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
-                if( internalProcessRuntime != null ) { 
+                if ( internalProcessRuntime != null ) {
                     internalProcessRuntime.clearProcessInstances();
                 }
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
@@ -429,14 +449,14 @@ public class SingleSessionCommandService
         }
 
     }
-    
+
     public StatefulKnowledgeSession getStatefulKnowledgeSession() {
         return this.ksession;
     }
-    
+
     public void addInterceptor(Interceptor interceptor) {
-    	interceptor.setNext(this.commandService);
-    	this.commandService = interceptor;
+        interceptor.setNext( this.commandService );
+        this.commandService = interceptor;
     }
 
     private void rollback() {
