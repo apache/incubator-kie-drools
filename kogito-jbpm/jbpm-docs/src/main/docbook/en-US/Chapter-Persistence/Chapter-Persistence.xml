@@ -121,7 +121,7 @@ int sessionId = ksession.getId();
 ksession.startProcess( "MyProcess" );
 ksession.dispose();</programlisting>
 
-    <para>You can also yse the <code>JPAKnowledgeService</code> to recreate
+    <para>You can also use the <code>JPAKnowledgeService</code> to recreate
     a session based on a specific session id:</para>
 
     <programlisting language="java">
@@ -153,7 +153,7 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
     information, you should use the history log, as explained later.</para>
 
     <para>You need to add a persistence configuration to your classpath to 
-    configures JPA to use Hibernate and the H2 database (or your preference), called
+    configure JPA to use Hibernate and the H2 database (or your preference), called
     <filename>persistence.xml</filename> in the META-INF directory, as shown below.
     For more details on how to change this for your own configuration, we refer to
     the JPA and Hibernate documentation for more information.</para>

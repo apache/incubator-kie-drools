@@ -241,7 +241,7 @@
     directory.</para>
     
     <para>The jBPM installer by default does not install the reporting engine (to limit
-    the size of the download).  If you want to try out persistence, make sure to put the
+    the size of the download).  If you want to try out reporting, make sure to put the
     jBPM.birt.download property in the build.properties file to true before running the
     installer. If you get an exception that the report engine was not initialized
     correctly, please run the installer again after making sure that reporting is 
