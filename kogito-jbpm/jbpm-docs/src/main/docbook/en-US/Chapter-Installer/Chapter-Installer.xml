@@ -93,7 +93,7 @@
   <section>
     <title>10-Minute Tutorial: Using the Eclipse tooling</title>
 
-    <para>The <ulink url="http://people.redhat.com/kverlaen/install-eclipse-jbpm.swf">following
+    <para>The <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-eclipse-5.2.swf">following
     screencast</ulink> gives an overview of how to run a simple demo process in Eclipse. It shows you: 
       <itemizedlist>
         <listitem>How to import an existing example project into your workspace, containing
@@ -106,7 +106,7 @@
       </itemizedlist>
     </para>
     
-    <ulink url="http://people.redhat.com/kverlaen/install-eclipse-jbpm.swf">
+    <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-eclipse-5.2.swf">
       <figure>
         <mediaobject>
           <imageobject>
@@ -124,17 +124,16 @@
         including a simple BPMN2 process and a Java file to start the process.</listitem>
         <listitem>You can open the BPMN2 process and the Java class by double-clicking it.</listitem>
         <listitem>We will now debug the process, so we can visualize its runtime state using the
-        debug tooling. First put a breakpoint on line "ksession.startProcess" of the ProcessTest class.
+        debug tooling. First put a breakpoint on line "logger.close()" of the ProcessTest class.
         To start debugging, right-click on ProcessTest.java in the com.sample package
         (under "src/main/java") and select "Debug As - Java Application", and switch to the debug
         perspective.</listitem>
         <listitem>Open up the various debug views: Under "Window - Show View -> Other ...", select 
         the Process Instances View and Process Instance View (under Drools category) and the Human
-        Task View (under Drools Task) and click OK.</listitem>
-        <listitem>The program will hit the breakpoint right before starting the process.  Click on
-        the "Step Over" (F6) to start the process.  In this case, it will simply
-        start the process, which will result in the creation of a new user task for the user "krisv"
-        in the human task service, after which the process will wait for its execution.  Go to the
+        Task View (under jBPM Task) and click OK.</listitem>
+        <listitem>The program will hit the breakpoint right after starting the process.  In this case,
+        it will simply start the process, which will result in the creation of a new user task for the user
+        "krisv" in the human task service, after which the process will wait for its execution.  Go to the
         Human Task View, fill in "krisv" under UserId and click Refresh.  A new Performance Evaluation
         task should show up.</listitem>
         <listitem>To show the state of the process instance you just started graphically, click on the
@@ -150,12 +149,15 @@
 
     <para>You could also create a new project using the jBPM project wizard.  This sample project
     contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.
-    Simply select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project"
-    and click "Next".  Give the project a name and click "Finish".  You should see a new project
-    containing a "sample.bpmn" process and a "com.sample.ProcessTest" Java class.  You can open the
-    BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java
-    and select "Run As - Java Application".  You should see a "Hello World" statement in the output
-    console.</para>
+    Simply select "File - New - jBPM Project" (if you cannot see that (because you're not in the jBPM
+    perspective) you can do "File - New ... - Project ..." and under the "jBPM" category, select 
+    "jBPM project" and click "Next").  Give the project a name and click "Finish".  You should see a new project
+    containing a "sample.bpmn" process and a "com.sample.ProcessMain" Java class and a "com.sample.ProcessTest"
+    JUnit test class.  You can open the BPMN2 process by double-clicking it.  To execute the process,
+    right-click on ProcessMain.java and select "Run As - Java Application".  You should see a 
+    "Hello World" statement in the output console.  To execute the test, right-click on ProcessTest.java
+    and select "Run As - JUnit Test".  You should also see a "Hello World" statement in the output console,
+    and the JUnit test completion in the JUnit view.</para>
  
   </section>
 
@@ -165,7 +167,7 @@
     <para>Open up the process management console:</para>
     <para><ulink url="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</ulink></para>
 
-    <para>Log in, using krisv / krisv as username / password. The <ulink url="http://people.redhat.com/kverlaen/install-gwt-console-jbpm.swf">following screencast</ulink> gives an overview of how to manage your
+    <para>Log in, using krisv / krisv as username / password. The <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-console.5.2.swf">following screencast</ulink> gives an overview of how to manage your
     process instances. It shows you: 
       <itemizedlist>
         <listitem>How to start a new process</listitem>
@@ -176,7 +178,7 @@
       </itemizedlist>
     </para>
     
-    <ulink url="http://people.redhat.com/kverlaen/install-gwt-console-jbpm.swf">
+    <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-console.5.2.swf">
       <figure>
         <mediaobject>
           <imageobject>
@@ -198,8 +200,8 @@ empty.</listitem>
 
   <listitem>You can start a new process instance by clicking on the "Start" button.  After confirming that you want to
 start a new execution of this process, you will see a process form where you need to fill in the 
-necessary information to start the process.  In this case, you need to fill in your username "krisv",
-after which you can complete the form and close the window.  A new instance should show up in the 
+necessary information to start the process.  In this case, you need to fill in your username "krisv" and a
+reason for the request, after which you can complete the form and close the window.  A new instance should show up in the 
 "Instance" table.  If you click the process instance, you can check its details below and the diagram 
 and instance data by clicking on the "Diagram" and "Instance Data" buttons respectively.  The process
 instance that you just started is first requiring a self-evaluation of the user and is waiting until 
@@ -216,10 +218,8 @@ perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" 
 tasks.</listitem>
 
   <listitem>After starting and/or completing a few process instances and human tasks, you can generate a report of 
-what has happened so far.  Under "Reporting", select "Report Templates".  By default, the console has two
-report templates, one for generating a generic overview for all processes and one for inspecting once 
-specific process definition.  If you select the latter, make sure to enter "com.sample.evaluation" as 
-the process definition id to see the activity related to the evaluation process.  Click the "Create 
+what has happened so far.  Under "Reporting", select "Report Templates".  By default, the console has one
+report template, for generating a generic overview for all processes.  Click the "Create 
 Report" button to generate a realtime report of the current status.  Notice that the initialization of 
 the reports might take a moment, especially the first time you use the application.</listitem>
     </itemizedlist>
@@ -236,8 +236,8 @@ editing processes.</para>
     <para>Open up Drools Guvnor:</para>
     <para><ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
 
-    <para>Log in, using any non-empty username / password (we disabled authentication for demo purposes). 
-    The <ulink url="http://people.redhat.com/kverlaen/install-guvnor-jbpm.swf">following screencast</ulink> gives an overview of how to manage your repository. It shows you:
+    <para>Log in (if necessary), using any non-empty username / password (we disabled authentication for demo purposes). 
+    The <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-guvnor.5.2.swf">following screencast</ulink> gives an overview of how to manage your repository. It shows you:
       <itemizedlist>
         <listitem>How to import an existing process (in this case the evaluation process) from eclipse into guvnor</listitem>
         <listitem>How to open up the evaluation process in the web editor</listitem>
@@ -245,7 +245,7 @@ editing processes.</para>
       </itemizedlist>
     </para>
 
-    <ulink url="http://people.redhat.com/kverlaen/install-guvnor-jbpm.swf">
+    <ulink url="http://people.redhat.com/kverlaen/jbpm-installer-guvnor.5.2.swf">
       <figure>
         <mediaobject>
           <imageobject>
@@ -295,9 +295,9 @@ editing processes.</para>
     <para>A: Always check the consoles for output like error messages or stack traces.  You can also check the Eclipse Error Log for exceptions.  Try adding an audit logger to your session to figure out what's happening at runtime, or try debugging your application.</para>
 
     <para>Q: Something seems to be going wrong when running the a web-based application like the jbpm-console, Guvnor and the Designer.  What can I do?</para>
-    <para>A: You can check the server log for possible exceptions in the jbpm-installer/jboss-4.2.3.GA/server/default/log directory.</para>
+    <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7) or jbpm-installer/jboss-as-{version}/server/default/log/server.log (for earlier versions).</para>
 
-    <para>For all other questions, try contacting the jBPM community as described above.</para>
+    <para>For all other questions, try contacting the jBPM community as described in the Getting Started chapter.</para>
   
   </section>
 
