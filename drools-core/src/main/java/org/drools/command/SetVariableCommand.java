@@ -31,6 +31,7 @@ public class SetVariableCommand
     GenericCommand<Object> {
     private String  identifier;
     private String  contextName;
+    private Command cmd;
     
     public SetVariableCommand(String identifier) {
         this.identifier = identifier;
@@ -41,10 +42,16 @@ public class SetVariableCommand
         this.identifier = identifier;
         this.contextName = contextName;
     }
+    
+    public SetVariableCommand(String contextName,
+                              String identifier,
+                              Command cmd) {
+        this.identifier = identifier;
+        this.contextName = contextName;
+        this.cmd = cmd;
+    }    
 
     public Object execute(Context context) {
-        GetDefaultValue sim = ( GetDefaultValue ) context.get( "simulator" );
-        
         Context targetCtx;
         if ( this.contextName == null ) {
             targetCtx = context;
@@ -52,21 +59,28 @@ public class SetVariableCommand
             targetCtx = context.getContextManager().getContext( this.contextName );
         }
         
-        Object o = sim.getObject();
-        // for FactHandle's we store the handle on a map and the actual object as
-        if ( o instanceof FactHandle ) {
-            Map<String, FactHandle> handles = (  Map<String, FactHandle> ) targetCtx.get( "h" );
-            if ( handles == null ) {
-                handles = new HashMap<String, FactHandle>();
-                targetCtx.set( "h", handles );
-            }            
-            handles.put( identifier, ( FactHandle ) o );
+        Object o;
+        if ( cmd != null ) {
+            o = ((GenericCommand) this.cmd).execute( context );
+        } else {
+            GetDefaultValue sim = ( GetDefaultValue ) context.get( "simulator" );
+
+            o = sim.getObject();
+            // for FactHandle's we store the handle on a map and the actual object as
+            if ( o instanceof FactHandle ) {
+                Map<String, FactHandle> handles = (  Map<String, FactHandle> ) targetCtx.get( "h" );
+                if ( handles == null ) {
+                    handles = new HashMap<String, FactHandle>();
+                    targetCtx.set( "h", handles );
+                }            
+                handles.put( identifier, ( FactHandle ) o );
+                
+                o = (( InternalFactHandle )o).getObject();
+                
+            }
             
-            o = (( InternalFactHandle )o).getObject();
-            
+            targetCtx.set( identifier, o );
         }
-        
-        targetCtx.set( identifier, o );
 
         return o;
     }
