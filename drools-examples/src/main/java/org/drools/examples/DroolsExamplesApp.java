@@ -19,6 +19,7 @@ package org.drools.examples;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,6 +45,8 @@ import org.drools.examples.templates.SimpleRuleTemplateExample;
 import org.drools.examples.troubleticket.TroubleTicketExample;
 import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
 import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1;
+import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -159,6 +162,16 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("DataDrivenTemplateExample") {
             public void actionPerformed(ActionEvent e) {
                 DataDrivenTemplateExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample1") {
+            public void actionPerformed(ActionEvent e) {
+                WorkItemConsequenceExample1.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("WorkItemConsequenceExample2") {
+            public void actionPerformed(ActionEvent e) {
+                WorkItemConsequenceExample2.main(new String[0]);
             }
         }));
         return contentPane;
