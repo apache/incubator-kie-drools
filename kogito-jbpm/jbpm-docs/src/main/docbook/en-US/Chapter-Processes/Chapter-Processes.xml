@@ -36,7 +36,7 @@
     <section>
       <title>Using the graphical BPMN2 Editor</title>
 
-      <para>The graphical BPMN2 editor is a editor that allows you to create a process
+      <para>The graphical BPMN2 editor is an editor that allows you to create a process
       by dragging and dropping different nodes on a canvas and editing the properties of these
       nodes.  The graphical BPMN2 editor is part of the jBPM / Drools Eclipse plugin.  Once
       you have set up a jBPM project (see the installer for creating a working Eclipse
@@ -553,7 +553,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         <programlisting>kcontext.getKnowledgeRuntime().signalEvent(
   eventType, data, kcontext.getProcessInstance().getId());</programlisting>
 
-        <para>A throwing signal events could also be used to model the signaling of an
+        <para>A throwing signal event could also be used to model the signaling of an
         event. This is however currently only possible when working with XML directly.  We will
         be adding support for graphically specifying this in the new BPMN2 editor.</para>
         
@@ -612,12 +612,12 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             <listitem>When trying to create a higher-level business process, that should
             also be understood by business users, it is probably wise to avoid low-level
             implementation details inside the process, including inside these script tasks.
-            Script task could still be used to quickly manipulate variables etc. but
-            other concepts like a service task could be used to model more complex
+            A Script Task could still be used to quickly manipulate variables etc. but
+            other concepts like a Service Task could be used to model more complex
             behaviour in a higher-level manner.</listitem>
             <listitem>Scripts should be immediate.  They are using the engine thread
             to execute the script.  Scripts that could take some time to execute should
-            probably be modeled as an asynchronous service task.</listitem>
+            probably be modeled as an asynchronous Service Task.</listitem>
             <listitem>You should try to avoid contacting external services through a
             script node.  Not only does this usually violate the first two caveats, it
             is also interacting with external services without the knowledge of the engine,
@@ -794,7 +794,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         
         <para>A user task should define the type of task that needs to be executed
         (using properties like TaskName, Comment, etc.) and who needs to perform it
-        (using either actorId or groupId).  Note that, if there is data related to
+        (using either actorId or groupId).  Note that if there is data related to
         this specific process instance that the end user needs when performing the
         task, this data should be passed as the content of the task.  The task for
         example does not have access to process variables.  Check out the chapter on
