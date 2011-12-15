@@ -62,50 +62,56 @@ public class FixedKnowledgeCommandContext
         this.workingMemoryEntryPoint = workingMemoryEntryPoint;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getKnowledgeBuilder()
-     */
     public KnowledgeBuilder getKnowledgeBuilder() {
         return kbuilder;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getKnowledgeBase()
-     */
     public KnowledgeBase getKnowledgeBase() {
         return this.kbase;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getStatefulKnowledgesession()
-     */
     public StatefulKnowledgeSession getStatefulKnowledgesession() {
         return statefulKsession;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getWorkItemManager()
-     */
     public WorkItemManager getWorkItemManager() {
         return statefulKsession.getWorkItemManager();
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getExecutionResults()
-     */
     public ExecutionResults getExecutionResults() {
         return this.kresults;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.command.impl.KnowledgeCommandContext#getWorkingMemoryEntryPoint()
-     */
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint() {
         return workingMemoryEntryPoint;
     }
 
     public void setWorkingMemoryEntryPoint(WorkingMemoryEntryPoint workingMemoryEntryPoint) {
         this.workingMemoryEntryPoint = workingMemoryEntryPoint;
+    }
+
+    public KnowledgeBuilder getKbuilder() {
+        return kbuilder;
+    }
+
+    public void setKbuilder(KnowledgeBuilder kbuilder) {
+        this.kbuilder = kbuilder;
+    }
+
+    public KnowledgeBase getKbase() {
+        return kbase;
+    }
+
+    public void setKbase(KnowledgeBase kbase) {
+        this.kbase = kbase;
+    }
+
+    public StatefulKnowledgeSession getStatefulKsession() {
+        return statefulKsession;
+    }
+
+    public void setStatefulKsession(StatefulKnowledgeSession statefulKsession) {
+        this.statefulKsession = statefulKsession;
     }
 
     public ContextManager getContextManager() {

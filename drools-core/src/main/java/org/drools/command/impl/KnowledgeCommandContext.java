@@ -10,16 +10,16 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 public interface KnowledgeCommandContext extends Context{
 
-    public abstract KnowledgeBuilder getKnowledgeBuilder();
+    public KnowledgeBuilder getKnowledgeBuilder();
 
-    public abstract KnowledgeBase getKnowledgeBase();
+    public KnowledgeBase getKnowledgeBase();
 
-    public abstract StatefulKnowledgeSession getStatefulKnowledgesession();
+    public StatefulKnowledgeSession getStatefulKnowledgesession();
 
-    public abstract WorkItemManager getWorkItemManager();
+    public WorkItemManager getWorkItemManager();
 
-    public abstract ExecutionResults getExecutionResults();
+    public ExecutionResults getExecutionResults();
 
-    public abstract WorkingMemoryEntryPoint getWorkingMemoryEntryPoint();
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint();
 
 }
