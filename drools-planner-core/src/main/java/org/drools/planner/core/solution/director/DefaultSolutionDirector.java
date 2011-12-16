@@ -162,7 +162,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
             String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
             uncorruptedSolutionDirector.dispose();
             throw new IllegalStateException(
-                    "Score corruption: the presumedScore (" + presumedScore + ") is not the uncorruptedScore  ("
+                    "Score corruption: the presumedScore (" + presumedScore + ") is not the uncorruptedScore ("
                             + uncorruptedScore + "):\n"
                             + scoreCorruptionAnalysis);
         } else {
