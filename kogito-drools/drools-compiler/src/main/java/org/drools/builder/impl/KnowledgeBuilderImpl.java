@@ -23,6 +23,10 @@ import org.drools.rule.Package;
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public PackageBuilder pkgBuilder;
 
+    public KnowledgeBuilderImpl() {
+        
+    }
+    
     public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
     }
