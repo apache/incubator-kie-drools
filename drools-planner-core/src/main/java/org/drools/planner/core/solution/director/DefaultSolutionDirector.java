@@ -86,7 +86,6 @@ public class DefaultSolutionDirector implements SolutionDirector {
 
     public void setScoreDefinition(ScoreDefinition scoreDefinition) {
         this.scoreDefinition = scoreDefinition;
-        workingScoreCalculator = scoreDefinition.buildScoreCalculator();
     }
 
     public Solution getWorkingSolution() {
@@ -119,6 +118,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
             workingMemory.dispose();
         }
         workingMemory = ruleBase.newStatefulSession();
+        workingScoreCalculator = scoreDefinition.buildScoreCalculator();
         workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
         for (Object fact : getWorkingFacts()) {
             workingMemory.insert(fact);
