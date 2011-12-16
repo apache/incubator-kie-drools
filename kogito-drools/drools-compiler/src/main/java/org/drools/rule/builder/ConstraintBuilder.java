@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class ConstraintBuilder {
 
-    private static final boolean USE_MVEL_EXPRESSION = true;
+    private static final boolean USE_MVEL_EXPRESSION = false;
     private static Set<String> mvelOperators;
 
     static {
@@ -58,7 +58,7 @@ public class ConstraintBuilder {
     }
 
     public static Constraint buildVariableConstraint(RuleBuildContext context,
-                                                     String expr,
+                                                     String expression,
                                                      Declaration[] declrations,
                                                      String leftValue,
                                                      String operator,
@@ -70,39 +70,20 @@ public class ConstraintBuilder {
                 return new EvaluatorConstraint(restriction.getRequiredDeclarations(), restriction.getEvaluator(), extractor);
             }
 
-            String packageName = context.getPkg().getName();
-            ParserConfiguration conf = getParserConfiguration(context);
-
-            // resolve ambiguity between variable and bound value with the same name in unifications
-            if (restriction instanceof UnificationRestriction && leftValue.equals(rightValue)) {
-                rightValue = rightValue + "__";
-                for (Declaration declaration : declrations) {
-                    if (declaration.getIdentifier().equals(leftValue)) {
-                        declaration.setBindingName(rightValue);
-                    }
-                }
-                expr = leftValue + " == " + rightValue;
-            }
-
-            return new MvelConstraint(conf, packageName, expr, operator, declrations, getIndexingDeclaration(restriction), extractor);
+            expression = resolveUnificationAmbiguity(expression, declrations, leftValue, rightValue, restriction);
+            return new MvelConstraint(context.getPkg().getName(), expression, operator, declrations, getIndexingDeclaration(restriction), extractor);
         } else {
             return new VariableConstraint(extractor, restriction);
         }
     }
 
-    private static Declaration getIndexingDeclaration(Restriction restriction) {
-        if (restriction instanceof ReturnValueRestriction) return null;
-        Declaration[] declarations = restriction.getRequiredDeclarations();
-        return declarations != null && declarations.length > 0 ? declarations[0] : null;
-    }
-
     public static Constraint buildLiteralConstraint(RuleBuildContext context,
                                                     ValueType vtype,
                                                     FieldValue field,
-                                                    String expr,
-                                                    String value1,
+                                                    String expression,
+                                                    String leftValue,
                                                     String operator,
-                                                    String value2,
+                                                    String rightValue,
                                                     InternalReadAccessor extractor,
                                                     LiteralRestrictionDescr restrictionDescr) {
         if (USE_MVEL_EXPRESSION) {
@@ -111,35 +92,32 @@ public class ConstraintBuilder {
                 return new EvaluatorConstraint(field, evaluator, extractor);
             }
 
-            return buildMVELConstraint(context, vtype, field, expr, value1, operator, value2, restrictionDescr);
+            String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
+            return new MvelConstraint(context.getPkg().getName(), mvelExpr, operator);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
-            if (restriction != null) {
-                return new LiteralConstraint( extractor, restriction );
-            }
+            return restriction != null ? new LiteralConstraint(extractor, restriction) : null;
         }
-        return null;
     }
 
-    private static Constraint buildMVELConstraint(RuleBuildContext context,
-                                          ValueType vtype,
-                                          FieldValue field,
-                                          String expr,
-                                          String leftValue,
-                                          String operator,
-                                          String rightValue,
-                                          LiteralRestrictionDescr restrictionDescr) {
-        String packageName = context.getPkg().getName();
-        ParserConfiguration conf = getParserConfiguration(context);
-
-        String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expr, leftValue, operator, rightValue, restrictionDescr);
-
-        return new MvelConstraint(conf, packageName, mvelExpr, operator);
+    private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue, Restriction restriction) {
+        // resolve ambiguity between variable and bound value with the same name in unifications
+        if (restriction instanceof UnificationRestriction && leftValue.equals(rightValue)) {
+            rightValue = rightValue + "__";
+            for (Declaration declaration : declrations) {
+                if (declaration.getIdentifier().equals(leftValue)) {
+                    declaration.setBindingName(rightValue);
+                }
+            }
+            expr = leftValue + " == " + rightValue;
+        }
+        return expr;
     }
 
-    private static ParserConfiguration getParserConfiguration(RuleBuildContext context) {
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-        return data.getParserConfiguration();
+    private static Declaration getIndexingDeclaration(Restriction restriction) {
+        if (restriction instanceof ReturnValueRestriction) return null;
+        Declaration[] declarations = restriction.getRequiredDeclarations();
+        return declarations != null && declarations.length > 0 ? declarations[0] : null;
     }
 
     private static String normalizeMVELLiteralExpression(ValueType vtype,

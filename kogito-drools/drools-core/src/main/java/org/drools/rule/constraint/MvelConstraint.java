@@ -51,14 +51,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(ParserConfiguration conf, String packageName, String expression, String operator) {
-        this(conf, packageName, expression, operator, null, null, null);
+    public MvelConstraint(String packageName, String expression, String operator) {
+        this(packageName, expression, operator, null, null, null);
     }
 
-    public MvelConstraint(ParserConfiguration conf, String packageName, String expression, String operator,
+    public MvelConstraint(String packageName, String expression, String operator,
                           Declaration[] declarations, Declaration indexingDeclaration, InternalReadAccessor extractor) {
         this.packageName = packageName;
-        this.conf = conf;
         this.expression = expression;
         this.operator = operator;
         this.declarations = declarations == null ? new Declaration[0] : declarations;
@@ -255,7 +254,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public Object clone() {
-        return new MvelConstraint(conf, packageName, expression, operator, declarations, indexingDeclaration, extractor);
+        return new MvelConstraint(packageName, expression, operator, declarations, indexingDeclaration, extractor);
     }
 
     public int hashCode() {
