@@ -75,7 +75,7 @@ public class Queen extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return column + " @ " + row;
+        return column + "@" + row;
     }
 
 }

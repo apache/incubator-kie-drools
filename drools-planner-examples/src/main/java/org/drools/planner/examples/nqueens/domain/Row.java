@@ -35,7 +35,7 @@ public class Row extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return Integer.toString(index);
+        return "row" + index;
     }
 
 }

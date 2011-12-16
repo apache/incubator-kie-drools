@@ -34,7 +34,7 @@ public class Column extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return Integer.toString(index);
+        return "col" + index;
     }
 
 }
