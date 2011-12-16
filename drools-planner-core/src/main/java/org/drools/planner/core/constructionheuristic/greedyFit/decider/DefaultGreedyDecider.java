@@ -20,8 +20,12 @@ import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalke
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 import org.drools.planner.core.score.Score;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultGreedyDecider implements GreedyDecider {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private PlanningVariableWalker planningVariableWalker;
     private ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType;
@@ -68,6 +72,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
                 greedyFitStepScope.setVariableToValueMap(planningVariableWalker.getVariableToValueMap());
                 maxScore = score;
             }
+            // TODO refactor to usage of Move and MoveScope
+            logger.trace("        Move score ({}) for planning entity ({}) for move (TODO).",
+                    new Object[]{score, greedyFitStepScope.getPlanningEntity()});
             if (constructionHeuristicPickEarlyType
                     == ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING
                     && lastStepScore != null
