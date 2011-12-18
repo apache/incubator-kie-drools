@@ -218,7 +218,7 @@ public class SolverBenchmarkSuite {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
         benchmarkDirectory.mkdirs();
-        if (solvedSolutionFilesDirectory == null) {
+        if (benchmarkInstanceDirectory == null) {
             String timestampDirectory = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
             benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
         }
