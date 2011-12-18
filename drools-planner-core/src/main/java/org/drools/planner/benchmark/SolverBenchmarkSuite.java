@@ -214,6 +214,14 @@ public class SolverBenchmarkSuite {
             solverBenchmark.setName(generatedName);
             generatedNameIndex++;
         }
+        initBenchmarkDirectoryAndSubdirs();
+        if (solverBenchmarkComparator == null) {
+            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        }
+//        resetSolverBenchmarkSuiteResultList();
+    }
+
+    private void initBenchmarkDirectoryAndSubdirs() {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
@@ -231,10 +239,6 @@ public class SolverBenchmarkSuite {
             solverStatisticFilesDirectory = new File(benchmarkInstanceDirectory, "statistic");
         }
         solverStatisticFilesDirectory.mkdirs();
-        if (solverBenchmarkComparator == null) {
-            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
-        }
-//        resetSolverBenchmarkSuiteResultList();
     }
 
 //    private void resetSolverBenchmarkSuiteResultList() {
