@@ -84,4 +84,9 @@ public class ContextImpl
         context.remove(name);
     }
 
+    @Override
+    public String toString() {
+        return "ContextImpl [name=" + name + ", parent=" + parent.getName() + ", context=" + context + "]";
+    }
+
 }
