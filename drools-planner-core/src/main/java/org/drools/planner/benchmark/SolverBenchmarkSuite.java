@@ -204,6 +204,15 @@ public class SolverBenchmarkSuite {
             solverBenchmark.validate();
             solverBenchmark.resetSolverBenchmarkResultList();
         }
+        initSolverNames(nameSet, noNameBenchmarkSet);
+        initBenchmarkDirectoryAndSubdirs();
+        if (solverBenchmarkComparator == null) {
+            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        }
+//        resetSolverBenchmarkSuiteResultList();
+    }
+
+    private void initSolverNames(Set<String> nameSet, Set<SolverBenchmark> noNameBenchmarkSet) {
         int generatedNameIndex = 0;
         for (SolverBenchmark solverBenchmark : noNameBenchmarkSet) {
             String generatedName = "Config_" + generatedNameIndex;
@@ -214,11 +223,6 @@ public class SolverBenchmarkSuite {
             solverBenchmark.setName(generatedName);
             generatedNameIndex++;
         }
-        initBenchmarkDirectoryAndSubdirs();
-        if (solverBenchmarkComparator == null) {
-            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
-        }
-//        resetSolverBenchmarkSuiteResultList();
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
