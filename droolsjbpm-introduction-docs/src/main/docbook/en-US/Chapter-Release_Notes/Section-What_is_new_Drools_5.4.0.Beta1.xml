@@ -255,6 +255,43 @@
     </section>
 
     <section>
+      <title>Decision table analysis</title>
+
+      <para>On the bottom of Web decision tables, there's now a button <guilabel>Analyze...</guilabel> which will check
+      if there issues in your decision table, such as impossible matches and conflicting matches.</para>
+
+      <section>
+        <title>Impossible match detection</title>
+
+        <para>An impossible match is a row in a decision table that can never match. For example:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Release_Notes/impossibleMatch.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>In the decision table above, row 2 is an impossible match, because there is no Person with a minimum age
+        of 21 and a maximum age of 20.</para>
+      </section>
+
+      <section>
+        <title>Conflicting match detection</title>
+
+        <para>A conflicting match are 2 rows in a decision table that can both match.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Release_Notes/conflictingMatch.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>In the decision table above, row 2 and 3 are a conflicting match, because a Person of age 67 will match
+        both rows: it's unclear whether that Person has to pay a fee of 200 or 100.</para>
+      </section>
+    </section>
+
+    <section>
       <title>REST api changes</title>
 
       <itemizedlist>
@@ -280,10 +317,38 @@
         </listitem>
       </itemizedlist>
     </section>
+
     <section>
       <title>JBoss AS 6 war is no longer shipped in the release</title>
-      
-      <para>This does not mean that Guvnor can not be made to work in AS 6. We are just focusing on JBoss AS 7 and Tomcat.</para>
+
+      <para>This does not mean that Guvnor can not be made to work in AS 6. We are just focusing on JBoss AS 7 and
+      Tomcat.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Planner</title>
+
+    <section>
+      <title>Build-in move factories</title>
+
+      <para>Planner now comes with 2 build-in move factories: <literal>GenericChangeMoveFactory</literal> and
+      <literal>GenericSwapMoveFactory</literal>. Here's an example that uses both of them:</para>
+
+      <programlisting>  &lt;localSearch&gt;
+    &lt;selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericSwapMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+    &lt;/selector&gt;
+    ...
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>It's no longer required to write your own Move and MoveFactory implementations, but you still can (and mix
+      those in too).</para>
     </section>
   </section>
 </section>
