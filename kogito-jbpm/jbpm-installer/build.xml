@@ -697,10 +697,20 @@
   <!-- ############ CLEAN ############ -->
 	
   <!-- Clean jboss -->
-  <target name="clean.jboss">
+  <target name="clean.jboss" depends="check.clean.repository">
     <delete dir="${jboss.home}"/>
-    <delete dir="${install.home}/repository"/>
-    <delete file="${install.home}/repository.xml"/>
+  	<antcall target="clean.jboss.repository" />    
+  </target>
+
+  <target name="clean.jboss.repository" if="clean.repository">
+  	<delete dir="${install.home}/repository"/>
+  	<delete file="${install.home}/repository.xml"/>
+  </target>
+	
+  <target name="check.clean.repository">
+    <condition property="clean.repository">
+	  <equals arg1="${jboss.clean.repository}" arg2="true" />
+	</condition>
   </target>
 
   <!-- Clean eclipse -->
