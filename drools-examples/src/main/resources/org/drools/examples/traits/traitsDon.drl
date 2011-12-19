@@ -1,0 +1,119 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.traits
+
+declare Person
+    @Traitable
+
+    name    : String       = "john"     @key
+
+    age     : int          = 18
+
+    weight  : Double       = 75.4
+
+end
+
+
+declare IPerson
+    @format( trait )
+
+    name    : String
+
+    age     : int
+
+    weight  : Double
+
+end
+
+
+declare IStudent extends IPerson
+    @format( trait )
+
+    school  : String
+end
+
+
+declare IWorker extends IPerson
+    @format( trait )
+
+    wage    : int
+end
+
+
+rule "Zero"
+when
+then
+    insert( new Person() );
+end
+
+
+rule "Students and Workers"
+no-loop
+when
+    $p : Person( $name : name, $age : age < 25, $weight : weight )
+then
+    IStudent s = don( $p, IStudent.class, true );
+        s.setSchool( "SomeSchool" );
+    update( s );
+
+    IWorker w = don( $p, IWorker.class, true );
+        w.setWage( 1200 );
+    update( w );
+end
+
+
+rule "Welcome"
+salience 10
+no-loop
+when
+    $s : IStudent( $school : school, $name : name )
+then
+    System.out.println( "Dear "+ $name + ", welcome to " + $school );
+end
+
+
+
+
+rule "Hard toil"
+salience 5
+no-loop
+when
+    $w : IWorker( $name : name, $weight : weight, $wage : wage )
+then
+    System.out.println( "Work harder, " + $name );
+
+    $w.setWage( $wage + 100 );
+    $w.setWeight( $weight - 10 );
+
+    update( $w );
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
