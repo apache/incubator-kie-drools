@@ -731,4 +731,12 @@ f.newPath("init")
       implementations, but you still can (and mix those in too).</para>
     </section>
   </section>
+  <section>
+    <title>Eclipse plugin</title>
+    <section>
+      <title>Debugging with Java does not work</title>
+
+      <para>Debugging with Java is not working. Debugging with MVEL is not affected. This will be fixed in the future releases before 5.4.0.Final</para> 
+    </section>
+  </section>
 </section>
