@@ -280,5 +280,10 @@
         </listitem>
       </itemizedlist>
     </section>
+    <section>
+      <title>JBoss AS 6 war is no longer shipped in the release</title>
+      
+      <para>This does not mean that Guvnor can not be made to work in AS 6. We are just focusing on JBoss AS 7 and Tomcat.</para>
+    </section>
   </section>
 </section>
