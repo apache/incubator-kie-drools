@@ -734,7 +734,7 @@ f.newPath("init")
   <section>
     <title>Eclipse plugin</title>
     <section>
-      <title>Debugging with Java does not work</title>
+      <title>Breakpoints in Rule RHS are not working with Java dialect</title>
 
       <para>Debugging with Java is not working. Debugging with MVEL is not affected. This will be fixed in the future releases before 5.4.0.Final</para> 
     </section>
