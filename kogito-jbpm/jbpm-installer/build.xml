@@ -290,7 +290,7 @@
     <antcall target="install.jBPM-gwt-console.into.jboss7" />
   </target>
   <target name="install.jBPM-gwt-console.into.jboss7" depends="check.jboss.version" if="jboss.version.is.7">
-    <!-- reporting -->
+    <!-- download reporting -->
     <antcall target="download.birt.as7" />
     <!-- gwt-console -->
     <mkdir dir="${install.home}/target"/>
@@ -322,8 +322,10 @@
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
     </copy>
-    <!-- reporting -->
+    <!-- install reporting -->
     <antcall target="install.reporting.into.jboss7" />
+  	<!-- install dependencies -->
+  	<antcall target="install.dependencies" />
     <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
          destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
     <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
@@ -338,7 +340,7 @@
           overwrite="true" />
   </target>
   <target name="install.jBPM-gwt-console.into.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">
-    <!-- reporting -->
+    <!-- download reporting -->
     <antcall target="download.birt.as5" />
     <!-- gwt-console -->
     <mkdir dir="${install.home}/target"/>
@@ -366,8 +368,10 @@
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
     </copy>
-    <!-- reporting -->
+    <!-- install reporting -->
     <antcall target="install.reporting.into.jboss5" />
+  	<!-- install dependencies -->
+  	<antcall target="install.dependencies" />
     <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
          destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
     <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
@@ -394,27 +398,12 @@
   </target>
   
   <!-- Install dependencies -->
-  <target name="install.dependencies.into.jboss">
-    <antcall target="install.dependencies.into.jboss7" />
-  	<antcall target="install.dependencies.into.jboss5" />
-  </target>
-  
-  <!-- Install dependencies AS7 -->
-  <target name="install.dependencies.into.jboss7" depends="check.jboss.version" if="jboss.version.is.7">	
-  	<copy todir="${jboss.home}/standalone/lib">
-  	  <fileset dir="${install.home}/dependencies">
-  	    <include name="**/*.jar"/>
-  	   </fileset>
-  	</copy>
-  </target>
-	
-  <!-- Install dependencies AS5 -->
-  <target name="install.dependencies.into.jboss5" depends="check.jboss.version" unless="jboss.version.is.7">	
-  	<copy todir="${jboss.home}/server/${jboss.server.configuration}/lib">
-  	  <fileset dir="${install.home}/dependencies">
-  	    <include name="**/*.jar"/>
-  	  </fileset>
-  	 </copy>
+  <target name="install.dependencies">	
+  	<copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
+  		<fileset dir="${install.home}/dependencies">
+  		  <include name="**/*.jar"/>
+  		</fileset>
+    </copy>
   </target>
 	
   <!-- Install reporting AS7  -->
@@ -522,13 +511,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.dependencies.into.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.dependencies.into.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
   
   <!-- ############ START/STOP ############ -->
 
