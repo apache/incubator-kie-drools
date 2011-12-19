@@ -10,6 +10,321 @@
   <title>What is New and Noteworthy in Drools 5.4.0.Beta1</title>
 
   <section>
+    <title>Drools Expert</title>
+
+    <section>
+      <title>Traits</title>
+
+      <para>Traits were introduced in the 5.3 release, and details on them can
+      be found in the N&amp;N for there. This release adds an example so that
+      people have something simple to run, to help understand. In the
+      drools-examples source project open the classes and drl for the
+      namespace "/org/drools/examples/traits". There you will find an example
+      around classifications of students and workers.</para>
+
+      <programlisting>rule "Students and Workers" no-loop when
+    $p : Person( $name : name, 
+                 $age : age &lt; 25,  
+                 $weight : weight )
+then
+    IWorker w = don( $p, IWorker.class, true );
+    w.setWage( 1200 );
+    update( w );
+
+    IStudent s = don( $p, IStudent.class, true );
+    s.setSchool( "SomeSchool" );
+    update( s );
+end
+
+
+rule "Working Students" salience -10 when
+    $s : IStudent( $school : school, 
+                   $name : name,
+                   this isA IWorker, 
+                   $wage : fields[ "wage" ] )
+then
+    System.out.println( $name + " : I have " + $wage + " to pay the fees at " + $school );
+end</programlisting>
+
+      <para>A two part detailed article has been written up at a blog, which
+      will later be improved and rolled into the main documentation. For now
+      you can read them here. </para>
+
+      <itemizedlist>
+        <listitem>
+          <para><link
+          xlink:href="???">http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link
+          xlink:href="http://blog.athico.com/2011/12/dynamic-typing-in-rules-traits-part-2.html">http://blog.athico.com/2011/12/dynamic-typing-in-rules-traits-part-2.html</link></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Simulation and Test</title>
+
+      <para>The simulation project that was first started in 2009, <link
+      xlink:href="http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html">http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html</link>,
+      has undergone an over haul and is now in a usable state. We have not yet
+      promoted this to -api, so it's considered unstable and will change
+      during the beta process. For now though the adventurous people can take
+      a look at the unit tests and start playing.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg"
+                     scale="80" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <para>The Simulator runs the Simulation. The Simulation is your scenario
+      definition. The Simulation consists of 1 to n Paths, you can think of a
+      Path as a sort of Thread. The Path is a chronological line on which
+      Steps are specified at given temporal distances from the start. You
+      don't specify a time unit for the Step, say 12:00am, instead it is
+      always a relative time distance from the start of the Simulation. Each
+      Step contains one or more Commands, i.e. create a
+      StatefulKnowledgeSession or insert an object or start a process. These
+      are the very same commands that you would use to script a knowledge
+      session using the batch execution, so it's re-using existing
+      concepts.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>1.1 Simulation</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>1..n Paths</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>1..n Steps</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>1..n Commands</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>All the steps, from all paths, are added to a priority queue which
+      is ordered by the temporal distance, and allows us to incrementally
+      execute the engine using a time slicing approach. The simulator pops of
+      the steps from the queue in turn. For each Step it increments the engine
+      clock and then executes all the Step's Commands.</para>
+
+      <para>Here is an example Command (notice it uses the same Commands as
+      used by the CommandExecutor):</para>
+
+      <programlisting>new InsertObjectCommand( new Person( "darth", 97 ) )</programlisting>
+
+      <para>Commands can be grouped together, especially Assertion commands,
+      via test groups. The test groups are mapped to JUnit "test methods", so
+      as they pass or fail using a specialised JUnit Runner the Eclipse GUI is
+      updated - as illustrated in the above image, showing two passed test
+      groups named "test1" and "test2".</para>
+
+      <para>Using the JUnit integration is trivial. Just annotate the class
+      with @RunWith(JUnitSimulationRunner.class). Then any method that is
+      annotated with @Test and returns a Simulation instance will be invoked
+      executing the returned Simulation instance in the Simulator. As test
+      groups are executed the JUnit GUI is updated.</para>
+
+      <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase
+      or StatefulKnowledgeSession the system assumed a "register" approach. To
+      get a feel for this look at the <link
+      xlink:href="org.drools.simulation.impl.SimulationTest">org.drools.simulation.impl.SimulationTest</link>
+      at github (path may change over time).</para>
+
+      <programlisting>cmds.add( new NewKnowledgeBuilderCommand( null ) );
+cmds.add( new SetVariableCommandFromLastReturn( "path1",
+                                                KnowledgeBuilder.class.getName() ) );
+
+cmds.add( new KnowledgeBuilderAddCommand( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                                          ResourceType.DRL, null ) );</programlisting>
+
+      <para>Notice the set command. "path1" is the context, each path has it's
+      own variable context. All paths inherit from a "root" context.
+      "KnowledgeBuilder.class.getName() " is the name that we are setting the
+      return value of the last class. As mentioned before we consider the
+      class names of for those classes as registers, any further commands that
+      attempt to operate on a knowledge builder will use what ever is assigned
+      to that, as in the case of KnowledgeBuilderAddCommand. This allows
+      multiple kbuilders, kbases and ksessions to list in one context under
+      different variable names, but only the one assigned to the register is
+      the one that is currently executed.</para>
+
+      <para>The code below show the rough outline used in
+      SimulationTest:</para>
+
+      <programlisting>Simulation simulation = new SimulationImpl();
+PathImpl path = new PathImpl( simulation,
+                              "path1" );                              
+simulation.getPaths().put( "path1",
+                           path );                                      
+List&lt;Step&gt; steps = new ArrayList&lt;Step&gt;();
+path.setSteps( steps );
+List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
+.... add commands to step here ....
+// create a step at temporal distance of 2000ms from start
+steps.add( new StepImpl( path,
+                         cmds,
+                         2000 ) ); </programlisting>
+
+      <para>We know the above looks quite verbose. SimulationTest just shows
+      our low level canonical model, the idea is that high level
+      representations are built ontop of this. As this is a builder api we are
+      currently focusing on two sets of fluents, compact and standard. We will
+      also work on a spreadsheet UI for building these.</para>
+
+      <para>The compact fluent is designed to provide the absolute minimum
+      necessary to run against a single ksession. A good place to start is
+      <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/CompactFluentTest.java">org.drools.simulation.impl.CompactFluentTest</link>
+      , a snippet of which is shown below. Notice we set "yoda" to "y" and can
+      then assert on that. currently inside of the test string it executes
+      mvel. The eventual goal is to build out a set of <link
+      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> that
+      will allow assertions against the state of the engine, such as what
+      rules have fired and optionally with with data.</para>
+
+      <programlisting>FluentCompactSimulation f = new FluentCompactSimulationImpl();
+f.newStatefulKnowledgeSession()
+    .getKnowledgeBase()
+    .addKnowledgePackages( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                           ResourceType.DRL )
+    .end()
+    .newStep( 100 ) // increases the time 100ms
+    .insert( new Person( "yoda",
+                         150 ) ).set( "y" )
+    .fireAllRules()
+    // show testing inside of ksession execution
+    .test( "y.name == 'yoda'" )
+    .test( "y.age == 160" );</programlisting>
+
+      <para>Note that the test is not executing at build time, it's building a
+      script to be exucted later. The script underneath matches what you saw
+      in SimulationTest. Currently the way to run a simulation manually is
+      shown below. Atlhough you already saw in SimulationTest taht JUnit will
+      execue these automatically. We'll improve this over itme.</para>
+
+      <programlisting>SimulationImpl sim = (SimulationImpl) ((FluentCompactSimulationImpl) f).getSimulation();
+Simulator simulator = new Simulator( sim,
+                                     new Date().getTime() );
+simulator.run();</programlisting>
+
+      <para>The standard fluent is almost a 1 to 1 mapping to the cannonical
+      path, step and command strucutre in SimulationTest- just more compact.
+      Start by looking in <link
+      xlink:href="???">org.drools.simulation.impl.StandardFluentTest.</link>.
+      This fluent allows you to run any number of paths and steps, along with
+      a lot more control over multiple kbuilders, kbases and ksessions.</para>
+
+      <programlisting>FluentStandardSimulation f = new FluentStandardSimulationImpl();      
+f.newPath("init")
+     .newStep( 0 )
+          // set to ROOT, as I want paths to share this
+         .newKnowledgeBuilder()
+             .add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                   ResourceType.DRL )
+         .end(ContextManager.ROOT, KnowledgeBuilder.class.getName() )
+         .newKnowledgeBase()
+             .addKnowledgePackages()
+         .end(ContextManager.ROOT, KnowledgeBase.class.getName() )
+    .end()
+ .newPath( "path1" )
+    .newStep( 1000 )
+        .newStatefulKnowledgeSession()
+            .insert( new Person( "yoda", 150 ) ).set( "y" )
+            .fireAllRules()
+            .test( "y.name == 'yoda'" )
+            .test( "y.age == 160" )
+        .end()
+    .end()
+ .newPath( "path2" )
+    .newStep( 800 )
+        .newStatefulKnowledgeSession()
+            .insert( new Person( "darth", 70 ) ).set( "d" )
+            .fireAllRules()
+            .test( "d.name == 'yoda'" )
+            .test( "d.age == 80" )
+        .end()
+    .end()
+ .end</programlisting>
+
+      <para>There is still an aweful lot to do</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Flesh out the api to support more commands, and also to
+          encompass jBPM commands</para>
+        </listitem>
+
+        <listitem>
+          <para>Improve out of the box userbility, including moving interfaces
+          to knowlege-api and hiding "new" constructors with factory
+          methods</para>
+        </listitem>
+
+        <listitem>
+          <para>Commands are already marshallable to json and xml. They should
+          be updated to allow full round tripping from java api commands and
+          json/xml documents.</para>
+        </listitem>
+
+        <listitem>
+          <para>Developer hamcrest matchers for testing state</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>What rule(s) fired, including optionally what data was
+              used with the executing rule (Drools)</para>
+            </listitem>
+
+            <listitem>
+              <para>What rules are active for a given fact</para>
+            </listitem>
+
+            <listitem>
+              <para>What rules activated and de-activated for a given fact
+              change</para>
+            </listitem>
+
+            <listitem>
+              <para>Process variable state (jBPM)</para>
+            </listitem>
+
+            <listitem>
+              <para>Wait node states (jBPM)</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Design and build tabular authoring tools via
+          spreadsheet</para>
+        </listitem>
+
+        <listitem>
+          <para>Design and develop textual DSL for test authoing - maybe part
+          of DRL (long term task).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
     <title>Guvnor</title>
 
     <section>
@@ -374,7 +689,7 @@
       Keys in 'free-form' LHS or RHS elements are considered 'Text' (i.e.
       you'll get a TextBox in the Template data screen). Data-types should be
       correctly escaped in the 'free-form' entry. For example:
-      System.out.println("@{key}"); </para>
+      System.out.println("@{key}");</para>
     </section>
 
     <section>
