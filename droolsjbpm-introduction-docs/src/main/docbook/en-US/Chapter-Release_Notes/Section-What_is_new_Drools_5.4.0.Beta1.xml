@@ -17,7 +17,7 @@
 
       <para>Traits were introduced in the 5.3 release, and details on them can
       be found in the N&amp;N for there. This release adds an example so that
-      people have something simple to run, to help understand. In the
+      people have something simple to run, to help them understand. In the
       drools-examples source project open the classes and drl for the
       namespace "/org/drools/examples/traits". There you will find an example
       around classifications of students and workers.</para>
@@ -142,7 +142,7 @@ end</programlisting>
       groups are executed the JUnit GUI is updated.</para>
 
       <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase
-      or StatefulKnowledgeSession the system assumed a "register" approach. To
+      or StatefulKnowledgeSession the system assumes a "register" approach. To
       get a feel for this look at the <link
       xlink:href="org.drools.simulation.impl.SimulationTest">org.drools.simulation.impl.SimulationTest</link>
       at github (path may change over time).</para>
@@ -157,13 +157,13 @@ cmds.add( new KnowledgeBuilderAddCommand( ResourceFactory.newByteArrayResource( 
       <para>Notice the set command. "path1" is the context, each path has it's
       own variable context. All paths inherit from a "root" context.
       "KnowledgeBuilder.class.getName() " is the name that we are setting the
-      return value of the last class. As mentioned before we consider the
-      class names of for those classes as registers, any further commands that
+      return value of the last command. As mentioned before we consider the
+      class names of those classes as registers, any further commands that
       attempt to operate on a knowledge builder will use what ever is assigned
       to that, as in the case of KnowledgeBuilderAddCommand. This allows
-      multiple kbuilders, kbases and ksessions to list in one context under
-      different variable names, but only the one assigned to the register is
-      the one that is currently executed.</para>
+      multiple kbuilders, kbases and ksessions to exist in one context under
+      different variable names, but only the one assigned to the register name
+      is the one that is currently executed on.</para>
 
       <para>The code below show the rough outline used in
       SimulationTest:</para>
@@ -186,17 +186,18 @@ steps.add( new StepImpl( path,
       our low level canonical model, the idea is that high level
       representations are built ontop of this. As this is a builder api we are
       currently focusing on two sets of fluents, compact and standard. We will
-      also work on a spreadsheet UI for building these.</para>
+      also work on a spreadsheet UI for building these, and eventually a
+      dedicated textual dsl.</para>
 
       <para>The compact fluent is designed to provide the absolute minimum
       necessary to run against a single ksession. A good place to start is
       <link
       xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/CompactFluentTest.java">org.drools.simulation.impl.CompactFluentTest</link>
       , a snippet of which is shown below. Notice we set "yoda" to "y" and can
-      then assert on that. currently inside of the test string it executes
-      mvel. The eventual goal is to build out a set of <link
-      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> that
-      will allow assertions against the state of the engine, such as what
+      then assert on that. Currently inside of the test string it executes
+      using mvel. The eventual goal is to build out a set of <link
+      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> matchers
+      that will allow assertions against the state of the engine, such as what
       rules have fired and optionally with with data.</para>
 
       <programlisting>FluentCompactSimulation f = new FluentCompactSimulationImpl();
@@ -214,10 +215,10 @@ f.newStatefulKnowledgeSession()
     .test( "y.age == 160" );</programlisting>
 
       <para>Note that the test is not executing at build time, it's building a
-      script to be exucted later. The script underneath matches what you saw
+      script to be executed later. The script underneath matches what you saw
       in SimulationTest. Currently the way to run a simulation manually is
-      shown below. Atlhough you already saw in SimulationTest taht JUnit will
-      execue these automatically. We'll improve this over itme.</para>
+      shown below. Atlhough you already saw in SimulationTest that JUnit will
+      execute these automatically. We'll improve this over itme.</para>
 
       <programlisting>SimulationImpl sim = (SimulationImpl) ((FluentCompactSimulationImpl) f).getSimulation();
 Simulator simulator = new Simulator( sim,
@@ -225,7 +226,7 @@ Simulator simulator = new Simulator( sim,
 simulator.run();</programlisting>
 
       <para>The standard fluent is almost a 1 to 1 mapping to the cannonical
-      path, step and command strucutre in SimulationTest- just more compact.
+      path, step and command structure in SimulationTest- just more compact.
       Start by looking in <link
       xlink:href="???">org.drools.simulation.impl.StandardFluentTest.</link>.
       This fluent allows you to run any number of paths and steps, along with
@@ -257,13 +258,16 @@ f.newPath("init")
         .newStatefulKnowledgeSession()
             .insert( new Person( "darth", 70 ) ).set( "d" )
             .fireAllRules()
-            .test( "d.name == 'yoda'" )
+            .test( "d.name == 'darth'" )
             .test( "d.age == 80" )
         .end()
     .end()
  .end</programlisting>
 
-      <para>There is still an aweful lot to do</para>
+      <para>There is still an aweful lot to do, this is designed to eventually
+      provide a unified simulation and testing environment for rules, workflow
+      and event processing over time, and eventually also over distributed
+      architectures.</para>
 
       <itemizedlist>
         <listitem>
@@ -284,7 +288,7 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Developer hamcrest matchers for testing state</para>
+          <para>Develop hamcrest matchers for testing state</para>
 
           <itemizedlist>
             <listitem>
@@ -312,13 +316,13 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Design and build tabular authoring tools via
-          spreadsheet</para>
+          <para>Design and build tabular authoring tools via spreadsheet,
+          targetting the web with round tripping to excel.</para>
         </listitem>
 
         <listitem>
-          <para>Design and develop textual DSL for test authoing - maybe part
-          of DRL (long term task).</para>
+          <para>Design and develop textual DSL for authoing - maybe part of
+          DRL (long term task).</para>
         </listitem>
       </itemizedlist>
     </section>
