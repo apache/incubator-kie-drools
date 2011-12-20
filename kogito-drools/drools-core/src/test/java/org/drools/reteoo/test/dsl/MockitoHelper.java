@@ -46,7 +46,7 @@ import org.junit.Assert;
 import org.junit.matchers.JUnitMatchers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.exceptions.base.MockitoAssertionError;
-import org.mockito.internal.verification.api.VerificationMode;
+import org.mockito.verification.VerificationMode;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
