@@ -125,7 +125,7 @@ end</programlisting>
 
       <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase or StatefulKnowledgeSession the system
       assumes a "register" approach. To get a feel for this look at the <link
-      xlink:href="org.drools.simulation.impl.SimulationTest">org.drools.simulation.impl.SimulationTest</link> at github
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/SimulationTest.java">org.drools.simulation.impl.SimulationTest</link> at github
       (path may change over time).</para>
 
       <programlisting>cmds.add( new NewKnowledgeBuilderCommand( null ) );
@@ -198,7 +198,7 @@ simulator.run();</programlisting>
 
       <para>The standard fluent is almost a 1 to 1 mapping to the cannonical path, step and command structure in
       SimulationTest- just more compact. Start by looking in <link
-      xlink:href="???">org.drools.simulation.impl.StandardFluentTest</link>. This fluent allows you to run any number of
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/StandardFluentTest.java">org.drools.simulation.impl.StandardFluentTest</link>. This fluent allows you to run any number of
       paths and steps, along with a lot more control over multiple kbuilders, kbases and ksessions.</para>
 
       <programlisting>FluentStandardSimulation f = new FluentStandardSimulationImpl();      
