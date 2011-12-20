@@ -71,9 +71,8 @@ including callbacks from within the rules
       Only a few Swing-related points will be discussed in this section,
       but a good tutorial about Swing components can be found at Sun's
       Swing website, in
-      <ulink url="???">
-      <uri>http://java.sun.com/docs/books/tutorial/uiswing/</uri>
-      </ulink>.</para>
+      <link
+      xlink:href="http://java.sun.com/docs/books/tutorial/uiswing/">http://java.sun.com/docs/books/tutorial/uiswing/</link>.</para>
 
       <para>The pieces of Java code in <filename>Petstore.java</filename>
       that relate to rules and facts are shown below.</para>
