@@ -252,7 +252,7 @@ public class GuvnorConnectionUtils {
         List<String> allPackages = getPackageNamesFromGuvnor();
         if(!isEmpty(properties.getProperty(GUVNOR_PACKAGES_KEY))) {
             // make sure that all user defined package names are in the list of provided packages
-            String[] providedPackages = properties.getProperty(GUVNOR_PACKAGES_KEY).split( ",\\s*" );
+            String[] providedPackages = properties.getProperty(GUVNOR_PACKAGES_KEY).trim().split( ",\\s*" );
             List<String> retList = new ArrayList<String>();
             for(String pkg : providedPackages) {
                 if(allPackages.contains(pkg)) {
@@ -281,12 +281,12 @@ public class GuvnorConnectionUtils {
     
 
     public String getGuvnorProtocol() {
-        return isEmpty(properties.getProperty(GUVNOR_PROTOCOL_KEY)) ? "" : properties.getProperty(GUVNOR_PROTOCOL_KEY);
+        return isEmpty(properties.getProperty(GUVNOR_PROTOCOL_KEY)) ? "" : properties.getProperty(GUVNOR_PROTOCOL_KEY).trim();
     }
     
     public String getGuvnorHost() {
         if(!isEmpty(properties.getProperty(GUVNOR_HOST_KEY))) {
-            String retStr = properties.getProperty(GUVNOR_HOST_KEY);
+            String retStr = properties.getProperty(GUVNOR_HOST_KEY).trim();
             if(retStr.startsWith("/")){
                 retStr = retStr.substring(1);
             }
@@ -300,27 +300,27 @@ public class GuvnorConnectionUtils {
     }
     
     public String getGuvnorSubdomain() {
-        return isEmpty(properties.getProperty(GUVNOR_SUBDOMAIN_KEY)) ? "" : properties.getProperty(GUVNOR_SUBDOMAIN_KEY);
+        return isEmpty(properties.getProperty(GUVNOR_SUBDOMAIN_KEY)) ? "" : properties.getProperty(GUVNOR_SUBDOMAIN_KEY).trim();
     }
     
     public String getGuvnorUsr() {
-        return isEmpty(properties.getProperty(GUVNOR_USR_KEY)) ? "" : properties.getProperty(GUVNOR_USR_KEY);
+        return isEmpty(properties.getProperty(GUVNOR_USR_KEY)) ? "" : properties.getProperty(GUVNOR_USR_KEY).trim();
     }
     
     public String getGuvnorPwd() {
-        return isEmpty(properties.getProperty(GUVNOR_PWD_KEY)) ? "" : properties.getProperty(GUVNOR_PWD_KEY);
+        return isEmpty(properties.getProperty(GUVNOR_PWD_KEY)) ? "" : properties.getProperty(GUVNOR_PWD_KEY).trim();
     }
     
     public String getGuvnorPackages() {
-        return isEmpty(properties.getProperty(GUVNOR_PACKAGES_KEY)) ? "" : properties.getProperty(GUVNOR_PACKAGES_KEY);
+        return isEmpty(properties.getProperty(GUVNOR_PACKAGES_KEY)) ? "" : properties.getProperty(GUVNOR_PACKAGES_KEY).trim();
     }
     
     public String getGuvnorConnectTimeout() {
-    	return isEmpty(properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY);
+    	return isEmpty(properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY).trim();
     }
     
     public String getGuvnorReadTimeout() {
-    	return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_READTIMEOUT_KEY);
+    	return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_READTIMEOUT_KEY).trim();
     }
     
     private List<String> getPackageNamesFromGuvnor() {
