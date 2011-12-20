@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.compact;
+package org.drools.fluent;
 
 import org.drools.command.Command;
 import org.drools.simulation.Simulation;
