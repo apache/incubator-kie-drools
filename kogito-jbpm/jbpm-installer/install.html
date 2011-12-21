@@ -16,7 +16,7 @@ Ant: <A href="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindo
 First of all, you need to download the installer:<BR/>
 <EM>jbpm-{version}-installer.zip</EM>
 <P>
-You can for example find the latest snapshot release <A href="http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/target">here</A>.
+You can for example find the latest release <a href="http://sourceforge.net/projects/jbpm/files/jBPM%205/">here</a> or the latest snapshot release <A href="http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/target">here</A>.
 
 <H2>Demo setup</H2>
 The easiest way to get started is to simply run the installation script to install the demo setup.
@@ -28,18 +28,16 @@ This will:<UL>
   <LI>Download JBoss AS</LI>
   <LI>Download Eclipse</LI>
   <LI>Install Drools Guvnor into JBoss AS</LI>
-  <LI>Install Oryx Designer into JBoss AS</LI>
+  <LI>Install jBPM Designer into JBoss AS</LI>
   <LI>Install the jBPM Console into JBoss AS</LI>
   <LI>Install the jBPM Eclipse plugin</LI>
   <LI>Install the Drools Eclipse plugin</LI>
 </UL>
 
-This could take a while (REALLY, not kidding, we are downloading an application server and Eclipse installation).  The script however always shows which file it is downloading (you could for example check whether it is still downloading by checking the whether the size of the file in question in the jbpm-installer/lib folder is still increasing). If you want to avoid downloading specific components (because you will not be using them or you already have them installed somewhere else), check below for running only specific parts of the demo or directing the installer to an already installed component.<BR/>
+This could take a while (REALLY, not kidding, we are downloading an application server and Eclipse installation).  The script however always shows which file it is downloading (you could for example check whether it is still downloading by checking the whether the size of the file in question in the jbpm-installer/lib folder is still increasing). If you want to avoid downloading specific components (because you will not be using them or you already have them installed somewhere else), check below for running only specific parts of the demo or directing the installer to an already installed component.
+You can also run <em>ant install.demo.noeclipse</em> if you do not wish to download Eclipse<BR/>
 <BR/>
-(To limit the amount of data that needs to be downloaded, we have disabled the download of the Eclipse
-BIRT plugin for reporting by default.  If you want to try out reporting as well in the jBPM console,
-make sure to put the jBPM.birt.download property in the build.properties file to true before running
-the installer.)
+(Download of Eclipse BIRT for reporting is turned on by default. If you do not wish to use the reporting engine, you can set the value of the jBPM.birt.download property to false in the build.properties file)
 <BR/>
 <BR/>
 Once the demo setup has finished, you can start playing with the various components by starting the demo setup:<BR/>
@@ -52,6 +50,7 @@ This will:<UL>
   <LI>Start Eclipse</LI>
   <LI>Start the jBPM Human Task Service</LI>
 </UL>
+Alternatively you can run <EM>ant start.demo.noeclipse</EM> if you do not wish to start Eclipse.<BR/>
 Once everything is started, you can start playing with the Eclipse tooling, Guvnor and jBPM console,
 as explained in the next three sections.
 <BR/>
@@ -112,7 +111,8 @@ etc.), the "Process" list should show all the known processes.  The jbpm-console
 currently loads all the process in the "src/main/resources" folder of the evaluation sample in 
 "jbpm-installer/sample/evaluation".  If you click the process, it will show you all current running 
 instances.  Since there are no running instances at this point, the "Instance" table will remain 
-empty.<BR/>
+empty. If you have Guvnor running, and have packages in Guvnor that include processes, jbpm-console
+will include those as well.<BR/>
 <BR/>
 You can start a new process instance by click on the "Start" button.  After confirming that you want to 
 start a new execution of this process, you will see a process form where you need to fill in the 
@@ -184,6 +184,12 @@ A: If your download failed while downloading a component, it is possible that th
 Q: What if I have been changing my installation (and it no longer works) and I want to start over again with a clean installation?<BR/>
 A: You can use ant clean.demo to remove all the installed components, so you end up with a fresh installation again.<BR/>
 <BR/>
+Q: How do I prevent my Guvnor repository to be deleted after calling ant clean.demo or ant clean.demo.noeclipse?<BR/>
+A: You can set the value of jboss.clean.repository in build.properties to false.<BR/>
+<BR/>
+Q: Where should I put my dependencies such as jar files including workitem implementations and/or my fact model jars?<BR/>
+A: You should place them in the dependencies directory and run ant clean.demo, then run ant install.demo or ant install.demo.noeclipse.<BR/>
+<BR/>
 Q: I sometimes see exceptions when trying to stop or restart certain services, what should I do?<BR/>
 A: If you see errors during shutdown, are you sure the services were still running?  If you see exceptions during restart, are you sure the service you started earlier was successfully shutdown?  Maybe try killing the services manually if necessary.<BR/>
 <BR/>
@@ -200,12 +206,12 @@ For all other questions, try contacting the jBPM community as described above.
 If you don't want to use the demo setup, you can also use the individual ant targets, as described below.
 
 <H3>Getting JBoss AS</H3>
-You need to download and install JBoss AS version 4.2.3.GA.
+You need to download and install JBoss AS version 7.0.2.Final.
 If you don't have it installed yet, go into the install folder and run the installation script:<BR/>
 <EM>ant install.jboss</EM><BR/>
 <BR/>
-This will download and install the server in install/jboss-4.2.3.GA folder. If you don't
-want it to download the zip file, you can put the jboss-4.2.3.GA.zip in the install/lib folder.
+This will download and install the server in install/jboss-as-7.0.2.Final folder. If you don't
+want it to download the zip file, you can put the jboss-as-7.0.2.Final.zip in the install/lib folder.
 <P>
 If you already have it installed somewhere else, in install/build.properties, change the
 jboss.home property to the location of your JBoss AS installation.
