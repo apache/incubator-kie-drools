@@ -25,9 +25,21 @@ import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ANEWARRAY;
 import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.D2F;
+import static org.mvel2.asm.Opcodes.D2I;
+import static org.mvel2.asm.Opcodes.D2L;
 import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.F2D;
+import static org.mvel2.asm.Opcodes.F2I;
+import static org.mvel2.asm.Opcodes.F2L;
 import static org.mvel2.asm.Opcodes.GETFIELD;
 import static org.mvel2.asm.Opcodes.GETSTATIC;
+import static org.mvel2.asm.Opcodes.I2B;
+import static org.mvel2.asm.Opcodes.I2C;
+import static org.mvel2.asm.Opcodes.I2D;
+import static org.mvel2.asm.Opcodes.I2F;
+import static org.mvel2.asm.Opcodes.I2L;
+import static org.mvel2.asm.Opcodes.I2S;
 import static org.mvel2.asm.Opcodes.ILOAD;
 import static org.mvel2.asm.Opcodes.INSTANCEOF;
 import static org.mvel2.asm.Opcodes.INVOKEINTERFACE;
@@ -35,6 +47,9 @@ import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
 import static org.mvel2.asm.Opcodes.INVOKESTATIC;
 import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
 import static org.mvel2.asm.Opcodes.ISTORE;
+import static org.mvel2.asm.Opcodes.L2D;
+import static org.mvel2.asm.Opcodes.L2F;
+import static org.mvel2.asm.Opcodes.L2I;
 import static org.mvel2.asm.Opcodes.NEW;
 import static org.mvel2.asm.Opcodes.PUTFIELD;
 import static org.mvel2.asm.Opcodes.RETURN;
@@ -306,7 +321,7 @@ public class ClassGenerator {
 
     public abstract static class MethodBody {
         ClassGenerator cg;
-        MethodVisitor mv;
+        protected MethodVisitor mv;
         private Map<Integer, Type> storedTypes;
 
         public abstract void body(MethodVisitor mv);
@@ -318,26 +333,26 @@ public class ClassGenerator {
             this.mv = mv;
         }
 
-        public int store(int registry, Class<?> typeClass) {
+        protected final int store(int registry, Class<?> typeClass) {
             return store(registry, Type.getType(typeClass));
         }
 
-        public int store(int registry, String typeName) {
+        protected final int store(int registry, String typeName) {
             return store(registry, cg.toType(typeName));
         }
 
-        private int store(int registry, Type t) {
+        protected final int store(int registry, Type t) {
             if (storedTypes == null) storedTypes = new HashMap<Integer, Type>();
             mv.visitVarInsn(t.getOpcode(ISTORE), registry);
             storedTypes.put(registry, t);
             return t.getSize();
         }
 
-        public void load(int registry) {
+        protected final void load(int registry) {
             mv.visitVarInsn(storedTypes.get(registry).getOpcode(ILOAD), registry);
         }
 
-        public void loadAsObject(int registry) {
+        protected final void loadAsObject(int registry) {
             Type type = storedTypes.get(registry);
             mv.visitVarInsn(type.getOpcode(ILOAD), registry);
             String typeName = type.getClassName();
@@ -359,19 +374,19 @@ public class ClassGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
         }
 
-        public void print(String msg) {
+        protected final void print(String msg) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitLdcInsn(msg);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
         }
 
-        public void println(String msg) {
+        protected final void println(String msg) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitLdcInsn(msg);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
         }
 
-        public void printRegistryValue(int reg) {
+        protected final void printRegistryValue(int reg) {
             Type type = storedTypes.get(reg);
             if (type == null) {
                 printRegistryValue(reg, Object.class);
@@ -399,13 +414,13 @@ public class ClassGenerator {
                 printRegistryValue(reg, Object.class);
         }
 
-        public void printRegistryValue(int reg, Class<?> clazz) {
+        protected final void printRegistryValue(int reg, Class<?> clazz) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitVarInsn(Type.getType(clazz).getOpcode(ILOAD), reg);
             invokeVirtual(PrintStream.class, "print", null, clazz);
         }
 
-        public void printLastRegistry(Class<?> clazz) {
+        protected final void printLastRegistry(Class<?> clazz) {
             Type t = Type.getType(clazz);
             mv.visitVarInsn(t.getOpcode(ISTORE), 100);
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
@@ -413,7 +428,7 @@ public class ClassGenerator {
             invokeVirtual(PrintStream.class, "print", null, clazz);
         }
 
-        public void printStack() {
+        protected final void printStack() {
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "()V");
@@ -421,7 +436,7 @@ public class ClassGenerator {
             mv.visitInsn(RETURN);
         }
 
-        public <T> void returnAsArray(T[] array) {
+        protected final <T> void returnAsArray(T[] array) {
             push(array.length);
             mv.visitTypeInsn(ANEWARRAY, internalName(array.getClass().getComponentType()));
             for (int i = 0; i < array.length; i++) {
@@ -433,7 +448,7 @@ public class ClassGenerator {
             mv.visitInsn(ARETURN);
         }
 
-        public <T> void returnAsArray(Collection<T> collection, Class<T> clazz) {
+        protected final <T> void returnAsArray(Collection<T> collection, Class<T> clazz) {
             push(collection.size());
             mv.visitTypeInsn(ANEWARRAY, internalName(clazz));
             int i = 0;
@@ -446,7 +461,7 @@ public class ClassGenerator {
             mv.visitInsn(ARETURN);
         }
 
-        public void push(Object obj) {
+        protected final void push(Object obj) {
             if (obj instanceof Boolean) {
                 mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", (Boolean)obj ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
             } else {
@@ -454,7 +469,7 @@ public class ClassGenerator {
             }
         }
 
-        public void push(Object obj, Class<?> type) {
+        protected final void push(Object obj, Class<?> type) {
             if (obj == null) {
                 mv.visitInsn(ACONST_NULL);
                 return;
@@ -471,6 +486,8 @@ public class ClassGenerator {
                 mv.visitLdcInsn(obj);
             } else if (type == Class.class) {
                 mv.visitLdcInsn(cg.toType((Class<?>)obj));
+            } else if (type == Character.class) {
+                invokeConstructor(type, new Object[]{ obj.toString().charAt(0) }, char.class);
             } else {
                 invokeConstructor(type, new Object[]{ obj.toString() }, String.class);
             }
@@ -517,15 +534,75 @@ public class ClassGenerator {
             throw new RuntimeException("Unexpected type: " + primitiveType);
         }
 
-        public void cast(Class<?> clazz) {
+        protected final void cast(Class<?> clazz) {
             mv.visitTypeInsn(CHECKCAST, internalName(clazz));
         }
 
-        public void instanceOf(Class<?> clazz) {
+        protected final void instanceOf(Class<?> clazz) {
             mv.visitTypeInsn(INSTANCEOF, internalName(clazz));
         }
 
-        public void invoke(Method method) {
+        protected final Class<?> convertFromPrimitiveType(Class<?> type) {
+            if (!type.isPrimitive()) return type;
+            if (type == int.class) return Integer.class;
+            if (type == long.class) return Long.class;
+            if (type == float.class) return Float.class;
+            if (type == double.class) return Double.class;
+            if (type == short.class) return Short.class;
+            if (type == byte.class) return Byte.class;
+            if (type == char.class) return Character.class;
+            if (type == boolean.class) return Boolean.class;
+            throw new RuntimeException("Class not convertible from primitive: " + type.getName());
+        }
+
+        protected final Class<?> convertToPrimitiveType(Class<?> type) {
+            if (type.isPrimitive()) return type;
+            if (type == Integer.class) return int.class;
+            if (type == Long.class) return long.class;
+            if (type == Float.class) return float.class;
+            if (type == Double.class) return double.class;
+            if (type == Short.class) return short.class;
+            if (type == Byte.class) return byte.class;
+            if (type == Character.class) return char.class;
+            if (type == Boolean.class) return boolean.class;
+            throw new RuntimeException("Class not convertible to primitive: " + type.getName());
+        }
+
+        protected final void castPrimitiveToPrimitive(Class<?> from, Class<?> to) {
+            if (from == to) return;
+            if (from == int.class) {
+                if (to == long.class) mv.visitInsn(I2L);
+                else if (to == float.class) mv.visitInsn(I2F);
+                else if (to == double.class) mv.visitInsn(I2D);
+                else if (to == byte.class) mv.visitInsn(I2B);
+                else if (to == char.class) mv.visitInsn(I2C);
+                else if (to == short.class) mv.visitInsn(I2S);
+            } else if (from == long.class) {
+                if (to == int.class) mv.visitInsn(L2I);
+                else if (to == float.class) mv.visitInsn(L2F);
+                else if (to == double.class) mv.visitInsn(L2D);
+            } else if (from == float.class) {
+                if (to == int.class) mv.visitInsn(F2I);
+                else if (to == long.class) mv.visitInsn(F2L);
+                else if (to == double.class) mv.visitInsn(F2D);
+            } else if (from == double.class) {
+                if (to == int.class) mv.visitInsn(D2I);
+                else if (to == long.class) mv.visitInsn(D2L);
+                else if (to == float.class) mv.visitInsn(D2F);
+            }
+        }
+
+        protected final void castToPrimitive(Class<?> clazz) {
+            if (clazz == boolean.class) {
+                cast(Boolean.class);
+                invokeVirtual(Boolean.class, "booleanValue", boolean.class);
+            } else {
+                cast(Number.class);
+                invokeVirtual(Number.class, clazz.getName() + "Value", clazz);
+            }
+        }
+
+        protected final void invoke(Method method) {
             if ((method.getModifiers() & Modifier.STATIC) > 0) {
                 invokeStatic(method.getDeclaringClass(), method.getName(), method.getReturnType(), method.getParameterTypes());
             } else if (method.getDeclaringClass().isInterface()) {
@@ -535,46 +612,46 @@ public class ClassGenerator {
             }
         }
 
-        public void invokeThis(String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invokeThis(String methodName, Class<?> returnedType, Class<?>... paramsType) {
             mv.visitMethodInsn(INVOKEVIRTUAL, classDescriptor(), methodName, methodDescr(returnedType, paramsType));
         }
 
-        public void invokeStatic(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invokeStatic(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             invoke(INVOKESTATIC, clazz, methodName, returnedType, paramsType);
         }
 
-        public void invokeVirtual(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invokeVirtual(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             invoke(INVOKEVIRTUAL, clazz, methodName, returnedType, paramsType);
         }
 
-        public void invokeInterface(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invokeInterface(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             invoke(INVOKEINTERFACE, clazz, methodName, returnedType, paramsType);
         }
 
-        public void invokeConstructor(Class<?> clazz, Object[] params, Class<?>... paramsType) {
+        protected final void invokeConstructor(Class<?> clazz, Object[] params, Class<?>... paramsType) {
             mv.visitTypeInsn(NEW, internalName(clazz));
             mv.visitInsn(DUP);
             for (Object param : params) mv.visitLdcInsn(param);
             invokeSpecial(clazz, "<init>", null, paramsType);
         }
 
-        public void invokeSpecial(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invokeSpecial(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             invoke(INVOKESPECIAL, clazz, methodName, returnedType, paramsType);
         }
 
-        private void invoke(int opCode, Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+        protected final void invoke(int opCode, Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
         }
 
-        public void putFieldInThis(String name, Class<?> type) {
+        protected final void putFieldInThis(String name, Class<?> type) {
             mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
-        public void getFieldFromThis(String name, Class<?> type) {
+        protected final void getFieldFromThis(String name, Class<?> type) {
             mv.visitFieldInsn(GETFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
-        public void readField(Field field) {
+        protected final void readField(Field field) {
             boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
             mv.visitFieldInsn(isStatic ? GETSTATIC : GETFIELD, field.getDeclaringClass().getName().replace('.', '/'), field.getName(), cg.descriptorOf(field.getType()));
         }

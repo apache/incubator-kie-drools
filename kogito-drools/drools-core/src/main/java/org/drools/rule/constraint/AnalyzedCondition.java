@@ -107,12 +107,12 @@ public class AnalyzedCondition {
         } else if (node instanceof RegExMatch) {
             left = analyzeNode(node);
             operation = BooleanOperator.MATCHES;
-            Pattern pattern = getFieldValue(RegExMatch.class, "p", (RegExMatch)node);
+            Pattern pattern = ((RegExMatch)node).getPattern();
             right = new FixedExpression(String.class, pattern.pattern());
         } else if (node instanceof Contains) {
-            left = analyzeNode((ASTNode)getFieldValue(Contains.class, "stmt", (Contains)node));
+            left = analyzeNode(((Contains)node).getFirstStatement());
             operation = BooleanOperator.CONTAINS;
-            right = analyzeNode((ASTNode)getFieldValue(Contains.class, "stmt2", (Contains)node));
+            right = analyzeNode(((Contains)node).getSecondStatement());
         } else {
             left = analyzeNode(node);
         }
@@ -121,25 +121,27 @@ public class AnalyzedCondition {
     private ASTNode analyzeNegation(ASTNode node) {
         if (node instanceof Negation) {
             negated = true;
-            ExecutableAccessor executableAccessor = getFieldValue(Negation.class, "stmt", (Negation)node);
-            node = executableAccessor.getNode();
+            return ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
         }
         return node;
     }
 
     private ASTNode analyzeSubstatement(ASTNode node) {
         if (node instanceof Substatement) {
-            ExecutableAccessor executableAccessor = (ExecutableAccessor)((Substatement)node).getStatement();
-            node = executableAccessor.getNode();
+            return ((ExecutableAccessor)((Substatement)node).getStatement()).getNode();
+        }
+        return node;
+    }
+
+    private ASTNode analyzeRegEx(ASTNode node) {
+        if (node instanceof RegExMatch) {
+            return ((ExecutableAccessor)((RegExMatch)node).getStatement()).getNode();
         }
         return node;
     }
 
     private Expression analyzeNode(ASTNode node) {
-        if (node instanceof RegExMatch) {
-            ExecutableAccessor executableAccessor = getFieldValue(RegExMatch.class, "stmt", (RegExMatch)node);
-            node = executableAccessor.getNode();
-        }
+        node = analyzeRegEx(analyzeSubstatement(node));
 
         if (node instanceof LiteralNode) {
             LiteralNode literalNode = (LiteralNode)node;
@@ -147,30 +149,52 @@ public class AnalyzedCondition {
         }
 
         if (node instanceof BinaryOperation) {
-            BinaryOperation binaryOperation = (BinaryOperation)node;
-            Object value = binaryOperation.getReducedValue(parserContext, null, new ImmutableDefaultFactory());
-            return new FixedExpression(binaryOperation.getEgressType(), value);
+            BinaryOperation op = (BinaryOperation)node;
+            if (node.getClass() == BinaryOperation.class) {
+                return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
+            } else {
+                return new FixedExpression(op.getEgressType(), op.getReducedValue(parserContext, null, new ImmutableDefaultFactory()));
+            }
         }
 
         Accessor accessor = node.getAccessor();
+
         if (accessor == null && node instanceof NewObjectNode) {
-            accessor = getFieldValue(NewObjectNode.class, "newObjectOptimizer", (NewObjectNode)node);
+            accessor = ((NewObjectNode)node).getNewObjectOptimizer();
         }
 
+        return analyzeAccessor(accessor);
+    }
+
+    private Expression analyzeAccessor(Accessor accessor) {
         AccessorNode accessorNode = null;
 
+        if (accessor instanceof VariableAccessor) {
+            VariableAccessor variableAccessor = (VariableAccessor)accessor;
+            accessorNode = variableAccessor.getNextNode();
+            if (accessorNode == null || !(accessorNode instanceof StaticVarAccessor || accessorNode instanceof StaticReferenceAccessor)) {
+                return new VariableExpression((String)(variableAccessor.getProperty()), analyzeExpressionNode(accessorNode));
+            }
+        }
+
         if (accessor instanceof DynamicGetAccessor) {
-            accessorNode = getFieldValue(DynamicGetAccessor.class, "_accessor", (DynamicGetAccessor)accessor);
+            accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
         } else if (accessor instanceof AccessorNode) {
             accessorNode = (AccessorNode)accessor;
         } else if (accessor instanceof CompiledExpression) {
             return analyzeNode(((CompiledExpression)accessor).getFirstNode());
         } else {
-            throw new RuntimeException("Unknown expression type: " + node);
+            throw new RuntimeException("Unknown accessor type: " + accessor);
         }
 
-        while (accessorNode != null && accessorNode instanceof VariableAccessor) {
-            accessorNode = accessorNode.getNextNode();
+        if (accessorNode != null && accessorNode instanceof VariableAccessor) {
+            if (isStaticAccessor(accessorNode)) {
+                while (accessorNode != null && accessorNode instanceof VariableAccessor) {
+                    accessorNode = accessorNode.getNextNode();
+                }
+            } else {
+                return analyzeAccessor(accessorNode);
+            }
         }
 
         while (accessorNode instanceof StaticReferenceAccessor) {
@@ -180,6 +204,21 @@ public class AnalyzedCondition {
             if (accessorNode == null) return new FixedExpression(literal.getClass(), literal);
         }
 
+        return analyzeExpressionNode(accessorNode);
+    }
+
+    private boolean isStaticAccessor(AccessorNode accessorNode) {
+        while (accessorNode != null) {
+            if (accessorNode instanceof StaticVarAccessor || accessorNode instanceof StaticReferenceAccessor) {
+                return true;
+            }
+            accessorNode = accessorNode.getNextNode();
+        }
+        return false;
+    }
+
+    private EvaluatedExpression analyzeExpressionNode(AccessorNode accessorNode) {
+        if (accessorNode == null) return null;
         EvaluatedExpression expression = new EvaluatedExpression();
         Invocation invocation = null;
         while (accessorNode != null) {
@@ -187,7 +226,6 @@ public class AnalyzedCondition {
             if (invocation != null) expression.addInvocation(invocation);
             accessorNode = accessorNode.getNextNode();
         }
-
         return expression;
     }
 
@@ -199,19 +237,15 @@ public class AnalyzedCondition {
         if (accessorNode instanceof MethodAccessor) {
             MethodAccessor methodAccessor = (MethodAccessor)accessorNode;
             MethodInvocation invocation = new MethodInvocation(methodAccessor.getMethod());
-            ExecutableStatement[] params = methodAccessor.getParms();
-            Class[] paramTypes = getFieldValue(MethodAccessor.class, "parameterTypes", methodAccessor);
-            readInvocationParams(invocation, params, paramTypes);
+            readInvocationParams(invocation, methodAccessor.getParms(), methodAccessor.getParameterTypes());
             return invocation;
         }
 
         if (accessorNode instanceof ConstructorAccessor) {
             ConstructorAccessor constructorAccessor = (ConstructorAccessor)accessorNode;
-            Constructor constructor = getFieldValue(ConstructorAccessor.class, "constructor", constructorAccessor);
+            Constructor constructor = constructorAccessor.getConstructor();
             ConstructorInvocation invocation = new ConstructorInvocation(constructor);
-            ExecutableStatement[] params = getFieldValue(ConstructorAccessor.class, "parms", constructorAccessor);
-            Class[] paramTypes = getFieldValue(ConstructorAccessor.class, "parmTypes", constructorAccessor);
-            readInvocationParams(invocation, params, paramTypes);
+            readInvocationParams(invocation, constructorAccessor.getParameters(), constructorAccessor.getParameterTypes());
             return invocation;
         }
 
@@ -250,8 +284,7 @@ public class AnalyzedCondition {
         }
 
         if (accessorNode instanceof StaticVarAccessor) {
-            StaticVarAccessor staticVarAccessor = ((StaticVarAccessor)accessorNode);
-            Field field = getFieldValue(StaticVarAccessor.class, "field", staticVarAccessor);
+            Field field = ((StaticVarAccessor)accessorNode).getField();
             return new FieldAccessInvocation(field);
         }
 
@@ -293,7 +326,7 @@ public class AnalyzedCondition {
             }
         }
     }
-
+/*
     private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {
         try {
             Field f = clazz.getDeclaredField(fieldName);
@@ -305,7 +338,7 @@ public class AnalyzedCondition {
             throw new RuntimeException(e);
         }
     }
-
+*/
     public interface Expression {
         boolean isFixed();
         boolean canBeNull();
@@ -313,7 +346,7 @@ public class AnalyzedCondition {
     }
 
     public static class FixedExpression implements Expression {
-        TypedValue typedValue;
+        final TypedValue typedValue;
 
         FixedExpression(TypedValue value) {
             this.typedValue = value;
@@ -340,8 +373,34 @@ public class AnalyzedCondition {
         }
     }
 
+    public static class VariableExpression implements Expression {
+        final String variableName;
+        final EvaluatedExpression subsequentInvocations;
+
+        VariableExpression(String variableName, EvaluatedExpression subsequentInvocations) {
+            this.variableName = variableName;
+            this.subsequentInvocations = subsequentInvocations;
+        }
+
+        public boolean isFixed() {
+            return false;
+        }
+
+        public boolean canBeNull() {
+            return true;
+        }
+
+        public Class<?> getType() {
+            return subsequentInvocations != null ? subsequentInvocations.getType() : Object.class;
+        }
+
+        public String toString() {
+            return variableName + (subsequentInvocations == null ? "" : " . " + subsequentInvocations);
+        }
+    }
+
     public static class EvaluatedExpression implements Expression {
-        List<Invocation> invocations = new ArrayList<Invocation>();
+        final List<Invocation> invocations = new ArrayList<Invocation>();
 
         void addInvocation(Invocation invocation) {
             invocations.add(invocation);
@@ -370,6 +429,38 @@ public class AnalyzedCondition {
         }
     }
 
+    public static class AritmeticExpression implements Expression {
+        final Expression left;
+        final AritmeticOperator operator;
+        final Expression right;
+
+        public AritmeticExpression(Expression left, AritmeticOperator operation, Expression right) {
+            this.left = left;
+            this.operator = operation;
+            this.right = right;
+        }
+
+        public boolean isFixed() {
+            return false;
+        }
+
+        public boolean canBeNull() {
+            return true;
+        }
+
+        public Class<?> getType() {
+            return isStringConcat() ? String.class : double.class;
+        }
+
+        public String toString() {
+            return left + " " + operator + " " + right;
+        }
+
+        public boolean isStringConcat() {
+            return operator == AritmeticOperator.ADD && (left.getType() == String.class || right.getType() == String.class);
+        }
+    }
+
     public static abstract class Invocation {
         private final List<Expression> arguments = new ArrayList<Expression>();
 
@@ -388,7 +479,18 @@ public class AnalyzedCondition {
         private final Method method;
 
         public MethodInvocation(Method method) {
-            this.method = method;
+            this.method = getMethodFromSuperclass(method);
+        }
+
+        private Method getMethodFromSuperclass(Method method) {
+            if (method == null) return method;
+            Class<?> declaringSuperclass = method.getDeclaringClass().getSuperclass();
+            if (declaringSuperclass == null) return method;
+            try {
+                return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()));
+            } catch (Exception e) {
+                return method;
+            }
         }
 
         public Method getMethod() {
@@ -539,7 +641,33 @@ public class AnalyzedCondition {
                 case Operator.LTHAN: return LT;
                 case Operator.LETHAN: return LE;
             }
-            throw new RuntimeException("Unknown opeation");
+            throw new RuntimeException("Unknown boolean operator");
+        }
+    }
+
+    public enum AritmeticOperator {
+        ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"), POW("^");
+
+        private String symbol;
+
+        AritmeticOperator(String symbol) {
+            this.symbol = symbol;
+        }
+
+        public String toString() {
+            return symbol;
+        }
+
+        public static AritmeticOperator fromMvelOpCode(int opCode) {
+            switch (opCode) {
+                case Operator.ADD: return ADD;
+                case Operator.SUB: return SUB;
+                case Operator.MULT: return MUL;
+                case Operator.DIV: return DIV;
+                case Operator.MOD: return MOD;
+                case Operator.POWER: return POW;
+            }
+            throw new RuntimeException("Unknown boolean operator");
         }
     }
 }

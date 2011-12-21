@@ -23,12 +23,6 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
         stmt = (ExecutableStatement)MVEL.compileExpression(expression, new ParserContext(conf));
     }
 
-    // TODO: remove this method
-    public boolean evaluate(Object object) {
-        return evaluate(object, null);
-    }
-
-    // TODO: do the vars check outside this method
     public boolean evaluate(Object object, Map<String, Object> vars) {
         return vars == null ? (Boolean)MVEL.executeExpression(stmt, object) : (Boolean)MVEL.executeExpression(stmt, object, vars);
     }

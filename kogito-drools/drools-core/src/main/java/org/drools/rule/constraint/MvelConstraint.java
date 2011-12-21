@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
-    private static final boolean TEST_JITTING = false;
+    private static final boolean TEST_JITTING = true;
     private static final int JIT_THRESOLD = Integer.MAX_VALUE;
 //  private static final int JIT_THRESOLD = 2;
 
@@ -43,8 +43,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
     private boolean isUnification;
-
-    private transient boolean isJittable;
 
     private transient ParserConfiguration conf;
     private transient ConditionEvaluator conditionEvaluator;
@@ -64,11 +62,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
         isUnification = initUnification();
-        init();
-    }
-
-    private void init() {
-        isJittable = initJittable();
     }
 
     public boolean isUnification() {
@@ -94,24 +87,25 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return pattern.getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && operator.equals("==");
     }
 
-    private boolean initJittable() {
-        return getType() == ConstraintType.ALPHA;
-    }
-
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
         if (isUnification) {
             throw new UnsupportedOperationException( "Should not be called" );
         }
-
-        if (TEST_JITTING && isJittable) {
+/*
+        if (TEST_JITTING) {
             return isJITAllowed(handle, workingMemory, context);
         }
+*/
+        Map<String, Object> vars = context == null ? null : ((MvelContextEntry)context).getRightVars(workingMemory, handle);
 
         if (!jitted) {
             if (conditionEvaluator == null) {
                 conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, operator);
+                if (TEST_JITTING) { // TO BE REMOVED
+                    jitEvaluator(handle.getObject(), workingMemory, vars);
+                }
             } else {
-                if (isJittable && invocationCounter.getAndIncrement() == JIT_THRESOLD) {
+                if (invocationCounter.getAndIncrement() == JIT_THRESOLD) {
                     CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
                     conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getExecutableStatement(), classLoader);
                     jitted = true;
@@ -119,44 +113,56 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
 
-        Map<String, Object> vars = context == null ? null : ((MvelContextEntry)context).getRightVars(workingMemory, handle);
         try {
             return conditionEvaluator.evaluate(handle.getObject(), vars);
         } catch (ClassCastException cce) {
-            cce.printStackTrace();
+            System.out.println("ASM - Got ClassCastException: " + cce + " on expression: " + expression);
+            return false;
+        } catch (NumberFormatException nfe) {
+            System.out.println("ASM - Got NumberFormatException: " + nfe + " on expression: " + expression);
             return false;
         }
     }
 
     public boolean isJITAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
+        Map<String, Object> vars = context == null ? null : ((MvelContextEntry)context).getRightVars(workingMemory, handle);
         boolean mvelValue = false;
+
         if (conditionEvaluator == null) {
             conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, operator);
-            try {
-                mvelValue = conditionEvaluator.evaluate(handle.getObject());
-            } catch (ClassCastException cce) {
-                System.out.println("Got ClassCastException: " + cce);
-                mvelValue = false;
-            }
-            try {
-                CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-                conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getExecutableStatement(), classLoader);
-            } catch (Throwable t) {
-                throw new RuntimeException("Exception jitting: " + expression, t);
-            }
+            mvelValue = jitEvaluator(handle.getObject(), workingMemory, vars);
         }
 
         boolean asmValue = false;
         try {
-            asmValue = conditionEvaluator.evaluate(handle.getObject());
+            asmValue = conditionEvaluator.evaluate(handle.getObject(), vars);
         } catch (ClassCastException cce) {
+            System.out.println("ASM - Got ClassCastException: " + cce + " on expression: " + expression);
             return false;
         } catch (NumberFormatException nfe) {
+            System.out.println("ASM - Got NumberFormatException: " + nfe + " on expression: " + expression);
             return false;
         }
 
 //        System.out.println(expression + " => mvel = " + mvelValue + "; asm = " + asmValue);
         return asmValue;
+    }
+
+    private boolean jitEvaluator(Object object, InternalWorkingMemory workingMemory, Map<String, Object> vars) {
+        boolean mvelValue;
+        try {
+            mvelValue = conditionEvaluator.evaluate(object, vars);
+        } catch (ClassCastException cce) {
+            System.out.println("MVEL - Got ClassCastException: " + cce);
+            mvelValue = false;
+        }
+        try {
+            CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+            conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator) conditionEvaluator).getExecutableStatement(), classLoader);
+        } catch (Throwable t) {
+            throw new RuntimeException("Exception jitting: " + expression, t);
+        }
+        return mvelValue;
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
@@ -167,11 +173,25 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             context = ((UnificationContextEntry)context).getContextEntry();
         }
 
+        MvelContextEntry mvelContextEntry = (MvelContextEntry)context;
         if (conditionEvaluator == null) {
-            ParserConfiguration conf = getParserConfiguration(((MvelContextEntry)context).workingMemory);
+            ParserConfiguration conf = getParserConfiguration(mvelContextEntry.workingMemory);
             conditionEvaluator = new MvelConditionEvaluator(conf, expression, operator);
+            if (TEST_JITTING) { // TO BE REMOVED
+                jitEvaluator(handle.getObject(), mvelContextEntry.workingMemory, mvelContextEntry.vars);
+            }
         }
-        return conditionEvaluator.evaluate(handle.getObject(), ((MvelContextEntry) context).vars);
+
+        try {
+            return conditionEvaluator.evaluate(handle.getObject(), mvelContextEntry.vars);
+        } catch (ClassCastException cce) {
+            cce.printStackTrace();
+            System.out.println("ASM - Got ClassCastException: " + cce + " on expression: " + expression);
+            return false;
+        } catch (NumberFormatException nfe) {
+            System.out.println("ASM - Got NumberFormatException: " + nfe + " on expression: " + expression);
+            return false;
+        }
     }
 
     public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
@@ -185,12 +205,25 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             context = ((UnificationContextEntry)context).getContextEntry();
         }
 
-        if (conditionEvaluator == null) {
-            ParserConfiguration conf = getParserConfiguration(((MvelContextEntry)context).workingMemory);
-            conditionEvaluator = new MvelConditionEvaluator(conf, expression, operator);
-        }
         MvelContextEntry mvelContextEntry = (MvelContextEntry)context;
-        return conditionEvaluator.evaluate(mvelContextEntry.right, mvelContextEntry.getRightVars(tuple));
+        if (conditionEvaluator == null) {
+            ParserConfiguration conf = getParserConfiguration(mvelContextEntry.workingMemory);
+            conditionEvaluator = new MvelConditionEvaluator(conf, expression, operator);
+            if (TEST_JITTING) { // TO BE REMOVED
+                jitEvaluator(mvelContextEntry.right, mvelContextEntry.workingMemory, mvelContextEntry.getRightVars(tuple));
+            }
+        }
+
+        try {
+            return conditionEvaluator.evaluate(mvelContextEntry.right, mvelContextEntry.getRightVars(tuple));
+        } catch (ClassCastException cce) {
+            cce.printStackTrace();
+            System.out.println("ASM - Got ClassCastException: " + cce + " on expression: " + expression);
+            return false;
+        } catch (NumberFormatException nfe) {
+            System.out.println("ASM - Got NumberFormatException: " + nfe + " on expression: " + expression);
+            return false;
+        }
     }
 
     public ContextEntry createContextEntry() {
@@ -246,7 +279,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         indexingDeclaration = (Declaration) in.readObject();
         extractor = (InternalReadAccessor) in.readObject();
         isUnification = in.readBoolean();
-        init();
     }
 
     public boolean isTemporal() {

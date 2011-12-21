@@ -29,7 +29,7 @@ public class ASMConditionEvaluatorJitter {
                 .setInterfaces(ConditionEvaluator.class)
                 .addDefaultConstructor();
 
-        generator.addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(boolean.class, Object.class), new EvaluateMethodGenerator(analyzedCondition));
+        generator.addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(boolean.class, Object.class, Map.class), new EvaluateMethodGenerator(analyzedCondition));
 
         return generator.newInstance();
     }
@@ -39,6 +39,9 @@ public class ASMConditionEvaluatorJitter {
     }
 
     private static class EvaluateMethodGenerator extends ClassGenerator.MethodBody {
+        private static final int LEFT_OPERAND = 3;
+        private static final int RIGHT_OPERAND = 5;
+        
         private AnalyzedCondition analyzedCondition;
 
         public EvaluateMethodGenerator(AnalyzedCondition analyzedCondition) {
@@ -47,23 +50,23 @@ public class ASMConditionEvaluatorJitter {
 
         public void body(MethodVisitor mv) {
             if (analyzedCondition.isBinary()) {
-                jitBinary(mv);
+                jitBinary();
             } else {
-                jitUnary(mv);
+                jitUnary();
             }
 
             if (analyzedCondition.isNegated()) {
-                jitNegation(mv);
+                jitNegation();
             }
 
             mv.visitInsn(IRETURN);
         }
 
-        private void jitUnary(MethodVisitor mv) {
-            jitExpression(mv, analyzedCondition.getLeft());
+        private void jitUnary() {
+            jitExpression(analyzedCondition.getLeft());
         }
 
-        private void jitBinary(MethodVisitor mv) {
+        private void jitBinary() {
             AnalyzedCondition.Expression left = analyzedCondition.getLeft();
             AnalyzedCondition.Expression right = analyzedCondition.getRight();
             Class<?> commonType = analyzedCondition.getOperation().needsSameType() ?
@@ -71,24 +74,26 @@ public class ASMConditionEvaluatorJitter {
                     null;
 
             if (commonType != null && commonType.isPrimitive()) {
-                jitPrimitiveBinary(mv, left, right, commonType);
+                jitPrimitiveBinary(left, right, commonType);
             } else {
-                jitObjectBinary(mv, left, right, commonType);
+                jitObjectBinary(left, right, commonType);
             }
         }
 
-        private void jitPrimitiveBinary(MethodVisitor mv, AnalyzedCondition.Expression left, AnalyzedCondition.Expression right, Class<?> type) {
+        private void jitPrimitiveBinary(AnalyzedCondition.Expression left, AnalyzedCondition.Expression right, Class<?> type) {
             if (right.isFixed() && right.canBeNull()) {
                 // a primitive cannot be null
                 mv.visitInsn(analyzedCondition.getOperation() == AnalyzedCondition.BooleanOperator.NE ? ICONST_1 : ICONST_0);
                 return;
             }
-            jitTopExpression(mv, left, type);
-            jitTopExpression(mv, right, type);
-            jitPrimitiveOperation(mv, analyzedCondition.getOperation(), type);
+            jitExpression(left, type);
+            castPrimitiveToPrimitive(left.getType(), type);
+            jitExpression(right, type);
+            castPrimitiveToPrimitive(right.getType(), type);
+            jitPrimitiveOperation(analyzedCondition.getOperation(), type);
         }
 
-        private void jitObjectBinary(MethodVisitor mv, AnalyzedCondition.Expression left, AnalyzedCondition.Expression right, Class<?> type) {
+        private void jitObjectBinary(AnalyzedCondition.Expression left, AnalyzedCondition.Expression right, Class<?> type) {
             if (left.isFixed()) {
                 throw new RuntimeException("Unmanaged fixed left"); // TODO
             }
@@ -96,31 +101,21 @@ public class ASMConditionEvaluatorJitter {
             Class<?> leftType = left.getType();
             Class<?> rightType = right.getType();
 
-            jitTopExpression(mv, left, type != null ? type : leftType);
-            store(2, leftType);
+            jitExpression(left, type != null ? type : leftType);
+            store(LEFT_OPERAND, leftType);
 
-            jitTopExpression(mv, right, type != null ? type : rightType);
-            store(4, rightType);
-
-            Label notNullLabel = jitLeftIsNull(mv, type == null || leftType == type ?
-                    jitNullSafeOperationStart(mv) :
-                    jitNullSafeCoercion(mv, leftType, type));
+            jitExpression(right, type != null ? type : rightType);
+            store(RIGHT_OPERAND, rightType);
 
             AnalyzedCondition.BooleanOperator operation = analyzedCondition.getOperation();
+            prepareLeftOperand(operation, type, leftType, rightType);
+            prepareRightOperand(operation, right, type, rightType);
 
-            if (operation.isEquality()) {
-                // if (left == null) return right == null
-                checkNullEquality(mv, operation);
-            } else {
-                // if (left == null) return false
-                mv.visitInsn(ICONST_0);
-            }
-
-            returnOnNull(mv, notNullLabel);
-            loadOperands(mv, right, type, rightType);
+            load(LEFT_OPERAND);
+            load(RIGHT_OPERAND);
 
             if (operation == AnalyzedCondition.BooleanOperator.CONTAINS) {
-                invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, Object.class);
+                invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, rightType.isPrimitive() ? rightType : Object.class);
             } else if (operation == AnalyzedCondition.BooleanOperator.MATCHES) {
                 invokeVirtual(type, "matches", boolean.class, String.class);
             } else if (operation.isEquality()) {
@@ -139,27 +134,56 @@ public class ASMConditionEvaluatorJitter {
                     invokeVirtual(type, "compareTo", int.class, type);
                 }
                 mv.visitInsn(ICONST_0);
-                jitPrimitiveOperation(mv, operation, int.class);
+                jitPrimitiveOperation(operation, int.class);
             }
         }
 
-        private void returnOnNull(MethodVisitor mv, Label notNullLabel) {
+        private void prepareLeftOperand(AnalyzedCondition.BooleanOperator operation, Class<?> type, Class<?> leftType, Class<?> rightType) {
+            if (leftType.isPrimitive()) {
+                if (type != null) castOrCoercePrimitive(LEFT_OPERAND, leftType, type);
+                return;
+            }
+
+            Label notNullLabel = jitLeftIsNull(type == null || leftType == type ?
+                    jitNullSafeOperationStart() :
+                    jitNullSafeCoercion(leftType, type));
+
+            if (operation.isEquality() && !rightType.isPrimitive()) {
+                // if (left == null) return right == null
+                checkNullEquality(operation);
+            } else {
+                // if (left == null) return false
+                mv.visitInsn(ICONST_0);
+            }
+
             mv.visitInsn(IRETURN);
             mv.visitLabel(notNullLabel);
         }
 
-        private void loadOperands(MethodVisitor mv, AnalyzedCondition.Expression right, Class<?> type, Class<?> rightType) {
-            load(2);
-            load(4);
-            if (type != null && !right.isFixed() && rightType != type) {
-                jitRightCoercion(mv, rightType, type);
+        private void prepareRightOperand(AnalyzedCondition.BooleanOperator operation, AnalyzedCondition.Expression right, Class<?> type, Class<?> rightType) {
+            if (rightType.isPrimitive()) {
+                if (type != null) castOrCoercePrimitive(RIGHT_OPERAND, rightType, type);
+                return;
             }
+
+            Label nullLabel = new Label();
+            Label notNullLabel = new Label();
+            load(RIGHT_OPERAND);
+            mv.visitJumpInsn(IFNULL, nullLabel);
+            if (type != null && !right.isFixed() && rightType != type) {
+                castOrCoerceTo(RIGHT_OPERAND, rightType, type);
+            }
+            mv.visitJumpInsn(GOTO, notNullLabel);
+            mv.visitLabel(nullLabel);
+            mv.visitInsn(operation == AnalyzedCondition.BooleanOperator.NE ? ICONST_1 : ICONST_0);
+            mv.visitInsn(IRETURN);
+            mv.visitLabel(notNullLabel);
         }
 
-        private void checkNullEquality(MethodVisitor mv, AnalyzedCondition.BooleanOperator operation) {
+        private void checkNullEquality(AnalyzedCondition.BooleanOperator operation) {
             Label rightNullLabel = new Label();
             Label rightNotNullLabel = new Label();
-            load(4);
+            load(RIGHT_OPERAND);
             mv.visitJumpInsn(IFNULL, rightNullLabel);
             mv.visitInsn(operation == AnalyzedCondition.BooleanOperator.EQ ? ICONST_0 : ICONST_1);
             mv.visitJumpInsn(GOTO, rightNotNullLabel);
@@ -168,81 +192,180 @@ public class ASMConditionEvaluatorJitter {
             mv.visitLabel(rightNotNullLabel);
         }
 
-        private Label jitNullSafeCoercion(MethodVisitor mv, Class<?> fromType, Class<?> toType) {
+        private Label jitNullSafeOperationStart() {
             Label nullLabel = new Label();
-            load(2);
-            mv.visitJumpInsn(IFNULL, nullLabel);
-            mv.visitTypeInsn(NEW, internalName(toType));
-            mv.visitInsn(DUP);
-            load(2);
-            invokeVirtual(fromType, "toString", String.class);
-            invokeSpecial(toType, "<init>", null, String.class);
-            store(2, toType);
-            return nullLabel;
-        }
-
-        private Label jitNullSafeOperationStart(MethodVisitor mv) {
-            Label nullLabel = new Label();
-            load(2);
+            load(LEFT_OPERAND);
             mv.visitJumpInsn(IFNULL, nullLabel);
             return nullLabel;
         }
 
-        private void jitRightCoercion(MethodVisitor mv, Class<?> fromType, Class<?> toType) {
-            store(4, fromType);
-            mv.visitTypeInsn(NEW, internalName(toType));
-            mv.visitInsn(DUP);
-            load(4);
-            invokeVirtual(fromType, "toString", String.class);
-            invokeSpecial(toType, "<init>", null, String.class);
+        private Label jitNullSafeCoercion(Class<?> fromType, Class<?> toType) {
+            Label nullLabel = new Label();
+            load(LEFT_OPERAND);
+            mv.visitJumpInsn(IFNULL, nullLabel);
+            castOrCoerceTo(LEFT_OPERAND, fromType, toType);
+            return nullLabel;
         }
 
-        private Label jitLeftIsNull(MethodVisitor mv, Label nullLabel) {
+        private void castOrCoerceTo(int regNr, Class<?> fromType, Class<?> toType) {
+            Label nonInstanceOfLabel = new Label();
+            Label endOfCoercionLabel = new Label();
+            load(regNr);
+            instanceOf(toType);
+            mv.visitJumpInsn(IFEQ, nonInstanceOfLabel);
+            load(regNr);
+            cast(toType);
+            store(regNr, toType);
+            mv.visitJumpInsn(GOTO, endOfCoercionLabel);
+
+            mv.visitLabel(nonInstanceOfLabel);
+            mv.visitTypeInsn(NEW, internalName(toType));
+            mv.visitInsn(DUP);
+            load(regNr);
+            coerceByConstructor(fromType, toType);
+            store(regNr, toType);
+            mv.visitLabel(endOfCoercionLabel);
+        }
+
+        private void coerceByConstructor(Class<?> fromType, Class<?> toType) {
+            invokeVirtual(fromType, "toString", String.class);
+            if (toType == Character.class) {
+                mv.visitInsn(ICONST_0);
+                invokeVirtual(String.class, "charAt", char.class, int.class);
+                invokeSpecial(Character.class, "<init>", null, char.class);
+            } else {
+                invokeSpecial(toType, "<init>", null, String.class);
+            }
+        }
+
+        private void castOrCoercePrimitive(int regNr, Class<?> fromType, Class<?> toType) {
+            if (fromType == toType) return;
+            load(regNr);
+            if (toType.isPrimitive()) {
+                castPrimitiveToPrimitive(fromType, toType);
+            } else {
+                Class<?> toTypeAsPrimitive = convertToPrimitiveType(toType);
+                castPrimitiveToPrimitive(fromType, toTypeAsPrimitive);
+                invokeStatic(toType, "valueOf", toType, toTypeAsPrimitive);
+            }
+            store(regNr, toType);
+        }
+
+        private void jitRightCoercion(Class<?> fromType, Class<?> toType) {
+            store(RIGHT_OPERAND, fromType);
+            mv.visitTypeInsn(NEW, internalName(toType));
+            mv.visitInsn(DUP);
+            load(RIGHT_OPERAND);
+            coerceByConstructor(fromType, toType);
+        }
+
+        private Label jitLeftIsNull(Label nullLabel) {
             Label notNullLabel = new Label();
             mv.visitJumpInsn(GOTO, notNullLabel);
             mv.visitLabel(nullLabel);
             return notNullLabel;
         }
 
-        private void jitTopExpression(MethodVisitor mv, AnalyzedCondition.Expression exp, Class<?> requiredClass) {
+        private void jitExpression(AnalyzedCondition.Expression exp) {
+            jitExpression(exp, exp.getType());
+        }
+
+        private void jitExpression(AnalyzedCondition.Expression exp, Class<?> requiredClass) {
             if (exp.isFixed()) {
                 push(((AnalyzedCondition.FixedExpression) exp).typedValue.value, requiredClass);
             } else {
-                jitEvaluatedExpression(mv, (AnalyzedCondition.EvaluatedExpression) exp);
+                if (exp instanceof AnalyzedCondition.EvaluatedExpression) {
+                    jitEvaluatedExpression((AnalyzedCondition.EvaluatedExpression) exp, true);
+                } else if (exp instanceof AnalyzedCondition.VariableExpression) {
+                    jitVariableExpression((AnalyzedCondition.VariableExpression) exp, requiredClass);
+                } else {
+                    jitAritmeticExpression((AnalyzedCondition.AritmeticExpression)exp);
+                }
             }
         }
 
-        private void jitExpression(MethodVisitor mv, AnalyzedCondition.Expression exp) {
-            if (exp.isFixed()) {
-                push(((AnalyzedCondition.FixedExpression)exp).typedValue.value, exp.getType());
-            } else {
-                jitEvaluatedExpression(mv, (AnalyzedCondition.EvaluatedExpression) exp);
-            }
-        }
-
-        private void jitEvaluatedExpression(MethodVisitor mv, AnalyzedCondition.EvaluatedExpression exp) {
+        private void jitEvaluatedExpression(AnalyzedCondition.EvaluatedExpression exp, boolean firstInvocation) {
             Iterator<AnalyzedCondition.Invocation> invocations = exp.invocations.iterator();
-            for (Class<?> currentClass = jitInvocation(mv, invocations.next(), Object.class, true);
-                 invocations.hasNext();
-                 currentClass = jitInvocation(mv, invocations.next(), currentClass, false));
+            Class<?> currentClass = jitInvocation(invocations.next(), Object.class, firstInvocation);
+            while (invocations.hasNext()) {
+                currentClass = jitInvocation(invocations.next(), currentClass, false);
+            }
         }
 
-        private Class<?> jitInvocation(MethodVisitor mv, AnalyzedCondition.Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
-            if (invocation instanceof AnalyzedCondition.MethodInvocation) {
-                jitMethodInvocation(mv, (AnalyzedCondition.MethodInvocation)invocation, currentClass, firstInvocation);
-            } else if (invocation instanceof AnalyzedCondition.ConstructorInvocation) {
-                jitConstructorInvocation(mv, (AnalyzedCondition.ConstructorInvocation) invocation);
-            } else if (invocation instanceof AnalyzedCondition.ListAccessInvocation) {
-                jitListAccessInvocation(mv, (AnalyzedCondition.ListAccessInvocation) invocation);
-            } else if (invocation instanceof AnalyzedCondition.MapAccessInvocation) {
-                jitMapAccessInvocation(mv, (AnalyzedCondition.MapAccessInvocation) invocation);
+        private void jitVariableExpression(AnalyzedCondition.VariableExpression exp, Class<?> requiredClass) {
+            mv.visitVarInsn(ALOAD, 2);
+            push(exp.variableName, String.class);
+            invokeInterface(Map.class, "get", Object.class, Object.class);
+            if (exp.subsequentInvocations != null) {
+                jitEvaluatedExpression(exp.subsequentInvocations, false);
+            } else if (requiredClass.isPrimitive()) {
+                castToPrimitive(requiredClass);
+            }
+        }
+
+        private void jitAritmeticExpression(AnalyzedCondition.AritmeticExpression aritmeticExpression) {
+            if (aritmeticExpression.isStringConcat()) {
+                jitStringConcat(aritmeticExpression.left, aritmeticExpression.right);
             } else {
-                jitFieldAccessInvocation(mv, (AnalyzedCondition.FieldAccessInvocation)invocation, currentClass, firstInvocation);
+                jitExpressionToDouble(aritmeticExpression.left);
+                jitExpressionToDouble(aritmeticExpression.right);
+                jitAritmeticOperation(aritmeticExpression.operator);
+            }
+        }
+
+        private void jitStringConcat(AnalyzedCondition.Expression left, AnalyzedCondition.Expression right) {
+            mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V");
+            jitExpression(left, String.class);
+            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, left.getType());
+            jitExpression(right, String.class);
+            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, right.getType());
+            invokeVirtual(StringBuilder.class, "toString", String.class);
+        }
+
+        private void jitExpressionToDouble(AnalyzedCondition.Expression expression) {
+            jitExpression(expression, Object.class);
+            if (expression.isFixed() || expression.getType().isPrimitive()) {
+                castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), double.class);
+            } else {
+                castToPrimitive(double.class);
+            }
+        }
+
+        private void jitAritmeticOperation(AnalyzedCondition.AritmeticOperator operator) {
+            switch(operator) {
+                case ADD:
+                    mv.visitInsn(DADD);
+                    break;
+                case SUB:
+                    mv.visitInsn(DSUB);
+                    break;
+                case MUL:
+                    mv.visitInsn(DMUL);
+                    break;
+                case DIV:
+                    mv.visitInsn(DDIV);
+                    break;
+            }
+        }
+
+        private Class<?> jitInvocation(AnalyzedCondition.Invocation invocation, Class<?> currentClass, boolean firstInvocation) {
+            if (invocation instanceof AnalyzedCondition.MethodInvocation) {
+                jitMethodInvocation((AnalyzedCondition.MethodInvocation)invocation, currentClass, firstInvocation);
+            } else if (invocation instanceof AnalyzedCondition.ConstructorInvocation) {
+                jitConstructorInvocation((AnalyzedCondition.ConstructorInvocation) invocation);
+            } else if (invocation instanceof AnalyzedCondition.ListAccessInvocation) {
+                jitListAccessInvocation((AnalyzedCondition.ListAccessInvocation) invocation);
+            } else if (invocation instanceof AnalyzedCondition.MapAccessInvocation) {
+                jitMapAccessInvocation((AnalyzedCondition.MapAccessInvocation) invocation);
+            } else {
+                jitFieldAccessInvocation((AnalyzedCondition.FieldAccessInvocation)invocation, currentClass, firstInvocation);
             }
             return invocation.getReturnType();
         }
 
-        private void jitMethodInvocation(MethodVisitor mv, AnalyzedCondition.MethodInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
+        private void jitMethodInvocation(AnalyzedCondition.MethodInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
             Method method = invocation.getMethod();
             if (firstInvocation && (method == null || (method.getModifiers() & Modifier.STATIC) == 0)) {
                 mv.visitVarInsn(ALOAD, 1);
@@ -253,46 +376,46 @@ public class ASMConditionEvaluatorJitter {
                 else throw new RuntimeException("access to this not in first position");
             }
 
-            if (!method.getDeclaringClass().isAssignableFrom(currentClass)) {
+            if (!method.getDeclaringClass().isAssignableFrom(currentClass) && (method.getModifiers() & Modifier.STATIC) == 0) {
                 cast(method.getDeclaringClass());
             }
 
             for (AnalyzedCondition.Expression argument : invocation.getArguments()) {
-                jitExpression(mv, argument);
+                jitExpression(argument);
             }
 
             invoke(method);
         }
 
-        private void jitConstructorInvocation(MethodVisitor mv, AnalyzedCondition.ConstructorInvocation invocation) {
+        private void jitConstructorInvocation(AnalyzedCondition.ConstructorInvocation invocation) {
             Constructor constructor = invocation.getConstructor();
             Class<?> clazz = invocation.getReturnType();
 
             mv.visitTypeInsn(NEW, internalName(clazz));
             mv.visitInsn(DUP);
             for (AnalyzedCondition.Expression argument : invocation.getArguments()) {
-                jitExpression(mv, argument);
+                jitExpression(argument);
             }
             invokeSpecial(clazz, "<init>", null, constructor.getParameterTypes());
         }
 
-        private void jitListAccessInvocation(MethodVisitor mv, AnalyzedCondition.ListAccessInvocation invocation) {
-            jitTopExpression(mv, invocation.getIndex(), int.class);
+        private void jitListAccessInvocation(AnalyzedCondition.ListAccessInvocation invocation) {
+            jitExpression(invocation.getIndex(), int.class);
             invokeInterface(List.class, "get", Object.class, int.class);
             if (invocation.getReturnType() != Object.class) {
                 cast(invocation.getReturnType());
             }
         }
 
-        private void jitMapAccessInvocation(MethodVisitor mv, AnalyzedCondition.MapAccessInvocation invocation) {
-            jitTopExpression(mv, invocation.getKey(), invocation.getKeyType());
+        private void jitMapAccessInvocation(AnalyzedCondition.MapAccessInvocation invocation) {
+            jitExpression(invocation.getKey(), invocation.getKeyType());
             invokeInterface(Map.class, "get", Object.class, Object.class);
             if (invocation.getReturnType() != Object.class) {
                 cast(invocation.getReturnType());
             }
         }
 
-        private void jitFieldAccessInvocation(MethodVisitor mv, AnalyzedCondition.FieldAccessInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
+        private void jitFieldAccessInvocation(AnalyzedCondition.FieldAccessInvocation invocation, Class<?> currentClass, boolean firstInvocation) {
             Field field = invocation.getField();
             boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
 
@@ -305,11 +428,11 @@ public class ASMConditionEvaluatorJitter {
             readField(field);
         }
         
-        private void jitPrimitiveOperation(MethodVisitor mv, AnalyzedCondition.BooleanOperator op, Class<?> type) {
-            jitPrimitiveCompare(mv, toOpCode(op, type), type);
+        private void jitPrimitiveOperation(AnalyzedCondition.BooleanOperator op, Class<?> type) {
+            jitPrimitiveCompare(toOpCode(op, type), type);
         }
 
-        private void jitPrimitiveCompare(MethodVisitor mv, int opCode, Class<?> type) {
+        private void jitPrimitiveCompare(int opCode, Class<?> type) {
             Label trueBranchLabel = new Label();
             Label returnLabel = new Label();
             if (type == double.class) {
@@ -328,7 +451,7 @@ public class ASMConditionEvaluatorJitter {
             mv.visitLabel(returnLabel);
         }
 
-        private void jitNegation(MethodVisitor mv) {
+        private void jitNegation() {
             Label trueBranch = new Label();
             Label falseBranch = new Label();
             mv.visitJumpInsn(IFNE, trueBranch);
@@ -339,7 +462,7 @@ public class ASMConditionEvaluatorJitter {
             mv.visitLabel(falseBranch);
         }
 
-        private static int toOpCode(AnalyzedCondition.BooleanOperator op, Class<?> type) {
+        private int toOpCode(AnalyzedCondition.BooleanOperator op, Class<?> type) {
             if (type == double.class || type == long.class || type == float.class) {
                 switch (op) {
                     case EQ: return IFEQ;
@@ -359,112 +482,120 @@ public class ASMConditionEvaluatorJitter {
                     case LE: return IF_ICMPLE;
                 }
             }
-            throw new RuntimeException("Unknown operation: " + op);
-        }
-    }
-
-    private static Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2) {
-        if (class1 == class2) return class1;
-        if (class1 == Object.class) return class2;
-        if (class2 == Object.class) return class1;
-        if (class1 == String.class) return class2;
-        if (class2 == String.class) return class1;
-
-        Class<?> result = findCommonClass(class1, class2, primitive2);
-        if (result == null) {
-            result = findCommonClass(class2, class1, primitive1);
-        }
-        if (result == null) {
-            throw new RuntimeException("Cannot find a common class between " + class1.getName() + " and " + class2.getName());
-        }
-        return result;
-    }
-
-    private static Class<?> findCommonClass(Class<?> class1, Class<?> class2, boolean canBePrimitive) {
-        if (class1.isAssignableFrom(class2)) return class1;
-
-        if (class1 == boolean.class) {
-            if (class2 == Boolean.class) return canBePrimitive ? boolean.class : Boolean.class;
+            throw new RuntimeException("Unknown operator: " + op);
         }
 
-        if (class1 == int.class || class1 == short.class || class1 == byte.class) {
-            if (class2 == Integer.class) return canBePrimitive ? int.class : Integer.class;
-            if (class2 == long.class) return long.class;
-            if (class2 == Long.class) return canBePrimitive ? long.class : Long.class;
-            if (class2 == float.class) return float.class;
-            if (class2 == Float.class) return canBePrimitive ? float.class : Float.class;
-            if (class2 == double.class) return double.class;
-            if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == BigInteger.class) return BigInteger.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
+        private Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2) {
+            Class<?> result = null;
+            if (class1 == class2) result = class1;
+            else if (class1 == Object.class) result = convertFromPrimitiveType(class2);
+            else if (class2 == Object.class) result = convertFromPrimitiveType(class1);
+            else if (class1 == String.class) result = convertFromPrimitiveType(class2);
+            else if (class2 == String.class) result = convertFromPrimitiveType(class1);
+
+            if (result == null) {
+                result = findCommonClass(class1, class2, primitive2);
+            }
+            if (result == null) {
+                result = findCommonClass(class2, class1, primitive1);
+            }
+            if (result == null) {
+                throw new RuntimeException("Cannot find a common class between " + class1.getName() + " and " + class2.getName());
+            }
+            return result == Number.class ? Double.class : result;
         }
 
-        if (class1 == long.class) {
-            if (class2 == int.class) return long.class;
-            if (class2 == Integer.class) return canBePrimitive ? long.class : Long.class;
-            if (class2 == Long.class) return canBePrimitive ? long.class : Long.class;
-            if (class2 == float.class) return double.class;
-            if (class2 == Float.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == double.class) return double.class;
-            if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == BigInteger.class) return BigInteger.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
+        private Class<?> findCommonClass(Class<?> class1, Class<?> class2, boolean canBePrimitive) {
+            if (class1.isAssignableFrom(class2)) return class1;
+
+            if (class1 == boolean.class) {
+                if (class2 == Boolean.class) return canBePrimitive ? boolean.class : Boolean.class;
+            }
+
+            if (class1 == Number.class && class2.isPrimitive()) {
+                return Double.class;
+            }
+
+            if (class1 == int.class || class1 == short.class || class1 == byte.class) {
+                if (class2 == Integer.class) return canBePrimitive ? int.class : Integer.class;
+                if (class2 == long.class) return long.class;
+                if (class2 == Long.class) return canBePrimitive ? long.class : Long.class;
+                if (class2 == float.class) return float.class;
+                if (class2 == Float.class) return canBePrimitive ? float.class : Float.class;
+                if (class2 == double.class) return double.class;
+                if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == BigInteger.class) return BigInteger.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == long.class) {
+                if (class2 == int.class) return long.class;
+                if (class2 == Integer.class) return canBePrimitive ? long.class : Long.class;
+                if (class2 == Long.class) return canBePrimitive ? long.class : Long.class;
+                if (class2 == float.class) return double.class;
+                if (class2 == Float.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == double.class) return double.class;
+                if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == BigInteger.class) return BigInteger.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == float.class) {
+                if (class2 == int.class) return float.class;
+                if (class2 == Integer.class) return canBePrimitive ? float.class : Float.class;
+                if (class2 == long.class) return double.class;
+                if (class2 == Long.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == Float.class) return canBePrimitive ? float.class : Float.class;
+                if (class2 == double.class) return double.class;
+                if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == BigInteger.class) return BigDecimal.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == double.class) {
+                if (class2 == int.class) return float.class;
+                if (class2 == Integer.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == long.class) return double.class;
+                if (class2 == Long.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == float.class) return double.class;
+                if (class2 == Float.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
+                if (class2 == BigInteger.class) return BigDecimal.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == Integer.class) {
+                if (class2 == Long.class) return Long.class;
+                if (class2 == Float.class) return Float.class;
+                if (class2 == Double.class) return Double.class;
+                if (class2 == BigInteger.class) return BigInteger.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == Long.class) {
+                if (class2 == Float.class) return Double.class;
+                if (class2 == Double.class) return Double.class;
+                if (class2 == BigInteger.class) return BigInteger.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == Float.class) {
+                if (class2 == Double.class) return Double.class;
+                if (class2 == BigInteger.class) return BigDecimal.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == Double.class) {
+                if (class2 == BigInteger.class) return BigDecimal.class;
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            if (class1 == BigInteger.class) {
+                if (class2 == BigDecimal.class) return BigDecimal.class;
+            }
+
+            return null;
         }
 
-        if (class1 == float.class) {
-            if (class2 == int.class) return float.class;
-            if (class2 == Integer.class) return canBePrimitive ? float.class : Float.class;
-            if (class2 == long.class) return double.class;
-            if (class2 == Long.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == Float.class) return canBePrimitive ? float.class : Float.class;
-            if (class2 == double.class) return double.class;
-            if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == BigInteger.class) return BigDecimal.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == double.class) {
-            if (class2 == int.class) return float.class;
-            if (class2 == Integer.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == long.class) return double.class;
-            if (class2 == Long.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == float.class) return double.class;
-            if (class2 == Float.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == Double.class) return canBePrimitive ? double.class : Double.class;
-            if (class2 == BigInteger.class) return BigDecimal.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == Integer.class) {
-            if (class2 == Long.class) return Long.class;
-            if (class2 == Float.class) return Float.class;
-            if (class2 == Double.class) return Double.class;
-            if (class2 == BigInteger.class) return BigInteger.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == Long.class) {
-            if (class2 == Float.class) return Double.class;
-            if (class2 == Double.class) return Double.class;
-            if (class2 == BigInteger.class) return BigInteger.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == Float.class) {
-            if (class2 == Double.class) return Double.class;
-            if (class2 == BigInteger.class) return BigDecimal.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == Double.class) {
-            if (class2 == BigInteger.class) return BigDecimal.class;
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        if (class1 == BigInteger.class) {
-            if (class2 == BigDecimal.class) return BigDecimal.class;
-        }
-
-        return null;
     }
 }
