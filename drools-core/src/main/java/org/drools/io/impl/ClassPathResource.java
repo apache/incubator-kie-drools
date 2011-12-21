@@ -103,8 +103,8 @@ public class ClassPathResource extends BaseResource
      * @see java.lang.Class#getResourceAsStream(String)
      */
     public InputStream getInputStream() throws IOException {
-	//update the lastRead field
-	this.lastRead = this.getLastModified();
+        //update the lastRead field
+        this.lastRead = this.getLastModified();
 
         //Some ClassLoaders caches the result of getResourceAsStream() this is
         //why we get the Input Stream from the URL of the resource
