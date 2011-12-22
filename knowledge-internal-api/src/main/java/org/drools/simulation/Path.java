@@ -22,6 +22,6 @@ public interface Path {
 
     String getName();
     
-    Collection<Step> getSteps();
+    Collection<SimulationStep> getSteps();
 
 }

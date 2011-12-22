@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import org.drools.command.Command;
 
-public interface Step {
+public interface SimulationStep {
 
     long getTemporalDistance();
     Collection<Command> getCommands();
