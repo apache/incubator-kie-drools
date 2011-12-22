@@ -20,6 +20,6 @@ import java.util.Map;
 
 public interface Simulation {
 
-    Map<String, Path> getPaths();
+    Map<String, SimulationPath> getPaths();
 
 }
