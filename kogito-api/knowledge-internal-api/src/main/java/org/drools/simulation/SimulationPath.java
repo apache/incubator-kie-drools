@@ -18,7 +18,7 @@ package org.drools.simulation;
 
 import java.util.Collection;
 
-public interface Path {
+public interface SimulationPath {
 
     String getName();
     
