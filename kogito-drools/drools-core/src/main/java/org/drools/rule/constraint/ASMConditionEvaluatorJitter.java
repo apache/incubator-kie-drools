@@ -207,6 +207,13 @@ public class ASMConditionEvaluatorJitter {
             return nullLabel;
         }
 
+        private Label jitLeftIsNull(Label nullLabel) {
+            Label notNullLabel = new Label();
+            mv.visitJumpInsn(GOTO, notNullLabel);
+            mv.visitLabel(nullLabel);
+            return notNullLabel;
+        }
+
         private void castOrCoerceTo(int regNr, Class<?> fromType, Class<?> toType) {
             Label nonInstanceOfLabel = new Label();
             Label endOfCoercionLabel = new Label();
@@ -249,21 +256,6 @@ public class ASMConditionEvaluatorJitter {
                 invokeStatic(toType, "valueOf", toType, toTypeAsPrimitive);
             }
             store(regNr, toType);
-        }
-
-        private void jitRightCoercion(Class<?> fromType, Class<?> toType) {
-            store(RIGHT_OPERAND, fromType);
-            mv.visitTypeInsn(NEW, internalName(toType));
-            mv.visitInsn(DUP);
-            load(RIGHT_OPERAND);
-            coerceByConstructor(fromType, toType);
-        }
-
-        private Label jitLeftIsNull(Label nullLabel) {
-            Label notNullLabel = new Label();
-            mv.visitJumpInsn(GOTO, notNullLabel);
-            mv.visitLabel(nullLabel);
-            return notNullLabel;
         }
 
         private void jitExpression(AnalyzedCondition.Expression exp) {
@@ -314,9 +306,7 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitStringConcat(AnalyzedCondition.Expression left, AnalyzedCondition.Expression right) {
-            mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
-            mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V");
+            invokeConstructor(StringBuilder.class);
             jitExpression(left, String.class);
             invokeVirtual(StringBuilder.class, "append", StringBuilder.class, left.getType());
             jitExpression(right, String.class);
@@ -429,10 +419,8 @@ public class ASMConditionEvaluatorJitter {
         }
         
         private void jitPrimitiveOperation(AnalyzedCondition.BooleanOperator op, Class<?> type) {
-            jitPrimitiveCompare(toOpCode(op, type), type);
-        }
+            int opCode = toOpCode(op, type);
 
-        private void jitPrimitiveCompare(int opCode, Class<?> type) {
             Label trueBranchLabel = new Label();
             Label returnLabel = new Label();
             if (type == double.class) {

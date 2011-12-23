@@ -628,10 +628,16 @@ public class ClassGenerator {
             invoke(INVOKEINTERFACE, clazz, methodName, returnedType, paramsType);
         }
 
+        protected final void invokeConstructor(Class<?> clazz) {
+            invokeConstructor(clazz, null);
+        }
+
         protected final void invokeConstructor(Class<?> clazz, Object[] params, Class<?>... paramsType) {
             mv.visitTypeInsn(NEW, internalName(clazz));
             mv.visitInsn(DUP);
-            for (Object param : params) mv.visitLdcInsn(param);
+            if (params != null) {
+                for (Object param : params) mv.visitLdcInsn(param);
+            }
             invokeSpecial(clazz, "<init>", null, paramsType);
         }
 
