@@ -86,9 +86,6 @@ public class SolverBenchmarkSuite {
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmark> solverBenchmarkList = null;
 
-//    @XStreamImplicit(itemFieldName = "solverBenchmarkSuiteResult")
-//    private List<SolverBenchmarkSuiteResult> solverBenchmarkSuiteResultList;
-
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
     }
@@ -218,7 +215,6 @@ public class SolverBenchmarkSuite {
         if (solverBenchmarkComparator == null) {
             solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
         }
-//        resetSolverBenchmarkSuiteResultList();
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
@@ -240,24 +236,6 @@ public class SolverBenchmarkSuite {
         }
         solverStatisticFilesDirectory.mkdirs();
     }
-
-//    private void resetSolverBenchmarkSuiteResultList() {
-//        solverBenchmarkSuiteResultList = new ArrayList<SolverBenchmarkSuiteResult>();
-//        Map<File, SolverBenchmarkSuiteResult> unsolvedSolutionFileToSuiteResultMap
-//                = new LinkedHashMap<File, SolverBenchmarkSuiteResult>();
-//        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-//            for (File unsolvedSolutionFile : solverBenchmark.getUnsolvedSolutionFileList()) {
-//                if (!unsolvedSolutionFileToSuiteResultMap.containsKey(unsolvedSolutionFile)) {
-//                    SolverBenchmarkSuiteResult suiteResult = new SolverBenchmarkSuiteResult();
-//                    suiteResult.setUnsolvedSolutionFile(unsolvedSolutionFile);
-//                    suiteResult.setSolverBenchmarkResultList(new ArrayList<SolverBenchmarkResult>(
-//                            solverBenchmarkList.size()));
-//                    solverBenchmarkSuiteResultList.add(suiteResult);
-//                    unsolvedSolutionFileToSuiteResultMap.put(unsolvedSolutionFile, suiteResult);
-//                }
-//            }
-//        }
-//    }
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
         benchmarkingStarted();
