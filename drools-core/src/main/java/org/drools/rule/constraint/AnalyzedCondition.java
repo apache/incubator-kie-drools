@@ -167,7 +167,7 @@ public class AnalyzedCondition {
     }
 
     private Expression analyzeAccessor(Accessor accessor) {
-        AccessorNode accessorNode = null;
+        AccessorNode accessorNode;
 
         if (accessor instanceof VariableAccessor) {
             VariableAccessor variableAccessor = (VariableAccessor)accessor;
@@ -326,19 +326,7 @@ public class AnalyzedCondition {
             }
         }
     }
-/*
-    private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {
-        try {
-            Field f = clazz.getDeclaredField(fieldName);
-            f.setAccessible(true);
-            return (V)f.get(object);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-*/
+
     public interface Expression {
         boolean isFixed();
         boolean canBeNull();

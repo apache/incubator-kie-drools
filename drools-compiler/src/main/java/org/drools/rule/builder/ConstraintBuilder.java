@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class ConstraintBuilder {
 
-    private static final boolean USE_MVEL_EXPRESSION = false;
+    private static final boolean USE_MVEL_EXPRESSION = true;
     private static Set<String> mvelOperators;
 
     static {
