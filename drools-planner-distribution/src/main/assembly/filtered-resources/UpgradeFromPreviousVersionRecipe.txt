@@ -1261,7 +1261,6 @@ After in *ScoreDefinition.java:
         return new HardAndSoftScoreCalculator();
     }
 
-
 [MINOR] If you implemented a custom Acceptor or Forager:
 double acceptanceChance has been replaced by boolean accepted.
 
