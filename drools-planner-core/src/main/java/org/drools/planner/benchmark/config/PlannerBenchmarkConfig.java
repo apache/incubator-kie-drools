@@ -1,0 +1,261 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.benchmark.config;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
+import org.drools.planner.benchmark.core.PlannerBenchmark;
+import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
+import org.drools.planner.benchmark.core.statistic.SolverStatistic;
+import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.DefaultSolverScope;
+
+@XStreamAlias("plannerBenchmark")
+public class PlannerBenchmarkConfig {
+
+    private File benchmarkDirectory = null;
+    private File benchmarkInstanceDirectory = null;
+    private File solvedSolutionFilesDirectory = null;
+    private File solverStatisticFilesDirectory = null;
+    @XStreamImplicit(itemFieldName = "solverStatisticType")
+    private List<SolverStatisticType> solverStatisticTypeList = null;
+    private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+
+    private Long warmUpTimeMillisSpend = null;
+    private Long warmUpSecondsSpend = null;
+    private Long warmUpMinutesSpend = null;
+    private Long warmUpHoursSpend = null;
+
+    @XStreamAlias("inheritedSolverBenchmark")
+    private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
+
+    @XStreamImplicit(itemFieldName = "solverBenchmark")
+    private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
+
+    public File getBenchmarkDirectory() {
+        return benchmarkDirectory;
+    }
+
+    public void setBenchmarkDirectory(File benchmarkDirectory) {
+        this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    public File getBenchmarkInstanceDirectory() {
+        return benchmarkInstanceDirectory;
+    }
+
+    public void setBenchmarkInstanceDirectory(File benchmarkInstanceDirectory) {
+        this.benchmarkInstanceDirectory = benchmarkInstanceDirectory;
+    }
+
+    public File getSolvedSolutionFilesDirectory() {
+        return solvedSolutionFilesDirectory;
+    }
+
+    public void setSolvedSolutionFilesDirectory(File solvedSolutionFilesDirectory) {
+        this.solvedSolutionFilesDirectory = solvedSolutionFilesDirectory;
+    }
+
+    public File getSolverStatisticFilesDirectory() {
+        return solverStatisticFilesDirectory;
+    }
+
+    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
+        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
+    }
+
+    public List<SolverStatisticType> getSolverStatisticTypeList() {
+        return solverStatisticTypeList;
+    }
+
+    public void setSolverStatisticTypeList(List<SolverStatisticType> solverStatisticTypeList) {
+        this.solverStatisticTypeList = solverStatisticTypeList;
+    }
+
+    public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
+        return solverBenchmarkComparator;
+    }
+
+    public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
+        this.solverBenchmarkComparator = solverBenchmarkComparator;
+    }
+
+    public Long getWarmUpTimeMillisSpend() {
+        return warmUpTimeMillisSpend;
+    }
+
+    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
+        this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
+    }
+
+    public Long getWarmUpSecondsSpend() {
+        return warmUpSecondsSpend;
+    }
+
+    public void setWarmUpSecondsSpend(Long warmUpSecondsSpend) {
+        this.warmUpSecondsSpend = warmUpSecondsSpend;
+    }
+
+    public Long getWarmUpMinutesSpend() {
+        return warmUpMinutesSpend;
+    }
+
+    public void setWarmUpMinutesSpend(Long warmUpMinutesSpend) {
+        this.warmUpMinutesSpend = warmUpMinutesSpend;
+    }
+
+    public Long getWarmUpHoursSpend() {
+        return warmUpHoursSpend;
+    }
+
+    public void setWarmUpHoursSpend(Long warmUpHoursSpend) {
+        this.warmUpHoursSpend = warmUpHoursSpend;
+    }
+
+    public SolverBenchmarkConfig getInheritedSolverBenchmarkConfig() {
+        return inheritedSolverBenchmarkConfig;
+    }
+
+    public void setInheritedSolverBenchmarkConfig(SolverBenchmarkConfig inheritedSolverBenchmarkConfig) {
+        this.inheritedSolverBenchmarkConfig = inheritedSolverBenchmarkConfig;
+    }
+
+    public List<SolverBenchmarkConfig> getSolverBenchmarkConfigList() {
+        return solverBenchmarkConfigList;
+    }
+
+    public void setSolverBenchmarkConfigList(List<SolverBenchmarkConfig> solverBenchmarkConfigList) {
+        this.solverBenchmarkConfigList = solverBenchmarkConfigList;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
+    private void validate() {
+        if (solverBenchmarkConfigList == null || solverBenchmarkConfigList.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
+        }
+    }
+
+    private void generateSolverBenchmarkConfigNames() {
+        Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
+                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+            if (solverBenchmarkConfig.getName() != null) {
+                boolean unique = nameSet.add(solverBenchmarkConfig.getName());
+                if (!unique) {
+                    throw new IllegalStateException("The benchmark name (" + solverBenchmarkConfig.getName()
+                            + ") is used in more than 1 benchmark.");
+                }
+            } else {
+                noNameBenchmarkConfigSet.add(solverBenchmarkConfig);
+            }
+        }
+        int generatedNameIndex = 0;
+        for (SolverBenchmarkConfig solverBenchmarkConfig : noNameBenchmarkConfigSet) {
+            String generatedName = "Config_" + generatedNameIndex;
+            while (nameSet.contains(generatedName)) {
+                generatedNameIndex++;
+                generatedName = "Config_" + generatedNameIndex;
+            }
+            solverBenchmarkConfig.setName(generatedName);
+            generatedNameIndex++;
+        }
+    }
+
+    private void inherit() {
+        if (inheritedSolverBenchmarkConfig != null) {
+            for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+                solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
+            }
+        }
+    }
+
+    public PlannerBenchmark buildPlannerBenchmark() {
+        validate();
+        generateSolverBenchmarkConfigNames();
+        inherit();
+        
+        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
+        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
+        plannerBenchmark.setSolvedSolutionFilesDirectory(solvedSolutionFilesDirectory);
+        plannerBenchmark.setSolverStatisticFilesDirectory(solverStatisticFilesDirectory);
+        plannerBenchmark.setSolverStatisticTypeList(solverStatisticTypeList);
+        plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
+        plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
+
+        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
+        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+            solverBenchmarkList.add(solverBenchmarkConfig.buildSolverBenchmark());
+        }
+        plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
+        return plannerBenchmark;
+    }
+
+    public Long calculateWarmUpTimeMillisSpendTotal() {
+        if (warmUpTimeMillisSpend == null && warmUpSecondsSpend == null && warmUpMinutesSpend == null
+                && warmUpHoursSpend == null) {
+            return null;
+        }
+        long warmUpTimeMillisSpendTotal = 0L;
+        if (warmUpTimeMillisSpend != null) {
+            warmUpTimeMillisSpendTotal += warmUpTimeMillisSpend;
+        }
+        if (warmUpSecondsSpend != null) {
+            warmUpTimeMillisSpendTotal += warmUpSecondsSpend * 1000L;
+        }
+        if (warmUpMinutesSpend != null) {
+            warmUpTimeMillisSpendTotal += warmUpMinutesSpend * 60000L;
+        }
+        if (warmUpHoursSpend != null) {
+            warmUpTimeMillisSpendTotal += warmUpHoursSpend * 3600000L;
+        }
+        return warmUpTimeMillisSpendTotal;
+    }
+
+}

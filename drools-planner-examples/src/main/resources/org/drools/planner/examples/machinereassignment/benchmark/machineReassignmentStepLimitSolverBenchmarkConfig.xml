@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<solverBenchmarkSuite>
+<plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
@@ -45,4 +45,4 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-</solverBenchmarkSuite>
+</plannerBenchmark>

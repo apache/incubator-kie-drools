@@ -1303,3 +1303,13 @@ Before in *SolverBenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
 After in *SolverBenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
+
+[MAJOR] SolverBenchmarkSuite has been renamed to PlannerBenchmark.
+Before in *SolverBenchmarkConfig.xml:
+    <solverBenchmarkSuite>
+      ...
+    </solverBenchmarkSuite>
+After in *SolverBenchmarkConfig.xml:
+    <plannerBenchmark>
+      ...
+    </plannerBenchmark>

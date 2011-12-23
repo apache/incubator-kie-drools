@@ -49,13 +49,12 @@
 
       <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
     benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
-    benchmarker.benchmark();
-    benchmarker.writeResults(resultFile);</programlisting>
+    benchmarker.benchmark();</programlisting>
 
       <para>A basic benchmarker configuration file looks something like this:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;solverBenchmarkSuite&gt;
+&lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
   &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
   &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
@@ -128,7 +127,7 @@
       &lt;/localSearch&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
-&lt;/solverBenchmarkSuite&gt;</programlisting>
+&lt;/plannerBenchmark&gt;</programlisting>
 
       <para>This benchmarker will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
       (32 and 64 queens), so it will run 6 solvers.</para>
@@ -156,11 +155,11 @@
       <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
       before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
 
-      <programlisting>&lt;solverBenchmarkSuite&gt;
+      <programlisting>&lt;plannerBenchmark&gt;
   ...
   &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
   ...
-&lt;/solverBenchmarkSuite&gt;</programlisting>
+&lt;/plannerBenchmark&gt;</programlisting>
     </section>
   </section>
 
@@ -194,11 +193,11 @@
     <para>To configure graph and CSV output of a statistic, just add a <literal>solverStatisticType</literal>
     line:</para>
 
-    <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
+    <programlisting language="xml">&lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
   &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
   ...
-&lt;/solverBenchmarkSuite&gt;</programlisting>
+&lt;/plannerBenchmark&gt;</programlisting>
 
     <para>Multiple <literal>solverStatisticType</literal> entries are allowed. Some statistic types might influence
     performance noticeably. The following types are are supported:</para>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<solverBenchmarkSuite>
+<plannerBenchmark>
   <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
@@ -219,4 +219,4 @@
       <!--</localSearch>-->
     <!--</solver>-->
   <!--</solverBenchmark>-->
-</solverBenchmarkSuite>
+</plannerBenchmark>

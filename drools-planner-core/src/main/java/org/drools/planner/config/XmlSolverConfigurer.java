@@ -100,6 +100,10 @@ public class XmlSolverConfigurer {
     }
 
     public Solver buildSolver() {
+        if (solverConfig == null) {
+            throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
+                    " call configure(...) first.");
+        }
         return solverConfig.buildSolver();
     }
 

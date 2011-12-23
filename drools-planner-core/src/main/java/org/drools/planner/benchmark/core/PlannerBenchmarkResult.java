@@ -21,8 +21,7 @@ import java.io.File;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.score.Score;
 
-@XStreamAlias("solverBenchmarkResult")
-public class SolverBenchmarkResult {
+public class PlannerBenchmarkResult {
 
     private File unsolvedSolutionFile = null;
     private int planningEntityCount = -1;
@@ -96,6 +95,10 @@ public class SolverBenchmarkResult {
     public void setSolvedSolutionFile(File solvedSolutionFile) {
         this.solvedSolutionFile = solvedSolutionFile;
     }
+
+    // ************************************************************************
+    // Benchmark methods
+    // ************************************************************************
 
     public Long getAverageCalculateCountPerSecond() {
         long timeMillisSpend = this.timeMillisSpend;

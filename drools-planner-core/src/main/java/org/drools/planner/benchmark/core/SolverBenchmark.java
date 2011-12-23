@@ -20,23 +20,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.score.Score;
 
-@XStreamAlias("solverBenchmark")
 public class SolverBenchmark {
 
     private String name = null;
 
-    @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
-    @XStreamImplicit(itemFieldName = "unsolvedSolutionFile")
     private List<File> unsolvedSolutionFileList = null;
 
-    @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
-    private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
+    private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -65,12 +59,12 @@ public class SolverBenchmark {
         this.unsolvedSolutionFileList = unsolvedSolutionFileList;
     }
 
-    public List<SolverBenchmarkResult> getSolverBenchmarkResultList() {
-        return solverBenchmarkResultList;
+    public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
+        return plannerBenchmarkResultList;
     }
 
-    public void setSolverBenchmarkResultList(List<SolverBenchmarkResult> solverBenchmarkResultList) {
-        this.solverBenchmarkResultList = solverBenchmarkResultList;
+    public void setPlannerBenchmarkResultList(List<PlannerBenchmarkResult> plannerBenchmarkResultList) {
+        this.plannerBenchmarkResultList = plannerBenchmarkResultList;
     }
 
     public Integer getRanking() {
@@ -82,42 +76,26 @@ public class SolverBenchmark {
     }
 
     // ************************************************************************
-    // Builder methods
+    // Benchmark methods
     // ************************************************************************
 
-    public void inherit(SolverBenchmark inheritedSolverBenchmark) {
-        if (solverConfig == null) {
-            solverConfig = inheritedSolverBenchmark.getSolverConfig();
-        } else if (inheritedSolverBenchmark.getSolverConfig() != null) {
-            solverConfig.inherit(inheritedSolverBenchmark.getSolverConfig());
-        }
-        if (unsolvedSolutionFileList == null) {
-            unsolvedSolutionFileList = inheritedSolverBenchmark.getUnsolvedSolutionFileList();
-        } else if (inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
-            // The inherited unsolvedSolutionFiles should be before the non-inherited one
-            List<File> mergedList = new ArrayList<File>(inheritedSolverBenchmark.getUnsolvedSolutionFileList());
-            for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
-                if (!mergedList.contains(unsolvedSolutionFile)) {
-                    mergedList.add(unsolvedSolutionFile);
-                }
-            }
-            unsolvedSolutionFileList = mergedList;
-        }
+    public void benchmarkingStarted() {
+        resetPlannerBenchmarkResultList();
     }
 
-    public void resetSolverBenchmarkResultList() {
-        solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+    public void resetPlannerBenchmarkResultList() {
+        plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>();
         for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
-            SolverBenchmarkResult result = new SolverBenchmarkResult();
+            PlannerBenchmarkResult result = new PlannerBenchmarkResult();
             result.setUnsolvedSolutionFile(unsolvedSolutionFile);
-            solverBenchmarkResultList.add(result);
+            plannerBenchmarkResultList.add(result);
         }
     }
 
     public List<Score> getScoreList() {
-        List<Score> scoreList = new ArrayList<Score>(solverBenchmarkResultList.size());
-        for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
-            scoreList.add(solverBenchmarkResult.getScore());
+        List<Score> scoreList = new ArrayList<Score>(plannerBenchmarkResultList.size());
+        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
+            scoreList.add(plannerBenchmarkResult.getScore());
         }
         return scoreList;
     }
@@ -127,11 +105,11 @@ public class SolverBenchmark {
      */
     public Score getTotalScore() {
         Score totalScore = null;
-        for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
+        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
             if (totalScore == null) {
-                totalScore = solverBenchmarkResult.getScore();
+                totalScore = plannerBenchmarkResult.getScore();
             } else {
-                totalScore = totalScore.add(solverBenchmarkResult.getScore());
+                totalScore = totalScore.add(plannerBenchmarkResult.getScore());
             }
         }
         return totalScore;
@@ -141,15 +119,11 @@ public class SolverBenchmark {
      * @return the average score
      */
     public Score getAverageScore() {
-        return getTotalScore().divide(solverBenchmarkResultList.size());
+        return getTotalScore().divide(plannerBenchmarkResultList.size());
     }
 
-    public void validate() {
-        if (unsolvedSolutionFileList == null || unsolvedSolutionFileList.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Configure at least 1 <unsolvedSolutionFile> for the <solverBenchmark> (" + name
-                            + ") directly or indirectly by inheriting it.");
-        }
+    public void benchmarkingEnded() {
+
     }
 
 }

@@ -32,8 +32,8 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.SolverBenchmarkResult;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
@@ -94,7 +94,7 @@ public class StatisticManager {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 Score score = result.getScore();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
@@ -141,7 +141,7 @@ public class StatisticManager {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 Score score = result.getWinningScoreDifference();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
@@ -186,7 +186,7 @@ public class StatisticManager {
     private CharSequence writeTimeSpendSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long timeMillisSpend = result.getTimeMillisSpend();
                 String solverLabel = solverBenchmark.getName();
                 dataset.addValue(timeMillisSpend, solverLabel, result.getUnsolvedSolutionFile().getName());
@@ -235,7 +235,7 @@ public class StatisticManager {
             XYSeries series = new XYSeries(solverBenchmark.getName());
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long problemScale = result.getProblemScale();
                 long timeMillisSpend = result.getTimeMillisSpend();
                 series.add((Long) problemScale, (Long) timeMillisSpend);
@@ -278,7 +278,7 @@ public class StatisticManager {
             XYSeries series = new XYSeries(solverBenchmark.getName());
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long problemScale = result.getProblemScale();
                 long averageCalculateCountPerSecond = result.getAverageCalculateCountPerSecond();
                 series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
@@ -319,7 +319,7 @@ public class StatisticManager {
         htmlFragment.append("    <tr><th>Solver</th>");
         Set<File> unsolvedSolutionFileSet = new LinkedHashSet<File>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 if (unsolvedSolutionFileSet.add(unsolvedSolutionFile)) {
                     htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
@@ -334,7 +334,7 @@ public class StatisticManager {
                     .append(solverBenchmark.getName()).append("</th>");
             for (File unsolvedSolutionFile : unsolvedSolutionFileSet) {
                 boolean noResult = true;
-                for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                     if (unsolvedSolutionFile.equals(result.getUnsolvedSolutionFile())) {
                         Score score = result.getScore();
                         htmlFragment.append("<td>").append(score.toString()).append("</td>");

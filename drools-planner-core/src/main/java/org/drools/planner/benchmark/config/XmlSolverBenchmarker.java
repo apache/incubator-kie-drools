@@ -23,17 +23,17 @@ import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.core.SolverBenchmarkSuite;
+import org.drools.planner.benchmark.core.PlannerBenchmark;
 import org.drools.planner.config.XmlSolverConfigurer;
 
 public class XmlSolverBenchmarker {
 
     private XStream xStream;
-    private SolverBenchmarkSuite suite = null;
+    private PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
     public XmlSolverBenchmarker() {
         xStream = XmlSolverConfigurer.buildXstream();
-        xStream.processAnnotations(SolverBenchmarkSuite.class);
+        xStream.processAnnotations(PlannerBenchmarkConfig.class);
     }
 
     public void addXstreamAnnotations(Class... xstreamAnnotations) {
@@ -66,15 +66,21 @@ public class XmlSolverBenchmarker {
     }
 
     public XmlSolverBenchmarker configure(Reader reader) {
-        suite = (SolverBenchmarkSuite) xStream.fromXML(reader);
+        plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
         return this;
     }
 
-    public void benchmark() {
-        if (suite == null) {
-            throw new IllegalStateException("No configuration found, call SolverBenchmarker.configure(...) first.");
+    public PlannerBenchmark buildPlannerBenchmark() {
+        if (plannerBenchmarkConfig == null) {
+            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
+                    " call configure(...) first.");
         }
-        suite.benchmark(xStream);
+        return plannerBenchmarkConfig.buildPlannerBenchmark();
+    }
+
+    public void benchmark() {
+        PlannerBenchmark plannerBenchmark = buildPlannerBenchmark();
+        plannerBenchmark.benchmark(xStream);
     }
 
 }

@@ -43,9 +43,6 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
@@ -61,30 +58,21 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@XStreamAlias("solverBenchmarkSuite")
-public class SolverBenchmarkSuite {
+public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 
-    @XStreamOmitField
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
     private File solvedSolutionFilesDirectory = null;
     private File solverStatisticFilesDirectory = null;
-    @XStreamImplicit(itemFieldName = "solverStatisticType")
     private List<SolverStatisticType> solverStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     private Long warmUpTimeMillisSpend = null;
-    private Long warmUpSecondsSpend = null;
-    private Long warmUpMinutesSpend = null;
-    private Long warmUpHoursSpend = null;
 
-    private SolverBenchmark inheritedSolverBenchmark = null;
-
-    @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmark> solverBenchmarkList = null;
 
     public File getBenchmarkDirectory() {
@@ -143,30 +131,6 @@ public class SolverBenchmarkSuite {
         this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
     }
 
-    public Long getWarmUpSecondsSpend() {
-        return warmUpSecondsSpend;
-    }
-
-    public void setWarmUpSecondsSpend(Long warmUpSecondsSpend) {
-        this.warmUpSecondsSpend = warmUpSecondsSpend;
-    }
-
-    public Long getWarmUpMinutesSpend() {
-        return warmUpMinutesSpend;
-    }
-
-    public void setWarmUpMinutesSpend(Long warmUpMinutesSpend) {
-        this.warmUpMinutesSpend = warmUpMinutesSpend;
-    }
-
-    public Long getWarmUpHoursSpend() {
-        return warmUpHoursSpend;
-    }
-
-    public void setWarmUpHoursSpend(Long warmUpHoursSpend) {
-        this.warmUpHoursSpend = warmUpHoursSpend;
-    }
-
     public List<SolverBenchmark> getSolverBenchmarkList() {
         return solverBenchmarkList;
     }
@@ -176,45 +140,20 @@ public class SolverBenchmarkSuite {
     }
 
     // ************************************************************************
-    // Builder methods
+    // Benchmark methods
     // ************************************************************************
 
     public void benchmarkingStarted() {
         if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <solverBenchmark> in the <solverBenchmarkSuite> configuration.");
-        }
-        Set<String> nameSet = new HashSet<String>(solverBenchmarkList.size());
-        Set<SolverBenchmark> noNameBenchmarkSet = new LinkedHashSet<SolverBenchmark>(solverBenchmarkList.size());
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            if (solverBenchmark.getName() != null) {
-                boolean unique = nameSet.add(solverBenchmark.getName());
-                if (!unique) {
-                    throw new IllegalStateException("The benchmark name (" + solverBenchmark.getName()
-                            + ") is used in more than 1 benchmark.");
-                }
-            } else {
-                noNameBenchmarkSet.add(solverBenchmark);
-            }
-            if (inheritedSolverBenchmark != null) {
-                solverBenchmark.inherit(inheritedSolverBenchmark);
-            }
-            solverBenchmark.validate();
-            solverBenchmark.resetSolverBenchmarkResultList();
-        }
-        int generatedNameIndex = 0;
-        for (SolverBenchmark solverBenchmark : noNameBenchmarkSet) {
-            String generatedName = "Config_" + generatedNameIndex;
-            while (nameSet.contains(generatedName)) {
-                generatedNameIndex++;
-                generatedName = "Config_" + generatedNameIndex;
-            }
-            solverBenchmark.setName(generatedName);
-            generatedNameIndex++;
+                    "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
         if (solverBenchmarkComparator == null) {
             solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        }
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            solverBenchmark.benchmarkingStarted();
         }
     }
 
@@ -244,7 +183,7 @@ public class SolverBenchmarkSuite {
         // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
         Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
                 Solver solver = solverBenchmark.getSolverConfig().buildSolver();
                 
@@ -274,26 +213,12 @@ public class SolverBenchmarkSuite {
     }
 
     private void warmUp(XStream xStream) {
-        if (warmUpTimeMillisSpend != null || warmUpSecondsSpend != null || warmUpMinutesSpend != null
-                || warmUpHoursSpend != null) {
+        if (warmUpTimeMillisSpend != null) {
             logger.info("================================================================================");
             logger.info("Warming up");
             logger.info("================================================================================");
-            long warmUpTimeMillisSpendTotal = 0L;
-            if (warmUpTimeMillisSpend != null) {
-                warmUpTimeMillisSpendTotal += warmUpTimeMillisSpend;
-            }
-            if (warmUpSecondsSpend != null) {
-                warmUpTimeMillisSpendTotal += warmUpSecondsSpend * 1000L;
-            }
-            if (warmUpMinutesSpend != null) {
-                warmUpTimeMillisSpendTotal += warmUpMinutesSpend * 60000L;
-            }
-            if (warmUpHoursSpend != null) {
-                warmUpTimeMillisSpendTotal += warmUpHoursSpend * 3600000L;
-            }
             long startingTimeMillis = System.currentTimeMillis();
-            long timeLeft = warmUpTimeMillisSpendTotal;
+            long timeLeft = warmUpTimeMillisSpend;
             Iterator<SolverBenchmark> solverBenchmarkIt = solverBenchmarkList.iterator();
             int overallResultIndex = 0;
             while (timeLeft > 0L) {
@@ -302,9 +227,9 @@ public class SolverBenchmarkSuite {
                     overallResultIndex++;
                 }
                 SolverBenchmark solverBenchmark = solverBenchmarkIt.next();
-                List<SolverBenchmarkResult> solverBenchmarkResultList = solverBenchmark.getSolverBenchmarkResultList();
-                int resultIndex = overallResultIndex % solverBenchmarkResultList.size();
-                SolverBenchmarkResult result = solverBenchmarkResultList.get(resultIndex);
+                List<PlannerBenchmarkResult> plannerBenchmarkResultList = solverBenchmark.getPlannerBenchmarkResultList();
+                int resultIndex = overallResultIndex % plannerBenchmarkResultList.size();
+                PlannerBenchmarkResult result = plannerBenchmarkResultList.get(resultIndex);
                 TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
                 TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
                 tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
@@ -316,7 +241,7 @@ public class SolverBenchmarkSuite {
                 solver.solve();
                 solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
                 long timeSpend = System.currentTimeMillis() - startingTimeMillis;
-                timeLeft = warmUpTimeMillisSpendTotal - timeSpend;
+                timeLeft = warmUpTimeMillisSpend - timeSpend;
             }
             logger.info("================================================================================");
             logger.info("Finished warmUp");
@@ -356,7 +281,7 @@ public class SolverBenchmarkSuite {
         return unsolvedSolution;
     }
 
-    private void writeSolvedSolution(XStream xStream, SolverBenchmark solverBenchmark, SolverBenchmarkResult result,
+    private void writeSolvedSolution(XStream xStream, SolverBenchmark solverBenchmark, PlannerBenchmarkResult result,
             Solution solvedSolution) {
         File solvedSolutionFile = null;
         String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
@@ -378,6 +303,9 @@ public class SolverBenchmarkSuite {
     }
 
     public void benchmarkingEnded(XStream xStream, Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap) {
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            solverBenchmark.benchmarkingEnded();
+        }
         determineWinningResultScoreDelta();
         determineRanking();
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
@@ -388,18 +316,18 @@ public class SolverBenchmarkSuite {
     }
 
     private void determineWinningResultScoreDelta() {
-        Map<File, SolverBenchmarkResult> winningResultMap = new LinkedHashMap<File, SolverBenchmarkResult>();
+        Map<File, PlannerBenchmarkResult> winningResultMap = new LinkedHashMap<File, PlannerBenchmarkResult>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                SolverBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
+                PlannerBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
                 if (winningResult == null || result.getScore().compareTo(winningResult.getScore()) > 0) {
                     winningResultMap.put(result.getUnsolvedSolutionFile(), result);
                 }
             }
         }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                SolverBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
+            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
+                PlannerBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
                 result.setWinningScoreDifference(result.getScore().subtract(winningResult.getScore()));
             }
         }
