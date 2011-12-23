@@ -1282,6 +1282,10 @@ After in pom.xml:
       ...
     </dependency>
 
+
+From 5.4.0.Beta1 to 5.4.0.Beta2
+-------------------------------
+
 [MAJOR] The class XmlSolverBenchmarker has moved.
 Before in *.java:
     import org.drools.planner.benchmark.XmlSolverBenchmarker;
