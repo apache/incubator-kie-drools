@@ -16,12 +16,12 @@
 
 package org.drools.planner.benchmark.config;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.config.solver.SolverConfig;
 
@@ -32,8 +32,9 @@ public class SolverBenchmarkConfig {
 
     @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
-    @XStreamImplicit(itemFieldName = "unsolvedSolutionFile")
-    private List<File> unsolvedSolutionFileList = null;
+
+    @XStreamAlias("planningProblemBenchmarkList")
+    private PlanningProblemBenchmarkListConfig planningProblemBenchmarkListConfig = new PlanningProblemBenchmarkListConfig();
 
     public String getName() {
         return name;
@@ -51,33 +52,27 @@ public class SolverBenchmarkConfig {
         this.solverConfig = solverConfig;
     }
 
-    public List<File> getUnsolvedSolutionFileList() {
-        return unsolvedSolutionFileList;
+    public PlanningProblemBenchmarkListConfig getPlanningProblemBenchmarkListConfig() {
+        return planningProblemBenchmarkListConfig;
     }
 
-    public void setUnsolvedSolutionFileList(List<File> unsolvedSolutionFileList) {
-        this.unsolvedSolutionFileList = unsolvedSolutionFileList;
+    public void setPlanningProblemBenchmarkListConfig(PlanningProblemBenchmarkListConfig planningProblemBenchmarkListConfig) {
+        this.planningProblemBenchmarkListConfig = planningProblemBenchmarkListConfig;
     }
 
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark() {
-        validate();
+    public SolverBenchmark buildSolverBenchmark(List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList) {
         SolverBenchmark solverBenchmark = new SolverBenchmark();
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
-        solverBenchmark.setUnsolvedSolutionFileList(unsolvedSolutionFileList);
+        solverBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
+        List<PlanningProblemBenchmark> planningProblemBenchmarkList = planningProblemBenchmarkListConfig
+                .buildPlanningProblemBenchmarkList(unifiedPlanningProblemBenchmarkList, solverBenchmark);
+        solverBenchmark.setPlanningProblemBenchmarkList(planningProblemBenchmarkList);
         return solverBenchmark;
-    }
-
-    private void validate() {
-        if (unsolvedSolutionFileList == null || unsolvedSolutionFileList.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Configure at least 1 <unsolvedSolutionFile> for the <solverBenchmark> (" + name
-                            + ") directly or indirectly by inheriting it.");
-        }
     }
 
     public void inherit(SolverBenchmarkConfig inheritedConfig) {
@@ -86,17 +81,10 @@ public class SolverBenchmarkConfig {
         } else if (inheritedConfig.getSolverConfig() != null) {
             solverConfig.inherit(inheritedConfig.getSolverConfig());
         }
-        if (unsolvedSolutionFileList == null) {
-            unsolvedSolutionFileList = inheritedConfig.getUnsolvedSolutionFileList();
-        } else if (inheritedConfig.getUnsolvedSolutionFileList() != null) {
-            // The inherited unsolvedSolutionFiles should be before the non-inherited one
-            List<File> mergedList = new ArrayList<File>(inheritedConfig.getUnsolvedSolutionFileList());
-            for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
-                if (!mergedList.contains(unsolvedSolutionFile)) {
-                    mergedList.add(unsolvedSolutionFile);
-                }
-            }
-            unsolvedSolutionFileList = mergedList;
+        if (planningProblemBenchmarkListConfig == null) {
+            planningProblemBenchmarkListConfig = inheritedConfig.getPlanningProblemBenchmarkListConfig();
+        } else if (inheritedConfig.getSolverConfig() != null) {
+            planningProblemBenchmarkListConfig.inherit(inheritedConfig.getPlanningProblemBenchmarkListConfig());
         }
     }
 

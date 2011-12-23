@@ -17,56 +17,27 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
-import org.drools.planner.benchmark.core.statistic.SolverStatistic;
 import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
-import org.drools.planner.config.termination.TerminationConfig;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
-    private static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
-
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
-    private File solvedSolutionFilesDirectory = null;
+    private File outputSolutionFilesDirectory = null;
     private File solverStatisticFilesDirectory = null;
     private List<SolverStatisticType> solverStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
@@ -74,6 +45,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Long warmUpTimeMillisSpend = null;
 
     private List<SolverBenchmark> solverBenchmarkList = null;
+    private List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -91,12 +63,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.benchmarkInstanceDirectory = benchmarkInstanceDirectory;
     }
 
-    public File getSolvedSolutionFilesDirectory() {
-        return solvedSolutionFilesDirectory;
+    public File getOutputSolutionFilesDirectory() {
+        return outputSolutionFilesDirectory;
     }
 
-    public void setSolvedSolutionFilesDirectory(File solvedSolutionFilesDirectory) {
-        this.solvedSolutionFilesDirectory = solvedSolutionFilesDirectory;
+    public void setOutputSolutionFilesDirectory(File outputSolutionFilesDirectory) {
+        this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
     public File getSolverStatisticFilesDirectory() {
@@ -139,9 +111,26 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.solverBenchmarkList = solverBenchmarkList;
     }
 
+    public List<PlanningProblemBenchmark> getUnifiedPlanningProblemBenchmarkList() {
+        return unifiedPlanningProblemBenchmarkList;
+    }
+
+    public void setUnifiedPlanningProblemBenchmarkList(List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList) {
+        this.unifiedPlanningProblemBenchmarkList = unifiedPlanningProblemBenchmarkList;
+    }
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
+
+    public void benchmark() {
+        benchmarkingStarted();
+        warmUp();
+        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
+            planningProblemBenchmark.benchmark();
+        }
+        benchmarkingEnded();
+    }
 
     public void benchmarkingStarted() {
         if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
@@ -155,6 +144,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
         }
+        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
+            planningProblemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
+            planningProblemBenchmark.benchmarkingStarted();
+        }
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
@@ -167,81 +160,30 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
         }
         benchmarkInstanceDirectory.mkdirs();
-        if (solvedSolutionFilesDirectory == null) {
-            solvedSolutionFilesDirectory = new File(benchmarkInstanceDirectory, "solved");
+        if (outputSolutionFilesDirectory == null) {
+            outputSolutionFilesDirectory = new File(benchmarkInstanceDirectory, "output");
         }
-        solvedSolutionFilesDirectory.mkdirs();
+        outputSolutionFilesDirectory.mkdirs();
         if (solverStatisticFilesDirectory == null) {
             solverStatisticFilesDirectory = new File(benchmarkInstanceDirectory, "statistic");
         }
         solverStatisticFilesDirectory.mkdirs();
     }
 
-    public void benchmark(XStream xStream) { // TODO refactor out xstream
-        benchmarkingStarted();
-        warmUp(xStream);
-        // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
-        Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
-                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-                
-                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
-                Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
-                solver.setPlanningProblem(unsolvedSolution);
-                List<SolverStatistic> statisticList = getOrCreateStatisticList(unsolvedSolutionFileToStatisticMap, unsolvedSolutionFile);
-                for (SolverStatistic statistic : statisticList) {
-                    statistic.addListener(solver, solverBenchmark.getName());
-                }
-                solver.solve();
-                Solution solvedSolution = solver.getBestSolution();
-                result.setTimeMillisSpend(solver.getTimeMillisSpend());
-                DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-                result.setCalculateCount(solverScope.getCalculateCount());
-                result.setScore(solvedSolution.getScore());
-                SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-                result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
-                result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
-                for (SolverStatistic statistic : statisticList) {
-                    statistic.removeListener(solver, solverBenchmark.getName());
-                }
-                writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
-            }
-        }
-        benchmarkingEnded(xStream, unsolvedSolutionFileToStatisticMap);
-    }
-
-    private void warmUp(XStream xStream) {
+    private void warmUp() {
         if (warmUpTimeMillisSpend != null) {
             logger.info("================================================================================");
             logger.info("Warming up");
             logger.info("================================================================================");
             long startingTimeMillis = System.currentTimeMillis();
             long timeLeft = warmUpTimeMillisSpend;
-            Iterator<SolverBenchmark> solverBenchmarkIt = solverBenchmarkList.iterator();
-            int overallResultIndex = 0;
+            Iterator<PlanningProblemBenchmark> planningProblemBenchmarkIt = unifiedPlanningProblemBenchmarkList.iterator();
             while (timeLeft > 0L) {
-                if (!solverBenchmarkIt.hasNext()) {
-                    solverBenchmarkIt = solverBenchmarkList.iterator();
-                    overallResultIndex++;
+                if (!planningProblemBenchmarkIt.hasNext()) {
+                    planningProblemBenchmarkIt = unifiedPlanningProblemBenchmarkList.iterator();
                 }
-                SolverBenchmark solverBenchmark = solverBenchmarkIt.next();
-                List<PlannerBenchmarkResult> plannerBenchmarkResultList = solverBenchmark.getPlannerBenchmarkResultList();
-                int resultIndex = overallResultIndex % plannerBenchmarkResultList.size();
-                PlannerBenchmarkResult result = plannerBenchmarkResultList.get(resultIndex);
-                TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
-                TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
-                tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
-                solverBenchmark.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
-                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
-                Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
-                solver.setPlanningProblem(unsolvedSolution);
-                solver.solve();
-                solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
-                long timeSpend = System.currentTimeMillis() - startingTimeMillis;
-                timeLeft = warmUpTimeMillisSpend - timeSpend;
+                PlanningProblemBenchmark planningProblemBenchmark = planningProblemBenchmarkIt.next();
+                timeLeft = planningProblemBenchmark.warmUp(startingTimeMillis, warmUpTimeMillisSpend, timeLeft);
             }
             logger.info("================================================================================");
             logger.info("Finished warmUp");
@@ -249,113 +191,45 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
     }
 
-    private List<SolverStatistic> getOrCreateStatisticList(
-            Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap, File unsolvedSolutionFile) {
-        if (solverStatisticTypeList == null) {
-            return Collections.emptyList();
+    public void benchmarkingEnded() {
+        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
+            planningProblemBenchmark.benchmarkingEnded();
         }
-        List<SolverStatistic> statisticList = unsolvedSolutionFileToStatisticMap.get(unsolvedSolutionFile);
-        if (statisticList == null) {
-            statisticList = new ArrayList<SolverStatistic>(solverStatisticTypeList.size());
-            for (SolverStatisticType solverStatisticType : solverStatisticTypeList) {
-                statisticList.add(solverStatisticType.create());
-            }
-            unsolvedSolutionFileToStatisticMap.put(unsolvedSolutionFile, statisticList);
-        }
-        return statisticList;
-    }
-
-    private Solution readUnsolvedSolution(XStream xStream, File unsolvedSolutionFile) {
-        Solution unsolvedSolution;
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(unsolvedSolutionFile), "utf-8");
-            unsolvedSolution = (Solution) xStream.fromXML(reader);
-        } catch (XStreamException e) {
-            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + unsolvedSolutionFile, e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + unsolvedSolutionFile, e);
-        } finally {
-            IOUtils.closeQuietly(reader);
-        }
-        return unsolvedSolution;
-    }
-
-    private void writeSolvedSolution(XStream xStream, SolverBenchmark solverBenchmark, PlannerBenchmarkResult result,
-            Solution solvedSolution) {
-        File solvedSolutionFile = null;
-        String baseName = FilenameUtils.getBaseName(result.getUnsolvedSolutionFile().getName());
-        String solverBenchmarkName = solverBenchmark.getName().replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        String scoreString = result.getScore().toString().replaceAll("[\\/ ]", "_");
-        String timeString = TIME_FORMAT.format(result.getTimeMillisSpend()) + "ms";
-        solvedSolutionFile = new File(solvedSolutionFilesDirectory, baseName + "_" + solverBenchmarkName
-                + "_score" + scoreString + "_time" + timeString + ".xml");
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
-            xStream.toXML(solvedSolution, writer);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing solvedSolutionFile: " + solvedSolutionFile, e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
-        result.setSolvedSolutionFile(solvedSolutionFile);
-    }
-
-    public void benchmarkingEnded(XStream xStream, Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap) {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingEnded();
         }
-        determineWinningResultScoreDelta();
         determineRanking();
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
-                solverStatisticFilesDirectory, unsolvedSolutionFileToStatisticMap);
+                solverStatisticFilesDirectory, unifiedPlanningProblemBenchmarkList);
         statisticManager.writeStatistics(solverBenchmarkList);
-        // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
-        // writeBenchmarkResult(xStream);
-    }
-
-    private void determineWinningResultScoreDelta() {
-        Map<File, PlannerBenchmarkResult> winningResultMap = new LinkedHashMap<File, PlannerBenchmarkResult>();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                PlannerBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
-                if (winningResult == null || result.getScore().compareTo(winningResult.getScore()) > 0) {
-                    winningResultMap.put(result.getUnsolvedSolutionFile(), result);
-                }
-            }
-        }
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                PlannerBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
-                result.setWinningScoreDifference(result.getScore().subtract(winningResult.getScore()));
-            }
-        }
     }
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
         Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
         Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
+        int index = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            solverBenchmark.setRanking(sortedSolverBenchmarkList.indexOf(solverBenchmark));
+            solverBenchmark.setRanking(index);
+            index++;
         }
     }
 
-    public void writeBenchmarkResult(XStream xStream) {
-        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
-        OutputStreamWriter writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "utf-8");
-            xStream.toXML(this, writer);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("This JVM does not support utf-8 encoding.", e);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException(
-                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
-    }
+    // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
+//    public void writeBenchmarkResult(XStream xStream) {
+//        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
+//        OutputStreamWriter writer = null;
+//        try {
+//            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "utf-8");
+//            xStream.toXML(this, writer);
+//        } catch (UnsupportedEncodingException e) {
+//            throw new IllegalStateException("This JVM does not support utf-8 encoding.", e);
+//        } catch (FileNotFoundException e) {
+//            throw new IllegalArgumentException(
+//                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
+//        } finally {
+//            IOUtils.closeQuietly(writer);
+//        }
+//    }
 
 }

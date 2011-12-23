@@ -1,0 +1,240 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.benchmark.core;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.drools.planner.benchmark.core.statistic.SolverStatistic;
+import org.drools.planner.config.termination.TerminationConfig;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.DefaultSolverScope;
+
+/**
+ * Represents one problem instance (a data set) benchmarked on multiple solvers.
+ */
+public class PlanningProblemBenchmark {
+
+    private String name = null;
+
+    private XStream xStream = null;
+    private File inputSolutionFile = null;
+    private File outputSolutionFilesDirectory = null;
+
+    private List<SolverStatistic> solverStatisticList = null;
+
+    private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
+    
+    private PlannerBenchmarkResult winningPlannerBenchmarkResult = null;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public XStream getxStream() {
+        return xStream;
+    }
+
+    public void setxStream(XStream xStream) {
+        this.xStream = xStream;
+    }
+
+    public File getInputSolutionFile() {
+        return inputSolutionFile;
+    }
+
+    public void setInputSolutionFile(File inputSolutionFile) {
+        this.inputSolutionFile = inputSolutionFile;
+    }
+
+    public File getOutputSolutionFilesDirectory() {
+        return outputSolutionFilesDirectory;
+    }
+
+    public void setOutputSolutionFilesDirectory(File outputSolutionFilesDirectory) {
+        this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
+    }
+
+    public List<SolverStatistic> getSolverStatisticList() {
+        return solverStatisticList;
+    }
+
+    public void setSolverStatisticList(List<SolverStatistic> solverStatisticList) {
+        this.solverStatisticList = solverStatisticList;
+    }
+
+    public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
+        return plannerBenchmarkResultList;
+    }
+
+    public void setPlannerBenchmarkResultList(List<PlannerBenchmarkResult> plannerBenchmarkResultList) {
+        this.plannerBenchmarkResultList = plannerBenchmarkResultList;
+    }
+
+    public PlannerBenchmarkResult getWinningPlannerBenchmarkResult() {
+        return winningPlannerBenchmarkResult;
+    }
+
+    public void setWinningPlannerBenchmarkResult(PlannerBenchmarkResult winningPlannerBenchmarkResult) {
+        this.winningPlannerBenchmarkResult = winningPlannerBenchmarkResult;
+    }
+
+    // ************************************************************************
+    // Benchmark methods
+    // ************************************************************************
+
+    public void benchmarkingStarted() {
+    }
+
+    public void benchmark() {
+        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            SolverBenchmark solverBenchmark = result.getSolverBenchmark();
+            // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+            for (SolverStatistic statistic : solverStatisticList) {
+                statistic.addListener(solver, solverBenchmark.getName());
+            }
+
+            solver.setPlanningProblem(readPlanningProblem());
+            solver.solve();
+            Solution solvedSolution = solver.getBestSolution();
+
+            result.setTimeMillisSpend(solver.getTimeMillisSpend());
+            DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
+            result.setCalculateCount(solverScope.getCalculateCount());
+            result.setScore(solvedSolution.getScore());
+            SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
+            result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
+            result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
+            for (SolverStatistic statistic : solverStatisticList) {
+                statistic.removeListener(solver, solverBenchmark.getName());
+            }
+            writeSolution(result, solvedSolution);
+        }
+    }
+
+    public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
+        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            SolverBenchmark solverBenchmark = result.getSolverBenchmark();
+            TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
+            TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
+            tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
+            solverBenchmark.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
+
+            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+            solver.setPlanningProblem(readPlanningProblem());
+            solver.solve();
+
+            solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
+            long timeSpend = System.currentTimeMillis() - startingTimeMillis;
+            timeLeft = warmUpTimeMillisSpend - timeSpend;
+            if (timeLeft <= 0L) {
+                return timeLeft;
+            }
+        }
+        return timeLeft;
+    }
+
+    public Solution readPlanningProblem() {
+        Solution unsolvedSolution;
+        Reader reader = null;
+        try {
+            reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "utf-8");
+            unsolvedSolution = (Solution) xStream.fromXML(reader);
+        } catch (XStreamException e) {
+            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + inputSolutionFile, e);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + inputSolutionFile, e);
+        } finally {
+            IOUtils.closeQuietly(reader);
+        }
+        return unsolvedSolution;
+    }
+
+    private void writeSolution(PlannerBenchmarkResult result, Solution solvedSolution) {
+        File solvedSolutionFile = null;
+        String solverBenchmarkName = result.getSolverBenchmark().getName()
+                .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
+        solvedSolutionFile = new File(outputSolutionFilesDirectory, name + "_" + solverBenchmarkName + ".xml");
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
+            xStream.toXML(solvedSolution, writer);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing solvedSolutionFile: " + solvedSolutionFile, e);
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
+    }
+
+    public void benchmarkingEnded() {
+        determineWinningResult();
+        determineWinningResultScoreDifference();
+    }
+
+    private void determineWinningResult() {
+        winningPlannerBenchmarkResult = null;
+        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            if (winningPlannerBenchmarkResult == null
+                    || result.getScore().compareTo(winningPlannerBenchmarkResult.getScore()) > 0) {
+                winningPlannerBenchmarkResult = result;
+            }
+        }
+    }
+
+    private void determineWinningResultScoreDifference() {
+        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            result.setWinningScoreDifference(result.getScore().subtract(winningPlannerBenchmarkResult.getScore()));
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof PlanningProblemBenchmark) {
+            PlanningProblemBenchmark other = (PlanningProblemBenchmark) o;
+            return inputSolutionFile.equals(other.getInputSolutionFile());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return inputSolutionFile.hashCode();
+    }
+
+}

@@ -16,10 +16,8 @@
 
 package org.drools.planner.benchmark.core;
 
-import com.thoughtworks.xstream.XStream;
-
 public interface PlannerBenchmark {
 
-    void benchmark(XStream xStream);
+    void benchmark();
 
 }

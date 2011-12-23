@@ -28,10 +28,11 @@ public class SolverBenchmark {
     private String name = null;
 
     private SolverConfig solverConfig = null;
-    private List<File> unsolvedSolutionFileList = null;
 
+    private List<PlanningProblemBenchmark> planningProblemBenchmarkList = null;
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
 
+    private Score totalScore = null;
     // Ranking starts from 0
     private Integer ranking = null;
 
@@ -51,12 +52,12 @@ public class SolverBenchmark {
         this.solverConfig = solverConfig;
     }
 
-    public List<File> getUnsolvedSolutionFileList() {
-        return unsolvedSolutionFileList;
+    public List<PlanningProblemBenchmark> getPlanningProblemBenchmarkList() {
+        return planningProblemBenchmarkList;
     }
 
-    public void setUnsolvedSolutionFileList(List<File> unsolvedSolutionFileList) {
-        this.unsolvedSolutionFileList = unsolvedSolutionFileList;
+    public void setPlanningProblemBenchmarkList(List<PlanningProblemBenchmark> planningProblemBenchmarkList) {
+        this.planningProblemBenchmarkList = planningProblemBenchmarkList;
     }
 
     public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
@@ -80,16 +81,35 @@ public class SolverBenchmark {
     // ************************************************************************
 
     public void benchmarkingStarted() {
-        resetPlannerBenchmarkResultList();
+        // Note: do not call PlannerBenchmarkResult.benchmarkingStarted()
+        // because DefaultPlannerBenchmark does that already on the unified list
     }
 
-    public void resetPlannerBenchmarkResultList() {
-        plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>();
-        for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
-            PlannerBenchmarkResult result = new PlannerBenchmarkResult();
-            result.setUnsolvedSolutionFile(unsolvedSolutionFile);
-            plannerBenchmarkResultList.add(result);
+    public void benchmarkingEnded() {
+        determineTotalScore();
+    }
+
+    private void determineTotalScore() {
+        totalScore = null;
+        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
+            if (totalScore == null) {
+                totalScore = plannerBenchmarkResult.getScore();
+            } else {
+                totalScore = totalScore.add(plannerBenchmarkResult.getScore());
+            }
         }
+    }
+
+    public boolean isRankingBest() {
+        return ranking == 0;
+    }
+
+    public Score getTotalScore() {
+        return totalScore;
+    }
+
+    public Score getAverageScore() {
+        return getTotalScore().divide(plannerBenchmarkResultList.size());
     }
 
     public List<Score> getScoreList() {
@@ -98,32 +118,6 @@ public class SolverBenchmark {
             scoreList.add(plannerBenchmarkResult.getScore());
         }
         return scoreList;
-    }
-
-    /**
-     * @return the total score
-     */
-    public Score getTotalScore() {
-        Score totalScore = null;
-        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
-            if (totalScore == null) {
-                totalScore = plannerBenchmarkResult.getScore();
-            } else {
-                totalScore = totalScore.add(plannerBenchmarkResult.getScore());
-            }
-        }
-        return totalScore;
-    }
-
-    /**
-     * @return the average score
-     */
-    public Score getAverageScore() {
-        return getTotalScore().divide(plannerBenchmarkResultList.size());
-    }
-
-    public void benchmarkingEnded() {
-
     }
 
 }

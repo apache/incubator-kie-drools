@@ -80,7 +80,7 @@ public class XmlSolverBenchmarker {
 
     public void benchmark() {
         PlannerBenchmark plannerBenchmark = buildPlannerBenchmark();
-        plannerBenchmark.benchmark(xStream);
+        plannerBenchmark.benchmark();
     }
 
 }

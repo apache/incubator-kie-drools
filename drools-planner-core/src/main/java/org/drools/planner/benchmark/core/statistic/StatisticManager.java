@@ -33,6 +33,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -57,18 +58,18 @@ public class StatisticManager {
 
     private final String benchmarkName;
     private final File solverStatisticFilesDirectory;
-    private final Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap;
+    private final List<PlanningProblemBenchmark> planningProblemBenchmarkList;
 
     public StatisticManager(String benchmarkName, File solverStatisticFilesDirectory,
-            Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap) {
+            List<PlanningProblemBenchmark> planningProblemBenchmarkList) {
         this.benchmarkName = benchmarkName;
         this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
-        this.unsolvedSolutionFileToStatisticMap = unsolvedSolutionFileToStatisticMap;
+        this.planningProblemBenchmarkList = planningProblemBenchmarkList;
     }
 
     public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
         // 2 lines at 80 chars per line give a max of 160 per entry
-        StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
+        StringBuilder htmlFragment = new StringBuilder(planningProblemBenchmarkList.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeWinningScoreDifferenceSummaryChart(solverBenchmarkList));
@@ -77,13 +78,12 @@ public class StatisticManager {
         htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
         htmlFragment.append("  <h1>Statistics</h1>\n");
-        for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
-            File unsolvedSolutionFile = entry.getKey();
-            List<SolverStatistic> statisticList = entry.getValue();
-            String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
-            htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
-            for (SolverStatistic statistic : statisticList) {
-                htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
+        for (PlanningProblemBenchmark planningProblemBenchmark : planningProblemBenchmarkList) {
+            String planningProblemBenchmarkName = planningProblemBenchmark.getName();
+            htmlFragment.append("  <h2>").append(planningProblemBenchmarkName).append("</h2>\n");
+            for (SolverStatistic statistic : planningProblemBenchmark.getSolverStatisticList()) {
+                htmlFragment.append(
+                        statistic.writeStatistic(solverStatisticFilesDirectory, planningProblemBenchmarkName));
             }
         }
         writeHtmlOverview(htmlFragment);
@@ -98,10 +98,11 @@ public class StatisticManager {
                 Score score = result.getScore();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
-                if (solverBenchmark.getRanking() == 0) {
+                if (solverBenchmark.isRankingBest()) {
                     solverLabel += " (winner)";
                 }
-                dataset.addValue(scoreGraphValue, solverLabel, result.getUnsolvedSolutionFile().getName());
+                String planningProblemLabel = result.getPlanningProblemBenchmark().getName();
+                dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
             }
         }
         CategoryAxis xAxis = new CategoryAxis("Data");
@@ -145,10 +146,11 @@ public class StatisticManager {
                 Score score = result.getWinningScoreDifference();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
-                if (solverBenchmark.getRanking() == 0) {
+                if (solverBenchmark.isRankingBest()) {
                     solverLabel += " (winner)";
                 }
-                dataset.addValue(scoreGraphValue, solverLabel, result.getUnsolvedSolutionFile().getName());
+                String planningProblemLabel = result.getPlanningProblemBenchmark().getName();
+                dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
             }
         }
         CategoryAxis xAxis = new CategoryAxis("Data");
@@ -189,7 +191,8 @@ public class StatisticManager {
             for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long timeMillisSpend = result.getTimeMillisSpend();
                 String solverLabel = solverBenchmark.getName();
-                dataset.addValue(timeMillisSpend, solverLabel, result.getUnsolvedSolutionFile().getName());
+                String planningProblemLabel = result.getPlanningProblemBenchmark().getName();
+                dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
             }
         }
         CategoryAxis xAxis = new CategoryAxis("Data");
@@ -317,25 +320,19 @@ public class StatisticManager {
         htmlFragment.append("  <h2>Best score summary table</h2>\n");
         htmlFragment.append("  <table border=\"1\">\n");
         htmlFragment.append("    <tr><th>Solver</th>");
-        Set<File> unsolvedSolutionFileSet = new LinkedHashSet<File>();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
-                if (unsolvedSolutionFileSet.add(unsolvedSolutionFile)) {
-                    htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
-                }
-            }
+        for (PlanningProblemBenchmark planningProblemBenchmark : planningProblemBenchmarkList) {
+            htmlFragment.append("<th>").append(planningProblemBenchmark.getName()).append("</th>");
         }
         htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
         boolean oddLine = true;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            String backgroundColor = solverBenchmark.getRanking() == 0 ? "Yellow" : oddLine ? "White" : "LightGray";
+            String backgroundColor = solverBenchmark.isRankingBest() ? "Yellow" : oddLine ? "White" : "LightGray";
             htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
                     .append(solverBenchmark.getName()).append("</th>");
-            for (File unsolvedSolutionFile : unsolvedSolutionFileSet) {
+            for (PlanningProblemBenchmark planningProblemBenchmark : planningProblemBenchmarkList) {
                 boolean noResult = true;
                 for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                    if (unsolvedSolutionFile.equals(result.getUnsolvedSolutionFile())) {
+                    if (planningProblemBenchmark.equals(result.getPlanningProblemBenchmark())) {
                         Score score = result.getScore();
                         htmlFragment.append("<td>").append(score.toString()).append("</td>");
                         noResult = false;

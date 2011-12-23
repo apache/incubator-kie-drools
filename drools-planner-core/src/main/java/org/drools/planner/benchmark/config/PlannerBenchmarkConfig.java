@@ -17,49 +17,27 @@
 package org.drools.planner.benchmark.config;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.PlannerBenchmark;
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
-import org.drools.planner.benchmark.core.statistic.SolverStatistic;
-import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.DefaultSolverScope;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
-    private File solvedSolutionFilesDirectory = null;
+    private File outputSolutionFilesDirectory = null;
     private File solverStatisticFilesDirectory = null;
-    @XStreamImplicit(itemFieldName = "solverStatisticType")
-    private List<SolverStatisticType> solverStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     private Long warmUpTimeMillisSpend = null;
@@ -89,12 +67,12 @@ public class PlannerBenchmarkConfig {
         this.benchmarkInstanceDirectory = benchmarkInstanceDirectory;
     }
 
-    public File getSolvedSolutionFilesDirectory() {
-        return solvedSolutionFilesDirectory;
+    public File getOutputSolutionFilesDirectory() {
+        return outputSolutionFilesDirectory;
     }
 
-    public void setSolvedSolutionFilesDirectory(File solvedSolutionFilesDirectory) {
-        this.solvedSolutionFilesDirectory = solvedSolutionFilesDirectory;
+    public void setOutputSolutionFilesDirectory(File outputSolutionFilesDirectory) {
+        this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
     public File getSolverStatisticFilesDirectory() {
@@ -103,14 +81,6 @@ public class PlannerBenchmarkConfig {
 
     public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
         this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
-    }
-
-    public List<SolverStatisticType> getSolverStatisticTypeList() {
-        return solverStatisticTypeList;
-    }
-
-    public void setSolverStatisticTypeList(List<SolverStatisticType> solverStatisticTypeList) {
-        this.solverStatisticTypeList = solverStatisticTypeList;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
@@ -223,17 +193,20 @@ public class PlannerBenchmarkConfig {
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
-        plannerBenchmark.setSolvedSolutionFilesDirectory(solvedSolutionFilesDirectory);
+        plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
         plannerBenchmark.setSolverStatisticFilesDirectory(solverStatisticFilesDirectory);
-        plannerBenchmark.setSolverStatisticTypeList(solverStatisticTypeList);
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
+        List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList = new ArrayList<PlanningProblemBenchmark>();
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            solverBenchmarkList.add(solverBenchmarkConfig.buildSolverBenchmark());
+            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(
+                    unifiedPlanningProblemBenchmarkList);
+            solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
+        plannerBenchmark.setUnifiedPlanningProblemBenchmarkList(unifiedPlanningProblemBenchmarkList);
         return plannerBenchmark;
     }
 

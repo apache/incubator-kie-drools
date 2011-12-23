@@ -23,21 +23,30 @@ import org.drools.planner.core.score.Score;
 
 public class PlannerBenchmarkResult {
 
-    private File unsolvedSolutionFile = null;
+    private SolverBenchmark solverBenchmark = null;
+    private PlanningProblemBenchmark planningProblemBenchmark = null;
+
     private int planningEntityCount = -1;
     private long problemScale = -1;
     private Score score = null;
     private Score winningScoreDifference = null; // compared to winning result (which might not be the overall winner)
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
-    private File solvedSolutionFile = null;
 
-    public File getUnsolvedSolutionFile() {
-        return unsolvedSolutionFile;
+    public SolverBenchmark getSolverBenchmark() {
+        return solverBenchmark;
     }
 
-    public void setUnsolvedSolutionFile(File unsolvedSolutionFile) {
-        this.unsolvedSolutionFile = unsolvedSolutionFile;
+    public void setSolverBenchmark(SolverBenchmark solverBenchmark) {
+        this.solverBenchmark = solverBenchmark;
+    }
+
+    public PlanningProblemBenchmark getPlanningProblemBenchmark() {
+        return planningProblemBenchmark;
+    }
+
+    public void setPlanningProblemBenchmark(PlanningProblemBenchmark planningProblemBenchmark) {
+        this.planningProblemBenchmark = planningProblemBenchmark;
     }
 
     public int getPlanningEntityCount() {
@@ -86,14 +95,6 @@ public class PlannerBenchmarkResult {
 
     public void setCalculateCount(long calculateCount) {
         this.calculateCount = calculateCount;
-    }
-
-    public File getSolvedSolutionFile() {
-        return solvedSolutionFile;
-    }
-
-    public void setSolvedSolutionFile(File solvedSolutionFile) {
-        this.solvedSolutionFile = solvedSolutionFile;
     }
 
     // ************************************************************************
