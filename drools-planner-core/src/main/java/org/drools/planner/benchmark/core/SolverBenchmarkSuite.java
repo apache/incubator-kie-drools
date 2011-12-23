@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark;
+package org.drools.planner.benchmark.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,9 +48,10 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.statistic.SolverStatistic;
-import org.drools.planner.benchmark.statistic.SolverStatisticType;
-import org.drools.planner.benchmark.statistic.StatisticManager;
+import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
+import org.drools.planner.benchmark.core.statistic.SolverStatistic;
+import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;

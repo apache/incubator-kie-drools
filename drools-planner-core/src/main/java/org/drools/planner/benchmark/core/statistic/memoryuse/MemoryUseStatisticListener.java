@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.calculatecount;
+package org.drools.planner.benchmark.core.statistic.memoryuse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class CalculateCountStatisticListener extends SolverPhaseLifecycleListenerAdapter {
+public class MemoryUseStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
 
-    private long lastTimeMillisSpend = 0L;
-    private long lastCalculateCount = 0L;
+    private List<MemoryUseStatisticPoint> statisticPointList = new ArrayList<MemoryUseStatisticPoint>();
 
-    private List<CalculateCountStatisticPoint> statisticPointList = new ArrayList<CalculateCountStatisticPoint>();
-
-    public CalculateCountStatisticListener() {
+    public MemoryUseStatisticListener() {
         this(1000L);
     }
 
-    public CalculateCountStatisticListener(long timeMillisThresholdInterval) {
+    public MemoryUseStatisticListener(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -46,7 +42,7 @@ public class CalculateCountStatisticListener extends SolverPhaseLifecycleListene
         nextTimeMillisThreshold = timeMillisThresholdInterval;
     }
 
-    public List<CalculateCountStatisticPoint> getStatisticPointList() {
+    public List<MemoryUseStatisticPoint> getStatisticPointList() {
         return statisticPointList;
     }
 
@@ -54,20 +50,8 @@ public class CalculateCountStatisticListener extends SolverPhaseLifecycleListene
     public void stepTaken(AbstractStepScope stepScope) {
         long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
-            long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;
-
-            DefaultSolverScope solverScope = stepScope.getSolverPhaseScope().getSolverScope();
-            long calculateCount = solverScope.getCalculateCount();
-            long calculateCountInterval = calculateCount - lastCalculateCount;
-            if (calculateCountInterval == 0L) {
-                // Avoid divide by zero exception on a fast CPU
-                calculateCountInterval = 1L;
-            }
-            long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
-            statisticPointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
-            lastCalculateCount = calculateCount;
-
-            lastTimeMillisSpend = timeMillisSpend;
+            statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
+            
             nextTimeMillisThreshold += timeMillisThresholdInterval;
             if (nextTimeMillisThreshold < timeMillisSpend) {
                 nextTimeMillisThreshold = timeMillisSpend;

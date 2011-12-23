@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic;
+package org.drools.planner.benchmark.core.statistic;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class AbstractSolverStatistic implements SolverStatistic {
 

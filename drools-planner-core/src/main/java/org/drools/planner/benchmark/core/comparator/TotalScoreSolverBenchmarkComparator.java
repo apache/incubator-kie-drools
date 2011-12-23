@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark;
+package org.drools.planner.benchmark.core.comparator;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.core.score.Score;
+import org.drools.planner.benchmark.core.SolverBenchmark;
 
-public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
+public class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark> {
+
+    private WorstScoreSolverBenchmarkComparator worstScoreSolverBenchmarkComparator
+            = new WorstScoreSolverBenchmarkComparator();
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {
-        List<Score> aScoreList = a.getScoreList();
-        Collections.sort(aScoreList); // Worst scores become first in the list
-        List<Score> bScoreList = b.getScoreList();
-        Collections.sort(bScoreList); // Worst scores become first in the list
         return new CompareToBuilder()
-                .append(aScoreList.toArray(), bScoreList.toArray())
+                .append(a.getTotalScore(), b.getTotalScore())
+                .append(a, b, worstScoreSolverBenchmarkComparator)
                 .toComparison();
     }
 

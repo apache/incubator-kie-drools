@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic;
+package org.drools.planner.benchmark.core.statistic;
 
-import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
-import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
-import org.drools.planner.benchmark.statistic.memoryuse.MemoryUseStatistic;
+import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreStatistic;
+import org.drools.planner.benchmark.core.statistic.calculatecount.CalculateCountStatistic;
+import org.drools.planner.benchmark.core.statistic.memoryuse.MemoryUseStatistic;
 
 public enum SolverStatisticType {
     BEST_SOLUTION_CHANGED,

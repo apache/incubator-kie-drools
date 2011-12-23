@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.memoryuse;
+package org.drools.planner.benchmark.core.statistic.memoryuse;
 
 public class MemoryUseStatisticPoint {
 

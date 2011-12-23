@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.bestscore;
+package org.drools.planner.benchmark.core.statistic.bestscore;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.common.app;
 
-import org.drools.planner.benchmark.XmlSolverBenchmarker;
+import org.drools.planner.benchmark.config.XmlSolverBenchmarker;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 

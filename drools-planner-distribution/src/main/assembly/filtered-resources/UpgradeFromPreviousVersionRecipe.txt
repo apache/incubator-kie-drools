@@ -1281,3 +1281,21 @@ After in pom.xml:
       <artifactId>jfreechart</artifactId>
       ...
     </dependency>
+
+[MAJOR] The class XmlSolverBenchmarker has moved.
+Before in *.java:
+    import org.drools.planner.benchmark.XmlSolverBenchmarker;
+After in *.java:
+    import org.drools.planner.benchmark.config.XmlSolverBenchmarker;
+
+[MINOR] All the classes in the benchmark package have been split-up into a config and a core package.
+Look for "org.drools.planner.benchmark" in all your files. Normally you won't have any besides the XmlSolverBenchmarker.
+One rare exception is the use of a build-in solverBenchmarkComparator:
+Before in *SolverBenchmarkConfig.xml:
+    <solverBenchmarkComparator>org.drools.planner.benchmark.WorstScoreSolverBenchmarkComparator</solverBenchmarkComparator>
+After in *SolverBenchmarkConfig.xml:
+    <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.WorstScoreSolverBenchmarkComparator</solverBenchmarkComparator>
+Before in *SolverBenchmarkConfig.xml:
+    <solverBenchmarkComparator>org.drools.planner.benchmark.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
+After in *SolverBenchmarkConfig.xml:
+    <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>

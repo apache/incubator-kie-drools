@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.calculatecount;
+package org.drools.planner.benchmark.core.statistic.calculatecount;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -32,11 +32,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
-import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
-import org.drools.planner.benchmark.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.AbstractSolverStatistic;
+import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;

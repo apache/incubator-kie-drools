@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.bestscore;
+package org.drools.planner.benchmark.core.statistic.calculatecount;
 
-import org.drools.planner.core.event.BestSolutionChangedEvent;
-import org.drools.planner.core.score.Score;
+public class CalculateCountStatisticPoint {
 
-public class BestScoreStatisticPoint {
+    private final long timeMillisSpend;
+    private final long calculateCountPerSecond;
 
-    private long timeMillisSpend;
-    private Score score;
-
-    public BestScoreStatisticPoint(BestSolutionChangedEvent event) {
-        timeMillisSpend = event.getTimeMillisSpend();
-        score = event.getNewBestSolution().getScore();
+    public CalculateCountStatisticPoint(long timeMillisSpend, long calculateCountPerSecond) {
+        this.timeMillisSpend = timeMillisSpend;
+        this.calculateCountPerSecond = calculateCountPerSecond;
     }
 
     public long getTimeMillisSpend() {
         return timeMillisSpend;
     }
 
-    public Score getScore() {
-        return score;
+    public long getCalculateCountPerSecond() {
+        return calculateCountPerSecond;
     }
 
 }

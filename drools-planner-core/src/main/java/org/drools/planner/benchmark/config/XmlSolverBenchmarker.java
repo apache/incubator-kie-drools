@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark;
+package org.drools.planner.benchmark.config;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,10 +22,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.SolverBenchmarkSuite;
 import org.drools.planner.config.XmlSolverConfigurer;
 
 public class XmlSolverBenchmarker {
