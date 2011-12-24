@@ -208,10 +208,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
         Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
         Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
-        int index = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            solverBenchmark.setRanking(index);
-            index++;
+            int ranking = sortedSolverBenchmarkList.indexOf(solverBenchmark);
+            solverBenchmark.setRanking(ranking);
         }
     }
 
