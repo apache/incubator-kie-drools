@@ -124,9 +124,12 @@ public class PlanningProblemBenchmarkListConfig {
         planningProblemBenchmark.setxStream(xStream);
         planningProblemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
-        List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(solverStatisticTypeList.size());
-        for (SolverStatisticType solverStatisticType : solverStatisticTypeList) {
-            solverStatisticList.add(solverStatisticType.create());
+        List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(
+                solverStatisticTypeList == null ? 0 : solverStatisticTypeList.size());
+        if (solverStatisticTypeList != null) {
+            for (SolverStatisticType solverStatisticType : solverStatisticTypeList) {
+                solverStatisticList.add(solverStatisticType.create());
+            }
         }
         planningProblemBenchmark.setSolverStatisticList(solverStatisticList);
         planningProblemBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());

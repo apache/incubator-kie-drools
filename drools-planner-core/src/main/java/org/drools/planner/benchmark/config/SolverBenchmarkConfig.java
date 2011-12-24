@@ -83,7 +83,7 @@ public class SolverBenchmarkConfig {
         }
         if (planningProblemBenchmarkListConfig == null) {
             planningProblemBenchmarkListConfig = inheritedConfig.getPlanningProblemBenchmarkListConfig();
-        } else if (inheritedConfig.getSolverConfig() != null) {
+        } else if (inheritedConfig.getPlanningProblemBenchmarkListConfig() != null) {
             planningProblemBenchmarkListConfig.inherit(inheritedConfig.getPlanningProblemBenchmarkListConfig());
         }
     }
