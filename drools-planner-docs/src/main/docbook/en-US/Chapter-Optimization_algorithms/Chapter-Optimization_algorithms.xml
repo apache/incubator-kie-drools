@@ -622,6 +622,25 @@
   </section>
 
   <section>
+    <title>SolverEventListener</title>
+
+    <para>Each time a new best solution is found, the <literal>Solver</literal> fires a
+    <literal>BestSolutionChangedEvent</literal>.</para>
+
+    <para>To listen to such events, add a <literal>SolverEventListener</literal> to the
+    <literal>Solver</literal>:</para>
+
+    <programlisting language="java">public interface Solver {
+
+    // ...
+
+    void addEventListener(SolverEventListener eventListener);
+    void removeEventListener(SolverEventListener eventListener);
+
+}</programlisting>
+  </section>
+
+  <section>
     <title>Custom SolverPhase</title>
 
     <para>Between phases or before the first phase, you might want to execute a custom action on the

@@ -283,7 +283,40 @@
 
 }</programlisting>
 
-      <para>But we might be making move generation part of the DRL's in the future.</para>
+      <para>Future versions might also support move generation by DRL.</para>
+    </section>
+
+    <section>
+      <title>Generic MoveFactory</title>
+
+      <para>To get started quickly, Planner comes with a few build-in <literal>MoveFactory</literal>
+      implementations:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>GenericChangeMoveFactory</literal>: TODO</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>GenericSwapMoveFactory</literal>: TODO</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>To use them:</para>
+
+      <programlisting>  &lt;localSearch&gt;
+    &lt;selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericSwapMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+    &lt;/selector&gt;
+    ...
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>They are slightly slower than a custom implementation, but equally scalable.</para>
     </section>
 
     <section>
@@ -435,6 +468,11 @@ TRACE         Move score (-3), accepted (true) for move (col2@row0 =&gt; row3).
 TRACE         Move score (-4), accepted (true) for move (col3@row0 =&gt; row3).
 DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted move size (12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
+
+    <para>Because the last solution can degrade (especially in tabu search and simulated annealing), the
+    <literal>Solver</literal> remembers the best solution it has encountered through the entire search path. Each time
+    the current solution is better than the last best solution, the current solution is cloned and referenced as the new
+    best solution.</para>
 
     <section>
       <title>Selector</title>
@@ -667,27 +705,6 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         </itemizedlist>
       </section>
     </section>
-  </section>
-
-  <section>
-    <title>Best solution</title>
-
-    <para>Because the current solution can degrade (especially in tabu search and simulated annealing), the
-    <literal>Solver</literal> remembers the best solution it has encountered through the entire search path. Each time
-    the current solution is better than the last best solution, the current solution is cloned and referenced as the new
-    best solution.</para>
-
-    <para>You can listen to solver events, including when the best solution changes during solving, by adding a
-    <literal>SolverEventListener</literal> to the <literal>Solver</literal>:</para>
-
-    <programlisting language="java">public interface Solver {
-
-    // ...
-
-    void addEventListener(SolverEventListener eventListener);
-    void removeEventListener(SolverEventListener eventListener);
-
-}</programlisting>
   </section>
 
   <section>
