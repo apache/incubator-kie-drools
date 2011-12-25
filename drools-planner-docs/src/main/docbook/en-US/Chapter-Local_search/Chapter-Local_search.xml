@@ -294,15 +294,19 @@
 
       <itemizedlist>
         <listitem>
-          <para><literal>GenericChangeMoveFactory</literal>: TODO</para>
+          <para><literal>GenericChangeMoveFactory</literal>: A <literal>GenericChangeMove</literal> changes 1 planning
+          variable of 1 planning entity to another planning value. For example: Given course C1 in room R1 and period
+          P1, change its room to room R2.</para>
         </listitem>
 
         <listitem>
-          <para><literal>GenericSwapMoveFactory</literal>: TODO</para>
+          <para><literal>GenericSwapMoveFactory</literal>: A <literal>GenericSwapMove</literal> swaps all the planning
+          variables of 2 planning entities. For example: Given course C1 in room R1 and period P1 and Course C2 in room
+          R2 and period P2, put course C1 in room R2 and period P2 and put course C2 in room R1 and period P1.</para>
         </listitem>
       </itemizedlist>
 
-      <para>To use them:</para>
+      <para>To use either or both, configure it as a <literal>Selector</literal>:</para>
 
       <programlisting>  &lt;localSearch&gt;
     &lt;selector&gt;
