@@ -18,7 +18,6 @@ public class BooleanConversionHandler implements ConversionHandler {
     }
 
     public boolean canConvertFrom(Class cls) {
-        // Apparently unused ???
-        return false;
+        return cls == Boolean.class || cls == boolean.class || cls == String.class;
     }
 }
