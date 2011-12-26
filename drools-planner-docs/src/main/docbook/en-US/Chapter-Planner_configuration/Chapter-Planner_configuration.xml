@@ -1045,11 +1045,14 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         <title>REPRODUCIBLE (default)</title>
 
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
-        runs on the same computer will execute the same code in the same order. They will also yield the same result,
-        except if they use a time based termination and they have a sufficiently large difference in allocated CPU time.
-        This allows you to benchmark new optimizations (such as a score constraint change) fairly.</para>
+        runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
+        runs will have the same result</emphasis>, except if they rely on time based termination and they have a
+        sufficiently large difference in allocated CPU time. This allows you to consistently reproduce bugs. It also
+        allows you to benchmark certain refactorings (such as a score constraint optimization) fairly across
+        runs.</para>
 
-        <para>The reproducible mode is not much slower than the production mode.</para>
+        <para>The reproducible mode is not much slower than the production mode. If your production environment requires
+        reproducability, use it in production too.</para>
 
         <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
         optimizations (such as work stealing).</para>
@@ -1076,7 +1079,15 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
       <itemizedlist>
         <listitem>
-          <para><emphasis role="bold">WARN</emphasis>: Log only when things go wrong.</para>
+          <para><emphasis role="bold">ERROR</emphasis>: When something is wrong, Planner fails fast: it throws a
+          subclass of <literal>RuntimeException</literal> with a detailed message to the calling code, but does not log
+          an error message to avoid duplicate log messages. If the calling code doesn't catch and eat that
+          <literal>RuntimeException</literal>, a <literal>Thread</literal>'s default <literal>ExceptionHandler</literal>
+          will log it as an error anyway.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">WARN</emphasis>: Log suspicous circumstances.</para>
         </listitem>
 
         <listitem>
@@ -1091,28 +1102,6 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
           <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase.</para>
         </listitem>
       </itemizedlist>
-
-      <para>Set the logging level on the category <literal>org.drools.planner</literal>, for example with Log4J:</para>
-
-      <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
-
-  &lt;category name="org.drools.planner"&gt;
-    &lt;priority value="debug" /&gt;
-  &lt;/category&gt;
-
-  ...
-
-&lt;/log4j:configuration&gt;</programlisting>
-
-      <para>Or with Logback:</para>
-
-      <programlisting>&lt;configuration&gt;
-
-  &lt;logger name="org.drools.planner" level="debug"/&gt;
-
-  ...
-
-&lt;configuration&gt;</programlisting>
 
       <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
@@ -1129,6 +1118,41 @@ INFO  Phase local search finished: step total (2), time spend (13), best score (
 INFO  Solved: time spend (13), best score (0), average calculate count per second (4846).</programlisting>
 
       <para>All time spends are in milliseconds.</para>
+
+      <para>Everything is logged to <link xlink:href="http://www.slf4j.org/">SLF4J</link>, which is a simple logging
+      facade that can delegate any log to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a dependency
+      to the logging adaptor for your logging framework of choice. If you're not using any logging framework yet, you
+      can use Logback by adding this Maven dependency:</para>
+
+      <programlisting>    &lt;dependency&gt;
+      &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+      &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+      &lt;version&gt;1.x&lt;/version&gt;
+    &lt;/dependency&gt;</programlisting>
+
+      <para>Configure the logging level on the package <literal>org.drools.planner</literal>. For example:</para>
+
+      <para>In Logback, configure it in your <filename>logback.xml</filename> file:</para>
+
+      <programlisting>&lt;configuration&gt;
+
+  &lt;logger name="org.drools.planner" level="debug"/&gt;
+
+  ...
+
+&lt;configuration&gt;</programlisting>
+
+      <para>In Log4J, configure it in your <filename>log4j.xml</filename> file:</para>
+
+      <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+
+  &lt;category name="org.drools.planner"&gt;
+    &lt;priority value="debug" /&gt;
+  &lt;/category&gt;
+
+  ...
+
+&lt;/log4j:configuration&gt;</programlisting>
     </section>
   </section>
 </chapter>

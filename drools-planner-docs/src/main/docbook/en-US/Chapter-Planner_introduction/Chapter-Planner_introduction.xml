@@ -273,7 +273,7 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section>
-      <title>Get it with maven, gradle, ivy, buildr or ANT</title>
+      <title>Use it with maven, gradle, ivy, buildr or ANT</title>
 
       <para>The Drools Planner jars are available on <link
       xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> (and
@@ -341,7 +341,9 @@ $ mvn exec:exec
     improvements, you 'll benefit from our peer review, improvements made upon your improvements and maybe even a thank
     you on our blog.</para>
 
-    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> and twitter (<link
+    <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+(<link
+    xlink:href="https://plus.google.com/112724449845406009021">Drools Planner</link>, <link
+    xlink:href="https://plus.google.com/112811208792575157490">Geoffrey De Smet</link>) and twitter (<link
     xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If Drools Planner
     helps you solve your problem, don't forget to blog or tweet about it!</para>
   </section>

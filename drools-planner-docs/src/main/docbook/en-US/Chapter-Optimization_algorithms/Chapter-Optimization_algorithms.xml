@@ -522,7 +522,7 @@
 
           <listitem>
             <para>The <literal>Termination</literal> might produce slightly different time gradient values, which will
-            send time gradient based algorithms (such as simulated annealing) on a different path.</para>
+            send time gradient based algorithms (such as simulated annealing) on a radically different path.</para>
           </listitem>
         </itemizedlist>
       </note>
