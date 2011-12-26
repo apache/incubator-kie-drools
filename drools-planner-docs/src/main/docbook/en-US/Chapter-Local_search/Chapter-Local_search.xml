@@ -301,12 +301,21 @@
 
         <listitem>
           <para><literal>GenericSwapMoveFactory</literal>: A <literal>GenericSwapMove</literal> swaps all the planning
-          variables of 2 planning entities. For example: Given course C1 in room R1 and period P1 and Course C2 in room
+          variables of 2 planning entities. For example: Given course C1 in room R1 and period P1 and course C2 in room
           R2 and period P2, put course C1 in room R2 and period P2 and put course C2 in room R1 and period P1.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>GenericSwapPillarMoveFactory</literal>: A <literal>GenericSwapPillarMove</literal> swaps all
+          the planning variables of 2 pillars. A pillar is a set of planning entities that have the same planning values
+          for all those planning variables. For example: Given course C10, course 11 and course 12 in room R1 and period
+          P1 and course C20 in room R2 and period P2, put course C10, course 11 and course 12 in room R2 and period P2
+          and put course C20 in room R1 and period P1.</para>
         </listitem>
       </itemizedlist>
 
-      <para>To use either or both, configure it as a <literal>Selector</literal>:</para>
+      <para>To use one or multiple build-in <literal>MoveFactory</literal> implementations, configure it as a
+      <literal>Selector</literal>:</para>
 
       <programlisting>  &lt;localSearch&gt;
     &lt;selector&gt;
