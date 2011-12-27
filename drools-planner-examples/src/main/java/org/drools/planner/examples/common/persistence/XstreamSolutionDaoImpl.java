@@ -30,6 +30,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
+import org.drools.planner.benchmark.core.XStreamProblemIO;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,17 +39,14 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private XStream xStream;
+    private XStreamProblemIO xStreamProblemIO;
     private String dirName;
     private File dataDir;
 
     public XstreamSolutionDaoImpl(String dirName, Class... xstreamAnnotations) {
         this.dirName = dirName;
         dataDir = new File("data/" + dirName);
-        // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
-        xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
-        xStream.setMode(XStream.ID_REFERENCES);
-        xStream.processAnnotations(xstreamAnnotations);
+        xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);
     }
 
     public String getDirName() {
@@ -59,70 +57,20 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
         return dataDir;
     }
 
-    public Solution readSolution(File file) {
-        Reader reader = null;
-        try {
-            // xStream.fromXml(InputStream) does not use UTF-8
-            reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-            Solution solution = (Solution) xStream.fromXML(reader);
-            logger.info("Loaded: {}", file);
-            return solution;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read file: " + file, e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    logger.warn("Problem closing file (" + file + ")", e);
-                }
-            }
-        }
-    }
-
-    public Solution readSolution(InputStream in) {
-        Reader reader = null;
-        try {
-            // xStream.fromXml(InputStream) does not use UTF-8
-            reader = new InputStreamReader(in, "UTF-8");
-            Solution solution = (Solution) xStream.fromXML(reader);
-            postRead(solution);
-            return solution;
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read from InputStream: " + in, e);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    logger.warn("Problem closing InputStream (" + in + ")", e);
-                }
-            }
-        }
+    public Solution readSolution(File inputSolutionFile) {
+        Solution solution = xStreamProblemIO.read(inputSolutionFile);
+        postRead(solution);
+        logger.info("Loaded: {}", inputSolutionFile);
+        return solution;
     }
 
     protected void postRead(Solution solution) {
         // Do nothing
     }
 
-    public void writeSolution(Solution solution, File file) {
-        Writer writer = null;
-        try {
-            // xStream.toXml(OutputStream) does not use UTF-8
-            writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
-            xStream.toXML(solution, writer);
-            logger.info("Saved: {}", file);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not write file (" + file + ")", e);
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    logger.warn("Problem closing file (" + file + ")", e);
-                }
-            }
-        }
+    public void writeSolution(Solution solution, File outputSolutionFile) {
+        xStreamProblemIO.write(solution, outputSolutionFile);
+        logger.info("Saved: {}", outputSolutionFile);
     }
 
 }

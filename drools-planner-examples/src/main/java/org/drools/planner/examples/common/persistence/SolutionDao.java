@@ -30,10 +30,8 @@ public interface SolutionDao {
 
     File getDataDir();
 
-    Solution readSolution(File file);
+    Solution readSolution(File inputSolutionFile);
 
-    Solution readSolution(InputStream in);
-
-    void writeSolution(Solution solution, File file);
+    void writeSolution(Solution solution, File outputSolutionFile);
 
 }

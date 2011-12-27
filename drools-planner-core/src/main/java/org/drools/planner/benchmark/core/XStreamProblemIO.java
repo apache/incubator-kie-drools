@@ -38,6 +38,7 @@ public class XStreamProblemIO implements ProblemIO {
     private XStream xStream;
 
     public XStreamProblemIO() {
+        // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
     }
@@ -55,6 +56,7 @@ public class XStreamProblemIO implements ProblemIO {
         Solution unsolvedSolution;
         Reader reader = null;
         try {
+            // xStream.fromXml(InputStream) does not use UTF-8
             reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8");
             unsolvedSolution = (Solution) xStream.fromXML(reader);
         } catch (XStreamException e) {
