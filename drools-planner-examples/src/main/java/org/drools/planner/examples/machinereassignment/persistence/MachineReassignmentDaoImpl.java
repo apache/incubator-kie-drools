@@ -16,11 +16,10 @@
 
 package org.drools.planner.examples.machinereassignment.persistence;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class MachineReassignmentDaoImpl extends XstreamSolutionDaoImpl {
+public class MachineReassignmentDaoImpl extends XStreamSolutionDaoImpl {
 
     public MachineReassignmentDaoImpl() {
         super("machinereassignment", MachineReassignment.class);

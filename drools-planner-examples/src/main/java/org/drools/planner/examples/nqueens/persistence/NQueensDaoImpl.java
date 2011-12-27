@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.nqueens.persistence;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 
-public class NQueensDaoImpl extends XstreamSolutionDaoImpl {
+public class NQueensDaoImpl extends XStreamSolutionDaoImpl {
 
     public NQueensDaoImpl() {
         super("nqueens", NQueens.class);

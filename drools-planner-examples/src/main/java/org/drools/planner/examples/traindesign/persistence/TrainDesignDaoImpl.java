@@ -17,11 +17,10 @@
 package org.drools.planner.examples.traindesign.persistence;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.planner.examples.traindesign.domain.RailNode;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
 
-public class TrainDesignDaoImpl extends XstreamSolutionDaoImpl {
+public class TrainDesignDaoImpl extends XStreamSolutionDaoImpl {
 
     public TrainDesignDaoImpl() {
         super("traindesign", TrainDesign.class);

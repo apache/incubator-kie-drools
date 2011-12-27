@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.travelingtournament.persistence.smart;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
-public class SmartTravelingTournamentDaoImpl extends XstreamSolutionDaoImpl {
+public class SmartTravelingTournamentDaoImpl extends XStreamSolutionDaoImpl {
 
     public SmartTravelingTournamentDaoImpl() {
         super("travelingtournament/smart", TravelingTournament.class);

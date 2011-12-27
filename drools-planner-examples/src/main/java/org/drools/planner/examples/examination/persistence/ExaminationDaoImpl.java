@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.examination.persistence;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.examination.domain.Examination;
 
-public class ExaminationDaoImpl extends XstreamSolutionDaoImpl {
+public class ExaminationDaoImpl extends XStreamSolutionDaoImpl {
 
     public ExaminationDaoImpl() {
         super("examination", Examination.class);

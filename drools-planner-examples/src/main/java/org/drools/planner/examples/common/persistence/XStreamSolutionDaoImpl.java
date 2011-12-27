@@ -35,7 +35,7 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class XstreamSolutionDaoImpl implements SolutionDao {
+public abstract class XStreamSolutionDaoImpl implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -43,7 +43,7 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
     private String dirName;
     private File dataDir;
 
-    public XstreamSolutionDaoImpl(String dirName, Class... xstreamAnnotations) {
+    public XStreamSolutionDaoImpl(String dirName, Class... xstreamAnnotations) {
         this.dirName = dirName;
         dataDir = new File("data/" + dirName);
         xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);

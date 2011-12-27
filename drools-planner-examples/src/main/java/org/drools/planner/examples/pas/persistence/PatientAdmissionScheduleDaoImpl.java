@@ -16,11 +16,10 @@
 
 package org.drools.planner.examples.pas.persistence;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.planner.examples.manners2009.domain.Manners2009;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleDaoImpl extends XstreamSolutionDaoImpl {
+public class PatientAdmissionScheduleDaoImpl extends XStreamSolutionDaoImpl {
 
     public PatientAdmissionScheduleDaoImpl() {
         super("pas", PatientAdmissionSchedule.class);

@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.nurserostering.persistence;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringDaoImpl extends XstreamSolutionDaoImpl {
+public class NurseRosteringDaoImpl extends XStreamSolutionDaoImpl {
 
     public NurseRosteringDaoImpl() {
         super("nurserostering", NurseRoster.class);

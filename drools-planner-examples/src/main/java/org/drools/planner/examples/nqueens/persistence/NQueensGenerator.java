@@ -21,12 +21,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.examples.nqueens.domain.Column;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;

@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.travelingtournament.persistence.simple;
 
-import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.common.persistence.XStreamSolutionDaoImpl;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
-public class SimpleTravelingTournamentDaoImpl extends XstreamSolutionDaoImpl {
+public class SimpleTravelingTournamentDaoImpl extends XStreamSolutionDaoImpl {
 
     public SimpleTravelingTournamentDaoImpl() {
         super("travelingtournament/simple", TravelingTournament.class);
