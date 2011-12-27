@@ -28,7 +28,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.PlannerBenchmark;
-import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
+import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 
 @XStreamAlias("plannerBenchmark")
@@ -199,14 +199,14 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
-        List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList = new ArrayList<PlanningProblemBenchmark>();
+        List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(
-                    unifiedPlanningProblemBenchmarkList);
+                    unifiedProblemBenchmarkList);
             solverBenchmarkList.add(solverBenchmark);
         }
         plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
-        plannerBenchmark.setUnifiedPlanningProblemBenchmarkList(unifiedPlanningProblemBenchmarkList);
+        plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
         return plannerBenchmark;
     }
 

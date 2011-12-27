@@ -16,7 +16,6 @@
 
 package org.drools.planner.benchmark.core;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class SolverBenchmark {
 
     private SolverConfig solverConfig = null;
 
-    private List<PlanningProblemBenchmark> planningProblemBenchmarkList = null;
+    private List<ProblemBenchmark> problemBenchmarkList = null;
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
 
     private Score totalScore = null;
@@ -52,12 +51,12 @@ public class SolverBenchmark {
         this.solverConfig = solverConfig;
     }
 
-    public List<PlanningProblemBenchmark> getPlanningProblemBenchmarkList() {
-        return planningProblemBenchmarkList;
+    public List<ProblemBenchmark> getProblemBenchmarkList() {
+        return problemBenchmarkList;
     }
 
-    public void setPlanningProblemBenchmarkList(List<PlanningProblemBenchmark> planningProblemBenchmarkList) {
-        this.planningProblemBenchmarkList = planningProblemBenchmarkList;
+    public void setProblemBenchmarkList(List<ProblemBenchmark> problemBenchmarkList) {
+        this.problemBenchmarkList = problemBenchmarkList;
     }
 
     public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {

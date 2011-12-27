@@ -30,7 +30,7 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 /**
  * Represents one problem instance (a data set) benchmarked on multiple solvers.
  */
-public class PlanningProblemBenchmark {
+public class ProblemBenchmark {
 
     private String name = null;
 
@@ -193,8 +193,8 @@ public class PlanningProblemBenchmark {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof PlanningProblemBenchmark) {
-            PlanningProblemBenchmark other = (PlanningProblemBenchmark) o;
+        } else if (o instanceof ProblemBenchmark) {
+            ProblemBenchmark other = (ProblemBenchmark) o;
             return inputSolutionFile.equals(other.getInputSolutionFile());
         } else {
             return false;

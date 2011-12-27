@@ -16,15 +16,12 @@
 
 package org.drools.planner.benchmark.core;
 
-import java.io.File;
-
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.score.Score;
 
 public class PlannerBenchmarkResult {
 
     private SolverBenchmark solverBenchmark = null;
-    private PlanningProblemBenchmark planningProblemBenchmark = null;
+    private ProblemBenchmark problemBenchmark = null;
 
     private int planningEntityCount = -1;
     private long problemScale = -1;
@@ -41,12 +38,12 @@ public class PlannerBenchmarkResult {
         this.solverBenchmark = solverBenchmark;
     }
 
-    public PlanningProblemBenchmark getPlanningProblemBenchmark() {
-        return planningProblemBenchmark;
+    public ProblemBenchmark getProblemBenchmark() {
+        return problemBenchmark;
     }
 
-    public void setPlanningProblemBenchmark(PlanningProblemBenchmark planningProblemBenchmark) {
-        this.planningProblemBenchmark = planningProblemBenchmark;
+    public void setProblemBenchmark(ProblemBenchmark problemBenchmark) {
+        this.problemBenchmark = problemBenchmark;
     }
 
     public int getPlanningEntityCount() {

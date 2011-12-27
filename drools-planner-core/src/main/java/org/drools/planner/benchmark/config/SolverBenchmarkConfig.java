@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
-import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
+import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.config.solver.SolverConfig;
 
@@ -33,8 +33,8 @@ public class SolverBenchmarkConfig {
     @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
 
-    @XStreamAlias("planningProblemBenchmarkList")
-    private PlanningProblemBenchmarkListConfig planningProblemBenchmarkListConfig = new PlanningProblemBenchmarkListConfig();
+    @XStreamAlias("problemBenchmarks")
+    private ProblemBenchmarksConfig problemBenchmarksConfig = new ProblemBenchmarksConfig();
 
     public String getName() {
         return name;
@@ -52,26 +52,26 @@ public class SolverBenchmarkConfig {
         this.solverConfig = solverConfig;
     }
 
-    public PlanningProblemBenchmarkListConfig getPlanningProblemBenchmarkListConfig() {
-        return planningProblemBenchmarkListConfig;
+    public ProblemBenchmarksConfig getProblemBenchmarksConfig() {
+        return problemBenchmarksConfig;
     }
 
-    public void setPlanningProblemBenchmarkListConfig(PlanningProblemBenchmarkListConfig planningProblemBenchmarkListConfig) {
-        this.planningProblemBenchmarkListConfig = planningProblemBenchmarkListConfig;
+    public void setProblemBenchmarksConfig(ProblemBenchmarksConfig problemBenchmarksConfig) {
+        this.problemBenchmarksConfig = problemBenchmarksConfig;
     }
 
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList) {
+    public SolverBenchmark buildSolverBenchmark(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
         SolverBenchmark solverBenchmark = new SolverBenchmark();
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
         solverBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
-        List<PlanningProblemBenchmark> planningProblemBenchmarkList = planningProblemBenchmarkListConfig
-                .buildPlanningProblemBenchmarkList(unifiedPlanningProblemBenchmarkList, solverBenchmark);
-        solverBenchmark.setPlanningProblemBenchmarkList(planningProblemBenchmarkList);
+        List<ProblemBenchmark> problemBenchmarkList = problemBenchmarksConfig
+                .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark);
+        solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
     }
 
@@ -81,10 +81,10 @@ public class SolverBenchmarkConfig {
         } else if (inheritedConfig.getSolverConfig() != null) {
             solverConfig.inherit(inheritedConfig.getSolverConfig());
         }
-        if (planningProblemBenchmarkListConfig == null) {
-            planningProblemBenchmarkListConfig = inheritedConfig.getPlanningProblemBenchmarkListConfig();
-        } else if (inheritedConfig.getPlanningProblemBenchmarkListConfig() != null) {
-            planningProblemBenchmarkListConfig.inherit(inheritedConfig.getPlanningProblemBenchmarkListConfig());
+        if (problemBenchmarksConfig == null) {
+            problemBenchmarksConfig = inheritedConfig.getProblemBenchmarksConfig();
+        } else if (inheritedConfig.getProblemBenchmarksConfig() != null) {
+            problemBenchmarksConfig.inherit(inheritedConfig.getProblemBenchmarksConfig());
         }
     }
 

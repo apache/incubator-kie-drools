@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
-import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
+import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.PlanningProblemIO;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.benchmark.core.XStreamPlanningProblemIO;
@@ -32,8 +32,8 @@ import org.drools.planner.benchmark.core.statistic.SolverStatistic;
 import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
 
-@XStreamAlias("planningProblemBenchmarkList")
-public class PlanningProblemBenchmarkListConfig {
+@XStreamAlias("problemBenchmarks")
+public class ProblemBenchmarksConfig {
 
     private Class<PlanningProblemIO> planningProblemIOClass = null;
     @XStreamImplicit(itemFieldName = "xstreamAnnotatedClass")
@@ -81,28 +81,28 @@ public class PlanningProblemBenchmarkListConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<PlanningProblemBenchmark> buildPlanningProblemBenchmarkList(
-            List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList, SolverBenchmark solverBenchmark) {
+    public List<ProblemBenchmark> buildProblemBenchmarkList(
+            List<ProblemBenchmark> unifiedProblemBenchmarkList, SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
         PlanningProblemIO planningProblemIO = buildPlanningProblemIO();
-        List<PlanningProblemBenchmark> planningProblemBenchmarkList = new ArrayList<PlanningProblemBenchmark>(
+        List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
                 inputSolutionFileList.size());
         for (File inputSolutionFile : inputSolutionFileList) {
-            // 2 SolverBenchmarks containing equal PlanningProblemBenchmarks should contain the same instance
-            PlanningProblemBenchmark newPlanningProblemBenchmark = buildPlanningProblemBenchmark(
+            // 2 SolverBenchmarks containing equal PProblemBenchmarks should contain the same instance
+            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(
                     planningProblemIO, inputSolutionFile);
-            PlanningProblemBenchmark planningProblemBenchmark;
-            int index = unifiedPlanningProblemBenchmarkList.indexOf(newPlanningProblemBenchmark);
+            ProblemBenchmark problemBenchmark;
+            int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
             if (index < 0) {
-                planningProblemBenchmark = newPlanningProblemBenchmark;
-                unifiedPlanningProblemBenchmarkList.add(planningProblemBenchmark);
+                problemBenchmark = newProblemBenchmark;
+                unifiedProblemBenchmarkList.add(problemBenchmark);
             } else {
-                planningProblemBenchmark = unifiedPlanningProblemBenchmarkList.get(index);
+                problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addPlannerBenchmarkResult(solverBenchmark, planningProblemBenchmark);
-            planningProblemBenchmarkList.add(planningProblemBenchmark);
+            addPlannerBenchmarkResult(solverBenchmark, problemBenchmark);
+            problemBenchmarkList.add(problemBenchmark);
         }
-        return planningProblemBenchmarkList;
+        return problemBenchmarkList;
     }
 
     private void validate(SolverBenchmark solverBenchmark) {
@@ -139,13 +139,13 @@ public class PlanningProblemBenchmarkListConfig {
         }
     }
 
-    private PlanningProblemBenchmark buildPlanningProblemBenchmark(
+    private ProblemBenchmark buildProblemBenchmark(
             PlanningProblemIO planningProblemIO, File inputSolutionFile) {
-        PlanningProblemBenchmark planningProblemBenchmark = new PlanningProblemBenchmark();
+        ProblemBenchmark problemBenchmark = new ProblemBenchmark();
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
-        planningProblemBenchmark.setName(name);
-        planningProblemBenchmark.setPlanningProblemIO(planningProblemIO);
-        planningProblemBenchmark.setInputSolutionFile(inputSolutionFile);
+        problemBenchmark.setName(name);
+        problemBenchmark.setPlanningProblemIO(planningProblemIO);
+        problemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(
                 solverStatisticTypeList == null ? 0 : solverStatisticTypeList.size());
@@ -154,21 +154,21 @@ public class PlanningProblemBenchmarkListConfig {
                 solverStatisticList.add(solverStatisticType.create());
             }
         }
-        planningProblemBenchmark.setSolverStatisticList(solverStatisticList);
-        planningProblemBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
-        return planningProblemBenchmark;
+        problemBenchmark.setSolverStatisticList(solverStatisticList);
+        problemBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
+        return problemBenchmark;
     }
 
     private void addPlannerBenchmarkResult(
-            SolverBenchmark solverBenchmark, PlanningProblemBenchmark planningProblemBenchmark) {
+            SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
         PlannerBenchmarkResult result = new PlannerBenchmarkResult();
         result.setSolverBenchmark(solverBenchmark);
         solverBenchmark.getPlannerBenchmarkResultList().add(result);
-        result.setPlanningProblemBenchmark(planningProblemBenchmark);
-        planningProblemBenchmark.getPlannerBenchmarkResultList().add(result);
+        result.setProblemBenchmark(problemBenchmark);
+        problemBenchmark.getPlannerBenchmarkResultList().add(result);
     }
 
-    public void inherit(PlanningProblemBenchmarkListConfig inheritedConfig) {
+    public void inherit(ProblemBenchmarksConfig inheritedConfig) {
         planningProblemIOClass = ConfigUtils.inheritOverwritableProperty(planningProblemIOClass,
                 inheritedConfig.getPlanningProblemIOClass());
         xstreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xstreamAnnotatedClassList,

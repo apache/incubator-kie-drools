@@ -45,7 +45,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private Long warmUpTimeMillisSpend = null;
 
     private List<SolverBenchmark> solverBenchmarkList = null;
-    private List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList = null;
+    private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -111,12 +111,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.solverBenchmarkList = solverBenchmarkList;
     }
 
-    public List<PlanningProblemBenchmark> getUnifiedPlanningProblemBenchmarkList() {
-        return unifiedPlanningProblemBenchmarkList;
+    public List<ProblemBenchmark> getUnifiedProblemBenchmarkList() {
+        return unifiedProblemBenchmarkList;
     }
 
-    public void setUnifiedPlanningProblemBenchmarkList(List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList) {
-        this.unifiedPlanningProblemBenchmarkList = unifiedPlanningProblemBenchmarkList;
+    public void setUnifiedProblemBenchmarkList(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
+        this.unifiedProblemBenchmarkList = unifiedProblemBenchmarkList;
     }
 
     // ************************************************************************
@@ -126,8 +126,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
-        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
-            planningProblemBenchmark.benchmark();
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            problemBenchmark.benchmark();
         }
         benchmarkingEnded();
     }
@@ -144,9 +144,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
         }
-        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
-            planningProblemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
-            planningProblemBenchmark.benchmarkingStarted();
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            problemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
+            problemBenchmark.benchmarkingStarted();
         }
     }
 
@@ -177,13 +177,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             logger.info("================================================================================");
             long startingTimeMillis = System.currentTimeMillis();
             long timeLeft = warmUpTimeMillisSpend;
-            Iterator<PlanningProblemBenchmark> planningProblemBenchmarkIt = unifiedPlanningProblemBenchmarkList.iterator();
+            Iterator<ProblemBenchmark> it = unifiedProblemBenchmarkList.iterator();
             while (timeLeft > 0L) {
-                if (!planningProblemBenchmarkIt.hasNext()) {
-                    planningProblemBenchmarkIt = unifiedPlanningProblemBenchmarkList.iterator();
+                if (!it.hasNext()) {
+                    it = unifiedProblemBenchmarkList.iterator();
                 }
-                PlanningProblemBenchmark planningProblemBenchmark = planningProblemBenchmarkIt.next();
-                timeLeft = planningProblemBenchmark.warmUp(startingTimeMillis, warmUpTimeMillisSpend, timeLeft);
+                ProblemBenchmark problemBenchmark = it.next();
+                timeLeft = problemBenchmark.warmUp(startingTimeMillis, warmUpTimeMillisSpend, timeLeft);
             }
             logger.info("================================================================================");
             logger.info("Finished warmUp");
@@ -192,15 +192,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     public void benchmarkingEnded() {
-        for (PlanningProblemBenchmark planningProblemBenchmark : unifiedPlanningProblemBenchmarkList) {
-            planningProblemBenchmark.benchmarkingEnded();
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            problemBenchmark.benchmarkingEnded();
         }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingEnded();
         }
         determineRanking();
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
-                solverStatisticFilesDirectory, unifiedPlanningProblemBenchmarkList);
+                solverStatisticFilesDirectory, unifiedProblemBenchmarkList);
         statisticManager.writeStatistics(solverBenchmarkList);
     }
 
