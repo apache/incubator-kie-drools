@@ -117,7 +117,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.csv");
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "utf-8");
+            writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "UTF-8");
             writer.append("\"TimeMillisSpend\"");
             for (String configName : configNameList) {
                 writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append("\"");

@@ -55,10 +55,10 @@ public class XmlSolverBenchmarker {
     public XmlSolverBenchmarker configure(InputStream in) {
         Reader reader = null;
         try {
-            reader = new InputStreamReader(in, "utf-8");
+            reader = new InputStreamReader(in, "UTF-8");
             return configure(reader);
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("This vm does not support utf-8 encoding.", e);
+            throw new IllegalStateException("This vm does not support UTF-8 encoding.", e);
         } finally {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(in);

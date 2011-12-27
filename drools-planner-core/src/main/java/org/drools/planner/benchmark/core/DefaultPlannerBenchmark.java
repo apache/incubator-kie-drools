@@ -219,10 +219,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 //        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
 //        OutputStreamWriter writer = null;
 //        try {
-//            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "utf-8");
+//            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");
 //            xStream.toXML(this, writer);
 //        } catch (UnsupportedEncodingException e) {
-//            throw new IllegalStateException("This JVM does not support utf-8 encoding.", e);
+//            throw new IllegalStateException("This JVM does not support UTF-8 encoding.", e);
 //        } catch (FileNotFoundException e) {
 //            throw new IllegalArgumentException(
 //                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);

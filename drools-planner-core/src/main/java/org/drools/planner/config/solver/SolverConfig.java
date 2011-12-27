@@ -223,7 +223,7 @@ public class SolverConfig {
                     throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.");
                 }
                 try {
-                    packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "utf-8"));
+                    packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "UTF-8"));
                 } catch (DroolsParserException e) {
                     throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
                 } catch (IOException e) {

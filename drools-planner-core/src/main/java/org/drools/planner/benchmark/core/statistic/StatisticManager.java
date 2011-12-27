@@ -352,7 +352,7 @@ public class StatisticManager {
         File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "utf-8");
+            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
             writer.append("<html>\n");
             writer.append("<head>\n");
             writer.append("  <title>Statistic ").append(benchmarkName).append("</title>\n");
