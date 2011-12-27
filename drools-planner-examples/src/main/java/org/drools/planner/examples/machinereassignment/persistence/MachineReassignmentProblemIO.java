@@ -18,10 +18,10 @@ package org.drools.planner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
-import org.drools.planner.benchmark.core.PlanningProblemIO;
+import org.drools.planner.benchmark.core.ProblemIO;
 import org.drools.planner.core.solution.Solution;
 
-public class MachineReassignmentPlanningProblemIO implements PlanningProblemIO {
+public class MachineReassignmentProblemIO implements ProblemIO {
 
     private MachineReassignmentSolutionImporter importer = new MachineReassignmentSolutionImporter();
     private MachineReassignmentSolutionExporter exporter = new MachineReassignmentSolutionExporter();

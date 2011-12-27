@@ -33,16 +33,16 @@ import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
 
-public class XStreamPlanningProblemIO implements PlanningProblemIO {
+public class XStreamProblemIO implements ProblemIO {
 
     private XStream xStream;
 
-    public XStreamPlanningProblemIO() {
+    public XStreamProblemIO() {
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
     }
 
-    public XStreamPlanningProblemIO(Class... xstreamAnnotatedClasses) {
+    public XStreamProblemIO(Class... xstreamAnnotatedClasses) {
         this();
         xStream.processAnnotations(xstreamAnnotatedClasses);
     }

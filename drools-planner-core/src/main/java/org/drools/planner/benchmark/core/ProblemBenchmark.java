@@ -34,7 +34,7 @@ public class ProblemBenchmark {
 
     private String name = null;
 
-    private PlanningProblemIO planningProblemIO = null;
+    private ProblemIO problemIO = null;
     private File inputSolutionFile = null;
     private File outputSolutionFilesDirectory = null;
 
@@ -52,12 +52,12 @@ public class ProblemBenchmark {
         this.name = name;
     }
 
-    public PlanningProblemIO getPlanningProblemIO() {
-        return planningProblemIO;
+    public ProblemIO getProblemIO() {
+        return problemIO;
     }
 
-    public void setPlanningProblemIO(PlanningProblemIO planningProblemIO) {
-        this.planningProblemIO = planningProblemIO;
+    public void setProblemIO(ProblemIO problemIO) {
+        this.problemIO = problemIO;
     }
 
     public File getInputSolutionFile() {
@@ -157,15 +157,15 @@ public class ProblemBenchmark {
     }
 
     public Solution readPlanningProblem() {
-        return planningProblemIO.read(inputSolutionFile);
+        return problemIO.read(inputSolutionFile);
     }
 
     private void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
         String solverBenchmarkName = result.getSolverBenchmark().getName()
                 .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        String filename = name + "_" + solverBenchmarkName + "." + planningProblemIO.getFileExtension();
+        String filename = name + "_" + solverBenchmarkName + "." + problemIO.getFileExtension();
         File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
-        planningProblemIO.write(outputSolution, outputSolutionFile);
+        problemIO.write(outputSolution, outputSolutionFile);
     }
 
     public void benchmarkingEnded() {

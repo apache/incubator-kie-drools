@@ -25,9 +25,9 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
-import org.drools.planner.benchmark.core.PlanningProblemIO;
+import org.drools.planner.benchmark.core.ProblemIO;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.XStreamPlanningProblemIO;
+import org.drools.planner.benchmark.core.XStreamProblemIO;
 import org.drools.planner.benchmark.core.statistic.SolverStatistic;
 import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
@@ -35,7 +35,7 @@ import org.drools.planner.config.util.ConfigUtils;
 @XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig {
 
-    private Class<PlanningProblemIO> planningProblemIOClass = null;
+    private Class<ProblemIO> problemIOClass = null;
     @XStreamImplicit(itemFieldName = "xstreamAnnotatedClass")
     private List<Class> xstreamAnnotatedClassList = null;
 
@@ -45,12 +45,12 @@ public class ProblemBenchmarksConfig {
     @XStreamImplicit(itemFieldName = "solverStatisticType")
     private List<SolverStatisticType> solverStatisticTypeList = null;
 
-    public Class<PlanningProblemIO> getPlanningProblemIOClass() {
-        return planningProblemIOClass;
+    public Class<ProblemIO> getProblemIOClass() {
+        return problemIOClass;
     }
 
-    public void setPlanningProblemIOClass(Class<PlanningProblemIO> planningProblemIOClass) {
-        this.planningProblemIOClass = planningProblemIOClass;
+    public void setProblemIOClass(Class<ProblemIO> problemIOClass) {
+        this.problemIOClass = problemIOClass;
     }
 
     public List<Class> getXstreamAnnotatedClassList() {
@@ -84,13 +84,13 @@ public class ProblemBenchmarksConfig {
     public List<ProblemBenchmark> buildProblemBenchmarkList(
             List<ProblemBenchmark> unifiedProblemBenchmarkList, SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
-        PlanningProblemIO planningProblemIO = buildPlanningProblemIO();
+        ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
                 inputSolutionFileList.size());
         for (File inputSolutionFile : inputSolutionFileList) {
             // 2 SolverBenchmarks containing equal PProblemBenchmarks should contain the same instance
             ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(
-                    planningProblemIO, inputSolutionFile);
+                    problemIO, inputSolutionFile);
             ProblemBenchmark problemBenchmark;
             int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
             if (index < 0) {
@@ -113,19 +113,19 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private PlanningProblemIO buildPlanningProblemIO() {
-        if (planningProblemIOClass != null && xstreamAnnotatedClassList != null) {
-            throw new IllegalArgumentException("Cannot use planningProblemIOClass (" + planningProblemIOClass
+    private ProblemIO buildProblemIO() {
+        if (problemIOClass != null && xstreamAnnotatedClassList != null) {
+            throw new IllegalArgumentException("Cannot use problemIOClass (" + problemIOClass
                     + ") and xstreamAnnotatedClassList (" + xstreamAnnotatedClassList + ") together.");
         }
-        if (planningProblemIOClass != null) {
+        if (problemIOClass != null) {
             try {
-                return planningProblemIOClass.newInstance();
+                return problemIOClass.newInstance();
             } catch (InstantiationException e) {
-                throw new IllegalArgumentException("planningProblemIOClass (" + planningProblemIOClass.getName()
+                throw new IllegalArgumentException("problemIOClass (" + problemIOClass.getName()
                         + ") does not have a public no-arg constructor", e);
             } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("planningProblemIOClass (" + planningProblemIOClass.getName()
+                throw new IllegalArgumentException("problemIOClass (" + problemIOClass.getName()
                         + ") does not have a public no-arg constructor", e);
             }
         } else {
@@ -135,16 +135,16 @@ public class ProblemBenchmarksConfig {
             } else {
                 xstreamAnnotatedClasses = new Class[0];
             }
-            return new XStreamPlanningProblemIO(xstreamAnnotatedClasses);
+            return new XStreamProblemIO(xstreamAnnotatedClasses);
         }
     }
 
     private ProblemBenchmark buildProblemBenchmark(
-            PlanningProblemIO planningProblemIO, File inputSolutionFile) {
+            ProblemIO problemIO, File inputSolutionFile) {
         ProblemBenchmark problemBenchmark = new ProblemBenchmark();
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         problemBenchmark.setName(name);
-        problemBenchmark.setPlanningProblemIO(planningProblemIO);
+        problemBenchmark.setProblemIO(problemIO);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(
@@ -169,8 +169,8 @@ public class ProblemBenchmarksConfig {
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {
-        planningProblemIOClass = ConfigUtils.inheritOverwritableProperty(planningProblemIOClass,
-                inheritedConfig.getPlanningProblemIOClass());
+        problemIOClass = ConfigUtils.inheritOverwritableProperty(problemIOClass,
+                inheritedConfig.getProblemIOClass());
         xstreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xstreamAnnotatedClassList,
                 inheritedConfig.getXstreamAnnotatedClassList());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,

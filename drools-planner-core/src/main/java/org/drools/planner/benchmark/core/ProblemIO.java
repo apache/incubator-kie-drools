@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.drools.planner.core.solution.Solution;
 
-public interface PlanningProblemIO {
+public interface ProblemIO {
 
     /**
      * The file extension does not include the dot that separates it from the base name.
