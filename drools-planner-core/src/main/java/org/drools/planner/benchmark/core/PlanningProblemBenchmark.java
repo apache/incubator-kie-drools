@@ -17,19 +17,8 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.XStreamException;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.drools.planner.benchmark.core.statistic.SolverStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
@@ -45,7 +34,7 @@ public class PlanningProblemBenchmark {
 
     private String name = null;
 
-    private XStream xStream = null;
+    private PlanningProblemIO planningProblemIO = null;
     private File inputSolutionFile = null;
     private File outputSolutionFilesDirectory = null;
 
@@ -63,12 +52,12 @@ public class PlanningProblemBenchmark {
         this.name = name;
     }
 
-    public XStream getxStream() {
-        return xStream;
+    public PlanningProblemIO getPlanningProblemIO() {
+        return planningProblemIO;
     }
 
-    public void setxStream(XStream xStream) {
-        this.xStream = xStream;
+    public void setPlanningProblemIO(PlanningProblemIO planningProblemIO) {
+        this.planningProblemIO = planningProblemIO;
     }
 
     public File getInputSolutionFile() {
@@ -129,19 +118,19 @@ public class PlanningProblemBenchmark {
 
             solver.setPlanningProblem(readPlanningProblem());
             solver.solve();
-            Solution solvedSolution = solver.getBestSolution();
+            Solution outputSolution = solver.getBestSolution();
 
             result.setTimeMillisSpend(solver.getTimeMillisSpend());
             DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
             result.setCalculateCount(solverScope.getCalculateCount());
-            result.setScore(solvedSolution.getScore());
+            result.setScore(outputSolution.getScore());
             SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-            result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
-            result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
+            result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(outputSolution));
+            result.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
             for (SolverStatistic statistic : solverStatisticList) {
                 statistic.removeListener(solver, solverBenchmark.getName());
             }
-            writeSolution(result, solvedSolution);
+            writeSolution(result, outputSolution);
         }
     }
 
@@ -168,35 +157,15 @@ public class PlanningProblemBenchmark {
     }
 
     public Solution readPlanningProblem() {
-        Solution unsolvedSolution;
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "utf-8");
-            unsolvedSolution = (Solution) xStream.fromXML(reader);
-        } catch (XStreamException e) {
-            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + inputSolutionFile, e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + inputSolutionFile, e);
-        } finally {
-            IOUtils.closeQuietly(reader);
-        }
-        return unsolvedSolution;
+        return planningProblemIO.read(inputSolutionFile);
     }
 
-    private void writeSolution(PlannerBenchmarkResult result, Solution solvedSolution) {
-        File solvedSolutionFile = null;
+    private void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
         String solverBenchmarkName = result.getSolverBenchmark().getName()
                 .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        solvedSolutionFile = new File(outputSolutionFilesDirectory, name + "_" + solverBenchmarkName + ".xml");
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(solvedSolutionFile), "utf-8");
-            xStream.toXML(solvedSolution, writer);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing solvedSolutionFile: " + solvedSolutionFile, e);
-        } finally {
-            IOUtils.closeQuietly(writer);
-        }
+        String filename = name + "_" + solverBenchmarkName + "." + planningProblemIO.getFileExtension();
+        File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
+        planningProblemIO.write(outputSolution, outputSolutionFile);
     }
 
     public void benchmarkingEnded() {

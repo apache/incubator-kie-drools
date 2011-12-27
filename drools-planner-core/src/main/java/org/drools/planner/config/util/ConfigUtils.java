@@ -21,7 +21,16 @@ import java.util.List;
 
 public class ConfigUtils {
 
-    public static <T> List<T> inheritListProperty(List<T> originalList, List<T> inheritedList) {
+    public static <T> T inheritOverwritableProperty(T original, T inherited) {
+        if (original != null) {
+            // Original overwrites inherited
+            return original;
+        } else {
+            return inherited;
+        }
+    }
+
+    public static <T> List<T> inheritMergeableListProperty(List<T> originalList, List<T> inheritedList) {
         if (inheritedList == null) {
             return originalList;
         } else if (originalList == null) {

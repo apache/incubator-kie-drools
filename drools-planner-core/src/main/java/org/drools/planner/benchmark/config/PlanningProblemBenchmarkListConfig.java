@@ -20,16 +20,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.PlanningProblemBenchmark;
+import org.drools.planner.benchmark.core.PlanningProblemIO;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.benchmark.core.XStreamPlanningProblemIO;
 import org.drools.planner.benchmark.core.statistic.SolverStatistic;
 import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
@@ -37,8 +35,9 @@ import org.drools.planner.config.util.ConfigUtils;
 @XStreamAlias("planningProblemBenchmarkList")
 public class PlanningProblemBenchmarkListConfig {
 
-    @XStreamImplicit(itemFieldName = "xstreamAnnotationClass")
-    private List<Class> xstreamAnnotationClassList = null;
+    private Class<PlanningProblemIO> planningProblemIOClass = null;
+    @XStreamImplicit(itemFieldName = "xstreamAnnotatedClass")
+    private List<Class> xstreamAnnotatedClassList = null;
 
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
@@ -46,12 +45,20 @@ public class PlanningProblemBenchmarkListConfig {
     @XStreamImplicit(itemFieldName = "solverStatisticType")
     private List<SolverStatisticType> solverStatisticTypeList = null;
 
-    public List<Class> getXstreamAnnotationClassList() {
-        return xstreamAnnotationClassList;
+    public Class<PlanningProblemIO> getPlanningProblemIOClass() {
+        return planningProblemIOClass;
     }
 
-    public void setXstreamAnnotationClassList(List<Class> xstreamAnnotationClassList) {
-        this.xstreamAnnotationClassList = xstreamAnnotationClassList;
+    public void setPlanningProblemIOClass(Class<PlanningProblemIO> planningProblemIOClass) {
+        this.planningProblemIOClass = planningProblemIOClass;
+    }
+
+    public List<Class> getXstreamAnnotatedClassList() {
+        return xstreamAnnotatedClassList;
+    }
+
+    public void setXstreamAnnotatedClassList(List<Class> xstreamAnnotatedClassList) {
+        this.xstreamAnnotatedClassList = xstreamAnnotatedClassList;
     }
 
     public List<File> getInputSolutionFileList() {
@@ -77,13 +84,13 @@ public class PlanningProblemBenchmarkListConfig {
     public List<PlanningProblemBenchmark> buildPlanningProblemBenchmarkList(
             List<PlanningProblemBenchmark> unifiedPlanningProblemBenchmarkList, SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
-        XStream xStream = buildXStream();
+        PlanningProblemIO planningProblemIO = buildPlanningProblemIO();
         List<PlanningProblemBenchmark> planningProblemBenchmarkList = new ArrayList<PlanningProblemBenchmark>(
                 inputSolutionFileList.size());
         for (File inputSolutionFile : inputSolutionFileList) {
             // 2 SolverBenchmarks containing equal PlanningProblemBenchmarks should contain the same instance
             PlanningProblemBenchmark newPlanningProblemBenchmark = buildPlanningProblemBenchmark(
-                    xStream, inputSolutionFile);
+                    planningProblemIO, inputSolutionFile);
             PlanningProblemBenchmark planningProblemBenchmark;
             int index = unifiedPlanningProblemBenchmarkList.indexOf(newPlanningProblemBenchmark);
             if (index < 0) {
@@ -106,22 +113,38 @@ public class PlanningProblemBenchmarkListConfig {
         }
     }
 
-    private XStream buildXStream() {
-        XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
-        xStream.setMode(XStream.ID_REFERENCES);
-        if (xstreamAnnotationClassList != null) {
-            for (Class xstreamAnnotationClass : xstreamAnnotationClassList) {
-                xStream.processAnnotations(xstreamAnnotationClass);
-            }
+    private PlanningProblemIO buildPlanningProblemIO() {
+        if (planningProblemIOClass != null && xstreamAnnotatedClassList != null) {
+            throw new IllegalArgumentException("Cannot use planningProblemIOClass (" + planningProblemIOClass
+                    + ") and xstreamAnnotatedClassList (" + xstreamAnnotatedClassList + ") together.");
         }
-        return xStream;
+        if (planningProblemIOClass != null) {
+            try {
+                return planningProblemIOClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("planningProblemIOClass (" + planningProblemIOClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("planningProblemIOClass (" + planningProblemIOClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+        } else {
+            Class[] xstreamAnnotatedClasses;
+            if (xstreamAnnotatedClassList != null) {
+                xstreamAnnotatedClasses = xstreamAnnotatedClassList.toArray(new Class[xstreamAnnotatedClassList.size()]);
+            } else {
+                xstreamAnnotatedClasses = new Class[0];
+            }
+            return new XStreamPlanningProblemIO(xstreamAnnotatedClasses);
+        }
     }
 
-    private PlanningProblemBenchmark buildPlanningProblemBenchmark(XStream xStream, File inputSolutionFile) {
+    private PlanningProblemBenchmark buildPlanningProblemBenchmark(
+            PlanningProblemIO planningProblemIO, File inputSolutionFile) {
         PlanningProblemBenchmark planningProblemBenchmark = new PlanningProblemBenchmark();
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         planningProblemBenchmark.setName(name);
-        planningProblemBenchmark.setxStream(xStream);
+        planningProblemBenchmark.setPlanningProblemIO(planningProblemIO);
         planningProblemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
         List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(
@@ -146,11 +169,13 @@ public class PlanningProblemBenchmarkListConfig {
     }
 
     public void inherit(PlanningProblemBenchmarkListConfig inheritedConfig) {
-        xstreamAnnotationClassList = ConfigUtils.inheritListProperty(xstreamAnnotationClassList,
-                inheritedConfig.getXstreamAnnotationClassList());
-        inputSolutionFileList = ConfigUtils.inheritListProperty(inputSolutionFileList,
+        planningProblemIOClass = ConfigUtils.inheritOverwritableProperty(planningProblemIOClass,
+                inheritedConfig.getPlanningProblemIOClass());
+        xstreamAnnotatedClassList = ConfigUtils.inheritMergeableListProperty(xstreamAnnotatedClassList,
+                inheritedConfig.getXstreamAnnotatedClassList());
+        inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,
                 inheritedConfig.getInputSolutionFileList());
-        solverStatisticTypeList = ConfigUtils.inheritListProperty(solverStatisticTypeList,
+        solverStatisticTypeList = ConfigUtils.inheritMergeableListProperty(solverStatisticTypeList,
                 inheritedConfig.getSolverStatisticTypeList());
     }
 
