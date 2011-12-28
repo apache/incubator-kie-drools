@@ -1,5 +1,15 @@
 package org.drools.rule.constraint;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.*;
