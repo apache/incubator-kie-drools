@@ -51,6 +51,7 @@ import org.drools.rule.BehaviorManager;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.IndexableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
