@@ -1,5 +1,7 @@
 package org.drools.rule.constraint;
 
+
+import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.AbstractRuleBase;
@@ -300,6 +302,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         if ( this == object ) return true;
         if ( object == null || object.getClass() != MvelConstraint.class ) return false;
         return expression.equals(((MvelConstraint) object).expression);
+    }
+    
+    @Override
+    public String toString() {
+        return expression;
     }
 
     private ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {

@@ -59,6 +59,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.WindowDeclaration;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
@@ -444,6 +445,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
     protected void addEntryPoint(final String id) throws InvalidPatternException {
         // This adds the entry point. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addEntryPoint( id );
+    }
+
+    protected void addWindowDeclaration(final WindowDeclaration window) throws InvalidPatternException {
+        // This adds the named window. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
+        this.reteooBuilder.addNamedWindow( window );
     }
 
     protected void removeRule(final Rule rule) {

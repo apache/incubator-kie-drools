@@ -47,4 +47,29 @@ public class BaseAnnotatedAsset implements AnnotatedElement {
     public boolean isAnnotationPresent( Class<? extends Annotation> annotation ) {
         return annotations.containsKey( annotation );
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( annotations == null ) ? 0 : annotations.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BaseAnnotatedAsset other = (BaseAnnotatedAsset) obj;
+        if (annotations == null) {
+            if (other.annotations != null)
+                return false;
+        } else if (!annotations.equals( other.annotations ))
+            return false;
+        return true;
+    }
 }

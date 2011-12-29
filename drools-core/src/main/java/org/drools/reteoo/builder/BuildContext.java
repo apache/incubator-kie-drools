@@ -103,6 +103,8 @@ public class BuildContext {
 
     private ObjectTypeNode rootObjectTypeNode;
 
+    private boolean attachPQN;
+
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
@@ -130,6 +132,8 @@ public class BuildContext {
         this.partitionId = null;
         
         this.ruleComponent = new Stack<RuleComponent>();
+        
+        this.attachPQN = true;
     }
 
     /**
@@ -470,6 +474,14 @@ public class BuildContext {
     
     public ObjectTypeNode getRootObjectTypeNode() {
         return rootObjectTypeNode;
+    }
+
+    public void setAttachPQN( final boolean attachPQN ) {
+        this.attachPQN = attachPQN;
+    }
+    
+    public boolean isAttachPQN() {
+        return attachPQN;
     }
 
 }

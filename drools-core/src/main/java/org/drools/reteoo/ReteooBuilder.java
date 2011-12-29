@@ -43,6 +43,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.rule.WindowDeclaration;
 import org.drools.spi.Salience;
 
 /**
@@ -63,6 +64,8 @@ public class ReteooBuilder
     private transient InternalRuleBase  ruleBase;
 
     private Map<Rule, BaseNode[]>       rules;
+    
+    private Map<String, WindowNode>     namedWindows;
 
     private transient ReteooRuleBuilder ruleBuilder;
 
@@ -85,6 +88,7 @@ public class ReteooBuilder
     ReteooBuilder(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.rules = new HashMap<Rule, BaseNode[]>();
+        this.namedWindows = new HashMap<String, WindowNode>();
 
         //Set to 1 as Rete node is set to 0
         this.idGenerator = new IdGenerator( 1 );
@@ -119,6 +123,19 @@ public class ReteooBuilder
         this.ruleBuilder.addEntryPoint( id,
                                         this.ruleBase,
                                         this.idGenerator );
+    }
+
+    public synchronized void addNamedWindow( WindowDeclaration window ) {
+        final WindowNode wnode = this.ruleBuilder.addWindowNode( window,
+                                                                 this.ruleBase,
+                                                                 this.idGenerator );
+
+        this.namedWindows.put( window.getName(),
+                               wnode );
+    }
+
+    public WindowNode getWindowNode( String name ) {
+        return this.namedWindows.get( name );
     }
 
     public IdGenerator getIdGenerator() {
@@ -303,6 +320,7 @@ public class ReteooBuilder
             droolsStream = new DroolsObjectOutputStream( bytes );
         }
         droolsStream.writeObject( rules );
+        droolsStream.writeObject( namedWindows );
         droolsStream.writeObject( idGenerator );
         droolsStream.writeBoolean( ordered );
         if ( !isDrools ) {
@@ -329,6 +347,7 @@ public class ReteooBuilder
         }
         
         this.rules = (Map<Rule, BaseNode[]>) droolsStream.readObject();
+        this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
         this.idGenerator = (IdGenerator) droolsStream.readObject();
         this.ordered = droolsStream.readBoolean();
         if ( !isDrools ) {

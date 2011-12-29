@@ -67,4 +67,34 @@ public class WindowDeclaration extends BaseAnnotatedAsset
         this.pattern = pattern;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
+        result = prime * result + ( ( pattern == null ) ? 0 : pattern.hashCode() );
+        return result;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if (this == obj)
+            return true;
+        if (!super.equals( obj ))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WindowDeclaration other = (WindowDeclaration) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals( other.name ))
+            return false;
+        if (pattern == null) {
+            if (other.pattern != null)
+                return false;
+        } else if (!pattern.equals( other.pattern ))
+            return false;
+        return true;
+    }
 }

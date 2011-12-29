@@ -27,6 +27,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.TerminalNode;
+import org.drools.reteoo.WindowNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.EntryPoint;
@@ -38,6 +39,8 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
+import org.drools.rule.WindowDeclaration;
+import org.drools.rule.WindowReference;
 import org.drools.time.TemporalDependencyMatrix;
 
 public class ReteooRuleBuilder {
@@ -65,6 +68,8 @@ public class ReteooRuleBuilder {
                                new ForallBuilder() );
         this.utils.addBuilder( EntryPoint.class,
                                new EntryPointBuilder() );
+        this.utils.addBuilder( WindowReference.class, 
+                               new WindowReferenceBuilder() );
     }
 
     /**
@@ -205,7 +210,36 @@ public class ReteooRuleBuilder {
         builder.build( context,
                        utils,
                        ep );
+    }
 
+    public WindowNode addWindowNode( WindowDeclaration window, 
+                                     InternalRuleBase ruleBase, 
+                                     ReteooBuilder.IdGenerator idGenerator ) {
+        // creates a clean build context for each subrule
+        final BuildContext context = new BuildContext( ruleBase,
+                                                       idGenerator );
+        
+        if ( ruleBase.getConfiguration().isSequential() ) {
+            context.setTupleMemoryEnabled( false );
+            context.setObjectTypeNodeMemoryEnabled( false );
+            context.setAlphaNodeMemoryAllowed( false );
+        } else {
+            context.setTupleMemoryEnabled( true );
+            context.setObjectTypeNodeMemoryEnabled( true );
+            context.setAlphaNodeMemoryAllowed( true );
+        }
+        
+        // gets the appropriate builder
+        final WindowBuilder builder = WindowBuilder.INSTANCE;
+
+        // builds and attach
+        builder.build( context,
+                       this.utils,
+                       window );
+        
+        WindowNode wnode = (WindowNode) context.getObjectSource();
+        
+        return wnode;
     }
 
 }

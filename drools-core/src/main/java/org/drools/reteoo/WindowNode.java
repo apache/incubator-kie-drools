@@ -35,6 +35,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -52,6 +53,7 @@ public class WindowNode extends ObjectSource
 
     private List<AlphaNodeFieldConstraint> constraints;
     private BehaviorManager                behavior;
+    private EntryPoint                     entryPoint;
 
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
@@ -80,6 +82,7 @@ public class WindowNode extends ObjectSource
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraints = constraints;
         this.behavior = new BehaviorManager( behaviors );
+        this.entryPoint = context.getCurrentEntryPoint();
     }
 
     @SuppressWarnings("unchecked")
@@ -88,12 +91,14 @@ public class WindowNode extends ObjectSource
         super.readExternal( in );
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
         behavior = (BehaviorManager) in.readObject();
+        entryPoint = (EntryPoint) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeObject( constraints );
         out.writeObject( behavior );
+        out.writeObject( entryPoint );
     }
 
     /**
@@ -332,6 +337,10 @@ public class WindowNode extends ObjectSource
      */
     public void setPreviousObjectSinkNode( final ObjectSinkNode previous ) {
         this.previousRightTupleSinkNode = previous;
+    }
+
+    public EntryPoint getEntryPoint() {
+        return entryPoint;
     }
 
     public static class WindowMemory implements Externalizable {
