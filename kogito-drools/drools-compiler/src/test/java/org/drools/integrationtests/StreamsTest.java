@@ -593,7 +593,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      "rule X\n" +
                      "when\n" +
                      "    accumulate( $s : StockTick( price > 20 ) from window RedHatTicks,\n" +
-                     "                $sum : sum( $s ),\n" +
+                     "                $sum : sum( $s.getPrice() ),\n" +
                      "                $cnt : count( $s ) )\n" +
                      "then\n" +
                      "end\n";

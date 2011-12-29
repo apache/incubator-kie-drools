@@ -47,7 +47,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -147,8 +146,8 @@ public class PatternBuilder
                                             behaviors,
                                             context.getObjectSource(),
                                             context );
-            utils.attachNode( context, 
-                              wn );
+            context.setObjectSource( (WindowNode) utils.attachNode( context, 
+                                                                    wn ) );
             
             // alpha constraints added to the window node already
             alphaConstraints.clear();
@@ -332,7 +331,7 @@ public class PatternBuilder
             context.popRuleComponent();
         }        
         
-        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new PropagationQueuingNode( context.getNextId(),
                                                                                                   context.getObjectSource(),
@@ -377,7 +376,7 @@ public class PatternBuilder
                                                      expirationOffset );
                     }
                 }
-                long distance = context.getTemporalDistance().getExpirationOffset( pattern );
+                long distance = context.getTemporalDistance() != null ? context.getTemporalDistance().getExpirationOffset( pattern ) : -1;
                 if( distance == -1 ) {
                     // it means the rules have no temporal constraints, or
                     // the constraints require events to be hold forever. In this 

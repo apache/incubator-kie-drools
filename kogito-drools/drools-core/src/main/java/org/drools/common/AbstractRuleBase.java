@@ -59,6 +59,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.WindowDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
@@ -556,6 +557,12 @@ abstract public class AbstractRuleBase
                 // now merge the new package into the existing one
                 mergePackage( pkg,
                               newPkg );
+                
+                // add the window declarations to the kbase
+                for( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
+                    addWindowDeclaration( newPkg, 
+                                          window );
+                }
 
                 // add entry points to the kbase
                 for (String id : newPkg.getEntryPointIds()) {
@@ -732,6 +739,19 @@ abstract public class AbstractRuleBase
                 }
             }
         }
+        
+        // merge window declarations
+        if ( newPkg.getWindowDeclarations() != null ) {
+            // add window declarations
+            for ( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
+                if ( !pkg.getWindowDeclarations().containsKey( window.getName() ) || 
+                      pkg.getWindowDeclarations().get( window.getName() ).equals( window ) ) {
+                    pkg.addWindowDeclaration( window );
+                } else {
+                    throw new RuntimeDroolsException( "Unable to merge two conflicting window declarations for window named: "+window.getName() );
+                }
+            }
+        }
 
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
@@ -873,6 +893,24 @@ abstract public class AbstractRuleBase
      * @throws InvalidPatternException
      */
     protected abstract void addEntryPoint( final String id );
+
+    public void addWindowDeclaration( final Package pkg,
+                                      final WindowDeclaration window ) throws InvalidPatternException {
+        lock();
+        try {
+            addWindowDeclaration( window );
+        } finally {
+            unlock();
+        }
+    }
+
+    /**
+    * This method is called with the rulebase lock held.
+    *
+    * @param window
+    * @throws InvalidPatternException
+    */
+    protected abstract void addWindowDeclaration( final WindowDeclaration window ) throws InvalidPatternException;
 
     public void removePackage( final String packageName ) {
         lock();

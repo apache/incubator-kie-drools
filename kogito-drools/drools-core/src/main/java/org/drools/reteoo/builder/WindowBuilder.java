@@ -23,24 +23,26 @@ import org.drools.rule.WindowDeclaration;
 /**
  * A builder for patterns
  */
-public class WindowBuilder implements ReteooComponentBuilder {
+public class WindowBuilder {
+    
+    public static final WindowBuilder INSTANCE = new WindowBuilder();
 
     /**
      * @inheritDoc
      */
     public void build( final BuildContext context,
                        final BuildUtils utils,
-                       final RuleConditionElement rce ) {
-
-        final WindowDeclaration window = (WindowDeclaration) rce;
+                       final WindowDeclaration window ) {
 
         final Pattern pattern = window.getPattern();
 
         final ReteooComponentBuilder builder = utils.getBuilderFor( pattern );
 
+        context.setAttachPQN( false );
         builder.build( context,
                        utils,
                        pattern );
+        context.setAttachPQN( true );
 
         // TODO: register named window
     }
