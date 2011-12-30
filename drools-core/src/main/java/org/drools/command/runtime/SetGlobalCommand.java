@@ -18,23 +18,22 @@ package org.drools.command.runtime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Object> , IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;
