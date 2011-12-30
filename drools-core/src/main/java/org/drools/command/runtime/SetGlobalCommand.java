@@ -44,9 +44,6 @@ public class SetGlobalCommand
 
     @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
-
-    @XmlAttribute
-    private boolean out;
     
     public SetGlobalCommand() {
     }
@@ -60,8 +57,8 @@ public class SetGlobalCommand
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
-        if ( this.out ) {
-            ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult().getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
+        if ( this.outIdentifier != null ) {
+            ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult().getResults().put( this.outIdentifier ,
                                                                                                      object );
         }
 
@@ -92,15 +89,6 @@ public class SetGlobalCommand
 
     public void setOutIdentifier(String outIdentifier) {
         this.outIdentifier = outIdentifier;
-        this.out = true;
-    }
-
-    public boolean isOut() {
-        return this.out;
-    }
-
-    public void setOut(boolean out) {
-        this.out = out;
     }
 
     public String toString() {
