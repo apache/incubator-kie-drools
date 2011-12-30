@@ -351,10 +351,7 @@ public static class SetGlobalConverter extends AbstractCollectionConverter
       if ( cmd.getOutIdentifier() != null ) {
           writer.addAttribute( "out-identifier",
                                cmd.getOutIdentifier() );
-      } else if ( cmd.isOut() ) {
-          writer.addAttribute( "out",
-                               Boolean.toString( cmd.isOut() ) );
-      }
+      } 
 
       writeItem( cmd.getObject(),
                  context,
@@ -376,9 +373,7 @@ public static class SetGlobalConverter extends AbstractCollectionConverter
                                                    object );
       if ( identifierOut != null ) {
           cmd.setOutIdentifier( identifierOut );
-      } else if ( out != null ) {
-          cmd.setOut( Boolean.parseBoolean( out ) );
-      }
+      } 
       return cmd;
   }
 

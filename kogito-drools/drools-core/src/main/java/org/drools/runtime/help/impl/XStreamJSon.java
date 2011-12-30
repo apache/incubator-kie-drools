@@ -865,11 +865,7 @@ public class XStreamJSon {
                 writer.startNode( "out-identifier" );
                 writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
-            } else if ( cmd.isOut() ) {
-                writer.startNode( "out" );
-                writer.setValue( Boolean.toString( cmd.isOut() ) );
-                writer.endNode();
-            }
+            } 
             writeValue( writer,
                         context,
                         "object",
@@ -907,9 +903,7 @@ public class XStreamJSon {
 
             if ( outIdentifier != null ) {
                 cmd.setOutIdentifier( outIdentifier );
-            } else if ( out != null ) {
-                cmd.setOut( Boolean.parseBoolean( out ) );
-            }
+            } 
             return cmd;
         }
 
