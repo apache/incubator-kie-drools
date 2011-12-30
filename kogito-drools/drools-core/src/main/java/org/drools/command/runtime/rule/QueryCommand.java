@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -34,7 +35,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.Variable;
 
 @XmlAccessorType( XmlAccessType.NONE )
-public class QueryCommand  implements GenericCommand<QueryResults> {
+public class QueryCommand  implements GenericCommand<QueryResults>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 
