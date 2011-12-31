@@ -9,20 +9,20 @@
   <section>
     <title>Finding the best configuration</title>
 
-    <para>Drools Planner supports several solver types, but you're probably wondering which is the best one? Although
-    some solver types generally perform better then others, it really depends on your problem domain. Most solver types
-    also have settings which can be tweaked. Those settings can influence the results of a solver a lot, although most
-    settings perform pretty good out-of-the-box.</para>
+    <para>Drools Planner supports several optimization algorithms (as solver phases), but you're probably wondering
+    which is the best one? Although some optimization algorithms generally perform better then others, it really depends
+    on your problem domain. Most solver phases have settings which can be tweaked. Those settings can influence the
+    results a lot, although most solver phases work pretty well out-of-the-box.</para>
 
-    <para>Luckily, Drools Planner includes a benchmarker, which allows you to play out different solver types and
-    different settings against each other, so you can pick the best configuration for your problem domain.</para>
+    <para>Luckily, Drools Planner includes a benchmarker, which allows you to play out different solver phases with
+    different settings against each other, so you can pick the best configuration for your planning problem.</para>
   </section>
 
   <section>
     <title>Building a Benchmarker</title>
 
     <section>
-      <title>Adding the exta dependency</title>
+      <title>Adding the extra dependency</title>
 
       <para>The Benchmarker is current in the drools-planner-core modules, but it requires an extra dependency on the
       <link xlink:href="http://www.jfree.org/jfreechart/">JFreeChart</link> library.</para>
@@ -48,7 +48,7 @@
       Configure it with a benchmarker configuration xml file:</para>
 
       <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
-    benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
+    benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml");
     benchmarker.benchmark();</programlisting>
 
       <para>A basic benchmarker configuration file looks something like this:</para>
@@ -56,12 +56,15 @@
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
-  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
   &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
 
   &lt;inheritedSolverBenchmark&gt;
-    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
-    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
+    &lt;problemBenchmarks&gt;
+      &lt;xstreamAnnotatedClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inputSolutionFile&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inputSolutionFile&gt;
+      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
       &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
       &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
@@ -132,9 +135,10 @@
       <para>This benchmarker will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
       (32 and 64 queens), so it will run 6 solvers.</para>
 
-      <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
-      solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
-      each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent.</para>
+      <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example with a local
+      search solver phase) and one or more <literal>inputSolutionFile</literal> elements. It will run the solver
+      configuration on each of those unsolved solution files. A <literal>name</literal> is optional and generated if
+      absent.</para>
 
       <para>The common part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
       <literal>inheritedSolverBenchmark</literal> entity, but that can still be overwritten per
@@ -143,13 +147,65 @@
       instead are added to the head of the solver phases list.</para>
 
       <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
-      solution of each solver run and a handy overview HTML webpage will be written in that directory.</para>
+      solution of each <literal>Solver</literal> run and a handy overview HTML file will be written in that
+      directory.</para>
+    </section>
+
+    <section>
+      <title>ProblemIO: input and output of Solution files</title>
+
+      <section>
+        <title><literal>ProblemIO</literal> interface</title>
+
+        <para>The Benchmarker needs to be able to read the input files to contain a <literal>Solution</literal> write
+        the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a class that
+        implements the <literal>ProblemIO</literal> interface:</para>
+
+        <programlisting>public interface ProblemIO {
+
+    String getFileExtension();
+
+    Solution read(File inputSolutionFile);
+
+    void write(Solution solution, File outputSolutionFile);
+
+}</programlisting>
+      </section>
+
+      <section>
+        <title><literal>XStreamProblemIO</literal></title>
+
+        <para>By default, a <literal>XStreamProblemIO</literal> instance is used and you just need to configure your
+        <literal>Solution</literal> class as being annotated with XStream:</para>
+
+        <programlisting>    &lt;problemBenchmarks&gt;
+      &lt;xstreamAnnotatedClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/xstreamAnnotatedClass&gt;
+      &lt;inputSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inputSolutionFile&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+        <para>However, your input files need to have been written with a <literal>XStreamProblemIO</literal> instance.
+        </para>
+      </section>
+
+      <section>
+        <title>Custom <literal>ProblemIO</literal></title>
+
+        <para>Alternatively, you can implement your own <literal>ProblemIO</literal> implementation and configure it
+        with the <literal>problemIOClass</literal> element:</para>
+
+        <programlisting>    &lt;problemBenchmarks&gt;
+      &lt;problemIOClass&gt;org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO&lt;/problemIOClass&gt;
+      &lt;inputSolutionFile&gt;data/machinereassignment/input/model_a1_1.txt&lt;/inputSolutionFile&gt;
+      ...
+    &lt;/problemBenchmarks&gt;</programlisting>
+      </section>
     </section>
 
     <section>
       <title>Warming up the hotspot compiler</title>
 
-      <para>Without a warmup, the results of the first (or first few) benchmarks are not reliable, because they will
+      <para>Without a warm up, the results of the first (or first few) benchmarks are not reliable, because they will
       have lost CPU time on hotspot JIT compilation (and possibly DRL compilation too).</para>
 
       <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
@@ -169,11 +225,11 @@
     <section>
       <title>Best score summary</title>
 
-      <para>A summary statistic of each solver run will be written in the <literal>benchmarkDirectory</literal>. Here is
-      an example of a summary statistic:</para>
+      <para>Several summary statistics of the <literal>Benchmarker</literal> run will be written in the
+      <literal>benchmarkDirectory</literal>. Here is an example of a summary statistic:</para>
 
       <figure>
-        <title>Summary statistic</title>
+        <title>Best score summary statistic</title>
 
         <mediaobject>
           <imageobject>
@@ -190,23 +246,30 @@
     <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files to the
     <literal>benchmarkDirectory</literal>.</para>
 
-    <para>To configure graph and CSV output of a statistic, just add a <literal>solverStatisticType</literal>
+    <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
     line:</para>
 
     <programlisting language="xml">&lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
-  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
+    ...
+  &lt;/inheritedSolverBenchmark&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-    <para>Multiple <literal>solverStatisticType</literal> entries are allowed. Some statistic types might influence
-    performance noticeably. The following types are are supported:</para>
+    <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might influence
+    performance noticeably. The following types are supported:</para>
 
     <section>
       <title>Best score over time statistic (graph and CSV)</title>
 
       <para>To see how the best score evolves over time, add <literal>BEST_SOLUTION_CHANGED</literal> as <literal>a
-      solverStatisticType</literal>.</para>
+      problemStatisticType</literal>.</para>
 
       <figure>
         <title>Best score over time statistic</title>
@@ -217,6 +280,9 @@
           </imageobject>
         </mediaobject>
       </figure>
+
+      <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as
+      score traps.</emphasis></para>
 
       <note>
         <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
@@ -230,7 +296,7 @@
       <title>Calculate count per second statistic (graph and CSV)</title>
 
       <para>To see how fast the scores are calculated, add <literal>CALCULATE_COUNT_PER_SECOND</literal> as a
-      <literal>solverStatisticType</literal>.</para>
+      <literal>problemStatisticType</literal>.</para>
 
       <figure>
         <title>Calculate count per second statistic</title>
@@ -255,7 +321,7 @@
       <title>Memory use statistic (graph and CSV)</title>
 
       <para>To see how much memory is used, add <literal>MEMORY_USE</literal> as <literal>a
-      solverStatisticType</literal>.</para>
+      problemStatisticType</literal>.</para>
 
       <figure>
         <title>Memory use statistic</title>
