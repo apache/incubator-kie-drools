@@ -1295,21 +1295,109 @@ After in *.java:
 [MINOR] All the classes in the benchmark package have been split-up into a config and a core package.
 Look for "org.drools.planner.benchmark" in all your files. Normally you won't have any besides the XmlSolverBenchmarker.
 One rare exception is the use of a build-in solverBenchmarkComparator:
-Before in *SolverBenchmarkConfig.xml:
+Before in *BenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.WorstScoreSolverBenchmarkComparator</solverBenchmarkComparator>
-After in *SolverBenchmarkConfig.xml:
+After in *BenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.WorstScoreSolverBenchmarkComparator</solverBenchmarkComparator>
-Before in *SolverBenchmarkConfig.xml:
+Before in *BenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
-After in *SolverBenchmarkConfig.xml:
+After in *BenchmarkConfig.xml:
     <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
 
 [MAJOR] SolverBenchmarkSuite has been renamed to PlannerBenchmark.
-Before in *SolverBenchmarkConfig.xml:
+Before in *BenchmarkConfig.xml:
     <solverBenchmarkSuite>
       ...
     </solverBenchmarkSuite>
-After in *SolverBenchmarkConfig.xml:
+After in *BenchmarkConfig.xml:
     <plannerBenchmark>
       ...
     </plannerBenchmark>
+
+[MAJOR] Benchmarker: <unsolvedSolutionFile> has been renamed to <inputSolutionFile> and moved under <problemBenchmarks>
+Before in *BenchmarkConfig.xml:
+    <inheritedSolverBenchmark><!-- or <solverBenchmark> -->
+      <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
+      <solver>
+        ...
+      </solver>
+    </inheritedSolverBenchmark>
+After in *BenchmarkConfig.xml:
+    <inheritedSolverBenchmark><!-- or <solverBenchmark> -->
+      <problemBenchmarks>
+        <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
+        <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
+      </problemBenchmarks>
+      <solver>
+        ...
+      </solver>
+    </inheritedSolverBenchmark>
+
+[MAJOR] Benchmarker: The XStream to parse the benchmark configuration is now separate from the one to parse the solution files.
+The xstreamAnnotatedClass is now set in the problemBenchmarks.
+Note: if you prefer to use a different solution file format, you can now easily hook in one with <problemIOClass> (see manual).
+Before in *BenchmarkApp.java:
+    ...
+    solverBenchmarker.addXstreamAnnotations(NQueens.class);
+    ...
+After in *BenchmarkApp.java:
+    ...
+Before in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
+      ...
+    </problemBenchmarks>
+</plannerBenchmark>
+After in *BenchmarkConfig.xml:
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
+      ...
+    </problemBenchmarks>
+
+[MAJOR] Benchmarker: <solverStatisticType> has been renamed to <problemStatisticType> and moved under <problemBenchmarks> (in <inheritedSolverBenchmark> or <solverBenchmark>)
+Before in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+      ...
+      <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+      ...
+      <inheritedSolverBenchmark>
+        <problemBenchmarks>
+          ...
+          <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
+          <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+        </problemBenchmarks>
+        ...
+      </inheritedSolverBenchmark>
+      ...
+    </plannerBenchmark>
+After in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+      ...
+      <inheritedSolverBenchmark>
+        <problemBenchmarks>
+          ...
+          <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
+          <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+        </problemBenchmarks>
+        ...
+      </inheritedSolverBenchmark>
+      ...
+    </plannerBenchmark>
+
+[MINOR] Benchmarker: the solved solution files no longer contain the score the time spend in their filename.
+See the statistic/index.html file for those numbers.
+
+[MINOR] Benchmarker: <solverStatisticFilesDirectory> has been renamed to <statisticDirectory>
+But it's better not to specify it at all and use the default.
+Before in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+        ...
+        <solverStatisticFilesDirectory>local/data/nurserostering/statistic</solverStatisticFilesDirectory>
+        ...
+After in *BenchmarkConfig.xml:
+    <plannerBenchmark>
+        ...
+        <statisticDirectory>local/data/nurserostering/statistic</statisticDirectory>
+        ...
