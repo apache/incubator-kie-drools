@@ -2,10 +2,12 @@
 
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_4.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <problemIOClass>org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
+    </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->

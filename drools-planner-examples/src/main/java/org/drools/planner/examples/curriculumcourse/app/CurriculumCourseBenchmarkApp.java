@@ -45,7 +45,7 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public CurriculumCourseBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, CurriculumCourseSchedule.class);
+        super(solverBenchmarkConfig);
     }
 
 }

@@ -25,7 +25,11 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <inputSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
     <solver>
       <termination>
         <terminationCompositionStyle>AND</terminationCompositionStyle>

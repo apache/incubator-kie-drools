@@ -39,7 +39,7 @@ public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public PatientAdmissionScheduleBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, PatientAdmissionSchedule.class);
+        super(solverBenchmarkConfig);
     }
 
 }

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/examination</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inputSolutionFile>
+    </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->

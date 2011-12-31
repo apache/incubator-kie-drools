@@ -53,7 +53,7 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public NurseRosteringBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, NurseRoster.class);
+        super(solverBenchmarkConfig);
     }
 
 }

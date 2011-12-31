@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</xstreamAnnotatedClass>
+      <inputSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
     <solver>
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>

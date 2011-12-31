@@ -22,9 +22,8 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
 
     protected XmlSolverBenchmarker solverBenchmarker;
 
-    protected CommonBenchmarkApp(String solverBenchmarkConfig, Class... xstreamAnnotations) {
+    protected CommonBenchmarkApp(String solverBenchmarkConfig) {
         solverBenchmarker = new XmlSolverBenchmarker().configure(solverBenchmarkConfig);
-        solverBenchmarker.addXstreamAnnotations(xstreamAnnotations);
     }
 
     public void process() {

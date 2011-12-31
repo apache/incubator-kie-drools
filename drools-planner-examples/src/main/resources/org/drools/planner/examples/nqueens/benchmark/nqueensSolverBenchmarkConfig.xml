@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
+      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
     <solver>
       <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>

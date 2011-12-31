@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/examination</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set3.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set4.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set5.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set6.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set7.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set8.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.examination.domain.Examination</xstreamAnnotatedClass>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set4.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set5.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set6.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set7.xml</inputSolutionFile>
+      <inputSolutionFile>data/examination/unsolved/exam_comp_set8.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->

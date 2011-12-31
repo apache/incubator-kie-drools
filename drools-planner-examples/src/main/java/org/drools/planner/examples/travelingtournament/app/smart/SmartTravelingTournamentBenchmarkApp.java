@@ -48,7 +48,7 @@ public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public SmartTravelingTournamentBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, TravelingTournament.class);
+        super(solverBenchmarkConfig);
     }
 
 }

@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_1.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_2.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_3.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_4.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_5.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_1.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_2.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_3.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_4.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_5.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <problemIOClass>org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->

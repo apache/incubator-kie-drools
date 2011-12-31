@@ -43,7 +43,7 @@ public class MachineReassignmentBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public MachineReassignmentBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, MachineReassignment.class);
+        super(solverBenchmarkConfig);
     }
 
 }

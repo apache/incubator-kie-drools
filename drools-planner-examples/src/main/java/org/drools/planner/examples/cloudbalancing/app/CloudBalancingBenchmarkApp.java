@@ -43,7 +43,7 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public CloudBalancingBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, CloudBalance.class);
+        super(solverBenchmarkConfig);
     }
 
 }

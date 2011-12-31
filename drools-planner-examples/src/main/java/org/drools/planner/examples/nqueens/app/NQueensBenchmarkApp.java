@@ -45,7 +45,7 @@ public class NQueensBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public NQueensBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, NQueens.class);
+        super(solverBenchmarkConfig);
     }
 
 }

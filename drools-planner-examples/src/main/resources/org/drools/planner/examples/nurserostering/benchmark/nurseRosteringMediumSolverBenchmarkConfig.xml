@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</unsolvedSolutionFile>-->
-
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium02.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium03.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium04.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium05.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late02.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late03.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late04.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late05.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium02.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium03.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium04.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium05.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
 
     <solver>
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>

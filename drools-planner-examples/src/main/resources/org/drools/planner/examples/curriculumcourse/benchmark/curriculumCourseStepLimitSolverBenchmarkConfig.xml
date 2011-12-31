@@ -3,7 +3,10 @@
   <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</unsolvedSolutionFile>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inputSolutionFile>
+    </problemBenchmarks>
 
     <solver>
       <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>

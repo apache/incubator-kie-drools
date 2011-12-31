@@ -1,33 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/sprint01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/sprint02.xml</unsolvedSolutionFile>
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint03.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint04.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint05.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint06.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint07.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint08.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint09.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint10.xml</unsolvedSolutionFile>-->
-    <unsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint02.xml</unsolvedSolutionFile>
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_hint03.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late01.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late02.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late03.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late04.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late05.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late06.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late07.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</unsolvedSolutionFile>-->
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</xstreamAnnotatedClass>
+      <inputSolutionFile>data/nurserostering/unsolved/sprint01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/sprint02.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint05.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint06.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint07.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint08.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint09.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint10.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/nurserostering/unsolved/sprint_hint01.xml</inputSolutionFile>
+      <inputSolutionFile>data/nurserostering/unsolved/sprint_hint02.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_hint03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late01.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late02.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late05.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late06.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late07.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late08.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late09.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</inputSolutionFile>-->
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
 
     <solver>
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>

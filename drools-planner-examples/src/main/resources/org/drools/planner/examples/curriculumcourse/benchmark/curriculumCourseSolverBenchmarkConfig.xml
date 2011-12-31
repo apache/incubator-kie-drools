@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
-  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp02.xml</unsolvedSolutionFile>
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp03.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp04.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp05.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp06.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp07.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp09.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp10.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp11.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp12.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp13.xml</unsolvedSolutionFile>-->
-    <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp14.xml</unsolvedSolutionFile>-->
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inputSolutionFile>
+      <inputSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp05.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp06.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp09.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp10.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp11.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inputSolutionFile>-->
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
 
     <solver>
       <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>

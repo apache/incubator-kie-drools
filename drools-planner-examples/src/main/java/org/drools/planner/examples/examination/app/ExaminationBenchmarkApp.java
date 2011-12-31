@@ -45,7 +45,7 @@ public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
     }
 
     public ExaminationBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig, Examination.class);
+        super(solverBenchmarkConfig);
     }
 
 }
