@@ -20,12 +20,12 @@ import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreStatistic;
 import org.drools.planner.benchmark.core.statistic.calculatecount.CalculateCountStatistic;
 import org.drools.planner.benchmark.core.statistic.memoryuse.MemoryUseStatistic;
 
-public enum SolverStatisticType {
+public enum ProblemStatisticType {
     BEST_SOLUTION_CHANGED,
     CALCULATE_COUNT_PER_SECOND,
     MEMORY_USE;
 
-    public SolverStatistic create() {
+    public ProblemStatistic create() {
         switch (this) {
             case BEST_SOLUTION_CHANGED:
                 return new BestScoreStatistic();
@@ -34,7 +34,7 @@ public enum SolverStatisticType {
             case MEMORY_USE:
                 return new MemoryUseStatistic();
             default:
-                throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
+                throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented");
         }
     }
 }

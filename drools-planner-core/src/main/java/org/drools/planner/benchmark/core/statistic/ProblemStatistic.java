@@ -23,17 +23,17 @@ import org.drools.planner.core.Solver;
 /**
  * TODO is this the correct package? Statistics can maybe be used outside the benchmarker
  */
-public interface SolverStatistic {
+public interface ProblemStatistic {
 
     void addListener(Solver solver, String configName);
 
     void removeListener(Solver solver, String configName);
 
     /**
-     * @param solverStatisticFilesDirectory never null
+     * @param statisticDirectory never null
      * @param baseName never null
      * @return a htmFragment, never null
      */
-    CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName);
+    CharSequence writeStatistic(File statisticDirectory, String baseName);
 
 }

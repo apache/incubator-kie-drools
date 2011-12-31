@@ -32,9 +32,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.core.statistic.AbstractSolverStatistic;
+import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
-import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.JFreeChart;
@@ -46,7 +46,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class MemoryUseStatistic extends AbstractSolverStatistic {
+public class MemoryUseStatistic extends AbstractProblemStatistic {
 
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
@@ -54,7 +54,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
             = new LinkedHashMap<String, MemoryUseStatisticListener>();
 
     public MemoryUseStatistic() {
-        super(SolverStatisticType.MEMORY_USE);
+        super(ProblemStatisticType.MEMORY_USE);
     }
 
     public void addListener(Solver solver, String configName) {
@@ -97,7 +97,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected static class MemoryUseScvLine extends AbstractSolverStatisticScvLine {
+    protected static class MemoryUseScvLine extends AbstractProblemStatisticScvLine {
 
         private Map<String, MemoryUseMeasurement> configNameToMemoryUseMeasurementMap;
 
@@ -112,9 +112,9 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
 
     }
 
-    protected CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeCsvStatistic(File statisticDirectory, String baseName) {
         List<MemoryUseScvLine> csvLineList = extractCsvLineList();
-        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "MemoryUseStatistic.csv");
+        File csvStatisticFile = new File(statisticDirectory, baseName + "MemoryUseStatistic.csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "UTF-8");
@@ -146,7 +146,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
-    protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeGraphStatistic(File statisticDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
@@ -172,7 +172,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         JFreeChart chart = new JFreeChart(baseName + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "MemoryUseStatistic.png");
+        File graphStatisticFile = new File(statisticDirectory, baseName + "MemoryUseStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);

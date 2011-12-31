@@ -37,7 +37,7 @@ public class PlannerBenchmarkConfig {
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
     private File outputSolutionFilesDirectory = null;
-    private File solverStatisticFilesDirectory = null;
+    private File statisticDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     private Long warmUpTimeMillisSpend = null;
@@ -75,12 +75,12 @@ public class PlannerBenchmarkConfig {
         this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
-    public File getSolverStatisticFilesDirectory() {
-        return solverStatisticFilesDirectory;
+    public File getStatisticDirectory() {
+        return statisticDirectory;
     }
 
-    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
-        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
+    public void setStatisticDirectory(File statisticDirectory) {
+        this.statisticDirectory = statisticDirectory;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
@@ -194,7 +194,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
         plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
-        plannerBenchmark.setSolverStatisticFilesDirectory(solverStatisticFilesDirectory);
+        plannerBenchmark.setStatisticDirectory(statisticDirectory);
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 

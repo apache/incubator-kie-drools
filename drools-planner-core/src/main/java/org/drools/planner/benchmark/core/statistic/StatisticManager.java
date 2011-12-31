@@ -53,13 +53,13 @@ import org.jfree.ui.TextAnchor;
 public class StatisticManager {
 
     private final String benchmarkName;
-    private final File solverStatisticFilesDirectory;
+    private final File statisticDirectory;
     private final List<ProblemBenchmark> problemBenchmarkList;
 
-    public StatisticManager(String benchmarkName, File solverStatisticFilesDirectory,
+    public StatisticManager(String benchmarkName, File statisticDirectory,
             List<ProblemBenchmark> problemBenchmarkList) {
         this.benchmarkName = benchmarkName;
-        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
+        this.statisticDirectory = statisticDirectory;
         this.problemBenchmarkList = problemBenchmarkList;
     }
 
@@ -77,9 +77,9 @@ public class StatisticManager {
         for (ProblemBenchmark problemBenchmark : problemBenchmarkList) {
             String problemBenchmarkName = problemBenchmark.getName();
             htmlFragment.append("  <h2>").append(problemBenchmarkName).append("</h2>\n");
-            for (SolverStatistic statistic : problemBenchmark.getSolverStatisticList()) {
+            for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
                 htmlFragment.append(
-                        statistic.writeStatistic(solverStatisticFilesDirectory, problemBenchmarkName));
+                        statistic.writeStatistic(statisticDirectory, problemBenchmarkName));
             }
         }
         writeHtmlOverview(htmlFragment);
@@ -119,7 +119,7 @@ public class StatisticManager {
         JFreeChart chart = new JFreeChart("Best score summary (higher score is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestScoreSummary.png");
+        File chartSummaryFile = new File(statisticDirectory, "bestScoreSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -167,7 +167,7 @@ public class StatisticManager {
         JFreeChart chart = new JFreeChart("Winning score difference summary (higher is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "winningScoreDifferenceSummary.png");
+        File chartSummaryFile = new File(statisticDirectory, "winningScoreDifferenceSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -210,7 +210,7 @@ public class StatisticManager {
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "timeSpendSummary.png");
+        File chartSummaryFile = new File(statisticDirectory, "timeSpendSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -254,7 +254,7 @@ public class StatisticManager {
         JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "scalabilitySummary.png");
+        File chartSummaryFile = new File(statisticDirectory, "scalabilitySummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -297,7 +297,7 @@ public class StatisticManager {
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "averageCalculateCountSummary.png");
+        File chartSummaryFile = new File(statisticDirectory, "averageCalculateCountSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -349,7 +349,7 @@ public class StatisticManager {
     }
 
     private void writeHtmlOverview(CharSequence htmlFragment) {
-        File htmlOverviewFile = new File(solverStatisticFilesDirectory, "index.html");
+        File htmlOverviewFile = new File(statisticDirectory, "index.html");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");

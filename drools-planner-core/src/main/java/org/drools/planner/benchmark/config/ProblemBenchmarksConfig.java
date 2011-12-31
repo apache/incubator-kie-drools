@@ -28,8 +28,8 @@ import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.ProblemIO;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.benchmark.core.XStreamProblemIO;
-import org.drools.planner.benchmark.core.statistic.SolverStatistic;
-import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
+import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
 
 @XStreamAlias("problemBenchmarks")
@@ -42,8 +42,8 @@ public class ProblemBenchmarksConfig {
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
     
-    @XStreamImplicit(itemFieldName = "solverStatisticType")
-    private List<SolverStatisticType> solverStatisticTypeList = null;
+    @XStreamImplicit(itemFieldName = "problemStatisticType")
+    private List<ProblemStatisticType> problemStatisticTypeList = null;
 
     public Class<ProblemIO> getProblemIOClass() {
         return problemIOClass;
@@ -69,12 +69,12 @@ public class ProblemBenchmarksConfig {
         this.inputSolutionFileList = inputSolutionFileList;
     }
 
-    public List<SolverStatisticType> getSolverStatisticTypeList() {
-        return solverStatisticTypeList;
+    public List<ProblemStatisticType> getProblemStatisticTypeList() {
+        return problemStatisticTypeList;
     }
 
-    public void setSolverStatisticTypeList(List<SolverStatisticType> solverStatisticTypeList) {
-        this.solverStatisticTypeList = solverStatisticTypeList;
+    public void setProblemStatisticTypeList(List<ProblemStatisticType> problemStatisticTypeList) {
+        this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
     // ************************************************************************
@@ -147,14 +147,14 @@ public class ProblemBenchmarksConfig {
         problemBenchmark.setProblemIO(problemIO);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);
         // outputSolutionFilesDirectory is set by DefaultPlannerBenchmark
-        List<SolverStatistic> solverStatisticList = new ArrayList<SolverStatistic>(
-                solverStatisticTypeList == null ? 0 : solverStatisticTypeList.size());
-        if (solverStatisticTypeList != null) {
-            for (SolverStatisticType solverStatisticType : solverStatisticTypeList) {
-                solverStatisticList.add(solverStatisticType.create());
+        List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(
+                problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
+        if (problemStatisticTypeList != null) {
+            for (ProblemStatisticType problemStatisticType : problemStatisticTypeList) {
+                problemStatisticList.add(problemStatisticType.create());
             }
         }
-        problemBenchmark.setSolverStatisticList(solverStatisticList);
+        problemBenchmark.setProblemStatisticList(problemStatisticList);
         problemBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
         return problemBenchmark;
     }
@@ -175,8 +175,8 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getXstreamAnnotatedClassList());
         inputSolutionFileList = ConfigUtils.inheritMergeableListProperty(inputSolutionFileList,
                 inheritedConfig.getInputSolutionFileList());
-        solverStatisticTypeList = ConfigUtils.inheritMergeableListProperty(solverStatisticTypeList,
-                inheritedConfig.getSolverStatisticTypeList());
+        problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,
+                inheritedConfig.getProblemStatisticTypeList());
     }
 
 }

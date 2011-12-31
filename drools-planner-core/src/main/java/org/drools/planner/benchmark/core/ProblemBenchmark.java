@@ -19,7 +19,7 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.util.List;
 
-import org.drools.planner.benchmark.core.statistic.SolverStatistic;
+import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -38,7 +38,7 @@ public class ProblemBenchmark {
     private File inputSolutionFile = null;
     private File outputSolutionFilesDirectory = null;
 
-    private List<SolverStatistic> solverStatisticList = null;
+    private List<ProblemStatistic> problemStatisticList = null;
 
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
     
@@ -76,12 +76,12 @@ public class ProblemBenchmark {
         this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
-    public List<SolverStatistic> getSolverStatisticList() {
-        return solverStatisticList;
+    public List<ProblemStatistic> getProblemStatisticList() {
+        return problemStatisticList;
     }
 
-    public void setSolverStatisticList(List<SolverStatistic> solverStatisticList) {
-        this.solverStatisticList = solverStatisticList;
+    public void setProblemStatisticList(List<ProblemStatistic> problemStatisticList) {
+        this.problemStatisticList = problemStatisticList;
     }
 
     public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
@@ -112,7 +112,7 @@ public class ProblemBenchmark {
             SolverBenchmark solverBenchmark = result.getSolverBenchmark();
             // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
             Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-            for (SolverStatistic statistic : solverStatisticList) {
+            for (ProblemStatistic statistic : problemStatisticList) {
                 statistic.addListener(solver, solverBenchmark.getName());
             }
 
@@ -127,7 +127,7 @@ public class ProblemBenchmark {
             SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
             result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(outputSolution));
             result.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
-            for (SolverStatistic statistic : solverStatisticList) {
+            for (ProblemStatistic statistic : problemStatisticList) {
                 statistic.removeListener(solver, solverBenchmark.getName());
             }
             writeSolution(result, outputSolution);

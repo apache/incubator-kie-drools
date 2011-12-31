@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
-import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +38,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
     private File outputSolutionFilesDirectory = null;
-    private File solverStatisticFilesDirectory = null;
-    private List<SolverStatisticType> solverStatisticTypeList = null;
+    private File statisticDirectory = null;
+    private List<ProblemStatisticType> problemStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     private Long warmUpTimeMillisSpend = null;
@@ -71,20 +71,20 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
-    public File getSolverStatisticFilesDirectory() {
-        return solverStatisticFilesDirectory;
+    public File getStatisticDirectory() {
+        return statisticDirectory;
     }
 
-    public void setSolverStatisticFilesDirectory(File solverStatisticFilesDirectory) {
-        this.solverStatisticFilesDirectory = solverStatisticFilesDirectory;
+    public void setStatisticDirectory(File statisticDirectory) {
+        this.statisticDirectory = statisticDirectory;
     }
 
-    public List<SolverStatisticType> getSolverStatisticTypeList() {
-        return solverStatisticTypeList;
+    public List<ProblemStatisticType> getProblemStatisticTypeList() {
+        return problemStatisticTypeList;
     }
 
-    public void setSolverStatisticTypeList(List<SolverStatisticType> solverStatisticTypeList) {
-        this.solverStatisticTypeList = solverStatisticTypeList;
+    public void setProblemStatisticTypeList(List<ProblemStatisticType> problemStatisticTypeList) {
+        this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
@@ -164,10 +164,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             outputSolutionFilesDirectory = new File(benchmarkInstanceDirectory, "output");
         }
         outputSolutionFilesDirectory.mkdirs();
-        if (solverStatisticFilesDirectory == null) {
-            solverStatisticFilesDirectory = new File(benchmarkInstanceDirectory, "statistic");
+        if (statisticDirectory == null) {
+            statisticDirectory = new File(benchmarkInstanceDirectory, "statistic");
         }
-        solverStatisticFilesDirectory.mkdirs();
+        statisticDirectory.mkdirs();
     }
 
     private void warmUp() {
@@ -200,7 +200,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         determineRanking();
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
-                solverStatisticFilesDirectory, unifiedProblemBenchmarkList);
+                statisticDirectory, unifiedProblemBenchmarkList);
         statisticManager.writeStatistics(solverBenchmarkList);
     }
 

@@ -32,9 +32,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.core.statistic.AbstractSolverStatistic;
+import org.drools.planner.benchmark.core.statistic.AbstractProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.MillisecondsSpendNumberFormat;
-import org.drools.planner.benchmark.core.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -48,7 +48,7 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class BestScoreStatistic extends AbstractSolverStatistic {
+public class BestScoreStatistic extends AbstractProblemStatistic {
 
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
@@ -57,7 +57,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     private ScoreDefinition scoreDefinition = null;
 
     public BestScoreStatistic() {
-        super(SolverStatisticType.BEST_SOLUTION_CHANGED);
+        super(ProblemStatisticType.BEST_SOLUTION_CHANGED);
     }
 
     public void addListener(Solver solver, String configName) {
@@ -109,7 +109,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected static class BestScoreScvLine extends AbstractSolverStatisticScvLine {
+    protected static class BestScoreScvLine extends AbstractProblemStatisticScvLine {
 
         private Map<String, Score> configNameToScoreMap;
 
@@ -124,9 +124,9 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
 
     }
 
-    protected CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeCsvStatistic(File statisticDirectory, String baseName) {
         List<BestScoreScvLine> scvLineList = extractCsvLineList();
-        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "BestScoreStatistic.csv");
+        File csvStatisticFile = new File(statisticDirectory, baseName + "BestScoreStatistic.csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "UTF-8");
@@ -157,7 +157,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
-    protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeGraphStatistic(File statisticDirectory, String baseName) {
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
@@ -193,7 +193,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         JFreeChart chart = new JFreeChart(baseName + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "BestScoreStatistic.png");
+        File graphStatisticFile = new File(statisticDirectory, baseName + "BestScoreStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);
