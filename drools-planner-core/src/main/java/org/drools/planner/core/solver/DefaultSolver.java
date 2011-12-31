@@ -160,7 +160,7 @@ public class DefaultSolver implements Solver {
             solverScope.setWorkingRandom(new Random());
         }
         bestSolutionRecaller.solvingStarted(solverScope);
-        logger.info("Solver started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
+        logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
                         solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed")});
     }
@@ -182,7 +182,7 @@ public class DefaultSolver implements Solver {
             timeMillisSpend = 1L;
         }
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpend;
-        logger.info("Solved: time spend ({}), best score ({}), average calculate count per second ({}).",
+        logger.info("Solving ended: time spend ({}), best score ({}), average calculate count per second ({}).",
                 new Object[]{timeMillisSpend,
                 solverScope.getBestScore(),
                 averageCalculateCountPerSecond});

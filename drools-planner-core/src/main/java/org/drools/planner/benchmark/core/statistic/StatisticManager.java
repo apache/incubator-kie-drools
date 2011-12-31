@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -54,12 +56,14 @@ public class StatisticManager {
 
     private final String benchmarkName;
     private final File statisticDirectory;
+    private final File htmlOverviewFile;
     private final List<ProblemBenchmark> problemBenchmarkList;
 
     public StatisticManager(String benchmarkName, File statisticDirectory,
             List<ProblemBenchmark> problemBenchmarkList) {
         this.benchmarkName = benchmarkName;
         this.statisticDirectory = statisticDirectory;
+        htmlOverviewFile = new File(statisticDirectory, "index.html");
         this.problemBenchmarkList = problemBenchmarkList;
     }
 
@@ -349,7 +353,6 @@ public class StatisticManager {
     }
 
     private void writeHtmlOverview(CharSequence htmlFragment) {
-        File htmlOverviewFile = new File(statisticDirectory, "index.html");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
@@ -366,6 +369,10 @@ public class StatisticManager {
         } finally {
             IOUtils.closeQuietly(writer);
         }
+    }
+
+    public File getHtmlOverviewFile() {
+        return htmlOverviewFile;
     }
 
 }

@@ -120,7 +120,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         super.phaseEnded(greedyFitSolverPhaseScope);
         greedyPlanningEntitySelector.phaseEnded(greedyFitSolverPhaseScope);
         greedyDecider.phaseEnded(greedyFitSolverPhaseScope);
-        logger.info("Phase construction heuristic finished: step total ({}), time spend ({}), best score ({}).",
+        logger.info("Phase construction heuristic ended: step total ({}), time spend ({}), best score ({}).",
                 new Object[]{greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 greedyFitSolverPhaseScope.calculateSolverTimeMillisSpend(),
                 greedyFitSolverPhaseScope.getBestScore()});

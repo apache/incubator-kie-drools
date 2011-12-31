@@ -17,6 +17,7 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
+
+    private SolverBenchmark winningSolverBenchmark = null;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
@@ -148,6 +151,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             problemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
             problemBenchmark.benchmarkingStarted();
         }
+        logger.info("Benchmarking started: solverBenchmarkList size ({}).",
+                solverBenchmarkList.size());
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
@@ -202,6 +207,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
                 statisticDirectory, unifiedProblemBenchmarkList);
         statisticManager.writeStatistics(solverBenchmarkList);
+        logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
+                winningSolverBenchmark.getName(), statisticManager.getHtmlOverviewFile().getAbsolutePath());
     }
 
     private void determineRanking() {
@@ -211,6 +218,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             int ranking = sortedSolverBenchmarkList.indexOf(solverBenchmark);
             solverBenchmark.setRanking(ranking);
+            if (ranking == 0) {
+                winningSolverBenchmark = solverBenchmark;
+            }
         }
     }
 
