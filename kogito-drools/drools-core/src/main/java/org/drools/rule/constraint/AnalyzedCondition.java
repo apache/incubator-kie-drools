@@ -472,13 +472,19 @@ public class AnalyzedCondition {
 
         private Method getMethodFromSuperclass(Method method) {
             if (method == null) return method;
-            Class<?> declaringSuperclass = method.getDeclaringClass().getSuperclass();
-            if (declaringSuperclass == null) return method;
-            try {
-                return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()));
-            } catch (Exception e) {
-                return method;
+            Class<?> declaringClass = method.getDeclaringClass();
+            Class<?> declaringSuperclass = declaringClass.getSuperclass();
+            if (declaringSuperclass != null) {
+                try {
+                    return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()));
+                } catch (Exception e) { }
             }
+            for (Class<?> interfaze : declaringClass.getInterfaces()) {
+                try {
+                    return interfaze.getMethod(method.getName(), method.getParameterTypes());
+                } catch (Exception e) { }
+            }
+            return method;
         }
 
         public Method getMethod() {
