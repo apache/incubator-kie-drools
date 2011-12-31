@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
@@ -32,7 +33,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectInEntryPointCommand
         implements
-        GenericCommand<FactHandle> {
+        GenericCommand<FactHandle>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
     @XmlElement
@@ -89,13 +90,6 @@ public class InsertObjectInEntryPointCommand
         this.outIdentifier = outIdentifier;
     }
 
-    public boolean isReturnObject() {
-        return returnObject;
-    }
-
-    public void setReturnObject(boolean returnObject) {
-        this.returnObject = returnObject;
-    }
 
     public String toString() {
         return "session.insert(" + object + ");";
