@@ -16,34 +16,33 @@
 
 package org.drools.planner.examples.cloudbalancing.app;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
 public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG
-            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingSolverBenchmarkConfig.xml";
-//    public static final String STEP_LIMIT_SOLVER_BENCHMARK_CONFIG
-//            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingStepLimitSolverBenchmarkConfig.xml";
+    public static final String DEFAULT_BENCHMARKER_CONFIG
+            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkerConfig.xml";
+//    public static final String STEP_LIMIT_BENCHMARKER_CONFIG
+//            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingStepLimitBenchmarkerConfig.xml";
 
     public static void main(String[] args) {
         String solverConfig;
         if (args.length > 0) {
             if (args[0].equals("default")) {
-                solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+                solverConfig = DEFAULT_BENCHMARKER_CONFIG;
 //            } else if (args[0].equals("stepLimit")) {
-//                solverConfig = STEP_LIMIT_SOLVER_BENCHMARK_CONFIG;
+//                solverConfig = STEP_LIMIT_BENCHMARKER_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
         } else {
-            solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+            solverConfig = DEFAULT_BENCHMARKER_CONFIG;
         }
         new CloudBalancingBenchmarkApp(solverConfig).process();
     }
 
-    public CloudBalancingBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig);
+    public CloudBalancingBenchmarkApp(String benchmarkerConfig) {
+        super(benchmarkerConfig);
     }
 
 }

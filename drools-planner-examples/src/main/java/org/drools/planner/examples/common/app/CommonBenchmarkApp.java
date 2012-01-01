@@ -22,8 +22,8 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
 
     protected XmlSolverBenchmarker solverBenchmarker;
 
-    protected CommonBenchmarkApp(String solverBenchmarkConfig) {
-        solverBenchmarker = new XmlSolverBenchmarker().configure(solverBenchmarkConfig);
+    protected CommonBenchmarkApp(String benchmarkerConfig) {
+        solverBenchmarker = new XmlSolverBenchmarker().configure(benchmarkerConfig);
     }
 
     public void process() {

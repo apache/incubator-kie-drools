@@ -16,29 +16,20 @@
 
 package org.drools.planner.examples.app;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
-import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
-import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.manners2009.domain.Manners2009;
-import org.drools.planner.examples.nqueens.domain.NQueens;
-import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
-import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG
-            = "/org/drools/planner/examples/app/benchmark/generalDroolsPlannerBenchmarkConfig.xml";
+    public static final String DEFAULT_BENCHMARKER_CONFIG
+            = "/org/drools/planner/examples/app/benchmark/generalDroolsPlannerBenchmarkerConfig.xml";
 
     public static void main(String[] args) {
-        String solverConfig = DEFAULT_SOLVER_BENCHMARK_CONFIG;
+        String solverConfig = DEFAULT_BENCHMARKER_CONFIG;
         new GeneralDroolsPlannerBenchmarkApp(solverConfig).process();
     }
 
-    public GeneralDroolsPlannerBenchmarkApp(String solverBenchmarkConfig) {
-        super(solverBenchmarkConfig);
+    public GeneralDroolsPlannerBenchmarkApp(String benchmarkerConfig) {
+        super(benchmarkerConfig);
     }
 
 }

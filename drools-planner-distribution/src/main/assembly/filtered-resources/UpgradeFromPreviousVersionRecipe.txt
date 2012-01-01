@@ -1401,3 +1401,13 @@ After in *BenchmarkConfig.xml:
         ...
         <statisticDirectory>local/data/nurserostering/statistic</statisticDirectory>
         ...
+
+[RECOMMENDED] Rename *SolverBenchmarkConfig.xml to *BenchmarkerConfig.xml.
+This is to avoid confusion with the more fine-grained SolverBenchmark and SolverBenchmarkConfig classes.
+The examples wrongly named their Benchmarker configs for example nqueensSolverBenchmarkConfig.xml instead of nqueensBenchmarkerConfig.xml.
+Before in *BenchmarkApp.java:
+    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml";
+After in *BenchmarkApp.java:
+    public static final String DEFAULT_BENCHMARKER_CONFIG
+            = "/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml";
