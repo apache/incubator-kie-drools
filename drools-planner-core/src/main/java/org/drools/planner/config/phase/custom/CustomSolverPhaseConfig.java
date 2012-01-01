@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.custom.CustomSolverPhase;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
@@ -78,15 +79,8 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(CustomSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (customSolverPhaseCommandClassList == null) {
-            customSolverPhaseCommandClassList = inheritedConfig.getCustomSolverPhaseCommandClassList();
-        } else if (inheritedConfig.getCustomSolverPhaseCommandClassList() != null) {
-            // The inherited customSolverPhaseCommandClassList should be before the non-inherited one
-            List<Class<CustomSolverPhaseCommand>> mergedList = new ArrayList<Class<CustomSolverPhaseCommand>>(
-                    inheritedConfig.getCustomSolverPhaseCommandClassList());
-            mergedList.addAll(customSolverPhaseCommandClassList);
-            customSolverPhaseCommandClassList = mergedList;
-        }
+        customSolverPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(
+                customSolverPhaseCommandClassList, inheritedConfig.getCustomSolverPhaseCommandClassList());
     }
 
 }

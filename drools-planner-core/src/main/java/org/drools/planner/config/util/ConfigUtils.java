@@ -38,11 +38,7 @@ public class ConfigUtils {
         } else {
             // The inheritedList should be before the originalList
             List<T> mergedList = new ArrayList<T>(inheritedList);
-            for (T t : originalList) {
-                if (!mergedList.contains(t)) {
-                    mergedList.add(t);
-                }
-            }
+            mergedList.addAll(originalList);
             return mergedList;
         }
     }

@@ -36,6 +36,7 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
@@ -283,15 +284,8 @@ public class SolverConfig {
         } else if (inheritedConfig.getTerminationConfig() != null) {
             terminationConfig.inherit(inheritedConfig.getTerminationConfig());
         }
-        if (solverPhaseConfigList == null) {
-            solverPhaseConfigList = inheritedConfig.getSolverPhaseConfigList();
-        } else if (inheritedConfig.getSolverPhaseConfigList() != null) {
-            // The inherited solverPhaseConfigList should be before the non-inherited one
-            List<SolverPhaseConfig> mergedList = new ArrayList<SolverPhaseConfig>(
-                    inheritedConfig.getSolverPhaseConfigList());
-            mergedList.addAll(solverPhaseConfigList);
-            solverPhaseConfigList = mergedList;
-        }
+        solverPhaseConfigList = ConfigUtils.inheritMergeableListProperty(
+                solverPhaseConfigList, inheritedConfig.getSolverPhaseConfigList());
     }
 
 }

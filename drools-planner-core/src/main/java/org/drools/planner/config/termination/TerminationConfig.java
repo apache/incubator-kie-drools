@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.termination.AbstractCompositeTermination;
 import org.drools.planner.core.termination.AndCompositeTermination;
 import org.drools.planner.core.termination.OrCompositeTermination;
@@ -262,15 +263,8 @@ public class TerminationConfig implements Cloneable {
         if (maximumUnimprovedStepCount == null) {
             maximumUnimprovedStepCount = inheritedConfig.getMaximumUnimprovedStepCount();
         }
-        if (terminationConfigList == null) {
-            terminationConfigList = inheritedConfig.getTerminationConfigList();
-        } else if (inheritedConfig.getTerminationConfigList() != null) {
-            // The inherited terminationConfigList should be before the non-inherited one
-            List<TerminationConfig> mergedList = new ArrayList<TerminationConfig>(
-                    inheritedConfig.getTerminationConfigList());
-            mergedList.addAll(terminationConfigList);
-            terminationConfigList = mergedList;
-        }
+        terminationConfigList = ConfigUtils.inheritMergeableListProperty(
+                terminationConfigList, inheritedConfig.getTerminationConfigList());
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
@@ -129,15 +130,8 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(GreedyFitSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (greedyFitPlanningEntityConfigList == null) {
-            greedyFitPlanningEntityConfigList = inheritedConfig.getGreedyFitPlanningEntityConfigList();
-        } else if (inheritedConfig.getGreedyFitPlanningEntityConfigList() != null) {
-            // The inherited greedyFitPlanningEntityConfigList should be before the non-inherited one
-            List<GreedyFitPlanningEntityConfig> mergedList = new ArrayList<GreedyFitPlanningEntityConfig>(
-                    inheritedConfig.getGreedyFitPlanningEntityConfigList());
-            mergedList.addAll(greedyFitPlanningEntityConfigList);
-            greedyFitPlanningEntityConfigList = mergedList;
-        }
+        greedyFitPlanningEntityConfigList = ConfigUtils.inheritMergeableListProperty(
+                greedyFitPlanningEntityConfigList, inheritedConfig.getGreedyFitPlanningEntityConfigList());
         if (constructionHeuristicPickEarlyType == null) {
             constructionHeuristicPickEarlyType = inheritedConfig.getConstructionHeuristicPickEarlyType();
         }
