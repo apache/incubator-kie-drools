@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -30,7 +31,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetGlobalCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Object>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 

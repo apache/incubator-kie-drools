@@ -24,10 +24,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.DisconnectedFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -38,7 +38,7 @@ import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectCommand
     implements
-    GenericCommand<FactHandle> {
+    GenericCommand<FactHandle>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 

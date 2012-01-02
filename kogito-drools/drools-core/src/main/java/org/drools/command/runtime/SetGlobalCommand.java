@@ -18,23 +18,22 @@ package org.drools.command.runtime;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.xml.jaxb.util.JaxbListAdapter;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Object> , IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;
@@ -45,9 +44,6 @@ public class SetGlobalCommand
 
     @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
-
-    @XmlAttribute
-    private boolean out;
     
     public SetGlobalCommand() {
     }
@@ -61,8 +57,8 @@ public class SetGlobalCommand
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
-        if ( this.out ) {
-            ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult().getResults().put( (this.outIdentifier != null) ? this.outIdentifier : this.identifier,
+        if ( this.outIdentifier != null ) {
+            ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult().getResults().put( this.outIdentifier ,
                                                                                                      object );
         }
 
@@ -93,15 +89,6 @@ public class SetGlobalCommand
 
     public void setOutIdentifier(String outIdentifier) {
         this.outIdentifier = outIdentifier;
-        this.out = true;
-    }
-
-    public boolean isOut() {
-        return this.out;
-    }
-
-    public void setOut(boolean out) {
-        this.out = out;
     }
 
     public String toString() {

@@ -22,13 +22,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlMixed;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
@@ -37,13 +36,11 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.xml.jaxb.util.JaxbCollectionAdapter;
-import org.drools.xml.jaxb.util.JaxbListAdapter;
-import org.drools.xml.jaxb.util.JaxbListWrapper;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
     implements
-    GenericCommand<Collection<FactHandle>> {
+    GenericCommand<Collection<FactHandle>>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 

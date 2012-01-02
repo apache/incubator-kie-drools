@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -36,7 +37,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartProcessCommand implements GenericCommand<ProcessInstance> {
+public class StartProcessCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
 
     @XmlAttribute(required = true)
     private String processId;
