@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,6 +59,7 @@ import org.acme.insurance.Policy;
 import org.drools.ActivationListenerFactory;
 import org.drools.Address;
 import org.drools.Attribute;
+import org.drools.Bar;
 import org.drools.Cat;
 import org.drools.Cell;
 import org.drools.Cheese;
@@ -169,7 +171,6 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
@@ -183,11 +184,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExecutableStatement;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -9456,6 +9453,96 @@ public class MiscTest {
         }
         assertFalse( builder.hasErrors() );
 
+    }
+    
+    @Test
+    public void testJBRULES3323() throws Exception {
+
+		//adding rules. it is important to add both since they reciprocate
+		StringBuilder rule = new StringBuilder();
+		rule.append("package de.orbitx.accumulatetesettest;\n");
+		rule.append("import java.util.Set;\n");
+		rule.append("import java.util.HashSet;\n");
+		rule.append("import org.drools.Foo;\n");
+		rule.append("import org.drools.Bar;\n");
+
+		rule.append("rule \"Sub optimal foo parallelism - this rule is causing NPE upon reverse\"\n");
+		rule.append("when\n");
+		rule.append("$foo : Foo($leftId : id, $leftBar : Bar != null)\n");
+		rule.append("$fooSet : Set()\n");
+		rule.append("from accumulate ( Foo(id > $leftId, bar != null && != $leftBar, $bar : bar),\n");
+		rule.append("init( Set bars = new HashSet(); ),\n");
+		rule.append("action( bars.add($bar); ),\n");
+		rule.append("reverse( System.out.println(\"reverse\"); bars.remove($bar); ),\n");
+		rule.append("result( bars ) )\n");
+		rule.append("then\n");
+		rule.append("System.out.println(\"ok\");\n");
+		rule.append("end\n");
+
+		rule.append("\n\n");
+
+		rule.append("rule \"only one foo within interval for the same bar\"\n");
+		rule.append("when\n");
+		rule.append("$leftFoo : Foo($leftId : id, bar != null, $bar : bar)\n");
+		rule.append("$rightFoo : Foo(bar == $bar, id > $leftId)\n");
+		rule.append("then\n");
+		rule.append("System.out.println(\"ok\");\n");
+		rule.append("end\n");
+
+		//building stuff
+		final PackageBuilder builder = new PackageBuilder();
+		builder.addPackageFromDrl(new StringReader(rule.toString()));
+		if (builder.hasErrors()) {
+			fail(builder.getErrors().toString());
+		}
+		final org.drools.rule.Package pkg = builder.getPackage();
+
+		final RuleBase ruleBase = getRuleBase();
+
+		ruleBase.addPackage(pkg);
+		StatefulSession session = ruleBase.newStatefulSession();
+
+		//adding test data
+		List<Bar> barList = new LinkedList<Bar>();
+		for (int i = 0; i < 3; i++) {
+			Bar bar = new Bar();
+			bar.setId("" + i);
+			barList.add(bar);
+		}
+
+		List<org.drools.Foo> fooList = new ArrayList<org.drools.Foo>();
+		for (int i = 0; i < 4; i++) {
+			org.drools.Foo foo = new org.drools.Foo();
+			foo.setId("" + i);
+
+			//do not modify this, else block is important
+			if (i < 3) {
+				foo.setBar(barList.get(i));
+			} else {
+				foo.setBar(barList.get(2));
+			}
+			fooList.add(foo);
+		}
+
+		for (org.drools.Foo foo : fooList) {
+			session.insert(foo);
+		}
+
+		//the NPE is caused by exactly this sequence. of course there are more sequences but this
+		//appears to be the most short one
+		int[] magicFoos = new int[] { 3, 3, 1, 1, 0, 0, 2, 2, 1, 1, 0, 0, 3, 3, 2, 2, 3, 1, 1 };
+		int[] magicBars = new int[] { 1, 2, 0, 1, 1, 0, 1, 2, 2, 1, 2, 0, 0, 2, 0, 2, 0, 0, 1 };
+
+		//upon final rule firing an NPE will be thrown in org.drools.rule.Accumulate
+		for (int i = 0; i < magicFoos.length; i++) {
+			org.drools.Foo tehFoo = fooList.get(magicFoos[i]);
+			FactHandle fooFactHandle = session.getFactHandle(tehFoo);
+			tehFoo.setBar(barList.get(magicBars[i]));
+			session.update(fooFactHandle, tehFoo);
+			session.fireAllRules();
+		}
+		
+		session.dispose();
     }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
