@@ -17,7 +17,7 @@
 package org.drools.command;
 
 
-public interface ContextManager {
+public interface ContextManager extends Context {
     public static final String        ROOT             = "ROOT";
     
     public Context getContext(String identifier);   
