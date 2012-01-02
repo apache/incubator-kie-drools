@@ -145,7 +145,7 @@ public class CommandFactory {
     }
 
     /**
-     * Sets the global.
+     * Sets the global. Does not add the global to the ExecutionResults.
      * 
      * @param identifier
      *     The identifier of the global
@@ -161,7 +161,7 @@ public class CommandFactory {
 
     /**
      * Sets the global but also when the out parameter is true specifies that the global is added to the ExecutionResults.
-     * 
+     *
      * @param identifier
      *     The identifier of the global
      * @param object
