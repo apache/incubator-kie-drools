@@ -114,8 +114,11 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     }
 
     public Command newSetGlobal(String identifier, Object object, boolean out) {
-        SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
-        return cmd;
+        if (out) {
+            return newSetGlobal(identifier, object, identifier);
+        } else {
+            return newSetGlobal(identifier, object);
+        }
     }
 
     public Command newSetGlobal(String identifier, Object object,
