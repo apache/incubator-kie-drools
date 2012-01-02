@@ -17,12 +17,13 @@
 package org.drools.fluent;
 
 import org.drools.command.Command;
+import org.drools.fluent.CommandScript;
 import org.drools.simulation.Simulation;
 
-public interface InternalSimulation extends Simulation {
+public interface InternalSimulation extends Simulation, CommandScript {
 
     void addCommand(Command cmd);
-
+    
     void newStep(long distance);
 
 }

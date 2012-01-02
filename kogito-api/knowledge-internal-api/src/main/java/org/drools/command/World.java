@@ -16,16 +16,9 @@
 
 package org.drools.command;
 
-public interface Context {
-    
-    World getContextManager();
-    
-    String getName();
-    
-    Object get(String identifier);
 
-    void set(String identifier,
-             Object value);
-
-    void remove(String identifier);
+public interface World extends Context {
+    public static final String        ROOT             = "ROOT";
+    
+    public Context getContext(String identifier);   
 }
