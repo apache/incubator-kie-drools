@@ -19,7 +19,7 @@ package org.drools.command.impl;
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.command.Context;
-import org.drools.command.ContextManager;
+import org.drools.command.World;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItemManager;
@@ -110,7 +110,7 @@ public class FixedKnowledgeCommandContext
         this.statefulKsession = statefulKsession;
     }
 
-    public ContextManager getContextManager() {
+    public World getContextManager() {
         return context.getContextManager();
     }
 

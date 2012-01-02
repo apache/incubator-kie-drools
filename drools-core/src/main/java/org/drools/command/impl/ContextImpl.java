@@ -16,45 +16,43 @@
 
 package org.drools.command.impl;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.command.Context;
-import org.drools.command.ContextManager;
+import org.drools.command.World;
 
 public class ContextImpl
     implements
     Context {
-    
-    private ContextManager      manager;
-    
+
+    private World               manager;
+
     private String              name;
-    
-    private Map<String, Object> context = new HashMap<String, Object>();
+
+    private Map<String, Object> context = new ConcurrentHashMap<String, Object>();
 
     private Context             parent;
-       
-    private int depth;
-    
-    public ContextImpl(String name, ContextManager manager) {
+
+    public ContextImpl(String name,
+                       World manager) {
         this.name = name;
         this.manager = manager;
-        this.depth = 0;
     }
-    
-    public ContextImpl(String name, ContextManager manager, Context delegate) {
+
+    public ContextImpl(String name,
+                       World manager,
+                       Context delegate) {
         this.name = name;
         this.manager = manager;
         setParent( delegate );
-        this.depth = ((ContextImpl)delegate).getDepth() + 1;
     }
 
     public void setParent(Context delegate) {
         this.parent = delegate;
     }
-    
 
-    public ContextManager getContextManager() {
+    public World getContextManager() {
         return this.manager;
     }
 
@@ -75,13 +73,9 @@ public class ContextImpl
         context.put( name,
                      object );
     }
-    
-    public int getDepth() {
-        return this.depth;
-    }
 
     public void remove(String name) {
-        context.remove(name);
+        context.remove( name );
     }
 
     @Override
