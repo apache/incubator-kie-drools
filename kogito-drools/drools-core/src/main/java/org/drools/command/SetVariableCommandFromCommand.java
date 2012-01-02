@@ -43,7 +43,7 @@ public class SetVariableCommandFromCommand
 
     public Void execute(Context context) {
         if ( this.contextName == null ) {
-            context.getContextManager().getContext( ContextManager.ROOT ).set( this.identifier,
+            context.getContextManager().getContext( World.ROOT ).set( this.identifier,
                          ((GenericCommand) this.cmd).execute( context ) );
         } else {
             context.getContextManager().getContext( this.contextName ).set( this.identifier,

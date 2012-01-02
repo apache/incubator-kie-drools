@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.command.Context;
-import org.drools.command.ContextManager;
+import org.drools.command.World;
 import org.drools.command.impl.ContextImpl;
 
 public class ContextManagerImpl
     implements
-    ContextManager {
+    World {
     private Map<String, Context> contexts;
 
 
@@ -36,5 +36,26 @@ public class ContextManagerImpl
 
     public Context getRootContext() {
         return this.root;
+    }
+
+    public World getContextManager() {
+        return this;
+    }
+
+    public String getName() {
+        return root.getName();
+    }
+
+    public Object get(String identifier) {
+        return root.get( identifier );
+    }
+
+    public void set(String identifier,
+                    Object value) {
+        root.set( identifier, value );
+    }
+
+    public void remove(String identifier) {
+        root.remove( identifier );
     }
 }

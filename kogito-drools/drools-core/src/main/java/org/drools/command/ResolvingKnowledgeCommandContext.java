@@ -46,7 +46,7 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         return ( WorkingMemoryEntryPoint ) context.get( WorkingMemoryEntryPoint.class.getName() );
     }
     
-    public ContextManager getContextManager() {
+    public World getContextManager() {
         return context.getContextManager();
     }
 

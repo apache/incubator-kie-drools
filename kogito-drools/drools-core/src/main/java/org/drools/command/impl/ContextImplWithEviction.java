@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.drools.command.Context;
-import org.drools.command.ContextManager;
+import org.drools.command.World;
 
 public class ContextImplWithEviction extends ContextImpl{
 
@@ -40,11 +40,11 @@ public class ContextImplWithEviction extends ContextImpl{
     
     //private LinkedBlockingQueue<ChangeSet> queue;
     
-    public ContextImplWithEviction(String name, ContextManager manager, Context delegate) {
+    public ContextImplWithEviction(String name, World manager, Context delegate) {
         super(name, manager, delegate);
     }
 
-    public ContextImplWithEviction(String name, ContextManager manager) {
+    public ContextImplWithEviction(String name, World manager) {
         super(name, manager);
         
     }
