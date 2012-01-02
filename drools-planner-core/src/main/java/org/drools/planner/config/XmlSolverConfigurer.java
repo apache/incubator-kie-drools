@@ -61,8 +61,8 @@ public class XmlSolverConfigurer {
         configure(resource);
     }
 
-    public void addXstreamAlias(Class aliasClass) {
-        xStream.processAnnotations(aliasClass);
+    public void addXstreamAnnotations(Class... xstreamAnnotations) {
+        xStream.processAnnotations(xstreamAnnotations);
     }
 
     public SolverConfig getSolverConfig() {

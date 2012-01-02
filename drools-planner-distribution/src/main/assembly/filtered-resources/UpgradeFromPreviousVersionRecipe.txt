@@ -1411,3 +1411,9 @@ Before in *BenchmarkApp.java:
 After in *BenchmarkApp.java:
     public static final String DEFAULT_BENCHMARKER_CONFIG
             = "/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml";
+
+[MINOR] XmlSolverConfigurer.addXstreamAlias() has been renamed to addXstreamAnnotations()
+Before in *.java:
+    solverConfigurer.addXstreamAlias(...);
+After in *.java:
+    solverConfigurer.addXstreamAnnotations(...);
