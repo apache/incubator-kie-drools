@@ -115,7 +115,6 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
 
     public Command newSetGlobal(String identifier, Object object, boolean out) {
         SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
-        cmd.setOut(out);
         return cmd;
     }
 

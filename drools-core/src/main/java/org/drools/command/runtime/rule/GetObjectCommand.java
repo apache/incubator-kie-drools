@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.command.Context;
+import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
@@ -31,7 +32,7 @@ import org.drools.runtime.rule.FactHandle;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Object>, IdentifiableResult {
 
     private FactHandle factHandle;
     private String     outIdentifier;
