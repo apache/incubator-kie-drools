@@ -19,12 +19,12 @@
   </section>
 
   <section>
-    <title>Building a Benchmarker</title>
+    <title>Building a benchmarker</title>
 
     <section>
       <title>Adding the extra dependency</title>
 
-      <para>The Benchmarker is current in the drools-planner-core modules, but it requires an extra dependency on the
+      <para>The benchmarker is current in the drools-planner-core modules, but it requires an extra dependency on the
       <link xlink:href="http://www.jfree.org/jfreechart/">JFreeChart</link> library.</para>
 
       <para>If you use maven, add a dependency in your <filename>pom.xml</filename> file:</para>
@@ -42,17 +42,17 @@
     </section>
 
     <section>
-      <title>Building a basic Benchmarker</title>
+      <title>Building a <literal>PlannerBenchmark</literal></title>
 
-      <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
-      Configure it with a benchmarker configuration xml file:</para>
+      <para>You can build a <literal>PlannerBenchmark</literal> instance with the <literal>XmlPlannerBenchmarkFactory</literal>.
+      Configure it with a benchmark configuration xml file:</para>
 
-      <programlisting language="java">    XmlSolverBenchmarker benchmarkConfig = new XmlSolverBenchmarker();
-    benchmarkConfig.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml");
-    PlannerBenchmark plannerBenchmark = benchmarkConfig.buildPlannerBenchmark();
+      <programlisting language="java">    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory();
+    plannerBenchmarkFactory.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
+    PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
     plannerBenchmark.benchmark();</programlisting>
 
-      <para>A basic benchmarker configuration file looks something like this:</para>
+      <para>A basic benchmark configuration file looks something like this:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
@@ -133,7 +133,7 @@
   &lt;/solverBenchmark&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>This benchmarker will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
+      <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
       (32 and 64 queens), so it will run 6 solvers.</para>
 
       <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example with a local
@@ -158,7 +158,7 @@
       <section>
         <title><literal>ProblemIO</literal> interface</title>
 
-        <para>The Benchmarker needs to be able to read the input files to contain a <literal>Solution</literal> write
+        <para>The benchmarker needs to be able to read the input files to contain a <literal>Solution</literal> write
         the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a class that
         implements the <literal>ProblemIO</literal> interface:</para>
 
@@ -226,7 +226,7 @@
     <section>
       <title>Best score summary</title>
 
-      <para>Several summary statistics of the <literal>Benchmarker</literal> run will be written in the
+      <para>Several summary statistics of the <literal>PlannerBenchmark</literal> run will be written in the
       <literal>benchmarkDirectory</literal>. Here is an example of a summary statistic:</para>
 
       <figure>

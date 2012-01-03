@@ -1286,11 +1286,23 @@ After in pom.xml:
 From 5.4.0.Beta1 to 5.4.0.Beta2
 -------------------------------
 
-[MAJOR] The class XmlSolverBenchmarker has moved.
+[MAJOR] The class XmlSolverBenchmarker has moved and been renamed to XmlPlannerBenchmarkFactory.
 Before in *.java:
     import org.drools.planner.benchmark.XmlSolverBenchmarker;
+    ...
+    XmlSolverBenchmarker solverBenchmarker = new XmlSolverBenchmarker().configure(benchmarkConfig);
 After in *.java:
-    import org.drools.planner.benchmark.config.XmlSolverBenchmarker;
+    import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
+    ...
+    XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkConfig);
+
+[MAJOR] Benchmarker: the XmlPlannerBenchmarkFactory can now only build a PlannerBenchmark.
+To benchmark, call benchmark() on that PlannerBenchmark.
+Before in *.java:
+    plannerBenchmarkFactory.benchmark();
+After in *.java:
+    PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+    plannerBenchmark.benchmark();
 
 [MINOR] All the classes in the benchmark package have been split-up into a config and a core package.
 Look for "org.drools.planner.benchmark" in all your files. Normally you won't have any besides the XmlSolverBenchmarker.
@@ -1339,7 +1351,7 @@ The xstreamAnnotatedClass is now set in the problemBenchmarks.
 Note: if you prefer to use a different solution file format, you can now easily hook in one with <problemIOClass> (see manual).
 Before in *BenchmarkApp.java:
     ...
-    solverBenchmarker.addXstreamAnnotations(NQueens.class);
+    plannerBenchmarkFactory.addXstreamAnnotations(NQueens.class);
     ...
 After in *BenchmarkApp.java:
     ...
@@ -1417,11 +1429,3 @@ Before in *.java:
     solverConfigurer.addXstreamAlias(...);
 After in *.java:
     solverConfigurer.addXstreamAnnotations(...);
-
-[MAJOR] Benchmarker: the XmlSolverBenchmarker can now only build a PlannerBenchmark.
-To benchmark, call benchmark() on that PlannerBenchmark.
-Before in *.java:
-    solverBenchmarker.benchmark();
-After in *.java:
-    PlannerBenchmark plannerBenchmark = solverBenchmarker.buildPlannerBenchmark();
-    plannerBenchmark.benchmark();

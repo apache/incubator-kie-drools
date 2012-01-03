@@ -26,12 +26,12 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.config.XmlSolverConfigurer;
 
-public class XmlSolverBenchmarker {
+public class XmlPlannerBenchmarkFactory {
 
     private XStream xStream;
     private PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
-    public XmlSolverBenchmarker() {
+    public XmlPlannerBenchmarkFactory() {
         xStream = XmlSolverConfigurer.buildXstream();
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
     }
@@ -44,7 +44,7 @@ public class XmlSolverBenchmarker {
     // Worker methods
     // ************************************************************************
 
-    public XmlSolverBenchmarker configure(String resource) {
+    public XmlPlannerBenchmarkFactory configure(String resource) {
         InputStream in = getClass().getResourceAsStream(resource);
         if (in == null) {
             throw new IllegalArgumentException("Resource not found: " + resource);
@@ -52,7 +52,7 @@ public class XmlSolverBenchmarker {
         return configure(in);
     }
 
-    public XmlSolverBenchmarker configure(InputStream in) {
+    public XmlPlannerBenchmarkFactory configure(InputStream in) {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -65,9 +65,17 @@ public class XmlSolverBenchmarker {
         }
     }
 
-    public XmlSolverBenchmarker configure(Reader reader) {
+    public XmlPlannerBenchmarkFactory configure(Reader reader) {
         plannerBenchmarkConfig = (PlannerBenchmarkConfig) xStream.fromXML(reader);
         return this;
+    }
+
+    public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
+        if (plannerBenchmarkConfig == null) {
+            throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
+                    " call configure(...) first.");
+        }
+        return plannerBenchmarkConfig;
     }
 
     public PlannerBenchmark buildPlannerBenchmark() {

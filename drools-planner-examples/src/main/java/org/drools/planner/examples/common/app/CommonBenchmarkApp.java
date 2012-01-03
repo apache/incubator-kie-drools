@@ -17,18 +17,18 @@
 package org.drools.planner.examples.common.app;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.config.XmlSolverBenchmarker;
+import org.drools.planner.benchmark.config.XmlPlannerBenchmarkFactory;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
 
-    protected XmlSolverBenchmarker solverBenchmarker;
+    protected XmlPlannerBenchmarkFactory plannerBenchmarkFactory;
 
     protected CommonBenchmarkApp(String benchmarkerConfig) {
-        solverBenchmarker = new XmlSolverBenchmarker().configure(benchmarkerConfig);
+        plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkerConfig);
     }
 
     public void process() {
-        PlannerBenchmark plannerBenchmark = solverBenchmarker.buildPlannerBenchmark();
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();
     }
 

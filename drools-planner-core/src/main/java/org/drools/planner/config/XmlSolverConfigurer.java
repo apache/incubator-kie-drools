@@ -65,10 +65,6 @@ public class XmlSolverConfigurer {
         xStream.processAnnotations(xstreamAnnotations);
     }
 
-    public SolverConfig getSolverConfig() {
-        return solverConfig;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -97,6 +93,14 @@ public class XmlSolverConfigurer {
     public XmlSolverConfigurer configure(Reader reader) {
         solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
+    }
+
+    public SolverConfig getSolverConfig() {
+        if (solverConfig == null) {
+            throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
+                    " call configure(...) first.");
+        }
+        return solverConfig;
     }
 
     public Solver buildSolver() {
