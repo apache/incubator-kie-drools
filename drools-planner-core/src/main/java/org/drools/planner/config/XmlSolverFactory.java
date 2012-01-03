@@ -36,7 +36,7 @@ import org.drools.planner.core.Solver;
 /**
  * XML based configuration that builds a {@link Solver}.
  */
-public class XmlSolverConfigurer {
+public class XmlSolverFactory {
 
     public static XStream buildXstream() {
         XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
@@ -52,11 +52,11 @@ public class XmlSolverConfigurer {
     private XStream xStream;
     private SolverConfig solverConfig = null;
 
-    public XmlSolverConfigurer() {
+    public XmlSolverFactory() {
         xStream = buildXstream();
     }
 
-    public XmlSolverConfigurer(String resource) {
+    public XmlSolverFactory(String resource) {
         this();
         configure(resource);
     }
@@ -69,7 +69,7 @@ public class XmlSolverConfigurer {
     // Worker methods
     // ************************************************************************
 
-    public XmlSolverConfigurer configure(String resource) {
+    public XmlSolverFactory configure(String resource) {
         InputStream in = getClass().getResourceAsStream(resource);
         if (in == null) {
             throw new IllegalArgumentException("The solver configuration (" + resource + ") does not exist.");
@@ -77,7 +77,7 @@ public class XmlSolverConfigurer {
         return configure(in);
     }
 
-    public XmlSolverConfigurer configure(InputStream in) {
+    public XmlSolverFactory configure(InputStream in) {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -90,7 +90,7 @@ public class XmlSolverConfigurer {
         }
     }
 
-    public XmlSolverConfigurer configure(Reader reader) {
+    public XmlSolverFactory configure(Reader reader) {
         solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
     }

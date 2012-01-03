@@ -104,10 +104,10 @@
       <title>A RuleBase (possibly defined by Guvnor)</title>
 
       <para>If you prefer to build the <literal>RuleBase</literal> yourself or if you're combining Planner with Guvnor,
-      you can set the <literal>RuleBase</literal> on the <literal>XmlSolverConfigurer</literal> before building the
+      you can set the <literal>RuleBase</literal> on the <literal>XmlSolverFactory</literal> before building the
       <literal>Solver</literal>:</para>
 
-      <programlisting language="xml">    xmlSolverConfigurer.getSolverConfig().setRuleBase(ruleBase);</programlisting>
+      <programlisting language="xml">    solverFactory.getSolverConfig().setRuleBase(ruleBase);</programlisting>
     </section>
   </section>
 

@@ -19,7 +19,7 @@ package org.drools.planner.examples.common.app;
 import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
@@ -50,25 +50,25 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     protected void runSpeedTest(File unsolvedDataFile, String scoreAttainedString, EnvironmentMode environmentMode) {
-        XmlSolverConfigurer configurer = buildConfigurer(scoreAttainedString, environmentMode);
-        Solver solver = solve(configurer, unsolvedDataFile);
+        XmlSolverFactory solverFactory = buildSolverFactory(scoreAttainedString, environmentMode);
+        Solver solver = solve(solverFactory, unsolvedDataFile);
         assertBestSolution(solver, scoreAttainedString);
     }
 
-    private XmlSolverConfigurer buildConfigurer(String scoreAttainedString, EnvironmentMode environmentMode) {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(createSolverConfigResource());
-        configurer.getSolverConfig().setEnvironmentMode(environmentMode);
+    private XmlSolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(createSolverConfigResource());
+        solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained(scoreAttainedString);
-        configurer.getSolverConfig().setTerminationConfig(terminationConfig);
-        return configurer;
+        solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
+        return solverFactory;
     }
 
-    private Solver solve(XmlSolverConfigurer configurer, File unsolvedDataFile) {
+    private Solver solve(XmlSolverFactory solverFactory, File unsolvedDataFile) {
         SolutionDao solutionDao = createSolutionDao();
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
-        Solver solver = configurer.buildSolver();
+        Solver solver = solverFactory.buildSolver();
         solver.setPlanningProblem(planningProblem);
         solver.solve();
         return solver;

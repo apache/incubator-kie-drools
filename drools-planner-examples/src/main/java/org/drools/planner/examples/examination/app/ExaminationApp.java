@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.examination.app;
 
-import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.app.CommonApp;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
@@ -44,9 +44,9 @@ public class ExaminationApp extends CommonApp {
 
     @Override
     protected Solver createSolver() {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(SOLVER_CONFIG);
-        return configurer.buildSolver();
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(SOLVER_CONFIG);
+        return solverFactory.buildSolver();
     }
 
     @Override

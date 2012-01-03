@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.travelingtournament.app.smart;
 
-import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
@@ -37,9 +37,9 @@ public class SmartTravelingTournamentApp extends AbstractTravelingTournamentApp 
 
     @Override
     protected Solver createSolver() {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(SOLVER_CONFIG);
-        return configurer.buildSolver();
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(SOLVER_CONFIG);
+        return solverFactory.buildSolver();
     }
 
     @Override

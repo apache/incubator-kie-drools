@@ -16,12 +16,11 @@
 
 package org.drools.planner.examples.travelingtournament.app.simple;
 
-import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.travelingtournament.app.AbstractTravelingTournamentApp;
 import org.drools.planner.examples.travelingtournament.persistence.simple.SimpleTravelingTournamentDaoImpl;
-import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
 
 public class SimpleTravelingTournamentApp extends AbstractTravelingTournamentApp {
 
@@ -34,9 +33,9 @@ public class SimpleTravelingTournamentApp extends AbstractTravelingTournamentApp
 
     @Override
     protected Solver createSolver() {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(SOLVER_CONFIG);
-        return configurer.buildSolver();
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(SOLVER_CONFIG);
+        return solverFactory.buildSolver();
     }
 
     @Override

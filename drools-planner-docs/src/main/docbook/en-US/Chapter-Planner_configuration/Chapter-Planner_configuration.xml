@@ -45,12 +45,12 @@
     <section>
       <title>Solver configuration by XML file</title>
 
-      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>.
+      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>.
       Configure it with a solver configuration XML file:</para>
 
-      <programlisting language="java">        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        Solver solver = configurer.buildSolver();</programlisting>
+      <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        Solver solver = solverFactory.buildSolver();</programlisting>
 
       <para>A solver configuration file looks something like this:</para>
 
@@ -139,10 +139,10 @@
       <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
       runtime:</para>
 
-      <programlisting>        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+      <programlisting>        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
-        SolverConfig solverConfig = configurer.getSolverConfig();
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMaximumMinutesSpend(userInput);
         Solver solver = solverConfig.buildSolver();</programlisting>
     </section>

@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
@@ -51,13 +51,13 @@ public class NQueensApp extends CommonApp {
 
     @Override
     protected Solver createSolver() {
-        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-        configurer.configure(SOLVER_CONFIG);
-        return configurer.buildSolver();
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(SOLVER_CONFIG);
+        return solverFactory.buildSolver();
     }
 
     protected Solver createSolverByApi() {
-        // Not recommended! It is highly recommended to use XmlSolverConfigurer with an XML configuration instead.
+        // Not recommended! It is highly recommended to use XmlSolverFactory with an XML configuration instead.
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);

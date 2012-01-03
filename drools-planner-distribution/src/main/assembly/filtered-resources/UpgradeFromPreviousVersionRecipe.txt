@@ -1286,6 +1286,30 @@ After in pom.xml:
 From 5.4.0.Beta1 to 5.4.0.Beta2
 -------------------------------
 
+[MAJOR] The class XmlSolverConfigurer has been renamed to XmlSolverFactory
+Before in *.java:
+    import org.drools.planner.config.XmlSolverConfigurer;
+    ...
+    protected Solver createSolver() {
+        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+        configurer.configure(SOLVER_CONFIG);
+        return configurer.buildSolver();
+    }
+After in *.java:
+    import org.drools.planner.config.XmlSolverFactory;
+    ...
+    protected Solver createSolver() {
+        XmlSolverFactory solverFactory = new XmlSolverFactory();
+        solverFactory.configure(SOLVER_CONFIG);
+        return solverFactory.buildSolver();
+    }
+
+[MINOR] XmlSolverFactory.addXstreamAlias() has been renamed to addXstreamAnnotations()
+Before in *.java:
+    solverFactory.addXstreamAlias(...);
+After in *.java:
+    solverFactory.addXstreamAnnotations(...);
+
 [MAJOR] The class XmlSolverBenchmarker has moved and been renamed to XmlPlannerBenchmarkFactory.
 Before in *.java:
     import org.drools.planner.benchmark.XmlSolverBenchmarker;
@@ -1296,8 +1320,8 @@ After in *.java:
     ...
     XmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkConfig);
 
-[MAJOR] Benchmarker: the XmlPlannerBenchmarkFactory can now only build a PlannerBenchmark.
-To benchmark, call benchmark() on that PlannerBenchmark.
+[MAJOR] Benchmarker: the XmlPlannerBenchmarkFactory can now only build a PlannerBenchmark, not run it.
+To run a benchmark, call benchmark() on that PlannerBenchmark.
 Before in *.java:
     plannerBenchmarkFactory.benchmark();
 After in *.java:
@@ -1423,9 +1447,3 @@ Before in *BenchmarkApp.java:
 After in *BenchmarkApp.java:
     public static final String DEFAULT_BENCHMARKER_CONFIG
             = "/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml";
-
-[MINOR] XmlSolverConfigurer.addXstreamAlias() has been renamed to addXstreamAnnotations()
-Before in *.java:
-    solverConfigurer.addXstreamAlias(...);
-After in *.java:
-    solverConfigurer.addXstreamAnnotations(...);
