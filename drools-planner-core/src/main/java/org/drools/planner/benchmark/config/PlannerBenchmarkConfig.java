@@ -26,8 +26,8 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
-import org.drools.planner.benchmark.core.PlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 

@@ -17,7 +17,6 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +25,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;

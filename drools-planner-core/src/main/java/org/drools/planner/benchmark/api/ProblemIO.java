@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core;
+package org.drools.planner.benchmark.api;
 
 import java.io.File;
 

@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.core.PlannerBenchmark;
+import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.config.XmlSolverConfigurer;
 
 public class XmlSolverBenchmarker {
