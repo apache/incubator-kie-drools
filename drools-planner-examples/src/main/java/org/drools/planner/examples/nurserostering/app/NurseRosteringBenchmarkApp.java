@@ -20,37 +20,37 @@ import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
 public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String SPRINT_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkerConfig.xml";
-    public static final String MEDIUM_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkerConfig.xml";
-    public static final String LONG_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkerConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkerConfig.xml";
+    public static final String SPRINT_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringSprintBenchmarkConfig.xml";
+    public static final String MEDIUM_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringMediumBenchmarkConfig.xml";
+    public static final String LONG_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringLongBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String solverConfig;
         if (args.length > 0) {
             if (args[0].equals("sprint")) {
-                solverConfig = SPRINT_BENCHMARKER_CONFIG;
+                solverConfig = SPRINT_BENCHMARK_CONFIG;
             } else if (args[0].equals("medium")) {
-                solverConfig = MEDIUM_BENCHMARKER_CONFIG;
+                solverConfig = MEDIUM_BENCHMARK_CONFIG;
             } else if (args[0].equals("long")) {
-                solverConfig = LONG_BENCHMARKER_CONFIG;
+                solverConfig = LONG_BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
-                solverConfig = STEP_LIMIT_BENCHMARKER_CONFIG;
+                solverConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
         } else {
-            solverConfig = MEDIUM_BENCHMARKER_CONFIG;
+            solverConfig = MEDIUM_BENCHMARK_CONFIG;
         }
         new NurseRosteringBenchmarkApp(solverConfig).process();
     }
 
-    public NurseRosteringBenchmarkApp(String benchmarkerConfig) {
-        super(benchmarkerConfig);
+    public NurseRosteringBenchmarkApp(String benchmarkConfig) {
+        super(benchmarkConfig);
     }
 
 }

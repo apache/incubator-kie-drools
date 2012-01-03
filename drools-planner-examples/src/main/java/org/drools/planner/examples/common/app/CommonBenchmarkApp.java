@@ -23,8 +23,8 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
 
     protected XmlPlannerBenchmarkFactory plannerBenchmarkFactory;
 
-    protected CommonBenchmarkApp(String benchmarkerConfig) {
-        plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkerConfig);
+    protected CommonBenchmarkApp(String benchmarkConfig) {
+        plannerBenchmarkFactory = new XmlPlannerBenchmarkFactory().configure(benchmarkConfig);
     }
 
     public void process() {

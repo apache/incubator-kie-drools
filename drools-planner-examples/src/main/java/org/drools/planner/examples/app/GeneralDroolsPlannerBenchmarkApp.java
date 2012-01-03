@@ -20,16 +20,16 @@ import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
 public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/app/benchmark/generalDroolsPlannerBenchmarkerConfig.xml";
+    public static final String DEFAULT_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/app/benchmark/generalDroolsPlannerBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        String solverConfig = DEFAULT_BENCHMARKER_CONFIG;
+        String solverConfig = DEFAULT_BENCHMARK_CONFIG;
         new GeneralDroolsPlannerBenchmarkApp(solverConfig).process();
     }
 
-    public GeneralDroolsPlannerBenchmarkApp(String benchmarkerConfig) {
-        super(benchmarkerConfig);
+    public GeneralDroolsPlannerBenchmarkApp(String benchmarkConfig) {
+        super(benchmarkConfig);
     }
 
 }

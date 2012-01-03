@@ -20,15 +20,15 @@ import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
 public class PatientAdmissionScheduleBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String DEFAULT_BENCHMARKER_CONFIG
-            = "/org/drools/planner/examples/pas/benchmark/patientAdmissionScheduleBenchmarkerConfig.xml";
+    public static final String DEFAULT_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/pas/benchmark/patientAdmissionScheduleBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleBenchmarkApp(DEFAULT_BENCHMARKER_CONFIG).process();
+        new PatientAdmissionScheduleBenchmarkApp(DEFAULT_BENCHMARK_CONFIG).process();
     }
 
-    public PatientAdmissionScheduleBenchmarkApp(String benchmarkerConfig) {
-        super(benchmarkerConfig);
+    public PatientAdmissionScheduleBenchmarkApp(String benchmarkConfig) {
+        super(benchmarkConfig);
     }
 
 }

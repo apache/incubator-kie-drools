@@ -16,39 +16,36 @@
 
 package org.drools.planner.examples.travelingtournament.app.smart;
 
-import java.io.File;
-
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
-import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
 public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
 
-    public static final String BENCHMARKER_CONFIG_PREFIX
+    public static final String BENCHMARK_CONFIG_PREFIX
             = "/org/drools/planner/examples/travelingtournament/benchmark/smart/";
-    public static final String BENCHMARKER_CONFIG
-            = BENCHMARKER_CONFIG_PREFIX + "smartTravelingTournamentBenchmarkerConfig.xml";
-    public static final String STEP_LIMIT_BENCHMARKER_CONFIG
-            = BENCHMARKER_CONFIG_PREFIX + "smartTravelingTournamentStepLimitBenchmarkerConfig.xml";
+    public static final String BENCHMARK_CONFIG
+            = BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_BENCHMARK_CONFIG
+            = BENCHMARK_CONFIG_PREFIX + "smartTravelingTournamentStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        String benchmarkerConfig;
+        String benchmarkConfig;
         if (args.length > 0) {
             // default is a workaround for http://jira.codehaus.org/browse/MEXEC-35
             if (args[0].equals("default")) {
-                benchmarkerConfig = BENCHMARKER_CONFIG;
+                benchmarkConfig = BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
-                benchmarkerConfig = STEP_LIMIT_BENCHMARKER_CONFIG;
+                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else {
-                benchmarkerConfig = BENCHMARKER_CONFIG_PREFIX + args[0] + "BenchmarkerConfig.xml";
+                benchmarkConfig = BENCHMARK_CONFIG_PREFIX + args[0] + "BenchmarkConfig.xml";
             }
         } else {
-            benchmarkerConfig = BENCHMARKER_CONFIG;
+            benchmarkConfig = BENCHMARK_CONFIG;
         }
-        new SmartTravelingTournamentBenchmarkApp(benchmarkerConfig).process();
+        new SmartTravelingTournamentBenchmarkApp(benchmarkConfig).process();
     }
 
-    public SmartTravelingTournamentBenchmarkApp(String benchmarkerConfig) {
-        super(benchmarkerConfig);
+    public SmartTravelingTournamentBenchmarkApp(String benchmarkConfig) {
+        super(benchmarkConfig);
     }
 
 }
