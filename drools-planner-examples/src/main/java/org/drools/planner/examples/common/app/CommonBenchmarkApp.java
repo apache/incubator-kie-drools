@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.common.app;
 
+import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.config.XmlSolverBenchmarker;
 
 public abstract class CommonBenchmarkApp extends LoggingMain {
@@ -27,7 +28,8 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
     }
 
     public void process() {
-        solverBenchmarker.benchmark();
+        PlannerBenchmark plannerBenchmark = solverBenchmarker.buildPlannerBenchmark();
+        plannerBenchmark.benchmark();
     }
 
 }

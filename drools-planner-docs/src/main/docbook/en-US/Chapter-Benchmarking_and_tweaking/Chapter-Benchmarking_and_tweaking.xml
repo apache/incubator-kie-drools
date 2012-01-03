@@ -47,9 +47,10 @@
       <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
       Configure it with a benchmarker configuration xml file:</para>
 
-      <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
-    benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml");
-    benchmarker.benchmark();</programlisting>
+      <programlisting language="java">    XmlSolverBenchmarker benchmarkConfig = new XmlSolverBenchmarker();
+    benchmarkConfig.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkerConfig.xml");
+    PlannerBenchmark plannerBenchmark = benchmarkConfig.buildPlannerBenchmark();
+    plannerBenchmark.benchmark();</programlisting>
 
       <para>A basic benchmarker configuration file looks something like this:</para>
 

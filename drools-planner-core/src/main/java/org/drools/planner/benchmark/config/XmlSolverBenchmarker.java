@@ -78,9 +78,4 @@ public class XmlSolverBenchmarker {
         return plannerBenchmarkConfig.buildPlannerBenchmark();
     }
 
-    public void benchmark() {
-        PlannerBenchmark plannerBenchmark = buildPlannerBenchmark();
-        plannerBenchmark.benchmark();
-    }
-
 }

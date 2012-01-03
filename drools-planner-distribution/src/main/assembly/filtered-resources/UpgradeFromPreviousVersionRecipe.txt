@@ -1417,3 +1417,11 @@ Before in *.java:
     solverConfigurer.addXstreamAlias(...);
 After in *.java:
     solverConfigurer.addXstreamAnnotations(...);
+
+[MAJOR] Benchmarker: the XmlSolverBenchmarker can now only build a PlannerBenchmark.
+To benchmark, call benchmark() on that PlannerBenchmark.
+Before in *.java:
+    solverBenchmarker.benchmark();
+After in *.java:
+    PlannerBenchmark plannerBenchmark = solverBenchmarker.buildPlannerBenchmark();
+    plannerBenchmark.benchmark();
