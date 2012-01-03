@@ -7,8 +7,11 @@
 
   <title>Core Engine: Persistence and transactions</title>
 
-  <para>jBPM allows the persistent storage of certain information,
-  i.e., the process runtime state, the history information, etc.</para>
+  <para>jBPM allows the persistent storage of certain information, i.e., the process runtime state (to
+  be able to continue execution of a process instance at any point, for example if something goes wrong),
+  the process definitions themselves, the history information (a log of current state and what happened
+  already), etc.  This chapter describes these different types of persistence, and how to configure
+  them.</para>
 
   <section>
     <title>Runtime State</title>
@@ -19,7 +22,7 @@
     instance is created for each sales request.  The process instance represents
     the current execution state in that specific context, and contains all the
     information related to that process instance.  Note that it only contains
-    the minimal runtime state that is needed to continue the execution of that
+    the (minimal) runtime state that is needed to continue the execution of that
     process instance at some later time, but it does not include information
     about the history of that process instance if that information is no longer
     needed in the process instance.</para>
@@ -31,6 +34,26 @@
     them at some later time.  jBPM allows you to plug in different
     persistence strategies.  By default, if you do not configure the
     process engine otherwise, process instances are not made persistent.</para>
+    
+    <para>If you configure the engine to use persistence, it will automatically store
+    the runtime state into the database.  You do not have to trigger persistence yourself,
+    the engine will take care of this when persistence is enabled.  Whenever you invoke the
+    engine, it will make sure that any changes are stored at the end of that invocation, at
+    so-called safe points.  Whenever something goes wrong and you restore the engine from
+    the database, you also should not reload the process instances and trigger them manually
+    to resume execution, as process instances will automatically resume execution if they are
+    triggered, like for example by a timer expiring, the completion of a task that was 
+    requested by that process instance, or a signal being sent to the process instance.  The
+    engine will automatically reload process instances on demand.</para>
+    
+    <para>The runtime persistence data should in general be considered internal, meaning that you
+    probably should not try to access these database tables directly and especially not try
+    to modify these directly (as changing the runtime state of process instances without the
+    engine knowing might have unexpected side-effects).  In most cases where information about
+    the current execution state of process instances is required, the use of a history log
+    is mostly recommended (see below).  In some cases, it might still be useful to for example
+    query the internal database tables directly, but you should only do this if you know what
+    you are doing.</para>
 
     <section>
       <title>Binary Persistence</title>
@@ -38,11 +61,33 @@
     <para>jBPM provides a binary persistence mechanism that allows
     you to save the state of a process instance as a binary dataset.  This
     way, the state of all running process instances can always be stored in
-    a persistent location. Note that these binary datasets usually are
+    a persistent location.  Note that these binary datasets usually are
     relatively small, as they only contain the minimal execution state of
     the process instance.  For a simple process instance, this usually
     contains one or a few node instances, i.e., any node that is currently
-    executing, and, possibly, some variable values.</para>
+    executing, and, possibly, some variable values.  The process instance is transformed
+    into a binary blob (for performance reasons, using a custom serialization
+    mechanism, not using normal Java serialization).  This blob is then stored,
+    alongside other metadata about this process instance (like for example the
+    process instance id, process id, start date, etc.).</para>
+    
+    <para>The database schema if you store this information into a database looks
+    like this:</para>
+    
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" width="70%"
+                     fileref="images/Chapter-Persistence/runtime_db.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+
+    <para>Apart from the process instance state, the session itself can also store
+    some state, like for example timers, or if you are using business rules the session
+    data that the rules are evaluated over.  This session state is stored separately as
+    a binary blob, along with the id of the session and some metadata.  You always restore
+    session state by reloading the session with the given id.  The session id can be retrieved
+    using <code>ksession.getId()</code>.</para>
+    
     </section>
 
     <section>
@@ -50,37 +95,52 @@
 
     <para>The state of a process instance is stored at so-called "safe points"
     during the execution of the process engine.  Whenever a process instance
-    is executing, after its start or continuation from a wait state, the engine
-    proceeds until no more actions can be performed. At that point, the engine
+    is executing (for example when it started or continuing from a previous wait state,
+    the engine executes the process instance until no more actions can be performed (meaning
+    that the process instance either has completed (or was aborted), or that it has reached a
+    wait state in all of its parallel paths). At that point, the engine
     has reached the next safe state, and the state of the process instance
-    and all other process instances that might have been affected is stored
+    (and all other process instances that might have been affected) is stored
     persistently.</para>
     </section>
 
     <section>
       <title>Configuring Persistence</title>
 
-    <para>By default, the engine does not save runtime data persistently.
-    It is, however, pretty straightforward to configure the engine to do
-    this, by adding a configuration file and the necessary dependencies.
-    Persistence itself is based on the Java Persistence API (JPA) and can
-    thus work with several persistence mechanisms.  We are using Hibernate by
-    default, but feel free to employ alternatives.  A H2 database is used
-    underneath to store the data, but you might choose your own alternative
-    for this, too.</para>
+    <para>By default, the engine does not save runtime data persistently.  This
+    means you can use the engine completely without persistence (so not even
+    requiring an in memory database) if necessary, for example for performance
+    reasons, or when you would like to manage persistence yourself.  It is, however,
+    possible to configure the engine to do use persistence by configuring it to do so.
+    This usually requires adding the necessary dependencies, configuring a datasource
+    and creating the engine with persistence configured.</para>
+    
+    <section>
+      <title>Adding dependencies</title>
 
-    <para>First of all, you need to add the necessary dependencies to your
-    classpath.  If you're using the Eclipse IDE, you can do that by adding
-    the jar files to your jBPM runtime directory,
-    or by manually adding these dependencies to your project. First of all,
+    <para>You need to make sure the necessary dependencies are available in the classpath
+    of your application if you want to user persistence.  By default,
+    persistence is based on the Java Persistence API (JPA) and can
+    thus work with several persistence mechanisms.  We are using Hibernate by
+    default.</para>
+
+    <para>If you're using the Eclipse IDE and the jBPM Eclipse plugin, you should make sure
+    the necessary jars are added to your jBPM runtime directory.  You don't really need to do
+    anything (as the necessary dependencies should already be there) if you are using the jBPM
+    runtime that is configured by default when using the jBPM installer, or if you downloaded
+    and unzipped the jBPM runtime artefact (from the downloads) and pointed the jBPM plugin to
+    that directory.</para>
+    
+    <para>If you would like to manually add the necessary dependencies to your project, first of all,
     you need the jar file <filename>jbpm-persistence-jpa.jar</filename>,
     as that contains code for saving the runtime state whenever necessary.
     Next, you also need various other dependencies, depending on the
     persistence solution and database you are using.  For the default
-    combination with Hibernate as the JPA persistence provider, the H2
-    database and Bitronix for JTA-based transaction management, the
+    combination with Hibernate as the JPA persistence provider and using an H2
+    in-memory database and Bitronix for JTA-based transaction management, the
     following list of additional dependencies is needed:
-      <orderedlist>
+      <itemizedlist>
+        <listitem>jbpm-test (org.jbpm)</listitem>
         <listitem>jbpm-persistence-jpa (org.jbpm)</listitem>
         <listitem>drools-persistence-jpa (org.drools)</listitem>
         <listitem>persistence-api (javax.persistence)</listitem>
@@ -88,6 +148,7 @@
         <listitem>hibernate-annotations (org.hibernate)</listitem>
         <listitem>hibernate-commons-annotations (org.hibernate)</listitem>
         <listitem>hibernate-core (org.hibernate)</listitem>
+        <listitem>commons-collections (commons-collections)</listitem>
         <listitem>dom4j (dom4j)</listitem>
         <listitem>jta (javax.transaction)</listitem>
         <listitem>btm (org.codehaus.btm)</listitem>
@@ -95,16 +156,91 @@
         <listitem>slf4j-api (org.slf4j)</listitem>
         <listitem>slf4j-jdk14 (org.slf4j)</listitem>
         <listitem>h2 (com.h2database)</listitem>
-        <listitem>commons-collections (commons-collections)</listitem>
-      </orderedlist>
+      </itemizedlist>
     </para>
+    
+    </section>
 
-    <para>Next, you need to configure the jBPM engine to save the state of the
-    engine whenever necessary.  The easiest way to do this is to use
-    <code>JPAKnowledgeService</code> to create your knowledge session, based on a
-    knowledge base, a knowledge session configuration (if necessary) and an
-    environment.  The environment needs to contain a reference to your
-    Entity Manager Factory.  For example:</para>
+    <section>
+      <title>Configuring the engine to use persistence using <code>JBPMHelper</code></title>
+
+    <para>You need to configure the jBPM engine to use persistence, usually simply by using
+    the appropriate constructor when creating your session.  There are various ways to create
+    a session (as we have tried to make this as easy as possible for you and have several
+    utility classes for you, depending for example if you are trying to write a process junit
+    test).</para>
+    
+    <para>The easiest way to do this is to use the <code>jbpm-test</code> module that allows you to easily
+    create and test your processes.  The <code>JBPMHelper</code> class has a method to create a session,
+    and uses a configuration file to configure this session, like whether you want to use persistence,
+    the datasource to use, etc.  The helper class will then do all the setup and configuration
+    for you.</para>
+    
+    <para>To configure persistence, create a <filename>jBPM.properties</filename> file and configure the following properties
+    (note that the example below are the default properties, using an H2 in-memory database with persistence
+    enables, if you are fine with all of these properties, you don't need to add new properties file, as it
+    will then use these properties by default):</para>
+    
+    <programlisting># for creating a datasource
+persistence.datasource.name=jdbc/jbpm-ds
+persistence.datasource.user=sa
+persistence.datasource.password=
+persistence.datasource.url=jdbc:h2:tcp://localhost/~/jbpm-db
+persistence.datasource.driverClassName=org.h2.Driver
+
+# for configuring persistence of the session
+persistence.enabled=true
+persistence.persistenceunit.name=org.jbpm.persistence.jpa
+persistence.persistenceunit.dialect=org.hibernate.dialect.H2Dialect
+
+# for configuring the human task service
+taskservice.enabled=true
+taskservice.datasource.name=org.jbpm.task
+taskservice.transport=mina
+taskservice.usergroupcallback=org.jbpm.task.service.DefaultUserGroupCallbackImpl
+    </programlisting>
+    
+    <para>If you want to use persistence, you must make sure that the datasource (that you specified
+    in the <filename>jBPM.properties</filename> file) is initialized correctly.  This means that the database itself must
+    be up and running, and the datasource should be registered using the correct name.  If you would like
+    to use an H2 in-memory database (which is usually very easy to do some testing), you can use the 
+    <code>JBPMHelper</code> class to start up this database, using:</para>
+    
+    <programlisting language="java">JBPMHelper.startH2Server();
+    </programlisting>
+
+    <para>To register the datasource (this is something you always need to do, even if you're not using H2
+    as your database, check below for more options on how to configure your datasource), use:</para>
+    
+    <programlisting language="java">JBPMHelper.setupDataSource();
+    </programlisting>
+
+    <para>Next, you can use the <code>JBPMHelper</code> class to create your session (after creating your knowledge base,
+    which is identical to the case when you are not using persistence):</para>
+    
+    <programlisting language="java">StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);
+    </programlisting>
+    
+    <para>Once you have done that, you can just call methods on this ksession (like <code>startProcess</code>)
+    and the engine will persist all runtime state in the created datasource.</para>
+
+    <para>You can also use the <code>JBPMHelper</code> class to recreate your session (by restoring its state
+    from the database, by passing in the session id (that you can retrieve using <code>ksession.getId()</code>)):</para>
+
+    <programlisting language="java">StatefulKnowledgeSession ksession = 
+    JBPMHelper.loadStatefulKnowledgeSession(kbase, sessionId);
+    </programlisting>
+    
+    </section>
+    
+    <section>
+      <title>Manually configuring the engine to use persistence</title>
+    
+    <para>You can also use the <code>JPAKnowledgeService</code> to create your knowledge session.  This
+    is slightly more complex, but gives you full access to the underlying configurations.  You can create
+    a new knowledge session using <code>JPAKnowledgeService</code> based on a knowledge base, a
+    knowledge session configuration (if necessary) and an environment.  The environment 
+    needs to contain a reference to your Entity Manager Factory.  For example:</para>
 
     <programlisting language="java">// create the entity manager factory and register it in the environment
 EntityManagerFactory emf =
@@ -126,7 +262,8 @@ ksession.dispose();</programlisting>
 
     <programlisting language="java">
 // recreate the session from database using the sessionId
-ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );</programlisting>
+ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
+    sessionId, kbase, null, env );</programlisting>
 
     <!--para>You can also configure your engine to use persistence by simply specifying this in your session
     configuration.  There are various ways to do this, but using a simple drools.session.conf file in a
@@ -145,15 +282,15 @@ drools.processInstanceManagerFactory = org.drools.persistence.processinstance.JP
 drools.workItemManagerFactory = org.drools.persistence.processinstance.JPAWorkItemManagerFactory
 drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting-->
 
-    <para>Note that we only save the minimal state that is needed to continue
+    <!--para>Note that we only save the minimal state that is needed to continue
     execution of the process instance at some later point.  This means, for example, that
     it does not contain information about already executed nodes if that information
     is no longer relevant, or that process instances that have been completed or
     aborted are removed from the database.  If you want to search for history-related
-    information, you should use the history log, as explained later.</para>
+    information, you should use the history log, as explained later.</para-->
 
     <para>You need to add a persistence configuration to your classpath to 
-    configure JPA to use Hibernate and the H2 database (or your preference), called
+    configure JPA to use Hibernate and the H2 database (or your own preference), called
     <filename>persistence.xml</filename> in the META-INF directory, as shown below.
     For more details on how to change this for your own configuration, we refer to
     the JPA and Hibernate documentation for more information.</para>
@@ -170,9 +307,10 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://java.sun.com/xml/ns/persistence"&gt;
 
-  &lt;persistence-unit name="org.jbpm.persistence.jpa"&gt;
+  &lt;persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA"&gt;
     &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
-    &lt;jta-data-source&gt;jdbc/processInstanceDS&lt;/jta-data-source&gt;
+    &lt;jta-data-source&gt;jdbc/jbpm-ds&lt;/jta-data-source&gt;
+    &lt;mapping-file&gt;META-INF/JBPMorm.xml&lt;/mapping-file&gt;
     &lt;class&gt;org.drools.persistence.info.SessionInfo&lt;/class&gt;
     &lt;class&gt;org.jbpm.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
     &lt;class&gt;org.drools.persistence.info.WorkItemInfo&lt;/class&gt;
@@ -188,33 +326,43 @@ drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPAS
   &lt;/persistence-unit&gt;
 &lt;/persistence&gt;</programlisting>
 
-    <para>This configuration file refers to a data source called "jdbc/processInstanceDS".
-    The following Java fragment could be used to set up this data source, where
-    we are using the file-based H2 database.</para>
-
-    <programlisting language="java">PoolingDataSource ds = new PoolingDataSource();
-ds.setUniqueName("jdbc/testDS1");
-ds.setClassName("org.h2.jdbcx.JdbcDataSource");
-ds.setMaxPoolSize(3);
-ds.setAllowLocalTransactions(true);
-ds.getDriverProperties().put("user", "sa");
-ds.getDriverProperties().put("password", "sasa");
-ds.getDriverProperties().put("URL", "jdbc:h2:file:/NotBackedUp/data/process-instance-db");
-ds.init();</programlisting>
-
-    <para>If you're deploying to an application server, you can usually create a datasource
-    by dropping a configuration file in the deploy directory, for example:</para>
+    <para>This configuration file refers to a data source called "jdbc/jbpm-ds".
+    If you run your application in an application server (like for example JBoss AS),
+    these containers typically allow you to easily set up data sources using some
+    configuration (like for example dropping a datasource configuration file in the
+    deploy directory).  Please refer to your application server documentation to know
+    how to do this.</para>
+     
+    <para>For example, if you're deploying to JBoss Application Server v5.x, you can 
+    create a datasource by dropping a configuration file in the deploy directory, 
+    for example:</para>
     
     <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;datasources&gt;
   &lt;local-tx-datasource&gt;
-    &lt;jndi-name&gt;jdbc/testDS1&lt;/jndi-name&gt;
-    &lt;connection-url&gt;jdbc:h2:file:/NotBackedUp/data/process-instance-db&lt;/connection-url&gt;
+    &lt;jndi-name&gt;jdbc/jbpm-ds&lt;/jndi-name&gt;
+    &lt;connection-url&gt;jdbc:h2:tcp://localhost/~/test&lt;/connection-url&gt;
     &lt;driver-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/driver-class&gt;
     &lt;user-name&gt;sa&lt;/user-name&gt;
-    &lt;password&gt;sasa&lt;/password&gt;
+    &lt;password&gt;&lt;/password&gt;
   &lt;/local-tx-datasource&gt;
 &lt;/datasources&gt;</programlisting>
+
+    <para>If you are however executing in a simple Java environment, you can use the 
+    <code>JBPMHelper</code> class to do this for you (see above) or the following code
+    fragment could be used to set up a data source (where we are using the H2 in-memory 
+    database in combination with Bitronix in this case).</para>
+
+    <programlisting language="java">PoolingDataSource ds = new PoolingDataSource();
+ds.setUniqueName("jdbc/jbpm-ds");
+ds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
+ds.setMaxPoolSize(3);
+ds.setAllowLocalTransactions(true);
+ds.getDriverProperties().put("user", "sa");
+ds.getDriverProperties().put("password", "sasa");
+ds.getDriverProperties().put("URL", "jdbc:h2:tcp://localhost/~/jbpm-db");
+ds.getDriverProperties().put("driverClassName", "org.h2.Driver");
+ds.init();</programlisting>
 
     <!--para>After adding the necessary dependencies and the configuration file to your project, you can simply
     use the StatelessKnowledgeSession just the way you used to do.  The engine will underneath translate your
@@ -230,6 +378,8 @@ ds.init();</programlisting>
   StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
   long processInstanceId = session.startProcess("org.drools.test.TestProcess").getId();
   session.dispose();</programlisting-->
+    </section>
+
     </section>
 
     <section>
@@ -269,6 +419,23 @@ ksession.startProcess( "MyProcess" );
 
 // commit the transaction
 ut.commit();</programlisting>
+
+    <para>Note that, if you use Bitronix as the transaction manager, you should also add
+    a simple <filename>jndi.properties</filename> file in you root classpath to register the
+    Bitronix transaction manager in JNDI.  If you are using the jbpm-test module, this is
+    already included by default.  If not, create a file named <filename>jndi.properties</filename>
+    with the following content:</para>
+
+    <programlisting>java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory</programlisting>
+
+    <para>If you would like to use a different JTA transaction manager, you can change the
+    <filename>persistence.xml</filename> file to use your own transaction manager.  For example,
+    when running inside JBoss Application Server v5.x, you can use the JBoss transaction manager.
+    You need to change the transaction manager property in <filename>persistence.xml</filename> to:</para>
+    
+    <programlisting>&lt;property name="hibernate.transaction.manager_lookup_class"
+             value="org.hibernate.transaction.JBossTransactionManagerLookup" /&gt;
+    </programlisting>
 
     </section>
 
@@ -342,9 +509,10 @@ ut.commit();</programlisting>
 
       <mediaobject>
         <imageobject>
-	  <imagedata align="center" width="100%"
+          <imagedata align="center" width="100%"
                      fileref="images/Chapter-Persistence/audit_db.png" format="PNG" role="" />
-        </imageobject>      </mediaobject>
+        </imageobject>
+      </mediaobject>
 
       <para>To log process history information in a database like this, you
       need to register the logger on your session (or working memory) like
