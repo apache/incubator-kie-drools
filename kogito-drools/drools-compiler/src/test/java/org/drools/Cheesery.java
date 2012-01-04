@@ -42,6 +42,9 @@ public class Cheesery
     public List<Object> getCheeses() {
         return this.cheeses;
     }
+    public List<Cheese> getTypedCheeses() {
+        return this.cheeses;
+    }
     public void setCheeses(List l) {
         this.cheeses=l;
     }
