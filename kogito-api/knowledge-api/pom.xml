@@ -40,8 +40,8 @@
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
-            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
+            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
             <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>

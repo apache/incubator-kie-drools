@@ -24,30 +24,31 @@ import org.drools.io.Resource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-public interface Fluent {       
-        Object getValue(); // returns the last commands returned value
-        Fluent set(String name);   // assigns the last commands return vlaue to a variable
-        
-    
-        Fluent newPath(String name);
-        Fluent createStep(long distance);
+public interface Fluent {
 
-        Fluent createKnowledgeBuilder();
+    Object getValue(); // returns the last commands returned value
+    Fluent set(String name);   // assigns the last commands return vlaue to a variable
 
-        Fluent hasErrors();        
-        Fluent getErrors();
 
-        Fluent add(Resource resource,
-                   ResourceType type);
+    Fluent newPath(String name);
+    Fluent createStep(long distance);
 
-        Fluent add(Resource resource,
-                                   ResourceType type,
-                                   ResourceConfiguration configuration); 
-        
-        Fluent newKnowledgeBase();        
-        
-        Fluent fireAllRules();
-        
-        Fluent insert(Object object);
-    
+    Fluent createKnowledgeBuilder();
+
+    Fluent hasErrors();
+    Fluent getErrors();
+
+    Fluent add(Resource resource,
+               ResourceType type);
+
+    Fluent add(Resource resource,
+                               ResourceType type,
+                               ResourceConfiguration configuration);
+
+    Fluent newKnowledgeBase();
+
+    Fluent fireAllRules();
+
+    Fluent insert(Object object);
+
 }

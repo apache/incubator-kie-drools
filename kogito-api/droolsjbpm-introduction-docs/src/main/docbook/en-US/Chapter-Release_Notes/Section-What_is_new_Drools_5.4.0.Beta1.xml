@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is New and Noteworthy in Drools 5.4.0.Beta1</title>
 
   <section>
@@ -15,12 +12,10 @@
     <section>
       <title>Traits</title>
 
-      <para>Traits were introduced in the 5.3 release, and details on them can
-      be found in the N&amp;N for there. This release adds an example so that
-      people have something simple to run, to help them understand. In the
-      drools-examples source project open the classes and drl for the
-      namespace "/org/drools/examples/traits". There you will find an example
-      around classifications of students and workers.</para>
+      <para>Traits were introduced in the 5.3 release, and details on them can be found in the N&amp;N for there. This
+      release adds an example so that people have something simple to run, to help them understand. In the
+      drools-examples source project open the classes and drl for the namespace "/org/drools/examples/traits". There you
+      will find an example around classifications of students and workers.</para>
 
       <programlisting>rule "Students and Workers" no-loop when
     $p : Person( $name : name, 
@@ -46,14 +41,13 @@ then
     System.out.println( $name + " : I have " + $wage + " to pay the fees at " + $school );
 end</programlisting>
 
-      <para>A two part detailed article has been written up at a blog, which
-      will later be improved and rolled into the main documentation. For now
-      you can read them here. </para>
+      <para>A two part detailed article has been written up at a blog, which will later be improved and rolled into the
+      main documentation. For now you can read them here.</para>
 
       <itemizedlist>
         <listitem>
           <para><link
-          xlink:href="???">http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html</link></para>
+          xlink:href="http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html">http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html</link></para>
         </listitem>
 
         <listitem>
@@ -68,30 +62,25 @@ end</programlisting>
 
       <para>The simulation project that was first started in 2009, <link
       xlink:href="http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html">http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html</link>,
-      has undergone an over haul and is now in a usable state. We have not yet
-      promoted this to -api, so it's considered unstable and will change
-      during the beta process. For now though the adventurous people can take
-      a look at the unit tests and start playing.</para>
+      has undergone an over haul and is now in a usable state. We have not yet promoted this to
+      <literal>knowledge-api</literal>, so it's considered unstable and will change during the beta process. For now
+      though, the adventurous people can take a look at the unit tests and start playing.</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg"
-                     scale="80" scalefit="1"></imagedata>
+          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg" scale="80" scalefit="1"></imagedata>
         </imageobject>
       </mediaobject>
     </section>
 
     <section>
-      <para>The Simulator runs the Simulation. The Simulation is your scenario
-      definition. The Simulation consists of 1 to n Paths, you can think of a
-      Path as a sort of Thread. The Path is a chronological line on which
-      Steps are specified at given temporal distances from the start. You
-      don't specify a time unit for the Step, say 12:00am, instead it is
-      always a relative time distance from the start of the Simulation. Each
-      Step contains one or more Commands, i.e. create a
-      StatefulKnowledgeSession or insert an object or start a process. These
-      are the very same commands that you would use to script a knowledge
-      session using the batch execution, so it's re-using existing
+      <para>The Simulator runs the Simulation. The Simulation is your scenario definition. The Simulation consists of 1
+      to n Paths, you can think of a Path as a sort of Thread. The Path is a chronological line on which Steps are
+      specified at given temporal distances from the start. You don't specify a time unit for the Step, say 12:00am,
+      instead it is always a relative time distance from the start of the Simulation (note: in Beta2 this will be
+      relative time distance from the last step in the same path). Each Step contains one or more Commands, i.e. create
+      a <literal>StatefulKnowledgeSession</literal> or insert an object or start a process. These are the very same
+      commands that you would use to script a knowledge session using the batch execution, so it's re-using existing
       concepts.</para>
 
       <itemizedlist>
@@ -118,34 +107,26 @@ end</programlisting>
         </listitem>
       </itemizedlist>
 
-      <para>All the steps, from all paths, are added to a priority queue which
-      is ordered by the temporal distance, and allows us to incrementally
-      execute the engine using a time slicing approach. The simulator pops of
-      the steps from the queue in turn. For each Step it increments the engine
-      clock and then executes all the Step's Commands.</para>
+      <para>All the steps, from all paths, are added to a priority queue which is ordered by the temporal distance, and
+      allows us to incrementally execute the engine using a time slicing approach. The simulator pops of the steps from
+      the queue in turn. For each Step it increments the engine clock and then executes all the Step's Commands.</para>
 
-      <para>Here is an example Command (notice it uses the same Commands as
-      used by the CommandExecutor):</para>
+      <para>Here is an example Command (notice it uses the same Commands as used by the CommandExecutor):</para>
 
       <programlisting>new InsertObjectCommand( new Person( "darth", 97 ) )</programlisting>
 
-      <para>Commands can be grouped together, especially Assertion commands,
-      via test groups. The test groups are mapped to JUnit "test methods", so
-      as they pass or fail using a specialised JUnit Runner the Eclipse GUI is
-      updated - as illustrated in the above image, showing two passed test
-      groups named "test1" and "test2".</para>
+      <para>Commands can be grouped together, especially Assertion commands, via test groups. The test groups are mapped
+      to JUnit "test methods", so as they pass or fail using a specialised JUnit Runner the Eclipse GUI is updated - as
+      illustrated in the above image, showing two passed test groups named "test1" and "test2".</para>
 
-      <para>Using the JUnit integration is trivial. Just annotate the class
-      with @RunWith(JUnitSimulationRunner.class). Then any method that is
-      annotated with @Test and returns a Simulation instance will be invoked
-      executing the returned Simulation instance in the Simulator. As test
-      groups are executed the JUnit GUI is updated.</para>
+      <para>Using the JUnit integration is trivial. Just annotate the class with @RunWith(JUnitSimulationRunner.class).
+      Then any method that is annotated with @Test and returns a Simulation instance will be invoked executing the
+      returned Simulation instance in the Simulator. As test groups are executed the JUnit GUI is updated.</para>
 
-      <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase
-      or StatefulKnowledgeSession the system assumes a "register" approach. To
-      get a feel for this look at the <link
-      xlink:href="org.drools.simulation.impl.SimulationTest">org.drools.simulation.impl.SimulationTest</link>
-      at github (path may change over time).</para>
+      <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase or StatefulKnowledgeSession the system
+      assumes a "register" approach. To get a feel for this look at the <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/SimulationTest.java">org.drools.simulation.impl.SimulationTest</link> at github
+      (path may change over time).</para>
 
       <programlisting>cmds.add( new NewKnowledgeBuilderCommand( null ) );
 cmds.add( new SetVariableCommandFromLastReturn( "path1",
@@ -154,19 +135,15 @@ cmds.add( new SetVariableCommandFromLastReturn( "path1",
 cmds.add( new KnowledgeBuilderAddCommand( ResourceFactory.newByteArrayResource( str.getBytes() ),
                                           ResourceType.DRL, null ) );</programlisting>
 
-      <para>Notice the set command. "path1" is the context, each path has it's
-      own variable context. All paths inherit from a "root" context.
-      "KnowledgeBuilder.class.getName() " is the name that we are setting the
-      return value of the last command. As mentioned before we consider the
-      class names of those classes as registers, any further commands that
-      attempt to operate on a knowledge builder will use what ever is assigned
-      to that, as in the case of KnowledgeBuilderAddCommand. This allows
-      multiple kbuilders, kbases and ksessions to exist in one context under
-      different variable names, but only the one assigned to the register name
-      is the one that is currently executed on.</para>
+      <para>Notice the set command. "path1" is the context, each path has it's own variable context. All paths inherit
+      from a "root" context. "KnowledgeBuilder.class.getName() " is the name that we are setting the return value of the
+      last command. As mentioned before we consider the class names of those classes as registers, any further commands
+      that attempt to operate on a knowledge builder will use what ever is assigned to that, as in the case of
+      KnowledgeBuilderAddCommand. This allows multiple kbuilders, kbases and ksessions to exist in one context under
+      different variable names, but only the one assigned to the register name is the one that is currently executed
+      on.</para>
 
-      <para>The code below show the rough outline used in
-      SimulationTest:</para>
+      <para>The code below show the rough outline used in SimulationTest:</para>
 
       <programlisting>Simulation simulation = new SimulationImpl();
 PathImpl path = new PathImpl( simulation,
@@ -182,23 +159,18 @@ steps.add( new StepImpl( path,
                          cmds,
                          2000 ) ); </programlisting>
 
-      <para>We know the above looks quite verbose. SimulationTest just shows
-      our low level canonical model, the idea is that high level
-      representations are built ontop of this. As this is a builder api we are
-      currently focusing on two sets of fluents, compact and standard. We will
-      also work on a spreadsheet UI for building these, and eventually a
+      <para>We know the above looks quite verbose. SimulationTest just shows our low level canonical model, the idea is
+      that high level representations are built ontop of this. As this is a builder API we are currently focusing on two
+      sets of fluents, compact and standard. We will also work on a spreadsheet UI for building these, and eventually a
       dedicated textual dsl.</para>
 
-      <para>The compact fluent is designed to provide the absolute minimum
-      necessary to run against a single ksession. A good place to start is
-      <link
-      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/CompactFluentTest.java">org.drools.simulation.impl.CompactFluentTest</link>
-      , a snippet of which is shown below. Notice we set "yoda" to "y" and can
-      then assert on that. Currently inside of the test string it executes
-      using mvel. The eventual goal is to build out a set of <link
-      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> matchers
-      that will allow assertions against the state of the engine, such as what
-      rules have fired and optionally with with data.</para>
+      <para>The compact fluent is designed to provide the absolute minimum necessary to run against a single ksession. A
+      good place to start is <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/CompactFluentTest.java">org.drools.simulation.impl.CompactFluentTest</link>,
+      a snippet of which is shown below. Notice we set "yoda" to "y" and can then assert on that. Currently inside of
+      the test string it executes using mvel. The eventual goal is to build out a set of <link
+      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> matchers that will allow assertions against the
+      state of the engine, such as what rules have fired and optionally with with data.</para>
 
       <programlisting>FluentCompactSimulation f = new FluentCompactSimulationImpl();
 f.newStatefulKnowledgeSession()
@@ -214,23 +186,20 @@ f.newStatefulKnowledgeSession()
     .test( "y.name == 'yoda'" )
     .test( "y.age == 160" );</programlisting>
 
-      <para>Note that the test is not executing at build time, it's building a
-      script to be executed later. The script underneath matches what you saw
-      in SimulationTest. Currently the way to run a simulation manually is
-      shown below. Atlhough you already saw in SimulationTest that JUnit will
-      execute these automatically. We'll improve this over itme.</para>
+      <para>Note that the test is not executing at build time, it's building a script to be executed later. The script
+      underneath matches what you saw in SimulationTest. Currently the way to run a simulation manually is shown below.
+      Atlhough you already saw in SimulationTest that JUnit will execute these automatically. We'll improve this over
+      itme.</para>
 
       <programlisting>SimulationImpl sim = (SimulationImpl) ((FluentCompactSimulationImpl) f).getSimulation();
 Simulator simulator = new Simulator( sim,
                                      new Date().getTime() );
 simulator.run();</programlisting>
 
-      <para>The standard fluent is almost a 1 to 1 mapping to the cannonical
-      path, step and command structure in SimulationTest- just more compact.
-      Start by looking in <link
-      xlink:href="???">org.drools.simulation.impl.StandardFluentTest.</link>.
-      This fluent allows you to run any number of paths and steps, along with
-      a lot more control over multiple kbuilders, kbases and ksessions.</para>
+      <para>The standard fluent is almost a 1 to 1 mapping to the cannonical path, step and command structure in
+      SimulationTest- just more compact. Start by looking in <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/StandardFluentTest.java">org.drools.simulation.impl.StandardFluentTest</link>. This fluent allows you to run any number of
+      paths and steps, along with a lot more control over multiple kbuilders, kbases and ksessions.</para>
 
       <programlisting>FluentStandardSimulation f = new FluentStandardSimulationImpl();      
 f.newPath("init")
@@ -264,27 +233,23 @@ f.newPath("init")
     .end()
  .end</programlisting>
 
-      <para>There is still an aweful lot to do, this is designed to eventually
-      provide a unified simulation and testing environment for rules, workflow
-      and event processing over time, and eventually also over distributed
+      <para>There is still an aweful lot to do, this is designed to eventually provide a unified simulation and testing
+      environment for rules, workflow and event processing over time, and eventually also over distributed
       architectures.</para>
 
       <itemizedlist>
         <listitem>
-          <para>Flesh out the api to support more commands, and also to
-          encompass jBPM commands</para>
+          <para>Flesh out the api to support more commands, and also to encompass jBPM commands</para>
         </listitem>
 
         <listitem>
-          <para>Improve out of the box userbility, including moving interfaces
-          to knowlege-api and hiding "new" constructors with factory
-          methods</para>
+          <para>Improve out of the box usability, including moving interfaces to knowlege-api and hiding "new"
+          constructors with factory methods</para>
         </listitem>
 
         <listitem>
-          <para>Commands are already marshallable to json and xml. They should
-          be updated to allow full round tripping from java api commands and
-          json/xml documents.</para>
+          <para>Commands are already marshallable to json and xml. They should be updated to allow full round tripping
+          from java api commands and json/xml documents.</para>
         </listitem>
 
         <listitem>
@@ -292,8 +257,7 @@ f.newPath("init")
 
           <itemizedlist>
             <listitem>
-              <para>What rule(s) fired, including optionally what data was
-              used with the executing rule (Drools)</para>
+              <para>What rule(s) fired, including optionally what data was used with the executing rule (Drools)</para>
             </listitem>
 
             <listitem>
@@ -301,8 +265,7 @@ f.newPath("init")
             </listitem>
 
             <listitem>
-              <para>What rules activated and de-activated for a given fact
-              change</para>
+              <para>What rules activated and de-activated for a given fact change</para>
             </listitem>
 
             <listitem>
@@ -316,13 +279,12 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Design and build tabular authoring tools via spreadsheet,
-          targetting the web with round tripping to excel.</para>
+          <para>Design and build tabular authoring tools via spreadsheet, targetting the web with round tripping to
+          excel.</para>
         </listitem>
 
         <listitem>
-          <para>Design and develop textual DSL for authoing - maybe part of
-          DRL (long term task).</para>
+          <para>Design and develop textual DSL for authoing - maybe part of DRL (long term task).</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -334,17 +296,15 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Limited Entry</title>
 
-      <para>The Guided Decision Table editor and wizard now support the
-      creation of "Limited Entry" tables.</para>
+      <para>The Guided Decision Table editor and wizard now support the creation of "Limited Entry" tables.</para>
 
       <figure>
         <title>Selecting the table format</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-1.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-1.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -354,9 +314,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-2.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-2.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -366,9 +325,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-3.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-3.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -378,9 +336,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-4.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-4.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -390,9 +347,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-5.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-5.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -402,9 +358,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/limited-entry-6.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-6.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -413,9 +368,8 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Improved formatting</title>
 
-      <para>With the introduction of support for Limited Entry, the decision
-      table format was improved to better differentiate between Condition and
-      Action columns. Furthermore the table header was improved to show more
+      <para>With the introduction of support for Limited Entry, the decision table format was improved to better
+      differentiate between Condition and Action columns. Furthermore the table header was improved to show more
       information for Action columns.</para>
 
       <figure>
@@ -423,9 +377,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-column-formatting.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-column-formatting.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -434,20 +387,17 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Rearranging columns</title>
 
-      <para>The ability to rearrange whole patterns as well as individual
-      conditions in the constraints section of the table has been added. This
-      allows the table author to arrange constraints to maximise performance
-      of the resulting rules, by placing generalised constraints before more
-      specific. Action columns can also be re-arranged. Both patterns and
-      columns are re-arranged by dragging and dropping.</para>
+      <para>The ability to rearrange whole patterns as well as individual conditions in the constraints section of the
+      table has been added. This allows the table author to arrange constraints to maximise performance of the resulting
+      rules, by placing generalised constraints before more specific. Action columns can also be re-arranged. Both
+      patterns and columns are re-arranged by dragging and dropping.</para>
 
       <figure>
         <title>Re-arranging Condition patterns</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-rearranging-patterns.png"
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-patterns.png"
                        format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
@@ -458,9 +408,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -469,35 +418,31 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Actions to retract Facts</title>
 
-      <para>This release brings the ability to define Action columns to
-      retract Facts.</para>
+      <para>This release brings the ability to define Action columns to retract Facts.</para>
 
-      <para>If you are authoring an Extended Entry decision table the column
-      definition contains basic information and the fact being retracted is
-      held in the table itself.</para>
+      <para>If you are authoring an Extended Entry decision table the column definition contains basic information and
+      the fact being retracted is held in the table itself.</para>
 
       <figure>
         <title>Defining an Extended Entry retraction</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-retract-extended-entry.png"
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-extended-entry.png"
                        format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>If however you are authoring a Limited Entry decision table the
-      Fact being retracted is defined in the column definition.</para>
+      <para>If however you are authoring a Limited Entry decision table the Fact being retracted is defined in the
+      column definition.</para>
 
       <figure>
         <title>Defining a Limited Entry retraction</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-retract-limited-entry.png"
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-limited-entry.png"
                        format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
@@ -507,18 +452,16 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Binding condition fields</title>
 
-      <para>You can now bind fields in Conditions to variables. These
-      variables can then be used in Predicate or Forumla conditions, and Work
-      Item actions.</para>
+      <para>You can now bind fields in Conditions to variables. These variables can then be used in Predicate or Forumla
+      conditions, and Work Item actions.</para>
 
       <figure>
         <title>Binding a field</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-field-binding1.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding1.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -528,9 +471,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-field-binding2.png"
-                       format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding2.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -539,16 +481,13 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Using jBPM Work Item actions</title>
 
-      <para>jBPM Work Items can now be used as Actions; and the corresponding
-      Work Item Handler invoked at runtime. Work Item Handlers should be added
-      to the runtime session as normal.</para>
+      <para>jBPM Work Items can now be used as Actions; and the corresponding Work Item Handler invoked at runtime. Work
+      Item Handlers should be added to the runtime session as normal.</para>
 
-      <para>Work Item input parameters can either be defined as a literal
-      value in the column definition or as a Fact or Fact Field
-      binding.</para>
+      <para>Work Item input parameters can either be defined as a literal value in the column definition or as a Fact or
+      Fact Field binding.</para>
 
-      <para>New Actions have been created to perform the following
-      functions:-</para>
+      <para>New Actions have been created to perform the following functions:-</para>
 
       <itemizedlist>
         <listitem>
@@ -556,13 +495,12 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Set the value of a field on an existing Fact to the value of a
-          Work Item output (result) parameter.</para>
+          <para>Set the value of a field on an existing Fact to the value of a Work Item output (result)
+          parameter.</para>
         </listitem>
 
         <listitem>
-          <para>Set the value of a field on a new Fact to the value of a Work
-          Item output (result) parameter.</para>
+          <para>Set the value of a field on a new Fact to the value of a Work Item output (result) parameter.</para>
         </listitem>
       </itemizedlist>
 
@@ -571,9 +509,8 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-workitems1.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems1.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -583,22 +520,19 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-workitems2.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems2.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
       <figure>
-        <title>Setting a field from a Work Item output (result)
-        parameter</title>
+        <title>Setting a field from a Work Item output (result) parameter</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-workitems3.png"
-                       format="PNG" scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems3.png" format="PNG"
+                       scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -607,16 +541,13 @@ f.newPath("init")
     <section>
       <title>Decision table analysis</title>
 
-      <para>On the bottom of Web decision tables, there's now a button
-      <guilabel>Analyze...</guilabel> which will check if there issues in your
-      decision table, such as impossible matches and conflicting
-      matches.</para>
+      <para>On the bottom of Web decision tables, there's now a button <guilabel>Analyze...</guilabel> which will check
+      if there issues in your decision table, such as impossible matches and conflicting matches.</para>
 
       <section>
         <title>Impossible match detection</title>
 
-        <para>An impossible match is a row in a decision table that can never
-        match. For example:</para>
+        <para>An impossible match is a row in a decision table that can never match. For example:</para>
 
         <mediaobject>
           <imageobject>
@@ -624,16 +555,14 @@ f.newPath("init")
           </imageobject>
         </mediaobject>
 
-        <para>In the decision table above, row 2 is an impossible match,
-        because there is no Person with a minimum age of 21 and a maximum age
-        of 20.</para>
+        <para>In the decision table above, row 2 is an impossible match, because there is no Person with a minimum age
+        of 21 and a maximum age of 20.</para>
       </section>
 
       <section>
         <title>Conflicting match detection</title>
 
-        <para>A conflicting match are 2 rows in a decision table that can both
-        match.</para>
+        <para>A conflicting match are 2 rows in a decision table that can both match.</para>
 
         <mediaobject>
           <imageobject>
@@ -641,9 +570,8 @@ f.newPath("init")
           </imageobject>
         </mediaobject>
 
-        <para>In the decision table above, row 2 and 3 are a conflicting
-        match, because a Person of age 67 will match both rows: it's unclear
-        whether that Person has to pay a fee of 200 or 100.</para>
+        <para>In the decision table above, row 2 and 3 are a conflicting match, because a Person of age 67 will match
+        both rows: it's unclear whether that Person has to pay a fee of 200 or 100.</para>
       </section>
     </section>
 
@@ -652,27 +580,24 @@ f.newPath("init")
 
       <itemizedlist>
         <listitem>
-          <para>Added support to create (PUT) and delete (DELETE) a Category
-          with <literal>rest/categories/{categoryName}</literal>.</para>
+          <para>Added support to create (PUT) and delete (DELETE) a Category with
+          <literal>rest/categories/{categoryName}</literal>.</para>
         </listitem>
 
         <listitem>
-          <para>Removed buggy <literal>category</literal> property from
-          <literal>Package</literal>: it was <literal>null</literal> upon GET
-          and ignored upon PUT.</para>
+          <para>Removed buggy <literal>category</literal> property from <literal>Package</literal>: it was
+          <literal>null</literal> upon GET and ignored upon PUT.</para>
         </listitem>
 
         <listitem>
-          <para>The REST resource to get the assets for a certain category has
-          been moved from <literal>rest/categories/{categoryName}</literal> to
+          <para>The REST resource to get the assets for a certain category has been moved from
+          <literal>rest/categories/{categoryName}</literal> to
           <literal>rest/categories/{categoryName}/assets</literal>.</para>
         </listitem>
 
         <listitem>
-          <para>The REST resources now properly encode and decode the URL's.
-          Note that URL path encoding is different than URL query encoding:
-          the former does not accept <literal>+</literal> as encoding for
-          space.</para>
+          <para>The REST resources now properly encode and decode the URL's. Note that URL path encoding is different
+          than URL query encoding: the former does not accept <literal>+</literal> as encoding for space.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -680,27 +605,24 @@ f.newPath("init")
     <section>
       <title>JBoss AS 6 war is no longer shipped in the release</title>
 
-      <para>This does not mean that Guvnor can not be made to work in AS 6. We
-      are just focusing on JBoss AS 7 and Tomcat.</para>
+      <para>This does not mean that Guvnor can not be made to work in AS 6. We are just focusing on JBoss AS 7 and
+      Tomcat.</para>
     </section>
 
     <section>
       <title>Rule Templates - Interpolation keys in free-form DRL</title>
 
-      <para>When using Rule Templates you can now define interpolation
-      variables in free-form DRL blocks. Template Keys are formatted as
-      documented in Drools Expert User Guide; i.e. @{keyName}. All Template
-      Keys in 'free-form' LHS or RHS elements are considered 'Text' (i.e.
-      you'll get a TextBox in the Template data screen). Data-types should be
-      correctly escaped in the 'free-form' entry. For example:
-      System.out.println("@{key}");</para>
+      <para>When using Rule Templates you can now define interpolation variables in free-form DRL blocks. Template Keys
+      are formatted as documented in Drools Expert User Guide; i.e. @{keyName}. All Template Keys in 'free-form' LHS or
+      RHS elements are considered 'Text' (i.e. you'll get a TextBox in the Template data screen). Data-types should be
+      correctly escaped in the 'free-form' entry. For example: System.out.println("@{key}");</para>
     </section>
 
     <section>
       <title>Relational operators for Strings</title>
 
-      <para>All guided rule editors (BRL, Rule Templates and Decision Tables)
-      now support relation operators for String values.</para>
+      <para>All guided rule editors (BRL, Rule Templates and Decision Tables) now support relation operators for String
+      values.</para>
     </section>
   </section>
 
@@ -710,10 +632,8 @@ f.newPath("init")
     <section>
       <title>Build-in move factories</title>
 
-      <para>Planner now comes with 2 build-in move factories:
-      <literal>GenericChangeMoveFactory</literal> and
-      <literal>GenericSwapMoveFactory</literal>. Here's an example that uses
-      both of them:</para>
+      <para>Planner now comes with 2 build-in move factories: <literal>GenericChangeMoveFactory</literal> and
+      <literal>GenericSwapMoveFactory</literal>. Here's an example that uses both of them:</para>
 
       <programlisting>  &lt;localSearch&gt;
     &lt;selector&gt;
@@ -727,8 +647,8 @@ f.newPath("init")
     ...
   &lt;/localSearch&gt;</programlisting>
 
-      <para>It's no longer required to write your own Move and MoveFactory
-      implementations, but you still can (and mix those in too).</para>
+      <para>It's no longer required to write your own Move and MoveFactory implementations, but you still can (and mix
+      those in too).</para>
     </section>
   </section>
   <section>
