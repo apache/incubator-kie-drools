@@ -9514,7 +9514,6 @@ public class MiscTest {
 
     @Test @Ignore
     public void testJBRULES3326() throws Exception {
-        //adding rules. it is important to add both since they reciprocate
         StringBuilder rule = new StringBuilder();
         rule.append("package org.drools\n");
         rule.append("rule X\n");
@@ -9535,7 +9534,6 @@ public class MiscTest {
 
     @Test 
     public void testInnerEnum() throws Exception {
-        //adding rules. it is important to add both since they reciprocate
         StringBuilder rule = new StringBuilder();
         rule.append("package org.drools\n");
         rule.append("rule X\n");
@@ -9554,6 +9552,49 @@ public class MiscTest {
         ksession.dispose();
     }
 
+    @Test 
+    public void testNestedAccessors2() throws Exception {
+        String rule = "package org.drools\n" +
+        		"rule 'rule1'" +
+        		"    salience 10\n" + 
+        		"when\n" + 
+        		"    Cheesery( typedCheeses[0].type == 'stilton' );\n" + 
+        		"then\n" + 
+        		"end\n" + 
+        		"rule 'rule2'\n" + 
+        		"when\n" + 
+        		"    Cheesery( typedCheeses[0].price == 10 );\n" + 
+        		"then\n" + 
+        		"end";
+
+        //building stuff
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        Cheesery c1 = new Cheesery();
+        c1.addCheese( new Cheese("stilton", 20) );
+        Cheesery c2 = new Cheesery();
+        c2.addCheese( new Cheese("brie", 10) );
+        Cheesery c3 = new Cheesery();
+        c3.addCheese( new Cheese("muzzarella", 30) );
+
+        ksession.insert( c1 );
+        ksession.insert( c2 );
+        ksession.insert( c3 );
+        ksession.fireAllRules();
+        
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael, times(2) ).afterActivationFired( captor.capture() );
+        
+        List<org.drools.event.rule.AfterActivationFiredEvent> values = captor.getAllValues();
+        assertThat( (Cheesery) values.get( 0 ).getActivation().getObjects().get( 0 ), is( c1 ) );
+        assertThat( (Cheesery) values.get( 1 ).getActivation().getObjects().get( 0 ), is( c2 ) );
+        
+        ksession.dispose();
+    }
+    
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
