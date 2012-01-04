@@ -58,6 +58,7 @@ import org.acme.insurance.Policy;
 import org.drools.ActivationListenerFactory;
 import org.drools.Address;
 import org.drools.Attribute;
+import org.drools.Bar;
 import org.drools.Cat;
 import org.drools.Cell;
 import org.drools.Cheese;
@@ -72,6 +73,7 @@ import org.drools.FactB;
 import org.drools.FactC;
 import org.drools.FactHandle;
 import org.drools.FirstClass;
+import org.drools.Foo;
 import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
@@ -9449,6 +9451,62 @@ public class MiscTest {
         }
         assertFalse( builder.hasErrors() );
 
+    }
+    
+    @Test
+    public void testJBRULES3323() throws Exception {
+
+		//adding rules. it is important to add both since they reciprocate
+		StringBuilder rule = new StringBuilder();
+		rule.append("package de.orbitx.accumulatetesettest;\n");
+		rule.append("import java.util.Set;\n");
+		rule.append("import java.util.HashSet;\n");
+		rule.append("import org.drools.Foo;\n");
+		rule.append("import org.drools.Bar;\n");
+
+		rule.append("rule \"Sub optimal foo parallelism - this rule is causing NPE upon reverse\"\n");
+		rule.append("when\n");
+		rule.append("$foo : Foo($leftId : id, $leftBar : Bar != null)\n");
+		rule.append("$fooSet : Set()\n");
+		rule.append("from accumulate ( Foo(id > $leftId, bar != null && != $leftBar, $bar : bar),\n");
+        rule.append("collectSet( $bar ) )\n");
+		rule.append("then\n");
+		rule.append("//System.out.println(\"ok\");\n");
+		rule.append("end\n");
+
+		//building stuff
+		KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+		//adding test data
+		Bar[] barList = new Bar[3];
+		for (int i = 0; i < barList.length; i++) {
+		    barList[i] = new Bar( String.valueOf( i ) );
+		}
+
+		org.drools.Foo[] fooList = new org.drools.Foo[4];
+		for (int i = 0; i < fooList.length; i++) {
+		    fooList[i] = new org.drools.Foo( String.valueOf( i ), i == 3 ? barList[2] : barList[i] );
+		}
+
+		for (org.drools.Foo foo : fooList) {
+			ksession.insert(foo);
+		}
+
+		//the NPE is caused by exactly this sequence. of course there are more sequences but this
+		//appears to be the most short one
+		int[] magicFoos = new int[] { 3, 3, 1, 1, 0, 0, 2, 2, 1, 1, 0, 0, 3, 3, 2, 2, 3, 1, 1 };
+		int[] magicBars = new int[] { 1, 2, 0, 1, 1, 0, 1, 2, 2, 1, 2, 0, 0, 2, 0, 2, 0, 0, 1 };
+
+		//upon final rule firing an NPE will be thrown in org.drools.rule.Accumulate
+		for (int i = 0; i < magicFoos.length; i++) {
+			org.drools.Foo tehFoo = fooList[magicFoos[i]];
+			org.drools.runtime.rule.FactHandle fooFactHandle = ksession.getFactHandle(tehFoo);
+			tehFoo.setBar(barList[magicBars[i]]);
+			ksession.update(fooFactHandle, tehFoo);
+			ksession.fireAllRules();
+		}
+		ksession.dispose();
     }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {

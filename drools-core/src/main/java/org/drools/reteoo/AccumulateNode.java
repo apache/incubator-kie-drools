@@ -472,15 +472,6 @@ public class AccumulateNode extends BetaNode {
             return;
         }
 
-        // WTD here
-        //                if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
-        //                                                 rightTuple,
-        //                                                 workingMemory ) ) {
-        //                    // destroy right tuple
-        //                    rightTuple.unlinkFromRightParent();
-        //                    return;
-        //                }
-
         LeftTuple childLeftTuple = rightTuple.firstChild;
 
         LeftTupleMemory leftMemory = memory.betaMemory.getLeftTupleMemory();
@@ -557,7 +548,7 @@ public class AccumulateNode extends BetaNode {
                                          memory,
                                          accctx,
                                          true );
-                            childLeftTuple = childLeftTuple.getRightParentNext();
+                            childLeftTuple = temp;
                         }
                         // add a new match
                         addMatch( leftTuple,
