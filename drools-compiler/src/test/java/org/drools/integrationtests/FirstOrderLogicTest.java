@@ -29,6 +29,7 @@ import org.drools.FactC;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Message;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -94,6 +95,19 @@ public class FirstOrderLogicTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         kbase.addKnowledgePackages( knowledgePackages );
+        return kbase;
+    }
+    
+    private KnowledgeBase loadKnowledgeBaseFromString( String drl ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
 
@@ -1564,15 +1578,7 @@ public class FirstOrderLogicTest {
         
         System.out.println( str );
         
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
              
         ksession.insert(new Field("t", "Y"));
@@ -1583,7 +1589,25 @@ public class FirstOrderLogicTest {
         ksession.fireAllRules();   
         ksession.dispose();
     }
-    
+
+    @Test 
+    public void testOrs() throws Exception {
+        String str = "package org.drools\n" + 
+                "rule X\n" + 
+                "    when\n" +
+                "        Message( message == 'test' )\n" +
+                "        Message( !fired ) or eval( !false )\n" + 
+                "    then\n" + 
+                "end\n";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Message( "test" ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 2, rules );
+        ksession.dispose();
+    }
 
     public class Field {
         public Field(String name, String value) {
