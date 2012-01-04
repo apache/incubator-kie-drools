@@ -105,6 +105,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.StockTick;
 import org.drools.TestParam;
+import org.drools.Triangle;
 import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryConsoleLogger;
@@ -9527,6 +9528,27 @@ public class MiscTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.insert(new Message("test"));
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+        ksession.dispose();
+    }
+
+    @Test 
+    public void testInnerEnum() throws Exception {
+        //adding rules. it is important to add both since they reciprocate
+        StringBuilder rule = new StringBuilder();
+        rule.append("package org.drools\n");
+        rule.append("rule X\n");
+        rule.append("when\n");
+        rule.append("    Triangle( type == Triangle.Type.UNCLASSIFIED )\n");
+        rule.append("then\n");
+        rule.append("end\n");
+
+        //building stuff
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Triangle());
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
         ksession.dispose();
