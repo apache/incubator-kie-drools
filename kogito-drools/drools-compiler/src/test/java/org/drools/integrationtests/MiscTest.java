@@ -9511,6 +9511,27 @@ public class MiscTest {
 		ksession.dispose();
     }
 
+    @Test @Ignore
+    public void testJBRULES3326() throws Exception {
+        //adding rules. it is important to add both since they reciprocate
+        StringBuilder rule = new StringBuilder();
+        rule.append("package org.drools\n");
+        rule.append("rule X\n");
+        rule.append("when\n");
+        rule.append("    Message(!!!false)\n");
+        rule.append("then\n");
+        rule.append("end\n");
+
+        //building stuff
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Message("test"));
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+        ksession.dispose();
+    }
+
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
