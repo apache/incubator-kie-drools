@@ -9471,61 +9471,28 @@ public class MiscTest {
 		rule.append("$foo : Foo($leftId : id, $leftBar : Bar != null)\n");
 		rule.append("$fooSet : Set()\n");
 		rule.append("from accumulate ( Foo(id > $leftId, bar != null && != $leftBar, $bar : bar),\n");
-		rule.append("init( Set bars = new HashSet(); ),\n");
-		rule.append("action( bars.add($bar); ),\n");
-		rule.append("reverse( System.out.println(\"reverse\"); bars.remove($bar); ),\n");
-		rule.append("result( bars ) )\n");
+        rule.append("collectSet( $bar ) )\n");
 		rule.append("then\n");
-		rule.append("System.out.println(\"ok\");\n");
-		rule.append("end\n");
-
-		rule.append("\n\n");
-
-		rule.append("rule \"only one foo within interval for the same bar\"\n");
-		rule.append("when\n");
-		rule.append("$leftFoo : Foo($leftId : id, bar != null, $bar : bar)\n");
-		rule.append("$rightFoo : Foo(bar == $bar, id > $leftId)\n");
-		rule.append("then\n");
-		rule.append("System.out.println(\"ok\");\n");
+		rule.append("//System.out.println(\"ok\");\n");
 		rule.append("end\n");
 
 		//building stuff
-		final PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl(new StringReader(rule.toString()));
-		if (builder.hasErrors()) {
-			fail(builder.getErrors().toString());
-		}
-		final org.drools.rule.Package pkg = builder.getPackage();
-
-		final RuleBase ruleBase = getRuleBase();
-
-		ruleBase.addPackage(pkg);
-		StatefulSession session = ruleBase.newStatefulSession();
+		KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
 		//adding test data
-		List<Bar> barList = new LinkedList<Bar>();
-		for (int i = 0; i < 3; i++) {
-			Bar bar = new Bar();
-			bar.setId("" + i);
-			barList.add(bar);
+		Bar[] barList = new Bar[3];
+		for (int i = 0; i < barList.length; i++) {
+		    barList[i] = new Bar( String.valueOf( i ) );
 		}
 
-		List<org.drools.Foo> fooList = new ArrayList<org.drools.Foo>();
-		for (int i = 0; i < 4; i++) {
-			org.drools.Foo foo = new org.drools.Foo();
-			foo.setId("" + i);
-
-			//do not modify this, else block is important
-			if (i < 3) {
-				foo.setBar(barList.get(i));
-			} else {
-				foo.setBar(barList.get(2));
-			}
-			fooList.add(foo);
+		org.drools.Foo[] fooList = new org.drools.Foo[4];
+		for (int i = 0; i < fooList.length; i++) {
+		    fooList[i] = new org.drools.Foo( String.valueOf( i ), i == 3 ? barList[2] : barList[i] );
 		}
 
 		for (org.drools.Foo foo : fooList) {
-			session.insert(foo);
+			ksession.insert(foo);
 		}
 
 		//the NPE is caused by exactly this sequence. of course there are more sequences but this
@@ -9535,14 +9502,13 @@ public class MiscTest {
 
 		//upon final rule firing an NPE will be thrown in org.drools.rule.Accumulate
 		for (int i = 0; i < magicFoos.length; i++) {
-			org.drools.Foo tehFoo = fooList.get(magicFoos[i]);
-			FactHandle fooFactHandle = session.getFactHandle(tehFoo);
-			tehFoo.setBar(barList.get(magicBars[i]));
-			session.update(fooFactHandle, tehFoo);
-			session.fireAllRules();
+			org.drools.Foo tehFoo = fooList[magicFoos[i]];
+			org.drools.runtime.rule.FactHandle fooFactHandle = ksession.getFactHandle(tehFoo);
+			tehFoo.setBar(barList[magicBars[i]]);
+			ksession.update(fooFactHandle, tehFoo);
+			ksession.fireAllRules();
 		}
-		
-		session.dispose();
+		ksession.dispose();
     }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
