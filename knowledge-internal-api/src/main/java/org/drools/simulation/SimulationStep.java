@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.fluent.compact;
+package org.drools.simulation;
+
+import java.util.Collection;
 
 import org.drools.command.Command;
-import org.drools.simulation.Simulation;
 
-public interface InternalSimulation extends Simulation {
-    void addCommand(Command cmd);
+public interface SimulationStep {
 
-    void newStep(long distance);
+    long getTemporalDistance();
+    Collection<Command> getCommands();
+
 }

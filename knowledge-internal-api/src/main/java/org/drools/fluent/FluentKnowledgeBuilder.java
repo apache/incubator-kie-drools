@@ -27,5 +27,6 @@ public interface FluentKnowledgeBuilder<T> extends FluentBase {
 
     T add(Resource resource,
           ResourceType type,
-          ResourceConfiguration configuration);   
+          ResourceConfiguration configuration);
+
 }
