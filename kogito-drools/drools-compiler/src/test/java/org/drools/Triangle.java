@@ -1,8 +1,10 @@
 package org.drools;
 
 public class Triangle {
+    public enum Type { INCOMPLETE, UNCLASSIFIED, EQUILATERAL, ISOSCELES, RECTANGLED, ISOSCELES_RECTANGLED, ACUTE, OBTUSE; }
     
     int a, b, c;
+    private Type type = Type.UNCLASSIFIED;
 
     public Triangle() {
     }
@@ -38,5 +40,13 @@ public class Triangle {
     public void setC(int c) {
         this.c = c;
     }
-
+    
+    public Type getType() {
+        return type;
+    }
+    
+    public void setType( Type type ) {
+        this.type = type;
+    }
+    
 }
