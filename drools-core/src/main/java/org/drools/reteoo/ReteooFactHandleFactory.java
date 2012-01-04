@@ -16,7 +16,7 @@
 
 package org.drools.reteoo;
 
-import java.sql.Date;
+import java.util.Date;
 
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
