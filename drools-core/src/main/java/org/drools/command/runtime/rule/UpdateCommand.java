@@ -25,8 +25,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class UpdateCommand
-    implements
-    GenericCommand<Object> {
+        implements GenericCommand<Object> {
 
     private FactHandle handle;
     private Object     object;
@@ -46,7 +45,6 @@ public class UpdateCommand
         return null;
     }
     
-    
 
     public String getEntryPoint() {
         return entryPoint;
@@ -59,4 +57,5 @@ public class UpdateCommand
     public String toString() {
         return "session.update( " + handle + ", " + object + " );";
     }
+
 }
