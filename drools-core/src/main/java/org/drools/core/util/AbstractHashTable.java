@@ -406,9 +406,9 @@ public abstract class AbstractHashTable
 
         private static final long serialVersionUID = 510l;
 
-        InternalReadAccessor    extractor;
-        Declaration             declaration;
-        IndexEvaluator          evaluator;
+        private InternalReadAccessor    extractor;
+        private Declaration             declaration;
+        private IndexEvaluator          evaluator;
 
         public FieldIndex() {
 

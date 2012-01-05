@@ -77,7 +77,7 @@ public class DefaultTemplateRuleBaseTest {
         pattern = (org.drools.rule.Pattern) exists.getChildren().get(0);
         assertEquals(3, pattern.getConstraints().size());
         IndexableConstraint vconstraint = (IndexableConstraint)pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldExtractor().getExtractToClass());
+        assertEquals(Column.class, vconstraint.getFieldIndex().getExtractor().getExtractToClass());
         assertEquals("column1", vconstraint.getRequiredDeclarations()[0].getIdentifier());
         pattern = (org.drools.rule.Pattern) lhs.getChildren().get(3);
         assertEquals(1, pattern.getConstraints().size());
@@ -86,7 +86,7 @@ public class DefaultTemplateRuleBaseTest {
         pattern = (org.drools.rule.Pattern) exists.getChildren().get(0);
         assertEquals(3, pattern.getConstraints().size());
         vconstraint = (IndexableConstraint)pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldExtractor().getExtractToClass());
+        assertEquals(Column.class, vconstraint.getFieldIndex().getExtractor().getExtractToClass());
         assertEquals("column2", vconstraint.getRequiredDeclarations()[0].getIdentifier());
         pattern = (org.drools.rule.Pattern) lhs.getChildren().get(5);
         assertEquals(1, pattern.getConstraints().size());
@@ -95,7 +95,7 @@ public class DefaultTemplateRuleBaseTest {
         pattern = (org.drools.rule.Pattern) exists.getChildren().get(0);
         assertEquals(3, pattern.getConstraints().size());
         vconstraint = (IndexableConstraint)pattern.getConstraints().get(1);
-        assertEquals(Column.class, vconstraint.getFieldExtractor().getExtractToClass());
+        assertEquals(Column.class, vconstraint.getFieldIndex().getExtractor().getExtractToClass());
         assertEquals("column3", vconstraint.getRequiredDeclarations()[0].getIdentifier());
     }
 }

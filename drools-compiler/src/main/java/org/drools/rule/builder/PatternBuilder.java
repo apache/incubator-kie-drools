@@ -398,6 +398,8 @@ public class PatternBuilder
                        result );
             }
         }
+
+        pattern.combineConstraints();
     }
 
     @SuppressWarnings("unchecked")
@@ -775,14 +777,6 @@ public class PatternBuilder
             }
         } else {
             if (declarations == null) declarations = new Declaration[] { declr };
-/*
-            else {
-                Declaration[] redefinedDeclaration = new Declaration[declarations.length+1];
-                for (int i = 0; i < declarations.length; i++) redefinedDeclaration[i] = declarations[i];
-                redefinedDeclaration[declarations.length] = declr;
-                declarations = redefinedDeclaration;
-            }
-*/
         }
         pattern.addConstraint(buildVariableConstraint(context, expr, declarations, value1, operator, value2, extractor, restriction));
         return true;

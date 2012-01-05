@@ -24,6 +24,7 @@ import java.io.ObjectOutput;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
@@ -88,8 +89,8 @@ public class VariableConstraint extends MutableTypeConstraint
         return this.restriction.getRequiredDeclarations();
     }
 
-    public Declaration getIndexingDeclaration() {
-        return getRequiredDeclarations()[0];
+    public FieldIndex getFieldIndex() {
+        return new FieldIndex(getFieldExtractor(), getRequiredDeclarations()[0], getIndexEvaluator());
     }
 
     public void replaceDeclaration(Declaration oldDecl,
@@ -106,7 +107,7 @@ public class VariableConstraint extends MutableTypeConstraint
         return this.restriction.getEvaluator();
     }
     
-    public IndexEvaluator getIndexEvaluator() {
+    private IndexEvaluator getIndexEvaluator() {
         if (indexEvaluator == null) {
             indexEvaluator = new WrapperIndexEvaluator(getEvaluator());
         }

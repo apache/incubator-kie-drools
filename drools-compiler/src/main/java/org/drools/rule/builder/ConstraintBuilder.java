@@ -59,7 +59,7 @@ public class ConstraintBuilder {
 
     public static Constraint buildVariableConstraint(RuleBuildContext context,
                                                      String expression,
-                                                     Declaration[] declrations,
+                                                     Declaration[] declarations,
                                                      String leftValue,
                                                      String operator,
                                                      String rightValue,
@@ -70,8 +70,12 @@ public class ConstraintBuilder {
                 return new EvaluatorConstraint(restriction.getRequiredDeclarations(), restriction.getEvaluator(), extractor);
             }
 
-            expression = resolveUnificationAmbiguity(expression, declrations, leftValue, rightValue, restriction);
-            return new MvelConstraint(context.getPkg().getName(), expression, operator, declrations, getIndexingDeclaration(restriction), extractor);
+            boolean isUnification = restriction instanceof UnificationRestriction;
+            if (isUnification) {
+                expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue, restriction);
+            }
+            boolean isIndexable = operator.equals("==");
+            return new MvelConstraint(context.getPkg().getName(), expression, isIndexable, declarations, getIndexingDeclaration(restriction), extractor, isUnification);
         } else {
             return new VariableConstraint(extractor, restriction);
         }
@@ -93,7 +97,7 @@ public class ConstraintBuilder {
             }
 
             String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
-            return new MvelConstraint(context.getPkg().getName(), mvelExpr, operator);
+            return new MvelConstraint(context.getPkg().getName(), mvelExpr);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
             return restriction != null ? new LiteralConstraint(extractor, restriction) : null;
@@ -102,7 +106,7 @@ public class ConstraintBuilder {
 
     private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue, Restriction restriction) {
         // resolve ambiguity between variable and bound value with the same name in unifications
-        if (restriction instanceof UnificationRestriction && leftValue.equals(rightValue)) {
+        if (leftValue.equals(rightValue)) {
             rightValue = rightValue + "__";
             for (Declaration declaration : declrations) {
                 if (declaration.getIdentifier().equals(leftValue)) {

@@ -2,14 +2,7 @@ package org.drools.rule.constraint;
 
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
-import org.mvel2.ast.ASTNode;
-import org.mvel2.ast.BinaryOperation;
-import org.mvel2.ast.Contains;
-import org.mvel2.ast.LiteralNode;
-import org.mvel2.ast.Negation;
-import org.mvel2.ast.NewObjectNode;
-import org.mvel2.ast.RegExMatch;
-import org.mvel2.ast.Substatement;
+import org.mvel2.ast.*;
 import org.mvel2.compiler.Accessor;
 import org.mvel2.compiler.AccessorNode;
 import org.mvel2.compiler.CompiledExpression;
@@ -40,90 +33,67 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
-public class AnalyzedCondition {
+public class ConditionAnalyzer {
 
-    private boolean negated;
-    private Expression left;
-    private BooleanOperator operation;
-    private Expression right;
+    private ASTNode node;
     private ParserContext parserContext;
 
-    public AnalyzedCondition(ExecutableStatement stmt) {
-        ASTNode node;
+    public ConditionAnalyzer(ExecutableStatement stmt) {
         if (stmt instanceof CompiledExpression) {
             parserContext = ((CompiledExpression)stmt).getParserContext();
             node = ((CompiledExpression)stmt).getFirstNode();
         } else {
             node = ((ExecutableAccessor)stmt).getNode();
         }
-        analyzeExpression(node);
     }
 
-    public Expression getLeft() {
-        return left;
-    }
-
-    public Expression getRight() {
-        return right;
-    }
-
-    public boolean isBinary() {
-        return operation != null;
-    }
-
-    public BooleanOperator getOperation() {
-        return operation;
-    }
-
-    public boolean isNegated() {
-        return negated;
-    }
-
-    public void toggleNegation() {
-        negated = !negated;
-    }
-
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (negated) sb.append("not ");
-        sb.append(left);
-        if (isBinary()) {
-            sb.append(" ").append(operation);
-            sb.append(" ").append(right);
-        }
-        return sb.toString();
-    }
-
-    private void analyzeExpression(ASTNode node) {
+    public Condition analyzeCondition() {
         while (node.nextASTNode != null) node = node.nextASTNode;
-        node = analyzeNegation(node);
+        return analyzeCondition(node);
+    }
+
+    private Condition analyzeCondition(ASTNode node) {
+        boolean isNegated = false;
+        if (node instanceof Negation) {
+            isNegated = true;
+            node = ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
+        }
         node = analyzeSubstatement(node);
 
-        if (node instanceof BinaryOperation) {
-            BinaryOperation binaryOperation = (BinaryOperation)node;
-            left = analyzeNode(binaryOperation.getLeft());
-            operation = BooleanOperator.fromMvelOpCode(binaryOperation.getOperation());
-            right = analyzeNode(binaryOperation.getRight());
-        } else if (node instanceof RegExMatch) {
-            left = analyzeNode(node);
-            operation = BooleanOperator.MATCHES;
-            Pattern pattern = ((RegExMatch)node).getPattern();
-            right = new FixedExpression(String.class, pattern.pattern());
-        } else if (node instanceof Contains) {
-            left = analyzeNode(((Contains)node).getFirstStatement());
-            operation = BooleanOperator.CONTAINS;
-            right = analyzeNode(((Contains)node).getSecondStatement());
-        } else {
-            left = analyzeNode(node);
+        if (node instanceof And || node instanceof Or) {
+            return analyzeCombinedCondition((BooleanNode)node, isNegated);
         }
+
+        return analyzeSingleCondition(node, isNegated);
     }
 
-    private ASTNode analyzeNegation(ASTNode node) {
-        if (node instanceof Negation) {
-            negated = true;
-            return ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
+    private SingleCondition analyzeSingleCondition(ASTNode node, boolean isNegated) {
+        SingleCondition condition = new SingleCondition(isNegated);
+        if (node instanceof BinaryOperation) {
+            BinaryOperation binaryOperation = (BinaryOperation)node;
+            condition.left = analyzeNode(binaryOperation.getLeft());
+            condition.operation = BooleanOperator.fromMvelOpCode(binaryOperation.getOperation());
+            condition.right = analyzeNode(binaryOperation.getRight());
+        } else if (node instanceof RegExMatch) {
+            condition.left = analyzeNode(node);
+            condition.operation = BooleanOperator.MATCHES;
+            Pattern pattern = ((RegExMatch)node).getPattern();
+            condition.right = new FixedExpression(String.class, pattern.pattern());
+        } else if (node instanceof Contains) {
+            condition.left = analyzeNode(((Contains)node).getFirstStatement());
+            condition.operation = BooleanOperator.CONTAINS;
+            condition.right = analyzeNode(((Contains)node).getSecondStatement());
+        } else {
+            condition.left = analyzeNode(node);
         }
-        return node;
+        return condition;
+    }
+
+    private CombinedCondition analyzeCombinedCondition(BooleanNode booleanNode, boolean isNegated) {
+        CombinedCondition condition = new CombinedCondition(booleanNode instanceof And, isNegated);
+        condition.addCondition(analyzeCondition(booleanNode.getLeft()));
+        condition.addCondition(analyzeCondition(booleanNode.getRight()));
+        return condition;
     }
 
     private ASTNode analyzeSubstatement(ASTNode node) {
@@ -324,6 +294,94 @@ public class AnalyzedCondition {
                     invocation.addArgument(analyzeNode(((ExecutableAccessor)param).getNode()));
                 }
             }
+        }
+    }
+
+    public static abstract class Condition {
+        private boolean negated;
+
+        protected Condition(boolean negated) {
+            this.negated = negated;
+        }
+
+        public boolean isNegated() {
+            return negated;
+        }
+
+        public void toggleNegation() {
+            negated = !negated;
+        }
+    }
+
+    public static class SingleCondition extends Condition {
+        private Expression left;
+        private BooleanOperator operation;
+        private Expression right;
+
+        protected SingleCondition(boolean negated) {
+            super(negated);
+        }
+
+        public Expression getLeft() {
+            return left;
+        }
+
+        public Expression getRight() {
+            return right;
+        }
+
+        public boolean isBinary() {
+            return operation != null;
+        }
+
+        public BooleanOperator getOperation() {
+            return operation;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder(isNegated() ? "not " : "");
+            sb.append(left);
+            if (isBinary()) {
+                sb.append(" ").append(operation);
+                sb.append(" ").append(right);
+            }
+            return sb.toString();
+        }
+    }
+
+    public static class CombinedCondition extends Condition {
+        private final boolean isAnd;
+        private List<Condition> conditions = new ArrayList<Condition>();
+
+        protected CombinedCondition(boolean isAnd, boolean negated) {
+            super(negated);
+            this.isAnd = isAnd;
+        }
+
+        private void addCondition(Condition condition) {
+            if (condition instanceof CombinedCondition && isAnd() == ((CombinedCondition)condition).isAnd()) {
+                conditions.addAll(((CombinedCondition)condition).getConditions());
+            } else {
+                conditions.add(condition);
+            }
+        }
+
+        public boolean isAnd() {
+            return isAnd;
+        }
+
+        public List<Condition> getConditions() {
+            return conditions;
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder(isNegated() ? "not (" : "(");
+            Iterator<Condition> i = conditions.iterator();
+            while (i.hasNext()) {
+                sb.append(i.next());
+                if (i.hasNext()) sb.append(isAnd ? " and " : " or ");
+            }
+            return sb.append(")").toString();
         }
     }
 
