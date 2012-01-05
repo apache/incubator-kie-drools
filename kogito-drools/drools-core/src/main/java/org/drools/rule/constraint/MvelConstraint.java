@@ -1,11 +1,11 @@
 package org.drools.rule.constraint;
 
-import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -13,11 +13,11 @@ import org.drools.rule.IndexEvaluator;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
-import org.drools.rule.Pattern;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
+import org.mvel2.compiler.ExecutableStatement;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,7 +35,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private String packageName;
     private String expression;
-    private String operator;
+    private boolean isIndexable;
     private Declaration[] declarations;
     private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
@@ -45,19 +45,27 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(String packageName, String expression, String operator) {
-        this(packageName, expression, operator, null, null, null);
+    public MvelConstraint(String packageName, String expression) {
+        this(packageName, expression, false, null, null, null, false);
     }
 
-    public MvelConstraint(String packageName, String expression, String operator,
-                          Declaration[] declarations, Declaration indexingDeclaration, InternalReadAccessor extractor) {
+    public MvelConstraint(String packageName, String expression, boolean isIndexable, Declaration[] declarations,
+                          Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
         this.packageName = packageName;
         this.expression = expression;
-        this.operator = operator;
+        this.isIndexable = isIndexable;
         this.declarations = declarations == null ? new Declaration[0] : declarations;
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
-        isUnification = initUnification();
+        this.isUnification = isUnification;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String getExpression() {
+        return expression;
     }
 
     public boolean isUnification() {
@@ -69,18 +77,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public boolean isIndexable() {
-        return indexingDeclaration != null && operator.equals("==");
-    }
-
-    public IndexEvaluator getIndexEvaluator() {
-        return INDEX_EVALUATOR;
-    }
-
-    private boolean initUnification() {
-        if (declarations.length == 0) return false;
-        Pattern pattern = declarations[0].getPattern();
-        if (pattern == null) return false;
-        return pattern.getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && operator.equals("==");
+        return isIndexable && indexingDeclaration != null;
     }
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
@@ -122,12 +119,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private boolean evaluate(Object object, InternalWorkingMemory workingMemory, Map<String, Object> vars) {
         if (!jitted) {
             if (conditionEvaluator == null) {
-                conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, operator);
+                conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression);
                 if (TEST_JITTING) { // TO BE REMOVED
-                    boolean mvelValue = forceJitEvaluator(object, workingMemory, vars);
+                    boolean mvelValue = forceJitEvaluator(workingMemory, object, vars);
                 }
             } else if (invocationCounter.getAndIncrement() == JIT_THRESOLD) {
-                jitEvaluator(workingMemory);
+                jitEvaluator(workingMemory, object, vars);
             }
         }
 
@@ -140,25 +137,27 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
     }
 
-    private boolean forceJitEvaluator(Object object, InternalWorkingMemory workingMemory, Map<String, Object> vars) {
+    private boolean forceJitEvaluator(InternalWorkingMemory workingMemory, Object object, Map<String, Object> vars) {
         boolean mvelValue;
         try {
             mvelValue = conditionEvaluator.evaluate(object, vars);
         } catch (ClassCastException cce) {
             mvelValue = false;
         }
-        jitEvaluator(workingMemory);
+        jitEvaluator(workingMemory, object, vars);
         return mvelValue;
     }
 
-    private void jitEvaluator(InternalWorkingMemory workingMemory) {
+    private void jitEvaluator(InternalWorkingMemory workingMemory, Object object, Map<String, Object> vars) {
+        jitted = true;
         try {
             CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-            conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator) conditionEvaluator).getExecutableStatement(), classLoader);
+            ExecutableStatement executableStatement = ((MvelConditionEvaluator) conditionEvaluator).getExecutableStatement(object, vars);
+            ConditionAnalyzer.Condition condition = new ConditionAnalyzer(executableStatement).analyzeCondition();
+            conditionEvaluator = ASMConditionEvaluatorJitter.jit(condition, classLoader);
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
-        jitted = true;
     }
 
     public ContextEntry createContextEntry() {
@@ -170,6 +169,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return contextEntry;
     }
 
+    public FieldIndex getFieldIndex() {
+        // declaration's offset can be modified by the reteoo's PatternBuilder so modify the indexingDeclaration accordingly
+        indexingDeclaration.getPattern().setOffset(declarations[0].getPattern().getOffset());
+        return new FieldIndex(extractor, indexingDeclaration, INDEX_EVALUATOR);
+    }
+
     public InternalReadAccessor getFieldExtractor() {
         return extractor;
     }
@@ -179,14 +184,17 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public Declaration getIndexingDeclaration() {
-        indexingDeclaration.getPattern().setOffset(declarations[0].getPattern().getOffset());
         return indexingDeclaration;
     }
 
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
-        if (declarations[0].equals(oldDecl)) {
-            declarations[0] = newDecl;
+        for (int i = 0; i < declarations.length; i++) {
+            if (declarations[i].equals(oldDecl)) {
+                declarations[i] = newDecl;
+                break;
+            }
         }
+
         if (indexingDeclaration != null && indexingDeclaration.equals(oldDecl)) {
             indexingDeclaration = newDecl;
         }
@@ -198,10 +206,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         super.writeExternal(out);
         out.writeObject(packageName);
         out.writeObject(expression);
-        out.writeObject(operator);
         out.writeObject(declarations);
         out.writeObject(indexingDeclaration);
         out.writeObject(extractor);
+        out.writeBoolean(isIndexable);
         out.writeBoolean(isUnification);
     }
 
@@ -209,10 +217,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         super.readExternal(in);
         packageName = (String)in.readObject();
         expression = (String)in.readObject();
-        operator = (String)in.readObject();
         declarations = (Declaration[]) in.readObject();
         indexingDeclaration = (Declaration) in.readObject();
         extractor = (InternalReadAccessor) in.readObject();
+        isIndexable = in.readBoolean();
         isUnification = in.readBoolean();
     }
 
@@ -221,7 +229,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public Object clone() {
-        return new MvelConstraint(packageName, expression, operator, declarations, indexingDeclaration, extractor);
+        return new MvelConstraint(packageName, expression, isIndexable, declarations, indexingDeclaration, extractor, isUnification);
     }
 
     public int hashCode() {
@@ -231,7 +239,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     public boolean equals(final Object object) {
         if ( this == object ) return true;
         if ( object == null || object.getClass() != MvelConstraint.class ) return false;
-        return expression.equals(((MvelConstraint)object).expression);
+        return expression.equals(((MvelConstraint) object).expression);
     }
 
     private ParserConfiguration getParserConfiguration(InternalWorkingMemory workingMemory) {
@@ -242,18 +250,21 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public static class MvelContextEntry implements ContextEntry {
 
-        Object left;
-        Object right;
-        Declaration[] declarations;
-        ContextEntry next;
+        private Object left;
+        private Object right;
+        private Declaration[] declarations;
+        private ContextEntry next;
 
-        transient Map<String, Object> vars = new HashMap<String, Object>();
-        transient InternalWorkingMemory workingMemory;
+        private transient Map<String, Object> vars;
+        private transient InternalWorkingMemory workingMemory;
 
         public MvelContextEntry() { }
 
         public MvelContextEntry(Declaration[] declarations) {
             this.declarations = declarations;
+            if (declarations.length > 0 ) {
+                vars = new HashMap<String, Object>();
+            }
         }
 
         public ContextEntry getNext() {
@@ -269,7 +280,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             Declaration declaration = declarations[0];
             InternalFactHandle handle = tuple.get(declaration);
             left = declaration.getExtractor().getValue(workingMemory, handle.getObject());
-            getRightVars(workingMemory, handle);
+            if (declarations.length == 1) {
+                vars.put(declaration.getBindingName(), left);
+            } else {
+                getRightVars(tuple);
+            }
         }
 
         public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
@@ -278,7 +293,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         Map<String, Object> getRightVars(LeftTuple tuple) {
-            return getRightVars(workingMemory, tuple.get(declarations[0]));
+            if (declarations.length == 0) return null;
+            for (Declaration declaration : declarations) {
+                try {
+                    vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, tuple.get(declaration).getObject()));
+                } catch (NullPointerException npe) {
+                    vars.put(declaration.getBindingName(), declarations[0].getExtractor().getValue(workingMemory, tuple.get(declarations[0]).getObject()));
+                }
+            }
+            return vars;
         }
 
         Map<String, Object> getRightVars(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
@@ -291,13 +314,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         public void resetTuple() {
             left = null;
-            vars.clear();
+            if (vars != null) vars.clear();
         }
 
         public void resetFactHandle() {
             workingMemory = null;
             right = null;
-            vars.clear();
+            if (vars != null) vars.clear();
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -305,6 +328,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             right = in.readObject();
             declarations = (Declaration[])in.readObject();
             next = (ContextEntry)in.readObject();
+            if (declarations.length > 0 ) {
+                vars = new HashMap<String, Object>();
+            }
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {

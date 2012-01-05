@@ -33,6 +33,7 @@ import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.DeclarationScopeResolver;
+import org.drools.spi.InternalReadAccessor;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or

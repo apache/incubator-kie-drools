@@ -395,8 +395,11 @@ abstract public class AbstractRuleBase
     }
 
     public Process[] getProcesses() {
-        synchronized ( this.pkgs ) {
+        readLock();
+        try {
             return (Process[]) this.processes.values().toArray( new Process[this.processes.size()] );
+        } finally {
+            readUnlock();
         }
     }
 
@@ -1049,12 +1052,7 @@ abstract public class AbstractRuleBase
     }
 
     public Package getPackage( final String name ) {
-        readLock();
-        try {
-            return this.pkgs.get( name );
-        } finally {
-            readUnlock();
-        }
+        return this.pkgs.get( name );
     }
 
     public StatefulSession[] getStatefulSessions() {

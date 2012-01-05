@@ -43,12 +43,12 @@ public class DynamicRulesChangesTest {
         addRule("raiseAlarm");
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore
     public void testBatchRuleAdditions() throws Exception {
         parallelExecute(BatchRulesExecutor.getSolvers());
     }

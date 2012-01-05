@@ -168,7 +168,7 @@ public class DefaultBetaConstraints
     }
 
     public static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        return constraint instanceof IndexableConstraint ? ((IndexableConstraint)constraint).isIndexable() : false;
+        return constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).isIndexable();
     }
 
     /* (non-Javadoc)
@@ -269,9 +269,7 @@ public class DefaultBetaConstraints
             for ( int pos = 0; pos <= this.indexed; pos++ ) {
                 final Constraint constraint = (Constraint) entry.getObject();
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) constraint;
-                final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                         indexableConstraint.getIndexingDeclaration(),
-                                                         indexableConstraint.getIndexEvaluator() );
+                final FieldIndex index = indexableConstraint.getFieldIndex();
                 list.add( index );
                 entry = (LinkedListEntry) entry.getNext();
             }

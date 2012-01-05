@@ -20,15 +20,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.drools.base.ClassObjectType;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -221,6 +216,52 @@ public class Pattern
             this.setConstraintType( (MutableTypeConstraint) constraint );
         }
         this.constraints.add( constraint );
+    }
+
+    public void combineConstraints() {
+        List<MvelConstraint> combinableConstraints = new ArrayList<MvelConstraint>();
+        for (Constraint constraint : constraints) {
+            if (constraint instanceof MvelConstraint &&
+                    !((MvelConstraint)constraint).isUnification() &&
+                    !((MvelConstraint)constraint).isIndexable() &&
+                    ((MvelConstraint)constraint).getType() == ConstraintType.BETA) {
+                combinableConstraints.add((MvelConstraint)constraint);
+            }
+        }
+
+        if (combinableConstraints.size() < 2) {
+            return;
+        }
+
+        List<Declaration> declarations = new ArrayList<Declaration>();
+        Set<String> declarationNames = new HashSet<String>();
+
+        Iterator<MvelConstraint> constraintIterator = combinableConstraints.iterator();
+        MvelConstraint firstConstraint = constraintIterator.next();
+        constraints.remove(firstConstraint);
+        String packageName = firstConstraint.getPackageName();
+        String expression = firstConstraint.getExpression();
+        for (Declaration declaration : firstConstraint.getRequiredDeclarations()) {
+            if (declarationNames.add(declaration.getBindingName())) {
+                declarations.add(declaration);
+            }
+        }
+
+        while (constraintIterator.hasNext()) {
+            MvelConstraint constraint = constraintIterator.next();
+            constraints.remove(constraint);
+            expression += " && " + constraint.getExpression();
+            for (Declaration declaration : constraint.getRequiredDeclarations()) {
+                if (declarationNames.add(declaration.getBindingName())) {
+                    declarations.add(declaration);
+                }
+            }
+        }
+
+        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression, false,
+                                                               declarations.toArray(new Declaration[declarations.size()]),
+                                                               null, null, false);
+        addConstraint(combinedConstraint);
     }
 
     public Declaration addDeclaration(final String identifier) {

@@ -154,9 +154,7 @@ public class SingleBetaConstraints
         BetaMemory memory;
         if ( this.indexed ) {
             final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint;
-            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                     indexableConstraint.getIndexingDeclaration(),
-                                                     indexableConstraint.getIndexEvaluator() );
+            final FieldIndex index = indexableConstraint.getFieldIndex();
             LeftTupleMemory tupleMemory;
             if ( this.conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new LeftTupleIndexHashTable( new FieldIndex[]{index} );

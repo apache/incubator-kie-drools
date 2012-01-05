@@ -241,26 +241,20 @@ public class TripleBetaConstraints
         final List list = new ArrayList( 2 );
         if ( this.indexed0 ) {
             final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint0;
-            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                     indexableConstraint.getIndexingDeclaration(),
-                                                     indexableConstraint.getIndexEvaluator() );
+            final FieldIndex index = indexableConstraint.getFieldIndex();
             list.add( index );
 
         }
 
         if ( this.indexed1 ) {
             final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint1;
-            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                     indexableConstraint.getIndexingDeclaration(),
-                                                     indexableConstraint.getIndexEvaluator() );
+            final FieldIndex index = indexableConstraint.getFieldIndex();
             list.add( index );
         }
 
         if ( this.indexed2 ) {
             final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint2;
-            final FieldIndex index = new FieldIndex( indexableConstraint.getFieldExtractor(),
-                                                     indexableConstraint.getIndexingDeclaration(),
-                                                     indexableConstraint.getIndexEvaluator() );
+            final FieldIndex index = indexableConstraint.getFieldIndex();
             list.add( index );
         }
 

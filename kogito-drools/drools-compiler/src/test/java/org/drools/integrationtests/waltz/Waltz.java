@@ -37,8 +37,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

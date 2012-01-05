@@ -64,15 +64,15 @@ public class JavaDialectBinaryEqualityTest{
         assertThat(rvc1, not( equalTo( rvc3 ) ) );
         
         // test inline eval
-        PredicateConstraint pc1 = ( PredicateConstraint )  p1.getConstraints().get( 1 );
+        PredicateConstraint pc1 = getPredicateConstraint(p1);
         PredicateExpression pe1 = ( PredicateExpression ) pc1.getPredicateExpression();
 
-        PredicateConstraint pc2 = ( PredicateConstraint )  p2.getConstraints().get( 1 );
+        PredicateConstraint pc2 = getPredicateConstraint(p2);
         PredicateExpression pe2 = ( PredicateExpression ) pc2.getPredicateExpression();
         assertNotSame( pe1, pe2 );
         assertEquals( pe1, pe2 );
         
-        PredicateConstraint pc3 = ( PredicateConstraint )  p3.getConstraints().get( 1 );
+        PredicateConstraint pc3 = getPredicateConstraint(p3);
         PredicateExpression pe3 = ( PredicateExpression ) pc3.getPredicateExpression();
         assertNotSame( pe1, pe3 );
         assertThat(pe1, not( equalTo( pe3 ) ) );
@@ -103,6 +103,13 @@ public class JavaDialectBinaryEqualityTest{
         
         assertNotSame( rule1.getLhs(), rule3.getLhs() );
         assertThat(rule1.getLhs(), not( equalTo( rule3.getLhs() ) ) );
+    }
+
+    private PredicateConstraint getPredicateConstraint(Pattern pattern) {
+        for (Constraint constraint : pattern.getConstraints()) {
+            if (constraint instanceof PredicateConstraint) return (PredicateConstraint)constraint;
+        }
+        return null;
     }
     
     public KnowledgePackage getKnowledgePackage1() {
