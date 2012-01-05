@@ -195,33 +195,35 @@ public class PatternBuilder
             Declaration target = constraint.getRequiredDeclarations()[0];
             if ( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
                 long uplimit = ((IntervalProviderConstraint) constraint).getInterval().getUpperBound();
+                // only makes sense to add the new timer if the uplimit is not infinity (Long.MAX_VALUE)
+                if( uplimit < Long.MAX_VALUE ) {
+                    Timer timer = context.getRule().getTimer();
+                    DurationTimer durationTimer = new DurationTimer( uplimit );
 
-                Timer timer = context.getRule().getTimer();
-                DurationTimer durationTimer = new DurationTimer( uplimit );
-
-                if ( timer instanceof CompositeMaxDurationTimer ) {
-                    // already a composite so just add
-                    ((CompositeMaxDurationTimer) timer).addDurationTimer( durationTimer );
-                } else {
-                    if ( timer == null ) {
-                        // no timer exists, so ok on it's own
-                        timer = durationTimer;
+                    if ( timer instanceof CompositeMaxDurationTimer ) {
+                        // already a composite so just add
+                        ((CompositeMaxDurationTimer) timer).addDurationTimer( durationTimer );
                     } else {
-                        // timer exists so we need to make a composite
-                        CompositeMaxDurationTimer temp = new CompositeMaxDurationTimer();
-                        if ( timer instanceof DurationTimer ) {
-                            // previous timer was a duration, so add another DurationTimer
-                            temp.addDurationTimer( (DurationTimer) timer );
+                        if ( timer == null ) {
+                            // no timer exists, so ok on it's own
+                            timer = durationTimer;
                         } else {
-                            // previous timer was not a duration, so set it as the delegate Timer.
-                            temp.setTimer( context.getRule().getTimer() );
+                            // timer exists so we need to make a composite
+                            CompositeMaxDurationTimer temp = new CompositeMaxDurationTimer();
+                            if ( timer instanceof DurationTimer ) {
+                                // previous timer was a duration, so add another DurationTimer
+                                temp.addDurationTimer( (DurationTimer) timer );
+                            } else {
+                                // previous timer was not a duration, so set it as the delegate Timer.
+                                temp.setTimer( context.getRule().getTimer() );
+                            }
+                            // now add the new durationTimer
+                            temp.addDurationTimer( durationTimer );
+                            timer = temp;
                         }
-                        // now add the new durationTimer
-                        temp.addDurationTimer( durationTimer );
-                        timer = temp;
+                        // with the composite made, reset it on the Rule
+                        context.getRule().setTimer( timer );
                     }
-                    // with the composite made, reset it on the Rule
-                    context.getRule().setTimer( timer );
                 }
             }
         }
