@@ -20,14 +20,20 @@ public class EvaluationExample {
 			// load up the knowledge base
 			KnowledgeBase kbase = readKnowledgeBase();
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
+			final KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
+                        Runtime.getRuntime().addShutdownHook(new Thread() {
+			      public void run() {
+			    	  if(logger != null){
+			    		  logger.close();
+			    	  }
+			      }
+			    });
 			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("employee", "krisv");
 			params.put("reason", "Yearly performance evaluation");
 			ksession.startProcess("com.sample.evaluation", params);
-			logger.close();
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
