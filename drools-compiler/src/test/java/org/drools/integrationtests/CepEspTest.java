@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -1434,6 +1435,69 @@ public class CepEspTest {
 
     }
 
+    @Test
+    public void testDelayingNot2() throws Exception {
+        String str = "package org.drools\n" +
+                "declare A @role(event) symbol : String end\n" +
+                "declare B @role(event) symbol : String end\n" +
+                "rule Setup when\n" +
+                "then\n" +
+                "    insert( new A() );\n" +
+                "end\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $a : A() and not( B( this after $a ) )\n" +
+                "then\n" +
+                "end\n";
+        
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ), conf );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        // rule X should not be delayed as the delay would be infinite
+        int rules = ksession.fireAllRules();
+        assertEquals( 2, rules );
+        
+    }
+    
+    @Test
+    public void testDelayingNotWithPreEpochClock() throws Exception {
+        String str = "package org.drools\n" +
+                "declare A @role(event) symbol : String end\n" +
+                "declare B @role(event) symbol : String end\n" +
+                "rule Setup when\n" +
+                "then\n" +
+                "    insert( new A() );\n" +
+                "end\n" +
+                "rule X\n" +
+                "when\n" +
+                "    $a : A() and not( B( this after $a ) )\n" +
+                "then\n" +
+                "end\n";
+        
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ), conf );
+
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf, null );
+        
+        // Getting a pre-epoch date (i.e., before 1970) 
+        Calendar ts = Calendar.getInstance();
+        ts.set( 1900, 1, 1 );
+        
+        // Initializing the clock to that date
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime( ts.getTimeInMillis(), TimeUnit.MILLISECONDS );
+        
+        // rule X should not be delayed as the delay would be infinite
+        int rules = ksession.fireAllRules();
+        assertEquals( 2, rules );
+        
+    }
+    
     //    @Test @Ignore
     //    public void testTransactionCorrelation() throws Exception {
     //        // read in the source

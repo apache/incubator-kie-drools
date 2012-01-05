@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.NumberUtils;
 import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
@@ -54,9 +55,17 @@ public class DurationTimer
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
                                  Calendars calendars) {
-        return new PointInTimeTrigger( timestamp + duration,
-                                       calendarNames,
-                                       calendars );
+        long offset = timestamp + duration;
+        if( NumberUtils.isAddOverflow( timestamp, duration, offset ) ) {
+            // this should not happen, but possible in some odd simulation scenarios, so creating a trigger for immediate execution instead
+            return new PointInTimeTrigger( timestamp,
+                                           calendarNames,
+                                           calendars );
+        } else {
+            return new PointInTimeTrigger( offset,
+                                           calendarNames,
+                                           calendars );
+        }
     }
 
     @Override
