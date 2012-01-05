@@ -30,8 +30,7 @@ import org.drools.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class RetractCommand
-implements
-GenericCommand<Object> {
+        implements GenericCommand<Object> {
 
     private FactHandle handle;
 
@@ -64,4 +63,5 @@ GenericCommand<Object> {
     public String toString() {
         return "session.retract( " + handle + " );";
     }
+
 }
