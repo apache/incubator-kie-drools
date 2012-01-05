@@ -46,7 +46,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -137,20 +136,7 @@ import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.DefaultWorkingMemoryEventListener;
-import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectRetractedEvent;
-import org.drools.event.ObjectUpdatedEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.WorkingMemoryEventListener;
+import org.drools.event.*;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -9594,7 +9580,7 @@ public class MiscTest {
         
         ksession.dispose();
     }
-    
+
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
@@ -9699,4 +9685,79 @@ public class MiscTest {
         }
     }
 
+    @Test
+    public void testMvelDoubleInvocation() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.MiscTest.TestUtility;\n" +
+                "import org.drools.integrationtests.MiscTest.TestFact;\n" +
+                "rule \"First Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value1\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"First Rule Fires\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Second Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value2\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"Second Rule Fires\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Third Rule\"\n" +
+                "    when\n" +
+                "    $tf : TestFact(TestUtility.utilMethod(s, \"Value3\") == true\n" +
+                "             && i > 0\n" +
+                "    )\n" +
+                "    then\n" +
+                "        System.out.println(\"Third Rule Fires\");\n" +
+                "end ";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        TestFact fact = new TestFact();
+        fact.setS("asdf");
+        fact.setI(10);
+        ksession.insert(fact);
+        ksession.fireAllRules();
+
+        ksession.dispose();
+    }
+
+    public static class TestUtility {
+        public static Boolean utilMethod(String s1, String s2) {
+            Boolean result = null;
+
+            if (s1 != null) {
+                result = s1.equals(s2);
+            }
+
+            System.out.println("in utilMethod >" + s1 + "<  >" + s2 + "< returns " + result);
+            return result;
+        }
+    }
+
+    public static class TestFact {
+        private int i;
+        private String s;
+
+        public int getI() {
+            return i;
+        }
+        public void setI(int i) {
+            this.i = i;
+        }
+
+        public String getS() {
+            return s;
+        }
+        public void setS(String s) {
+            this.s = s;
+        }
+    }
 }

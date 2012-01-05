@@ -23,11 +23,7 @@ import org.mvel2.optimizers.impl.refl.nodes.StaticVarAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ThisValueAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.VariableAccessor;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -142,7 +138,7 @@ public class ConditionAnalyzer {
         if (accessor instanceof VariableAccessor) {
             VariableAccessor variableAccessor = (VariableAccessor)accessor;
             accessorNode = variableAccessor.getNextNode();
-            if (accessorNode == null || !(accessorNode instanceof StaticVarAccessor || accessorNode instanceof StaticReferenceAccessor)) {
+            if (accessorNode == null || !isStaticAccessor(accessorNode)) {
                 return new VariableExpression((String)(variableAccessor.getProperty()), analyzeExpressionNode(accessorNode));
             }
         }
@@ -181,6 +177,10 @@ public class ConditionAnalyzer {
         while (accessorNode != null) {
             if (accessorNode instanceof StaticVarAccessor || accessorNode instanceof StaticReferenceAccessor) {
                 return true;
+            }
+            if (accessorNode instanceof MethodAccessor) {
+                Method method = ((MethodAccessor)accessorNode).getMethod();
+                return (method.getModifiers() & Modifier.STATIC) > 0;
             }
             accessorNode = accessorNode.getNextNode();
         }
