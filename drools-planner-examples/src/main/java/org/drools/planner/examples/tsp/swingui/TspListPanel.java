@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
@@ -57,42 +57,42 @@ public class TspListPanel extends JPanel {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-            JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
-            JButton button = new JButton(new CityAssignmentAction(cityAssignment));
-            cityAssignmentPanel.add(button);
+        for (Journey journey : travelingSalesmanTour.getJourneyList()) {
+            JPanel journeyPanel = new JPanel(new GridLayout(1, 2));
+            JButton button = new JButton(new JourneyAction(journey));
+            journeyPanel.add(button);
             String distanceLabelString;
-            if (cityAssignment.getNextCityAssignment() == null) {
+            if (journey.getNextJourney() == null) {
                 distanceLabelString = "Unassigned";
             } else {
                 distanceLabelString = "Distance to next: "
-                        + cityAssignment.getDistanceToNextCityAssignment();
+                        + journey.getDistanceToNextJourney();
             }
-            cityAssignmentPanel.add(new JLabel(distanceLabelString));
-            add(cityAssignmentPanel);
+            journeyPanel.add(new JLabel(distanceLabelString));
+            add(journeyPanel);
         }
     }
 
-    private class CityAssignmentAction extends AbstractAction {
+    private class JourneyAction extends AbstractAction {
 
-        private CityAssignment cityAssignment;
+        private Journey journey;
 
-        public CityAssignmentAction(CityAssignment cityAssignment) {
-            super(cityAssignment.getCity().toString());
-            this.cityAssignment = cityAssignment;
+        public JourneyAction(Journey journey) {
+            super(journey.getCity().toString());
+            this.journey = journey;
         }
 
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<CityAssignment> afterCityAssignmentList = tspPanel.getTravelingSalesmanTour().getCityAssignmentList();
-            JComboBox afterCityAssignmentListField = new JComboBox(afterCityAssignmentList.toArray());
-            afterCityAssignmentListField.setSelectedItem(cityAssignment.getNextCityAssignment());
-            listFieldsPanel.add(afterCityAssignmentListField);
+            List<Journey> afterJourneyList = tspPanel.getTravelingSalesmanTour().getJourneyList();
+            JComboBox afterJourneyListField = new JComboBox(afterJourneyList.toArray());
+            afterJourneyListField.setSelectedItem(journey.getNextJourney());
+            listFieldsPanel.add(afterJourneyListField);
             int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), listFieldsPanel,
                     "Select to move after city", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                CityAssignment toAfterCityAssignment = (CityAssignment) afterCityAssignmentListField.getSelectedItem();
-                tspPanel.doMove(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
+                Journey toAfterJourney = (Journey) afterJourneyListField.getSelectedItem();
+                tspPanel.doMove(new SubTourChangeMove(journey, journey, toAfterJourney));
                 tspPanel.getWorkflowFrame().resetScreen();
             }
         }

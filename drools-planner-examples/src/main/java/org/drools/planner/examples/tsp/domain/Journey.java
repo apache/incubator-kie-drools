@@ -17,23 +17,23 @@
 package org.drools.planner.examples.tsp.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.DependentPlanningVariable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-@XStreamAlias("CityAssignment")
-public class CityAssignment extends AbstractPersistable {
+@XStreamAlias("Journey")
+public class Journey extends AbstractPersistable {
 
     private City city;
     
     // Planning variables: changes during planning, between score calculations.
-    private CityAssignment previousCityAssignment;
-    private CityAssignment nextCityAssignment;
+    private Journey previousJourney;
+    private Journey nextJourney;
 
     public City getCity() {
         return city;
@@ -43,37 +43,35 @@ public class CityAssignment extends AbstractPersistable {
         this.city = city;
     }
 
-    // TODO FIXME this isn't a planning variable
     @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "cityAssignmentList")
-    public CityAssignment getPreviousCityAssignment() {
-        return previousCityAssignment;
+    @ValueRangeFromSolutionProperty(propertyName = "journeyList")
+    public Journey getPreviousJourney() {
+        return previousJourney;
     }
 
-    public void setPreviousCityAssignment(CityAssignment previousCityAssignment) {
-        this.previousCityAssignment = previousCityAssignment;
+    public void setPreviousJourney(Journey previousJourney) {
+        this.previousJourney = previousJourney;
     }
 
-    @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "cityAssignmentList")
-    public CityAssignment getNextCityAssignment() {
-        return nextCityAssignment;
+    @DependentPlanningVariable(master = "previousJourney", mappedBy = "previousJourney")
+    public Journey getNextJourney() {
+        return nextJourney;
     }
 
-    public void setNextCityAssignment(CityAssignment nextCityAssignment) {
-        this.nextCityAssignment = nextCityAssignment;
+    public void setNextJourney(Journey nextJourney) {
+        this.nextJourney = nextJourney;
     }
 
     /**
      * Warning: previous and next do not point to new clones.
      * @return never null
      */
-    public CityAssignment clone() {
-        CityAssignment clone = new CityAssignment();
+    public Journey clone() {
+        Journey clone = new Journey();
         clone.id = id;
         clone.city = city;
-        clone.previousCityAssignment = previousCityAssignment;
-        clone.nextCityAssignment = nextCityAssignment;
+        clone.previousJourney = previousJourney;
+        clone.nextJourney = nextJourney;
         return clone;
     }
 
@@ -85,13 +83,13 @@ public class CityAssignment extends AbstractPersistable {
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CityAssignment) {
-            CityAssignment other = (CityAssignment) o;
+        } else if (o instanceof Journey) {
+            Journey other = (Journey) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(city, other.city) // TODO performance leak: not needed?
-                    .append(previousCityAssignment, other.previousCityAssignment) // TODO performance leak: not needed?
-                    .append(nextCityAssignment, other.nextCityAssignment)
+                    .append(previousJourney, other.previousJourney) // TODO performance leak: not needed?
+                    .append(nextJourney, other.nextJourney)
                     .isEquals();
         } else {
             return false;
@@ -107,8 +105,8 @@ public class CityAssignment extends AbstractPersistable {
         return new HashCodeBuilder()
                 .append(id)
                 .append(city) // TODO performance leak: not needed?
-                .append(previousCityAssignment) // TODO performance leak: not needed?
-                .append(nextCityAssignment)
+                .append(previousJourney) // TODO performance leak: not needed?
+                .append(nextJourney)
                 .toHashCode();
     }
 
@@ -117,8 +115,8 @@ public class CityAssignment extends AbstractPersistable {
         return city.toString();
     }
 
-    public int getDistanceToNextCityAssignment() {
-        return city.getDistance(nextCityAssignment.getCity());
+    public int getDistanceToNextJourney() {
+        return city.getDistance(nextJourney.getCity());
     }
 
 }

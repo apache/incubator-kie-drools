@@ -23,10 +23,8 @@ import java.util.List;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
@@ -62,7 +60,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             readHeaders();
             readCityList();
             readConstantLine("EOF");
-            createCityAssignmentList();
+            createJourneyList();
             logger.info("TravelingSalesmanTour with {} cities.",
                     travelingSalesmanTour.getCityList().size());
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
@@ -99,22 +97,22 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             travelingSalesmanTour.setStartCity(cityList.get(0));
         }
 
-        private void createCityAssignmentList() {
+        private void createJourneyList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
-            List<CityAssignment> cityAssignmentList = new ArrayList<CityAssignment>(cityList.size());
+            List<Journey> journeyList = new ArrayList<Journey>(cityList.size());
             long id = 0L;
             for (City city : cityList) {
-                CityAssignment cityAssignment = new CityAssignment();
-                cityAssignment.setId(id);
+                Journey journey = new Journey();
+                journey.setId(id);
                 id++;
-                cityAssignment.setCity(city);
+                journey.setCity(city);
                 // Notice that we leave the PlanningVariable properties on null
-                cityAssignmentList.add(cityAssignment);
+                journeyList.add(journey);
                 if (city.equals(travelingSalesmanTour.getStartCity())) {
-                    travelingSalesmanTour.setStartCityAssignment(cityAssignment);
+                    travelingSalesmanTour.setStartJourney(journey);
                 }
             }
-            travelingSalesmanTour.setCityAssignmentList(cityAssignmentList);
+            travelingSalesmanTour.setJourneyList(journeyList);
         }
 
         private BigInteger factorial(int base) {

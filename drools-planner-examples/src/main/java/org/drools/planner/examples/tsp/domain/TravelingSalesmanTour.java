@@ -37,8 +37,8 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     private List<City> cityList;
     private City startCity;
 
-    private List<CityAssignment> cityAssignmentList;
-    private CityAssignment startCityAssignment;
+    private List<Journey> journeyList;
+    private Journey startJourney;
 
     private SimpleScore score;
 
@@ -67,21 +67,21 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     }
 
     @PlanningEntityCollectionProperty
-    public List<CityAssignment> getCityAssignmentList() {
-        return cityAssignmentList;
+    public List<Journey> getJourneyList() {
+        return journeyList;
     }
 
-    public void setCityAssignmentList(List<CityAssignment> cityAssignmentList) {
-        this.cityAssignmentList = cityAssignmentList;
+    public void setJourneyList(List<Journey> journeyList) {
+        this.journeyList = journeyList;
     }
 
-    // Not annotated as a planning entity because it already included in cityAssignmentList
-    public CityAssignment getStartCityAssignment() {
-        return startCityAssignment;
+    // Not annotated as a planning entity because it already included in journeyList
+    public Journey getStartJourney() {
+        return startJourney;
     }
 
-    public void setStartCityAssignment(CityAssignment startCityAssignment) {
-        this.startCityAssignment = startCityAssignment;
+    public void setStartJourney(Journey startJourney) {
+        this.startJourney = startJourney;
     }
 
     public SimpleScore getScore() {
@@ -96,12 +96,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
         facts.add(startCity);
-        // Do not add the planning entity's (cityAssignmentList) because that will be done automatically
+        // Do not add the planning entity's (journeyList) because that will be done automatically
         return facts;
     }
 
     /**
-     * Clone will only deep copy the {@link #cityAssignmentList}.
+     * Clone will only deep copy the {@link #journeyList}.
      */
     public TravelingSalesmanTour cloneSolution() {
         TravelingSalesmanTour clone = new TravelingSalesmanTour();
@@ -109,25 +109,25 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         clone.name = name;
         clone.cityList = cityList;
         clone.startCity = startCity;
-        List<CityAssignment> clonedCityAssignmentList = new ArrayList<CityAssignment>(cityAssignmentList.size());
-        Map<Long, CityAssignment> idToClonedCityAssignmentMap = new HashMap<Long, CityAssignment>(
-                cityAssignmentList.size());
-        for (CityAssignment cityAssignment : cityAssignmentList) {
-            CityAssignment clonedCityAssignment = cityAssignment.clone();
-            clonedCityAssignmentList.add(clonedCityAssignment);
-            idToClonedCityAssignmentMap.put(clonedCityAssignment.getId(), clonedCityAssignment);
-            if (cityAssignment == startCityAssignment) {
-                clone.startCityAssignment = clonedCityAssignment;
+        List<Journey> clonedJourneyList = new ArrayList<Journey>(journeyList.size());
+        Map<Long, Journey> idToClonedJourneyMap = new HashMap<Long, Journey>(
+                journeyList.size());
+        for (Journey journey : journeyList) {
+            Journey clonedJourney = journey.clone();
+            clonedJourneyList.add(clonedJourney);
+            idToClonedJourneyMap.put(clonedJourney.getId(), clonedJourney);
+            if (journey == startJourney) {
+                clone.startJourney = clonedJourney;
             }
         }
         // Fix: Previous and next should point to the new clones instead of the old instances
-        for (CityAssignment clonedCityAssignment : clonedCityAssignmentList) {
-            clonedCityAssignment.setPreviousCityAssignment(idToClonedCityAssignmentMap.get(
-                    clonedCityAssignment.getPreviousCityAssignment().getId()));
-            clonedCityAssignment.setNextCityAssignment(idToClonedCityAssignmentMap.get(
-                    clonedCityAssignment.getNextCityAssignment().getId()));
+        for (Journey clonedJourney : clonedJourneyList) {
+            clonedJourney.setPreviousJourney(idToClonedJourneyMap.get(
+                    clonedJourney.getPreviousJourney().getId()));
+            clonedJourney.setNextJourney(idToClonedJourneyMap.get(
+                    clonedJourney.getNextJourney().getId()));
         }
-        clone.cityAssignmentList = clonedCityAssignmentList;
+        clone.journeyList = clonedJourneyList;
         clone.score = score;
         return clone;
     }
@@ -140,14 +140,14 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
             return false;
         } else {
             TravelingSalesmanTour other = (TravelingSalesmanTour) o;
-            if (cityAssignmentList.size() != other.cityAssignmentList.size()) {
+            if (journeyList.size() != other.journeyList.size()) {
                 return false;
             }
-            for (Iterator<CityAssignment> it = cityAssignmentList.iterator(), otherIt = other.cityAssignmentList.iterator(); it.hasNext();) {
-                CityAssignment cityAssignment = it.next();
-                CityAssignment otherCityAssignment = otherIt.next();
+            for (Iterator<Journey> it = journeyList.iterator(), otherIt = other.journeyList.iterator(); it.hasNext();) {
+                Journey journey = it.next();
+                Journey otherJourney = otherIt.next();
                 // Notice: we don't use equals()
-                if (!cityAssignment.solutionEquals(otherCityAssignment)) {
+                if (!journey.solutionEquals(otherJourney)) {
                     return false;
                 }
             }
@@ -157,9 +157,9 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (CityAssignment cityAssignment : cityAssignmentList) {
+        for (Journey journey : journeyList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(cityAssignment.solutionHashCode());
+            hashCodeBuilder.append(journey.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

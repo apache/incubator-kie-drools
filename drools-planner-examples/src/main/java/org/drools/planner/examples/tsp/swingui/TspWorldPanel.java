@@ -24,7 +24,7 @@ import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
@@ -60,12 +60,12 @@ public class TspWorldPanel extends JPanel {
             g.fillRect(x - 1, y - 1, 3, 3);
         }
         g.setColor(Color.BLACK);
-        for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-            if (cityAssignment.getNextCityAssignment() != null) {
-                City city1 = cityAssignment.getCity();
+        for (Journey journey : travelingSalesmanTour.getJourneyList()) {
+            if (journey.getNextJourney() != null) {
+                City city1 = journey.getCity();
                 int x1 = translator.translateLongitude(city1.getLongitude());
                 int y1 = translator.translateLatitude(city1.getLatitude());
-                City city2 = cityAssignment.getNextCityAssignment().getCity();
+                City city2 = journey.getNextJourney().getCity();
                 int x2 = translator.translateLongitude(city2.getLongitude());
                 int y2 = translator.translateLatitude(city2.getLatitude());
                 g.drawLine(x1, y1, x2, y2);

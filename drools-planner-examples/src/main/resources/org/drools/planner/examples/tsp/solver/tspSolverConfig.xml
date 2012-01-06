@@ -2,7 +2,7 @@
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.tsp.domain.CityAssignment</planningEntityClass>
+  <planningEntityClass>org.drools.planner.examples.tsp.domain.Journey</planningEntityClass>
 
   <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
   <scoreDefinition>

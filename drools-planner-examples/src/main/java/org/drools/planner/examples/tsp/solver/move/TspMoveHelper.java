@@ -17,23 +17,23 @@
 package org.drools.planner.examples.tsp.solver.move;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.FactHandle;
 
 public class TspMoveHelper {
 
-    public static void moveCityAssignmentAfterCityAssignment(WorkingMemory workingMemory,
-            CityAssignment cityAssignment, CityAssignment toNextCityAssignment) {
-        FactHandle cityAssignmentFactHandle = workingMemory.getFactHandle(cityAssignment);
-        FactHandle toNextCityAssignmentFactHandle = workingMemory.getFactHandle(toNextCityAssignment);
+    public static void moveJourneyAfterJourney(WorkingMemory workingMemory,
+            Journey journey, Journey toNextJourney) {
+        FactHandle journeyFactHandle = workingMemory.getFactHandle(journey);
+        FactHandle toNextJourneyFactHandle = workingMemory.getFactHandle(toNextJourney);
 
-        cityAssignment.setNextCityAssignment(toNextCityAssignment);
-        toNextCityAssignment.setPreviousCityAssignment(cityAssignment);
+        journey.setNextJourney(toNextJourney);
+        toNextJourney.setPreviousJourney(journey);
 
-        workingMemory.update(cityAssignmentFactHandle, cityAssignment);
+        workingMemory.update(journeyFactHandle, journey);
         // Note: for the score rules this isn't currently needed (and a performance leak)
         // but removing it would not be clean code.
-        workingMemory.update(toNextCityAssignmentFactHandle, toNextCityAssignment);
+        workingMemory.update(toNextJourneyFactHandle, toNextJourney);
     }
 
     private TspMoveHelper() {

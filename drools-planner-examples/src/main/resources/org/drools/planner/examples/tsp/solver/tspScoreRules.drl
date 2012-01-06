@@ -22,7 +22,7 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 global SimpleScoreCalculator scoreCalculator;
@@ -33,11 +33,11 @@ global SimpleScoreCalculator scoreCalculator;
 
 rule "distance"
     when
-        $leftCityAssignment : CityAssignment($distanceToNextCityAssignment : distanceToNextCityAssignment)
+        $leftJourney : Journey($distanceToNextJourney : distanceToNextJourney)
     then
         insertLogical(new IntConstraintOccurrence("distance", ConstraintType.NEGATIVE_SOFT,
-                $distanceToNextCityAssignment,
-                $leftCityAssignment));
+                $distanceToNextJourney,
+                $leftJourney));
 end
 
 // ############################################################################

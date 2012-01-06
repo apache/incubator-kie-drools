@@ -18,7 +18,6 @@ package org.drools.planner.examples.tsp.solver.move;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -26,55 +25,55 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 
 public class SubTourChangeMove implements Move, TabuPropertyEnabled {
 
-    private CityAssignment startCityAssignment;
-    private CityAssignment endCityAssignment;
+    private Journey startJourney;
+    private Journey endJourney;
 
-    private CityAssignment toAfterCityAssignment;
+    private Journey toAfterJourney;
 
-    public SubTourChangeMove(CityAssignment startCityAssignment, CityAssignment endCityAssignment, CityAssignment toAfterCityAssignment) {
-        this.startCityAssignment = startCityAssignment;
-        this.endCityAssignment = endCityAssignment;
-        this.toAfterCityAssignment = toAfterCityAssignment;
+    public SubTourChangeMove(Journey startJourney, Journey endJourney, Journey toAfterJourney) {
+        this.startJourney = startJourney;
+        this.endJourney = endJourney;
+        this.toAfterJourney = toAfterJourney;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        CityAssignment nextCityAssignment = startCityAssignment;
-        if (ObjectUtils.equals(startCityAssignment, toAfterCityAssignment.getNextCityAssignment())) {
+        Journey nextJourney = startJourney;
+        if (ObjectUtils.equals(startJourney, toAfterJourney.getNextJourney())) {
             return false;
         }
-        while (!ObjectUtils.equals(nextCityAssignment, endCityAssignment)) {
-            if (ObjectUtils.equals(nextCityAssignment, toAfterCityAssignment)) {
+        while (!ObjectUtils.equals(nextJourney, endJourney)) {
+            if (ObjectUtils.equals(nextJourney, toAfterJourney)) {
                 return false;
             }
-            nextCityAssignment = nextCityAssignment.getNextCityAssignment();
+            nextJourney = nextJourney.getNextJourney();
         }
-        if (ObjectUtils.equals(endCityAssignment, toAfterCityAssignment)) {
+        if (ObjectUtils.equals(endJourney, toAfterJourney)) {
             return false;
         }
         return true;
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new SubTourChangeMove(startCityAssignment, endCityAssignment,
-                startCityAssignment.getPreviousCityAssignment());
+        return new SubTourChangeMove(startJourney, endJourney,
+                startJourney.getPreviousJourney());
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        CityAssignment newPreviousCityAssignment = toAfterCityAssignment;
-        CityAssignment newNextCityAssignment = newPreviousCityAssignment.getNextCityAssignment();
-        CityAssignment originalPreviousCityAssignment = startCityAssignment.getPreviousCityAssignment();
-        CityAssignment originalNextCityAssignment = endCityAssignment.getNextCityAssignment();
-        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, newPreviousCityAssignment, startCityAssignment);
-        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, endCityAssignment, newNextCityAssignment);
-        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, originalPreviousCityAssignment, originalNextCityAssignment);
+        Journey newPreviousJourney = toAfterJourney;
+        Journey newNextJourney = newPreviousJourney.getNextJourney();
+        Journey originalPreviousJourney = startJourney.getPreviousJourney();
+        Journey originalNextJourney = endJourney.getNextJourney();
+        TspMoveHelper.moveJourneyAfterJourney(workingMemory, newPreviousJourney, startJourney);
+        TspMoveHelper.moveJourneyAfterJourney(workingMemory, endJourney, newNextJourney);
+        TspMoveHelper.moveJourneyAfterJourney(workingMemory, originalPreviousJourney, originalNextJourney);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(startCityAssignment.getCity());
+        return Collections.singletonList(startJourney.getCity());
     }
 
     public boolean equals(Object o) {
@@ -83,9 +82,9 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
         } else if (o instanceof SubTourChangeMove) {
             SubTourChangeMove other = (SubTourChangeMove) o;
             return new EqualsBuilder()
-                    .append(startCityAssignment, other.startCityAssignment)
-                    .append(endCityAssignment, other.endCityAssignment)
-                    .append(toAfterCityAssignment, other.toAfterCityAssignment)
+                    .append(startJourney, other.startJourney)
+                    .append(endJourney, other.endJourney)
+                    .append(toAfterJourney, other.toAfterJourney)
                     .isEquals();
         } else {
             return false;
@@ -94,14 +93,14 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(startCityAssignment)
-                .append(endCityAssignment)
-                .append(toAfterCityAssignment)
+                .append(startJourney)
+                .append(endJourney)
+                .append(toAfterJourney)
                 .toHashCode();
     }
 
     public String toString() {
-        return startCityAssignment + "-" + endCityAssignment + " => after " + toAfterCityAssignment;
+        return startJourney + "-" + endJourney + " => after " + toAfterJourney;
     }
 
 }

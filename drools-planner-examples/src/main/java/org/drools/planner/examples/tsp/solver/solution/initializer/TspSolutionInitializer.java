@@ -28,7 +28,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,96 +39,96 @@ public class TspSolutionInitializer implements CustomSolverPhaseCommand {
 
     public void changeWorkingSolution(SolutionDirector solutionDirector) {
         TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solutionDirector.getWorkingSolution();
-        initializeCityAssignmentList(solutionDirector, travelingSalesmanTour);
+        initializeJourneyList(solutionDirector, travelingSalesmanTour);
     }
 
-    private void initializeCityAssignmentList(SolutionDirector solutionDirector,
+    private void initializeJourneyList(SolutionDirector solutionDirector,
             TravelingSalesmanTour travelingSalesmanTour) {
         City startCity = travelingSalesmanTour.getStartCity();
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
-        List<CityAssignment> cityAssignmentList = createCityAssignmentList(travelingSalesmanTour);
-        List<CityAssignment> assignedCityAssignmentList = null;
-        for (CityAssignment cityAssignment : cityAssignmentList) {
-            FactHandle cityAssignmentHandle = null;
-            if (assignedCityAssignmentList == null) {
-                assignedCityAssignmentList = new ArrayList<CityAssignment>(cityAssignmentList.size());
-                cityAssignment.setNextCityAssignment(cityAssignment);
-                cityAssignment.setPreviousCityAssignment(cityAssignment);
-                cityAssignmentHandle = workingMemory.insert(cityAssignment);
+        List<Journey> journeyList = createJourneyList(travelingSalesmanTour);
+        List<Journey> assignedJourneyList = null;
+        for (Journey journey : journeyList) {
+            FactHandle journeyHandle = null;
+            if (assignedJourneyList == null) {
+                assignedJourneyList = new ArrayList<Journey>(journeyList.size());
+                journey.setNextJourney(journey);
+                journey.setPreviousJourney(journey);
+                journeyHandle = workingMemory.insert(journey);
             } else {
                 Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
-                CityAssignment bestAfterCityAssignment = null;
-                FactHandle bestAfterCityAssignmentFactHandle = null;
-                CityAssignment bestBeforeCityAssignment = null;
-                FactHandle bestBeforeCityAssignmentFactHandle = null;
-                for (CityAssignment afterCityAssignment : assignedCityAssignmentList) {
-                    CityAssignment beforeCityAssignment = afterCityAssignment.getNextCityAssignment();
-                    FactHandle afterCityAssignmentFactHandle = workingMemory.getFactHandle(afterCityAssignment);
-                    FactHandle beforeCityAssignmentFactHandle = workingMemory.getFactHandle(beforeCityAssignment);
+                Journey bestAfterJourney = null;
+                FactHandle bestAfterJourneyFactHandle = null;
+                Journey bestBeforeJourney = null;
+                FactHandle bestBeforeJourneyFactHandle = null;
+                for (Journey afterJourney : assignedJourneyList) {
+                    Journey beforeJourney = afterJourney.getNextJourney();
+                    FactHandle afterJourneyFactHandle = workingMemory.getFactHandle(afterJourney);
+                    FactHandle beforeJourneyFactHandle = workingMemory.getFactHandle(beforeJourney);
                     // Do changes
-                    afterCityAssignment.setNextCityAssignment(cityAssignment);
-                    cityAssignment.setPreviousCityAssignment(afterCityAssignment);
-                    cityAssignment.setNextCityAssignment(beforeCityAssignment);
-                    beforeCityAssignment.setPreviousCityAssignment(cityAssignment);
-                    if (cityAssignmentHandle == null) {
-                        cityAssignmentHandle = workingMemory.insert(cityAssignment);
+                    afterJourney.setNextJourney(journey);
+                    journey.setPreviousJourney(afterJourney);
+                    journey.setNextJourney(beforeJourney);
+                    beforeJourney.setPreviousJourney(journey);
+                    if (journeyHandle == null) {
+                        journeyHandle = workingMemory.insert(journey);
                     } else {
-                        workingMemory.update(cityAssignmentHandle, cityAssignment);
+                        workingMemory.update(journeyHandle, journey);
                     }
-                    workingMemory.update(afterCityAssignmentFactHandle, afterCityAssignment);
-                    workingMemory.update(beforeCityAssignmentFactHandle, beforeCityAssignment);
+                    workingMemory.update(afterJourneyFactHandle, afterJourney);
+                    workingMemory.update(beforeJourneyFactHandle, beforeJourney);
                     // Calculate score
                     Score score = solutionDirector.calculateScoreFromWorkingMemory();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
-                        bestAfterCityAssignment = afterCityAssignment;
-                        bestAfterCityAssignmentFactHandle = afterCityAssignmentFactHandle;
-                        bestBeforeCityAssignment = beforeCityAssignment;
-                        bestBeforeCityAssignmentFactHandle = beforeCityAssignmentFactHandle;
+                        bestAfterJourney = afterJourney;
+                        bestAfterJourneyFactHandle = afterJourneyFactHandle;
+                        bestBeforeJourney = beforeJourney;
+                        bestBeforeJourneyFactHandle = beforeJourneyFactHandle;
                     }
                     // Undo changes
-                    afterCityAssignment.setNextCityAssignment(beforeCityAssignment);
-                    beforeCityAssignment.setPreviousCityAssignment(afterCityAssignment);
-                    workingMemory.update(afterCityAssignmentFactHandle, afterCityAssignment);
-                    workingMemory.update(beforeCityAssignmentFactHandle, beforeCityAssignment);
+                    afterJourney.setNextJourney(beforeJourney);
+                    beforeJourney.setPreviousJourney(afterJourney);
+                    workingMemory.update(afterJourneyFactHandle, afterJourney);
+                    workingMemory.update(beforeJourneyFactHandle, beforeJourney);
                 }
-                if (bestAfterCityAssignment == null) {
-                    throw new IllegalStateException("The bestAfterCityAssignment (" + bestAfterCityAssignment
+                if (bestAfterJourney == null) {
+                    throw new IllegalStateException("The bestAfterJourney (" + bestAfterJourney
                             + ") cannot be null.");
                 }
-                bestAfterCityAssignment.setNextCityAssignment(cityAssignment);
-                cityAssignment.setPreviousCityAssignment(bestAfterCityAssignment);
-                cityAssignment.setNextCityAssignment(bestBeforeCityAssignment);
-                bestBeforeCityAssignment.setPreviousCityAssignment(cityAssignment);
-                workingMemory.update(cityAssignmentHandle, cityAssignment);
-                workingMemory.update(bestAfterCityAssignmentFactHandle, bestAfterCityAssignment);
-                workingMemory.update(bestBeforeCityAssignmentFactHandle, bestBeforeCityAssignment);
+                bestAfterJourney.setNextJourney(journey);
+                journey.setPreviousJourney(bestAfterJourney);
+                journey.setNextJourney(bestBeforeJourney);
+                bestBeforeJourney.setPreviousJourney(journey);
+                workingMemory.update(journeyHandle, journey);
+                workingMemory.update(bestAfterJourneyFactHandle, bestAfterJourney);
+                workingMemory.update(bestBeforeJourneyFactHandle, bestBeforeJourney);
             }
-            assignedCityAssignmentList.add(cityAssignment);
-            if (cityAssignment.getCity() == startCity) {
-                travelingSalesmanTour.setStartCityAssignment(cityAssignment);
+            assignedJourneyList.add(journey);
+            if (journey.getCity() == startCity) {
+                travelingSalesmanTour.setStartJourney(journey);
             }
-            logger.debug("    CityAssignment ({}) initialized.", cityAssignment);
+            logger.debug("    Journey ({}) initialized.", journey);
         }
-        Collections.sort(cityAssignmentList, new PersistableIdComparator());
-        travelingSalesmanTour.setCityAssignmentList(cityAssignmentList);
+        Collections.sort(journeyList, new PersistableIdComparator());
+        travelingSalesmanTour.setJourneyList(journeyList);
     }
 
-    public List<CityAssignment> createCityAssignmentList(TravelingSalesmanTour travelingSalesmanTour) {
+    public List<Journey> createJourneyList(TravelingSalesmanTour travelingSalesmanTour) {
         List<City> cityList = travelingSalesmanTour.getCityList();
         // TODO weight: create by city on distance from the center ascending
-        List<CityAssignment> cityAssignmentList = new ArrayList<CityAssignment>(cityList.size());
-        int cityAssignmentId = 0;
+        List<Journey> journeyList = new ArrayList<Journey>(cityList.size());
+        int journeyId = 0;
         for (City city : cityList) {
-            CityAssignment cityAssignment = new CityAssignment();
-            cityAssignment.setId((long) cityAssignmentId);
-            cityAssignment.setCity(city);
-            cityAssignmentList.add(cityAssignment);
-            cityAssignmentId++;
+            Journey journey = new Journey();
+            journey.setId((long) journeyId);
+            journey.setCity(city);
+            journeyList.add(journey);
+            journeyId++;
         }
-        return cityAssignmentList;
+        return journeyList;
     }
 
 }
