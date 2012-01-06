@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.PlanningVariable;
@@ -41,12 +43,17 @@ public class PlanningVariableDescriptor {
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
     private PlanningValueSorter valueSorter;
+    private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
 
     public PlanningVariableDescriptor(PlanningEntityDescriptor planningEntityDescriptor,
             PropertyDescriptor variablePropertyDescriptor) {
         this.planningEntityDescriptor = planningEntityDescriptor;
         this.variablePropertyDescriptor = variablePropertyDescriptor;
+    }
+
+    public void processAnnotations() {
         processPropertyAnnotations();
+        dependentPlanningVariableDescriptorMap = new HashMap<String, DependentPlanningVariableDescriptor>(2);
     }
 
     private void processPropertyAnnotations() {
@@ -63,8 +70,9 @@ public class PlanningVariableDescriptor {
         }
         if (strengthComparatorClass != null && strengthWeightFactoryClass != null) {
             throw new IllegalStateException("The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") " + variablePropertyDescriptor.getName() + ") cannot have a strengthComparatorClass (" + strengthComparatorClass.getName()
+                    + planningEntityDescriptor.getPlanningEntityClass()  + ") property ("
+                    + variablePropertyDescriptor.getName() + ") cannot have a strengthComparatorClass ("
+                    + strengthComparatorClass.getName()
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()
                     + ") at the same time.");
         }
@@ -131,6 +139,16 @@ public class PlanningVariableDescriptor {
                     + ") that has multiple ValueRange* annotations.");
         }
     }
+    
+    public void addDependentPlanningVariableDescriptor(
+            DependentPlanningVariableDescriptor dependentPlanningVariableDescriptor) {
+        dependentPlanningVariableDescriptorMap.put(
+                dependentPlanningVariableDescriptor.getVariablePropertyName(), dependentPlanningVariableDescriptor);
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     public PlanningEntityDescriptor getPlanningEntityDescriptor() {
         return planningEntityDescriptor;
@@ -140,12 +158,8 @@ public class PlanningVariableDescriptor {
         return variablePropertyDescriptor.getName();
     }
 
-    public PlanningValueSorter getValueSorter() {
-        return valueSorter;
-    }
-
-    public long getProblemScale(Solution solution, Object planningEntity) {
-        return valueRangeDescriptor.getProblemScale(solution, planningEntity);
+    public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {
+        return dependentPlanningVariableDescriptorMap.values();
     }
 
     public boolean isInitialized(Object planningEntity) {
@@ -173,6 +187,14 @@ public class PlanningVariableDescriptor {
 
     public boolean isPlanningValuesCacheable() {
         return valueRangeDescriptor.isValuesCacheable();
+    }
+
+    public PlanningValueSorter getValueSorter() {
+        return valueSorter;
+    }
+
+    public long getProblemScale(Solution solution, Object planningEntity) {
+        return valueRangeDescriptor.getProblemScale(solution, planningEntity);
     }
 
 }

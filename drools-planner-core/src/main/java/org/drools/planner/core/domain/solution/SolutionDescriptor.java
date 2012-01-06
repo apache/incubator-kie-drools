@@ -58,6 +58,9 @@ public class SolutionDescriptor {
         entityPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
         entityCollectionPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
         planningEntityDescriptorMap = new HashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
+    }
+
+    public void processAnnotations() {
         processPropertyAnnotations();
     }
 

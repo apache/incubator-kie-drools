@@ -29,8 +29,10 @@ import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.variable.DependentPlanningVariable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.DependentPlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
@@ -44,6 +46,7 @@ public class PlanningEntityDescriptor {
     private PlanningEntitySorter planningEntitySorter;
 
     private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
+    private Map<String, DependentPlanningVariableDescriptor> dependentPlanningVariableDescriptorMap;
 
     public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> planningEntityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -54,6 +57,9 @@ public class PlanningEntityDescriptor {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                     + ") is not a valid java bean.", e);
         }
+    }
+
+    public void processAnnotations() {
         processEntityAnnotations();
         processPropertyAnnotations();
     }
@@ -114,12 +120,18 @@ public class PlanningEntityDescriptor {
     }
 
     private void processPropertyAnnotations() {
-        int mapSize = planningEntityBeanInfo.getPropertyDescriptors().length;
+        PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
+        int mapSize = propertyDescriptors.length;
         planningVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(mapSize);
         boolean noPlanningVariableAnnotation = true;
-        for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
             if (propertyGetter != null && propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
+                if (propertyGetter.isAnnotationPresent(DependentPlanningVariable.class)) {
+                    throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                            + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                            + ") that is also annotated with DependentPlanningVariable.");
+                }
                 noPlanningVariableAnnotation = false;
                 if (propertyDescriptor.getWriteMethod() == null) {
                     throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
@@ -129,6 +141,24 @@ public class PlanningEntityDescriptor {
                 PlanningVariableDescriptor planningVariableDescriptor = new PlanningVariableDescriptor(
                         this, propertyDescriptor);
                 planningVariableDescriptorMap.put(propertyDescriptor.getName(), planningVariableDescriptor);
+                planningVariableDescriptor.processAnnotations();
+            }
+        }
+        dependentPlanningVariableDescriptorMap = new LinkedHashMap<String, DependentPlanningVariableDescriptor>(
+                mapSize);
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            Method propertyGetter = propertyDescriptor.getReadMethod();
+            if (propertyGetter != null && propertyGetter.isAnnotationPresent(DependentPlanningVariable.class)) {
+                if (propertyDescriptor.getWriteMethod() == null) {
+                    throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                            + ") has a DependentPlanningVariable annotated property (" + propertyDescriptor.getName()
+                            + ") that should have a setter.");
+                }
+                DependentPlanningVariableDescriptor dependentPlanningVariableDescriptor
+                        = new DependentPlanningVariableDescriptor(this, propertyDescriptor);
+                dependentPlanningVariableDescriptorMap.put(propertyDescriptor.getName(),
+                        dependentPlanningVariableDescriptor);
+                dependentPlanningVariableDescriptor.processAnnotations();
             }
         }
         if (noPlanningVariableAnnotation) {
@@ -136,6 +166,10 @@ public class PlanningEntityDescriptor {
                     + ") should have at least 1 getter with a PlanningVariable annotation.");
         }
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     public SolutionDescriptor getSolutionDescriptor() {
         return solutionDescriptor;
@@ -160,6 +194,10 @@ public class PlanningEntityDescriptor {
 
     public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
         return planningVariableDescriptorMap.values();
+    }
+    
+    public PlanningVariableDescriptor getPlanningVariableDescriptor(String propertyName) {
+        return planningVariableDescriptorMap.get(propertyName);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {

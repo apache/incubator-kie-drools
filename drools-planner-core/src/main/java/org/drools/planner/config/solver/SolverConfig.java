@@ -196,6 +196,7 @@ public class SolverConfig {
             throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
         }
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
+        solutionDescriptor.processAnnotations();
         if (planningEntityClassSet == null || planningEntityClassSet.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
@@ -204,6 +205,7 @@ public class SolverConfig {
             PlanningEntityDescriptor planningEntityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
             solutionDescriptor.addPlanningEntityDescriptor(planningEntityDescriptor);
+            planningEntityDescriptor.processAnnotations();
         }
         return solutionDescriptor;
     }
