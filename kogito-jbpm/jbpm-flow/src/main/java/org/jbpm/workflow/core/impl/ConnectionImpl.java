@@ -46,8 +46,9 @@ public class ConnectionImpl implements Connection, Serializable {
      * and a type.
      * 
      * @param from      The from node
+	 * @param fromType  The node type
      * @param to        The to node
-     * @param type      The connection type
+     * @param toType    The connection type
      */
     public ConnectionImpl(final Node from, final String fromType,
                           final Node to, final String toType) {

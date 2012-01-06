@@ -89,7 +89,7 @@ public interface Constraint {
      * Method for setting the dialect of the constraint,
      * e.g. "mvel" or "java"
      * 
-     * @param type  the dialect of the constraint
+     * @param dialect  the dialect of the constraint
      */
     void setDialect(String dialect);
     

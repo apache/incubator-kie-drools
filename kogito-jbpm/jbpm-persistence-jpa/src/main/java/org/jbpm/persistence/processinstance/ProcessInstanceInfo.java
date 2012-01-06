@@ -167,8 +167,8 @@ public class ProcessInstanceInfo{
      * <li>..and the marshaller retrieves the context instance</li>
      * <li>..which actually (re)sets all variables in {@link VariableScopeInstance}.setContextInstanceContainer(...)</li>
      * <li>This of course causes {@link ProcessEventSupport}.fireBeforeVariableChanged(...) to fire.</li>
-     * <li>Then the {@link JPAWorkingMemoryDBLogger} ends up logging a variable change -- but the associated 
-     *     process instance hasn't been persisted yet.</li> 
+     * <li>Then the {@link org.jbpm.process.audit.JPAWorkingMemoryDbLogger} ends up logging a variable change 
+	 * -- but the associated process instance hasn't been persisted yet.</li> 
      * <li>So the variable instance change is associated with process instance "0"</li>
      * <li>...and can never be retrieved, because "0" is not a valid id.</li>
      * </ul>

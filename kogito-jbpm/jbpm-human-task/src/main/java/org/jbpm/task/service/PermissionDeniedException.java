@@ -20,7 +20,7 @@ package org.jbpm.task.service;
  * Exception that is thrown when a <code>User</code> try to perform an <code>Operation</code> on a <code>Task</code>
  *
  * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
- * @see org.jbpm.task.service.TaskServiceSession#taskOperation(Operation, long, String, String, ContentData)  
+ * @see org.jbpm.task.service.TaskServiceSession#taskOperation(Operation, long, String, String, ContentData, List)  
  */
 public class PermissionDeniedException extends TaskException{
     public PermissionDeniedException(String message) {
