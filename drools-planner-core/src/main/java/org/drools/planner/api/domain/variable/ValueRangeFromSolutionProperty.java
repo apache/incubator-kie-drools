@@ -36,7 +36,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface ValueRangeFromSolutionProperty {
 
     /**
-     * The property name of which exists a getter on the {@link Solution} that returns a {@link Collection}.
+     * The property name for which exists a getter on the {@link Solution} that returns a {@link Collection}.
      * @return never null
      */
     String propertyName();

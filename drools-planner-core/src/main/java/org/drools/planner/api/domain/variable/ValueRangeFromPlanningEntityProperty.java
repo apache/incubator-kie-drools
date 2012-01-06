@@ -35,7 +35,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface ValueRangeFromPlanningEntityProperty {
 
     /**
-     * The property name of which exists a getter on the planning entity that returns a {@link Collection}.
+     * The property name for which exists a getter on the planning entity that returns a {@link Collection}.
      * @return never null
      */
     String propertyName();

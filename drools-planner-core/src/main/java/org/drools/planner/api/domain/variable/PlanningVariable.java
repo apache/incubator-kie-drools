@@ -44,7 +44,9 @@ public @interface PlanningVariable {
      * Do not use together with {@link #strengthWeightFactoryClass()}.
      * @return {@link NullStrengthComparator} when it is null (workaround for annotation limitation)
      */
-    public Class<? extends Comparator> strengthComparatorClass() default NullStrengthComparator.class;
+    Class<? extends Comparator> strengthComparatorClass()
+            default NullStrengthComparator.class;
+
     interface NullStrengthComparator extends Comparator {}
 
     /**
@@ -54,8 +56,9 @@ public @interface PlanningVariable {
      * @return {@link NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
      * @see PlanningValueStrengthWeightFactory
      */
-    public Class<? extends PlanningValueStrengthWeightFactory> strengthWeightFactoryClass()
+    Class<? extends PlanningValueStrengthWeightFactory> strengthWeightFactoryClass()
             default NullStrengthWeightFactory.class;
+
     interface NullStrengthWeightFactory extends PlanningValueStrengthWeightFactory {}
 
 }
