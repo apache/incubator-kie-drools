@@ -41,11 +41,16 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
 
     private void ensureCompleteEvaluation(Object object, Map<String, Object> vars) {
         ASTNode node = stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
+        ensureCompleteEvaluation(node, object, vars);
+    }
+
+    private void ensureCompleteEvaluation(ASTNode node, Object object, Map<String, Object> vars) {
         if (!(node instanceof And || node instanceof Or)) return;
         ASTNode rightNode = ((BooleanNode)node).getRight();
         if (!isEvaluated(rightNode)) {
             evaluate(asCompiledExpression(rightNode), object, vars);
         }
+        ensureCompleteEvaluation(rightNode, object, vars);
     }
 
     private boolean isEvaluated(ASTNode node) {
