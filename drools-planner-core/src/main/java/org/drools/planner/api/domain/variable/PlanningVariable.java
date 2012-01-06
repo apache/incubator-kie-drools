@@ -29,7 +29,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 /**
  * Specifies that a bean property should be optimized by Drools Planner.
  * <p/>
- * It is specified on a getter of a java bean property of a class with the {@link PlanningEntity} annotation.
+ * It is specified on a getter of a java bean property of a {@link PlanningEntity} class.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
