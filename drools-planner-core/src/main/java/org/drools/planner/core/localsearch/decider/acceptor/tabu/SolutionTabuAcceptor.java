@@ -19,6 +19,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
@@ -42,6 +43,19 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
     protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
         // TODO this should be better done in stepTaken
         return Collections.singletonList(localSearchStepScope.createOrGetClonedSolution());
+    }
+    
+    /**
+     * This implementation will add the starting solution to the tabu list to
+     * avoid visiting this solution (see JBRULES-3334).
+     */
+    @Override
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+    	super.phaseStarted(localSearchSolverPhaseScope);
+    	// Get a clone of the current solution, then add it to the tabu list.
+    	Object tabu = localSearchSolverPhaseScope.getWorkingSolution().cloneSolution();
+        tabuToStepIndexMap.put(tabu, 0);
+        tabuSequenceList.add(tabu);
     }
 
 }
