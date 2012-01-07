@@ -40,6 +40,7 @@ public class PlanningVariableDescriptor {
     private final PlanningEntityDescriptor planningEntityDescriptor;
 
     private final PropertyDescriptor variablePropertyDescriptor;
+    private boolean triggerChainCorrection;
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
     private PlanningValueSorter valueSorter;
@@ -106,6 +107,16 @@ public class PlanningVariableDescriptor {
                         + ") does not have a public no-arg constructor", e);
             }
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
+        }
+        triggerChainCorrection = planningVariableAnnotation.triggerChainCorrection();
+        if (triggerChainCorrection && !variablePropertyDescriptor.getPropertyType().isAssignableFrom(
+                planningEntityDescriptor.getPlanningEntityClass())) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") with triggerChainCorrection and propertyType (" + variablePropertyDescriptor.getPropertyType()
+                    + ") which is not a superclass/interface of or the same as the planningEntityClass ("
+                    + planningEntityDescriptor.getPlanningEntityClass() + ").");
         }
 
         Method propertyGetter = variablePropertyDescriptor.getReadMethod();

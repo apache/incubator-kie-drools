@@ -91,7 +91,6 @@ public class DependentPlanningVariableDescriptor {
             }
 
             // TODO use mappedByPropertyName
-            System.out.println("mappedByPropertyName " + mappedByPropertyName);
         }
 
     }

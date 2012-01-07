@@ -29,7 +29,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("Journey")
 public class Journey extends AbstractPersistable {
 
-    private City city;
+    private City city; // the destinationCity
     
     // Planning variables: changes during planning, between score calculations.
     private Journey previousJourney;
@@ -43,7 +43,7 @@ public class Journey extends AbstractPersistable {
         this.city = city;
     }
 
-    @PlanningVariable
+    @PlanningVariable(triggerChainCorrection = true)
     @ValueRangeFromSolutionProperty(propertyName = "journeyList")
     public Journey getPreviousJourney() {
         return previousJourney;
