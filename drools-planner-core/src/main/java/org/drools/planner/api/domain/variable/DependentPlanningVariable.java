@@ -36,6 +36,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  */
 @Target({METHOD})
 @Retention(RUNTIME)
+@Deprecated // TODO Decide if we want to keep this or remove it
 public @interface DependentPlanningVariable {
 
     /**
