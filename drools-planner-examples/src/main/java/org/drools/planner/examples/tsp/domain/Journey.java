@@ -24,6 +24,7 @@ import org.drools.planner.api.domain.variable.DependentPlanningVariable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.tsp.solver.variable.PreviousJourneyListener;
 
 @PlanningEntity
 @XStreamAlias("Journey")
@@ -43,7 +44,8 @@ public class Journey extends AbstractPersistable {
         this.city = city;
     }
 
-    @PlanningVariable(triggerChainCorrection = true)
+//    @PlanningVariable(triggerChainCorrection = true)
+    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class})
     @ValueRangeFromSolutionProperty(propertyName = "journeyList")
     public Journey getPreviousJourney() {
         return previousJourney;
@@ -53,7 +55,7 @@ public class Journey extends AbstractPersistable {
         this.previousJourney = previousJourney;
     }
 
-    @DependentPlanningVariable(master = "previousJourney", mappedBy = "previousJourney")
+//    @DependentPlanningVariable(master = "previousJourney", mappedBy = "previousJourney")
     public Journey getNextJourney() {
         return nextJourney;
     }

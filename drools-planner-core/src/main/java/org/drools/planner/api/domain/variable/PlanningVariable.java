@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
+import org.drools.planner.api.domain.variable.event.PlanningVariableListener;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -76,5 +77,8 @@ public @interface PlanningVariable {
      */
     @Deprecated // TODO This is probably a failed experiment
     boolean triggerChainCorrection() default false;
+
+    @Deprecated // TODO This is still under experimentation
+    Class<? extends PlanningVariableListener>[] listenerClasses() default {};
 
 }
