@@ -74,6 +74,7 @@ public @interface PlanningVariable {
      * giving the result A <- C <- D <- X <- B <- Y.
      * @return true if changes to this variable need to trigger chain correction
      */
+    @Deprecated // TODO This is probably a failed experiment
     boolean triggerChainCorrection() default false;
 
 }
