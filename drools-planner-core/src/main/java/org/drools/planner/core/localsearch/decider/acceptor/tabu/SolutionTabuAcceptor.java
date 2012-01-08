@@ -45,15 +45,11 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
         return Collections.singletonList(localSearchStepScope.createOrGetClonedSolution());
     }
     
-    /**
-     * This implementation will add the starting solution to the tabu list to
-     * avoid visiting this solution (see JBRULES-3334).
-     */
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-    	super.phaseStarted(localSearchSolverPhaseScope);
-    	// Get a clone of the current solution, then add it to the tabu list.
-    	Object tabu = localSearchSolverPhaseScope.getWorkingSolution().cloneSolution();
+        super.phaseStarted(localSearchSolverPhaseScope);
+        // Add the starting solution to the tabu list
+        Object tabu = localSearchSolverPhaseScope.createOrGetClonedSolution();
         tabuToStepIndexMap.put(tabu, 0);
         tabuSequenceList.add(tabu);
     }
