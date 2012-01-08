@@ -26,7 +26,7 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 public class ForagerConfig {
 
     private Forager forager = null; // TODO remove this and document extending ForagerConfig
-    private Class<Forager> foragerClass = null;
+    private Class<? extends Forager> foragerClass = null;
     private PickEarlyType pickEarlyType = null;
 
     protected Integer minimalAcceptedSelection = null;
@@ -39,11 +39,11 @@ public class ForagerConfig {
         this.forager = forager;
     }
 
-    public Class<Forager> getForagerClass() {
+    public Class<? extends Forager> getForagerClass() {
         return foragerClass;
     }
 
-    public void setForagerClass(Class<Forager> foragerClass) {
+    public void setForagerClass(Class<? extends Forager> foragerClass) {
         this.foragerClass = foragerClass;
     }
 

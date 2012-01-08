@@ -27,7 +27,7 @@ import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefin
 public class ScoreDefinitionConfig {
 
     private ScoreDefinition scoreDefinition = null;
-    private Class<ScoreDefinition> scoreDefinitionClass = null;
+    private Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     private ScoreDefinitionType scoreDefinitionType = null;
 
     public ScoreDefinition getScoreDefinition() {
@@ -38,11 +38,11 @@ public class ScoreDefinitionConfig {
         this.scoreDefinition = scoreDefinition;
     }
 
-    public Class<ScoreDefinition> getScoreDefinitionClass() {
+    public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
         return scoreDefinitionClass;
     }
 
-    public void setScoreDefinitionClass(Class<ScoreDefinition> scoreDefinitionClass) {
+    public void setScoreDefinitionClass(Class<? extends ScoreDefinition> scoreDefinitionClass) {
         this.scoreDefinitionClass = scoreDefinitionClass;
     }
 

@@ -36,7 +36,7 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 public class AcceptorConfig {
 
     private Acceptor acceptor = null; // TODO make into a list
-    private Class<Acceptor> acceptorClass = null;
+    private Class<? extends Acceptor> acceptorClass = null;
 
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
@@ -63,11 +63,11 @@ public class AcceptorConfig {
         this.acceptor = acceptor;
     }
 
-    public Class<Acceptor> getAcceptorClass() {
+    public Class<? extends Acceptor> getAcceptorClass() {
         return acceptorClass;
     }
 
-    public void setAcceptorClass(Class<Acceptor> acceptorClass) {
+    public void setAcceptorClass(Class<? extends Acceptor> acceptorClass) {
         this.acceptorClass = acceptorClass;
     }
 

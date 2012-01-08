@@ -36,7 +36,7 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 @XStreamAlias("termination")
 public class TerminationConfig implements Cloneable {
 
-    private Class<Termination> terminationClass = null;
+    private Class<? extends Termination> terminationClass = null;
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
@@ -51,11 +51,11 @@ public class TerminationConfig implements Cloneable {
     @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
 
-    public Class<Termination> getTerminationClass() {
+    public Class<? extends Termination> getTerminationClass() {
         return terminationClass;
     }
 
-    public void setTerminationClass(Class<Termination> terminationClass) {
+    public void setTerminationClass(Class<? extends Termination> terminationClass) {
         this.terminationClass = terminationClass;
     }
 

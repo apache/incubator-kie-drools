@@ -24,7 +24,7 @@ import org.drools.planner.core.localsearch.decider.deciderscorecomparator.Shifti
 @XStreamAlias("deciderScoreComparatorFactory")
 public class DeciderScoreComparatorFactoryConfig {
 
-    private Class<DeciderScoreComparatorFactory> deciderScoreComparatorClass = null;
+    private Class<? extends DeciderScoreComparatorFactory> deciderScoreComparatorClass = null;
     private DeciderScoreComparatorFactoryType deciderScoreComparatorFactoryType = null;
 
     private Integer hardScoreActivationThreshold = null;
@@ -34,11 +34,11 @@ public class DeciderScoreComparatorFactoryConfig {
     private Double hardWeightSurvivalRatio = null;
     private Integer startingHardWeight = null; // TODO determine dynamically
 
-    public Class<DeciderScoreComparatorFactory> getDeciderScoreComparatorClass() {
+    public Class<? extends DeciderScoreComparatorFactory> getDeciderScoreComparatorClass() {
         return deciderScoreComparatorClass;
     }
 
-    public void setDeciderScoreComparatorClass(Class<DeciderScoreComparatorFactory> deciderScoreComparatorClass) {
+    public void setDeciderScoreComparatorClass(Class<? extends DeciderScoreComparatorFactory> deciderScoreComparatorClass) {
         this.deciderScoreComparatorClass = deciderScoreComparatorClass;
     }
 
