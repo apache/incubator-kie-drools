@@ -3,33 +3,49 @@ package org.drools.world.impl;
 import java.util.Map;
 
 import org.drools.command.Context;
+import org.drools.command.ShadowContext;
+import org.drools.command.ShadowWorld;
 import org.drools.command.World;
 import org.drools.command.impl.ContextImpl;
 
-public class ShadowWorldImpl implements World {
+public class ShadowWorldImpl implements ShadowWorld {
     private World                world;
     
     private Context              rootShadow;
 
-    private Map<String, Context> contexts;
+    private Map<String, ShadowContext> contexts;
 
     public ShadowWorldImpl(World world) {
         this.world = world;
-        rootShadow = new ContextImpl( world.getName(), this, world.getContextManager() );
+        rootShadow = new ShadowContextImpl( world.getName(), world, this );
     }
     
-    
-    public Context getContext(String identifier) {
-        
-        Context ctx = contexts.get( identifier );
-        
-        if ( ctx == null ) {
-            ctx = world.getContext( identifier );            
-            ctx = new ContextImpl( identifier, this, ctx );
-            contexts.put(  identifier, ctx );
+    public Context createContext(String identifier) {
+        Context actualCtx = world.getContext( identifier );
+        if ( actualCtx == null ) {
+            actualCtx = world.createContext( identifier );
         }
         
-        return  ctx;
+        ShadowContext shadowCtx = contexts.get( identifier );
+        if ( shadowCtx == null ) {
+            shadowCtx = new ShadowContextImpl( world.getName(), world, this );
+            contexts.put( identifier, shadowCtx );
+        }
+         
+        return null;
+    }    
+    
+    public ShadowContext getContext(String identifier) {
+//        
+//        Context ctx = contexts.get( identifier );
+//        
+//        if ( ctx == null ) {
+//            ctx = world.getContext( identifier );            
+//            ctx = new ContextImpl( identifier, this, ctx );
+//            contexts.put(  identifier, ctx );
+//        }
+        
+        return  null; //ctx;
     }
 
     public World getContextManager() {
@@ -41,8 +57,6 @@ public class ShadowWorldImpl implements World {
     public String getName() {
         return world.getName();
     }
-
-
 
     public Object get(String identifier) {
         return rootShadow.get( identifier );
@@ -60,4 +74,5 @@ public class ShadowWorldImpl implements World {
     public void remove(String identifier) {
         rootShadow.remove(  identifier );
     }
+
 }

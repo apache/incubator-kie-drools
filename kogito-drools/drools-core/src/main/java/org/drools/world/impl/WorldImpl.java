@@ -52,9 +52,7 @@ public class WorldImpl
 
     private Object                        lastReturnValue;
 
-    public WorldImpl( Simulation simulation,
-                      //SessionPseudoClock clock,
-                      long startTime ) {
+    public WorldImpl() {
         this.root = new ContextImpl( ROOT,
                                      this );
         
@@ -122,6 +120,16 @@ public class WorldImpl
 
     public void setCommandExecutionHandler(CommandExecutionHandler executionHandler) {
         this.executionHandler = executionHandler;
+    }
+    
+    public Context createContext(String identifier) {
+        Context ctx = this.contexts.get(  identifier );
+        if ( ctx == null ) {
+            ctx = new ContextImpl( identifier, this, root );
+            this.contexts.put(  identifier, ctx );
+        }
+        
+        return ctx;
     }
 
     public Context getContext(String identifier) {
