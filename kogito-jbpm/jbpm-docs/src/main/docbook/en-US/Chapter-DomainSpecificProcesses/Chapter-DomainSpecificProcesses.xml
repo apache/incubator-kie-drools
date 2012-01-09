@@ -144,8 +144,11 @@ node definition to the existing palette nodes, adjust the drools.workDefinitions
 as follows including the default set configuration file:</para>
 
 <programlisting>
-  drools.workDefinitions = MyWorkDefinitions.conf WorkDefinitions.conf
+  drools.workDefinitions = MyWorkDefinitions.wid WorkDefinitions.conf
 </programlisting>
+
+<para>It is recommended to use extension .wid for your own definitions of domain specific nodes.
+Do not be confused with extension .conf, it is used only for backward compatibility.</para>
 
   </section>
 
