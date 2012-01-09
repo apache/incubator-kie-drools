@@ -3,7 +3,6 @@ package org.drools.world.impl;
 import org.drools.command.Context;
 import org.drools.command.ShadowContext;
 import org.drools.command.ShadowWorld;
-import org.drools.command.World;
 import org.drools.command.impl.ContextImpl;
 
 public class ShadowContextImpl extends ContextImpl implements ShadowContext {
@@ -11,10 +10,11 @@ public class ShadowContextImpl extends ContextImpl implements ShadowContext {
     private Context actualCtx;
 
     public ShadowContextImpl(String name,
-                             World manager) {
+                             Context actualCtx,
+                             ShadowWorld manager) {
         super( name,
                manager );
-        // TODO Auto-generated constructor stub
+        this.actualCtx = actualCtx;
     }
 
     public ShadowWorld getContextManager() {

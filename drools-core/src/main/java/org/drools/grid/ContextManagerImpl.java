@@ -58,4 +58,9 @@ public class ContextManagerImpl
     public void remove(String identifier) {
         root.remove( identifier );
     }
+
+    public Context createContext(String identifier) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
