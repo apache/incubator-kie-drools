@@ -158,7 +158,9 @@ public class Pattern
 
         if( this.declarations != null ) {
             for( Declaration decl : (Iterable<Declaration>) this.declarations.values() ) {
-                clone.addDeclaration( decl.getIdentifier() ).setReadAccessor( decl.getExtractor() );
+                Declaration addedDeclaration = clone.addDeclaration( decl.getIdentifier() );
+                addedDeclaration.setReadAccessor( decl.getExtractor() );
+                addedDeclaration.setBindingName( decl.getBindingName() );
             }
         }
 
