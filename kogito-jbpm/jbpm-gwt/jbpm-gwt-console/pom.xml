@@ -22,7 +22,7 @@
       <classifier>jbpm</classifier>
       <type>war</type>
       <!-- overwrite parent pom version -->
-      <version>2.3.2.Final</version>
+      <version>2.3.3.Final</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
