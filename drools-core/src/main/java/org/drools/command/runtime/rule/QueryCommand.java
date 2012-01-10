@@ -90,7 +90,6 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
     public QueryResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        QueryResults results = null;
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();
         }
@@ -101,8 +100,7 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
             }
         }
 
-        
-        results = ksession.getQueryResults( name, this.arguments.toArray() );
+        QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
         
         if ( this.outIdentifier != null ) {
             ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );
