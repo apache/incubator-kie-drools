@@ -18,20 +18,28 @@ package org.drools.persistence.map.impl;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
+import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +83,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
                                                                KnowledgeBase kbase) {
         int ksessionId = ksession.getId();
         ksession.dispose();
-        return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, createEnvironment(context) );
+        return JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, createEnvironment(context));
     }
 
     @Override
@@ -90,6 +98,32 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
             txm.commit(transactionOwner);
         }
         return savedSessionsCount;
+    }
+
+    @Test
+    public void testSetGlobalWithJPAKnowledgeService() throws Exception {
+        String str = "";
+        str += "package org.drools.persistence \n";
+        str += "global String globalCheeseCountry\n";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, env);
+
+        List<Command<?>> commands = new ArrayList<Command<?>>();
+        commands.add(CommandFactory.newInsert(new Integer(5)));
+        commands.add(CommandFactory.newInsert(new Integer(7)));
+        commands.add(CommandFactory.newFireAllRules());
+        commands.add(CommandFactory.newSetGlobal( "globalCheeseCountry", "France", true ));
+
+        Command cmds = CommandFactory.newBatchExecution( commands );
+
+        ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
     }
 
 }
