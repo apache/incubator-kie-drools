@@ -4,7 +4,7 @@
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>What is New and Noteworthy in Drools 5.4.0.Beta1</title>
+  <title>What is New and Noteworthy in Drools 5.4.0.Beta2</title>
 
   <section>
     <title>Guvnor</title>
@@ -34,6 +34,66 @@
         <para>For example: a person below 40 has to pay the standard fee (400) and also has to pay the youngster fee
         (200). Since fee can only be set once, that's a problem.</para>
       </section>
+    </section>
+
+    <section>
+      <title>Decision table - BRL fragments</title>
+
+      <para>BRL fragments can now be used for Condition and/or Action columns.</para>
+
+      <figure>
+        <title>Adding a BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-advanced-columns.png" format="PNG"
+                       scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A BRL fragment is a section of a rule created using Guvnor's (BRL) Guided Rule Editor: Condition columns
+      permit the definition of "WHEN" sections and Action columns the definition of "THEN" sections. Fields defined
+      therein as "Template Keys" become columns in the decision table.</para>
+
+      <figure>
+        <title>A Condition BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-condition.png" format="PNG"
+                       scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An Action BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-action.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Consequently any rule that could be defined with the (BRL) Guided Rule Editor can now be defined with a
+      decision table; including free-format DRL and DSL Sentences.</para>
+
+      <para>BRL fragments are fully integrated with other columns in the decision table, so that a Pattern or field
+      defined in a regular column can be referenced in the BRL fragments and vice-versa.</para>
+
+      <figure>
+        <title>A decision table with BRL fragments and regular columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-columns.png" format="PNG"
+                       scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
     </section>
   </section>
 
