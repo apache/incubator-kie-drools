@@ -33,7 +33,7 @@ public class UserGroupCallbackTest extends BaseTestNoUserGroupSetup {
         assertTrue(UserGroupCallbackManager.getInstance().getCallback().existsGroup("Crusaders"));
         assertFalse(UserGroupCallbackManager.getInstance().getCallback().existsGroup("Volleyball Players"));
         
-        List<String> groups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser("sales-rep");
+        List<String> groups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser("sales-rep", null, null);
         assertNotNull(groups);
         assertEquals(groups.size(), 1);        
         System.clearProperty(UserGroupCallbackManager.USER_GROUP_CALLBACK_KEY);
@@ -49,7 +49,7 @@ public class UserGroupCallbackTest extends BaseTestNoUserGroupSetup {
         assertTrue(UserGroupCallbackManager.getInstance().getCallback().existsGroup("Crusaders"));
         assertFalse(UserGroupCallbackManager.getInstance().getCallback().existsGroup("Volleyball Players"));
         
-        List<String> groups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser("Darth Vader");
+        List<String> groups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser("Darth Vader", null, null);
         assertNotNull(groups);
         assertEquals(groups.size(), 2);
     }
