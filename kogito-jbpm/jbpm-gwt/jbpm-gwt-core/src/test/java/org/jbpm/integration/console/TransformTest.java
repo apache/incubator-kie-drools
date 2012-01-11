@@ -1,8 +1,5 @@
 package org.jbpm.integration.console;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jbpm.integration.JbpmTestCase;
@@ -12,12 +9,9 @@ import org.junit.Test;
 
 public class TransformTest extends JbpmTestCase {
 
-	CommandDelegate delegate = new CommandDelegate();
-	
 	@Test
 	public void testProcessDefinition(){
-		
-		org.drools.definition.process.Process process =   delegate.getProcess("Minimal");
+		org.drools.definition.process.Process process = CommandDelegate.getProcess("Minimal");
 		ProcessDefinitionRef processDefinitionRef = Transform.processDefinition(process);
 		assertEquals(processDefinitionRef.getId(),process.getId());
 		assertEquals(processDefinitionRef.getPackageName(),process.getPackageName());
@@ -26,8 +20,8 @@ public class TransformTest extends JbpmTestCase {
 	
 	@Test
 	public void testProcessInstance(){
-		String instanceID = Long.toString(delegate.startProcess("UserTask", null).getProcessInstanceId());
-		ProcessInstanceLog instanceLog =delegate.getProcessInstanceLog(instanceID);
+		String instanceID = Long.toString(CommandDelegate.startProcess("UserTask", null).getProcessInstanceId());
+		ProcessInstanceLog instanceLog = CommandDelegate.getProcessInstanceLog(instanceID);
 		ProcessInstanceRef processInstanceRef = Transform.processInstance(instanceLog);
 		
 		assertEquals(instanceLog.getProcessInstanceId(),Long.parseLong(processInstanceRef.getId()));
