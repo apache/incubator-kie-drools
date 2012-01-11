@@ -489,11 +489,10 @@ responseHandler.waitTillDone(1000);
       assigned to one or more groups.  This means that any user that is part of the group
       can claim and execute the task.</para>
       
-      <para>The human task service needs to know what all the possible valid user and group
-      ids are (to make sure tasks are assigned to existing users and/or groups to avoid
-      errors and tasks that end up assigned to non-existing users).  You need to make sure
-      to register all users and groups before tasks can be assigned to them.  This can be
-      done dynamically.</para>
+      <para>The human task service needs to know about valid user and group
+      ids (to make sure tasks are assigned to existing users and/or groups to avoid
+      errors and tasks that end up assigned to non-existing users). User and group registration has to be done before tasks can be assigned to them.  
+      One possible registration method is to dynamically adding users and groups to the task service session:</para>
       
 <programlisting language="java">EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
 TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
@@ -526,15 +525,88 @@ taskClient.getTasksAssignedAsPotentialOwner("sales-rep", groups, "en-UK", taskSu
       therefor make sure that you always define at least a user "Adminstrator" when
       registering the list of valid users at the task service.</para>
       
-      <para>Future versions of jBPM will provide a callback interface that will simplify
-      the user and group management.  This interface will allow you to validate users
-      and groups without having to register them all at the task service, and provide
-      a method that you can implement to dynamically resolve the groups a user is part
-      of (for example by contacting an existing service like LDAP).  Users will then be
-      able to simply register their implementation of this callback interface without
-      having to provide the list of groupIds the user is part of for all relevent method
-      invocations.</para>
+      <para>
+      It is often necessary to hook into existing systems and/or services (such as LDAP) where users and groups 
+      are maintained in order to perform validation without having to manually register all users and group with the task service. 
+      jBPM provides the UserGroupCallback interface which allows you to create your own implementation for user and group management:</para>
       
+<programlisting language="java">
+public interface UserGroupCallback {
+	/**
+	 * Resolves existence of user id.
+	 * @param userId	the user id assigned to the task
+	 * @return true if userId exists, false otherwise.
+	 */
+    boolean existsUser(String userId);
+    
+    /**
+     * Resolves existence of group id.
+     * @param groupId	the group id assigned to the task
+     * @return true if groupId exists, false otherwise.
+     */
+    boolean existsGroup(String groupId);
+    
+    /**
+     * Returns list of group ids for specified user id.
+     * @param userId	the user id assigned to the task
+     * @param groupIds  list of group ids assigned to the task
+     * @param allExistingGroupIds	list of all currently known group ids
+     * @return List of group ids.
+     */
+    List&lt;String&gt; getGroupsForUser(String userId, List&lt;String&gt; groupIds, List&lt;String&gt; allExistingGroupIds);
+}</programlisting>      
+      
+      <para>
+      	If you register your own implementation of the UserGroupCallback interface, the human task service will call it whenever it needs to 
+      	perform user and group validation. Here is a very simple example implementation which treats all users and groups as being valid:  
+      </para>
+
+<programlisting language="java">
+public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
+
+	public boolean existsUser(String userId) {
+		// accept all by default
+		return true;
+	}
+
+	public boolean existsGroup(String groupId) {
+		// accept all by default
+		return true;
+	}
+	
+	public List&lt;String&gt; getGroupsForUser(String userId, List&lt;String&gt; groupIds,
+			List&lt;String&gt; allExistingGroupIds) {
+		if(groupIds != null) {
+			List&lt;String&gt; retList = new ArrayList&lt;String&gt;(groupIds);
+			// merge all groups
+			if(allExistingGroupIds != null) {
+				for(String grp : allExistingGroupIds) {
+					if(!retList.contains(grp)) {
+						retList.add(grp);
+					}
+				}
+			} 
+			return retList;
+		} else {
+			// return empty list by default
+			return new ArrayList&lt;String&gt;();
+		}
+	}
+}
+</programlisting>     
+      
+      <para> 
+      You can register your own implementation of the UserGroupCallback interface in a properties file called jbpm.usergroup.callback.properties which should be available on the classpath, for example:
+      </para>
+
+<programlisting language="java">
+jbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl
+</programlisting>
+   
+      <para>
+      or via a system property, for example -Djbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl. If you are using the jBPM installer, you can also modify
+      $jbpm-installer-dir$/task-service/resources/org/jbpm/jbpm.usergroup.callback.properties directly to register your own callback implementation.
+      </para>
     </section>
 
     <section>

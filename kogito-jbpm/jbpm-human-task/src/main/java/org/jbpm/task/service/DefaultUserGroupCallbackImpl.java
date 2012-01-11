@@ -30,16 +30,6 @@ public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
 		return true;
 	}
 	
-	public List<String> getGroupsForUser(String userId, List<String> groupIds) {
-		// just return back the list of groupIds or empty if null
-		return groupIds == null ? getGroupsForUser(userId) : groupIds;
-	}
-
-	public List<String> getGroupsForUser(String userId) {
-		// return empty list by default
-		return new ArrayList<String>();
-	}
-
 	public List<String> getGroupsForUser(String userId, List<String> groupIds,
 			List<String> allExistingGroupIds) {
 		if(groupIds != null) {
@@ -54,7 +44,8 @@ public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
 			} 
 			return retList;
 		} else {
-			return getGroupsForUser(userId);
+			// return empty list by default
+			return new ArrayList<String>();
 		}
 	}
 	

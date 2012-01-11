@@ -1266,14 +1266,14 @@ public class TaskServiceSession {
                 if(groupIds != null && groupIds.size() > 0) {
                     for(String groupId : groupIds) {
                         if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId) && 
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds) != null &&
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds).contains(groupId)) {
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, null) != null &&
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, null).contains(groupId)) {
                             addGroupFromCallbackOperation(groupId);
                         }
                     }
                 } else {
                     if(!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) { 
-                        List<String> userGroups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId);
+                        List<String> userGroups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, null, null);
                         if(userGroups != null && userGroups.size() > 0) {
                             for(String group : userGroups) {
                                 addGroupFromCallbackOperation(group);
