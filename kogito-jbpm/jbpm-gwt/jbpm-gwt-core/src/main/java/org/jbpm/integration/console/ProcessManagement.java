@@ -29,86 +29,84 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 
 public class ProcessManagement implements org.jboss.bpm.console.server.integration.ProcessManagement {
 
-	private CommandDelegate delegate;
-	
     public ProcessManagement() {
-        delegate = new CommandDelegate();
     }
     
-	public List<ProcessDefinitionRef> getProcessDefinitions() {
-		List<Process> processes = delegate.getProcesses();
-		List<ProcessDefinitionRef> result = new ArrayList<ProcessDefinitionRef>();
-		for (Process process: processes) {
-			result.add(Transform.processDefinition(process));
-		}
-		return result;
-	}
+    public List<ProcessDefinitionRef> getProcessDefinitions() {
+        List<Process> processes = CommandDelegate.getProcesses();
+        List<ProcessDefinitionRef> result = new ArrayList<ProcessDefinitionRef>();
+        for (Process process: processes) {
+            result.add(Transform.processDefinition(process));
+        }
+        return result;
+    }
 
-	public ProcessDefinitionRef getProcessDefinition(String definitionId) {
-		Process process = delegate.getProcess(definitionId);
-		return Transform.processDefinition(process);
-	}
+    public ProcessDefinitionRef getProcessDefinition(String definitionId) {
+        Process process = CommandDelegate.getProcess(definitionId);
+        return Transform.processDefinition(process);
+    }
 
-	/**
-	 * method unsupported
-	 */
-	public List<ProcessDefinitionRef> removeProcessDefinition(String definitionId) {
-		delegate.removeProcess(definitionId); 
-	    return getProcessDefinitions();
-	}
+    /**
+     * method unsupported
+     */
+    public List<ProcessDefinitionRef> removeProcessDefinition(String definitionId) {
+        CommandDelegate.removeProcess(definitionId); 
+        return getProcessDefinitions();
+    }
+    
+    
+    public ProcessInstanceRef getProcessInstance(String instanceId) {
+        ProcessInstanceLog processInstance = CommandDelegate.getProcessInstanceLog(instanceId);
+        return Transform.processInstance(processInstance);
+    }
 
-	public ProcessInstanceRef getProcessInstance(String instanceId) {
-		ProcessInstanceLog processInstance = delegate.getProcessInstanceLog(instanceId);
-		return Transform.processInstance(processInstance);
-	}
+    public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
+        List<ProcessInstanceLog> processInstances = CommandDelegate.getActiveProcessInstanceLogsByProcessId(definitionId);
+        List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
+        for (ProcessInstanceLog processInstance: processInstances) {
+            result.add(Transform.processInstance(processInstance));
+        }
+        return result;
+    }
 
-	public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
-		List<ProcessInstanceLog> processInstances = delegate.getActiveProcessInstanceLogsByProcessId(definitionId);
-		List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
-		for (ProcessInstanceLog processInstance: processInstances) {
-			result.add(Transform.processInstance(processInstance));
-		}
-		return result;
-	}
+    public ProcessInstanceRef newInstance(String definitionId) {
+        ProcessInstanceLog processInstance = CommandDelegate.startProcess(definitionId, null);
+        return Transform.processInstance(processInstance);
+    }
+    
+    public ProcessInstanceRef newInstance(String definitionId, Map<String, Object> processVars) {
+        ProcessInstanceLog processInstance = CommandDelegate.startProcess(definitionId, processVars);
+        return Transform.processInstance(processInstance);
+    }
 
-	public ProcessInstanceRef newInstance(String definitionId) {
-		ProcessInstanceLog processInstance = delegate.startProcess(definitionId, null);
-		return Transform.processInstance(processInstance);
-	}
-	
-	public ProcessInstanceRef newInstance(String definitionId, Map<String, Object> processVars) {
-		ProcessInstanceLog processInstance = delegate.startProcess(definitionId, processVars);
-		return Transform.processInstance(processInstance);
-	}
+    public void setProcessState(String instanceId, STATE nextState) {
+        if (nextState == STATE.ENDED) {
+            CommandDelegate.abortProcessInstance(instanceId);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
+    public Map<String, Object> getInstanceData(String instanceId) {
+        return CommandDelegate.getProcessInstanceVariables(instanceId);
+    }
 
-	public void setProcessState(String instanceId, STATE nextState) {
-		if (nextState == STATE.ENDED) {
-			delegate.abortProcessInstance(instanceId);
-		} else {
-			throw new UnsupportedOperationException();
-		}
-	}
-	
-	public Map<String, Object> getInstanceData(String instanceId) {
-		return delegate.getProcessInstanceVariables(instanceId);
-	}
+    public void setInstanceData(String instanceId, Map<String, Object> data) {
+        CommandDelegate.setProcessInstanceVariables(instanceId, data);
+    }
 
-	public void setInstanceData(String instanceId, Map<String, Object> data) {
-		delegate.setProcessInstanceVariables(instanceId, data);
-	}
+    
+    public void signalExecution(String executionId, String signal) {
+        CommandDelegate.signalExecution(executionId, signal);
+    }
 
-	
-	public void signalExecution(String executionId, String signal) {
-		delegate.signalExecution(executionId, signal);
-	}
+    public void deleteInstance(String instanceId) {
+        CommandDelegate.abortProcessInstance(instanceId);
+    }
 
-	public void deleteInstance(String instanceId) {
-		delegate.abortProcessInstance(instanceId);
-	}
-
-	//result means nothing
-	public void endInstance(String instanceId, RESULT result) {
-		delegate.abortProcessInstance(instanceId);
-	}
+    //result means nothing
+    public void endInstance(String instanceId, RESULT result) {
+        CommandDelegate.abortProcessInstance(instanceId);
+    }
 
 }

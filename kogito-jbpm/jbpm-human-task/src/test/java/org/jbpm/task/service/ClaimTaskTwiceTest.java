@@ -119,7 +119,7 @@ public abstract class ClaimTaskTwiceTest extends BaseTest {
             }
 
             execObj.shutdown();
-            execObj.awaitTermination(1, TimeUnit.MINUTES);
+            execObj.awaitTermination(60, TimeUnit.SECONDS);
             logger.info("main() all tasks completed on ExecutorService ...");
         } catch (Throwable t) {
             t.printStackTrace();

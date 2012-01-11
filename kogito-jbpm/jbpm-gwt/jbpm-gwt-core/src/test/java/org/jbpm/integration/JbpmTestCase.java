@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import junit.framework.Assert;
+
 import org.drools.SystemEventListenerFactory;
 import org.drools.persistence.util.PersistenceUtil;
 import org.jbpm.task.AccessType;
@@ -36,7 +38,6 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.mina.MinaTaskServer;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
@@ -44,14 +45,12 @@ import org.mvel2.compiler.ExpressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 /**
  * This is a.. wacky test (suite). 
  * 
  * ! Adding a @AfterClass method will mess up the tests. 
  */
-public abstract class JbpmTestCase {
+public abstract class JbpmTestCase extends Assert {
 
     private static Logger logger = LoggerFactory.getLogger(JbpmTestCase.class);
     

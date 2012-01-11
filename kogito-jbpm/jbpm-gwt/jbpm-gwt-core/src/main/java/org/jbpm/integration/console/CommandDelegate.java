@@ -16,254 +16,58 @@
 
 package org.jbpm.integration.console;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.command.Context;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.compiler.BPMN2ProcessFactory;
-import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
-import org.drools.event.ActivationCancelledEvent;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaGroupPoppedEvent;
-import org.drools.event.AgendaGroupPushedEvent;
-import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
-import org.drools.marshalling.impl.ProcessMarshallerFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.ProcessRuntimeFactory;
-import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
-import org.jbpm.integration.console.shared.GuvnorConnectionUtils;
-import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
-import org.jbpm.process.audit.ProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.process.audit.WorkingMemoryDbLogger;
-import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
-import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * This class encapsulates the logic for executing operations via the Drools/jBPM api and retrieving information 
+ * from that api. 
+ */
 public class CommandDelegate {
-	private static final Logger logger = LoggerFactory.getLogger(CommandDelegate.class);
-	
-    private static StatefulKnowledgeSession ksession;
-    
-    public CommandDelegate() {
-        getSession();
-    }
-    
-    private StatefulKnowledgeSession newStatefulKnowledgeSession() {
-        try {
-            KnowledgeBase kbase = null;
-            Properties jbpmconsoleproperties = new Properties();
-            try {
-                jbpmconsoleproperties.load(CommandDelegate.class.getResourceAsStream("/jbpm.console.properties"));
-            } catch (IOException e) {
-                throw new RuntimeException("Could not load jbpm.console.properties", e);
-            }
-            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
-            if(guvnorUtils.guvnorExists()) {
-            	try {
-            		ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-					sconf.setProperty( "drools.resource.scanner.interval", "10" );
-					ResourceFactory.getResourceChangeScannerService().configure( sconf );
-					ResourceFactory.getResourceChangeScannerService().start();
-					ResourceFactory.getResourceChangeNotifierService().start();
-					KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-					aconf.setProperty("drools.agent.newInstance", "false");
-					KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
-					kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
-					kbase = kagent.getKnowledgeBase();
-				} catch (Throwable t) {
-					logger.error("Could not load processes from Guvnor: " + t.getMessage());
-				}
-            } else {
-            	logger.warn("Could not connect to Guvnor.");
-            }
-            if (kbase == null) {
-                kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            }
-            
-            String directory = System.getProperty("jbpm.console.directory") == null ? jbpmconsoleproperties.getProperty("jbpm.console.directory") :
-            	System.getProperty("jbpm.console.directory");
-            if (directory == null || directory.length() < 1 ) {
-                logger.error("jbpm.console.directory property not found");
-            } else {
-                File file = new File(directory);
-                if (!file.exists()) {
-                    throw new IllegalArgumentException("Could not find " + directory);
-                }
-                if (!file.isDirectory()) {
-                    throw new IllegalArgumentException(directory + " is not a directory");
-                }
-                ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
-                ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
-                ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
-                BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
-                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-                for (File subfile: file.listFiles(new FilenameFilter() {
-                        public boolean accept(File dir, String name) {
-                            return name.endsWith(".bpmn") || name.endsWith("bpmn2");
-                        }})) {
-                    logger.info("Loading process from file system: " + subfile.getName());
-                    kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
-                }
-                kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-            }
-            StatefulKnowledgeSession ksession = null;
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-                    "org.jbpm.persistence.jpa");
-            Environment env = KnowledgeBaseFactory.newEnvironment();
-            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-            Properties sessionconfigproperties = new Properties();
-            sessionconfigproperties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-            sessionconfigproperties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-            KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(sessionconfigproperties);
-            try {
-                logger.info("Loading session data ...");
-                ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
-                    1, kbase, config, env);
-            } catch (RuntimeException e) {
-                logger.error("Error loading session data: " + e.getMessage());
-                if (e instanceof IllegalStateException) {
-                    Throwable cause = ((IllegalStateException) e).getCause();
-                    if (cause instanceof InvocationTargetException) {
-                        cause = cause.getCause();
-                        if (cause != null && "Could not find session data for id 1".equals(cause.getMessage())) {
-                            logger.info("Creating new session data ...");
-                            env = KnowledgeBaseFactory.newEnvironment();
-                            env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-                            ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
-                                kbase, config, env);
-                        } else {
-                            logger.error("Error loading session data: " + cause);
-                            throw e;
-                        }
-                    } else {
-                    	logger.error("Error loading session data: " + cause);
-                        throw e;
-                    }
-                } else {
-                	logger.error("Error loading session data: " + e.getMessage());
-                    throw e;
-                }
-            }
-            new WorkingMemoryDbLogger(ksession);
-            if ("Mina".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
-                CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
-                handler.setConnection(
-                    jbpmconsoleproperties.getProperty("jbpm.console.task.service.host"),
-                    new Integer(jbpmconsoleproperties.getProperty("jbpm.console.task.service.port")));
-                ksession.getWorkItemManager().registerWorkItemHandler(
-                    "Human Task", handler);
-                handler.connect();
-            } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
-				TaskService taskService = HumanTaskService.getService();
-	            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService.createSession()), ksession);
-	            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-            }
-            final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {
-                public void activationCreated(ActivationCreatedEvent event,
-                        WorkingMemory workingMemory){
-                }
-                public void activationCancelled(ActivationCancelledEvent event,
-                          WorkingMemory workingMemory){
-                }
-                public void beforeActivationFired(BeforeActivationFiredEvent event,
-                            WorkingMemory workingMemory) {
-                }
-                public void afterActivationFired(AfterActivationFiredEvent event,
-                           WorkingMemory workingMemory) {
-                }
-                public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                        WorkingMemory workingMemory) {
-                }
 
-                public void agendaGroupPushed(AgendaGroupPushedEvent event,
-                        WorkingMemory workingMemory) {
-                }
-                public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                   WorkingMemory workingMemory) {
-                }
-                public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, 
-                        WorkingMemory workingMemory) {
-                    workingMemory.fireAllRules();
-                }
-                public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                     WorkingMemory workingMemory) {
-                }
-                public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                    WorkingMemory workingMemory) {
-                }
-            };
-            ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                    .getCommandService().getContext()).getStatefulKnowledgesession() )
-                    .session.addEventListener(agendaEventListener);
-            return ksession;
-        } catch (Throwable t) {
-            throw new RuntimeException(
-                "Could not initialize stateful knowledge session: "
-                    + t.getMessage(), t);
-        }
-    }
-
-    private StatefulKnowledgeSession getSession() {
-        if (ksession == null) {
-            ksession = newStatefulKnowledgeSession();
-        }
-        return ksession;
+    /**
+     * The methods in this class are purposefully static and no instance of this class should be initialized.
+     */
+    private CommandDelegate() {
     }
     
-    public List<Process> getProcesses() {
+    /**
+     * This method retrieves the stateful knowledge session associated with the console.
+     * @return a (stateful knowledge) session.
+     */
+    private static StatefulKnowledgeSession getSession() { 
+        return StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession();
+    }
+    
+    public static List<Process> getProcesses() {
         List<Process> result = new ArrayList<Process>();
-        for (KnowledgePackage kpackage: getSession().getKnowledgeBase().getKnowledgePackages()) {
+        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             result.addAll(kpackage.getProcesses());
         }
         return result;
     }
     
-    public Process getProcess(String processId) {
-        for (KnowledgePackage kpackage: getSession().getKnowledgeBase().getKnowledgePackages()) {
+    public static Process getProcess(String processId) {
+        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             for (Process process: kpackage.getProcesses()) {
                 if (processId.equals(process.getId())) {
                     return process;
@@ -273,8 +77,9 @@ public class CommandDelegate {
         return null;
     }
     
-    public Process getProcessByName(String name) {
-        for (KnowledgePackage kpackage: getSession().getKnowledgeBase().getKnowledgePackages()) {
+    public static Process getProcessByName(String name) {
+        KnowledgeBase kbase = getSession().getKnowledgeBase();
+        for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             for (Process process: kpackage.getProcesses()) {
                 if (name.equals(process.getName())) {
                     return process;
@@ -284,41 +89,52 @@ public class CommandDelegate {
         return null;
     }
 
-    public void removeProcess(String processId) {
+    /**
+     * This method is not supported by jBPM and will throw a {@link UnsupportedOperationException}.
+     * @param processId
+     */
+    public static void removeProcess(String processId) {
         throw new UnsupportedOperationException();
     }
     
-    public ProcessInstanceLog getProcessInstanceLog(String processInstanceId) {
-        return ProcessInstanceDbLog.findProcessInstance(new Long(processInstanceId));
+    public static ProcessInstanceLog getProcessInstanceLog(String processInstanceId) {
+        return JPAProcessInstanceDbLog.findProcessInstance(new Long(processInstanceId));
     }
 
-    public List<ProcessInstanceLog> getProcessInstanceLogsByProcessId(String processId) {
-        return ProcessInstanceDbLog.findProcessInstances(processId);
+    public static List<ProcessInstanceLog> getProcessInstanceLogsByProcessId(String processId) {
+        return JPAProcessInstanceDbLog.findProcessInstances(processId);
     }
     
-    public List<ProcessInstanceLog> getActiveProcessInstanceLogsByProcessId(String processId) {
-        return ProcessInstanceDbLog.findActiveProcessInstances(processId);
+    public static List<ProcessInstanceLog> getActiveProcessInstanceLogsByProcessId(String processId) {
+        return JPAProcessInstanceDbLog.findActiveProcessInstances(processId);
     }
     
-    public ProcessInstanceLog startProcess(String processId, Map<String, Object> parameters) {
-        long processInstanceId = ksession.startProcess(processId, parameters).getId();
-        return ProcessInstanceDbLog.findProcessInstance(processInstanceId);
+    public static ProcessInstanceLog startProcess(String processId, Map<String, Object> parameters) {
+        long processInstanceId = getSession().startProcess(processId, parameters).getId();
+        return JPAProcessInstanceDbLog.findProcessInstance(processInstanceId);
     }
     
-    public void abortProcessInstance(String processInstanceId) {
-        ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
-        if (processInstance != null) {
-            ksession.abortProcessInstance(new Long(processInstanceId));
+    public static void abortProcessInstance(String processInstanceIdString) {
+        StatefulKnowledgeSession session = getSession();
+        Long processInstanceId = new Long(processInstanceIdString);
+        if ( session.getProcessInstance(processInstanceId) != null) {
+            session.abortProcessInstance(processInstanceId);
         } else {
             throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
         }
+        
     }
     
-    public Map<String, Object> getProcessInstanceVariables(String processInstanceId) {
-        ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
+    /**
+     * This returns the variables associated with the process instance. This is a "read-only" function: modifying
+     * the values of the map will not have any effect on the actual variables associated with the process instance. 
+     * @param processInstanceId
+     * @return
+     */
+    public static Map<String, Object> getProcessInstanceVariables(String processInstanceId) {
+        ProcessInstance processInstance = getSession().getProcessInstance(new Long(processInstanceId));
         if (processInstance != null) {
-            Map<String, Object> variables = 
-                ((WorkflowProcessInstanceImpl) processInstance).getVariables();
+            Map<String, Object> variables = ((WorkflowProcessInstanceImpl) processInstance).getVariables();
             if (variables == null) {
                 return new HashMap<String, Object>();
             }
@@ -334,14 +150,18 @@ public class CommandDelegate {
             throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
         }
     }
+    
     /**
-     * This method the variables provided in the map to the instance.
-     * NOTE: the map will be added not replaced
-     * @param processInstanceId
-     * @param variables
+     * This method adds the variables provided in the map, to the (process) instance.
+     * NOTE: the variables given will be <i>added</i> to the existing map of variables. 
+     * They will <i>not</i> replace the variables that are already associated with the proces instance. 
+     * @param processInstanceId The id of the process instance. 
+     * @param variables The variables to add.
      */
-    public void setProcessInstanceVariables(final String processInstanceId, final Map<String, Object> variables) {
-        ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new GenericCommand<Void>() {
+    @SuppressWarnings("serial")
+    public static void setProcessInstanceVariables(final String processInstanceId, final Map<String, Object> variables) {
+
+        GenericCommand<Void> setProcInstVariablesCommand = new GenericCommand<Void>() {
             public Void execute(Context context) {
                 StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
                 ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
@@ -361,12 +181,21 @@ public class CommandDelegate {
                 }
                 return null;
             }
-            
-        });
+        };
+        
+        /**
+         * We execute the above code as a command for a couple of reasons, mostly because it's the easiest way.  
+         * One of the positive side effects is that the command will then happen
+         * 1. within a transaction and 
+         * 2. use the persistence logic of the SingleSessionCommandService. 
+         */
+        ((CommandBasedStatefulKnowledgeSession) getSession())
+            .getCommandService()
+            .execute(setProcInstVariablesCommand);
     }   
-    public void signalExecution(String executionId, String signal) {
-        ksession.getProcessInstance(new Long(executionId))
-            .signalEvent("signal", signal);
-    }
     
+    public static void signalExecution(String executionId, String signal) {
+        getSession().getProcessInstance(new Long(executionId)).signalEvent("signal", signal);
+    }
+
 }

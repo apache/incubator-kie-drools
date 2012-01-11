@@ -58,8 +58,7 @@ public class HumanTaskService {
 	            taskSession.addGroup( group );
 	        }
 	        taskSession.dispose();
-	        System.out.println("Task service started correctly !");
-	        System.out.println("Task service running ...");
+	        System.out.println("Task service running and started correctly !");
 	        INSTANCE = taskService;
 		}
 		return INSTANCE;
