@@ -2,8 +2,7 @@
 <datasources>
   <local-tx-datasource>
     <jndi-name>jboss/datasources/jbpmDS</jndi-name>
-    <connection-url>jdbc:h2:tcp://localhost/~/test</connection-url>
-    <!--connection-url>jdbc:h2:mem:mydb</connection-url-->
+    <connection-url>jdbc:h2:tcp://localhost/runtime/jbpm-demo</connection-url>
     <driver-class>org.h2.jdbcx.JdbcDataSource</driver-class>
     <user-name>sa</user-name>
     <password></password>
