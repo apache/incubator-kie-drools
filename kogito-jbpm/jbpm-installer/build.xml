@@ -38,22 +38,41 @@
     <get src="${h2.download.url}" dest="${install.home}/db/driver/h2.jar"  />
   </target>
 
-  <!-- Download mysql driver -->
-  <property name="mysql.driver.jar" value="${install.home}/db/driver/mysql-connector-java.jar" />
+  <!-- Download JDBC driver jar (MySQL is default)-->
+  <property name="db.driver.jar.name" value="mysql-connector-java.jar" />
+  <property name="db.driver.jar" value="${install.home}db/driver/${db.driver.jar.name}" />
 
-  <target name="download.mysql.check">
-    <echo message="Checking mysql driver jar download ..." />
-    <condition property="mysql.not.available">
+  <target name="download.db.driver.check">
+    <echo message="Checking if db driver jar has been downloaded ..." />
+    <condition property="db.driver.not.available">
       <not>
-        <available file="${mysql.driver.jar}" />
+        <available file="${db.driver.jar}" />
       </not>
     </condition>
   </target>
 
-  <target name="download.mysql.driver" depends="download.mysql.check" if="mysql.not.available">
+  <target name="download.mysql.driver" depends="download.db.driver.check" if="db.driver.not.available">
     <echo message="Getting mysql driver jar ..." />
     <mkdir dir="${install.home}/db/driver"/>
-    <get src="${mysql.download.url}" dest="${mysql.driver.jar}" />
+    <get src="${mysql.download.url}" dest="${db.driver.jar}" />
+  </target>
+
+  <!-- db driver module in jBoss AS 7 installation -->
+  <property name="db.driver.module.prefix">com/mysql</property> 
+  <property name="db.driver.module.dir">${jboss.home}/modules/${db.driver.module.prefix}/main/</property> 
+
+  <target name="install.db.files" depends="check.jboss.version,download.mysql.driver" if="jboss.version.is.7">
+    <mkdir dir="${db.driver.module.dir}" />
+    <copy file="${db.driver.jar}" tofile="${db.driver.module.dir}/${db.driver.jar.name}" />
+    <copy file="db/driver_jar_module.xml" tofile="${db.driver.module.dir}/module.xml" />
+    <!--
+    <copy file="${db.driver.jar}" tofile="${jboss.home}/standalone/deployments" />
+    -->
+    <property name="db.driver.installed" value="true" />
+  </target>
+
+  <target name="remove.db.files" depends="check.jboss.version" if="jboss.version.is.7">
+    <delete dir="${jboss.home}/modules/com/mysql" />
   </target>
 
   <!-- Download BIRT engine for AS5 -->
@@ -524,19 +543,6 @@
     <delete dir="${eclipse.home}/droolsjbpm-update-site"/>
   </target>
 
-  <!-- MySQL jBoss files -->
-  <property name="mysql.module.dir">${jboss.home}/modules/com/mysql/main/</property> 
-
-  <target name="install.db.files" depends="check.jboss.version,download.mysql.driver" if="jboss.version.is.7">
-    <mkdir dir="${mysql.module.dir}" />
-    <copy file="${mysql.driver.jar}" tofile="${mysql.module.dir}/mysql-connector-java.jar" />
-    <copy file="db/mysql_module.xml" tofile="${mysql.module.dir}/module.xml" />
-  </target>
-
-  <target name="remove.db.files" depends="check.jboss.version" if="jboss.version.is.7">
-    <delete dir="${jboss.home}/modules/com/mysql" />
-  </target>
-
   <!-- Install Demo -->
   <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
@@ -545,6 +551,9 @@
 
   <!-- Install Demo (No Eclipse) -->
   <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
+
+  <!-- Install Demo (DB == No Eclipse) -->
+  <target name="install.demo.db" depends="install.demo.noeclipse" />
   
   <!-- ############ START/STOP ############ -->
 
@@ -684,6 +693,7 @@
     <fileset dir="${install.home}/runtime" includes="**/*.jar"/>
     <fileset dir="${install.home}/db/driver" includes="**/*.jar"/>
   </path>
+ 
   <target name="start.human.task">
     <mkdir dir="${install.home}/task-service/target"/>
     <javac srcdir="${install.home}/task-service/src" destdir="${install.home}/task-service/target" classpathref="classpath.human.task">

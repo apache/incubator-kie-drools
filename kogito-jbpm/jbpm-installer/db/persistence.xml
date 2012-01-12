@@ -29,7 +29,6 @@
       <property name="hibernate.transaction.manager_lookup_class" value="org.jbpm.integration.console.JBPMTransactionManager" />
       <!-- for AS5 -->
       <!-- <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" /> -->
-      <!--property name="hibernate.transaction.manager_lookup_class" value="org.jbpm.integration.console.JBPMTransactionManager" /-->
     </properties>        
   </persistence-unit>
     
