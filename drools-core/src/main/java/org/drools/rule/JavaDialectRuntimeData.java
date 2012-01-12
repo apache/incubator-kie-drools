@@ -41,10 +41,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.core.util.DroolsClassLoader;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Wireable;
@@ -595,7 +594,15 @@ public class JavaDialectRuntimeData
         }
         
         public Enumeration<URL> getResources(String name) throws IOException {
-            return null;
+            return new Enumeration<URL>() {
+                public boolean hasMoreElements() {
+                    return false;
+                }
+
+                public URL nextElement() {
+                    throw new NoSuchElementException();
+                }
+            };
         }
 
     }
