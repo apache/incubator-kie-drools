@@ -525,4 +525,21 @@ public class ClassBuilderTest {
         }
 
     }
+    
+    @Test
+    public void testGetResourcesJBRULES3122() {
+        try {
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
+
+            ClassDefinition classDef = new ClassDefinition("org.drools.TestClass4", null, new String[] {});
+            Class clazz = build(builder, classDef);
+            ClassLoader cl = clazz.getClassLoader();
+
+            // We expect normal classloader stuff to work
+            assertFalse(cl.getResources("not-there.txt").hasMoreElements());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception not expected: " + e.getMessage());
+        }
+    }
 }
