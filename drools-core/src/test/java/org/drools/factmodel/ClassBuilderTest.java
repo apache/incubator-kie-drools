@@ -525,4 +525,31 @@ public class ClassBuilderTest {
         }
 
     }
+
+    @Test
+    public void testGetResourcesJBRULES3122() {
+        try {
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
+
+            ClassDefinition classDef = new ClassDefinition("org.drools.TestClass4", null, new String[] {});
+            // FieldDefinition intDef = new FieldDefinition( "intAttr",
+            // "int",
+            // true );
+            // classDef.addField( intDef );
+
+            Class clazz = build(builder, classDef);
+            // intDef.setReadWriteAccessor( store.getAccessor( clazz,
+            // intDef.getName(),
+            // classLoader ) );
+            //
+            ClassLoader cl = clazz.getClassLoader();
+
+            // We expect normal classloader stuff to work
+            assertFalse(cl.getResources("not-there.txt").hasMoreElements());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception not expected: " + e.getMessage());
+        }
+    }
+
 }
