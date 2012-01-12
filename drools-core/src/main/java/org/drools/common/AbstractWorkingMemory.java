@@ -20,14 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -66,7 +64,6 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.reteoo.RuleTerminalNode;
@@ -934,18 +931,18 @@ public abstract class AbstractWorkingMemory
                        final Object object) throws FactException {
         update( (org.drools.FactHandle) handle,
                 object,
-                null,
+                Long.MAX_VALUE,
                 null );
     }
 
     public void update(final org.drools.runtime.rule.FactHandle factHandle,
                        final Object object,
-                       final Rule rule,
+                       final long mask,
                        final Activation activation) throws FactException {
 
         update( (org.drools.FactHandle) factHandle,
                 object,
-                rule,
+                mask,
                 activation );
     }
 
@@ -955,13 +952,13 @@ public abstract class AbstractWorkingMemory
      * 
      * @see WorkingMemory
      */
-    public void update(org.drools.FactHandle factHandle,
+    public void update(FactHandle factHandle,
                        final Object object,
-                       final Rule rule,
+                       final long mask,
                        final Activation activation) throws FactException {
         this.defaultEntryPoint.update( factHandle,
                                        object,
-                                       rule,
+                                       mask,
                                        activation );
     }
 

@@ -65,6 +65,7 @@ public class PropagationContextImpl
     
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
+    private long modificationMask = Long.MAX_VALUE;
 
     public PropagationContextImpl() {
 
@@ -106,6 +107,19 @@ public class PropagationContextImpl
         this.originOffset = -1;
     }
 
+    public PropagationContextImpl(final long number,
+                                  final int type,
+                                  final Rule rule,
+                                  final LeftTuple leftTuple,
+                                  final InternalFactHandle factHandle,
+                                  final int activeActivations,
+                                  final int dormantActivations,
+                                  final EntryPoint entryPoint,
+                                  long modificationMask) {
+        this(number, type, rule, leftTuple, factHandle, activeActivations, dormantActivations, entryPoint);
+        this.modificationMask = modificationMask;
+    }
+
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.type = in.readInt();
@@ -119,6 +133,7 @@ public class PropagationContextImpl
         this.propagationAttempts = (ObjectHashSet) in.readObject();
         this.currentPropagatingOTN = (ObjectTypeNode) in.readObject();
         this.shouldPropagateAll = in.readBoolean();        
+        this.modificationMask = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -132,7 +147,8 @@ public class PropagationContextImpl
         out.writeInt( this.originOffset );
         out.writeObject( this.propagationAttempts );
         out.writeObject( this.currentPropagatingOTN );
-        out.writeObject( this.shouldPropagateAll );        
+        out.writeObject( this.shouldPropagateAll );
+        out.writeLong( this.modificationMask );
     }
 
     public long getPropagationNumber() {
@@ -281,6 +297,10 @@ public class PropagationContextImpl
             }     
                                   
         }
+    }
+
+    public long getModificationMask() {
+        return modificationMask;
     }
 
 

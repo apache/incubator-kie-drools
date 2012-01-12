@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -28,7 +29,9 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -50,6 +53,8 @@ public class AlphaNode extends ObjectSource
 
     private ObjectSinkNode           previousRightTupleSinkNode;
     private ObjectSinkNode           nextRightTupleSinkNode;
+
+    private long listenedPropertyMask = -1L;
 
     public AlphaNode() {
 
@@ -312,5 +317,31 @@ public class AlphaNode extends ObjectSource
             throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
         }
 
+    }
+
+    long getListenedPropertyMask() {
+        if (!(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
+        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+
+        Class<?> nodeClass = getNodeClass();
+        long mask = nodeClass == null ? Long.MAX_VALUE : ((MvelConstraint)constraint).getListenedPropertyMask(nodeClass);
+        listenedPropertyMask = mask;
+        return mask >= 0 ? mask : Long.MAX_VALUE;
+    }
+
+    private Class<?> getNodeClass() {
+        ObjectTypeNode objectTypeNode = getObjectTypeNode();
+        if (objectTypeNode == null) return null;
+        ObjectType objectType = objectTypeNode.getObjectType();
+        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+    }
+
+    private ObjectTypeNode getObjectTypeNode() {
+        ObjectSource source = this;
+        while (source != null) {
+            if (source instanceof ObjectTypeNode) return (ObjectTypeNode)source;
+            source = source.source;
+        }
+        return null;
     }
 }

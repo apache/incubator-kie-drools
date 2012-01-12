@@ -246,7 +246,7 @@ public class SequentialKnowledgeHelper
         
     }
 
-    public void update(FactHandle newObject) {
+    public void update(FactHandle newObject, long mask) {
         // TODO Auto-generated method stub
         
     }

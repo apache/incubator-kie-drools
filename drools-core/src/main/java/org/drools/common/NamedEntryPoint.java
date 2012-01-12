@@ -357,24 +357,24 @@ public class NamedEntryPoint
                        final Object object) throws FactException {
         update( handle,
                 object,
-                null,
+                Long.MAX_VALUE,
                 null );
     }
     
     public void update(final org.drools.runtime.rule.FactHandle factHandle,
                        final Object object,
-                       final Rule rule,
+                       final long mask,
                        final Activation activation) throws FactException {
 
         update( (org.drools.FactHandle) factHandle,
                 object,
-                rule,
+                mask,
                 activation );
     }
 
     public void update(org.drools.FactHandle factHandle,
                        final Object object,
-                       final Rule rule,
+                       final long mask,
                        final Activation activation) throws FactException {
         try {
             this.ruleBase.readLock();
@@ -453,6 +453,8 @@ public class NamedEntryPoint
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
+            Rule rule = activation == null ? null : activation.getRule();
+
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
@@ -460,7 +462,8 @@ public class NamedEntryPoint
                                                                                       handle,
                                                                                       this.wm.agenda.getActiveActivations(),
                                                                                       this.wm.agenda.getDormantActivations(),
-                                                                                      entryPoint );
+                                                                                      entryPoint,
+                                                                                      mask );
 
             this.entryPointNode.modifyObject( handle,
                                               propagationContext,

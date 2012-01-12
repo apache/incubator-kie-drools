@@ -404,11 +404,11 @@ public class StatefulKnowledgeSessionImpl
 
     public void update(FactHandle factHandle,
                        Object object,
-                       Rule rule,
+                       long mask,
                        Activation activation) throws FactException {
         ((AbstractWorkingMemory) this.session).update( (org.drools.FactHandle) factHandle,
                                                        object,
-                                                       rule,
+                                                       mask,
                                                        activation );
     }
 

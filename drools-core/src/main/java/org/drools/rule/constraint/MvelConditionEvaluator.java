@@ -19,6 +19,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
     private ExecutableStatement stmt;
     private String expression;
     private ParserContext parserContext;
+    private boolean evaluated = false;
 
     MvelConditionEvaluator(ParserConfiguration conf, String expression) {
         this.expression = expression;
@@ -34,14 +35,20 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
         return vars == null ? (Boolean)MVEL.executeExpression(statement, object) : (Boolean)MVEL.executeExpression(statement, object, vars);
     }
 
-    ExecutableStatement getExecutableStatement(Object object, Map<String, Object> vars) {
+    ConditionAnalyzer.Condition getAnalyzedCondition() {
+        return isCompletelyEvaluated() ? new ConditionAnalyzer(stmt).analyzeCondition() : null;
+    }
+
+    ConditionAnalyzer.Condition getAnalyzedCondition(Object object, Map<String, Object> vars) {
         ensureCompleteEvaluation(object, vars);
-        return stmt;
+        return new ConditionAnalyzer(stmt).analyzeCondition();
     }
 
     private void ensureCompleteEvaluation(Object object, Map<String, Object> vars) {
-        ASTNode node = stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
-        ensureCompleteEvaluation(node, object, vars);
+        if (!evaluated) {
+            ensureCompleteEvaluation(getRootNode(), object, vars);
+            evaluated = true;
+        }
     }
 
     private void ensureCompleteEvaluation(ASTNode node, Object object, Map<String, Object> vars) {
@@ -59,5 +66,21 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
 
     private CompiledExpression asCompiledExpression(ASTNode node) {
         return new CompiledExpression(new ASTLinkedList(node), null, Object.class, parserContext, false);
+    }
+
+    private boolean isCompletelyEvaluated() {
+        if (evaluated) return true;
+        evaluated = isCompletelyEvaluated(getRootNode());
+        return evaluated;
+    }
+
+    private boolean isCompletelyEvaluated(ASTNode node) {
+        if (!(node instanceof And || node instanceof Or)) return true;
+        ASTNode rightNode = ((BooleanNode)node).getRight();
+        return isEvaluated(rightNode) && isCompletelyEvaluated(rightNode);
+    }
+
+    private ASTNode getRootNode() {
+        return stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
     }
 }

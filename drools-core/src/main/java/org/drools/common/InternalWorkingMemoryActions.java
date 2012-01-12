@@ -27,7 +27,7 @@ public interface InternalWorkingMemoryActions
     InternalWorkingMemoryEntryPoint {
     public void update(FactHandle handle,
                        Object object,
-                       Rule rule,
+                       long mask,
                        Activation activation) throws FactException;
 
     public void retract(FactHandle handle,

@@ -28,36 +28,37 @@ public interface BetaConstraints
     extends
     Externalizable {
 
-    public ContextEntry[] createContext();
+    ContextEntry[] createContext();
 
-    public void updateFromTuple(ContextEntry[] context,
+    void updateFromTuple(ContextEntry[] context,
                                 InternalWorkingMemory workingMemory,
                                 LeftTuple tuple);
 
-    public void updateFromFactHandle(ContextEntry[] context,
+    void updateFromFactHandle(ContextEntry[] context,
                                      InternalWorkingMemory workingMemory,
                                      InternalFactHandle handle);
 
-    public boolean isAllowedCachedLeft(ContextEntry[] context,
+    boolean isAllowedCachedLeft(ContextEntry[] context,
                                        InternalFactHandle handle);
 
-    public boolean isAllowedCachedRight(ContextEntry[] context,
+    boolean isAllowedCachedRight(ContextEntry[] context,
                                         LeftTuple tuple);
 
-    public LinkedList getConstraints();
+    LinkedList getConstraints();
 
-    public BetaConstraints getOriginalConstraint();
+    BetaConstraints getOriginalConstraint();
     
-    public boolean isIndexed();
+    boolean isIndexed();
 
-    public int getIndexCount();
+    int getIndexCount();
 
-    public boolean isEmpty();
+    boolean isEmpty();
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config);
+    BetaMemory createBetaMemory(final RuleBaseConfiguration config);
 
-    public void resetTuple(final ContextEntry[] context);
+    void resetTuple(final ContextEntry[] context);
 
-    public void resetFactHandle(final ContextEntry[] context);
+    void resetFactHandle(final ContextEntry[] context);
 
+    long getListenedPropertyMask(Class<?> nodeClass);
 }

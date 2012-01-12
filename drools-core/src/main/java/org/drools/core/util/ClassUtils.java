@@ -17,6 +17,7 @@
 package org.drools.core.util;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -277,5 +278,31 @@ public final class ClassUtils {
             return pkg.getName();
         }
     }
-    
+
+    public static List<String> getSettableProperties(Class<?> clazz) {
+        List<String> settableProperties = new ArrayList<String>();
+        for (Method m : clazz.getMethods()) {
+            if (m.getParameterTypes().length == 1) {
+                String propName = setter2property(m.getName());
+                if (propName != null) settableProperties.add(propName);
+            }
+        }
+        Collections.sort(settableProperties);
+        return settableProperties;
+    }
+
+    public static String getter2property(String methodName) {
+        if (methodName.startsWith("get") && methodName.length() > 3) {
+            return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+        }
+        if (methodName.startsWith("is") && methodName.length() > 2) {
+            return Character.toLowerCase(methodName.charAt(2)) + methodName.substring(3);
+        }
+        return null;
+    }
+
+    public static String setter2property(String methodName) {
+        if (!methodName.startsWith("set") || methodName.length() < 4) return null;
+        return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+    }
 }

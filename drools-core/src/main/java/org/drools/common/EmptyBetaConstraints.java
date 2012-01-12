@@ -144,4 +144,7 @@ public class EmptyBetaConstraints
         throw new UnsupportedOperationException();
     }
 
+    public long getListenedPropertyMask(Class<?> nodeClass) {
+        return Long.MAX_VALUE;
+    }
 }

@@ -6,6 +6,7 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.BitMaskUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -18,17 +19,22 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.compiler.ExecutableStatement;
+import org.drools.rule.constraint.ConditionAnalyzer.*;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.drools.core.util.ClassUtils.*;
+
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
-    private static final int JIT_THRESOLD = 1; // Integer.MAX_VALUE;
+    private static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
     private transient AtomicInteger invocationCounter = new AtomicInteger(1);
     private transient boolean jitted = false;
@@ -42,6 +48,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private boolean isUnification;
 
     private transient ConditionEvaluator conditionEvaluator;
+    private transient Condition analyzedCondition;
 
     public MvelConstraint() {}
 
@@ -117,6 +124,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private boolean evaluate(Object object, InternalWorkingMemory workingMemory, Map<String, Object> vars) {
+System.out.println("Exp => " + expression);
         if (!jitted) {
             if (conditionEvaluator == null) {
                 conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression);
@@ -152,9 +160,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         jitted = true;
         try {
             CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-            ExecutableStatement executableStatement = ((MvelConditionEvaluator) conditionEvaluator).getExecutableStatement(object, vars);
-            ConditionAnalyzer.Condition condition = new ConditionAnalyzer(executableStatement).analyzeCondition();
-            conditionEvaluator = ASMConditionEvaluatorJitter.jit(condition, classLoader);
+            if (analyzedCondition == null) {
+                analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, vars);
+            }
+            conditionEvaluator = ASMConditionEvaluatorJitter.jit(analyzedCondition, classLoader);
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
@@ -198,6 +207,54 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         if (indexingDeclaration != null && indexingDeclaration.equals(oldDecl)) {
             indexingDeclaration = newDecl;
         }
+    }
+
+    public long getListenedPropertyMask(Class<?> nodeClass) {
+        if (analyzedCondition == null && conditionEvaluator != null) {
+            analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
+        }
+        if (analyzedCondition != null) {
+            return calculateMask(analyzedCondition, nodeClass, getSettableProperties(nodeClass));
+        }
+        return -1L;
+    }
+
+    private long calculateMask(Condition condition, Class<?> nodeClass, List<String> settableProperties) {
+        if (condition instanceof SingleCondition) {
+            return calculateMask((SingleCondition)condition, nodeClass, settableProperties);
+        }
+        long mask = 0L;
+        for (Condition c : ((CombinedCondition)condition).getConditions()) {
+            mask |= calculateMask(c, nodeClass, settableProperties);
+        }
+        return mask;
+    }
+
+    private long calculateMask(SingleCondition condition, Class<?> nodeClass, List<String> settableProperties) {
+        Method method = getFirstInvokedMethod(condition.getLeft());
+        if (method == null) return Long.MAX_VALUE;
+        String propertyName = getter2property(method.getName());
+        if (propertyName != null) {
+            int pos = settableProperties.indexOf(propertyName);
+            if (pos < 0) throw new RuntimeException("Unknown property " + propertyName + " for " + nodeClass);
+            return 1L << pos;
+        }
+
+        // Invocation of a non-getter => cannot calculate the mask
+        return Long.MAX_VALUE;
+    }
+
+    private Method getFirstInvokedMethod(Expression expression) {
+        if (!(expression instanceof EvaluatedExpression)) return null;
+        List<Invocation> invocations = ((EvaluatedExpression)expression).invocations;
+        Invocation invocation = invocations.get(0);
+        if (!(invocation instanceof MethodInvocation)) return null;
+        Method method = ((MethodInvocation)invocation).getMethod();
+        if (method == null && invocations.size() > 1) {
+            invocation = invocations.get(1);
+            if (invocation instanceof MethodInvocation) method = ((MethodInvocation)invocation).getMethod();
+        }
+        return method;
     }
 
     // Externalizable

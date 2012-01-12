@@ -10,9 +10,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.base.ClassObjectType;
 import org.drools.commons.jci.readers.*;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
+import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
@@ -42,6 +44,8 @@ import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.util.ClassUtils.getSettableProperties;
+import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.core.util.StringUtils.generateUUID;
 
 public final class DialectUtil {
@@ -588,12 +592,15 @@ public final class DialectUtil {
            return declr != null;
     }
 
-    private static boolean rewriteModifyDescr(final RuleBuildContext context,
+    private static void rewriteModifyDescr(final RuleBuildContext context,
                                               JavaBlockDescr d,
                                               String originalBlock,
                                               StringBuilder consequence,
                                               Declaration declr,
                                               String obj) {
+        boolean isInternalFact = declr != null && !declr.isInternalFact();
+        long modificationMask = isInternalFact ? 0 : Long.MAX_VALUE;
+
         int end = originalBlock.indexOf("{");
         if (end == -1) {
             // no block
@@ -601,38 +608,48 @@ public final class DialectUtil {
                     context.getRuleDescr(),
                     null,
                     "Block missing after modify" + d.getTargetExpression() + " ?\n"));
-            return false;
+            return;
         }
 
-        addLineBreaks(consequence,
-                originalBlock.substring(0,
-                        end));
+        addLineBreaks(consequence, originalBlock.substring(0, end));
+
+        List<String> settableProperties = isInternalFact ?
+                getSettableProperties(((ClassObjectType) declr.getPattern().getObjectType()).getClassType()) :
+                null;
 
         int start = end + 1;
         // adding each of the expressions:
         for (String exprStr : ((JavaModifyBlockDescr) d).getExpressions()) {
-            end = originalBlock.indexOf(exprStr,
-                    start);
-            addLineBreaks(consequence,
-                    originalBlock.substring(start,
-                            end));
+            end = originalBlock.indexOf(exprStr, start);
+            addLineBreaks(consequence, originalBlock.substring(start, end));
             consequence.append(obj + ".");
             consequence.append(exprStr);
             consequence.append("; ");
             start = end + exprStr.length();
+
+            if (isInternalFact) {
+                int endMethodName = exprStr.indexOf('(');
+                String methodName = exprStr.substring(0, endMethodName).trim();
+                String propertyName = setter2property(methodName);
+                if (propertyName != null) {
+                    int pos = settableProperties.indexOf(propertyName);
+                    modificationMask = BitMaskUtil.set(modificationMask, pos);
+                } else {
+                    // Invocation of a non-setter => cannot calculate the mask
+                    modificationMask = Long.MAX_VALUE;
+                }
+            }
         }
 
         // adding the modifyInsert call:
-        addLineBreaks(consequence,
-                originalBlock.substring(end));
+        addLineBreaks(consequence, originalBlock.substring(end));
 
-        if (declr != null && !declr.isInternalFact()) {
-            consequence.append("drools.update( " + obj + "__Handle__ ); }");
-        } else {
-            consequence.append("drools.update( " + obj + "__Handle2__ ); }");
-        }
-
-        return declr != null;
+        consequence
+                .append("drools.update( ")
+                .append(obj)
+                .append(isInternalFact ? "__Handle__, " : "__Handle2__, ")
+                .append(modificationMask)
+                .append("L ); }");
     }
 
     private static boolean rewriteUpdateDescr(JavaBlockDescr d,

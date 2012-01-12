@@ -145,4 +145,7 @@ public class TripleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight( context, tuple );
     }
 
+    public long getListenedPropertyMask(Class<?> nodeClass) {
+        return Long.MAX_VALUE;
+    }
 }

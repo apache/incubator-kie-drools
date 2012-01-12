@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.extractors.ArrayElementReader;
+import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
@@ -40,20 +40,16 @@ import org.drools.common.SingleBetaConstraints;
 import org.drools.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.*;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.IndexableConstraint;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
-import com.thoughtworks.xstream.core.util.FastField;
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -99,6 +95,8 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         lrUnlinkingEnabled         = false;
     
     private boolean indexedUnificationJoin;
+
+    private long listenedPropertyMask = -1L;
 
 
     // ------------------------------------------------------------
@@ -148,7 +146,7 @@ public abstract class BetaNode extends LeftTupleSource
         concurrentRightTupleMemory = in.readBoolean();
         lrUnlinkingEnabled = in.readBoolean();
         setUnificationJoin();
-        super.readExternal( in );
+        super.readExternal(in);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -275,8 +273,8 @@ public abstract class BetaNode extends LeftTupleSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.rightInput.addObjectSink( this );
-        this.leftInput.addTupleSink( this );
+        this.rightInput.addObjectSink(this);
+        this.leftInput.addTupleSink(this);
     }
 
     public void networkUpdated() {
@@ -301,10 +299,11 @@ public abstract class BetaNode extends LeftTupleSource
 
     public ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this.rightInput;
-        while ( !(source instanceof ObjectTypeNode) ) {
+        while (source != null) {
+            if (source instanceof ObjectTypeNode) return (ObjectTypeNode)source;
             source = source.source;
         }
-        return ((ObjectTypeNode) source);
+        return null;
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -425,6 +424,14 @@ public abstract class BetaNode extends LeftTupleSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
+System.out.println("modify in rule " + context.getRule().getName());
+System.out.println("Evaluating " + this + " associated to rules " + associations.keySet());
+
+        if (!intersect(context.getModificationMask(), getListenedPropertyMask())) {
+            System.out.println("Modification mask " + context.getModificationMask() + " doesn't intersect listened property mask " + getListenedPropertyMask() + " ... SKIPPING");
+            return;
+        }
+
         RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
         if ( rightTuple != null ) {
             rightTuple.reAdd();
@@ -438,6 +445,30 @@ public abstract class BetaNode extends LeftTupleSource
                           context,
                           workingMemory );
         }
+    }
+
+    void setListenedPropertyMask(long listenedPropertyMask) {
+        this.listenedPropertyMask = listenedPropertyMask;
+    }
+
+    long getListenedPropertyMask() {
+        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        Class<?> nodeClass = getNodeClass();
+        long mask = nodeClass == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(nodeClass);
+        if (mask >= 0 && mask != Long.MAX_VALUE) {
+            if (rightInput instanceof AlphaNode) {
+                mask |= ((AlphaNode)rightInput).getListenedPropertyMask();
+            }
+        }
+        setListenedPropertyMask(mask);
+        return mask >= 0 ? mask : Long.MAX_VALUE;
+    }
+
+    private Class<?> getNodeClass() {
+        ObjectTypeNode objectTypeNode = getObjectTypeNode();
+        if (objectTypeNode == null) return null;
+        ObjectType objectType = objectTypeNode.getObjectType();
+        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
