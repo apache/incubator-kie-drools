@@ -361,7 +361,11 @@ public static class SetGlobalConverter extends AbstractCollectionConverter
   public Object unmarshal(HierarchicalStreamReader reader,
                           UnmarshallingContext context) {
       String identifier = reader.getAttribute( "identifier" );
-      String out = reader.getAttribute( "out" );
+      String outString = reader.getAttribute( "out" );
+      boolean out = false;
+      if (outString != null) {
+          out = Boolean.valueOf(outString);
+      }
       String identifierOut = reader.getAttribute( "out-identifier" );
 
       reader.moveDown();
@@ -373,7 +377,9 @@ public static class SetGlobalConverter extends AbstractCollectionConverter
                                                    object );
       if ( identifierOut != null ) {
           cmd.setOutIdentifier( identifierOut );
-      } 
+      } else if (out) {
+          cmd.setOutIdentifier( identifier );
+      }
       return cmd;
   }
 
