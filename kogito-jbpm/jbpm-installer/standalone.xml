@@ -76,6 +76,16 @@
                 <suffix value=".yyyy-MM-dd"/>
             </periodic-rotating-file-handler>
 
+            <logger category="org.jboss.modules">
+                <level name="INFO"/>
+            </logger>
+            <logger category="org.jboss.vfs.util">
+                <level name="INFO"/>
+            </logger>
+            <logger category="org.jboss.weld">
+                <level name="INFO"/>
+            </logger>
+            
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -96,17 +106,8 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
-                <datasource jndi-name="java:jboss/datasources/ExampleDS" enabled="true" use-java-context="true" pool-name="H2DS">
-                    <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1</connection-url>
-                    <driver>h2</driver>
-                    <pool></pool>
-                    <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
-                    </security>
-                </datasource>
-                <datasource enabled="true" use-java-context="true" jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS">
-                    <connection-url>jdbc:h2:tcp://localhost/~/test</connection-url>
+                <datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true">
+                    <connection-url>jdbc:h2:tcp://localhost/runtime/jbpm</connection-url>
                     <driver>h2</driver>
                     <pool></pool>
                     <security>
