@@ -44,6 +44,9 @@ public class SetGlobalCommand
 
     @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
+    // Added only for backward compatibility
+    @XmlAttribute(name="out")
+    private boolean out = false;
     
     public SetGlobalCommand() {
     }
@@ -86,11 +89,20 @@ public class SetGlobalCommand
     public String getOutIdentifier() {
         return this.outIdentifier;
     }
-
+    // Added only for backward compatibility
     public void setOutIdentifier(String outIdentifier) {
+        this.out = true;
         this.outIdentifier = outIdentifier;
     }
+    // Added only for backward compatibility
+    public boolean isOut() {
+        return out;
+    }
 
+    public void setOut(boolean out) {
+        this.out = out;
+    }
+    
     public String toString() {
         return "session.setGlobal(" + this.identifier + ", " + this.object + ");";
     }
