@@ -33,11 +33,11 @@ public interface PropagationContext
     Externalizable,
     org.drools.runtime.rule.PropagationContext {
 
-    public Rule getRuleOrigin();
+    Rule getRuleOrigin();
     
-    public FactHandle getFactHandleOrigin();
+    FactHandle getFactHandleOrigin();
 
-    public LeftTuple getLeftTupleOrigin();
+    LeftTuple getLeftTupleOrigin();
 
     /**
      * Returns the offset of the fact that initiated this propagation
@@ -47,41 +47,42 @@ public interface PropagationContext
      * 
      * @return -1 for not set, and from 0 to the tuple length-1.
      */
-    public int getOriginOffset();
+    int getOriginOffset();
     
     /**
      * Sets the origin offset to the given offset.
      * 
      * @param offset -1 to unset or from 0 to tuple length-1
      */
-    public void setOriginOffset( int offset );
+    void setOriginOffset( int offset );
 
-    public int getActiveActivations();
+    int getActiveActivations();
 
-    public int getDormantActivations();
+    int getDormantActivations();
 
-    public void releaseResources();
+    void releaseResources();
 
-    public EntryPoint getEntryPoint();
+    EntryPoint getEntryPoint();
     
     /** When L&R unlinking is active, we need to keep 
      * track of the OTN that triggered this propagation. */
-    public void setCurrentPropagatingOTN(ObjectTypeNode otn);
+    void setCurrentPropagatingOTN(ObjectTypeNode otn);
 
-    public boolean isPropagating(ObjectTypeNode otn);
+    boolean isPropagating(ObjectTypeNode otn);
 
-    public boolean shouldPropagateAll();
+    boolean shouldPropagateAll();
 
-    public void setShouldPropagateAll(Object node);
+    void setShouldPropagateAll(Object node);
 
     /** Keeps a list of nodes to which a propagation attempt fail 
      *  because the node was unlinked. */
-    public ObjectHashSet getPropagationAttemptsMemory();
+    ObjectHashSet getPropagationAttemptsMemory();
     
-    public LinkedList<WorkingMemoryAction> getQueue1();
+    LinkedList<WorkingMemoryAction> getQueue1();
 
-    public LinkedList<WorkingMemoryAction> getQueue2();    
+    LinkedList<WorkingMemoryAction> getQueue2();
 
-    public void evaluateActionQueue(InternalWorkingMemory workingMemory); 
+    void evaluateActionQueue(InternalWorkingMemory workingMemory);
 
+    long getModificationMask();
 }

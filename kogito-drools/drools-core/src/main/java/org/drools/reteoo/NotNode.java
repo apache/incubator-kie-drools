@@ -512,12 +512,7 @@ public class NotNode extends BetaNode {
     }       
 
     public String toString() {
-        ObjectSource source = this.rightInput;
-        while ( source != null && !(source instanceof ObjectTypeNode) ) {
-            source = source.source;
-        }
-
+        ObjectTypeNode source = getObjectTypeNode();
         return "[NotNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
     }
-
 }

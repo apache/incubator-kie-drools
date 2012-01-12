@@ -284,26 +284,28 @@ public class DefaultKnowledgeHelper
     
     public void update(final FactHandle handle,
                        final Object newObject){
-        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
-                                                                                                  newObject,
-                                                                                                  this.activation.getRule(),
-                                                                                                  this.activation );
+        InternalFactHandle h = (InternalFactHandle) handle;
+        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                      newObject,
+                                                                      Long.MAX_VALUE,
+                                                                      this.activation );
         if ( getIdentityMap() != null ) {
             this.getIdentityMap().put( newObject,
                                        handle );
         }
     }
     
-    public void update(final FactHandle handle) {
-        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
-                                                                                                  ((InternalFactHandle)handle).getObject(),
-                                                                                                  this.activation.getRule(),
-                                                                                                  this.activation );
+    public void update(final FactHandle handle, long mask) {
+        InternalFactHandle h = (InternalFactHandle) handle;
+        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
+                                                                      ((InternalFactHandle)handle).getObject(),
+                                                                      mask,
+                                                                      this.activation );
     }
 
     
     public void update( Object object ) {
-        update( getFactHandle(object) );
+        update( getFactHandle(object), Long.MAX_VALUE );
     }
     
     public void retract(Object object) {

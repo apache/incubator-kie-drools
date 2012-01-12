@@ -473,12 +473,7 @@ public class JoinNode extends BetaNode {
   
     
     public String toString() {
-        ObjectSource source = this.rightInput;
-        while ( !(source instanceof ObjectTypeNode) ) {
-            source = source.source;
-        }
-
-        return "[JoinNode(" + this.getId() + ") - " + ((ObjectTypeNode) source).getObjectType() + "]";
+        return "[JoinNode(" + this.getId() + ") - " + getObjectTypeNode().getObjectType() + "]";
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,

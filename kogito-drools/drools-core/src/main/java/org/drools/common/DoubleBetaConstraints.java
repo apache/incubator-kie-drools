@@ -298,7 +298,7 @@ public class DoubleBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    
-    
-
+    public long getListenedPropertyMask(Class<?> nodeClass) {
+        return Long.MAX_VALUE;
+    }
 }

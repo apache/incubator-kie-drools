@@ -36,6 +36,7 @@ import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -473,4 +474,64 @@ public class JoinNodeTest extends DroolsTestCase {
         assertLength(1, sink2.getAsserted());
     }
 
+    @Test
+    public void testSlotSpecific() {
+        PropagationContext contextPassAll = new PropagationContextImpl(0,
+                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
+        PropagationContext contextPassNothing = new PropagationContextImpl(0,
+                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
+        PropagationContext contextPass2And3 = new PropagationContextImpl(0,
+                PropagationContext.ASSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
+
+        when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
+
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
+                (ReteooRuleBase) RuleBaseFactory.newRuleBase());
+
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
+                .newRuleBase();
+        BuildContext buildContext = new BuildContext(ruleBase, ruleBase
+                .getReteooBuilder().getIdGenerator());
+
+        final JoinNode joinNode = new JoinNode(1, this.tupleSource,
+                this.objectSource, EmptyBetaConstraints.getInstance(),
+                Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
+
+        // Add the first tuple sink and assert a tuple and object
+        // The sink has no memory
+        final MockLeftTupleSink sink1 = new MockLeftTupleSink(2);
+        joinNode.addTupleSink(sink1);
+
+        final DefaultFactHandle f0 = new DefaultFactHandle(0, "string0");
+
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f0, this.node, true);
+
+        joinNode.assertLeftTuple(tuple1, this.context, workingMemory);
+
+        final String string1 = "string1";
+        final DefaultFactHandle string1Handle = new DefaultFactHandle(1, string1);
+
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(null, null);
+
+        assertLength(0, sink1.getAsserted());
+
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassNothing, workingMemory);
+        assertLength(0, sink1.getAsserted());
+
+        joinNode.setListenedPropertyMask(0);
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassAll, workingMemory);
+        assertLength(0, sink1.getAsserted());
+
+        joinNode.setListenedPropertyMask(9);
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
+        assertLength(0, sink1.getAsserted());
+
+        joinNode.setListenedPropertyMask(3);
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
+        assertLength(1, sink1.getAsserted());
+
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassAll, workingMemory);
+        assertLength(2, sink1.getAsserted());
+    }
 }

@@ -91,7 +91,7 @@ public interface KnowledgeHelper
     void update(FactHandle handle,
                       Object newObject) ;
     
-    void update( FactHandle newObject ) ;
+    void update( FactHandle newObject, long mask ) ;
     
     void update( Object newObject ) ;
     
@@ -136,13 +136,13 @@ public interface KnowledgeHelper
 
     void setFocus(String focus);
 
-    public Declaration getDeclaration(String identifier);
+    Declaration getDeclaration(String identifier);
     
-    public void halt();
+    void halt();
 
-     public IdentityHashMap<Object, FactHandle> getIdentityMap();
+    IdentityHashMap<Object, FactHandle> getIdentityMap();
 
-    public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
+    void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
     
     <T> T getContext(Class<T> contextClass);
 

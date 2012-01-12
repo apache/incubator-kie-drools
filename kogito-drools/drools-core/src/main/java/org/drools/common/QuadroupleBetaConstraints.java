@@ -399,5 +399,8 @@ public class QuadroupleBetaConstraints
     public BetaConstraints getOriginalConstraint() {
         throw new UnsupportedOperationException();
     }
-    
+
+    public long getListenedPropertyMask(Class<?> nodeClass) {
+        return Long.MAX_VALUE;
+    }
 }

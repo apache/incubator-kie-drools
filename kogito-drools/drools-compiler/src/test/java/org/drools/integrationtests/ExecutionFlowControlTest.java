@@ -913,7 +913,7 @@ public class ExecutionFlowControlTest {
         // simulate a modify inside a consequence
         wm.update( stiltonHandle,
                    stilton,
-                   item.getRule(),
+                   Long.MAX_VALUE,
                    item );
 
         // with true modify, no reactivations should be triggered
