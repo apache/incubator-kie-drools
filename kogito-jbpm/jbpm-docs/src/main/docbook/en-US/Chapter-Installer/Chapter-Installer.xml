@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0"
+<chapter id="ch.installer"
+         version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -264,6 +265,306 @@ editing processes.</para>
   </section>
 
   <section>
+  
+    <title>10-Minute Tutorial: Using your own database with jBPM</title>
+ 
+    <para>At the moment, this quickstart does <emphasis>not</emphasis> work with JBoss AS 5. 
+    However, an update to the quickstart (and installer) is forthcoming which will fix that 
+    (and make it work with JBoss AS 5). [01/2012]
+    </para> 
+
+    <section>
+      <title>Introduction</title>
+  
+      <para>In this quickstart, we are going to: 
+        <orderedlist>
+          <listitem><para>modify the persistence settings for the process engine</para></listitem>
+          <listitem><para>modify the persistence settings for the task server</para></listitem>
+          <listitem><para>test the startup with our new settings!</para></listitem>
+        </orderedlist>
+      </para>
+  
+      <para>You will need a local instance of a database, in this case MySQL in order 
+      to complete this quickstart</para>
+  
+      <para>First though, let's look at the persistence setup that jBPM uses. In the demo, and 
+      in general, there are three types of persistent entities used by jBPM:
+        <itemizedlist> 
+          <listitem>entities used for saving the the actual session, process and work item information.</listitem>
+          <listitem>entities used for logging and generating Business Activity Monitoring (BAM) 
+          information.</listitem>
+          <listitem>entities used by the task service.</listitem>
+        </itemizedlist>
+      </para>
+  
+      <para><quote>persistent entities</quote> in this context, are java classes that represent information in the database.</para>
+  
+      <para>For reasons that I'll explain later on in this quickstart, the demo uses two different 
+      persistent units:
+        <itemizedlist>
+          <listitem>one for jBPM and the logging/BAM information,</listitem>
+          <listitem>and one for the task service. </listitem>
+        </itemizedlist>
+      With other jBPM installations, there's no reason not to use only one persistent unit if you want to. 
+      </para>
+  
+      <para>The first persistence unit needs to use JTA, which is why we also need to define 
+      a seperate datasource for that persistence unit as well.</para> 
+    </section>
+  
+    <section>
+      <title>Database setup</title>
+  
+      <para>In the MySQL database that I use in this quickstart, I've created two users: 
+        <itemizedlist>
+          <listitem>user/schema "jbpm5" with password "jbpm5" (for jBPM and the logging/BAM information)</listitem>
+          <listitem>user/schema "task" with password "task" (for the task service) </listitem>
+        </itemizedlist>
+      </para>
+  
+      <para>If you end up using different names for your user/schemas, please make a note of
+      where we insert "jbpm5" and "task" in the configuation files.</para>
+  
+      <para>If you want to try this quickstart with <emphasis>another</emphasis> database, I've 
+      included a section at the end of this quickstart that describes what you may need
+      to modify.</para>
+  
+    </section>
+  
+    <section>
+      <title>Quickstart</title>
+  
+      <para>The following 4 files define the persistence settings for the jbpm-installer demo:
+        <itemizedlist>
+          <listitem>db/persistence.xml</listitem>
+          <listitem>task-service/resources/META-INF/persistence.xml</listitem> 
+          <listitem>db/jBPM-ds.xml
+            <itemizedlist>
+              <listitem>If you're using the JBoss AS 5 server</listitem>
+            </itemizedlist></listitem>
+          <listitem>standalone.xml
+            <itemizedlist>
+              <listitem>If you're using the JBoss AS 7 server</listitem>
+            </itemizedlist></listitem>
+        </itemizedlist>
+      </para>
+    
+      <para>Do the following:<itemizedlist>
+        <listitem>
+          <para><filename>db/persistence.xml</filename>:</para>
+          <para>This is the JPA persistence file that defines the persistence settings used by 
+          jBPM for both the process engine information and the logging/BAM information. The installer 
+          ant script moves this file to the expanded gwt console server war before the server 
+          is started.</para>
+          <para>In this file, you will have to change the name of the hibernate dialect used 
+          for your database.</para>
+          <para>The original line is:</para> 
+          <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;</programlisting>
+          <para>In the case of a MySql database, you need to change it to:</para> 
+          <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.<emphasis role="bold">MySQL</emphasis>Dialect"/&gt;</programlisting>
+          <para>For those of you who decided to use another database, a list of the available 
+          hibernate dialect classes can be found <ulink 
+          url="http://docs.jboss.org/hibernate/core/3.3/reference/en-US/html/session-configuration.html#configuration-optional-dialects">
+          here</ulink>.</para>
+        </listitem><listitem>
+          <para><filename>task-service/resources/META-INF/persistence.xml</filename>:</para>
+          <para>The task service (that the installer starts) uses the JPA Persistence settings 
+          described in this file.</para>
+          <para>The original file contains the following lines:</para>
+          <programlisting>    &lt;properties&gt;
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
+      &lt;property name="hibernate.connection.driver_class" value="org.h2.Driver"/&gt;
+      &lt;property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost/runtime/task" /&gt;
+      &lt;property name="hibernate.connection.username" value="sa"/&gt;
+      &lt;property name="hibernate.connection.password" value="sasa"/&gt;</programlisting>
+           <para>Please change these lines so that they look like this:</para> 
+           <programlisting>    &lt;properties&gt;
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.<emphasis role="bold">MySQL</emphasis>Dialect"/&gt;
+      &lt;property name="hibernate.connection.driver_class" value="<emphasis role="bold">com.mysql.jdbc.Driver</emphasis>"/&gt;
+      &lt;property name="hibernate.connection.url" value="<emphasis role="bold">jdbc:mysql://localhost:3306/task</emphasis>" /&gt;
+      &lt;property name="hibernate.connection.username" value="<emphasis role="bold">task</emphasis>"/&gt;
+      &lt;property name="hibernate.connection.password" value="<emphasis role="bold">task</emphasis>"/&gt;</programlisting>
+        </listitem><listitem>
+          <para><filename>db/jBPM-ds.xml</filename>:</para>
+          <para>This step is <emphasis>only</emphasis> neccessary if you're using JBoss AS 5.</para>
+          <para>This file is the configuration for the (JTA) datasource used by the jBoss AS 
+          5 instance for the process engine persistence. The installer ant script moves this 
+          file to the jboss server deploy directory.</para> 
+          <para>The original file contains the following lines:</para>
+          <programlisting>&lt;datasources&gt;
+  &lt;local-tx-datasource&gt;
+    &lt;jndi-name&gt;jboss/datasources/jbpmDS&lt;/jndi-name&gt;
+    &lt;connection-url&gt;jdbc:h2:tcp://localhost/runtime/jbpm-demo&lt;/connection-url&gt;
+    &lt;driver-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/driver-class&gt;
+    &lt;user-name&gt;sa&lt;/user-name&gt;
+    &lt;password&gt;&lt;/password&gt;
+  &lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;</programlisting>
+          <para>Please change these to the following:</para>
+          <programlisting>&lt;datasources&gt;
+  &lt;local-tx-datasource&gt;
+    &lt;jndi-name&gt;jboss/datasources/jbpmDS&lt;/jndi-name&gt;
+    &lt;connection-url&gt;<emphasis role="bold">jdbc:mysql://localhost:3306/jbpm5</emphasis>&lt;/connection-url&gt;
+    &lt;driver-class&gt;<emphasis role="bold">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</emphasis>&lt;/driver-class&gt;
+    &lt;user-name&gt;<emphasis role="bold">jbpm5</emphasis>&lt;/user-name&gt;
+    &lt;password&gt;<emphasis role="bold">jbpm5</emphasis>&lt;/password&gt;
+  &lt;/local-tx-datasource&gt;
+&lt;/datasources&gt;</programlisting>
+        </listitem><listitem>
+          <para><filename>standalone.xml</filename>:</para>
+          <para>This step is <emphasis>only</emphasis> neccessary if you're using AS 7.</para>
+          <para>This file is the configuration for the standalone JBoss AS 7 server. When the 
+          installer starts the demo (using jBoss AS 7), it moves this file to the <code>standalone/configuration</code> 
+          directory in the jboss server directory</para>
+          <para>We need to change the datasource configuration in <code>standalone.xml</code> 
+          so that the (JTA) datasource for the jBPM process engine and logging/BAM points to 
+          our MySQL database</para>
+          <para>The original file contains the following lines:</para>
+          <programlisting>        &lt;subsystem xmlns="urn:jboss:domain:datasources:1.0"&gt;
+            &lt;datasources&gt;
+                &lt;datasource jndi-name="java:jboss/datasources/jbpmDS" enabled="true" use-java-context="true" pool-name="H2DS"&gt;
+                    &lt;connection-url&gt;jdbc:h2:tcp://localhost/runtime/jbpm-demo&lt;/connection-url&gt;
+                    &lt;driver&gt;h2&lt;/driver&gt;
+                    &lt;pool&gt;&lt;/pool&gt;
+                    &lt;security&gt;
+                       &lt;user-name&gt;sa&lt;/user-name&gt;
+                       &lt;password&gt;&lt;/password&gt;
+                    &lt;/security&gt;
+                &lt;/datasource&gt;
+                &lt;drivers&gt;
+                    &lt;driver name="h2" module="com.h2database.h2"&gt;
+                        &lt;xa-datasource-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/xa-datasource-class&gt;
+                    &lt;/driver&gt;
+                &lt;/drivers&gt;
+            &lt;/datasources&gt;
+        &lt;/subsystem&gt;</programlisting>
+          <para>Change the lines to the following:</para>
+          <programlisting>        &lt;subsystem xmlns="urn:jboss:domain:datasources:1.0"&gt;
+            &lt;datasources&gt;
+                &lt;datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true"&gt;
+                    &lt;connection-url&gt;<emphasis role="bold">jdbc:mysql://localhost:3306/jbpm5</emphasis>&lt;/connection-url&gt;
+                    &lt;driver&gt;<emphasis role="bold">mysql</emphasis>&lt;/driver&gt;
+                    &lt;pool&gt;&lt;/pool&gt;
+                    &lt;security&gt;
+                       &lt;user-name&gt;<emphasis role="bold">jbpm5</emphasis>&lt;/user-name&gt;
+                       &lt;password&gt;<emphasis role="bold">jbpm5</emphasis>&lt;/password&gt;
+                    &lt;/security&gt;
+                &lt;/datasource&gt;
+                &lt;drivers&gt;
+                    &lt;driver name="<emphasis role="bold">mysql</emphasis>" module="<emphasis role="bold">com.mysql</emphasis>"&gt;
+                        &lt;xa-datasource-class&gt;<emphasis role="bold">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+                    &lt;/driver&gt;
+                &lt;/drivers&gt;
+            &lt;/datasources&gt;
+        &lt;/subsystem&gt;</programlisting>
+        </listitem><listitem>
+          <para><filename>Start the demo</filename></para>
+          <para>We've modified all the neccessary files at this point, all that's left to do is run the demo.</para>
+          <para>Of course, this would be a good time to start your database up as well!</para>
+          <para>If you haven't installed the demo yet, do that first:
+            <programlisting>ant install.demo.db</programlisting>
+            If you have already installed and <emphasis>run</emphasis> the demo, it can't hurt to reinstall the demo: 
+            <programlisting>ant clean.demo; ant install.demo.db</programlisting>
+            After you've done that, you can finally start the demo using the following command: 
+            <programlisting>ant start.demo.db</programlisting>
+          </para>
+          <para>If you're done with the demo, you can stop it using this command: 
+            <programlisting>ant stop.demo.db</programlisting>
+            The <code>stop.demo</code> ant task will also work, although it might throw some exceptions.
+          </para>
+        </listitem><listitem>
+          <para><filename>Problems?</filename></para>
+          <para>If you this isn't working for you, please try the following:
+            <itemizedlist>
+              <listitem>Please double check the files you've modified: I <emphasis>wrote</emphasis> this, but still made mistakes when changing files!</listitem>
+              <listitem>Please make sure that you don't secretly have another instance of jboss AS running.</listitem>
+              <listitem>If neither of those work (and you're using MySQL), please do then let us know.</listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist></para>
+    </section>
+  
+    <section>
+      <title>Using a different database</title>
+      
+      <para>At the moment, I have to admit that I haven't gotten the demo to work with other 
+      databases, although applying the notes below to the steps above should work. [01/2012]
+      </para>
+
+      <para>If you decide to use a different database with this demo, you need to remember 
+      the following when going through the steps above:
+        <itemizedlist>
+          <listitem>Change the JDBC URLs, usernames and passwords, to match your database information in 
+          the configuration files mentioned above. 
+          </listitem><listitem>You will need to download the correct driver jar for your database 
+          and add it to the <code>db/drivers</code> directory. If you're using JBoss AS 5, 
+          the installer ant script will make sure that your downloaded driver is installed 
+          in the server. If you're using JBoss AS 7, see the next step.
+          </listitem><listitem>In order make sure your driver will be correctly installed in 
+          the JBoss AS 7 server, you can do one of two things. Both ways are explained 
+          <ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7">here</ulink>.
+            <itemizedlist>
+              <listitem><ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_deployment">
+              Modify and install</ulink> the downloaded jar as a <emphasis>deployment</emphasis>. 
+              In this case you will have to copy the jar yourself to the <code>standalone/deployments</code> 
+              directory.
+              </listitem><listitem>Otherwise, you can 
+              <ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_module">
+              install</ulink> the driver jar as a <emphasis>module</emphasis>, which is what 
+              the install script does. 
+              </listitem>
+            </itemizedlist>
+          While the former (deployment) is possibly easier, the latter (module) is slightly more 
+          straightforward -- and the installer can help you. If you choose to do the latter, 
+          please do the following:
+            <itemizedlist>
+              <listitem>Change the <code>db.driver.jar.name</code> property in <code>build.xml</code> 
+              to the name of the downloaded jdbc driver jar you placed in <code>db/drivers</code>.
+              For example: 
+              <programlisting>  &lt;property name="db.driver.jar.name" value="<emphasis role="bold">ojdbc5.jar</emphasis>" /&gt;</programlisting>
+              </listitem><listitem>Change the <code>&lt;driver&gt;</code> information in
+              the <code>&lt;datasource&gt;</code> section of <code>standalone.xml</code> so 
+              that it refers to the name of your driver module (see next step). For example:
+              <programlisting>&lt;driver&gt;<emphasis role="bold">oracledriver</emphasis>&lt;/driver&gt;</programlisting>
+              </listitem><listitem>Further on in <code>standalone.xml</code> is the 
+              <code>&lt;drivers&gt;</code> section of the 
+              <code>&lt;datasources&gt;</code> (note the plural: driver<emphasis>s</emphasis>, 
+              datasource<emphasis>s</emphasis>). Change the name of the driver to match the 
+              name in the last step, and add your own appropriate value (doesn't matter what 
+              it is) to modules. Also fill in the correct name of the XA datasource class to 
+              use. For example:
+              <programlisting>    &lt;drivers&gt;
+        &lt;driver name="<emphasis role="bold">oracledriver</emphasis>" module="<emphasis role="bold">oracle.jdbc</emphasis>"&gt;
+            &lt;xa-datasource-class&gt;<emphasis role="bold">oracle.jdbc.xa.client.OracleXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+        &lt;/driver&gt;
+    &lt;/drivers&gt;</programlisting>
+              </listitem><listitem>Change the <code>db.driver.module.prefix</code> property 
+              in <code>build.xml</code> to the same <quote>value</quote> you used for the module name 
+              in <code>standalone.xml</code>. In the example above, I used 
+              <quote><code>oracle.jdbc</code></quote> which means that I should then use
+              <code>oracle/jdbc</code> for the <code>db.driver.module.prefix</code> property. For example: 
+              <programlisting>  &lt;property name="db.driver.module.prefix" value="<emphasis role="bold">oracle/jdbc</emphasis>" /&gt;</programlisting>
+              </listitem><listitem>Lastly, you'll have to modify the <code>db/driver_jar_module.xml</code>
+              file. Change the name of the module jar to the name of the JDBC driver jar that you downloaded. 
+              The original lines look like this: 
+              <programlisting>  &lt;resources&gt;
+    &lt;resource-root path="mysql-connector-java.jar"/&gt;
+  &lt;/resources&gt;</programlisting>
+              Change those lines to look like this, for example: 
+              <programlisting>  &lt;resources&gt;
+    &lt;resource-root path="<emphasis role="bold">ojdbc5.jar</emphasis>"/&gt;
+  &lt;/resources&gt;</programlisting>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </para>
+    </section>
+  
+  </section>
+
+  <section>
     <title>What to do if I encounter problems or have questions?</title>
 
     <para>You can always contact the jBPM community for assistance.</para>
@@ -298,7 +599,7 @@ editing processes.</para>
     <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7) or jbpm-installer/jboss-as-{version}/server/default/log/server.log (for earlier versions).</para>
 
     <para>For all other questions, try contacting the jBPM community as described in the Getting Started chapter.</para>
-  
+
   </section>
 
 </chapter>
