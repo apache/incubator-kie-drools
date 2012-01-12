@@ -876,7 +876,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             String identifier = null;
-            String out = null;
+            boolean out = false;
             String outIdentifier = null;
             Object object = null;
             SetGlobalCommand cmd = new SetGlobalCommand();
@@ -887,7 +887,7 @@ public class XStreamJSon {
                 if ( "identifier".equals( nodeName ) ) {
                     identifier = reader.getValue();
                 } else if ( "out".equals( nodeName ) ) {
-                    out = reader.getValue();
+                    out = Boolean.valueOf(reader.getValue());
                 } else if ( "out-identifier".equals( nodeName ) ) {
                     outIdentifier = reader.getValue();
                 } else if ( "object".equals( nodeName ) ) {
@@ -903,7 +903,9 @@ public class XStreamJSon {
 
             if ( outIdentifier != null ) {
                 cmd.setOutIdentifier( outIdentifier );
-            } 
+            } else if (out) {
+                cmd.setOutIdentifier( identifier );
+            }
             return cmd;
         }
 
