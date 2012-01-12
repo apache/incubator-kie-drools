@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0"
+<chapter id="ch.designer"
+         version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
   <title>Designer</title>
 
   <para>Web-based process editing is possible using the jBPM Designer. The designer is fully integrated into Drools Guvnor, the knowledge repository where you can store all your BPM assets such as of course your BPMN2 processes as well as rules, process images, workitem configurations, and process forms. The Designer can be used to create, view or update BPMN2 based processes which are executable in the jBPM runtime environment.</para>
