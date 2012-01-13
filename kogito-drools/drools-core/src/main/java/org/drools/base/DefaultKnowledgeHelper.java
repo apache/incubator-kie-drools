@@ -294,7 +294,11 @@ public class DefaultKnowledgeHelper
                                        handle );
         }
     }
-    
+
+    public void update(final FactHandle handle) {
+        update(handle, Long.MAX_VALUE);
+    }
+
     public void update(final FactHandle handle, long mask) {
         InternalFactHandle h = (InternalFactHandle) handle;
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
@@ -305,7 +309,11 @@ public class DefaultKnowledgeHelper
 
     
     public void update( Object object ) {
-        update( getFactHandle(object), Long.MAX_VALUE );
+        update(object, Long.MAX_VALUE);
+    }
+
+    public void update(Object object, long mask) {
+        update(getFactHandle(object), mask);
     }
     
     public void retract(Object object) {

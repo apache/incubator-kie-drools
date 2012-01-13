@@ -8,16 +8,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ModifyInterceptor;
@@ -84,6 +76,7 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.integration.Interceptor;
 
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
@@ -125,7 +118,7 @@ public class MVELDialect
 
     private static final MVELExprAnalyzer                  analyzer                       = new MVELExprAnalyzer();
 
-    private Map                                            interceptors;
+    private final Map                                      interceptors                   = MVELCompilationUnit.INTERCEPTORS;
 
     protected List                                         results;
     // private final JavaFunctionBuilder function = new JavaFunctionBuilder();
@@ -168,10 +161,6 @@ public class MVELDialect
         // setting MVEL option directly
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
 
-        this.interceptors = new HashMap( 1 );
-        this.interceptors.put( "Modify",
-                               new ModifyInterceptor() );
-
         this.results = new ArrayList();
 
         // this.data = new MVELDialectRuntimeData(
@@ -201,7 +190,6 @@ public class MVELDialect
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        interceptors = (Map) in.readObject();
         results = (List) in.readObject();
         src = (MemoryResourceReader) in.readObject();
         pkg = (Package) in.readObject();
@@ -212,7 +200,6 @@ public class MVELDialect
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( interceptors );
         out.writeObject( results );
         out.writeObject( src );
         out.writeObject( pkg );
@@ -730,5 +717,4 @@ public class MVELDialect
     public PackageRegistry getPackageRegistry() {
         return this.packageRegistry;
     }
-
 }
