@@ -16,6 +16,9 @@
 
 package org.drools.factmodel.traits;
 
+import org.drools.core.util.TripleImpl;
+import org.drools.runtime.rule.Variable;
+
 import java.util.Map;
 
 public abstract class TraitProxy {
@@ -58,7 +61,6 @@ public abstract class TraitProxy {
     public abstract Object getObject();
 
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -70,10 +72,24 @@ public abstract class TraitProxy {
         return true;
     }
 
-    @Override
+
     public int hashCode() {
         return fields != null ? fields.hashCode() : 0;
     }
+
+
+    protected TripleImpl propertyKey( String property ) {
+        return new TripleImpl( getObject(), property, Variable.v );
+    }
+
+    protected TripleImpl property( String property, Object value ) {
+        return new TripleImpl( getObject(), property, value );
+    }
+
+    protected TripleImpl propertyKey( Object property ) {
+        return new TripleImpl( getObject(), property.toString(), Variable.v );
+    }
+
 
 
 }

@@ -3,6 +3,7 @@ package org.test;
 
 // Individual is an empty traitable, based solely on a property map.
 import org.drools.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Traitable;
 
 import org.drools.factmodel.traits.Imp;
 

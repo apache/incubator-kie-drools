@@ -1,0 +1,59 @@
+package org.test;
+
+import java.util.List;
+import org.drools.factmodel.traits.Traitable;
+
+global List trueTraits;
+global List untrueTraits;
+
+
+declare DeclaredFact
+	@Traitable
+	id : int
+	flag : boolean
+end
+
+declare TrueTrait
+	@format(trait)
+	flag : boolean
+end
+	
+
+rule "Init"
+	when
+	then
+		insert(new DeclaredFact(1, true));
+		insert(new DeclaredFact(2, false));
+end
+
+rule "Don"
+	salience 100
+	no-loop
+	when
+		$d : DeclaredFact( flag == true )
+	then
+		don( $d, TrueTrait.class, true );
+		update($d);
+end 
+
+rule "True Traits"
+	when
+		DeclaredFact( $id : id, this isA TrueTrait )
+	then
+		trueTraits.add($id);
+end
+
+rule "Untrue Traits"
+	when
+		DeclaredFact( $id : id, this not isA TrueTrait )
+	then
+		untrueTraits.add($id);
+end
+
+
+rule "Log"
+when
+    $o : Object()
+then
+    System.out.println(" Log " + $o );
+end

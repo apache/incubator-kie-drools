@@ -42,7 +42,9 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
         this.object = object;
         this.store = store;
 
-        this.store.put( property( "age", 0) );
+        if ( ! this.store.contains( propertyKey("age") ) ) {
+            this.store.put( property( "age", 0) );
+        }
         this.store.put( property( "xcsvf" , 0.0 ) );
         this.store.put( property( "name" , null ) );
         this.store.put( property( "csdfsd", 0L ) );
@@ -128,7 +130,7 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
             return val;
         }
         if ( "age".equals( key ) ) {
-            val = this.store.get( key( "age" ) );
+            val = this.store.get( propertyKey( "age" ) );
             super.put( "age", 0 );
             return val;
         }

@@ -25,10 +25,14 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilder {
+public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder {
 
 
     private ClassDefinition trait;
+
+    protected ClassDefinition getTrait() {
+        return trait;
+    }
 
     public void init(ClassDefinition trait) {
         this.trait = trait;
@@ -60,14 +64,8 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
         String internalWrapper  = BuildUtils.getInternalType(name);
-        String internalProxy    = BuildUtils.getInternalType(masterName);
-        String descrWrapper     = BuildUtils.getTypeDescriptor(name);
-        String descrProxy       = BuildUtils.getTypeDescriptor(masterName);
-
-        String internalCore     = BuildUtils.getInternalType(core.getClassName());
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
-        String internalTrait    = BuildUtils.getInternalType(trait.getClassName());
-        String descrTrait       = BuildUtils.getTypeDescriptor(trait.getClassName());
+
 
 
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
@@ -98,8 +96,8 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
             mv = cw.visitMethod(ACC_PUBLIC,
                     "<init>",
                     "(" +
-                    descrCore +
-                    "Lorg/drools/core/util/TripleStore;)V",
+                            descrCore +
+                            "Lorg/drools/core/util/TripleStore;)V",
                     null,
                     null);
 
@@ -115,15 +113,19 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
             mv.visitVarInsn(ALOAD, 2);
             mv.visitFieldInsn(PUTFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
 
-            int stackSize = initSoftFields( mv, internalWrapper, trait, mask );
 
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "initSoftFields", "()V");
             mv.visitInsn(RETURN);
-            mv.visitMaxs( 4 + stackSize,
-                    3 );
+            mv.visitMaxs(2, 3);
             mv.visitEnd();
+
 
         }
 
+        buildInitSoftFields( cw, internalWrapper, trait, mask );
+
+        buildClearSoftFields(cw, internalWrapper, trait, mask);
 
         buildSize( cw, name, core.getClassName(), trait, core, mask );
 
@@ -151,6 +153,8 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
         buildSpecificMethods( cw, name, core );
 
+        buildExtensionMethods( cw, name, core );
+
         cw.visitEnd();
 
         return cw.toByteArray();
@@ -158,13 +162,9 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildRemove(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
-        boolean hasPrimitiveFields = false;
-        boolean hasObjectFields = false;
+    protected void buildRemove(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
+        String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -194,7 +194,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
                 stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
 
@@ -207,7 +207,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
                 mv.visitFieldInsn(GETFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitLdcInsn( field.getName() );
-                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "key", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "get", "(Lorg/drools/core/util/Triple;)Lorg/drools/core/util/Triple;");
 
                 mv.visitVarInsn(ASTORE, 2);
@@ -240,36 +240,31 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, long mask ) {
+    protected boolean mustSkip( FieldDefinition field ) {
+        return false;
+    }
 
+    protected void buildInitSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, long mask ) {
+
+        MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "initSoftFields", "()V", null, null);
+        mv.visitCode();
+
+        int stackSize = initSoftFields( mv, wrapperName, trait, mask );
+
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(4 + stackSize, 2);
+        mv.visitEnd();
+    }
+
+    protected int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, long mask ) {
         int j = 0;
-        int nonPrimitiveFields = 0;
         int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            if ( mustSkip( field ) ) continue;
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
-                        mv.visitVarInsn(ALOAD, 0);
-                        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
-                        mv.visitVarInsn(ALOAD, 0);
-                        mv.visitLdcInsn( field.getName() );
-                mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
-                if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                    TraitFactory.valueOf( mv, field.getTypeName() );
-                    int size = BuildUtils.sizeOf( field.getTypeName() );
-                    stackSize = Math.max( stackSize, size );
-                } else {
-                    stackSize = Math.max( stackSize, 2 );
-                }
-                mv.visitMethodInsn( INVOKEVIRTUAL,
-                                    wrapperName,
-                                    "property",
-                                    "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
-                mv.visitMethodInsn( INVOKEVIRTUAL,
-                                    "org/drools/core/util/TripleStore",
-                                    "put",
-                                    "(Lorg/drools/core/util/Triple;)Z");
-                mv.visitInsn(POP);
-
+                int size = initSoftField( mv, wrapperName, field );
+                stackSize = Math.max( stackSize, size );
             }
         }
         return stackSize;
@@ -277,11 +272,51 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildClear(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+    protected int initSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field ) {
+        int size = 0;
 
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitLdcInsn( field.getName() );
+        mv.visitMethodInsn(INVOKEVIRTUAL, wrapperName, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "contains", "(Lorg/drools/core/util/Triple;)Z");
+        Label l0 = new Label();
+        mv.visitJumpInsn(IFNE, l0);
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitLdcInsn( field.getName() );
+
+
+        mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+        if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            TraitFactory.valueOf( mv, field.getTypeName() );
+            size = BuildUtils.sizeOf( field.getTypeName() );
+
+        } else {
+            size = 2;
+        }
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                wrapperName,
+                "property",
+                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitInsn(ICONST_1);
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                "org/drools/core/util/TripleStore",
+                "put",
+                "(Lorg/drools/core/util/Triple;Z)Z");
+        mv.visitInsn(POP);
+        mv.visitLabel(l0);
+
+        return size;
+    }
+
+
+    protected void buildClear(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
+        String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         boolean hasPrimitiveFields = false;
         boolean hasObjectFields = false;
@@ -309,9 +344,9 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "clear", "()V");
 
-        int num = initSoftFields(mv, internalWrapper, trait, mask);
-        stack += num;
 
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "clearSoftFields", "()V");
 
         mv.visitInsn(RETURN);
         mv.visitMaxs( stack , 1 );
@@ -324,15 +359,66 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
+    protected void buildClearSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, long mask ) {
+
+        MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "clearSoftFields", "()V", null, null);
+        mv.visitCode();
+
+        int j = 0;
+        int stackSize = 0;
+        for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+            if ( isSoftField ) {
+                int size = clearSoftField(mv, wrapperName, field);
+                stackSize = Math.max( stackSize, size );
+            }
+        }
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(4 + stackSize, 2);
+        mv.visitEnd();
+    }
+
+    protected int clearSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field ) {
+        int size = 0;
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitLdcInsn( field.getName() );
+
+
+        mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+        if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            TraitFactory.valueOf( mv, field.getTypeName() );
+            size = BuildUtils.sizeOf( field.getTypeName() );
+
+        } else {
+            size = 2;
+        }
+        mv.visitMethodInsn(INVOKEVIRTUAL,
+                wrapperName,
+                "property",
+                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitInsn(ICONST_1);
+        mv.visitMethodInsn(INVOKEVIRTUAL,
+                "org/drools/core/util/TripleStore",
+                "put",
+                "(Lorg/drools/core/util/Triple;Z)Z");
+        mv.visitInsn(POP);
+
+        return size;
+    }
 
 
 
 
 
-    private void buildContainsValue(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+
+
+
+
+    protected void buildContainsValue(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsValue", "(Ljava/lang/Object;)Z", null, null);
         mv.visitCode();
@@ -375,8 +461,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
     }
 
-    private void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, long mask) {
-        String internalWrapper = BuildUtils.getInternalType( name );
+    protected void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, long mask) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsKey", "(Ljava/lang/Object;)Z", null, null);
         mv.visitCode();
@@ -402,8 +487,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
     }
 
 
-    private void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
+    protected void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "size", "()I", null, null);
         mv.visitCode();
@@ -424,8 +508,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
     }
 
 
-    private void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
+    protected void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         boolean hasHardFields = core.getFieldsDefinitions().size() > 0;
 
@@ -450,10 +533,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+    protected void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "get", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -489,10 +569,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+    protected void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -536,10 +613,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+    protected void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "entrySet", "()Ljava/util/Set;", "()Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/String;Ljava/lang/Object;>;>;", null);
         mv.visitCode();
@@ -566,7 +640,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "entrySet", "()Ljava/util/Set;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");                    
+        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
         mv.visitInsn(POP);
 
         mv.visitVarInsn(ALOAD, 1);
@@ -579,8 +653,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
     }
 
 
-    private void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
+    protected void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "keySet", "()Ljava/util/Set;", "()Ljava/util/Set<Ljava/lang/String;>;", null);
         mv.visitCode();
@@ -601,22 +674,19 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
         mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "keySet", "()Ljava/util/Set;");
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
         mv.visitInsn(POP);
-        
+
         mv.visitVarInsn(ALOAD, 1);
         mv.visitInsn(ARETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
     }
 
-            
-         
 
 
 
-    private void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
-        String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
+
+
+    protected void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "values", "()Ljava/util/Collection;", "()Ljava/util/Collection<Ljava/lang/Object;>;", null);
         mv.visitCode();
@@ -645,7 +715,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
         mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "values", "()Ljava/util/Collection;");
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Collection", "addAll", "(Ljava/util/Collection;)Z");
         mv.visitInsn(POP);
-        
+
         mv.visitVarInsn(ALOAD, 1);
         mv.visitInsn(ARETURN);
 
@@ -656,10 +726,10 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-      
-    
 
-            
+
+
+
 
 
 
@@ -677,7 +747,7 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
     public void buildCommonMethods( ClassVisitor cw, String wrapper ) {
         MethodVisitor mv;
-        
+
 
         {
             mv = cw.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
@@ -714,10 +784,10 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
 
 
 
-    private void buildSpecificMethods(ClassWriter cw, String wrapper, ClassDefinition core) {
+    protected void buildSpecificMethods(ClassWriter cw, String wrapper, ClassDefinition core) {
         MethodVisitor mv;
 
-         {
+        {
             mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
@@ -743,9 +813,9 @@ public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilde
     }
 
 
+    protected void buildExtensionMethods(ClassWriter cw, String name, ClassDefinition core) {
 
-
-
+    }
 
 
 

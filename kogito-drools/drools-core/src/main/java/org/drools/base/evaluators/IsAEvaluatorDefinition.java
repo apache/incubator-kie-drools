@@ -21,6 +21,7 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.factmodel.traits.*;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.runtime.ObjectFilter;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -29,15 +30,15 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Iterator;
 
 /**
  * <p>The implementation of the 'str' evaluator definition.</p>
- * 
+ *
  * <p>The <b><code>str</code></b> compares two string values.</p> 
- * 
+ *
  * <p>Lets look at some examples:</p>
- * 
+ *
  * <pre>$m : Message( routingValue str[startsWith] "R1" )</pre>
  * <pre>$m : Message( routingValue str[endsWith] "R2" )</pre>
  * <pre>$m : Message( routingValue str[length] 17 )</pre>
@@ -160,25 +161,50 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 Thing thing = (Thing) objectValue;
                 core = (TraitableBean) thing.getCore();
                 return this.getOperator().isNegated() ^ core.hasTrait(typeName.toString());
-            } else if ( objectValue.getClass().getAnnotation( Traitable.class ) != null ) {
+            } else if ( objectValue instanceof TraitableBean ) {
                 core = (TraitableBean) objectValue;
                 return this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() );
+            } else {
+                core = lookForWrapper( objectValue, workingMemory );
+                return ( core == null && this.getOperator().isNegated() )
+                        || ( core != null && this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() ) );
             }
+        }
 
 
-            return false;
+
+        private TraitableBean lookForWrapper( final Object objectValue, InternalWorkingMemory workingMemory) {
+            Iterator iter = workingMemory.getObjectStore().iterateObjects( new ObjectFilter() {
+                public boolean accept(Object object) {
+                    if ( object instanceof TraitProxy ) {
+                        Object core = ((TraitProxy) object).getObject();
+                        if ( core instanceof CoreWrapper ) {
+                            core = ((CoreWrapper) core).getCore();
+                        }
+                        return core == objectValue;
+                    } else {
+                        return false;
+                    }
+                }
+            });
+            if ( iter.hasNext() ) {
+                return (TraitableBean) ((TraitProxy) iter.next()).getObject();
+            } else {
+                return null;
+//                throw new RuntimeException(" Error : the isA operator must be used on a trait-type, was applied to " + objectValue );
+            }
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
-                InternalReadAccessor leftExtractor, Object left,
-                InternalReadAccessor rightExtractor, Object right) {
+                                InternalReadAccessor leftExtractor, Object left,
+                                InternalReadAccessor rightExtractor, Object right) {
             final Object value1 = leftExtractor.getValue(workingMemory, left);
             final Object value2 = rightExtractor.getValue(workingMemory, right);
 
             Object target = value1;
             Object source = value2;
 
-            return compare( source, target );
+            return compare( source, target, workingMemory );
         }
 
 
@@ -188,7 +214,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             Object target = right;
             Object source = context.getObject();
 
-            return compare( source, target );
+            return compare( source, target, workingMemory );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -197,28 +223,39 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             Object target = left;
             Object source = context.getObject();
 
-            return compare( source, target );
+            return compare( source, target, workingMemory );
         }
 
 
 
-        private boolean compare(Object source, Object target) {
+        private boolean compare(Object source, Object target, InternalWorkingMemory workingMemory ) {
             Collection sourceTraits = null;
             Collection targetTraits = null;
             if ( source instanceof Thing) {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getTraits();
-            } else if ( source.getClass().getAnnotation( Traitable.class ) != null ) {
+            } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getTraits();
+            } else {
+                TraitableBean tbean = lookForWrapper( source, workingMemory);
+                if ( tbean != null ) {
+                    sourceTraits = tbean.getTraits();
+                }
             }
 
             if ( target instanceof Thing) {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getTraits();
-            } else if ( source.getClass().getAnnotation( Traitable.class ) != null ) {
+            } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getTraits();
+            } else {
+                TraitableBean tbean = lookForWrapper( target, workingMemory);
+                if ( tbean != null ) {
+                    targetTraits = tbean.getTraits();
+                }
             }
 
-            return ( targetTraits != null &&
-                    ( this.getOperator().isNegated() ^ sourceTraits.containsAll( targetTraits ) ) );
+            return ( targetTraits != null && sourceTraits != null &&
+                    ( this.getOperator().isNegated() ^ sourceTraits.containsAll( targetTraits ) ) )
+                   || ( sourceTraits == null && this.getOperator().isNegated() ) ;
         }
 
         @Override

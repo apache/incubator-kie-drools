@@ -23,6 +23,7 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.factmodel.BuildUtils;
+import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -46,7 +47,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     public enum VirtualPropertyMode { MAP, TRIPLES }
 
-    private VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
+    private static VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
 
     public final static String SUFFIX = "_Trait__Extension";
 
@@ -57,9 +58,36 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private AbstractRuleBase ruleBase;
 
 
+
+    public static TripleStore getStore() {
+        return store;
+    }
+
+    public static void clearStore() {
+        store = new TripleStore();
+    }
+
     public static void reset() {
         factoryCache.clear();
     }
+
+    public static void setMode( VirtualPropertyMode newMode ) {
+        mode = newMode;
+        switch ( mode ) {
+            case MAP    :
+                ClassBuilderFactory.setPropertyWrapperBuilderService(new TraitMapPropertyWrapperClassBuilderImpl());
+                ClassBuilderFactory.setTraitProxyBuilderService( new TraitMapProxyClassBuilderImpl() );
+                break;
+            case TRIPLES:
+                ClassBuilderFactory.setPropertyWrapperBuilderService(new TraitTriplePropertyWrapperClassBuilderImpl());
+                ClassBuilderFactory.setTraitProxyBuilderService( new TraitTripleProxyClassBuilderImpl() );
+                break;
+            default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+        }
+
+    }
+
+
 
 
     public TraitFactory(KnowledgeBase knowledgeBase) {
@@ -169,15 +197,15 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-        TraitProxyClassBuilder propWrapperBuilder;
-        switch ( mode ) {
-            case TRIPLES    : propWrapperBuilder = new TraitTripleWrapperClassBuilderImpl();
-                    break;
-            case MAP        : propWrapperBuilder = new TraitPropertyWrapperClassBuilderImpl();
-                    break;
-            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-        }
-            propWrapperBuilder.init( tdef );
+        TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) ClassBuilderFactory.getPropertyWrapperBuilderService();
+//        switch ( mode ) {
+//            case TRIPLES    : propWrapperBuilder = new TraitTriplePropertyWrapperClassBuilderImpl();
+//                break;
+//            case MAP        : propWrapperBuilder = new TraitMapPropertyWrapperClassBuilderImpl();
+//                break;
+//            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+//        }
+        propWrapperBuilder.init( tdef );
         try {
             byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
             data.write(JavaDialectRuntimeData.convertClassToResourcePath( wrapperName ), propWrapper );
@@ -186,15 +214,15 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
 
-        TraitProxyClassBuilder proxyBuilder;
-        switch ( mode ) {
-            case TRIPLES    : proxyBuilder = new TraitTripleProxyClassBuilderImpl();
-                    break;
-            case MAP        : proxyBuilder = new TraitProxyClassBuilderImpl();
-                    break;
-            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
-        }
-            proxyBuilder.init( tdef );
+        TraitProxyClassBuilder proxyBuilder = (TraitProxyClassBuilder) ClassBuilderFactory.getTraitProxyBuilderService();
+//        switch ( mode ) {
+//            case TRIPLES    : proxyBuilder = new TraitTripleProxyClassBuilderImpl();
+//                break;
+//            case MAP        : proxyBuilder = new TraitMapProxyClassBuilderImpl();
+//                break;
+//            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+//        }
+        proxyBuilder.init( tdef );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
             data.write(JavaDialectRuntimeData.convertClassToResourcePath( proxyName ), proxy);
@@ -220,7 +248,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private void bindAccessors( Class<T> proxyClass, ClassDefinition tdef, ClassDefinition cdef, long mask ) {
         int j = 0;
         for ( FieldDefinition traitField : tdef.getFieldsDefinitions() ) {
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            boolean isSoftField = TraitRegistry.isSoftField( traitField, j++, mask );
             if ( ! isSoftField ) {
                 FieldDefinition field = cdef.getField(traitField.getName());
                 Field staticField;
@@ -334,12 +362,12 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         for ( Field f : fields.values() ) {
             if ( f != null ) {
                 FieldDefinition fld = new FieldDefinition();
-                    fld.setName( f.getName() );
-                    fld.setTypeName( f.getType().getName() );
-                    fld.setInherited( true );
-                        ClassFieldAccessor accessor = store.getAccessor( def.getDefinedClass().getName(),
-                                                                         fld.getName() );
-                        fld.setReadWriteAccessor( accessor );
+                fld.setName( f.getName() );
+                fld.setTypeName( f.getType().getName() );
+                fld.setInherited( true );
+                ClassFieldAccessor accessor = store.getAccessor( def.getDefinedClass().getName(),
+                        fld.getName() );
+                fld.setReadWriteAccessor( accessor );
 
                 def.addField( fld );
             }
