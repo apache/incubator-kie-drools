@@ -74,15 +74,14 @@ public class TraitTest {
     private StatefulKnowledgeSession getSession( String... ruleFiles ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for (String file : ruleFiles) {
-            knowledgeBuilder.add( ResourceFactory.newClassPathResource( file ),
-                                  ResourceType.DRL );
+            knowledgeBuilder.add (ResourceFactory.newClassPathResource(file), ResourceType.DRL);
         }
         if (knowledgeBuilder.hasErrors()) {
-            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+            throw new RuntimeException(knowledgeBuilder.getErrors().toString());
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(knowledgeBuilder.getKnowledgePackages());
 
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
         return session;
@@ -147,17 +146,7 @@ public class TraitTest {
     public void testTraitShed() {
         String source = "org/drools/factmodel/traits/testTraitShed.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -193,17 +182,7 @@ public class TraitTest {
     public void testTraitDon() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -224,17 +203,7 @@ public class TraitTest {
     public void testMixin() {
         String source = "org/drools/factmodel/traits/testTraitMixin.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -249,21 +218,7 @@ public class TraitTest {
     public void testTraitMethodsWithObjects() {
         String source = "org/drools/factmodel/traits/testTraitWrapping.drl";
 
-        Character c = Character.valueOf('\u0000' );
-        System.out.println(">>>>" +c+ "<<<<");
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull( res );
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List errors = new ArrayList();
         ks.setGlobal( "list",
                       errors );
@@ -359,7 +314,6 @@ public class TraitTest {
 
             assertEquals( proxy2,
                           proxy4 );
-
         } catch (InstantiationException e) {
             e.printStackTrace();
             fail( e.getMessage() );
@@ -910,17 +864,7 @@ public class TraitTest {
     public void testIsA() {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -942,17 +886,7 @@ public class TraitTest {
     public void testTraitOverrideType() {
         String source = "org/drools/factmodel/traits/testTraitOverride.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-        assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -969,17 +903,7 @@ public class TraitTest {
     public void testTraitLegacy() {
         String source = "org/drools/factmodel/traits/testTraitLegacyTrait.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-            assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1008,17 +932,7 @@ public class TraitTest {
     public void testTraitCollections() {
         String source = "org/drools/factmodel/traits/testTraitCollections.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-            assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1043,17 +957,7 @@ public class TraitTest {
     public void testTraitCore() {
         String source = "org/drools/factmodel/traits/testTraitLegacyCore.drl";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        Resource res = ResourceFactory.newClassPathResource(source);
-            assertNotNull(res);
-        kbuilder.add(res, ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = getSession( source );
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1103,4 +1007,41 @@ public class TraitTest {
 
     }
 
+    @Test
+    public void testTraitDeclared() {
+
+        List<Integer> trueTraits = new ArrayList<Integer>();
+        List<Integer> untrueTraits = new ArrayList<Integer>();
+
+        StatefulKnowledgeSession session = getSession("org/drools/factmodel/traits/testDeclaredFactTrait.drl");
+        session.setGlobal("trueTraits", trueTraits);
+        session.setGlobal("untrueTraits", untrueTraits);
+
+        session.fireAllRules();
+        session.dispose();
+
+        assertTrue(trueTraits.contains(1));
+        assertFalse(trueTraits.contains(2));
+        assertTrue(untrueTraits.contains(2));
+        assertFalse(untrueTraits.contains(1));
+    }
+
+    @Test
+    public void testTraitPojo() {
+
+        List<Integer> trueTraits = new ArrayList<Integer>();
+        List<Integer> untrueTraits = new ArrayList<Integer>();
+
+        StatefulKnowledgeSession session = getSession("org/drools/factmodel/traits/testPojoFactTrait.drl");
+        session.setGlobal("trueTraits", trueTraits);
+        session.setGlobal("untrueTraits", untrueTraits);
+
+        session.fireAllRules();
+        session.dispose();
+
+        assertTrue(trueTraits.contains(1));
+        assertFalse(trueTraits.contains(2));
+        assertTrue(untrueTraits.contains(2));
+        assertFalse(untrueTraits.contains(1));
+    }
 }

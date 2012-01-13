@@ -24,12 +24,13 @@ import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
+public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
 
     private ClassDefinition trait;
@@ -69,13 +70,9 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
         String internalWrapper  = BuildUtils.getInternalType(name);
         String internalProxy    = BuildUtils.getInternalType(masterName);
-        String descrWrapper     = BuildUtils.getTypeDescriptor(name);
-        String descrProxy       = BuildUtils.getTypeDescriptor(masterName);
 
-        String internalCore     = BuildUtils.getInternalType(core.getClassName());
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
         String internalTrait    = BuildUtils.getInternalType(trait.getClassName());
-        String descrTrait       = BuildUtils.getTypeDescriptor(trait.getClassName());
 
 
         Class mixinClass = null;
@@ -84,7 +81,7 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
         Map<String,Method> mixinGetSet = new HashMap<String,Method>();
         try {
             if ( trait.getDefinedClass() != null ) {
-                Trait annTrait = trait.getDefinedClass().getAnnotation( Trait.class );
+                Trait annTrait = getAnnotation( trait.getDefinedClass(), Trait.class );
                 if ( annTrait != null && ! annTrait.impl().equals(Trait.NullMixin.class) ) {
                     mixinClass = annTrait.impl();
                     mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
@@ -214,7 +211,7 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
                 if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
                     buildSoftGetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
@@ -255,10 +252,21 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
     }
 
+    private <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
+        K ann = (K) klass.getAnnotation( annotationClass );
 
-
-
-
+        if ( ann == null ) {
+            for ( Class sup : klass.getInterfaces() ) {
+                ann = getAnnotation( sup, annotationClass );
+                if ( ann != null ) {
+                    return ann;
+                }
+            }
+            return null;
+        } else {
+            return ann;
+        }
+    }
 
     private void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
         for ( Method method : mixinMethods ) {
@@ -487,6 +495,14 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitEnd();
 
         }
+
+    }
+
+
+    private void buildCommonMethods(ClassWriter cw, String proxy, String core ) {
+
+        String proxyType = BuildUtils.getInternalType( proxy );
+
         {
             MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
             mv.visitCode();
@@ -507,14 +523,4 @@ public class TraitProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
         }
     }
-
-
-
-
-
-
-
-
-
-
 }

@@ -24,6 +24,7 @@ import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -33,6 +34,10 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
 
     private ClassDefinition trait;
+
+    protected ClassDefinition getTrait() {
+        return trait;
+    }
 
     public void init( ClassDefinition trait ) {
         this.trait = trait;
@@ -57,21 +62,21 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = TraitRegistry.getInstance().getFieldMask(trait.getName(), core.getDefinedClass().getName());
+        long mask = TraitRegistry.getInstance().getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
-        String name = TraitFactory.getPropertyWrapperName( trait, core );
-        String masterName = TraitFactory.getProxyName(trait, core);
+        String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
+        String masterName = TraitFactory.getProxyName( getTrait(), core );
 
 
-        String internalWrapper  = BuildUtils.getInternalType(name);
-        String internalProxy    = BuildUtils.getInternalType(masterName);
-        String descrWrapper     = BuildUtils.getTypeDescriptor(name);
-        String descrProxy       = BuildUtils.getTypeDescriptor(masterName);
+        String internalWrapper  = BuildUtils.getInternalType( name );
+        String internalProxy    = BuildUtils.getInternalType( masterName );
+        String descrWrapper     = BuildUtils.getTypeDescriptor( name );
+        String descrProxy       = BuildUtils.getTypeDescriptor( masterName );
 
-        String internalCore     = BuildUtils.getInternalType(core.getClassName());
-        String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
-        String internalTrait    = BuildUtils.getInternalType(trait.getClassName());
-        String descrTrait       = BuildUtils.getTypeDescriptor(trait.getClassName());
+        String internalCore     = BuildUtils.getInternalType( core.getClassName() );
+        String descrCore        = BuildUtils.getTypeDescriptor( core.getClassName() );
+        String internalTrait    = BuildUtils.getInternalType( getTrait().getClassName() );
+        String descrTrait       = BuildUtils.getTypeDescriptor( getTrait().getClassName() );
 
 
         Class mixinClass = null;
@@ -79,8 +84,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         Set<Method> mixinMethods = new HashSet<Method>();
         Map<String,Method> mixinGetSet = new HashMap<String,Method>();
         try {
-            if ( trait.getDefinedClass() != null ) {
-                Trait annTrait = trait.getDefinedClass().getAnnotation( Trait.class );
+            if ( getTrait().getDefinedClass() != null ) {
+                Trait annTrait = getAnnotation( getTrait().getDefinedClass(),Trait.class);
                 if ( annTrait != null && ! annTrait.impl().equals(Trait.NullMixin.class) ) {
                     mixinClass = annTrait.impl();
                     mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
@@ -88,7 +93,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
                     for ( Method m : mixinClass.getMethods() ) {
                         try {
-                            trait.getDefinedClass().getMethod(m.getName(), m.getParameterTypes() );
+                            getTrait().getDefinedClass().getMethod(m.getName(), m.getParameterTypes() );
                             if ( cfi.getGetterMethods().containsValue( m )
                                     || cfi.getSetterMethods().containsValue( m )) {
                                 mixinGetSet.put( m.getName(), m );
@@ -130,64 +135,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + descrCore + "Lorg/drools/core/util/TripleStore;)V", null, null);
             mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
-            if ( mixinClass != null ) {
-                try {
-                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
 
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
-                    mv.visitInsn(DUP);
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitMethodInsn( INVOKESPECIAL,
-                            BuildUtils.getInternalType( mixinClass.getName() ),
-                            "<init>",
-                            "("+ BuildUtils.getTypeDescriptor( trait.getDefinedClass().getName() ) + ")V");
-                    mv.visitFieldInsn( PUTFIELD,
-                            internalProxy,
-                            mixin,
-                            BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
-                } catch ( NoSuchMethodException nsme ) {
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
-                    mv.visitInsn(DUP);
-                    mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( mixinClass.getName() ), "<init>", "()V");
-                    mv.visitFieldInsn( PUTFIELD,
-                            internalProxy,
-                            mixin,
-                            BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
-                }
-
-            }
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitFieldInsn(PUTFIELD, internalProxy, "store", "Lorg/drools/core/util/TripleStore;");            mv.visitVarInsn(ALOAD, 0);
-            mv.visitTypeInsn(NEW, internalWrapper);
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "<init>", "(" + descrCore + "Lorg/drools/core/util/TripleStore;)V");
-            mv.visitFieldInsn(PUTFIELD, internalProxy, "fields", "Ljava/util/Map;");
-
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(NEW, "org/drools/factmodel/traits/TripleBasedBean");
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedBean", "<init>", "(Ljava/lang/Object;Lorg/drools/core/util/TripleStore;)V");
-            mv.visitMethodInsn(INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(Ljava/util/Map;)V");
-
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(NEW, "org/drools/factmodel/traits/TripleBasedTypes");
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedTypes", "<init>", "(Ljava/lang/Object;Lorg/drools/core/util/TripleStore;)V");
-            mv.visitMethodInsn(INVOKEVIRTUAL, internalCore, "setTraitMap", "(Ljava/util/Map;)V");
+            buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
 
             mv.visitInsn(RETURN);
             mv.visitMaxs(5, 3);
@@ -223,36 +172,20 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         }
 
 
-        int j = 0;
-        for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
+        buildProxyAccessors( mask, cw, masterName, core, mixinGetSet );
 
-            boolean isSoftField = (mask & (1 << j++)) == 0;
-            if ( isSoftField ) {
-                if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
-                    buildSoftGetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
-                    buildSoftSetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
-                } else {
-                    //
-                }
-
-            } else {
-                {
-                    fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, field.getName()+"_reader", "Lorg/drools/spi/InternalReadAccessor;", null, null);
-                    fv.visitEnd();
-                }
-                {
-                    fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, field.getName()+"_writer", "Lorg/drools/spi/WriteAccessor;", null, null);
-                    fv.visitEnd();
-                }
-
-                buildHardGetter( cw, field, masterName, trait, core );
-                buildHardSetter( cw, field, masterName, trait, core );
-
+        boolean hasKeys = false;
+        for ( FactField ff : getTrait().getFields() ) {
+            if ( ff.isKey() ) {
+                hasKeys = true;
+                break;
             }
         }
-
-
-        buildEqualityMethods( cw, masterName, core.getClassName() );
+        if ( ! hasKeys ) {
+            buildEqualityMethods( cw, masterName, core.getClassName() );
+        } else {
+            buildKeyedEqualityMethods( cw, getTrait(), masterName, core.getClassName() );
+        }
 
         if ( mixinClass != null ) {
             buildMixinMethods( cw, masterName, mixin, mixinClass, mixinMethods );
@@ -263,12 +196,155 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         buildCommonMethds( cw, masterName );
 
 
+        buildExtendedMethods( cw, getTrait(), core );
+
+
         cw.visitEnd();
 
         return cw.toByteArray();
 
     }
 
+
+
+    private <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
+        K ann = (K) klass.getAnnotation( annotationClass );
+
+        if ( ann == null ) {
+            for ( Class sup : klass.getInterfaces() ) {
+                ann = getAnnotation( sup, annotationClass );
+                if ( ann != null ) {
+                    return ann;
+                }
+            }
+            return null;
+        } else {
+            return ann;
+        }
+    }
+
+
+    protected void buildConstructorCore( ClassWriter cw, MethodVisitor mv, String internalProxy, String internalWrapper, String internalCore, String descrCore, String mixin, Class mixinClass ) {
+
+
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+        if ( mixinClass != null ) {
+            try {
+//                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
+                Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
+
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
+                mv.visitInsn(DUP);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitMethodInsn( INVOKESPECIAL,
+                        BuildUtils.getInternalType( mixinClass.getName() ),
+                        "<init>",
+                        "("+ BuildUtils.getTypeDescriptor( actualArg.getName() ) + ")V");
+                mv.visitFieldInsn( PUTFIELD,
+                        internalProxy,
+                        mixin,
+                        BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
+            } catch ( NoSuchMethodException nsme ) {
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
+                mv.visitInsn(DUP);
+                mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( mixinClass.getName() ), "<init>", "()V");
+                mv.visitFieldInsn( PUTFIELD,
+                        internalProxy,
+                        mixin,
+                        BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
+            }
+
+        }
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore);
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitVarInsn(ALOAD, 2);
+        mv.visitFieldInsn(PUTFIELD, internalProxy, "store", "Lorg/drools/core/util/TripleStore;");
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitTypeInsn(NEW, internalWrapper);
+        mv.visitInsn(DUP);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitVarInsn(ALOAD, 2);
+        mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "<init>", "(" + descrCore + "Lorg/drools/core/util/TripleStore;)V");
+        mv.visitFieldInsn(PUTFIELD, internalProxy, "fields", "Ljava/util/Map;");
+
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitTypeInsn(NEW, "org/drools/factmodel/traits/TripleBasedBean");
+        mv.visitInsn(DUP);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitVarInsn(ALOAD, 2);
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedBean", "<init>", "(Ljava/lang/Object;Lorg/drools/core/util/TripleStore;)V");
+        mv.visitMethodInsn(INVOKEVIRTUAL, internalCore, "setDynamicProperties", "(Ljava/util/Map;)V");
+
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitTypeInsn(NEW, "org/drools/factmodel/traits/TripleBasedTypes");
+        mv.visitInsn(DUP);
+        mv.visitVarInsn(ALOAD, 1);
+        mv.visitVarInsn(ALOAD, 2);
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedTypes", "<init>", "(Ljava/lang/Object;Lorg/drools/core/util/TripleStore;)V");
+        mv.visitMethodInsn(INVOKEVIRTUAL, internalCore, "setTraitMap", "(Ljava/util/Map;)V");
+
+    }
+
+    private Class getPossibleConstructor(Class klass, Class arg) throws NoSuchMethodException {
+
+        Constructor[] ctors = klass.getConstructors();
+
+        for (Constructor c : ctors) {
+            Class[] cpars = c.getParameterTypes();
+
+            if ( cpars.length != 1 || ! cpars[0].isAssignableFrom( arg ) ) {
+                continue;
+            }
+
+            return cpars[0];
+        }
+        throw new NoSuchMethodException("Constructor for " + klass + " using " + arg + " not found ");
+    }
+
+
+
+    protected void buildProxyAccessors( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
+        int j = 0;
+
+        for ( FieldDefinition field : getTrait().getFieldsDefinitions() ) {
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
+            buildProxyAccessor( mask, cw, masterName, core, mixinGetSet, field, isSoftField );
+        }
+
+    }
+
+
+    protected void buildProxyAccessor( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
+        FieldVisitor fv;
+
+        if ( isSoftField ) {
+            if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
+                buildSoftGetter( cw, field, masterName );
+                buildSoftSetter( cw, field, masterName );
+            } else {
+                //
+            }
+
+        } else {
+            {
+                fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, field.getName()+"_reader", "Lorg/drools/spi/InternalReadAccessor;", null, null);
+                fv.visitEnd();
+            }
+            {
+                fv = cw.visitField(ACC_PUBLIC + ACC_STATIC, field.getName()+"_writer", "Lorg/drools/spi/WriteAccessor;", null, null);
+                fv.visitEnd();
+            }
+
+            buildHardGetter( cw, field, masterName, getTrait(), core );
+            buildHardSetter( cw, field, masterName, getTrait(), core );
+
+        }
+    }
 
 
 
@@ -303,13 +379,23 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
     }
 
 
-    private void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core ) {
+
+
+
+
+
+
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core) {
+        buildHardGetter( cw, field, masterName, proxy, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
+    }
+
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core, String getterName, boolean protect ) {
         String fieldName = field.getName();
         String fieldType = field.getTypeName();
-        String getter = BuildUtils.getterName( fieldName, fieldType );
 
-        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
-                getter,
+
+        MethodVisitor mv = cw.visitMethod( protect ? ACC_PROTECTED : ACC_PUBLIC,
+                getterName,
                 "()" + BuildUtils.getTypeDescriptor( fieldType ),
                 null,
                 null);
@@ -330,14 +416,16 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
 
 
+    protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
+        buildHardSetter( cw, field, masterName, trait, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), false );
+    }
 
-    private void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
+    protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core, String setterName, boolean protect ) {
         String fieldName = field.getName();
         String fieldType = field.getTypeName();
-        String setter = "set" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
 
-        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
-                BuildUtils.setterName( fieldName, fieldType ),
+        MethodVisitor mv = cw.visitMethod( protect ? ACC_PROTECTED : ACC_PUBLIC,
+                setterName,
                 "(" + BuildUtils.getTypeDescriptor( fieldType ) + ")V",
                 null,
                 null);
@@ -353,12 +441,19 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
     }
 
 
+    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy ) {
+        buildSoftSetter( cw, field, proxy, BuildUtils.setterName( field.getName(), field.getTypeName() ), false );
+    }
 
+    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, String setterName, boolean protect  ) {
+        String fieldName = field.getName();
+        String type = field.getTypeName();
 
-    private void buildSoftSetter( ClassVisitor cw, String fieldName, String type, String proxy, String core ) {
-        String setter = BuildUtils.setterName( fieldName, type );
-
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, setter, "(" + BuildUtils.getTypeDescriptor( type ) + ")V", null, null);
+        MethodVisitor mv = cw.visitMethod( protect ? ACC_PROTECTED : ACC_PUBLIC,
+                setterName,
+                "(" + BuildUtils.getTypeDescriptor( type ) + ")V",
+                null,
+                null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( proxy ), "store", "Lorg/drools/core/util/TripleStore;");
@@ -380,12 +475,19 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
 
 
+    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy ) {
+        buildSoftGetter( cw, field, proxy, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
+    }
 
-    private void buildSoftGetter( ClassVisitor cw, String fieldName, String type, String proxy, String core ) {
+    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy, String getterName, boolean protect ) {
+        String fieldName = field.getName();
+        String type = field.getTypeName();
 
-        String getter = BuildUtils.getterName( fieldName, type );
-
-        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, getter, "()"+ BuildUtils.getTypeDescriptor( type ), null, null);
+        MethodVisitor mv = cw.visitMethod( protect ? ACC_PROTECTED : ACC_PUBLIC,
+                getterName,
+                "()"+ BuildUtils.getTypeDescriptor( type ),
+                null,
+                null );
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( proxy ), "store", "Lorg/drools/core/util/TripleStore;");
@@ -593,43 +695,44 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         }
     }
 
-
-
-    private void buildCommonMethds( ClassWriter cw, String proxy ) {
+    protected void buildCommonMethods( ClassWriter cw, String proxy ) {
         MethodVisitor mv;
-        {
-            mv = cw.visitMethod(ACC_PROTECTED, "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/TripleImpl;", null, null);
-            mv.visitCode();
-            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitFieldInsn(GETSTATIC, "org/drools/runtime/rule/Variable", "v", "Lorg/drools/runtime/rule/Variable;");
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(5, 2);
-            mv.visitEnd();
-        }
-        {
-            mv = cw.visitMethod(ACC_PROTECTED, "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;", null, null);
-            mv.visitCode();
-            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(5, 3);
-            mv.visitEnd();
-        }
+//        {
+//            mv = cw.visitMethod(ACC_PROTECTED, "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/TripleImpl;", null, null);
+//            mv.visitCode();
+//            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
+//            mv.visitInsn(DUP);
+//            mv.visitVarInsn(ALOAD, 0);
+//            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
+//            mv.visitVarInsn(ALOAD, 1);
+//            mv.visitFieldInsn(GETSTATIC, "org/drools/runtime/rule/Variable", "v", "Lorg/drools/runtime/rule/Variable;");
+//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+//            mv.visitInsn(ARETURN);
+//            mv.visitMaxs(5, 2);
+//            mv.visitEnd();
+//        }
+//        {
+//            mv = cw.visitMethod(ACC_PROTECTED, "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;", null, null);
+//            mv.visitCode();
+//            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
+//            mv.visitInsn(DUP);
+//            mv.visitVarInsn(ALOAD, 0);
+//            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
+//            mv.visitVarInsn(ALOAD, 1);
+//            mv.visitVarInsn(ALOAD, 2);
+//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+//            mv.visitInsn(ARETURN);
+//            mv.visitMaxs(5, 3);
+//            mv.visitEnd();
+//        }
 
     }
 
 
 
+    protected void buildExtendedMethods(ClassWriter cw, ClassDefinition trait, ClassDefinition core ) {
+        // empty here, left for subclasses to extend
+    }
 
 
 
