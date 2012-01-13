@@ -16,7 +16,10 @@
 
 package org.drools.planner.examples.nqueens.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
@@ -27,6 +30,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -50,6 +54,7 @@ public class NQueensPanel extends SolutionPanel {
 
     public NQueensPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setBackground(Color.BLACK);
         queenImageIcon = new ImageIcon(getClass().getResource(QUEEN_IMAGE_PATH));
     }
 
@@ -59,28 +64,32 @@ public class NQueensPanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         removeAll();
+        repaint(); // When GridLayout doesn't fill up all the space
         NQueens nQueens = (NQueens) solution;
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
         setLayout(new GridLayout(n, n));
-        for (int y = 0; y < n; y++) {
-            for (int x = 0; x < n; x++) {
-                Queen queen = queenList.get(x);
-                if (queen.getColumn().getIndex() != x) {
+        for (int row = 0; row < n; row++) {
+            for (int column = 0; column < n; column++) {
+                Queen queen = queenList.get(column);
+                if (queen.getColumn().getIndex() != column) {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
-                if (queen.getRow() != null && queen.getRow().getIndex() == y) {
+                String toolTipText = "row " + row + ", column " + column;
+                if (queen.getRow() != null && queen.getRow().getIndex() == row) {
                     JButton button = new JButton(new QueenAction(queen));
-                    button.setHorizontalTextPosition(SwingConstants.CENTER);
-                    button.setVerticalTextPosition(SwingConstants.BOTTOM);
+                    button.setMinimumSize(new Dimension(20, 20));
+                    button.setPreferredSize(new Dimension(20, 20));
+                    button.setToolTipText(toolTipText);
                     add(button);
                 } else {
                     JPanel panel = new JPanel();
                     panel.setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.DARK_GRAY),
                             BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-                    Color background = (((y + x) % 2) == 0) ? Color.WHITE : Color.GRAY;
+                    Color background = (((row + column) % 2) == 0) ? Color.WHITE : Color.GRAY;
                     panel.setBackground(background);
+                    panel.setToolTipText(toolTipText);
                     add(panel);
                 }
             }
@@ -92,15 +101,19 @@ public class NQueensPanel extends SolutionPanel {
         private Queen queen;
 
         public QueenAction(Queen queen) {
-            super("[" + queen.getId() + "]", queenImageIcon);
+            super(null, queenImageIcon);
             this.queen = queen;
         }
 
         public void actionPerformed(ActionEvent e) {
             List<Row> rowList = getNQueens().getRowList();
+            JPanel messagePanel = new JPanel(new BorderLayout());
+            messagePanel.add(new JLabel("Move to row: "), BorderLayout.WEST);
             JComboBox rowListField = new JComboBox(rowList.toArray());
             rowListField.setSelectedItem(queen.getRow());
-            int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), rowListField, "Select row",
+            messagePanel.add(rowListField, BorderLayout.CENTER);
+            int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), messagePanel,
+                    "Queen in column " + queen.getColumn().getIndex(),
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Row toRow = (Row) rowListField.getSelectedItem();
