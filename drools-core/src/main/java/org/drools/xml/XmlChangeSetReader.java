@@ -35,12 +35,17 @@ public class XmlChangeSetReader {
     }
 
     public XmlChangeSetReader(final SemanticModules modules, final SAXParser parser) {
+        this( modules, parser, 0 );
+    }
+
+    public XmlChangeSetReader(final SemanticModules modules, final SAXParser parser, int timeout) {
         if ( parser == null ) {
             this.parser = new ExtensibleXmlParser();
         } else {
             this.parser = new ExtensibleXmlParser( parser );
         }
         this.parser.setSemanticModules( modules );
+        this.parser.setTimeout( timeout );
     }
     
     public void setClassLoader(ClassLoader classLoader, Class clazz ) {
