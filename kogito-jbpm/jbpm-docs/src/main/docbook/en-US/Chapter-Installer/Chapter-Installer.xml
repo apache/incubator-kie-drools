@@ -47,8 +47,8 @@
         <listitem>Download JBoss AS</listitem>
         <listitem>Download Eclipse</listitem>
         <listitem>Install Drools Guvnor into JBoss AS</listitem>
-        <listitem>Install Oryx Designer into JBoss AS</listitem>
-        <listitem>Install the jBPM gwt-console into JBoss AS</listitem>
+        <listitem>Install jBPM Designer into JBoss AS</listitem>
+        <listitem>Install the jBPM console into JBoss AS</listitem>
         <listitem>Install the jBPM Eclipse plugin</listitem>
         <listitem>Install the Drools Eclipse plugin</listitem>
       </itemizedlist>
