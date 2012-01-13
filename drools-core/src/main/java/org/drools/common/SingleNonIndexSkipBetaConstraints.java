@@ -36,6 +36,7 @@ import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
 public class SingleNonIndexSkipBetaConstraints 
@@ -139,6 +140,6 @@ public class SingleNonIndexSkipBetaConstraints
     }
 
     public long getListenedPropertyMask(Class<?> nodeClass) {
-        return Long.MAX_VALUE;
+        return constraint instanceof MvelConstraint ? ((MvelConstraint)constraint).getListenedPropertyMask(nodeClass) : Long.MAX_VALUE;
     }
 }

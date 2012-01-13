@@ -424,26 +424,22 @@ public abstract class BetaNode extends LeftTupleSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-System.out.println("modify in rule " + context.getRule().getName());
-System.out.println("Evaluating " + this + " associated to rules " + associations.keySet());
-
-        if (!intersect(context.getModificationMask(), getListenedPropertyMask())) {
-            System.out.println("Modification mask " + context.getModificationMask() + " doesn't intersect listened property mask " + getListenedPropertyMask() + " ... SKIPPING");
-            return;
-        }
-
         RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
-        if ( rightTuple != null ) {
-            rightTuple.reAdd();
-            // RightTuple previously existed, so continue as modify
-            modifyRightTuple( rightTuple,
-                              context,
-                              workingMemory );
-        } else {
-            // RightTuple does not exist, so create and continue as assert
-            assertObject( factHandle,
-                          context,
-                          workingMemory );
+        if ( rightTuple != null ) rightTuple.reAdd();
+
+        if (context.getModificationMask() == Long.MAX_VALUE || intersect(context.getModificationMask(), getListenedPropertyMask())) {
+            // Propagate only if listened property mask intersects the modification one (slot specific)
+            if ( rightTuple != null ) {
+                // RightTuple previously existed, so continue as modify
+                modifyRightTuple( rightTuple,
+                        context,
+                        workingMemory );
+            } else {
+                // RightTuple does not exist, so create and continue as assert
+                assertObject( factHandle,
+                        context,
+                        workingMemory );
+            }
         }
     }
 
@@ -455,11 +451,14 @@ System.out.println("Evaluating " + this + " associated to rules " + associations
         if (listenedPropertyMask >= 0) return listenedPropertyMask;
         Class<?> nodeClass = getNodeClass();
         long mask = nodeClass == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(nodeClass);
+
+/* Should add mask from right AlphaNode ?
         if (mask >= 0 && mask != Long.MAX_VALUE) {
             if (rightInput instanceof AlphaNode) {
                 mask |= ((AlphaNode)rightInput).getListenedPropertyMask();
             }
         }
+*/
         setListenedPropertyMask(mask);
         return mask >= 0 ? mask : Long.MAX_VALUE;
     }

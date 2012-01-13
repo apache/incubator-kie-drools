@@ -520,7 +520,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertLength(0, sink1.getAsserted());
 
         joinNode.setListenedPropertyMask(0);
-        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassAll, workingMemory);
+        joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(0, sink1.getAsserted());
 
         joinNode.setListenedPropertyMask(9);
