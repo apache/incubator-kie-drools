@@ -25,7 +25,7 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuilder {
+public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder {
 
 
     private ClassDefinition trait;
@@ -37,7 +37,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         this.trait = trait;
         this.pack = trait.getDefinedClass().getPackage().toString();
     }
-
 
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,
@@ -64,15 +63,7 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
 
         String internalWrapper  = BuildUtils.getInternalType(name);
-        String internalProxy    = BuildUtils.getInternalType(masterName);
-        String descrWrapper     = BuildUtils.getTypeDescriptor(name);
-        String descrProxy       = BuildUtils.getTypeDescriptor(masterName);
-
-        String internalCore     = BuildUtils.getInternalType(core.getClassName());
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
-        String internalTrait    = BuildUtils.getInternalType(trait.getClassName());
-        String descrTrait       = BuildUtils.getTypeDescriptor(trait.getClassName());
-
 
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
@@ -167,11 +158,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildRemove(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
-
-        boolean hasPrimitiveFields = false;
-        boolean hasObjectFields = false;
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -200,7 +186,7 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         int j = 0;
         int stack = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
                 stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
 
@@ -247,10 +233,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private int initSoftFields( MethodVisitor mv, ClassDefinition trait, long mask, int varNum ) {
         int j = 0;
-        int nonPrimitiveFields = 0;
         int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
-            boolean isSoftField = (mask & (1 << j++)) == 0;
+            boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
                 mv.visitVarInsn(ALOAD, varNum);
                 mv.visitLdcInsn( field.getName() );
@@ -273,9 +258,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildClear(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
-
 
         boolean hasPrimitiveFields = false;
         boolean hasObjectFields = false;
@@ -321,8 +303,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildContainsValue(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsValue", "(Ljava/lang/Object;)Z", null, null);
         mv.visitCode();
@@ -460,8 +440,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "get", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -499,8 +477,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
@@ -547,8 +523,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "entrySet", "()Ljava/util/Set;", "()Ljava/util/Set<Ljava/util/Map$Entry<Ljava/lang/String;Ljava/lang/Object;>;>;", null);
         mv.visitCode();
@@ -622,8 +596,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
     private void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
-        String internalCore = BuildUtils.getInternalType( coreName );
-        String descrCore = BuildUtils.getTypeDescriptor( coreName );
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "values", "()Ljava/util/Collection;", "()Ljava/util/Collection<Ljava/lang/Object;>;", null);
         mv.visitCode();

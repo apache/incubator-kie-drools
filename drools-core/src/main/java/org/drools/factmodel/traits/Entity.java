@@ -17,6 +17,7 @@
 package org.drools.factmodel.traits;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -48,7 +49,7 @@ public class Entity implements TraitableBean {
 
     public Map<String, Object> getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
-            __$$dynamic_properties_map$$ = new HashMap<String,Object>();
+            __$$dynamic_properties_map$$ = new HashMap<String,Object>(5);
         }
         return  __$$dynamic_properties_map$$;
     }
@@ -66,7 +67,7 @@ public class Entity implements TraitableBean {
 
     public Map<String, Thing> getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
-            __$$dynamic_traits_map$$ = new HashMap<String, Thing>();
+            __$$dynamic_traits_map$$ = new HashMap<String, Thing>(5);
         }
         return __$$dynamic_traits_map$$;
     }
@@ -80,15 +81,23 @@ public class Entity implements TraitableBean {
     }
 
     public boolean hasTrait(String type) {
-        return getTraitMap().containsKey(type);
+        return isTraitMapInitialized() && getTraitMap().containsKey(type);
     }
 
     public Thing removeTrait(String type) {
-        return getTraitMap().remove( type );
+        if ( isTraitMapInitialized() ) {
+            return getTraitMap().remove( type );    
+        } else {
+            return null;
+        }        
     }
 
     public Collection<String> getTraits() {
-        return getTraitMap().keySet();
+        if ( isTraitMapInitialized() ) {
+            return getTraitMap().keySet();
+        } else {
+            return Collections.emptySet();
+        }
     }
 
     public boolean equals(Object o) {
@@ -103,6 +112,10 @@ public class Entity implements TraitableBean {
 
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public boolean isTraitMapInitialized() {
+        return __$$dynamic_traits_map$$ != null;
     }
 }
 

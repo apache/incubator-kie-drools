@@ -14,7 +14,7 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
     protected TripleStore store;
 
 
-    protected TripleImpl key( Object property ) {
+    protected TripleImpl propertyKey( Object property ) {
         return new TripleImpl( getObject(), property.toString(), Variable.v );
     }
 
@@ -37,7 +37,7 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
 
 
     public boolean containsKey(Object key) {
-        return store.get( key( key ) ) != null;
+        return store.get( propertyKey( key ) ) != null;
     }
 
     public boolean containsValue(Object value) {
@@ -56,7 +56,7 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
     }
 
     public Object get(Object key) {
-        Triple t = store.get( key( key ) );
+        Triple t = store.get( propertyKey( key ) );
         return t == null ? null : t.getValue();
     }
 
@@ -65,7 +65,7 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
     }
 
     public Object remove(Object key) {
-        return store.remove( store.get( key ( key ) ) );
+        return store.remove( store.get( propertyKey ( key ) ) );
     }
 
     public void clear() {
