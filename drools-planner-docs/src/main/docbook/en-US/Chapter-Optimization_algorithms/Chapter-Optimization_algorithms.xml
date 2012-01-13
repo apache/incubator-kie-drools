@@ -431,18 +431,18 @@
     <programlisting>&lt;solver&gt;
   ...
   &lt;constructionHeuristic&gt;
-    ... &lt;!-- Phase 1: First Fit decreasing --&gt;
+    ... &lt;!-- First phase: First Fit decreasing --&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Phase 2: Simulated annealing --&gt;
+    ... &lt;!-- Second phase: Simulated annealing --&gt;
   &lt;/localSearch&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Phase 3: Tabu search --&gt;
+    ... &lt;!-- Third phase: Tabu search --&gt;
   &lt;/localSearch&gt;
 &lt;/solver&gt;</programlisting>
 
-    <para>When the first phase terminates, the second phase starts, and so on. When the last phase terminates, the
-    <literal>Solver</literal> terminates.</para>
+    <para>The solver phases are run in the order defined by solver configuration. When the first phase terminates, the
+    second phase starts, and so on. When the last phase terminates, the <literal>Solver</literal> terminates.</para>
 
     <para>Some phases (especially construction heuristics) will terminate automatically. Other phases (especially
     metaheuristics) will only terminate if the phase is configured to terminate:</para>
