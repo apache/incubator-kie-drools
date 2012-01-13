@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -78,6 +79,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     /** isValidating */
     private boolean             isValidating                  = true;
+
+    private int                 timeout                       = 0;
 
     /** Locator for errors. */
     private Locator             locator;
@@ -503,7 +506,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     /**
      * Start a configuration node.
      *
-     * @param name
+     * @param tagName
      *            Tag name.
      * @param attrs
      *            Tag attributes.
@@ -674,8 +677,12 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         // try the actual location given by systemId
         try {
-            final URL url = new URL( systemId );
-            return new InputSource( url.openStream() );
+            if ( getTimeout() >= 0 ) {
+                final URL url = new URL( systemId );
+                URLConnection conn = url.openConnection();
+                    conn.setConnectTimeout( getTimeout() );
+                return new InputSource( conn.getInputStream() );
+            }
         } catch ( final Exception e ) {
         }
 
@@ -691,9 +698,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
             xsd = systemId;
         }
 
-        // Try looking in META-INF
+        // Try looking at root of classpath
         {
-            final InputStream is = classLoader.getResourceAsStream( "META-INF/" + xsd );
+            InputStream is = ExtensibleXmlParser.class.getResourceAsStream( "/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -701,15 +708,15 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         // Try looking in /META-INF
         {
-            final InputStream is = classLoader.getResourceAsStream( "/META-INF/" + xsd );
+            final InputStream is = ExtensibleXmlParser.class.getResourceAsStream( "/META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
         }
 
-        // Try looking at root of classpath
+        // Try looking in META-INF
         {
-            final InputStream is = classLoader.getResourceAsStream( "/" + xsd );
+            final InputStream is = ExtensibleXmlParser.class.getResourceAsStream( "META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -741,4 +748,20 @@ public class ExtensibleXmlParser extends DefaultHandler {
         }
     }
 
+
+    /**
+     * Timeout for retrieving remote resources
+     * @return
+     */
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Sets the timeout for retrieving remote resources, e.g. xsd schemas
+     * @param timeout
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 }
