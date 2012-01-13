@@ -19,9 +19,7 @@ package org.drools.factmodel;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
-import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
 
 public class BuildUtils {
 
@@ -439,5 +437,24 @@ public class BuildUtils {
         } else {
             return "setValue";
         }
+    }
+
+    public static String numericMorph(String type) {
+        if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
+            return "byteValue";
+        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
+            return "doubleValue";
+        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
+            return "floatValue";
+        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
+            return "intValue";
+        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
+            return "longValue";
+        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
+            return "shortBalue";
+        } else {
+            throw new RuntimeDroolsException("Not a numeric type " + type);
+        }
+
     }
 }
