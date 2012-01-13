@@ -9581,7 +9581,7 @@ public class MiscTest {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void testSlotSpecific() throws Exception {
         String rule = "package org.drools\n" +
                 "global java.util.List list;\n" +
@@ -9600,7 +9600,6 @@ public class MiscTest {
                 "    $a : A(s == \"start\");\n" +
                 "    $b : B(s == $a.s);\n" +
                 "then\n" +
-                "    System.out.println(\"R1\");\n" +
                 "    modify($a) { setS(\"running\") };\n" +
                 "    list.add(\"R1\");\n" +
                 "end\n" +
@@ -9609,7 +9608,6 @@ public class MiscTest {
                 "    A($s : s);\n" +
                 "    $b : B(s != $s);\n" +
                 "then\n" +
-                "    System.out.println(\"R2\");\n" +
                 "    modify($b) { setS($s) };\n" +
                 "    list.add(\"R2\");\n" +
                 "end\n" +
@@ -9618,16 +9616,15 @@ public class MiscTest {
                 "    $a : A(s != \"end\");\n" +
                 "    $b : B(i > $a.i);\n" +
                 "then\n" +
-                "    System.out.println(\"R3\");\n" +
                 "    modify($a) { setS(\"end\") };\n" +
                 "    list.add(\"R3\");\n" +
                 "end\n" +
                 "rule R4\n" +
                 "when\n" +
                 "    $a : A(s == \"running\");\n" +
-                "    $b : B(i != 2, s != $a.s);\n" + // TODO: slot specific should make it work without i!=2
+                "    $b : B(s != $a.s);\n" + // Slot specific allows to avoid an infinite loop even without the constraint i!=2
+                // "    $b : B(i != 2, != $a.s);\n" + // add this constraint if you disable slot specific
                 "then\n" +
-                "    System.out.println(\"R4\");\n" +
                 "    modify($b) { setI(2) };\n" +
                 "    list.add(\"R4\");\n" +
                 "end\n" +
@@ -9635,7 +9632,6 @@ public class MiscTest {
                 "when\n" +
                 "    $b : B(i == 2, s == \"running\");\n" +
                 "then\n" +
-                "    System.out.println(\"R5\");\n" +
                 "    modify($b) { setI(4) };\n" +
                 "    list.add(\"R5\");\n" +
                 "end";
@@ -9661,6 +9657,7 @@ public class MiscTest {
 
         list = (List)ksession.getGlobal( "list" );
         System.out.println(list);
+
         assertEquals(6, rules);
         assertEquals("end", factTypeB.get(factB, "s"));
         assertEquals(4, factTypeB.get(factB, "i"));
@@ -9682,14 +9679,12 @@ public class MiscTest {
                 "    A($s : s)\n" +
                 "    $b : B(s != $s)\n" +
                 "then\n" +
-                "    System.out.println(\"R1\");\n" +
                 "    modify($b) { setS($s) }\n" +
                 "end\n" +
                 "rule R2\n" +
                 "when\n" +
                 "    $b : B(on == false)\n" +
                 "then\n" +
-                "    System.out.println(\"R2\");\n" +
                 "    modify($b) { setOn(true) }\n" +
                 "end\n";
 
@@ -9708,8 +9703,11 @@ public class MiscTest {
         ksession.insert( factB );
 
         int rules = ksession.fireAllRules();
-
         assertEquals(2, rules);
+
+        assertEquals(true, factTypeB.get(factB, "on"));
+        assertEquals("y", factTypeB.get(factB, "s"));
+        ksession.dispose();
     }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {

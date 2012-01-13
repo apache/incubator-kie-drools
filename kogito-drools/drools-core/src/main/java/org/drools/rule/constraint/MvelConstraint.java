@@ -34,7 +34,7 @@ import static org.drools.core.util.ClassUtils.*;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
-    private static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
+    private static final int JIT_THRESOLD = 1; // Integer.MAX_VALUE;
 
     private transient AtomicInteger invocationCounter = new AtomicInteger(1);
     private transient boolean jitted = false;
@@ -124,10 +124,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private boolean evaluate(Object object, InternalWorkingMemory workingMemory, Map<String, Object> vars) {
-System.out.println("Exp => " + expression);
         if (!jitted) {
             if (conditionEvaluator == null) {
-                conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression);
+                createMvelConditionEvaluator(workingMemory);
                 if (TEST_JITTING) { // TO BE REMOVED
                     boolean mvelValue = forceJitEvaluator(workingMemory, object, vars);
                 }
@@ -143,6 +142,10 @@ System.out.println("Exp => " + expression);
         } catch (NumberFormatException nfe) {
             return false;
         }
+    }
+
+    private void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
+        conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression);
     }
 
     private boolean forceJitEvaluator(InternalWorkingMemory workingMemory, Object object, Map<String, Object> vars) {
@@ -209,14 +212,14 @@ System.out.println("Exp => " + expression);
         }
     }
 
+    // Slot specific
+
     public long getListenedPropertyMask(Class<?> nodeClass) {
-        if (analyzedCondition == null && conditionEvaluator != null) {
+        if (conditionEvaluator == null) return 0L;
+        if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
         }
-        if (analyzedCondition != null) {
-            return calculateMask(analyzedCondition, nodeClass, getSettableProperties(nodeClass));
-        }
-        return -1L;
+        return calculateMask(analyzedCondition, nodeClass, getSettableProperties(nodeClass));
     }
 
     private long calculateMask(Condition condition, Class<?> nodeClass, List<String> settableProperties) {
