@@ -14,6 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -49,7 +50,7 @@ import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemory;
 
-public class SequentialTest {
+public class SequentialTest extends CommonTestMethodBase {
     //  FIXME lots of XXX tests here, need to find out why.
     
     @Test
@@ -423,15 +424,4 @@ public class SequentialTest {
 
     }
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
 }

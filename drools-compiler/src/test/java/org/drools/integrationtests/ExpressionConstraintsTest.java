@@ -2,6 +2,7 @@ package org.drools.integrationtests;
 
 import static org.junit.Assert.fail;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Mailbox;
@@ -18,7 +19,7 @@ import org.junit.Test;
 /**
  * This is a sample class to launch a rule.
  */
-public class ExpressionConstraintsTest {
+public class ExpressionConstraintsTest extends CommonTestMethodBase {
     
     @Test
     public void testExpressionConstraints1() {
@@ -40,7 +41,7 @@ public class ExpressionConstraintsTest {
         		     "    then\n" + 
         		     "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Mailbox mbox = new Mailbox(Mailbox.TEST_EMAIL);
         Message message = new Message();
@@ -80,7 +81,7 @@ public class ExpressionConstraintsTest {
                      "    then\n" + 
                      "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Mailbox mbox = new Mailbox(Mailbox.TEST_EMAIL);
         Message message = new Message();
@@ -129,7 +130,7 @@ public class ExpressionConstraintsTest {
                      "    then\n" + 
                      "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Mailbox mbox = new Mailbox(Mailbox.TEST_EMAIL);
         Message message = new Message();
@@ -160,7 +161,7 @@ public class ExpressionConstraintsTest {
                      "    then\n" + 
                      "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert(new Mailbox("foo@mail"));
         int rules = ksession.fireAllRules();

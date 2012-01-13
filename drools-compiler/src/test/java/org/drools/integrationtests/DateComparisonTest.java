@@ -3,20 +3,15 @@ package org.drools.integrationtests;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.Cheese;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -24,11 +19,12 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Test;
 
 /**
  * This is a sample class to launch a rule.
  */
-public class DateComparisonTest {
+public class DateComparisonTest extends CommonTestMethodBase {
 
     @Test
     public void testDateComparisonThan() throws Exception {
@@ -64,7 +60,7 @@ public class DateComparisonTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "results",
                             results );
         File testTmpDir = new File("target/test-tmp/");

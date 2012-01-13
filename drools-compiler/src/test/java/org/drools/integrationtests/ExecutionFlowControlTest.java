@@ -18,6 +18,7 @@ import static org.junit.Assert.*;
 
 import org.drools.Cell;
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -35,6 +36,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.RuleFlowGroupImpl;
@@ -54,18 +56,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 
-public class ExecutionFlowControlTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
+public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testSalienceIntegerAndDepthCrs() throws Exception {
@@ -315,7 +306,7 @@ public class ExecutionFlowControlTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -361,7 +352,7 @@ public class ExecutionFlowControlTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -621,7 +612,7 @@ public class ExecutionFlowControlTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -803,11 +794,11 @@ public class ExecutionFlowControlTest {
             }
             System.exit(1);
         }
-        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> knowledgePackages = kBuilder.getKnowledgePackages();
-        kBase.addKnowledgePackages(knowledgePackages);
+        kbase.addKnowledgePackages(knowledgePackages);
         
-        StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         Holder inrec = new Holder(1);
         System.out.println("Holds: " + inrec.getValue());
@@ -816,7 +807,8 @@ public class ExecutionFlowControlTest {
         Assert.assertEquals(1, session.getFactHandles().size());
         Assert.assertEquals("setting 1", inrec.getOutcome());
 
-        session = kBase.newStatefulKnowledgeSession();
+        session.dispose();
+        session = createKnowledgeSession(kbase);
         inrec = new Holder(null);
         System.out.println("Holds: " + inrec.getValue());
         session.insert(inrec);
@@ -824,7 +816,8 @@ public class ExecutionFlowControlTest {
         Assert.assertEquals(1, session.getFactHandles().size());
         Assert.assertEquals("setting null", inrec.getOutcome());
 
-        session = kBase.newStatefulKnowledgeSession();
+        session.dispose();
+        session = createKnowledgeSession(kbase);
         inrec = new Holder(0);
         System.out.println("Holds: " + inrec.getValue());
         session.insert(inrec);

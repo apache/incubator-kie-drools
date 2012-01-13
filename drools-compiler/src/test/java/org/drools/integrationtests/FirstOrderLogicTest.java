@@ -1,9 +1,7 @@
 package org.drools.integrationtests;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,36 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.Address;
-import org.drools.Cheese;
-import org.drools.Cheesery;
-import org.drools.ClockType;
-import org.drools.FactA;
-import org.drools.FactB;
-import org.drools.FactC;
-import org.drools.FactHandle;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Message;
-import org.drools.Order;
-import org.drools.OrderItem;
-import org.drools.Person;
-import org.drools.PersonInterface;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SpecialString;
-import org.drools.State;
-import org.drools.StatefulSession;
-import org.drools.StockTick;
-import org.drools.Triangle;
-import org.drools.WorkingMemory;
+import org.drools.*;
 import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
@@ -64,20 +33,15 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class FirstOrderLogicTest {
-    protected RuleBase getRuleBase() throws Exception {
+public class FirstOrderLogicTest extends CommonTestMethodBase {
 
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+    private static Logger logger = LoggerFactory.getLogger(FirstOrderLogicTest.class);
+    
     private KnowledgeBase loadKnowledgeBase( String fileName ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
@@ -86,7 +50,7 @@ public class FirstOrderLogicTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -111,6 +75,10 @@ public class FirstOrderLogicTest {
         return kbase;
     }
 
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
+        return kbase.newStatefulKnowledgeSession();
+    }
+    
     @Test
     public void testCollect() throws Exception {
 
@@ -165,7 +133,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_collectNodeSharing.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession workingMemory = ruleBase.newStatefulSession();
@@ -317,7 +285,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -348,7 +316,7 @@ public class FirstOrderLogicTest {
         }
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -389,7 +357,7 @@ public class FirstOrderLogicTest {
         assertTrue( rule.isValid() );
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -428,7 +396,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -468,7 +436,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_exists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -520,7 +488,7 @@ public class FirstOrderLogicTest {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( ksession );
         ksession.fireAllRules();
         ksession.dispose();
@@ -532,7 +500,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -572,7 +540,7 @@ public class FirstOrderLogicTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -662,7 +630,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectWithNestedFrom.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -771,7 +739,7 @@ public class FirstOrderLogicTest {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            System.out.println( parser.getErrors() );
+            logger.info( parser.getErrors().toString() );
             fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package 
@@ -780,7 +748,7 @@ public class FirstOrderLogicTest {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         // load up the rulebase 
@@ -794,7 +762,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -853,7 +821,7 @@ public class FirstOrderLogicTest {
     @Test
     public void testForallSinglePattern2() throws Exception {
         final KnowledgeBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Triangle( 3,
                                        3,
@@ -980,7 +948,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromInsideNotAndExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1020,7 +988,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrNesting.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1062,7 +1030,7 @@ public class FirstOrderLogicTest {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -1090,7 +1058,7 @@ public class FirstOrderLogicTest {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final AgendaEventListener al = mock( AgendaEventListener.class );
         ksession.addEventListener( al );
@@ -1110,7 +1078,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1169,7 +1137,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectContainsOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1228,7 +1196,7 @@ public class FirstOrderLogicTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePatternWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1302,14 +1270,14 @@ public class FirstOrderLogicTest {
                      ResourceType.DRL );
 
         if ( builder.hasErrors() ) {
-            System.out.println( builder.getErrors() );
+            logger.info( builder.getErrors().toString() );
         }
         assertFalse( builder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final List<Address> results = new ArrayList<Address>();
         session.setGlobal( "results",
@@ -1490,7 +1458,7 @@ public class FirstOrderLogicTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -1501,7 +1469,7 @@ public class FirstOrderLogicTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( knowledgePackages );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.insert( bonFromage );
 
         int rules = session.fireAllRules();
@@ -1513,7 +1481,7 @@ public class FirstOrderLogicTest {
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( knowledgePackages );
         
-        session = kbase.newStatefulKnowledgeSession();
+        session = createKnowledgeSession(kbase);
         session.insert( bonFromage );
 
         rules = session.fireAllRules();
@@ -1522,7 +1490,8 @@ public class FirstOrderLogicTest {
 
     }
     
-    @Test @Ignore
+    @Test 
+    @Ignore
     public void testLotsOfOrs() throws Exception {
         // Decomposed this test down to just two rules, while still exhibiting the problem
         // Uncomment rest of rule as those are fixed, to complicate it again.
@@ -1578,10 +1547,10 @@ public class FirstOrderLogicTest {
                 "        System.out.println( \"Worked!\" ); \n" + 
                 "end";
         
-        System.out.println( str );
+        logger.info( str );
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
              
         ksession.insert(new Field("t", "Y"));
         ksession.insert(new Field("a", "b"));
@@ -1603,7 +1572,7 @@ public class FirstOrderLogicTest {
                 "end\n";
         
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         
         ksession.insert( new Message( "test" ) );
         int rules = ksession.fireAllRules();

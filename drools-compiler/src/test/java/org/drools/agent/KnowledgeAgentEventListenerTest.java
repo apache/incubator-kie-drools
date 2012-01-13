@@ -1,12 +1,10 @@
 package org.drools.agent;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -22,6 +20,7 @@ import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Test;
 
 public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
@@ -63,7 +62,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         KnowledgeAgent kagent = this.createKAgent( kbase,
                                                    false );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         //Agent: take care of them!
         applyChangeSet( kagent,
@@ -261,7 +260,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         ksession.setGlobal( "list",
                             list );
         ksession.insert( new Person( "John", 34  ) );
@@ -280,7 +279,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         scan( kagent );
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         ksession.setGlobal( "list",
                             list );
         ksession.insert( new Person( "John", 34  ) );
@@ -307,7 +306,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         ksession.setGlobal( "list",
                             list );
         ksession.insert( new Person( "John", 34  ) );
@@ -339,7 +338,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         ksession.setGlobal( "list",
                             list );
         ksession.insert( new Person( "John", 34  ) );
@@ -372,7 +371,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         ksession.setGlobal( "list",
                             list );
         ksession.insert( new Person( "John", 34  ) );

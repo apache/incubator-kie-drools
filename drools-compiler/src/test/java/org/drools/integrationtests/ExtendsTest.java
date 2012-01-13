@@ -16,10 +16,20 @@
 
 package org.drools.integrationtests;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.*;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
@@ -27,21 +37,10 @@ import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
- * Created by IntelliJ IDEA.
- * User: davide
- * Date: 11/15/10
- * Time: 4:03 PM
- *
  * Test for declared bean Extension
  */
-public class ExtendsTest extends TestCase {
+public class ExtendsTest extends CommonTestMethodBase {
 
 
 
@@ -69,10 +68,9 @@ public class ExtendsTest extends TestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        return kbase.newStatefulKnowledgeSession();
+        return createKnowledgeSession(kbase);
 
     }
-
 
     @Test
     public void testExtends() throws Exception {
@@ -371,7 +369,7 @@ public class ExtendsTest extends TestCase {
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List out = new ArrayList();
         ksession.setGlobal("ans",out);

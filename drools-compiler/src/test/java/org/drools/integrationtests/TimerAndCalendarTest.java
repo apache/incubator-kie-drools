@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.Alarm;
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -40,18 +41,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 
-public class TimerAndCalendarTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
+public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test
     public void testDuration() throws Exception {

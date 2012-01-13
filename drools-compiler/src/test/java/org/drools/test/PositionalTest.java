@@ -1,9 +1,8 @@
 package org.drools.test;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -13,7 +12,7 @@ import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-public class PositionalTest {
+public class PositionalTest extends CommonTestMethodBase {
 
     @Test
     public void testPositional() {
@@ -39,7 +38,7 @@ public class PositionalTest {
         assertFalse( knowledgeBuilder.hasErrors() );
         KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
         kBase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession kSession = kBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession kSession = createKnowledgeSession(kBase);
 
         java.util.ArrayList list = new ArrayList();
         kSession.setGlobal( "list",
@@ -53,4 +52,5 @@ public class PositionalTest {
         assertTrue( list.contains( 84.2 ) );
 
     }
+
 }

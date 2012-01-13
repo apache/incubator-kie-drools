@@ -2,20 +2,15 @@ package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Address;
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.DomainObject;
 import org.drools.FactHandle;
 import org.drools.InsertedObject;
@@ -26,8 +21,6 @@ import org.drools.Person;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.Worker;
 import org.drools.WorkingMemory;
@@ -43,8 +36,8 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.Entry;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.EntryPointNode;
@@ -61,15 +54,9 @@ import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
+import org.junit.Test;
 
-public class QueryTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setMultithreadEvaluation( false );
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
+public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQuery() throws Exception {
@@ -77,7 +64,7 @@ public class QueryTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
 
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -100,7 +87,7 @@ public class QueryTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
 
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -137,7 +124,7 @@ public class QueryTest {
             fail( builder.getErrors().toString() );
         }
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -184,7 +171,7 @@ public class QueryTest {
             fail( builder.getErrors().toString() );
         }
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -365,7 +352,7 @@ public class QueryTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -398,7 +385,7 @@ public class QueryTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -484,7 +471,7 @@ public class QueryTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 

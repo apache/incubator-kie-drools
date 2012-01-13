@@ -16,39 +16,43 @@
 
 package org.drools.integrationtests;
 
+import java.io.FileWriter;
 import java.io.InputStreamReader;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.HashMap;
 
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.debug.SessionInspector;
+import org.drools.core.util.debug.SessionReporter;
+import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
-public class OutOfMemoryTest {
+public class OutOfMemoryTest extends CommonTestMethodBase {
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+    private static Logger logger = LoggerFactory.getLogger(OutOfMemoryTest.class);
+    
+    /**
+     * This test can take a while (> 1 minute).
+     * @throws Exception
+     */
     @Test
     @Ignore
     public void testStatefulSessionsCreation() throws Exception {
@@ -72,7 +76,7 @@ public class OutOfMemoryTest {
                 session.dispose();
             }
         } catch ( Throwable e ) {
-            System.out.println( "Error at: " + i );
+            logger.info( "Error at: " + i );
             e.printStackTrace();
             fail( "Should not raise any error or exception." );
         }
@@ -99,74 +103,68 @@ public class OutOfMemoryTest {
         // just for profiling
         //Thread.currentThread().wait();
     }
+    
+    @Test
+    @Ignore
+    public void testMemoryLeak() {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_MemoryLeak.drl",
+                                                            OutOfMemoryTest.class ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
 
-//    public void testMemoryLeak() {
-//        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        kbuilder.add( ResourceFactory.newClassPathResource( "test_MemoryLeak.drl",
-//                                                            OutOfMemoryTest.class ),
-//                      ResourceType.DRL );
-//        assertFalse( kbuilder.getErrors().toString(),
-//                     kbuilder.hasErrors() );
-//
-//        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-//
-//        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-//
-//        final int pcount = 5;
-//        Person[] persons = new Person[pcount];
-//        FactHandle[] pHandles = new FactHandle[pcount];
-//        for ( int i = 0; i < persons.length; i++ ) {
-//            persons[i] = new Person( "person-0-" + i );
-//            pHandles[i] = ksession.insert( persons[i] );
-//        }
-//
-//        Cheese[] cheeses = new Cheese[pcount];
-//        FactHandle[] cHandles = new FactHandle[pcount];
-//        for ( int i = 0; i < cheeses.length; i++ ) {
-//            cheeses[i] = new Cheese( "cheese-0-" + i );
-//            cHandles[i] = ksession.insert( cheeses[i] );
-//        }
-//
-//        ksession.fireAllRules();
-//
-//        for ( int j = 1; j <= 5; j++ ) {
-//            for ( int i = 0; i < pcount; i++ ) {
-//                cheeses[i].setType( "cheese-" + j + "-" + i );
-//                ksession.update( cHandles[i],
-//                                 cheeses[i] );
-//                persons[i].setName( "person-" + j + "-" + i );
-//                ksession.update( pHandles[i],
-//                                 persons[i] );
-//            }
-//            ksession.fireAllRules();
-//            System.out.println( "DONE" );
-//        }
-//
-//        SessionInspector inspector = new SessionInspector( ksession );
-//        SessionReporter.addNamedTemplate( "dump_tuples",
-//                                          getClass().getResourceAsStream( "/org/drools/core/util/debug/dump_tuples.mvel" ) );
-//        String report = SessionReporter.generateReport( "dump_tuples",
-//                                                        inspector.getSessionInfo(),
-//                                                        new HashMap<String, Object>() );
-//        try {
-//            FileWriter out = new FileWriter( "tupleDump.txt" );
-//            out.write( report );
-//            out.close();
-//            System.out.println( report );
-//        } catch ( Exception e ) {
-//            e.printStackTrace();
-//        }
-//        //        logicals = getLogicallyInserted( ksession );
-//        //        assertEquals( pcount, logicals.size() );
-//    }
-//
-//    private Collection< ? > getLogicallyInserted(final StatefulKnowledgeSession ksession) {
-//        Collection< ? > logicals = ksession.getObjects( new ObjectFilter() {
-//            public boolean accept(Object object) {
-//                return object.getClass().getSimpleName().equals( "PersonName" );
-//            }
-//        } );
-//        return logicals;
-//    }
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        final int pcount = 5;
+        Person[] persons = new Person[pcount];
+        FactHandle[] pHandles = new FactHandle[pcount];
+        for ( int i = 0; i < persons.length; i++ ) {
+            persons[i] = new Person( "person-0-" + i );
+            pHandles[i] = ksession.insert( persons[i] );
+        }
+
+        Cheese[] cheeses = new Cheese[pcount];
+        FactHandle[] cHandles = new FactHandle[pcount];
+        for ( int i = 0; i < cheeses.length; i++ ) {
+            cheeses[i] = new Cheese( "cheese-0-" + i );
+            cHandles[i] = ksession.insert( cheeses[i] );
+        }
+
+        ksession.fireAllRules();
+
+        for ( int j = 1; j <= 5; j++ ) {
+            for ( int i = 0; i < pcount; i++ ) {
+                cheeses[i].setType( "cheese-" + j + "-" + i );
+                ksession.update( cHandles[i],
+                                 cheeses[i] );
+                persons[i].setName( "person-" + j + "-" + i );
+                ksession.update( pHandles[i],
+                                 persons[i] );
+            }
+            ksession.fireAllRules();
+            logger.info( "DONE" );
+        }
+
+        SessionInspector inspector = new SessionInspector( ksession );
+        SessionReporter.addNamedTemplate( "dump_tuples",
+                                          getClass().getResourceAsStream( "/org/drools/core/util/debug/dump_tuples.mvel" ) );
+        String report = SessionReporter.generateReport( "dump_tuples",
+                                                        inspector.getSessionInfo(),
+                                                        new HashMap<String, Object>() );
+        try {
+            FileWriter out = new FileWriter( "tupleDump.txt" );
+            out.write( report );
+            out.close();
+            logger.info( report );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        //        logicals = getLogicallyInserted( ksession );
+        //        assertEquals( pcount, logicals.size() );
+    }
+
 }

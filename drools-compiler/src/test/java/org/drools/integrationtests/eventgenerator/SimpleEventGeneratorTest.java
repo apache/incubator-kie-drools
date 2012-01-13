@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -21,15 +22,9 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
 
-public class SimpleEventGeneratorTest {
+public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     private final static String TEST_RULE_FILE = "test_eventGenerator.drl";
-
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
 
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
         DroolsParserException,

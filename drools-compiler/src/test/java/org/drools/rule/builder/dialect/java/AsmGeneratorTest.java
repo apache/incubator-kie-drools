@@ -3,23 +3,21 @@ package org.drools.rule.builder.dialect.java;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.conf.AssertBehaviorOption;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-public class AsmGeneratorTest {
+public class AsmGeneratorTest extends CommonTestMethodBase {
      
     @Test
     public void testPatterDeclarations() {
@@ -47,7 +45,7 @@ public class AsmGeneratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         
@@ -93,7 +91,7 @@ public class AsmGeneratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -136,7 +134,7 @@ public class AsmGeneratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         

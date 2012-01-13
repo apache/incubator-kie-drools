@@ -1,10 +1,9 @@
 package org.drools.common;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -15,7 +14,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
 import org.junit.Test;
 
-public class ActivationIteratorTest {
+public class ActivationIteratorTest extends CommonTestMethodBase {
+
     @Test
     public void testSingleLian() {
         String str = "package org.drools.test \n" +
@@ -41,7 +41,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -91,7 +91,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -171,7 +171,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -254,7 +254,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -295,7 +295,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -342,7 +342,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -400,7 +400,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -476,7 +476,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -536,7 +536,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( "0" );
         ksession.insert( "2" );
 
@@ -593,7 +593,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( "0" );
         ksession.insert( "1" );
         ksession.insert( "2" );
@@ -650,7 +650,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         list.add( "0" );
         list.add( "1" );
@@ -704,7 +704,7 @@ public class ActivationIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( new Integer( 1 ) );
         ksession.insert( new Integer( 2 ) );
         ksession.insert( new Integer( 3 ) );
@@ -730,4 +730,5 @@ public class ActivationIteratorTest {
             }
         }
     }
+    
 }

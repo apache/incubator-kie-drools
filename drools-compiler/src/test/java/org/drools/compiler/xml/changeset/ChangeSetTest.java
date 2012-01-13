@@ -1,48 +1,31 @@
 package org.drools.compiler.xml.changeset;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.ChangeSet;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.agent.impl.KnowledgeAgentConfigurationImpl;
-import org.drools.agent.impl.KnowledgeAgentImpl;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.core.util.FileManager;
-import org.drools.io.Resource;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.FileSystemResource;
-import org.drools.io.impl.KnowledgeResource;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.UrlResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.xml.XmlChangeSetReader;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
-public class ChangeSetTest {
+public class ChangeSetTest extends CommonTestMethodBase {
 
     @Test
     public void testXmlParser() throws SAXException,
@@ -97,7 +80,7 @@ public class ChangeSetTest {
         assertFalse( kbuilder.hasErrors() );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -142,7 +125,5 @@ public class ChangeSetTest {
         assertEquals( ResourceType.PKG,
                       resource.getResourceType() );
     }
-
-
     
 }

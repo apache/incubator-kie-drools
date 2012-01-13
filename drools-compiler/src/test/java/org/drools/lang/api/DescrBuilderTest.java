@@ -16,14 +16,10 @@
 
 package org.drools.lang.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.StockTick;
@@ -41,7 +37,7 @@ import org.junit.Test;
 /**
  * DescrBuilderTest
  */
-public class DescrBuilderTest {
+public class DescrBuilderTest extends CommonTestMethodBase {
 
     @Test
     public void testPackage() {
@@ -170,7 +166,7 @@ public class DescrBuilderTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         int rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
@@ -274,7 +270,7 @@ public class DescrBuilderTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0, rules );

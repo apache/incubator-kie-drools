@@ -19,35 +19,20 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class RulebasePartitioningTest {
+public class RulebasePartitioningTest extends CommonTestMethodBase {
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
-    @Test @Ignore
+    @Test 
+    @Ignore
     public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_rulebasePartitions1.drl" ) ) );

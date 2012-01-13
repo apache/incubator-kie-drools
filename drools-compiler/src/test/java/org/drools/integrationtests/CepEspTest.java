@@ -1,18 +1,9 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +20,7 @@ import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -83,19 +75,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-public class CepEspTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+public class CepEspTest extends CommonTestMethodBase {
+    
     private RuleBase loadRuleBase( final Reader reader ) throws IOException,
                                                         DroolsParserException,
                                                         Exception {
@@ -162,6 +143,14 @@ public class CepEspTest {
         }
         return kbase;
     }
+    
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
+        return kbase.newStatefulKnowledgeSession();
+    }
+
+    protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KnowledgeSessionConfiguration conf) { 
+        return kbase.newStatefulKnowledgeSession(conf, null);
+    }
 
     @Test
     public void testComplexTimestamp() {
@@ -186,7 +175,7 @@ public class CepEspTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Message msg = new Message();
         Properties props = new Properties();
         props.put( "timestamp",
@@ -218,8 +207,7 @@ public class CepEspTest {
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
-                                                                              null );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
 
@@ -298,8 +286,7 @@ public class CepEspTest {
 
         // create the session
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
-                                                                              null );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
 
         final List<StockTick> results = new ArrayList<StockTick>();
 
@@ -557,8 +544,7 @@ public class CepEspTest {
         final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( "pseudo" ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
-                                                                               null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
 
         WorkingMemoryEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
 
@@ -810,8 +796,7 @@ public class CepEspTest {
 
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
-                                                                               null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
         clock.setStartupTime( 1000 );
@@ -900,8 +885,7 @@ public class CepEspTest {
 
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
-                                                                               null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
 
         final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<PseudoClockScheduler>getSessionClock();
         clock.setStartupTime( 1000 );
@@ -1454,7 +1438,7 @@ public class CepEspTest {
         conf.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ), conf );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         // rule X should not be delayed as the delay would be infinite
         int rules = ksession.fireAllRules();
         assertEquals( 2, rules );
@@ -1482,7 +1466,7 @@ public class CepEspTest {
 
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf, null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
         
         // Getting a pre-epoch date (i.e., before 1970) 
         Calendar ts = Calendar.getInstance();
@@ -1524,8 +1508,7 @@ public class CepEspTest {
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
-                                                                              null );
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase, conf);
         InternalWorkingMemory iwm = ((StatefulKnowledgeSessionImpl) session).session;
 
         SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
@@ -1732,8 +1715,7 @@ public class CepEspTest {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
-                                                                               null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
         File testTmpDir = new File( "target/test-tmp/" );
         testTmpDir.mkdirs();
@@ -1998,10 +1980,10 @@ public class CepEspTest {
                                                         kbconf,
                                                         true );
 
-        final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
-        ksession1.addEventListener( ael1 );
-        WorkingMemoryEntryPoint ep1 = ksession1.getWorkingMemoryEntryPoint( "stocktick stream" );
+        ksession.addEventListener( ael1 );
+        WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint( "stocktick stream" );
 
         FactHandle fh1 = ep1.insert( st1 );
         FactHandle fh1_2 = ep1.insert( st1 );
@@ -2017,12 +1999,12 @@ public class CepEspTest {
         assertNotSame( fh2,
                        fh3 );
 
-        ksession1.fireAllRules();
+        ksession.fireAllRules();
         // must have fired 3 times, one for each event identity
         verify( ael1,
                 times( 3 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
 
-        ksession1.dispose();
+        ksession.dispose();
     }
 
     @Test
@@ -2080,7 +2062,7 @@ public class CepEspTest {
                                                        null,
                                                        true );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         StockTickInterface tick1 = new StockTick( 1,
                                                   "DROO",
@@ -2119,7 +2101,7 @@ public class CepEspTest {
                                                  kbconf,
                                                  true );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new StockTick( 1,
                                         "A",
@@ -2139,8 +2121,7 @@ public class CepEspTest {
         KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
-                                                                               null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
@@ -2252,7 +2233,7 @@ public class CepEspTest {
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
                                                  config );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -2357,7 +2338,7 @@ public class CepEspTest {
         config.setOption( EventProcessingOption.CLOUD );
         KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
                                                  config );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
 

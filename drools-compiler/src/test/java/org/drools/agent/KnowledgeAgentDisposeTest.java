@@ -1,23 +1,17 @@
 package org.drools.agent;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
-
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-@Ignore
 public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
     private int resourceChangeNotificationCount = 0;
@@ -81,7 +75,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
             this.scan(kagent);
             fail("The agent didn't process any change set. This should be failed.");
         }catch (RuntimeException e){
-            assertEquals(e.getMessage(), "Event for KnowlegeBase update, due to scan, was never received");
+            assertEquals(e.getMessage(), "Event for KnowledgeBase update, due to scan, was never received");
         }
         assertEquals(0, resourceChangeNotificationCount);
         
@@ -143,7 +137,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
         resourceChangeNotificationCount = 0;
 
         //let us create a new ksession and fire all the rules
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal("list", new ArrayList<String>());
         ksession.fireAllRules();
 
@@ -180,7 +174,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
             this.scan(kagent);
             fail("The agent didn't process any change set. This should be failed.");
         }catch (RuntimeException e){
-            assertEquals(e.getMessage(), "Event for KnowlegeBase update, due to scan, was never received");
+            assertEquals(e.getMessage(), "Event for KnowledgeBase update, due to scan, was never received");
         }
         assertEquals(0, resourceChangeNotificationCount);
 

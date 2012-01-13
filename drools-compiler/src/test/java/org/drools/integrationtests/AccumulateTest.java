@@ -1,12 +1,7 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -20,6 +15,7 @@ import java.util.Set;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.CommonTestMethodBase;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -28,8 +24,6 @@ import org.drools.OrderItem;
 import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -50,23 +44,11 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
-public class AccumulateTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
+public class AccumulateTest extends CommonTestMethodBase {
 
     private RuleBase loadRuleBase( final Reader reader ) throws IOException,
                                                         DroolsParserException,
@@ -1655,7 +1637,7 @@ public class AccumulateTest {
     public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( fileName,
                                                  null );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -1767,7 +1749,7 @@ public class AccumulateTest {
                      "end \n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Number> results = new ArrayList<Number>();
         ksession.setGlobal( "results",
@@ -1813,7 +1795,7 @@ public class AccumulateTest {
         		     "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
@@ -1898,7 +1880,7 @@ public class AccumulateTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
 
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
 
         ArrayList resList = new ArrayList();
             ks.setGlobal("list",resList);
@@ -1927,7 +1909,7 @@ public class AccumulateTest {
                 "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.fireAllRules();
         ksession.dispose();
     }

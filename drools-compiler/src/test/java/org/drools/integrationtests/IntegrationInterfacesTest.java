@@ -1,9 +1,5 @@
 package org.drools.integrationtests;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -12,12 +8,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -26,9 +18,9 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.Channel;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.mockito.exceptions.verification.NeverWantedButInvoked;
+import org.junit.Test;
 
-public class IntegrationInterfacesTest {
+public class IntegrationInterfacesTest extends CommonTestMethodBase {
 
     private KnowledgeBase getKnowledgeBase(final String resourceName) throws IOException,
                                                                      ClassNotFoundException {
@@ -70,7 +62,7 @@ public class IntegrationInterfacesTest {
     @Test
     public void testGlobals() throws Exception {
         final KnowledgeBase kbase = getKnowledgeBase( "globals_rule_test.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Object> list = mock( List.class );
         ksession.setGlobal( "list",
@@ -94,7 +86,7 @@ public class IntegrationInterfacesTest {
     @Test
     public void testGlobals2() throws Exception {
         final KnowledgeBase kbase = getKnowledgeBase( "test_globalsAsConstraints.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Object> results = mock( List.class );
         ksession.setGlobal( "results",
@@ -153,7 +145,7 @@ public class IntegrationInterfacesTest {
         readers[1] = new StringReader( rule2 );
 
         final KnowledgeBase kbase = getKnowledgeBase( readers );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.setGlobal( "str",
                             "boo" );
@@ -169,7 +161,7 @@ public class IntegrationInterfacesTest {
     @Test
     public void testChannels() throws IOException, ClassNotFoundException {
         KnowledgeBase kbase = getKnowledgeBase( "test_Channels.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         
         Channel someChannel = mock( Channel.class );
         ksession.registerChannel( "someChannel", someChannel );

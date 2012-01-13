@@ -17,19 +17,9 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,58 +45,8 @@ import java.util.jar.JarInputStream;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.ActivationListenerFactory;
-import org.drools.Address;
-import org.drools.Attribute;
-import org.drools.Bar;
-import org.drools.Cat;
-import org.drools.Cell;
-import org.drools.Cheese;
-import org.drools.CheeseEqual;
-import org.drools.Cheesery;
+import org.drools.*;
 import org.drools.Cheesery.Maturity;
-import org.drools.Child;
-import org.drools.ClassObjectFilter;
-import org.drools.DomainObjectHolder;
-import org.drools.FactA;
-import org.drools.FactB;
-import org.drools.FactC;
-import org.drools.FactHandle;
-import org.drools.FirstClass;
-import org.drools.FromTestClass;
-import org.drools.Guess;
-import org.drools.IndexedNumber;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Message;
-import org.drools.MockPersistentSet;
-import org.drools.Move;
-import org.drools.ObjectWithSet;
-import org.drools.Order;
-import org.drools.OrderItem;
-import org.drools.OuterClass;
-import org.drools.Person;
-import org.drools.PersonFinal;
-import org.drools.PersonInterface;
-import org.drools.PersonWithEquals;
-import org.drools.Pet;
-import org.drools.PolymorphicFact;
-import org.drools.Primitives;
-import org.drools.RandomNumber;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SecondClass;
-import org.drools.Sensor;
-import org.drools.SpecialString;
-import org.drools.State;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.StockTick;
-import org.drools.TestParam;
-import org.drools.Triangle;
-import org.drools.Win;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.base.RuleNameEndsWithAgendaFilter;
 import org.drools.base.RuleNameEqualsAgendaFilter;
@@ -136,7 +76,20 @@ import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
-import org.drools.event.*;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.DefaultWorkingMemoryEventListener;
+import org.drools.event.ObjectInsertedEvent;
+import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.ObjectUpdatedEvent;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -172,27 +125,16 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Run all the tests with the ReteOO engine implementation
  */
-public class MiscTest {
+public class MiscTest extends CommonTestMethodBase {
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setMultithreadEvaluation( false );
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        //config.setPartitionsEnabled( true );
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+    private static Logger logger = LoggerFactory.getLogger(MiscTest.class);
+    
     @Test
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -203,7 +145,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -244,7 +186,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -286,7 +228,7 @@ public class MiscTest {
     public void testMetaConsequence() throws Exception {
         final Package pkg = loadPackage( "test_MetaConsequence.drl" );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -320,7 +262,7 @@ public class MiscTest {
             fail( builder.getErrors().toString() );
         }
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -353,7 +295,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession_1 = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession_1 = createKnowledgeSession(kbase);
         String expected_1 = "expected_1";
         String expected_2 = "expected_2";
         org.drools.runtime.rule.FactHandle handle_1 = ksession_1.insert( expected_1 );
@@ -390,16 +332,16 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession_1 = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 20; i++ ) {
             Object object = new Object();
-            ksession_1.insert( object );
-            org.drools.runtime.rule.FactHandle factHandle = ksession_1.getFactHandle( object );
+            ksession.insert( object );
+            org.drools.runtime.rule.FactHandle factHandle = ksession.getFactHandle( object );
             assertNotNull( factHandle );
             assertEquals( object,
-                          ksession_1.getObject( factHandle ) );
+                          ksession.getObject( factHandle ) );
         }
-        ksession_1.dispose();
+        ksession.dispose();
     }
 
     @Test
@@ -408,7 +350,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -456,7 +398,7 @@ public class MiscTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
@@ -488,7 +430,7 @@ public class MiscTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                                       true );
@@ -528,7 +470,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
@@ -592,7 +534,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+            logger.warn( kbuilder.getErrors().toString() );
         }
         assertTrue( kbuilder.hasErrors() );
     }
@@ -618,7 +560,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+            logger.warn( kbuilder.getErrors().toString() );
         }
         assertTrue( kbuilder.hasErrors() );
     }
@@ -644,7 +586,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+            logger.warn( kbuilder.getErrors().toString() );
         }
         assertTrue( kbuilder.hasErrors() );
     }
@@ -670,14 +612,14 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+            logger.warn( kbuilder.getErrors().toString() );
         }
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -706,7 +648,7 @@ public class MiscTest {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Message( "help" ) );
         ksession.fireAllRules();
@@ -734,14 +676,14 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.err.println( kbuilder.getErrors() );
+            logger.warn( kbuilder.getErrors().toString() );
         }
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -759,7 +701,7 @@ public class MiscTest {
     public void testCustomGlobalResolver() throws Exception {
         final Package pkg = loadPackage( "test_globalCustomResolver.drl" );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -824,7 +766,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -909,7 +851,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -997,7 +939,7 @@ public class MiscTest {
                       cheeseFact.getField( "type" ).get( cheese ) );
 
         // creating a stateful session
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Object cg = cheeseFact.newInstance();
         ksession.setGlobal( "cg",
                             cg );
@@ -1081,7 +1023,7 @@ public class MiscTest {
                 "OK" );
 
         Object application = af.newInstance();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( person );
         ksession.insert( application );
 
@@ -1163,7 +1105,7 @@ public class MiscTest {
         assertFalse( ps.equals( ps2 ) );
 
         // creating a stateful session
-        StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession wm = createKnowledgeSession(kbase);
         Object cg = cheeseFact.newInstance();
         wm.setGlobal( "cg",
                       cg );
@@ -1238,7 +1180,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -1281,7 +1223,7 @@ public class MiscTest {
         }
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "list",
                             new ArrayList<String>() );
 
@@ -1318,7 +1260,7 @@ public class MiscTest {
                       "then\n" +
                       "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         FactType factType = kbase.getFactType( "org.drools",
                                                "SomeFact" );
@@ -1349,7 +1291,7 @@ public class MiscTest {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -1400,7 +1342,7 @@ public class MiscTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -1426,7 +1368,7 @@ public class MiscTest {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -1458,7 +1400,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -1493,7 +1435,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -1525,7 +1467,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         //ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -1616,7 +1558,7 @@ public class MiscTest {
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-            final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
             final List results = new ArrayList();
             ksession.setGlobal( "results",
@@ -1643,7 +1585,7 @@ public class MiscTest {
                           results.get( 1 ) );
         } catch ( Exception e ) {
             e.printStackTrace();
-            if ( kbuilder.hasErrors() ) System.out.println( kbuilder.getErrors() );
+            if ( kbuilder.hasErrors() ) logger.info( kbuilder.getErrors().toString() );
             fail( "Unexpected exception: " + e.getMessage() );
         }
     }
@@ -1667,7 +1609,7 @@ public class MiscTest {
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
             final List<String> results = new ArrayList<String>();
             ksession.setGlobal( "results",
@@ -1710,7 +1652,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
 
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -1742,7 +1684,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -1772,7 +1714,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -1802,7 +1744,7 @@ public class MiscTest {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1848,7 +1790,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         Environment env = EnvironmentFactory.newEnvironment();
@@ -1911,7 +1853,7 @@ public class MiscTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -1944,7 +1886,7 @@ public class MiscTest {
     @Test
     public void testDisconnectedFactHandle() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
         DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
@@ -1965,7 +1907,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2002,7 +1944,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_literal.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -2043,7 +1985,7 @@ public class MiscTest {
                      builder.hasErrors() );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -2069,14 +2011,14 @@ public class MiscTest {
         builder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ),
                      ResourceType.DRL );
 
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         try {
-            knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+            kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should execute with out exceptions" );
         }
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.fireAllRules();
     }
 
@@ -2102,7 +2044,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
@@ -2130,7 +2072,7 @@ public class MiscTest {
             fail( builder.getErrors().toString() );
         }
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         Package pkg = builder.getPackage();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -2192,7 +2134,7 @@ public class MiscTest {
                       ((AttributeDescr) ruleAttrs.get( "dialect" )).getValue() );
         assertEquals( "dialect",
                       ((AttributeDescr) ruleAttrs.get( "dialect" )).getName() );
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -2211,7 +2153,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2256,7 +2198,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -2288,7 +2230,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2317,7 +2259,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2345,7 +2287,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2385,7 +2327,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2422,7 +2364,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2448,7 +2390,7 @@ public class MiscTest {
 
         if ( builder.hasErrors() ) {
             for ( DroolsError error : builder.getErrors().getErrors() ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
         }
         assertFalse( builder.getErrors().toString(),
@@ -2456,7 +2398,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -2492,7 +2434,7 @@ public class MiscTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         final List list1 = new ArrayList();
         ksession.setGlobal( "list1",
                             list1 );
@@ -2553,7 +2495,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -2651,7 +2593,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -2689,7 +2631,7 @@ public class MiscTest {
 
         RuntimeException runtime = null;
         // this should ralph all over the place.
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         try {
             ruleBase.addPackage( pkg );
             fail( "Should have thrown an exception as the rule is NOT VALID." );
@@ -2713,7 +2655,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule2.drl" ) ) );
         assertTrue( builder.hasErrors() );
         String err = builder.getErrors().toString();
-        System.out.println( err );
+        logger.info( err );
     }
 
     @Test
@@ -2773,7 +2715,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -2792,7 +2734,9 @@ public class MiscTest {
         workingMemory.fireAllRules();
 
         List<String> results = (List<String>) workingMemory.getGlobal( "list" );
-        System.out.println( results );
+        for( String result : results ) { 
+            logger.info( result );
+        }
         assertEquals( 5,
                       results.size() );
         assertTrue( results.contains( "first" ) );
@@ -2812,7 +2756,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -2840,7 +2784,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -2914,7 +2858,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -2941,7 +2885,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -2964,7 +2908,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -2993,7 +2937,7 @@ public class MiscTest {
 
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3071,7 +3015,7 @@ public class MiscTest {
 
         if ( parser.hasErrors() ) {
             for ( DroolsError error : parser.getErrors() ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             fail( parser.getErrors().toString() );
         }
@@ -3079,7 +3023,7 @@ public class MiscTest {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage( pkg );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3110,12 +3054,12 @@ public class MiscTest {
 
         if ( builder.hasErrors() ) {
             for ( DroolsError error : builder.getErrors().getErrors() ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             fail( parser.getErrors().toString() );
         }
 
-        ruleBase = getRuleBase();
+        ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         workingMemory = ruleBase.newStatefulSession();
 
@@ -3146,12 +3090,12 @@ public class MiscTest {
 
         if ( builder.hasErrors() ) {
             for ( DroolsError error : builder.getErrors().getErrors() ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             fail( parser.getErrors().toString() );
         }
 
-        ruleBase = getRuleBase();
+        ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         workingMemory = ruleBase.newStatefulSession();
 
@@ -3182,7 +3126,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3218,7 +3162,7 @@ public class MiscTest {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -3239,7 +3183,7 @@ public class MiscTest {
         builder.addPackageFromDrl( reader );
         final Package pkg1 = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg1 );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3271,7 +3215,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3292,7 +3236,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoPatterns.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3314,7 +3258,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3350,7 +3294,7 @@ public class MiscTest {
         builder.addPackageFromDrl( reader );
         final Package pkg1 = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg1 );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3391,7 +3335,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         // now create some test data
         final Driver driver = new Driver();
@@ -3418,7 +3362,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
@@ -3515,7 +3459,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueAndGlobal.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3594,7 +3538,7 @@ public class MiscTest {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_missing_import.drl" ) ) );
             final Package pkg = builder.getPackage();
 
-            RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getSinglethreadRuleBase();
             ruleBase.addPackage( pkg );
             ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -3614,7 +3558,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedConditionalElements.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3652,7 +3596,7 @@ public class MiscTest {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclarationUsage.drl" ) ) );
             final Package pkg = builder.getPackage();
 
-            RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getSinglethreadRuleBase();
             ruleBase.addPackage( pkg );
             ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -3671,7 +3615,7 @@ public class MiscTest {
         FactType profileType = kbase.getFactType( "org.drools",
                                                   "Profile" );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Object profile = profileType.newInstance();
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put( "internet",
@@ -3692,7 +3636,7 @@ public class MiscTest {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclarationOfNonExistingField.drl" ) ) );
             final Package pkg = builder.getPackage();
 
-            RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getSinglethreadRuleBase();
             ruleBase.addPackage( pkg );
 
             fail( "Should have trown an exception" );
@@ -3710,7 +3654,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -3738,7 +3682,7 @@ public class MiscTest {
 
     @Test
     public void testImportConflict() throws Exception {
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3752,7 +3696,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3778,7 +3722,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3826,7 +3770,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3842,7 +3786,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3881,7 +3825,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3940,7 +3884,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -3971,7 +3915,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -4090,7 +4034,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_implicitDeclarations.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4134,7 +4078,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -4171,7 +4115,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -4190,7 +4134,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_castsInsideEval.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4207,7 +4151,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_memberOf.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4247,7 +4191,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_contains_in_array.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4277,7 +4221,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4312,7 +4256,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nullBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4340,7 +4284,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RetractModifyWithFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
@@ -4373,7 +4317,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintConnectors.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4434,7 +4378,7 @@ public class MiscTest {
     @Test
     public void testConnectorsAndOperators() throws Exception {
         final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ConstraintConnectorsAndOperators.drl" ) );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new StockTick( 1,
                                         "RHT",
@@ -4461,7 +4405,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Person> results = new ArrayList<Person>();
         ksession.setGlobal( "results",
                             results );
@@ -4502,7 +4446,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4541,7 +4485,7 @@ public class MiscTest {
 
         workingMemory.fireAllRules();
 
-        System.out.println( list.toString() );
+        logger.info( list.toString() );
         assertEquals( 4,
                       list.size() );
 
@@ -4561,7 +4505,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4591,7 +4535,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final StatefulSession session = ruleBase.newStatefulSession();
 
@@ -4613,7 +4557,7 @@ public class MiscTest {
     @Test
     public void testMatchesMVEL2() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Map map = new HashMap();
         map.put( "content",
@@ -4628,7 +4572,7 @@ public class MiscTest {
     @Test
     public void testMatchesMVEL3() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Map map = new HashMap();
         map.put( "content",
@@ -4649,7 +4593,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4684,7 +4628,7 @@ public class MiscTest {
                             "then\n" +
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( "b" );
 
@@ -4712,7 +4656,7 @@ public class MiscTest {
                             "then\n" +
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Person( "mark",
                                      50 ) );
@@ -4738,7 +4682,7 @@ public class MiscTest {
                             "then\n" +
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Person( "mark",
                                      50 ) );
@@ -4759,7 +4703,7 @@ public class MiscTest {
                             "then\n" +
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( "b" );
 
@@ -4786,7 +4730,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4861,7 +4805,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -4890,7 +4834,7 @@ public class MiscTest {
     @Test
     public void testMapNullConstraint() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_mapNullConstraints.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -5001,7 +4945,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -5022,7 +4966,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5075,7 +5019,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_halt.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5101,7 +5045,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_fireLimit.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5184,7 +5128,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_charComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5255,7 +5199,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5292,7 +5236,7 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -5300,7 +5244,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -5378,7 +5322,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -5443,7 +5387,7 @@ public class MiscTest {
             assertEquals( 1,
                           pkg2.getRules().length );
 
-            RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getSinglethreadRuleBase();
             ruleBase.addPackage( pkg1 );
             ruleBase.addPackage( pkg2 );
             ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -5478,7 +5422,7 @@ public class MiscTest {
     public void testMergePackageWithSameRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames1.drl" ) ) );
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
         builder = new PackageBuilder();
@@ -5524,7 +5468,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         DefaultFactHandle handle = (DefaultFactHandle) ksession.insert( "hello" );
         LeftTuple leftTuple = handle.getFirstLeftTuple();
@@ -5558,7 +5502,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -5592,7 +5536,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -5621,7 +5565,7 @@ public class MiscTest {
         assertEquals( 1,
                       pkg1.getRules().length );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg1 );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5661,7 +5605,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5689,7 +5633,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_multipleFroms.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5723,7 +5667,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHashing.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5751,7 +5695,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DefaultBetaConstraint.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5866,7 +5810,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_BooleanWrapper.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -5969,7 +5913,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_IterateObjects.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6026,7 +5970,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -6068,7 +6012,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteWithSpecialOperators.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6173,7 +6117,7 @@ public class MiscTest {
         final Package pkg = builder.getPackage();
         final Package pkg2 = builder2.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase.addPackage( pkg2 );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -6197,7 +6141,7 @@ public class MiscTest {
         }
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6222,7 +6166,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6250,7 +6194,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final StatefulSession workingMemory = ruleBase.newStatefulSession();
 
@@ -6282,7 +6226,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -6342,7 +6286,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Logger.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -6370,7 +6314,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromNestedAccessors.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -6407,7 +6351,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromArrayIteration.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
         final WorkingMemory session = ruleBase.newStatefulSession();
@@ -6436,7 +6380,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SubNetworks.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
 
         try {
             ruleBase.addPackage( builder.getPackage() );
@@ -6453,7 +6397,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass.drl" ) ) );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
@@ -6490,7 +6434,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteMatches.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6534,7 +6478,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6579,7 +6523,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6639,7 +6583,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaEvalWithOrCE.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6668,7 +6612,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6696,7 +6640,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaCompositeConstraints.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -6724,7 +6668,7 @@ public class MiscTest {
         }
 
         final Package pkg = builder.getPackage();
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -6753,7 +6697,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlockWithFrom.drl" ) ) );
         final Package pkg = builder.getPackage();
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -6787,7 +6731,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_JavaModifyBlock.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6829,7 +6773,7 @@ public class MiscTest {
 
         pkg = SerializationHelper.serializeObject( pkg );
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -6902,7 +6846,7 @@ public class MiscTest {
         List mlist = new ArrayList();
         List jlist = new ArrayList();
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "mlist",
                             mlist );
         ksession.setGlobal( "jlist",
@@ -6915,7 +6859,8 @@ public class MiscTest {
         assertEquals( b1,
                       jlist.get( 0 ) );
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.dispose();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "mlist",
                             mlist );
         ksession.setGlobal( "jlist",
@@ -6929,7 +6874,8 @@ public class MiscTest {
         assertEquals( b2,
                       jlist.get( 1 ) );
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.dispose();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "mlist",
                             mlist );
         ksession.setGlobal( "jlist",
@@ -7001,7 +6947,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeepNestedConstraints.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -7066,7 +7012,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCEFollowedByEval.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -7092,7 +7038,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final StatefulSession session = ruleBase.newStatefulSession();
@@ -7135,7 +7081,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyWithLockOnActive.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         StatefulSession session = ruleBase.newStatefulSession();
@@ -7172,7 +7118,7 @@ public class MiscTest {
 
         final List<Person> results = new ArrayList<Person>();
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.setGlobal( "results",
                            results );
 
@@ -7215,7 +7161,7 @@ public class MiscTest {
 
         final List<Person> results = new ArrayList<Person>();
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.setGlobal( "results",
                            results );
 
@@ -7249,7 +7195,7 @@ public class MiscTest {
                       "age",
                       Integer.valueOf( 30 ) );
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         final List results = new ArrayList();
         session.setGlobal( "results",
                            results );
@@ -7272,13 +7218,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -7299,13 +7245,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         Map mapOne = new HashMap<String, Object>();
@@ -7335,13 +7281,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -7362,13 +7308,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -7396,13 +7342,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             fail( "Error loading test_JBRules2369" );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -7435,13 +7381,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -7459,7 +7405,8 @@ public class MiscTest {
         assertTrue( results.contains( win2 ) );
         assertTrue( results.contains( win3 ) );
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.dispose();
+        ksession = createKnowledgeSession(kbase);
         results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -7480,7 +7427,7 @@ public class MiscTest {
     @Test
     public void testFireAllWhenFiringUntilHalt() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Runnable fireUntilHalt = new Runnable() {
             public void run() {
@@ -7542,7 +7489,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
+            logger.info( kbuilder.getErrors().toString() );
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
 
@@ -7550,7 +7497,7 @@ public class MiscTest {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
 
         List list = new ArrayList();
@@ -7608,7 +7555,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
+            logger.info( kbuilder.getErrors().toString() );
             throw new RuntimeException( kbuilder.getErrors().toString() );
         }
 
@@ -7616,7 +7563,7 @@ public class MiscTest {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
 
         List list = new ArrayList();
@@ -7660,13 +7607,13 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );
@@ -7712,7 +7659,7 @@ public class MiscTest {
                         "brie" );
 
         // creating a stateful session
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Number> results = new ArrayList<Number>();
         ksession.setGlobal( "results",
                             results );
@@ -7743,7 +7690,7 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         // creating listener as a jmock proxy
         final org.drools.event.rule.WorkingMemoryEventListener wmeListener = mock( org.drools.event.rule.WorkingMemoryEventListener.class );
@@ -7795,7 +7742,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Person( "Toni" ) );
         ksession.insert( new Pet( "Toni" ) );
@@ -7829,7 +7776,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final org.drools.rule.Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -7871,7 +7818,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final org.drools.rule.Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -7913,7 +7860,7 @@ public class MiscTest {
         }
         final org.drools.rule.Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
@@ -7943,7 +7890,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final org.drools.rule.Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
         assertNotNull( session );
@@ -8045,7 +7992,7 @@ public class MiscTest {
         builder.addPackageFromDrl( new StringReader( rule ) );
         final org.drools.rule.Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        final RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
         assertNotNull( session );
@@ -8100,7 +8047,7 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -8108,7 +8055,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         // create working memory mock listener
         org.drools.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
@@ -8151,7 +8098,7 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -8206,7 +8153,7 @@ public class MiscTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
+                logger.warn( error.toString() );
             }
             throw new IllegalArgumentException( "Could not parse knowledge." );
         }
@@ -8214,7 +8161,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         // create working memory mock listener
         org.drools.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.drools.event.rule.WorkingMemoryEventListener.class );
@@ -8251,7 +8198,7 @@ public class MiscTest {
     public void testOrWithReturnValueRestriction() throws Exception {
         String fileName = "test_OrWithReturnValue.drl";
         KnowledgeBase kbase = loadKnowledgeBase( fileName );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Cheese( "brie",
                                      18 ) );
@@ -8286,7 +8233,7 @@ public class MiscTest {
             Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
 
             while ( errors.hasNext() ) {
-                System.out.println( "kbuilder error: " + errors.next().getMessage() );
+                logger.info( "kbuilder error: " + errors.next().getMessage() );
             }
         }
 
@@ -8324,7 +8271,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -8379,7 +8326,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -8430,7 +8377,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -8496,7 +8443,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -8566,7 +8513,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         FactType asgType = kbase.getFactType( "org.drools",
                                               "Assignment" );
@@ -8609,7 +8556,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         FactType asgType = kbase.getFactType( "org.drools",
                                               "Assignment" );
@@ -8644,7 +8591,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Person p = new Person( "-..x..xrwx" );
 
@@ -8671,7 +8618,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Person p = new Person( "d..x..xrwx" );
 
@@ -8696,7 +8643,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Primitives p = new Primitives();
         p.setBooleanPrimitive( true );
@@ -8724,7 +8671,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Order order1 = new Order( 1,
                                   "XYZ" );
@@ -8768,7 +8715,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Order order1 = new Order( 1,
                                   "XYZ" );
@@ -8803,7 +8750,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Person( "Bob" ) );
         ksession.insert( new Person( "Mark" ) );
@@ -8820,7 +8767,7 @@ public class MiscTest {
                      "rule Bbb when then end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -8844,7 +8791,7 @@ public class MiscTest {
                      "rule Bbb when then end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -8868,7 +8815,7 @@ public class MiscTest {
                      "rule Bbb when then end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -8892,7 +8839,7 @@ public class MiscTest {
                      "rule Bbb when then end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -8924,7 +8871,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Cheese( "Stilton",
                                      2 ) );
@@ -8945,7 +8892,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Map<String, String> mark = new HashMap<String, String>();
         mark.put( "type",
@@ -8983,7 +8930,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Person( "Bob" ) );
 
@@ -9002,7 +8949,7 @@ public class MiscTest {
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Person person = new Person( "Bob" );
         person.setAlive( true );
@@ -9030,7 +8977,7 @@ public class MiscTest {
                      "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Person person = new Person( "bob" );
         ksession.insert( person );
@@ -9055,7 +9002,7 @@ public class MiscTest {
                      "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         int rules = ksession.fireAllRules();
         assertEquals( 1,
@@ -9072,7 +9019,7 @@ public class MiscTest {
                      "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert( new Primitives() );
         int rules = ksession.fireAllRules();
@@ -9090,7 +9037,7 @@ public class MiscTest {
                          "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Person bob = new Person( "bob",
                                  30 );
@@ -9135,7 +9082,7 @@ public class MiscTest {
                      "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Primitives primitives = new Primitives();
         primitives.setClassAttr( String.class );
@@ -9160,7 +9107,7 @@ public class MiscTest {
 
         assertTrue( kbuilder.hasErrors() );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        System.out.println( errors );
+        logger.info( errors.toString() );
         assertEquals( 1,
                       errors.size() );
         KnowledgeBuilderError error = errors.iterator().next();
@@ -9220,7 +9167,7 @@ public class MiscTest {
                      "then\n" +
                      "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
@@ -9258,7 +9205,7 @@ public class MiscTest {
                      "then\n" +
                      "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         Primitives p = new Primitives();
         p.setBigDecimal( BigDecimal.valueOf( 10 ) );
@@ -9285,7 +9232,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         assertTrue(kbuilder.hasErrors());
-        System.out.println(kbuilder.getErrors().toString());
+        logger.info(kbuilder.getErrors().toString());
     }
 
     @Test
@@ -9360,7 +9307,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( ruleFileContent1,
                                                            ruleFileContent2 );
-        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession knowledgeSession = createKnowledgeSession(kbase);
 
         final FactType myDeclaredFactType = kbase.getFactType( "org.drools.integrationtests",
                                                                "MyDeclaredType" );
@@ -9430,13 +9377,13 @@ public class MiscTest {
 
         builder.addPackageFromDrl( new StringReader( passingRule ) );
         if ( builder.hasErrors() ) {
-            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+            logger.warn( builder.getErrors().getErrors()[0].getMessage() );
         }
         assertFalse( builder.hasErrors() );
 
         builder.addPackageFromDrl( new StringReader( failingRule ) );
         if ( builder.hasErrors() ) {
-            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+            logger.warn( builder.getErrors().getErrors()[0].getMessage() );
         }
         assertFalse( builder.hasErrors() );
 
@@ -9465,7 +9412,7 @@ public class MiscTest {
 
 		//building stuff
 		KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
 		//adding test data
 		Bar[] barList = new Bar[3];
@@ -9510,7 +9457,7 @@ public class MiscTest {
 
         //building stuff
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert(new Message("test"));
         int rules = ksession.fireAllRules();
@@ -9530,7 +9477,7 @@ public class MiscTest {
 
         //building stuff
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.insert(new Triangle());
         int rules = ksession.fireAllRules();
@@ -9555,7 +9502,7 @@ public class MiscTest {
 
         //building stuff
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
         
@@ -9812,7 +9759,7 @@ public class MiscTest {
         pkg = SerializationHelper.serializeObject( pkg );
 
         // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getSinglethreadRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         // load up the rulebase
@@ -9883,7 +9830,7 @@ public class MiscTest {
                 "end ";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         TestFact fact = new TestFact();
         fact.setS("asdf");
@@ -9902,7 +9849,7 @@ public class MiscTest {
                 result = s1.equals(s2);
             }
 
-            System.out.println("in utilMethod >" + s1 + "<  >" + s2 + "< returns " + result);
+            logger.info("in utilMethod >" + s1 + "<  >" + s2 + "< returns " + result);
             return result;
         }
     }

@@ -1,24 +1,22 @@
 package org.drools.agent;
 
-import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.definition.KnowledgePackage;
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
@@ -282,7 +280,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
@@ -299,7 +297,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         scan(kagent);
 
         // Use the same session for incremental build test
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal("list", list);
         ksession.insert("Some String");
         ksession.fireAllRules();
@@ -333,7 +331,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ksession.fireAllRules();
@@ -350,7 +348,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         scan( kagent );
 
         // Use the same session for incremental build test
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal("list", list);
         ksession.insert("Some String");
         ksession.fireAllRules();
@@ -399,7 +397,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ksession.setGlobal("salesChannelId", 1);
@@ -419,7 +417,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         scan(kagent);
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal("list", list);
         ksession.setGlobal("salesChannelId", 4);
         ksession.setGlobal("includeFinishing", true);
@@ -479,7 +477,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         ksession.setGlobal("salesChannelId", 1);
@@ -504,7 +502,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         
         scan(kagent);
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         ksession.setGlobal("list", list);
         ksession.setGlobal("salesChannelId", 4);
         ksession.setGlobal("includeFinishing", true);

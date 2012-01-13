@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -11,11 +12,12 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-public class VarargsTest {
+public class VarargsTest extends CommonTestMethodBase {
+    
     @Test
     public void testStrStartsWith() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.setGlobal( "invoker", new Invoker() );
 

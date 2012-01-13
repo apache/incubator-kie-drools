@@ -1,10 +1,11 @@
 package org.drools.integrationtests;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RoutingMessage;
@@ -15,13 +16,14 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Test;
 
-public class StrEvaluatorTest {
+public class StrEvaluatorTest extends CommonTestMethodBase {
 
     @Test
     public void testStrStartsWith() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -39,7 +41,7 @@ public class StrEvaluatorTest {
     @Test
     public void testStrEndsWith() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -57,7 +59,7 @@ public class StrEvaluatorTest {
     @Test
     public void testStrLengthEquals() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -75,7 +77,7 @@ public class StrEvaluatorTest {
     @Test
     public void testStrNotStartsWith() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -92,7 +94,7 @@ public class StrEvaluatorTest {
     @Test
     public void testStrNotEndsWith() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -109,7 +111,7 @@ public class StrEvaluatorTest {
     @Test
     public void testStrLengthNoEquals() throws Exception {
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );

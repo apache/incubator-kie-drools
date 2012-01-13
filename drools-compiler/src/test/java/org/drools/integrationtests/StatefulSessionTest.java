@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -31,20 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StatefulSessionTest {
+public class StatefulSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
-
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
 
     @Test
     public void testSingleObjectAssert() throws Exception {
