@@ -88,13 +88,14 @@ public interface KnowledgeHelper
     
     FactHandle getFactHandle(FactHandle handle);
     
-    void update(FactHandle handle,
-                      Object newObject) ;
+    void update(FactHandle handle, Object newObject);
+
+    void update(FactHandle newObject);
+    void update(FactHandle newObject, long mask);
     
-    void update( FactHandle newObject, long mask ) ;
-    
-    void update( Object newObject ) ;
-    
+    void update(Object newObject);
+    void update(Object newObject, long mask);
+
     void modify( Object newObject ) ;
 
     void retract(FactHandle handle) ;

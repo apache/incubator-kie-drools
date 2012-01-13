@@ -9667,6 +9667,7 @@ public class MiscTest {
     @Test
     public void testSlotSpecificSimplified() throws Exception {
         String rule = "package org.drools\n" +
+                "dialect \"mvel\"\n" +
                 "declare A\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -9708,6 +9709,41 @@ public class MiscTest {
         assertEquals(true, factTypeB.get(factB, "on"));
         assertEquals("y", factTypeB.get(factB, "s"));
         ksession.dispose();
+    }
+
+    @Test @Ignore
+    public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation() {
+
+        String rule = "package test; \n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean \n" +
+                " field : double \n" +
+                "end \n" +
+                "\n" +
+                "rule \"Init\" \n" +
+                "when \n" +
+                "then \n" +
+                "\t insert( new Bean( 1.0E-2 ) ); \n" +
+                "end \n" +
+                "\n" +
+                "rule \"Check\" \n" +
+                "when \n" +
+                "\t Bean( field > 1.0E-1 ) \n" +
+                "then \n" +
+                "\t list.add( \"OK\" ); \n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        kSession.setGlobal( "list", list );
+
+        kSession.fireAllRules();
+
+        assertEquals( 1 , list.size() );
     }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {

@@ -240,49 +240,47 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
-    public void update(FactHandle handle,
-                       Object newObject) {
+    public void update(FactHandle handle, Object newObject) {
         // TODO Auto-generated method stub
-        
+    }
+
+    public void update(FactHandle newObject) {
+        // TODO Auto-generated method stub
     }
 
     public void update(FactHandle newObject, long mask) {
         // TODO Auto-generated method stub
-        
     }
 
     public void retract(FactHandle handle) {
         // TODO Auto-generated method stub
-        
     }
 
     public void update(Object newObject) {
         // TODO Auto-generated method stub
-        
+    }
+
+    public void update(Object newObject, long mask) {
+        // TODO Auto-generated method stub
     }
 
     public void retract(Object handle) {
         // TODO Auto-generated method stub
-        
     }
 
     public void modify(Object newObject) {
         // TODO Auto-generated method stub
-        
     }
 
     public void blockActivation(org.drools.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
-        
     }
 
     public void unblockAllActivations(org.drools.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
-        
     }
 
     public void cancelActivation(org.drools.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
-        
     }
 }

@@ -21,49 +21,27 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ModifyInterceptor;
 import org.drools.common.AgendaItem;
-import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.runtime.Globals;
-import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.UnresolveablePropertyException;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.integration.PropertyHandler;
-import org.mvel2.integration.PropertyHandlerFactory;
-import org.mvel2.integration.VariableResolver;
-import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.integration.impl.BaseVariableResolverFactory;
-import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
-import org.mvel2.integration.impl.IndexVariableResolver;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.integration.*;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
 
@@ -95,11 +73,7 @@ public class MVELCompilationUnit
 
     private int                                  allVarsLength;
 
-    private static Map                           interceptors     = new HashMap( 2 );
-    static {
-        interceptors.put( "Modify",
-                          new ModifyInterceptor() );
-    }
+    public static final Map                      INTERCEPTORS = new InterceptorMap();
 
     static {
         //for handling dates as string literals
@@ -215,8 +189,8 @@ public class MVELCompilationUnit
         parserContext.setStrongTyping( strictMode );
         parserContext.setIndexAllocation( true );
 
-        if ( interceptors != null ) {
-            parserContext.setInterceptors( interceptors );
+        if ( INTERCEPTORS != null ) {
+            parserContext.setInterceptors(INTERCEPTORS);
         }
 
         parserContext.addIndexedInput( inputIdentifiers );
@@ -519,7 +493,7 @@ public class MVELCompilationUnit
     }
 
     public static Map getInterceptors() {
-        return interceptors;
+        return INTERCEPTORS;
     }
 
     public static Map<String, Class< ? >> getPrimitivesmap() {
@@ -734,4 +708,69 @@ public class MVELCompilationUnit
         }
     }
 
+    private static class InterceptorMap implements Map<String, Interceptor> {
+        public int size() {
+            return 1;
+        }
+
+        public boolean isEmpty() {
+            return false;
+        }
+
+        public boolean containsKey(Object key) {
+            return key != null && key.equals("Modify");
+        }
+
+        public boolean containsValue(Object value) {
+            return false;
+        }
+
+        public Interceptor get(Object key) {
+            return new ModifyInterceptor();
+        }
+
+        public Interceptor put(String key, Interceptor value) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Interceptor remove(Object key) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void putAll(Map<? extends String, ? extends Interceptor> m) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Set<String> keySet() {
+            return new HashSet<String>() {{
+                add("Modify");
+            }};
+        }
+
+        public Collection<Interceptor> values() {
+            return new ArrayList<Interceptor>() {{
+                add(new ModifyInterceptor());
+            }};
+        }
+
+        public Set<Entry<String, Interceptor>> entrySet() {
+            return new HashSet<Entry<String, Interceptor>>() {{
+                add(new Entry<String, Interceptor>() {
+                    public String getKey() {
+                        return "Modify";
+                    }
+                    public Interceptor getValue() {
+                        return new ModifyInterceptor();
+                    }
+                    public Interceptor setValue(Interceptor value) {
+                        throw new UnsupportedOperationException();
+                    }
+                });
+            }};
+        }
+    }
 }
