@@ -1,6 +1,11 @@
 package org.drools.integrationtests;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.AccessController;
@@ -14,27 +19,24 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.*;
-import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.reteoo.AlphaNode;
-import org.drools.reteoo.ObjectTypeNode;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.MapBackedClassLoader;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.Address;
+import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.TestEnum;
+import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.InternalRuleBase;
@@ -46,17 +48,22 @@ import org.drools.core.util.DateUtils;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.rule.LiteralConstraint;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.spi.CompiledInvoker;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
 import org.drools.type.DateFormatsImpl;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
-public class MVELTest {
+public class MVELTest extends CommonTestMethodBase {
+    
     @Test
     public void testHelloWorld() throws Exception {
         // read in the source
@@ -118,7 +125,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -160,7 +167,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -301,7 +308,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         int result = ksession.fireAllRules();
         
@@ -334,7 +341,7 @@ public class MVELTest {
 //         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 //         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 //    
-//         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 //         List list = new ArrayList();
 //         ksession.setGlobal( "list", list );
 //         
@@ -388,7 +395,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         Triangle t = new Triangle( Triangle.Type.ACUTE);
@@ -422,7 +429,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -459,7 +466,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -515,7 +522,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -579,7 +586,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -642,7 +649,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
  
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -743,7 +750,7 @@ public class MVELTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(knowledgeBaseConfiguration);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         Triangle t = new Triangle( Triangle.Type.ACUTE);
@@ -864,12 +871,6 @@ public class MVELTest {
         return ruleBase;
     }
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-    
     @Test
     public void test1() {
     	ParserContext pc = new ParserContext();

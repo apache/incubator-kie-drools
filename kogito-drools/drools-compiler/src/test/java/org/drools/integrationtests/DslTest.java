@@ -7,46 +7,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
-import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class DslTest {
+public class DslTest extends CommonTestMethodBase {
    
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
-
     @Test
     public void testMultiLineTemplates() throws Exception {
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_multiline.dslr" ) );
@@ -83,7 +64,7 @@ public class DslTest {
         kbase.addKnowledgePackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.insert( new Person( "Bob",
                                "http://foo.bar" ) );
         session.insert( new Cheese( "stilton",
@@ -127,7 +108,7 @@ public class DslTest {
         kbase.addKnowledgePackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         session.insert( new Person( "rage" ) );
         session.insert( new Cheese( "cheddar",
                                15 ) );
@@ -187,7 +168,7 @@ public class DslTest {
         kbase.addKnowledgePackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         pkgs = SerializationHelper.serializeObject( pkgs );
         assertNull( pkgs );
@@ -218,7 +199,7 @@ public class DslTest {
         kbase.addKnowledgePackages( pkgs );
         kbase    = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         List results = new ArrayList();
         session.setGlobal( "results",
                       results );

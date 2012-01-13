@@ -1,63 +1,32 @@
 package org.drools.compiler.xml.rules;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
+import org.drools.CommonTestMethodBase;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlPackageReader;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.DrlDumper;
-import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.MVELExprDescr;
 import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class XmlPackageReaderTest {
-
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
+public class XmlPackageReaderTest extends CommonTestMethodBase {
 
     @Test
     public void testParseFrom() throws Exception {

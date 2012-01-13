@@ -1,21 +1,17 @@
 package org.drools.agent;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
@@ -48,7 +44,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
         //Agent: take care of them!
         this.applyChangeSet(kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.setGlobal("list", list);
         ksession.insert(new Person());
@@ -103,7 +99,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         
         //we want to use a new ksession.
         ksession.dispose();
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
 
         //insert John
         list.clear();
@@ -160,7 +156,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
         //Agent: take care of them!
         this.applyChangeSet(kagent,ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
         ksession.setGlobal("list", list);
         ksession.insert(new Person());
@@ -183,7 +179,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         this.scan(kagent);
 
         //get a new ksession
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
         //A Person without name shouldn't fire any rule now (because it was
         //modified)
@@ -210,7 +206,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         this.scan(kagent);
         
         //get a new ksession
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
         //A "John" Person now should fire 2 rules
         list.clear();
@@ -230,7 +226,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         this.scan(kagent);
         
         //get a new ksession
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
         //A "John" Person now should only Rule3 (the other two rules were removes)
         list.clear();

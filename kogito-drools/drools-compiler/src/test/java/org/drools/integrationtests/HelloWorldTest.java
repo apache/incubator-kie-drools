@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
@@ -18,6 +19,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -29,13 +31,13 @@ import org.mvel2.debug.Frame;
 /**
  * This is a sample class to launch a rule.
  */
-public class HelloWorldTest {
+public class HelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorld() throws Exception {
         // load up the knowledge base
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
@@ -67,7 +69,7 @@ public class HelloWorldTest {
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
         KnowledgeBase kbase = readKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,

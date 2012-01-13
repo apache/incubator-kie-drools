@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.FileManager;
@@ -27,6 +28,7 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
@@ -35,7 +37,8 @@ import org.junit.Before;
 import static org.junit.Assert.*;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 
-public abstract class BaseKnowledgeAgentTest {
+public abstract class BaseKnowledgeAgentTest extends CommonTestMethodBase {
+    
     FileManager     fileManager;
     Server           server;
     ResourceChangeScannerImpl scanner;
@@ -69,14 +72,11 @@ public abstract class BaseKnowledgeAgentTest {
 
         server.stop();
     }
-    
-
 
     public int getPort() {
         return this.server.getConnectors()[0].getLocalPort();
     }
     
-
     public void scan(KnowledgeAgent kagent) {
         // Calls the Resource Scanner and sets up a listener and a latch so we can wait until it's finished processing, instead of using timers
         final CountDownLatch latch = new CountDownLatch( 1 );

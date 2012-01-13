@@ -1,12 +1,10 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -17,7 +15,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-public class FunctionsTest {
+public class FunctionsTest extends CommonTestMethodBase {
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -54,13 +52,13 @@ public class FunctionsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
-
+    
     @SuppressWarnings("unchecked")
     @Test
     public void testFunction() throws Exception {
 
         KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionInConsequence.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -79,7 +77,7 @@ public class FunctionsTest {
     @Test
     public void testFunctionException() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionException.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
@@ -97,7 +95,7 @@ public class FunctionsTest {
     @Test
     public void testFunctionWithPrimitives() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_FunctionWithPrimitives.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
@@ -118,7 +116,7 @@ public class FunctionsTest {
         KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         kbconf.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
         KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "results",
@@ -139,7 +137,7 @@ public class FunctionsTest {
         kbconf.setProperty( "drools.dialect.java.compiler", "JANINO" );
         KnowledgeBase kbase = loadKnowledgeBase( kbconf, "test_functionCallingFunction.drl" );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "results",
@@ -166,7 +164,7 @@ public class FunctionsTest {
                      "    boolean y = isNotContainedInt( Integer.MAX_VALUE, new int[] { 1, 2, 3 } );\n" +
                      "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         int rulesFired = ksession.fireAllRules();
         assertEquals( 1,

@@ -2,17 +2,10 @@ package org.drools.integrationtests;
 
 import java.util.Comparator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -20,18 +13,12 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.LiveQuery;
 import org.drools.runtime.rule.Row;
+import org.junit.Test;
 
 import ca.odell.glazedlists.SortedList;
 
-public class DroolsEventListTest {
-    protected RuleBase getRuleBase() throws Exception {
+public class DroolsEventListTest extends CommonTestMethodBase {
 
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setMultithreadEvaluation( false );
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-    
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
@@ -53,7 +40,7 @@ public class DroolsEventListTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Cheese stilton1 = new Cheese( "stilton",
                                       1 );
         Cheese cheddar1 = new Cheese( "cheddar",

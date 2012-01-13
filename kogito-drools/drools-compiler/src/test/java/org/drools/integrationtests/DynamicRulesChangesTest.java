@@ -1,18 +1,6 @@
 package org.drools.integrationtests;
 
-import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.command.Command;
-import org.drools.command.CommandFactory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.impl.InternalKnowledgeBase;
-import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import static junit.framework.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -26,7 +14,19 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static junit.framework.Assert.assertEquals;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
+import org.drools.compiler.PackageBuilder;
+import org.drools.impl.InternalKnowledgeBase;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class DynamicRulesChangesTest {
 
@@ -43,6 +43,11 @@ public class DynamicRulesChangesTest {
         addRule("raiseAlarm");
     }
 
+    protected static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
+        return kbase.newStatefulKnowledgeSession();
+    }
+    
+    
     @Test(timeout=10000) @Ignore
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
@@ -112,7 +117,7 @@ public class DynamicRulesChangesTest {
             final List<String> events = new ArrayList<String>();
 
             try {
-                StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+                StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
                 ksession.setGlobal("events", events);
 
                 Room room1 = new Room("Room 1");

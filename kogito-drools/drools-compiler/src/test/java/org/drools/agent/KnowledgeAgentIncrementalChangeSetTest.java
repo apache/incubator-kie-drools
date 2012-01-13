@@ -1,33 +1,35 @@
 package org.drools.agent;
 
-import java.io.File;
-import java.util.*;
+import static org.junit.Assert.*;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.impl.KnowledgeAgentImpl;
-import org.drools.definition.KnowledgeDefinition;
-import org.drools.io.Resource;
-import org.drools.io.impl.ByteArrayResource;
-import org.drools.io.impl.ChangeSetImpl;
-import org.drools.io.impl.UrlResource;
-import org.drools.runtime.rule.QueryResults;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.io.impl.ChangeSetImpl;
+import org.drools.io.impl.UrlResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
-
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTest {
 
@@ -57,7 +59,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -86,7 +88,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         ksession.dispose();
 
         // Check rule2 is still there
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -130,7 +132,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -211,7 +213,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -287,7 +289,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -352,7 +354,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         applyChangeSet( kagent,
                         ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -449,7 +451,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         applyChangeSet( kagent,
                         ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -533,7 +535,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -626,7 +628,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         KnowledgeAgent kagent = this.createKAgent( kbase,
                                                    false );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         applyChangeSet( kagent,
                         ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
@@ -708,7 +710,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase,
                                                    false );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         FactHandle h1 = ksession.insert( "String1" );
 
         applyChangeSet( kagent,
@@ -940,7 +942,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                                              null, "String()\n", "function1 (list, drools.getRule().getName());\n") );
         scan( kagent );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -1026,7 +1028,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
             
             this.scan(kagent);
     
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
             List<String> list = new ArrayList<String>();
             ksession.setGlobal("list", list);
             ksession.insert("Some String");
@@ -1092,7 +1094,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         assertEquals(1,kbase.getKnowledgePackages().iterator().next().getRules().size());
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -1169,7 +1171,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
         assertEquals(2,kbase.getKnowledgePackages().iterator().next().getRules().size());
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -1361,7 +1363,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
            applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-           StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+           StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
 
            org.drools.rule.Rule r1 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test","rule1");
                assertEquals(((UrlResource) r1.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");

@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
@@ -23,7 +24,7 @@ import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class SessionInspectorTest {
+public class SessionInspectorTest extends CommonTestMethodBase {
 
     @Test
     public void testGetSessionInfo() {
@@ -43,7 +44,7 @@ public class SessionInspectorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "results", new ArrayList<Object>() );
         
         ksession.insert( new Dimension( 100, 50 ) );
@@ -103,8 +104,6 @@ public class SessionInspectorTest {
         String report = SessionReporter.generateReport( "simple", info, null );
         
         assertNotNull( report );
-        //System.out.println(report);
-        
     }
     
     @Test
@@ -125,7 +124,7 @@ public class SessionInspectorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "results", new ArrayList<Object>() );
         
         ksession.insert( new Dimension( 100, 50 ) );
@@ -186,9 +185,7 @@ public class SessionInspectorTest {
         String report = SessionReporter.generateReport( "topten", info, null );
         
         assertNotNull( report );
-        //System.out.println(report);
         
     }
-    
 
 }

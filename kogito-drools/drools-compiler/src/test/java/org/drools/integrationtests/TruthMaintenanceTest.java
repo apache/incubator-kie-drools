@@ -1,5 +1,10 @@
 package org.drools.integrationtests;
 
+import static org.drools.integrationtests.SerializationHelper.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,15 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.ClassObjectFilter;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -38,32 +38,16 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.mockito.Mockito.*;
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-public class TruthMaintenanceTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+public class TruthMaintenanceTest extends CommonTestMethodBase {
+    
     protected KnowledgeBase getKnowledgeBase() throws Exception {
         return KnowledgeBaseFactory.newKnowledgeBase();
     }
@@ -86,7 +70,7 @@ public class TruthMaintenanceTest {
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         KnowledgeBase kbase = getKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final Cheese c1 = new Cheese( "a",
                                       1 );
@@ -219,7 +203,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -271,7 +255,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final Cheese cheese1 = new Cheese( "c",
                                            1 );
@@ -345,7 +329,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final Person b = new Person( "b" );
         final Person a = new Person( "a" );
@@ -390,7 +374,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         final List l = new ArrayList();
         final Person a = new Person( "a" );
@@ -926,7 +910,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = getKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
 
         Sensor sensor1 = new Sensor( 100,
                                      0 );
@@ -976,7 +960,7 @@ public class TruthMaintenanceTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase = SerializationHelper.serializeObject( kbase );
 
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         WorkingMemoryEventListener wmel = mock( WorkingMemoryEventListener.class );
         session.addEventListener( wmel );
         
@@ -1050,7 +1034,7 @@ public class TruthMaintenanceTest {
                 ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
  
         List list = new ArrayList();
         kSession.setGlobal("list",list);

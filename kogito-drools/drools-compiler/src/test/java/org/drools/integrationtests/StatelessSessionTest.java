@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
@@ -44,22 +45,10 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.spi.GlobalResolver;
 import org.junit.Test;
 
-public class StatelessSessionTest {
+public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
     final Cheesery cheesery = new Cheesery();
     final GlobalResolver globalResolver = new MapGlobalResolver();
-
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
 
     @Test
     public void testSingleObjectAssert() throws Exception {

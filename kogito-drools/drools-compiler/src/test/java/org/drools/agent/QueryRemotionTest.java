@@ -47,7 +47,7 @@ public class QueryRemotionTest extends BaseKnowledgeAgentTest {
         assertEquals(1, kbase.getKnowledgePackages().iterator().next().getRules().size());
         assertTrue(kbase.getKnowledgePackages().iterator().next().getRules().iterator().next().getName().equals("all the Strings"));
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert("Some String");
 
         QueryResults queryResults = ksession.getQueryResults("all the Strings");

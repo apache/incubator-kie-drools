@@ -1,16 +1,14 @@
 package org.drools.integrationtests;
 
-import java.io.StringReader;
+import static org.junit.Assert.fail;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.junit.Test;
 
 public class DroolsTest {
     private final static int NUM_FACTS = 20;

@@ -6,11 +6,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -26,8 +22,10 @@ import org.drools.conf.ShareBetaNodesOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Test;
 
-public class FailureOnRemovalTest {
+public class FailureOnRemovalTest extends CommonTestMethodBase {
+    
     private static final String  LS                   = System.getProperty( "line.separator" );
     private static final String  PACKAGE              = "failure_on_removal";
     private static final String  RULE_1               = "rule_1";
@@ -58,7 +56,7 @@ public class FailureOnRemovalTest {
         kbase.removeRule( PACKAGE,
                           RULE_1 );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         int fired = ksession.fireAllRules();
         ksession.dispose();
         

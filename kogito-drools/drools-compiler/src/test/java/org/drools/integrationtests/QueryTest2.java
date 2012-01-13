@@ -1,31 +1,20 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
-import org.drools.RuleBase;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.PackageBuilder;
 import org.drools.io.ResourceFactory;
-import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
-
-public class QueryTest2 {
+public class QueryTest2 extends CommonTestMethodBase {
+    
     @Test
     public void testEvalRewrite() throws Exception {
         String str = "" +
@@ -56,7 +45,7 @@ public class QueryTest2 {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( order1 );
         ksession.insert( item11 );
         ksession.insert( item12 );

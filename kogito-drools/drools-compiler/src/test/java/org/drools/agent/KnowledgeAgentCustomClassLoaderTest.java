@@ -1,11 +1,12 @@
 package org.drools.agent;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
@@ -14,12 +15,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest {
 
@@ -131,7 +127,7 @@ public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest 
         assertEquals(1, kagent.getKnowledgeBase().getKnowledgePackages().size());
 
         //We create a session to test if the rule runs ok
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 

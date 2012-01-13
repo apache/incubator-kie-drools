@@ -16,6 +16,7 @@
 
 package org.drools.integrationtests;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -29,12 +30,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.KnowledgeBase;
@@ -75,20 +72,10 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.junit.Test;
 
-public class DynamicRulesTest {
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            null );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                                            config );
-    }
-
+public class DynamicRulesTest extends CommonTestMethodBase {
+    
     @Test
     public void testDynamicRuleAdditions() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
@@ -632,7 +619,7 @@ public class DynamicRulesTest {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-         Environment env = EnvironmentFactory.newEnvironment();
+        Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
                     new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
@@ -1031,7 +1018,7 @@ public class DynamicRulesTest {
                      kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         // now lets add some knowledge to the kbase
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1174,7 +1161,7 @@ public class DynamicRulesTest {
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final AgendaEventListener alistener = mock( AgendaEventListener.class );
         ksession.addEventListener( alistener );
@@ -1259,7 +1246,7 @@ public class DynamicRulesTest {
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
-        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = createKnowledgeSession(kbase);
         
         AgendaEventListener ael = mock( AgendaEventListener.class );
         session.addEventListener( ael );

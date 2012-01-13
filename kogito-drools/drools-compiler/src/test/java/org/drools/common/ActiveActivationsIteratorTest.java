@@ -3,26 +3,21 @@ package org.drools.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.common.ActivationIterator;
-import org.drools.common.TerminalNodeIterator;
 import org.drools.core.util.Iterator;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.TerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-public class ActiveActivationsIteratorTest {
+public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testActiveActivationsIteratorTest() {
@@ -76,7 +71,7 @@ public class ActiveActivationsIteratorTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 3; i++ ) {
             ksession.insert( new String( "" + i ) );
         }

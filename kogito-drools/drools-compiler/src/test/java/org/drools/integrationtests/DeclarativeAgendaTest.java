@@ -1,10 +1,9 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -12,7 +11,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.DeclarativeAgendaOption;
-import org.drools.common.AgendaItem;
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
@@ -26,7 +24,7 @@ import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
-public class DeclarativeAgendaTest {
+public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
     @Test
     public void testBasicBlockOnAnnotation() {
@@ -75,7 +73,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -291,7 +289,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         return ksession;
     }
@@ -351,7 +349,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -453,7 +451,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -536,7 +534,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -660,7 +658,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List cancelled = new ArrayList();
 
@@ -750,7 +748,7 @@ public class DeclarativeAgendaTest {
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );

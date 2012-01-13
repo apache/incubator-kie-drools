@@ -1,12 +1,11 @@
 package org.drools.integrationtests;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.Order;
 import org.drools.Primitives;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -14,13 +13,10 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-public class ArrayContainsTest {
+public class ArrayContainsTest extends CommonTestMethodBase {
+    
     @Test
     public void testContainsBooleanArray() throws Exception {
         String str = "";
@@ -51,7 +47,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -116,7 +112,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -182,7 +178,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -247,7 +243,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -312,7 +308,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -377,7 +373,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -442,7 +438,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -507,7 +503,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -572,7 +568,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -638,7 +634,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -704,7 +700,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -770,7 +766,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -836,7 +832,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -902,7 +898,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -969,7 +965,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -1036,7 +1032,7 @@ public class ArrayContainsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",

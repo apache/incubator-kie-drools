@@ -66,7 +66,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -84,7 +84,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         
          scan(kagent);
         
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -142,7 +142,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxm2.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -161,7 +161,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         scan(kagent);
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -265,7 +265,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -295,7 +295,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         scan( kagent );
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -353,7 +353,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newByteArrayResource( xml.getBytes() )  );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -378,7 +378,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent, xml );
         
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -429,7 +429,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() )  );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -472,7 +472,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         
         applyChangeSet( kagent,ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -491,7 +491,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         scan( kagent );
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -536,7 +536,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -556,7 +556,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         scan( kagent );
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -604,7 +604,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
         
-        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -624,7 +624,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         scan(kagent);
 
-        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kagent.getKnowledgeBase());
         list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );

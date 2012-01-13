@@ -1,9 +1,10 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.fail;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.drools.runtime.rule.Variable.v;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.Address;
+import org.drools.CommonTestMethodBase;
 import org.drools.InitialFact;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -26,28 +28,22 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
-import org.drools.definition.process.Process;
-import org.drools.definition.rule.Rule;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.FromNode;
 import org.drools.reteoo.FromNode.FromMemory;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
-import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
-import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.LiveQuery;
@@ -56,14 +52,15 @@ import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Row;
 import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
-import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.runtime.rule.Variable.v;
+public class BackwardChainingTest extends CommonTestMethodBase {
+    
+    private static Logger logger = LoggerFactory.getLogger(BackwardChainingTest.class);
 
-public class BackwardChainingTest {
+    
     @Test
     public void testQueryPositional() throws Exception {
         String str = "" +
@@ -126,7 +123,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -271,7 +268,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -403,7 +400,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -506,7 +503,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -589,7 +586,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -649,7 +646,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -717,7 +714,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -792,7 +789,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -880,7 +877,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
                             list );
@@ -909,8 +906,6 @@ public class BackwardChainingTest {
                       list.size() );
         assertEquals( 1,
                       list.get( 0 ).intValue() );
-
-        System.out.println();
 
         list.clear();
         results = ksession.getQueryResults( "p",
@@ -1052,7 +1047,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -1463,7 +1458,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         ksession.setGlobal( "list",
                             list );
@@ -1664,7 +1659,7 @@ public class BackwardChainingTest {
                      "end\n" +
                      "";
 
-        System.out.println( str );
+        logger.debug( str );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -1704,7 +1699,7 @@ public class BackwardChainingTest {
         RightInputAdapterNode riaNode3 = (RightInputAdapterNode) fromNode.getSinkPropagator().getSinks()[0];
         NotNode notNode = (NotNode) riaNode3.getSinkPropagator().getSinks()[0];
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ReteooWorkingMemory wm = ((StatefulKnowledgeSessionImpl) ksession).session;
         AccumulateMemory accMemory = (AccumulateMemory) wm.getNodeMemory( accNode );
         BetaMemory existsMemory = (BetaMemory) wm.getNodeMemory( existsNode );
@@ -1730,7 +1725,7 @@ public class BackwardChainingTest {
 
         for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
-            System.out.println( row.get( "food" ) );
+            logger.debug( row.get( "food" ).toString() );
         }
         assertEquals( 2,
                       food.size() );
@@ -1787,7 +1782,7 @@ public class BackwardChainingTest {
 
         for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
             food.addAll( (Collection) row.get( "food" ) );
-            System.out.println( row.get( "food" ) );
+            logger.debug( row.get( "food" ).toString() );
         }
         assertEquals( 2,
                       food.size() );
@@ -1956,7 +1951,7 @@ public class BackwardChainingTest {
         kbase.addKnowledgePackages(  Arrays.asList( new KnowledgePackage[] { pkgs.get( "org.drools.test1" ), pkgs.get( "org.drools.test2" ) } ) );
 
         kbase = SerializationHelper.serializeObject( kbase );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         ksession.setGlobal( "list",
@@ -2112,7 +2107,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list",
                             list );
@@ -2369,7 +2364,7 @@ public class BackwardChainingTest {
         kbase = SerializationHelper.serializeObject( kbase );
 
         for ( int i = 0; i < f; i++ ) {
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2454,7 +2449,7 @@ public class BackwardChainingTest {
         }
 
         for ( int i = f; i < h; i++ ) { //h; i++) {
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2644,7 +2639,7 @@ public class BackwardChainingTest {
         kbase = SerializationHelper.serializeObject( kbase );
 
         for ( int i = 1; i <= 6; i++ ) {
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list",
                                 list );
@@ -2674,7 +2669,7 @@ public class BackwardChainingTest {
                              ruleList,
                              objects );
 
-        System.out.println( queryList.size() + " - " + ruleList.size() );
+        logger.debug( queryList.size() + " - " + ruleList.size() );
 
         assertEquals( oCount,
                       queryList.size() );
@@ -2736,7 +2731,7 @@ public class BackwardChainingTest {
                         "end \n" +
                         "";
 
-        System.out.println( str );
+        logger.debug( str );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -2750,7 +2745,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.setGlobal( "queryList",
                             queryList );
         ksession.setGlobal( "ruleList",
@@ -2819,7 +2814,7 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
                             list );
@@ -2836,8 +2831,9 @@ public class BackwardChainingTest {
                                 new Q( 6 ), new R( 6 ), new S( 3 ), new R( 2 ), new R( 1 ), new R( 4 ), new S( 2 ), new S( 6 ), new Q( 1 ), new Q( 5 )},
                         list );
 
+        ksession.dispose();
         // now reverse the go1 and init order
-        ksession = kbase.newStatefulKnowledgeSession();
+        ksession = createKnowledgeSession(kbase);
         list = new ArrayList<Integer>();
         ksession.setGlobal( "list",
                             list );

@@ -17,6 +17,8 @@
 package org.drools.factmodel.traits;
 
 import junit.framework.Assert;
+
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -39,7 +41,7 @@ import java.util.*;
 import static junit.framework.Assert.*;
 
 
-public class TraitTest {
+public class TraitTest extends CommonTestMethodBase {
 
     private static long t0;
 
@@ -119,7 +121,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -162,7 +164,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -196,7 +198,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -226,7 +228,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List errors = new ArrayList();
         ks.setGlobal( "list", errors );
 
@@ -258,7 +260,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List errors = new ArrayList();
         ks.setGlobal( "list", errors );
 
@@ -823,7 +825,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -856,7 +858,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -885,7 +887,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -927,7 +929,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -969,7 +971,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 
@@ -1007,7 +1009,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ks = createKnowledgeSession(kb);
         List info = new ArrayList();
         ks.setGlobal( "list", info );
 

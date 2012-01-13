@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -65,7 +66,7 @@ import org.mockito.ArgumentCaptor;
 /**
  * Tests related to the stream support features
  */
-public class StreamsTest {
+public class StreamsTest extends CommonTestMethodBase {
 
     private KnowledgeBase loadKnowledgeBase( final String fileName ) throws IOException,
                                                                     DroolsParserException,
@@ -351,7 +352,7 @@ public class StreamsTest {
 
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );

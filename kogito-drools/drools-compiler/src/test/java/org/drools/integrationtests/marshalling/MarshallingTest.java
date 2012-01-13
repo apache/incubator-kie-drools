@@ -22,25 +22,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.Address;
-import org.drools.Cell;
-import org.drools.Cheese;
-import org.drools.ClockType;
-import org.drools.FactA;
-import org.drools.FactB;
-import org.drools.FactC;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Message;
-import org.drools.Person;
-import org.drools.Primitives;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
+import org.drools.*;
 import org.drools.base.ClassObjectType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -96,7 +78,7 @@ import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class MarshallingTest {
+public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testSerializable() throws Exception {
@@ -3087,23 +3069,11 @@ public class MarshallingTest {
         return marshaller;
     }
 
-    protected RuleBase getRuleBase() throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                null );
-    }
-
     protected RuleBase getRuleBase(Package pkg) throws Exception {
         RuleBase ruleBase = getRuleBase();
 
         ruleBase.addPackage( pkg );
         return SerializationHelper.serializeObject( ruleBase );
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-
-        return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
-                config );
     }
 
 }
