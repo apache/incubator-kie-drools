@@ -129,6 +129,7 @@ public class DroolsSoftKeywords {
     public static final String ENUM         = "enum";
     public static final String IMPLEMENTS   = "implements";
     public static final String TYPE         = "type";
+    public static final String TRAIT        = "trait";
 
     public static boolean isOperator( final String operator,
                                       final boolean negated ) {

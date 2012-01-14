@@ -1,0 +1,110 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.examples.traits
+
+import org.drools.examples.traits.Scholar;
+import org.drools.factmodel.traits.Thing;
+
+
+declare Person
+    @Traitable
+
+    name    : String       = "john"     @key
+
+    age     : int          = 18
+
+    weight  : Double       = 75.4
+
+end
+
+
+declare trait IPerson
+
+    name    : String
+
+    age     : int
+
+    weight  : Double
+
+end
+
+
+declare trait Student extends IPerson
+
+    school  : String
+end
+
+
+declare trait Worker extends IPerson
+
+    wage    : int
+end
+
+
+rule "Zero"
+when
+then
+    insert( new Person() );
+end
+
+
+rule "Student and Worker"
+no-loop
+when
+    $p : Person( $age : age < 25 )
+then
+    Worker  w = don( $p, Worker.class, false );
+    Student s = don( $p, Student.class );
+end
+
+rule "Work too hard"
+when
+    $s : Student( this isA Worker, $age : age < 25 )
+then
+    System.out.println( " The toll of toil ");
+    $s.setAge( 75 );
+    update( $s );
+end
+
+rule "Too old for school and all"
+when
+    $w : Worker( this not isA Student, $age : age )
+then
+    System.out.println( " Student (no more) at " + $age );
+    shed( $w, Worker.class );
+end
+
+rule "Retire"
+when
+    Thing( this not isA Worker )
+then
+    System.out.println( " Time to Retire" );
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+

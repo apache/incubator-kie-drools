@@ -67,6 +67,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.rule.TypeDeclaration;
 
 public class DRLParser {
 
@@ -415,7 +416,8 @@ public class DRLParser {
     /**
      * declare := DECLARE 
      *               | (ENTRY-POINT) => entryPointDeclaration
-     *               | typeDeclaration
+     *               | (TRAIT) => typeDeclaration (trait)
+     *               | typeDeclaration (class)
      *            END
      * 
      * @return
@@ -436,12 +438,23 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             
-            if( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
                 // entry point declaration
                 declaration = entryPointDeclaration( declare );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TRAIT ) ) {
+                // trait type declaration
+                // 'trait'
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.TRAIT,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                declaration = typeDeclaration( declare, true );
             } else {
-                // type declaration
-                declaration = typeDeclaration( declare );
+                // class type declaration
+                declaration = typeDeclaration( declare, false );
             }
 
         } catch ( RecognitionException re ) {
@@ -526,13 +539,17 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public TypeDeclarationDescr typeDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+    public TypeDeclarationDescr typeDeclaration( DeclareDescrBuilder ddb, boolean isTrait ) throws RecognitionException {
         TypeDeclarationDescrBuilder declare = null;
         try {
             declare = helper.start( ddb,
                                     TypeDeclarationDescrBuilder.class,
                                     null );
 
+            if ( isTrait ) {
+                declare.newAnnotation( TypeDeclaration.Kind.ID ).value( TypeDeclaration.Kind.TRAIT.name() );
+            }
+            
             if( helper.validateIdentifierKey( DroolsSoftKeywords.TYPE ) ) {
                 // 'type'
                 match( input,

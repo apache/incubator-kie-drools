@@ -1,0 +1,81 @@
+package org.test;
+
+import org.drools.factmodel.traits.Entity;
+
+
+global java.util.List list;
+
+ 
+ 
+declare trait Student
+    name    : String            @key
+    code    : int               @key
+    dcode   : double            @key
+    age     : int
+end
+
+
+declare Imp
+    @Traitable 
+    name    : String
+    code    : int
+    dcode   : double
+    school  : String
+end
+ 
+
+rule "Init"
+when 
+then 
+    Imp core = new Imp( "alan", 33, 3.47, "zkool" );
+    insert( core );
+
+    Imp core2 = new Imp( "alan", 33, 3.44, "squola" );
+    insert( core2 );
+end
+
+
+rule "Trait"
+when
+    $core: Imp( "alan", 33, 3.47, "zkool" ; )
+then
+    Student s = don( $core, Student.class, true );
+
+    s.setAge( 12 );
+    s.getFields().put( "school", "zkl" );
+
+    update( s );
+end
+
+
+rule "Trait II"
+when
+    $core: Imp( "alan", 33, 3.44, "squola" ; )
+then
+    Student s = don( $core, Student.class, true );
+end
+
+
+
+
+rule "Check" 
+no-loop 
+when
+    $z: Student( name == "alan", fields[ "age" ] == 12, fields[ "school" ] == "zkl" )
+then
+    list.add( "DON" );
+end 
+ 
+rule "Check II"
+no-loop
+when
+    $s: Student( name == "alan", fields[ "school" ] == "zkl" )
+    $z: Student( name == "alan", fields[ "school" ] == "squola" )
+then
+    System.out.println( "Compare " + $s + " vs " + $z );
+
+    $z.setDcode(3.47);
+    if ( $s.equals( $z ) ) {
+        list.add( "EQUAL" );
+    }
+end
