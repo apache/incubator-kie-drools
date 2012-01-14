@@ -172,7 +172,7 @@ end
             be called normally. A trait, then, adds a type and some fields to an object. If a bean has a field of the given name and
             type, that field will be used to support the interface. ''Virtual'' fields, instead, will be stored as entries in a map,
             or as triples in an in-memory store.</para>
-            <para>Traits are <literal>declared</literal> with the attribute <literal>@format(trait)</literal>. Unlike normal beans,
+            <para>Traits are <literal>declared</literal> with the notation <literal>declare trait</literal>. Unlike normal beans,
             declared traits will generate interfaces instead of classes: the declared fields will be mapped to getters/setters.
             Notice that multiple traits can be worn at the same time.</para>
             <section>
