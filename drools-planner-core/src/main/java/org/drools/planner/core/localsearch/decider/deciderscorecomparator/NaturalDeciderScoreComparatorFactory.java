@@ -28,7 +28,7 @@ import org.drools.planner.core.score.comparator.NaturalScoreComparator;
  */
 public class NaturalDeciderScoreComparatorFactory extends AbstractDeciderScoreComparatorFactory {
 
-    private Comparator<Score> naturalDeciderScoreComparator = new NaturalScoreComparator();
+    private final Comparator<Score> naturalDeciderScoreComparator = new NaturalScoreComparator();
 
     public Comparator<Score> createDeciderScoreComparator() {
         return naturalDeciderScoreComparator;
