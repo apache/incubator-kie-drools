@@ -28,7 +28,6 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private final LocalSearchSolverPhaseScope localSearchSolverPhaseScope;
 
     private double timeGradient = Double.NaN;
-    private Comparator<Score> deciderScoreComparator;
     private Move step = null;
     private String stepString = null;
     private Move undoStep = null;
@@ -52,14 +51,6 @@ public class LocalSearchStepScope extends AbstractStepScope {
 
     public void setTimeGradient(double timeGradient) {
         this.timeGradient = timeGradient;
-    }
-
-    public Comparator<Score> getDeciderScoreComparator() {
-        return deciderScoreComparator;
-    }
-
-    public void setDeciderScoreComparator(Comparator<Score> deciderScoreComparator) {
-        this.deciderScoreComparator = deciderScoreComparator;
     }
 
     public Move getStep() {

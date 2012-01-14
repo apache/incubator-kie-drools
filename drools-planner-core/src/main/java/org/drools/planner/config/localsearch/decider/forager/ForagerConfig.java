@@ -17,6 +17,8 @@
 package org.drools.planner.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.forager.AcceptedForager;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
@@ -27,6 +29,9 @@ public class ForagerConfig {
 
     private Forager forager = null; // TODO remove this and document extending ForagerConfig
     private Class<? extends Forager> foragerClass = null;
+    @XStreamAlias("deciderScoreComparatorFactory")
+    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
+            = new DeciderScoreComparatorFactoryConfig();
     private PickEarlyType pickEarlyType = null;
 
     protected Integer minimalAcceptedSelection = null;
@@ -45,6 +50,15 @@ public class ForagerConfig {
 
     public void setForagerClass(Class<? extends Forager> foragerClass) {
         this.foragerClass = foragerClass;
+    }
+
+    public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
+        return deciderScoreComparatorFactoryConfig;
+    }
+
+    public void setDeciderScoreComparatorFactoryConfig(
+            DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig) {
+        this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;
     }
 
     public PickEarlyType getPickEarlyType() {
@@ -85,15 +99,23 @@ public class ForagerConfig {
         int minimalAcceptedSelection = (this.minimalAcceptedSelection == null)
                 ? Integer.MAX_VALUE : this.minimalAcceptedSelection;
 
-        return new AcceptedForager(pickEarlyType, minimalAcceptedSelection);
+        AcceptedForager forager = new AcceptedForager(pickEarlyType, minimalAcceptedSelection);
+        forager.setDeciderScoreComparatorFactory(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
+        return forager;
     }
 
     public void inherit(ForagerConfig inheritedConfig) {
+        // TODO this is messed up
         if (forager == null && foragerClass == null && pickEarlyType == null && minimalAcceptedSelection == null) {
             forager = inheritedConfig.getForager();
             foragerClass = inheritedConfig.getForagerClass();
             pickEarlyType = inheritedConfig.getPickEarlyType();
             minimalAcceptedSelection = inheritedConfig.getMinimalAcceptedSelection();
+        }
+        if (deciderScoreComparatorFactoryConfig == null) {
+            deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
+        } else if (inheritedConfig.getDeciderScoreComparatorFactoryConfig() != null) {
+            deciderScoreComparatorFactoryConfig.inherit(inheritedConfig.getDeciderScoreComparatorFactoryConfig());
         }
     }
 

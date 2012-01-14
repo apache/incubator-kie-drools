@@ -23,7 +23,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
 import org.drools.planner.core.move.Move;
@@ -40,7 +39,6 @@ public class DefaultDecider implements Decider {
 
     protected LocalSearchSolverPhase localSearchSolverPhase;
 
-    protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     protected Selector selector;
     protected Acceptor acceptor;
     protected Forager forager;
@@ -50,14 +48,6 @@ public class DefaultDecider implements Decider {
 
     public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
         this.localSearchSolverPhase = localSearchSolverPhase;
-    }
-
-    public DeciderScoreComparatorFactory getDeciderScoreComparator() {
-        return deciderScoreComparatorFactory;
-    }
-
-    public void setDeciderScoreComparator(DeciderScoreComparatorFactory deciderScoreComparator) {
-        this.deciderScoreComparatorFactory = deciderScoreComparator;
     }
 
     public void setSelector(Selector selector) {
@@ -90,15 +80,12 @@ public class DefaultDecider implements Decider {
     // ************************************************************************
 
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        deciderScoreComparatorFactory.phaseStarted(localSearchSolverPhaseScope);
         selector.phaseStarted(localSearchSolverPhaseScope);
         acceptor.phaseStarted(localSearchSolverPhaseScope);
         forager.phaseStarted(localSearchSolverPhaseScope);
     }
 
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
-        localSearchStepScope.setDeciderScoreComparator(deciderScoreComparatorFactory.createDeciderScoreComparator());
         selector.beforeDeciding(localSearchStepScope);
         acceptor.beforeDeciding(localSearchStepScope);
         forager.beforeDeciding(localSearchStepScope);
@@ -145,7 +132,7 @@ public class DefaultDecider implements Decider {
             LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope()
                     .getLocalSearchSolverPhaseScope();
             Score undoScore = localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
-            Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
+            Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 // First assert that are probably no corrupted score rules.
                 localSearchSolverPhaseScope.getSolverScope().getSolutionDirector()
@@ -176,21 +163,18 @@ public class DefaultDecider implements Decider {
     }
 
     public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
         selector.stepDecided(localSearchStepScope);
         acceptor.stepDecided(localSearchStepScope);
         forager.stepDecided(localSearchStepScope);
     }
 
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepTaken(localSearchStepScope);
         selector.stepTaken(localSearchStepScope);
         acceptor.stepTaken(localSearchStepScope);
         forager.stepTaken(localSearchStepScope);
     }
 
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        deciderScoreComparatorFactory.phaseEnded(localSearchSolverPhaseScope);
         selector.phaseEnded(localSearchSolverPhaseScope);
         acceptor.phaseEnded(localSearchSolverPhaseScope);
         forager.phaseEnded(localSearchSolverPhaseScope);

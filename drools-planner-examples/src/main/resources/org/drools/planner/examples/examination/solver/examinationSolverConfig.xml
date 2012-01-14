@@ -22,15 +22,6 @@
     <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
-    <!--<deciderScoreComparatorFactory>-->
-      <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-      <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-      <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-      <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-      <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-      <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
-      <!--<startingHardWeight>1000</startingHardWeight>-->
-    <!--</deciderScoreComparatorFactory>-->
     <selector>
       <!--<selector>-->
         <!--<topSize>10</topSize>-->
@@ -51,6 +42,15 @@
       <propertyTabuSize>10</propertyTabuSize>
     </acceptor>
     <forager>
+      <!--<deciderScoreComparatorFactory>-->
+        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
+        <!--<startingHardWeight>1000</startingHardWeight>-->
+      <!--</deciderScoreComparatorFactory>-->
       <pickEarlyType>NEVER</pickEarlyType>
       <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>

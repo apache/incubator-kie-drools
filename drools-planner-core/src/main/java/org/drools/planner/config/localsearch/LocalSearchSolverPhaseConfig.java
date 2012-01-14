@@ -20,7 +20,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -37,24 +36,12 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    @XStreamAlias("deciderScoreComparatorFactory")
-    private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
-            = new DeciderScoreComparatorFactoryConfig();
     @XStreamAlias("selector")
     private SelectorConfig selectorConfig = new SelectorConfig();
     @XStreamAlias("acceptor")
     private AcceptorConfig acceptorConfig = new AcceptorConfig();
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = new ForagerConfig();
-
-    public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
-        return deciderScoreComparatorFactoryConfig;
-    }
-
-    public void setDeciderScoreComparatorFactoryConfig(
-            DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig) {
-        this.deciderScoreComparatorFactoryConfig = deciderScoreComparatorFactoryConfig;
-    }
 
     public SelectorConfig getSelectorConfig() {
         return selectorConfig;
@@ -97,7 +84,6 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     private Decider buildDecider(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultDecider decider = new DefaultDecider();
-        decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
         decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
         decider.setForager(foragerConfig.buildForager(scoreDefinition));
@@ -112,11 +98,6 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (deciderScoreComparatorFactoryConfig == null) {
-            deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
-        } else if (inheritedConfig.getDeciderScoreComparatorFactoryConfig() != null) {
-            deciderScoreComparatorFactoryConfig.inherit(inheritedConfig.getDeciderScoreComparatorFactoryConfig());
-        }
         if (selectorConfig == null) {
             selectorConfig = inheritedConfig.getSelectorConfig();
         } else if (inheritedConfig.getSelectorConfig() != null) {

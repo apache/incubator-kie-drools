@@ -1225,7 +1225,7 @@ After in *ScoreRules.drl:
     import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
     global HardAndSoftScoreCalculator scoreCalculator;
 
-[MAJOR] The buildin Score implementations (including their ScoreCalculator and ScoreDefinition)
+[MAJOR] The build-in Score implementations (including their ScoreCalculator and ScoreDefinition)
 have been moved into a package per implementation functionality.
 Before in *.java:
     import org.drools.planner.core.score.SimpleScore;
@@ -1447,3 +1447,25 @@ Before in *BenchmarkApp.java:
 After in *BenchmarkApp.java:
     public static final String DEFAULT_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
+
+[MINOR] The DeciderScoreComparatorFactory has been moved into the Forager
+Before in *SolverConfig.xml:
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
+        ...
+        <forager>
+          ...
+        </forager>
+      </localSearch>
+After in *SolverConfig.xml:
+      <localSearch>
+        ...
+        <forager>
+          <deciderScoreComparatorFactory>
+            <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+          </deciderScoreComparatorFactory>
+          ...
+        </forager>
+      </localSearch>

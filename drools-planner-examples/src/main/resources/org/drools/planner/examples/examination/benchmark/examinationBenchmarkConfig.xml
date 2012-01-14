@@ -43,9 +43,6 @@
     <name>absolute500_propertyTabu10</name>
     <solver>
       <localSearch>
-        <deciderScoreComparatorFactory>
-          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-        </deciderScoreComparatorFactory>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
@@ -72,9 +69,6 @@
     <name>absolute500_moveTabu7</name>
     <solver>
       <localSearch>
-        <deciderScoreComparatorFactory>
-          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-        </deciderScoreComparatorFactory>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
@@ -101,9 +95,6 @@
     <name>absolute500WithCustomSelector_propertyTabu10</name>
     <solver>
       <localSearch>
-        <deciderScoreComparatorFactory>
-          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-        </deciderScoreComparatorFactory>
         <selector>
           <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
           <selector>
@@ -131,9 +122,6 @@
     <name>absolute500WithCustomSelector_moveTabu7</name>
     <solver>
       <localSearch>
-        <deciderScoreComparatorFactory>
-          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-        </deciderScoreComparatorFactory>
         <selector>
           <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
           <selector>

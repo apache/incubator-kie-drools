@@ -18,7 +18,6 @@ package org.drools.planner.core.localsearch.decider;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverAware;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
@@ -33,11 +32,6 @@ public interface Decider extends LocalSearchSolverAware, LocalSearchSolverPhaseL
      * @param localSearchStepScope never null
      */
     void decideNextStep(LocalSearchStepScope localSearchStepScope);
-
-    /**
-     * @return never null
-     */
-    DeciderScoreComparatorFactory getDeciderScoreComparator();
 
     /**
      * @return never null

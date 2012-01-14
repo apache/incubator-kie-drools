@@ -13,15 +13,6 @@
     <scoreAttained>0hard/0soft</scoreAttained>
   </termination>
   <localSearch>
-    <deciderScoreComparatorFactory>
-      <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-      <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-      <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-      <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-      <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-      <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
-      <startingHardWeight>1000</startingHardWeight>
-    </deciderScoreComparatorFactory>
     <selector>
       <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
     </selector>
@@ -30,6 +21,15 @@
       <moveTabuSize>7</moveTabuSize>
     </acceptor>
     <forager>
+      <deciderScoreComparatorFactory>
+        <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
+        <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
+        <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
+        <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
+        <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
+        <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
+        <startingHardWeight>1000</startingHardWeight>
+      </deciderScoreComparatorFactory>
       <pickEarlyType>NEVER</pickEarlyType>
       <!-- Real world problems require to use of <minimalAcceptedSelection> -->
     </forager>

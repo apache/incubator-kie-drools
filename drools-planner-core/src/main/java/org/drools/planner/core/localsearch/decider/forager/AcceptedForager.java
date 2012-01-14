@@ -18,12 +18,14 @@ package org.drools.planner.core.localsearch.decider.forager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
+import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 
@@ -34,23 +36,28 @@ import org.drools.planner.core.score.Score;
  */
 public class AcceptedForager extends AbstractForager {
 
+    protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     // final to allow better hotspot optimization. TODO prove that it indeed makes a difference
     protected final PickEarlyType pickEarlyType;
     protected final int minimalAcceptedSelection;
 
+    protected Comparator<Score> scoreComparator;
     protected AcceptedMoveScopeComparator acceptedMoveScopeComparator;
 
     protected int selectedCount;
     protected List<MoveScope> acceptedList;
     protected List<MoveScope> maxScoreAcceptedList;
-    protected boolean listSorted;
     protected Score maxScore;
 
-    protected MoveScope earlyPickedMoveScope = null;
+    protected MoveScope earlyPickedMoveScope;
 
     public AcceptedForager(PickEarlyType pickEarlyType, int minimalAcceptedSelection) {
         this.pickEarlyType = pickEarlyType;
         this.minimalAcceptedSelection = minimalAcceptedSelection;
+    }
+
+    public void setDeciderScoreComparatorFactory(DeciderScoreComparatorFactory deciderScoreComparator) {
+        this.deciderScoreComparatorFactory = deciderScoreComparator;
     }
 
     // ************************************************************************
@@ -58,13 +65,19 @@ public class AcceptedForager extends AbstractForager {
     // ************************************************************************
 
     @Override
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        deciderScoreComparatorFactory.phaseStarted(localSearchSolverPhaseScope);
+    }
+
+    @Override
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(localSearchStepScope.getDeciderScoreComparator());
+        deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
+        scoreComparator = deciderScoreComparatorFactory.createDeciderScoreComparator();
+        acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(scoreComparator);
         selectedCount = 0;
         acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         maxScoreAcceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
-        listSorted = false;
-        maxScore = localSearchStepScope.getLocalSearchSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
+        maxScore = localSearchStepScope.getSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
         earlyPickedMoveScope = null;
     }
 
@@ -81,15 +94,15 @@ public class AcceptedForager extends AbstractForager {
             case NEVER:
                 break;
             case FIRST_BEST_SCORE_IMPROVING:
-                if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
-                        moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getBestScore()) > 0) {
+                Score bestScore = moveScope.getLocalSearchStepScope().getSolverPhaseScope().getBestScore();
+                if (scoreComparator.compare(moveScope.getScore(), bestScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_LAST_STEP_SCORE_IMPROVING:
-                if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(),
-                        moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getLastCompletedLocalSearchStepScope().getScore())
-                        > 0) {
+                Score lastStepScore = moveScope.getLocalSearchStepScope().getSolverPhaseScope()
+                        .getLastCompletedStepScope().getScore();
+                if (scoreComparator.compare(moveScope.getScore(), lastStepScore) > 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
@@ -100,8 +113,7 @@ public class AcceptedForager extends AbstractForager {
 
     protected void addMoveScopeToAcceptedList(MoveScope moveScope) {
         acceptedList.add(moveScope);
-        listSorted = false;
-        if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(), maxScore) > 0) {
+        if (scoreComparator.compare(moveScope.getScore(), maxScore) > 0) {
             maxScore = moveScope.getScore();
             maxScoreAcceptedList.clear();
             maxScoreAcceptedList.add(moveScope);
@@ -138,21 +150,30 @@ public class AcceptedForager extends AbstractForager {
     }
 
     public List<Move> getTopList(int topSize) {
-        sortAcceptedList();
-        int size = acceptedList.size();
+        List<MoveScope> sortedAcceptedList = new ArrayList<MoveScope>(acceptedList);
+        Collections.sort(sortedAcceptedList, acceptedMoveScopeComparator);
+        int size = sortedAcceptedList.size();
         List<Move> topList = new ArrayList<Move>(Math.min(topSize, size));
-        List<MoveScope> subAcceptedList = acceptedList.subList(Math.max(0, size - topSize), size);
+        List<MoveScope> subAcceptedList = sortedAcceptedList.subList(Math.max(0, size - topSize), size);
         for (MoveScope moveScope : subAcceptedList) {
             topList.add(moveScope.getMove());
         }
         return topList;
     }
 
-    protected void sortAcceptedList() {
-        if (!listSorted) {
-            Collections.sort(acceptedList, acceptedMoveScopeComparator);
-            listSorted = true;
-        }
+    @Override
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
+    }
+
+    @Override
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        deciderScoreComparatorFactory.stepTaken(localSearchStepScope);
+    }
+
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        deciderScoreComparatorFactory.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }
