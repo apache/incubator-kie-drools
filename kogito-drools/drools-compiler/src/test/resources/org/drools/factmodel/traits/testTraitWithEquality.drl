@@ -7,8 +7,7 @@ global java.util.List list;
 
  
  
-declare Student
-    @format(trait)
+declare trait Student
     name    : String            @key
     code    : int               @key
     dcode   : double            @key

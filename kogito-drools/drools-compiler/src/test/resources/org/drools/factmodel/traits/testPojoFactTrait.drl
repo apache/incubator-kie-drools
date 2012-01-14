@@ -11,8 +11,7 @@ declare PojoFact
 	@Traitable
 end
 
-declare TrueTrait
-	@format(trait)
+declare trait TrueTrait
 	flag : boolean
 end
 
