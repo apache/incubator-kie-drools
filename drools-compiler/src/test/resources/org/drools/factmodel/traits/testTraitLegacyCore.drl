@@ -14,8 +14,8 @@ global java.util.List list;
 
 
 
-declare IRole
-    @format(trait)
+declare trait IRole
+
 end
 
 declare Imp
@@ -29,8 +29,7 @@ end
 
 
 // declared interface
-declare Person
-    @format(trait)
+declare trait Person
     name : String
     age  : int
 end

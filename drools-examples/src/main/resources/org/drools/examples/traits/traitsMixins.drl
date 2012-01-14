@@ -31,8 +31,7 @@ declare Person
 end
 
 
-declare Student extends Scholar
-    @format( trait )
+declare trait Student extends Scholar
 
     name    : String
 

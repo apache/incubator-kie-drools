@@ -16,20 +16,17 @@ declare Imp
 end
 
 
-declare Person
-    @format(trait)
+declare trait Person
     name    : String 
     age     : int   @position(0) 
 end
   
 
-declare Student extends Person
-    @format(trait)
+declare trait Student extends Person
     school  : String
 end 
 
-declare Worker
-    @format(trait)
+declare trait Worker
     job     : String
 end
  

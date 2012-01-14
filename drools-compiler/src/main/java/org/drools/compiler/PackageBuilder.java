@@ -28,7 +28,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -126,14 +139,14 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
- * 
+ *
  * If you are using the Java dialect the JavaDialectConfiguration will attempt
  * to validate that the specified compiler is in the classpath, using
  * ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
  * you must either overload the compiler property before instantiating this
  * class or the PackageBuilder, or make sure Eclipse is in the classpath, as
  * Eclipse is the default.
- * 
+ *
  * Normally, a complete package is built using one of the applicable
  * addPackageFromXXX methods. It is however possible to construct a package
  * incrementally by adding individual component parts. When a package is built
@@ -220,12 +233,12 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     * 
+     *
      * PackageBuilderConfiguration is not thread safe and it also contains
      * state. Once it is created and used in one or more PackageBuilders it
      * should be considered immutable. Do not modify its properties while it is
      * being used by a PackageBuilder.
-     * 
+     *
      * @param configuration
      */
     public PackageBuilder( final PackageBuilderConfiguration configuration ) {
@@ -328,7 +341,7 @@ public class PackageBuilder {
                           activationType );
 
         TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
-        thingType.setFormat( TypeDeclaration.Format.TRAIT );
+        thingType.setKind( TypeDeclaration.Kind.TRAIT );
         thingType.setTypeClass( Thing.class );
         builtinTypes.put( Thing.class.getCanonicalName(),
                           thingType );
@@ -357,7 +370,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -489,7 +502,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     * 
+     *
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -1395,7 +1408,7 @@ public class PackageBuilder {
      * the superclass of a declared bean. Looks among imports, local
      * declarations and previous declarations. Means that a class can't extend
      * another class declared in package that has not been loaded yet.
-     * 
+     *
      * @param sup
      *            the simple name of the superclass
      * @param packageDescr
@@ -1442,7 +1455,7 @@ public class PackageBuilder {
      * declaration descriptor The declared supertype, if any, may be a simple
      * name or a fully qualified one. In the former case, the simple name could
      * be the local name of some f.q.n. which has to be resolved
-     * 
+     *
      * @param typeDescr
      *            the descriptor of the declared superclass whose superclass
      *            will be identified
@@ -1514,14 +1527,14 @@ public class PackageBuilder {
      * the fields are cloned as inherited (ii) The superclass is imported
      * (external), but some of its fields have been tagged with metadata (iii)
      * The superclass is imported.
-     * 
+     *
      * The search for field descriptors is carried out in the order. (i) and
      * (ii+iii) are mutually exclusive. The search is as such: (i) The
      * superclass' declared fields are used to build the base class additional
      * fields (iii) The superclass is inspected to discover its (public) fields,
      * from which descriptors are generated (ii) Both (i) and (iii) are applied,
      * but the declared fields override the inspected ones
-     * 
+     *
      * @param typeDescr
      *            The base class descriptor, to be completed with the inherited
      *            fields descriptors
@@ -1885,11 +1898,18 @@ public class PackageBuilder {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
             }
 
-            // is it a pojo or a trait?
+            // is it a pojo or a template?
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Format.ID );
             String format = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
             if (format != null) {
                 type.setFormat( TypeDeclaration.Format.parseFormat( format ) );
+            }
+
+            // is it a class, a trait or an enum?
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Kind.ID );
+            String kind = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+            if ( kind != null ) {
+                type.setKind( TypeDeclaration.Kind.parseKind( kind ) );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
@@ -1910,6 +1930,21 @@ public class PackageBuilder {
                 clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
                 type.setTypeClass( clazz );
 
+                if (type.getTypeClassDef() != null) {
+                    try {
+                        buildFieldAccessors( type,
+                                             pkgRegistry );
+                    } catch (Exception e) {
+                        this.results.add( new TypeDeclarationError(
+                                                                    "Error creating field accessors for TypeDeclaration '" + className +
+                                                                            "' for type '" +
+                                                                            type.getTypeName() +
+                                                                            "' " +
+																			e.getMessage(),
+                                                                    typeDescr.getLine() ) );
+                        continue;
+                    }
+                }
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( "Class '" + className +
                                                             "' not found for type declaration of '" +
@@ -2046,7 +2081,7 @@ public class PackageBuilder {
     /**
      * Checks whether a declaration is novel, or is a retagging of an external
      * one
-     * 
+     *
      * @param typeDescr
      * @return
      */
@@ -2078,9 +2113,9 @@ public class PackageBuilder {
     /**
      * Tries to determine whether a given annotation is properly defined using a
      * java.lang.Annotation and can be resolved
-     * 
+     *
      * Proper annotations will be wired to dynamically generated beans
-     * 
+     *
      * @param annotation
      * @param resolver
      * @return
@@ -2107,7 +2142,7 @@ public class PackageBuilder {
     }
 
     /**
-     * 
+     *
      * @param pkgRegistry
      * @throws SecurityException
      * @throws IllegalArgumentException
@@ -2151,11 +2186,10 @@ public class PackageBuilder {
         // extracts type, supertype and interfaces
         String fullName = typeDescr.getType().getFullName();
 
-        if (type.getFormat().equals( TypeDeclaration.Format.POJO )) {
-            if (typeDescr.getSuperTypes().size() > 1) {
-                this.results.add( new TypeDeclarationError( "Declared class " + fullName +
-                                                            "  - has more than one supertype;",
-                                                            typeDescr.getLine() ) );
+        if ( type.getKind().equals( TypeDeclaration.Kind.CLASS ) ) {
+            if ( typeDescr.getSuperTypes().size() > 1 ) {
+                this.results.add( new TypeDeclarationError( "Declared class " + fullName + "  - has more than one supertype;",
+                                                                typeDescr.getLine() ) );
                 return;
             } else if (typeDescr.getSuperTypes().size() == 0) {
                 typeDescr.addSuperType( "java.lang.Object" );
@@ -2179,8 +2213,8 @@ public class PackageBuilder {
         String[] interfaces = interfaceList.toArray( new String[interfaceList.size()] );
 
         // prepares a class definition
-        ClassDefinition def;
-        if (type.getFormat().equals( TypeDeclaration.Format.TRAIT )) {
+        ClassDefinition def = null;
+        if ( type.getKind().equals( TypeDeclaration.Kind.TRAIT ) ) {
             def = new ClassDefinition( fullName,
                                        "java.lang.Object",
                                        fullSuperTypes );
@@ -2256,8 +2290,8 @@ public class PackageBuilder {
                 }
             }
             TraitRegistry.getInstance().addTraitable( def );
-        } else if (type.getFormat().equals( TypeDeclaration.Format.TRAIT )
-                   || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null) {
+        } else if ( type.getKind().equals( TypeDeclaration.Kind.TRAIT )
+                    || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null ) {
 
             if (!type.isNovel()) {
                 try {
@@ -2276,7 +2310,7 @@ public class PackageBuilder {
                                            typeDescr.getNamespace() );
                         tempDescr.addSuperType( typeDescr.getType() );
                         TypeDeclaration tempDeclr = new TypeDeclaration( target );
-                        tempDeclr.setFormat( TypeDeclaration.Format.TRAIT );
+                        tempDeclr.setKind( TypeDeclaration.Kind.TRAIT );
                         tempDeclr.setTypesafe( type.isTypesafe() );
                         tempDeclr.setNovel( true );
                         tempDeclr.setTypeClassName( tempDescr.getType().getFullName() );
@@ -2292,7 +2326,7 @@ public class PackageBuilder {
                         tempDef.setSuperClass( def.getClassName() );
                         tempDef.setDefinedClass( resolvedType );
 
-                        type.setFormat( TypeDeclaration.Format.POJO );
+                        type.setKind( TypeDeclaration.Kind.CLASS );
 
                         generateDeclaredBean( tempDescr,
                                               tempDeclr,
@@ -2322,13 +2356,11 @@ public class PackageBuilder {
         if (type.isNovel()) {
             String fullName = typeDescr.getType().getFullName();
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
-            switch (type.getFormat()) {
-                case TRAIT:
+            switch ( type.getKind() ) {
+                case TRAIT :
                     try {
-                        byte[] d;
-
                         ClassBuilder tb = ClassBuilderFactory.getTraitBuilderService();
-                        d = tb.buildClass( def );
+                        byte[] d = tb.buildClass( def );
                         dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
                                        d );
 
@@ -2340,8 +2372,8 @@ public class PackageBuilder {
                                                                     typeDescr.getLine() ) );
                     }
                     break;
-                case POJO:
-                default:
+                case CLASS :
+                default :
                     try {
                         ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
                         byte[] d = cb.buildClass( def );
@@ -2369,7 +2401,7 @@ public class PackageBuilder {
      * order is as follows (i) as defined using the @position metadata (ii) as
      * resulting from the inspection of an external java superclass, if
      * applicable (iii) in declaration order, superclasses first
-     * 
+     *
      * @param flds
      * @param pkgRegistry
      * @return
@@ -2531,7 +2563,7 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     * 
+     *
      *         Compiled packages are serializable.
      */
     public Package getPackage() {
@@ -2570,7 +2602,7 @@ public class PackageBuilder {
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     * 
+     *
      * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -2736,7 +2768,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     * 
+     *
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -2761,7 +2793,7 @@ public class PackageBuilder {
         }
 
         /**
-         * 
+         *
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
@@ -2904,7 +2936,7 @@ public class PackageBuilder {
      * Sup, then the index of Sub will be > than the index of Sup in the
      * resulting collection. This ensures that superclasses are processed before
      * their subclasses
-     * 
+     *
      * @param typeDeclarations
      * @return
      */
@@ -2967,7 +2999,7 @@ public class PackageBuilder {
 
     /**
      * Utility class for the sorting algorithm
-     * 
+     *
      * @param <T>
      */
     private static class Node<T> {
