@@ -47,32 +47,32 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        phaseStarted(solverPhaseScope);
 
-        LocalSearchStepScope localSearchStepScope = createNextStepScope(localSearchSolverPhaseScope, null);
-        while (!termination.isPhaseTerminated(localSearchSolverPhaseScope)) {
-            localSearchStepScope.setTimeGradient(termination.calculatePhaseTimeGradient(localSearchSolverPhaseScope));
-            beforeDeciding(localSearchStepScope);
-            decider.decideNextStep(localSearchStepScope);
-            Move nextStep = localSearchStepScope.getStep();
+        LocalSearchStepScope stepScope = createNextStepScope(solverPhaseScope, null);
+        while (!termination.isPhaseTerminated(solverPhaseScope)) {
+            stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(solverPhaseScope));
+            beforeDeciding(stepScope);
+            decider.decideNextStep(stepScope);
+            Move nextStep = stepScope.getStep();
             if (nextStep == null) {
                 logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
-                        localSearchStepScope.getStepIndex(),
-                        localSearchSolverPhaseScope.calculateSolverTimeMillisSpend());
+                        stepScope.getStepIndex(),
+                        solverPhaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
-            stepDecided(localSearchStepScope);
-            nextStep.doMove(localSearchStepScope.getWorkingMemory());
+            stepDecided(stepScope);
+            nextStep.doMove(stepScope.getWorkingMemory());
             // there is no need to recalculate the score, but we still need to set it
-            localSearchSolverPhaseScope.getWorkingSolution().setScore(localSearchStepScope.getScore());
+            solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                localSearchSolverPhaseScope.assertWorkingScore(localSearchStepScope.getScore());
+                solverPhaseScope.assertWorkingScore(stepScope.getScore());
             }
-            stepTaken(localSearchStepScope);
-            localSearchStepScope = createNextStepScope(localSearchSolverPhaseScope, localSearchStepScope);
+            stepTaken(stepScope);
+            stepScope = createNextStepScope(solverPhaseScope, stepScope);
         }
-        phaseEnded(localSearchSolverPhaseScope);
+        phaseEnded(solverPhaseScope);
     }
 
     private LocalSearchStepScope createNextStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope, LocalSearchStepScope completedLocalSearchStepScope) {

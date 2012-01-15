@@ -29,9 +29,9 @@ public interface Decider extends LocalSearchSolverAware, LocalSearchSolverPhaseL
 
     /**
      * Decides the next step
-     * @param localSearchStepScope never null
+     * @param stepScope never null
      */
-    void decideNextStep(LocalSearchStepScope localSearchStepScope);
+    void decideNextStep(LocalSearchStepScope stepScope);
 
     /**
      * @return never null

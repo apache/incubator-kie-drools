@@ -91,12 +91,12 @@ public class DefaultDecider implements Decider {
         forager.beforeDeciding(localSearchStepScope);
     }
 
-    public void decideNextStep(LocalSearchStepScope localSearchStepScope) {
-        WorkingMemory workingMemory = localSearchStepScope.getWorkingMemory();
-        Iterator<Move> moveIterator = selector.moveIterator(localSearchStepScope);
+    public void decideNextStep(LocalSearchStepScope stepScope) {
+        WorkingMemory workingMemory = stepScope.getWorkingMemory();
+        Iterator<Move> moveIterator = selector.moveIterator(stepScope);
         while (moveIterator.hasNext()) {
             Move move = moveIterator.next();
-            MoveScope moveScope = new MoveScope(localSearchStepScope);
+            MoveScope moveScope = new MoveScope(stepScope);
             moveScope.setMove(move);
             // Filter out not doable moves
             if (move.isMoveDoable(workingMemory)) {
@@ -108,15 +108,15 @@ public class DefaultDecider implements Decider {
                 logger.trace("        Ignoring not doable move ({}).", move);
             }
         }
-        MoveScope pickedMoveScope = forager.pickMove(localSearchStepScope);
+        MoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
-            localSearchStepScope.setStep(step);
+            stepScope.setStep(step);
             if (logger.isDebugEnabled()) {
-                localSearchStepScope.setStepString(step.toString());
+                stepScope.setStepString(step.toString());
             }
-            localSearchStepScope.setUndoStep(step.createUndoMove(workingMemory));
-            localSearchStepScope.setScore(pickedMoveScope.getScore());
+            stepScope.setUndoStep(pickedMoveScope.getUndoMove());
+            stepScope.setScore(pickedMoveScope.getScore());
         }
     }
 
