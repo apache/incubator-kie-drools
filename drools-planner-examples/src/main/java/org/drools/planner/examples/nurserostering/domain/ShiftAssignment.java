@@ -122,10 +122,16 @@ public class ShiftAssignment extends AbstractPersistable {
     }
 
     public Contract getContract() {
+        if (employee == null) {
+            return null;
+        }
         return employee.getContract();
     }
 
     public boolean isWeekend() {
+        if (employee == null) {
+            return false;
+        }
         WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
         DayOfWeek dayOfWeek = shift.getShiftDate().getDayOfWeek();
         return weekendDefinition.isWeekend(dayOfWeek);

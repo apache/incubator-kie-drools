@@ -1469,3 +1469,52 @@ After in *SolverConfig.xml:
           ...
         </forager>
       </localSearch>
+
+[MAJOR] An uninitialized planning entity should be allowed to be put into the working memory
+without causing a NullPointerException because a planning variable is still null.
+Before in *.java:
+    @PlanningEntity(...)
+    public class Lecture ... {
+
+        @PlanningVariable(...)
+        public Period getPeriod() {
+            return period;
+        }
+        ...
+
+        public Day getDay() {
+            return period.getDay();
+        }
+
+        public int getTimeslotIndex() {
+            return period.getTimeslot().getTimeslotIndex();
+        }
+
+        ...
+    }
+After in *.java:
+    @PlanningEntity(...)
+    public class Lecture ... {
+
+        @PlanningVariable(...)
+        public Period getPeriod() {
+            return period;
+        }
+        ...
+
+        public Day getDay() {
+            if (period == null) {
+                return null;
+            }
+            return period.getDay();
+        }
+
+        public int getTimeslotIndex() {
+            if (period == null) {
+                return -1;
+            }
+            return period.getTimeslot().getTimeslotIndex();
+        }
+
+        ...
+    }

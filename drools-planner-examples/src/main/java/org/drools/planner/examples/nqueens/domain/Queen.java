@@ -54,6 +54,9 @@ public class Queen extends AbstractPersistable {
     }
 
     public int getRowIndex() {
+        if (row == null) {
+            return -1;
+        }
         return row.getIndex();
     }
 

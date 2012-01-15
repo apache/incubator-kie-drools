@@ -90,10 +90,16 @@ public class Lecture extends AbstractPersistable {
     }
 
     public Day getDay() {
+        if (period == null) {
+            return null;
+        }
         return period.getDay();
     }
 
     public int getTimeslotIndex() {
+        if (period == null) {
+            return -1;
+        }
         return period.getTimeslot().getTimeslotIndex();
     }
 
