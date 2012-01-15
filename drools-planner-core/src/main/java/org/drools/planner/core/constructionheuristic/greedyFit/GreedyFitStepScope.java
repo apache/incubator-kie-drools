@@ -21,6 +21,7 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
@@ -30,7 +31,9 @@ public class GreedyFitStepScope extends AbstractStepScope {
 
     private Object planningEntity;
 
-    private Map<PlanningVariableDescriptor, Object> variableToValueMap;
+    private Move step = null;
+    private String stepString = null;
+    private Move undoStep = null;
 
     public GreedyFitStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         this.greedyFitSolverPhaseScope = greedyFitSolverPhaseScope;
@@ -53,25 +56,35 @@ public class GreedyFitStepScope extends AbstractStepScope {
         this.planningEntity = planningEntity;
     }
 
-    public void setVariableToValueMap(Map<PlanningVariableDescriptor, Object> variableToValueMap) {
-        this.variableToValueMap = variableToValueMap;
+    public Move getStep() {
+        return step;
+    }
+
+    public void setStep(Move step) {
+        this.step = step;
+    }
+
+    /**
+     * @return null if logging level is to high
+     */
+    public String getStepString() {
+        return stepString;
+    }
+
+    public void setStepString(String stepString) {
+        this.stepString = stepString;
+    }
+
+    public Move getUndoStep() {
+        return undoStep;
+    }
+
+    public void setUndoStep(Move undoStep) {
+        this.undoStep = undoStep;
     }
 
     // ************************************************************************
     // Calculated methods
     // ************************************************************************
-
-    public void doStep() {
-        WorkingMemory workingMemory = greedyFitSolverPhaseScope.getWorkingMemory();
-        FactHandle factHandle = workingMemory.getFactHandle(planningEntity);
-        for (Map.Entry<PlanningVariableDescriptor, Object> entry : variableToValueMap.entrySet()) {
-            PlanningVariableDescriptor planningVariableDescriptor = entry.getKey();
-            Object value = entry.getValue();
-            planningVariableDescriptor.setValue(planningEntity, value);
-        }
-        workingMemory.update(factHandle, planningEntity);
-        // there is no need to recalculate the score, but we still need to set it
-        greedyFitSolverPhaseScope.getWorkingSolution().setScore(score);
-    }
 
 }

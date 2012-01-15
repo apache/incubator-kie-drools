@@ -121,7 +121,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
-        greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
+        // TODO greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
         if (environmentMode == EnvironmentMode.TRACE) {
             greedyDecider.setAssertMoveScoreIsUncorrupted(true);
         }

@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -50,28 +51,37 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
     // ************************************************************************
 
     public void solve(DefaultSolverScope solverScope) {
-        GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = new GreedyFitSolverPhaseScope(solverScope);
-        phaseStarted(greedyFitSolverPhaseScope);
+        GreedyFitSolverPhaseScope solverPhaseScope = new GreedyFitSolverPhaseScope(solverScope);
+        phaseStarted(solverPhaseScope);
 
-        GreedyFitStepScope greedyFitStepScope = createNextStepScope(greedyFitSolverPhaseScope, null);
+        GreedyFitStepScope stepScope = createNextStepScope(solverPhaseScope, null);
         Iterator it = greedyPlanningEntitySelector.iterator();
-        while (!termination.isPhaseTerminated(greedyFitSolverPhaseScope) && it.hasNext()) {
+        while (!termination.isPhaseTerminated(solverPhaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
-            greedyFitStepScope.setPlanningEntity(planningEntity);
-            beforeDeciding(greedyFitStepScope);
-            greedyDecider.decideNextStep(greedyFitStepScope);
-            stepDecided(greedyFitStepScope);
-            greedyFitStepScope.doStep();
-            if (!it.hasNext()) {
-                greedyFitStepScope.setSolutionInitialized(true);
+            stepScope.setPlanningEntity(planningEntity);
+            beforeDeciding(stepScope);
+            greedyDecider.decideNextStep(stepScope);
+            Move nextStep = stepScope.getStep();
+            if (nextStep == null) {
+                logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
+                        stepScope.getStepIndex(),
+                        solverPhaseScope.calculateSolverTimeMillisSpend());
+                break;
             }
+            stepDecided(stepScope);
+            nextStep.doMove(stepScope.getWorkingMemory());
+            // there is no need to recalculate the score, but we still need to set it
+            solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {
-                greedyFitSolverPhaseScope.assertWorkingScore(greedyFitStepScope.getScore());
+                solverPhaseScope.assertWorkingScore(stepScope.getScore());
             }
-            stepTaken(greedyFitStepScope);
-            greedyFitStepScope = createNextStepScope(greedyFitSolverPhaseScope, greedyFitStepScope);
+            if (!it.hasNext()) {
+                stepScope.setSolutionInitialized(true);
+            }
+            stepTaken(stepScope);
+            stepScope = createNextStepScope(solverPhaseScope, stepScope);
         }
-        phaseEnded(greedyFitSolverPhaseScope);
+        phaseEnded(solverPhaseScope);
     }
 
     private GreedyFitStepScope createNextStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope, GreedyFitStepScope completedGreedyFitStepScope) {

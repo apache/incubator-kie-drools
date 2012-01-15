@@ -16,9 +16,17 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
+import java.util.Iterator;
+
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,21 +36,25 @@ public class DefaultGreedyDecider implements GreedyDecider {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private PlanningVariableWalker planningVariableWalker;
-    private ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType;
+    private GreedyForager forager;
 
     protected boolean assertMoveScoreIsUncorrupted = false;
+    protected boolean assertUndoMoveIsUncorrupted = false;
 
     public void setPlanningVariableWalker(PlanningVariableWalker planningVariableWalker) {
         this.planningVariableWalker = planningVariableWalker;
     }
 
-    public void setConstructionHeuristicPickEarlyType(
-            ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType) {
-        this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
+    public void setForager(GreedyForager forager) {
+        this.forager = forager;
     }
 
     public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
         this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
+    }
+
+    public void setAssertUndoMoveIsUncorrupted(boolean assertUndoMoveIsUncorrupted) {
+        this.assertUndoMoveIsUncorrupted = assertUndoMoveIsUncorrupted;
     }
 
     // ************************************************************************
@@ -51,50 +63,91 @@ public class DefaultGreedyDecider implements GreedyDecider {
 
     public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         planningVariableWalker.phaseStarted(greedyFitSolverPhaseScope);
+        forager.phaseStarted(greedyFitSolverPhaseScope);
     }
 
     public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
         planningVariableWalker.beforeDeciding(greedyFitStepScope);
+        forager.beforeDeciding(greedyFitStepScope);
     }
 
-    public void decideNextStep(GreedyFitStepScope greedyFitStepScope) {
-        GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = greedyFitStepScope.getGreedyFitSolverPhaseScope();
-        planningVariableWalker.initWalk(greedyFitStepScope.getPlanningEntity());
-        Score lastStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
-        Score maxScore = greedyFitSolverPhaseScope.getScoreDefinition().getPerfectMinimumScore();
-        while (planningVariableWalker.hasWalk()) {
-            planningVariableWalker.walk();
-            Score score = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
-            if (assertMoveScoreIsUncorrupted) {
-                greedyFitSolverPhaseScope.assertWorkingScore(score);
-            }
-            if (score.compareTo(maxScore) > 0) {
-                greedyFitStepScope.setVariableToValueMap(planningVariableWalker.getVariableToValueMap());
-                maxScore = score;
-            }
-            // TODO refactor to usage of Move and MoveScope
-            logger.trace("        Move score ({}) for planning entity ({}) for move (TODO).",
-                    new Object[]{score, greedyFitStepScope.getPlanningEntity()});
-            if (constructionHeuristicPickEarlyType
-                    == ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING
-                    && lastStepScore != null
-                    && score.compareTo(lastStepScore) >= 0) {
+    public void decideNextStep(GreedyFitStepScope stepScope) {
+        Object planningEntity = stepScope.getPlanningEntity();
+        Iterator<Move> moveIterator = planningVariableWalker.moveIterator(planningEntity);
+        while (moveIterator.hasNext()) {
+            Move move = moveIterator.next();
+            GreedyMoveScope moveScope = new GreedyMoveScope(stepScope);
+            moveScope.setMove(move);
+            doMove(moveScope);
+            if (forager.isQuitEarly()) {
                 break;
             }
         }
-        greedyFitStepScope.setScore(maxScore);
+        GreedyMoveScope pickedMoveScope = forager.pickMove(stepScope);
+        if (pickedMoveScope != null) {
+            Move step = pickedMoveScope.getMove();
+            stepScope.setStep(step);
+            if (logger.isDebugEnabled()) {
+                stepScope.setStepString(step.toString());
+            }
+            stepScope.setUndoStep(pickedMoveScope.getUndoMove());
+            stepScope.setScore(pickedMoveScope.getScore());
+        }
+    }
+
+    private void doMove(GreedyMoveScope moveScope) {
+        WorkingMemory workingMemory = moveScope.getWorkingMemory();
+        Move move = moveScope.getMove();
+        Move undoMove = move.createUndoMove(workingMemory);
+        moveScope.setUndoMove(undoMove);
+        move.doMove(workingMemory);
+        processMove(moveScope);
+        undoMove.doMove(workingMemory);
+        if (assertUndoMoveIsUncorrupted) {
+            GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = moveScope.getGreedyFitStepScope()
+                    .getGreedyFitSolverPhaseScope();
+            Score undoScore = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score lastCompletedStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
+            if (!undoScore.equals(lastCompletedStepScore)) {
+                // First assert that are probably no corrupted score rules.
+                greedyFitSolverPhaseScope.getSolverScope().getSolutionDirector()
+                        .assertWorkingScore(undoScore);
+                throw new IllegalStateException(
+                        "The moveClass (" + move.getClass() + ")'s move (" + move
+                                + ") probably has a corrupted undoMove (" + undoMove + ")." +
+                                " Or maybe there are corrupted score rules.\n"
+                                + "Check the Move.createUndoMove(...) method of that Move class" +
+                                " and enable EnvironmentMode TRACE to fail-faster on corrupted score rules.\n"
+                                + "Score corruption: the lastCompletedStepScore (" + lastCompletedStepScore
+                                + ") is not the undoScore (" + undoScore + ").");
+            }
+        }
+        logger.trace("        Move score ({}) for move ({}).",
+                new Object[]{moveScope.getScore(), moveScope.getMove()});
+    }
+
+    private void processMove(GreedyMoveScope moveScope) {
+        Score score = moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().calculateScoreFromWorkingMemory();
+        if (assertMoveScoreIsUncorrupted) {
+            moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().assertWorkingScore(score);
+        }
+        moveScope.setScore(score);
+        forager.addMove(moveScope);
     }
 
     public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
         planningVariableWalker.stepDecided(greedyFitStepScope);
+        forager.stepDecided(greedyFitStepScope);
     }
 
     public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
         planningVariableWalker.stepTaken(greedyFitStepScope);
+        forager.stepTaken(greedyFitStepScope);
     }
 
     public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         planningVariableWalker.phaseEnded(greedyFitSolverPhaseScope);
+        forager.phaseEnded(greedyFitSolverPhaseScope);
     }
 
 }

@@ -16,11 +16,16 @@
 
 package org.drools.planner.core.heuristic.selector.variable;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
@@ -47,10 +52,6 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     public PlanningVariableDescriptor getPlanningVariableDescriptor() {
         return planningVariableDescriptor;
-    }
-
-    public Object getWorkingValue() {
-        return workingValue;
     }
 
     // ************************************************************************
@@ -128,6 +129,26 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningVariableDescriptor.setValue(planningEntity, value);
         workingMemory.update(planningEntityFactHandle, planningEntity);
         workingValue = value;
+    }
+
+    // TODO refactor variableWalker to this
+    public Iterator<Move> moveIterator(final Object planningEntity) {
+        final Iterator<?> planningValueIterator = planningValueSelector.iterator(planningEntity);
+        return new Iterator<Move>() {
+            public boolean hasNext() {
+                return planningValueIterator.hasNext();
+            }
+
+            public Move next() {
+                Object toPlanningValue = planningValueIterator.next();
+                return new GenericChangeMove(planningEntity, planningEntityFactHandle,
+                        planningVariableDescriptor, toPlanningValue);
+            }
+
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 
 }

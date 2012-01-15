@@ -23,8 +23,8 @@ public interface GreedyDecider extends GreedySolverPhaseLifecycleListener {
 
     /**
      * Decides the next step
-     * @param greedyFitStepScope never null
+     * @param stepScope never null
      */
-    void decideNextStep(GreedyFitStepScope greedyFitStepScope);
+    void decideNextStep(GreedyFitStepScope stepScope);
 
 }

@@ -28,6 +28,7 @@ import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPh
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -116,8 +117,6 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
 
     private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
-        ConstructionHeuristicPickEarlyType pickEarlyType = (this.constructionHeuristicPickEarlyType == null)
-                ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
 
         Set<Class<?>> planningEntityImplementationClassSet = solutionDescriptor.getPlanningEntityImplementationClassSet();
         if (planningEntityImplementationClassSet.size() != 1) {
@@ -140,11 +139,22 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
         planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
-        greedyDecider.setConstructionHeuristicPickEarlyType(pickEarlyType);
+        greedyDecider.setForager(buildGreedyForager());
         if (environmentMode == EnvironmentMode.TRACE) {
             greedyDecider.setAssertMoveScoreIsUncorrupted(true);
         }
+        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+            greedyDecider.setAssertUndoMoveIsUncorrupted(true);
+        }
         return greedyDecider;
+    }
+
+    private GreedyForager buildGreedyForager() {
+        GreedyForager forager = new GreedyForager();
+        ConstructionHeuristicPickEarlyType pickEarlyType = (this.constructionHeuristicPickEarlyType == null)
+                ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
+        forager.setPickEarlyType(pickEarlyType);
+        return forager;
     }
 
     private PlanningEntitySelectionOrder determinePlanningEntitySelectionOrder() {
