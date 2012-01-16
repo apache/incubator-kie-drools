@@ -21,8 +21,11 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.Context;
+import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.core.util.StringUtils;
+import org.drools.runtime.impl.ExecutionResultImpl;
 
 public class NewKnowledgeBuilderCommand
     implements
@@ -33,7 +36,16 @@ public class NewKnowledgeBuilderCommand
     private KnowledgeBase attachedKnowledgeBase;
     
     private String kbaseId;
+    
+    private String outIdentifier;
 
+    public NewKnowledgeBuilderCommand() {
+    }
+    
+    public NewKnowledgeBuilderCommand(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+    
     public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf) {
         this.kbuilderConf = kbuilderConf;
     }
@@ -41,6 +53,12 @@ public class NewKnowledgeBuilderCommand
     public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf, String kbaseId) {
         this.kbuilderConf = kbuilderConf;
         setAttachedKnowledgeBase( kbaseId );
+    }    
+
+    public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf, String kbaseId, String outIdentifier) {
+        this.kbuilderConf = kbuilderConf;
+        setAttachedKnowledgeBase( kbaseId );
+        this.outIdentifier = outIdentifier;
     }    
 
     public KnowledgeBase getAttachedKnowledgeBase() {
@@ -70,6 +88,11 @@ public class NewKnowledgeBuilderCommand
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase,
                                                                     this.kbuilderConf );
+        }
+        ((FixedKnowledgeCommandContext) context).setKbuilder(kbuilder);
+        
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
         }
         
         return kbuilder;

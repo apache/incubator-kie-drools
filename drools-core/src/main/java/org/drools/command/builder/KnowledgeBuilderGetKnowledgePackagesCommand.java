@@ -23,6 +23,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.definition.KnowledgePackage;
+import org.drools.runtime.impl.ExecutionResultImpl;
 
 public class KnowledgeBuilderGetKnowledgePackagesCommand
     implements
@@ -39,7 +40,14 @@ public class KnowledgeBuilderGetKnowledgePackagesCommand
 
     public Collection<KnowledgePackage> execute(Context context) {
         KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
-        return kbuilder.getKnowledgePackages();
+        
+        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults()
+                .put( this.outIdentifier, knowledgePackages );
+        }
+        
+        return knowledgePackages;
     }
 
 }

@@ -4,26 +4,20 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Test;
 import org.mvel2.MVELRuntime;
 import org.mvel2.debug.Debugger;
 import org.mvel2.debug.Frame;
@@ -96,7 +90,6 @@ public class HelloWorldTest extends CommonTestMethodBase {
         kbuilder.add(
             ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
             ResourceType.DRL);
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (kbuilder.hasErrors()) {
            fail( kbuilder.getErrors().toString() );
         }
