@@ -136,11 +136,23 @@ public class CommandFactory {
         return getCommandFactoryProvider().newGetObject( factHandle );
     }
 
+    public static Command newGetObject(FactHandle factHandle, String outIdentifier ) {
+        return getCommandFactoryProvider().newGetObject( factHandle, outIdentifier );
+    }
+
     public static Command newGetObjects() {
         return getCommandFactoryProvider().newGetObjects();
     }
 
+    public static Command newGetObjects( String outIdentifier ) {
+        return getCommandFactoryProvider().newGetObjects( outIdentifier );
+    }
+
     public static Command newGetObjects(ObjectFilter filter) {
+        return getCommandFactoryProvider().newGetObjects( filter );
+    }
+
+    public static Command newGetObjects(ObjectFilter filter, String outIdentifier ) {
         return getCommandFactoryProvider().newGetObjects( filter );
     }
 
