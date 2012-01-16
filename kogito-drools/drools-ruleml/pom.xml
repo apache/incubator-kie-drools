@@ -10,13 +10,7 @@
 
   <artifactId>drools-ruleml</artifactId>
 
-  <name>Drools :: RuleML </name>
-
-  <url>http://org.drools</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  <name>Drools :: RuleML</name>
 
   <dependencies>
     <dependency>
@@ -111,5 +105,5 @@
         </configuration>
       </plugin>
     </plugins>
-  </build>  
+  </build>
 </project>
