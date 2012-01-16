@@ -101,12 +101,24 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
         return new GetObjectCommand(factHandle);
     }
 
+    public Command newGetObject(FactHandle factHandle, String outIdentifier) {
+        return new GetObjectCommand(factHandle, outIdentifier);
+    }
+
     public Command newGetObjects() {
-        return newGetObjects(null);
+        return newGetObjects((ObjectFilter) null);
+    }
+
+    public Command newGetObjects(String outIdentifier) {
+        return newGetObjects(null, outIdentifier);
     }
 
     public Command newGetObjects(ObjectFilter filter) {
         return new GetObjectsCommand(filter);
+    }
+
+    public Command newGetObjects(ObjectFilter filter, String outIdentifier) {
+        return new GetObjectsCommand(filter, outIdentifier);
     }
 
     public Command newSetGlobal(String identifier, Object object) {
