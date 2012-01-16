@@ -9539,6 +9539,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "    i : int\n" +
                 "end\n" +
                 "declare B\n" +
+                "    @propSpecific\n" +
                 "    s : String\n" +
                 "    i : int\n" +
                 "end\n" +
@@ -9619,6 +9620,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "    s : String\n" +
                 "end\n" +
                 "declare B\n" +
+                "    @propSpecific\n" +
                 "    on : boolean\n" +
                 "    s : String\n" +
                 "end\n" +

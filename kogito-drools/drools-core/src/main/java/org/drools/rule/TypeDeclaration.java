@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.List;
 
 import org.drools.base.ClassObjectType;
 import org.drools.definition.KnowledgeDefinition;
@@ -31,6 +32,7 @@ import org.drools.io.Resource;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
+import org.drools.core.util.ClassUtils;
 
 /**
  * The type declaration class stores all type's metadata
@@ -53,6 +55,7 @@ public class TypeDeclaration
     public static final String ATTR_KEY                 = "key";
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
+    public static final String ATTR_PROP_SPECIFIC       = "propSpecific";
 
     public int setMask                                  = 0;
     
@@ -88,21 +91,23 @@ public class TypeDeclaration
         }
     }
 
-    private String               typeName;
-    private Role                 role;
-    private Format               format;
-    private String               timestampAttribute;
-    private String               durationAttribute;
-    private InternalReadAccessor durationExtractor;
-    private InternalReadAccessor timestampExtractor;
-    private transient Class< ? > typeClass;
-    private String               typeClassName;
-    private FactTemplate         typeTemplate;
-    private ClassDefinition      typeClassDef;
-    private Resource             resource;
-    private boolean              dynamic;
-    private boolean              typesafe;
-    private boolean              novel;
+    private String                 typeName;
+    private Role                   role;
+    private Format                 format;
+    private String                 timestampAttribute;
+    private String                 durationAttribute;
+    private InternalReadAccessor   durationExtractor;
+    private InternalReadAccessor   timestampExtractor;
+    private transient Class< ? >   typeClass;
+    private String                 typeClassName;
+    private FactTemplate           typeTemplate;
+    private ClassDefinition        typeClassDef;
+    private Resource               resource;
+    private boolean                dynamic;
+    private boolean                typesafe;
+    private boolean                novel;
+    private boolean                propSpecific;
+    private transient List<String> settableProprties;
 
     private transient ObjectType objectType;
     private long                 expirationOffset = -1;
@@ -118,7 +123,6 @@ public class TypeDeclaration
         this.timestampAttribute = null;
         this.typeTemplate = null;
         this.typesafe =  true;
-        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -137,6 +141,7 @@ public class TypeDeclaration
         this.expirationOffset = in.readLong();
         this.dynamic = in.readBoolean();
         this.typesafe = in.readBoolean();
+        this.propSpecific = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -151,9 +156,10 @@ public class TypeDeclaration
         out.writeObject( durationExtractor );
         out.writeObject( timestampExtractor );
         out.writeObject( this.resource );
-        out.writeLong( expirationOffset );
-        out.writeBoolean( dynamic );
+        out.writeLong(expirationOffset);
+        out.writeBoolean(dynamic);
         out.writeBoolean( typesafe );
+        out.writeBoolean( propSpecific );
     }
     
     public int getSetMask() {
@@ -405,6 +411,13 @@ public class TypeDeclaration
         this.typesafe = typesafe;
     }
 
+    public boolean isPropSpecific() {
+        return propSpecific;
+    }
+
+    public void setPropSpecific(boolean propSpecific) {
+        this.propSpecific = propSpecific;
+    }
 
     public boolean isNovel() {
         return novel;
@@ -412,5 +425,12 @@ public class TypeDeclaration
 
     public void setNovel(boolean novel) {
         this.novel = novel;
+    }
+
+    public List<String> getSettableProperties() {
+        if (settableProprties == null) {
+            settableProprties = ClassUtils.getSettableProperties(getTypeClass());
+        }
+        return settableProprties;
     }
 }

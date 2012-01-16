@@ -18,6 +18,7 @@ import org.drools.core.util.BitMaskUtil;
 import org.drools.core.util.ClassUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.*;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
@@ -44,7 +45,6 @@ import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
-import static org.drools.core.util.ClassUtils.getSettableProperties;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.core.util.StringUtils.generateUUID;
 
@@ -599,7 +599,18 @@ public final class DialectUtil {
                                               Declaration declr,
                                               String obj) {
         boolean isInternalFact = declr != null && !declr.isInternalFact();
-        long modificationMask = isInternalFact ? 0 : Long.MAX_VALUE;
+        boolean isPropSpecific = false;
+        List<String> settableProperties = null;
+        if (isInternalFact) {
+            Class<?> typeClass = ((ClassObjectType) declr.getPattern().getObjectType()).getClassType();
+            TypeDeclaration typeDeclaration = context.getPackageBuilder().getTypeDeclaration(typeClass);
+            if (typeDeclaration != null && typeDeclaration.isPropSpecific()) {
+                isPropSpecific = true;
+                typeDeclaration.setTypeClass(typeClass);
+                settableProperties = typeDeclaration.getSettableProperties();
+            }
+        }
+        long modificationMask = isPropSpecific ? 0 : Long.MAX_VALUE;
 
         int end = originalBlock.indexOf("{");
         if (end == -1) {
@@ -613,10 +624,6 @@ public final class DialectUtil {
 
         addLineBreaks(consequence, originalBlock.substring(0, end));
 
-        List<String> settableProperties = isInternalFact ?
-                getSettableProperties(((ClassObjectType) declr.getPattern().getObjectType()).getClassType()) :
-                null;
-
         int start = end + 1;
         // adding each of the expressions:
         for (String exprStr : ((JavaModifyBlockDescr) d).getExpressions()) {
@@ -627,7 +634,7 @@ public final class DialectUtil {
             consequence.append("; ");
             start = end + exprStr.length();
 
-            if (isInternalFact) {
+            if (isPropSpecific) {
                 int endMethodName = exprStr.indexOf('(');
                 String methodName = exprStr.substring(0, endMethodName).trim();
                 String propertyName = setter2property(methodName);
