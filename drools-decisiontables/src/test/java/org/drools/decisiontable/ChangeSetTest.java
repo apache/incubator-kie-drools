@@ -1,13 +1,19 @@
 package org.drools.decisiontable;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.drools.SystemEventListener;
+import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.agent.impl.FailureDetectingSystemEventListener;
+import org.drools.io.ResourceChangeScannerConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +43,9 @@ public class ChangeSetTest {
     public void setUp() throws Exception {
         fileManager = new FileManager();
         fileManager.setUp();
+        ResourceChangeScannerConfiguration config = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+        config.setProperty("drools.resource.scanner.interval", "1");
+        ResourceFactory.getResourceChangeScannerService().configure(config);
         ResourceFactory.getResourceChangeNotifierService().start();
         ResourceFactory.getResourceChangeScannerService().start();
     }
@@ -99,6 +108,38 @@ public class ChangeSetTest {
         
         assertEquals(1, kbase.getKnowledgePackages().size());
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
+    }
+
+    @Test
+    public void testCSVByKnowledgeAgentWithFileReader() throws IOException {
+        FailureDetectingSystemEventListener systemEventListener = new FailureDetectingSystemEventListener();
+        SystemEventListenerFactory.setSystemEventListener(systemEventListener);
+
+        try {
+            File targetTestFilesDir = new File("target/testFiles");
+            targetTestFilesDir.mkdirs();
+            File changeSetFile = new File(targetTestFilesDir, "changeSetTestCSV.xml");
+            FileUtils.copyURLToFile(getClass().getResource("changeSetTestCSV.xml"), changeSetFile);
+
+            KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
+            kagent.setSystemEventListener(systemEventListener);
+            kagent.applyChangeSet(ResourceFactory.newFileResource(changeSetFile));
+            KnowledgeBase kbase = kagent.getKnowledgeBase();
+
+            assertEquals(1, kbase.getKnowledgePackages().size());
+            assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
+
+            if (!systemEventListener.isSuccessful()) {
+                for (Throwable throwable : systemEventListener.getExceptionList()) {
+                    throwable.printStackTrace();
+                }
+                fail("The scanner ran into exceptions");
+            }
+        } catch(Throwable t) {
+            t.printStackTrace();
+            fail( t.getMessage() );
+        } finally {
+        }
     }
 
 }
