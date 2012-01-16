@@ -90,6 +90,13 @@ public class InsertObjectInEntryPointCommand
         this.outIdentifier = outIdentifier;
     }
 
+    public boolean isReturnObject() {
+        return returnObject;
+    }
+
+    public void setReturnObject(boolean returnObject) {
+        this.returnObject = returnObject;
+    }
 
     public String toString() {
         return "session.insert(" + object + ");";
