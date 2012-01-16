@@ -23,19 +23,30 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.After;
 import org.junit.Test;
 
 public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
 
     private static final String source = "org/drools/lang/misplaced_parenthesis.drl";
 
+    private StatefulKnowledgeSession ksession = null;
+    
+    @After
+    public void disposeKSession() throws Exception {
+        if( ksession != null ) { 
+            ksession.dispose();
+            ksession = null;
+        }
+    }
+    
     @Test
     public void testKBuilderAdd() throws Exception {
         Resource res = ResourceFactory.newClassPathResource(source);
         assertNotNull(res);
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(new NewKnowledgeBuilderCommand("kbuilder"));
@@ -57,7 +68,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         assertNotNull(res);
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(new NewKnowledgeBuilderCommand());
@@ -79,7 +90,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         assertNotNull(res);
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(new NewKnowledgeBuilderCommand());
@@ -119,7 +130,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         + "end\n";
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(new NewKnowledgeBuilderCommand());
@@ -133,6 +144,7 @@ public class KBuilderBatchExecutionTest extends CommonTestMethodBase {
         assertTrue(pkgsObject != null && pkgsObject instanceof Collection<?>);
         kbase.addKnowledgePackages( ((Collection<KnowledgePackage>) pkgsObject) );
 
+        ksession.dispose();
         ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < NUM_FACTS; i++ ) {
             ksession.insert( new Foo( i ) );

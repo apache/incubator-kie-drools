@@ -2,6 +2,7 @@ package org.drools.integrationtests;
 
 import static org.junit.Assert.fail;
 
+import java.io.Serializable;
 import java.io.StringReader;
 
 import org.drools.RuleBase;
@@ -15,7 +16,7 @@ public class DroolsTest {
 
     private static int       counter;
 
-    public static class Foo {
+    public static class Foo implements Serializable {
         private final int id;
 
         public Foo(int id) {
@@ -27,7 +28,7 @@ public class DroolsTest {
         }
     }
 
-    public static class Bar {
+    public static class Bar implements Serializable {
         private final int id;
 
         public Bar(int id) {
