@@ -29,10 +29,21 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.QueryResults;
+import org.junit.After;
 import org.junit.Test;
 
 public class MoreBatchExecutionTest extends CommonTestMethodBase {
 
+    private StatefulKnowledgeSession ksession = null;
+    
+    @After
+    public void disposeKSession() throws Exception {
+        if( ksession != null ) { 
+            ksession.dispose();
+            ksession = null;
+        }
+    }
+    
     @Test
     public void testFireAllRules() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -42,7 +53,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
 
         final Cheese cheese = new Cheese("stilton", 15);
         ksession.insert(cheese);
@@ -77,7 +88,7 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession = createKnowledgeSession(kbase);
         
         ksession.insert( new Cheese( "stinky", 5 ) );
         ksession.insert( new Cheese( "smelly", 7 ) );

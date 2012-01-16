@@ -1,0 +1,6 @@
+package com.sample
+
+rule "EmptyRule" 
+    when
+    then
+end 

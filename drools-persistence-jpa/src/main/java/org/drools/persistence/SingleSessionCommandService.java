@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
+import org.drools.command.BatchExecutionCommand;
 import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
@@ -44,8 +45,10 @@ import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
@@ -341,8 +344,15 @@ public class SingleSessionCommandService
             registerRollbackSync();
 
             T result = null;
-            if ( !( command instanceof DisposeCommand) ) {
-                result = commandService.execute((GenericCommand<T>) command);
+            if ( !(command instanceof DisposeCommand) ) {
+                if( command instanceof BatchExecutionCommand ) { 
+                    // Batch execution requires the extra logic in 
+                    //  StatefulSessionKnowledgeImpl.execute(Context,Command);
+                    result = ksession.execute(command);
+                }
+                else { 
+                    result = commandService.execute( (GenericCommand<T>) command );
+                }
             }
 
             txm.commit(transactionOwner);

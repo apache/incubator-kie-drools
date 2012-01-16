@@ -30,11 +30,16 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.util.EntityManagerFactoryProxy;
 import org.drools.marshalling.util.UserTransactionProxy;
+import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
@@ -153,6 +158,15 @@ public class PersistenceUtil {
     }
 
     /**
+     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times. 
+     * @see {@link PersistenceUtil#cleanUp(HashMap)}
+     */
+    @Deprecated
+    public static void tearDown(HashMap<String, Object> context) {
+       cleanUp(context);     
+    }
+    
+    /**
      * This method should be called in the @After method of a test to clean up
      * the persistence unit and datasource.
      * 
@@ -161,7 +175,7 @@ public class PersistenceUtil {
      *            {@link org.drools.persistence.util.PersistenceUtil setupWithPoolingDataSource(String)}
      * 
      */
-    public static void tearDown(HashMap<String, Object> context) {
+    public static void cleanUp(HashMap<String, Object> context) {
         if (context != null) {
             
             BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
@@ -422,4 +436,10 @@ public class PersistenceUtil {
 
    }
 
+   public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) { 
+       KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+       StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
+       return knowledgeSession;
+   }
+   
 }
