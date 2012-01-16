@@ -15,25 +15,18 @@
  */
 package org.drools.command;
 
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.PackageBuilder;
-import org.drools.integrationtests.SerializationHelper;
 import org.drools.io.ResourceFactory;
-import org.drools.rule.Package;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -66,7 +59,10 @@ public class SimpleBatchExecutionTest extends CommonTestMethodBase {
     
     @After
     public void disposeKSession() throws Exception {
-        ksession.dispose();
+        if( ksession != null ) { 
+            ksession.dispose();
+            ksession = null;
+        }
     }
     
     @Test 
