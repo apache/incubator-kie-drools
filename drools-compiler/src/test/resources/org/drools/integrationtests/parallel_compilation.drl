@@ -1,0 +1,34 @@
+package org.drools.integrationtests
+
+import org.drools.integrationtests.ParallelCompilationTest.User;
+
+
+rule "When a user is young, print his name."
+    when
+        $user : User(age < 20)
+    then
+        System.out.println("Young: "+$user.getName() );
+end
+
+
+rule "When a user is old, print his name."
+    when
+        $user : User(age > 30)
+    then
+        System.out.println("Old: "+$user.getName() );
+end
+
+
+rule "Girls get a special parking lot."
+    when
+        $user : User(age < 20, gender == User.Gender.FEMALE)
+    then
+        System.out.println("Park: "+$user.getName() );
+end
+
+rule "When there is god, the light always shines."
+    when
+        $user : User(name matches "God")
+    then
+        System.out.println("Light is on" );
+end
