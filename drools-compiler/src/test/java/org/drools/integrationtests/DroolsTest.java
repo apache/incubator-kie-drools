@@ -20,7 +20,7 @@ public class DroolsTest {
     public static class Foo {
         private final int id;
 
-        Foo(int id) {
+        public Foo(int id) {
             this.id = id;
         }
 
@@ -32,7 +32,7 @@ public class DroolsTest {
     public static class Bar {
         private final int id;
 
-        Bar(int id) {
+        public Bar(int id) {
             this.id = id;
         }
 

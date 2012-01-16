@@ -60,6 +60,10 @@ public class KnowledgeCommandContext
         return kbuilder;
     }
 
+    public void setKnowledgeBuilder(KnowledgeBuilder kbuilder) {
+        this.kbuilder = kbuilder;
+    }
+
     public KnowledgeBase getKnowledgeBase() {
         return this.kbase;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,38 @@
 
 package org.drools.command.builder;
 
+import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
+import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.runtime.impl.ExecutionResultImpl;
 
 public class NewKnowledgeBuilderCommand
     implements
     GenericCommand<KnowledgeBuilder> {
 
     private KnowledgeBuilderConfiguration kbuilderConf;
+    
+    private String outIdentifier;
 
+    public NewKnowledgeBuilderCommand() {
+    }
+    
+    public NewKnowledgeBuilderCommand(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+    
     public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf) {
         this.kbuilderConf = kbuilderConf;
     }
+    
+    public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf, String outIdentifier) {
+        this.kbuilderConf = kbuilderConf;
+        this.outIdentifier = outIdentifier;
+    }    
 
     public KnowledgeBuilder execute(Context context) {
         KnowledgeBuilder kbuilder = null;
@@ -38,6 +55,11 @@ public class NewKnowledgeBuilderCommand
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbuilderConf );
+        }
+        ((KnowledgeCommandContext) context).setKnowledgeBuilder(kbuilder);
+        
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
         }
         
         return kbuilder;

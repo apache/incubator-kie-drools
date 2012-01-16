@@ -59,6 +59,11 @@ public class GetObjectsCommand
         this.filter = filter;
     }
 
+    public GetObjectsCommand(ObjectFilter filter, String outIdentifier) {
+        this.filter = filter;
+        this.outIdentifier = outIdentifier;
+    }
+
     public Collection execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
