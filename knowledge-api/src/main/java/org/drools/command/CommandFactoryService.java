@@ -51,9 +51,15 @@ public interface CommandFactoryService {
 
     Command newGetObject(FactHandle factHandle);
 
+    Command newGetObject(FactHandle factHandle, String outIdentifier);
+
     Command newGetObjects();
 
+    Command newGetObjects(String outIdentifier);
+
     Command newGetObjects(ObjectFilter filter);
+
+    Command newGetObjects(ObjectFilter filter, String outIdentifier);
 
     Command newSetGlobal(String identifie,
                          Object object);
