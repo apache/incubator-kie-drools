@@ -1823,6 +1823,9 @@ public class PackageBuilder {
             boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
             type.setDynamic( dynamic );
 
+            boolean propSpecific = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_SPECIFIC );
+            type.setPropSpecific( propSpecific );
+
             pkgRegistry.getPackage().addTypeDeclaration( type );
         }
     }

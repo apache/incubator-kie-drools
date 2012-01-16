@@ -22,7 +22,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.drools.base.mvel.MVELCompilationUnit.DroolsVarFactory;
+import org.drools.common.InternalRuleBase;
 import org.drools.core.util.BitMaskUtil;
+import org.drools.rule.TypeDeclaration;
+import org.drools.spi.KnowledgeHelper;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.WithNode;
 import org.mvel2.compiler.CompiledAccExpression;
@@ -67,18 +70,27 @@ public class ModifyInterceptor
             throw new RuntimeException( "Unable to find DroolsMVELIndexedFactory" );
         }
 
+        KnowledgeHelper knowledgeHelper = ((DroolsVarFactory)factory).getKnowledgeHelper();
+
         if (modificationMask < 0) {
-            calculateModificationMask((WithNode)node);
+            calculateModificationMask(knowledgeHelper, (WithNode)node);
         }
-        
-        ((DroolsVarFactory)factory).getKnowledgeHelper().update(value, modificationMask);
+
+
+        knowledgeHelper.update(value, modificationMask);
         return 0;
     }
 
-    private void calculateModificationMask(WithNode node) {
+    private void calculateModificationMask(KnowledgeHelper knowledgeHelper, WithNode node) {
         Class<?> nodeClass = node.getEgressType();
-        List<String> settableProperties = getSettableProperties(nodeClass);
+        InternalRuleBase ruleBase = (InternalRuleBase)knowledgeHelper.getWorkingMemory().getRuleBase();
+        TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
+        if (typeDeclaration == null || !typeDeclaration.isPropSpecific()) {
+            modificationMask = Long.MAX_VALUE;
+            return;
+        }
 
+        List<String> settableProperties = typeDeclaration.getSettableProperties();
         modificationMask = 0L;
 
         // TODO: access parmValuePairs without reflection

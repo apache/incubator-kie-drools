@@ -601,6 +601,11 @@ abstract public class AbstractRuleBase
                                             existingDecl.isDynamic(),
                                             newDecl.isDynamic(),
                                             true ) );
+        existingDecl.setPropSpecific( mergeLeft( existingDecl.getTypeName(),
+                                                 "Unable to merge @propSpecific attribute for type declaration of class:",
+                                                 existingDecl.isPropSpecific(),
+                                                 newDecl.isPropSpecific(),
+                                                 true ) );
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
         existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
