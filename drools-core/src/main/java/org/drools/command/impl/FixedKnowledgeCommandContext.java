@@ -90,11 +90,7 @@ public class FixedKnowledgeCommandContext
         this.workingMemoryEntryPoint = workingMemoryEntryPoint;
     }
 
-    public KnowledgeBuilder getKbuilder() {
-        return kbuilder;
-    }
-
-    public void setKbuilder(KnowledgeBuilder kbuilder) {
+    public void setKnowledgeBuilder(KnowledgeBuilder kbuilder) {
         this.kbuilder = kbuilder;
     }
 

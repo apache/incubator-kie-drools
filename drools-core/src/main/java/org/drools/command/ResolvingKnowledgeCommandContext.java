@@ -22,6 +22,10 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         return ( KnowledgeBuilder ) context.get( KnowledgeBuilder.class.getName() );
     }
 
+    public void setKnowledgeBuilder(KnowledgeBuilder kbuilder) {
+        context.set( KnowledgeBuilder.class.getName(), kbuilder );
+    }
+
     public KnowledgeBase getKnowledgeBase() {
         return ( KnowledgeBase ) context.get( KnowledgeBase.class.getName() );
     }

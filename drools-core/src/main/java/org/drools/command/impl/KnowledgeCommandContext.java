@@ -8,9 +8,11 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
-public interface KnowledgeCommandContext extends Context{
+public interface KnowledgeCommandContext extends Context {
 
     public KnowledgeBuilder getKnowledgeBuilder();
+    
+    public void setKnowledgeBuilder(KnowledgeBuilder kbuilder);
 
     public KnowledgeBase getKnowledgeBase();
 
