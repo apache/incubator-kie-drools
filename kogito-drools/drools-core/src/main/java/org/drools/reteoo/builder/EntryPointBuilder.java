@@ -16,6 +16,8 @@
 
 package org.drools.reteoo.builder;
 
+import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.ObjectSource;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.RuleConditionElement;
 
@@ -34,8 +36,17 @@ public class EntryPointBuilder
                       BuildUtils utils,
                       RuleConditionElement rce) {
         final EntryPoint entry = (EntryPoint) rce;
-        
         context.setCurrentEntryPoint( entry );
+        
+        EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( entry );
+        if( epn == null ) {
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      new EntryPointNode( context.getNextId(),
+                                                                                          context.getRuleBase().getRete(),
+                                                                                          context ) ) );
+        } else {
+            context.setObjectSource( epn );
+        }
      }
 
     /* (non-Javadoc)

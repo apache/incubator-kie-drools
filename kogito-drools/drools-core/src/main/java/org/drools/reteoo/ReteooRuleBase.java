@@ -441,6 +441,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.reteooBuilder.addRule( rule );
     }
 
+    protected void addEntryPoint(final String id) throws InvalidPatternException {
+        // This adds the entry point. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
+        this.reteooBuilder.addEntryPoint( id );
+    }
+
     protected void removeRule(final Rule rule) {
         this.reteooBuilder.removeRule( rule );
     }
