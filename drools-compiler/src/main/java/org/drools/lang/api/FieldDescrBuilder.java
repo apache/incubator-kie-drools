@@ -21,19 +21,19 @@ import org.drools.lang.descr.TypeFieldDescr;
 /**
  *  A descriptor builder for Globals
  */
-public interface FieldDescrBuilder
+public interface FieldDescrBuilder<T extends DescrBuilder<?,?>>
     extends
-    AnnotatedDescrBuilder<FieldDescrBuilder>,
-    DescrBuilder<TypeDeclarationDescrBuilder, TypeFieldDescr> {
+    AnnotatedDescrBuilder<FieldDescrBuilder<T>>,
+    DescrBuilder<T, TypeFieldDescr> {
 
-    public FieldDescrBuilder index( int index );
+    public FieldDescrBuilder<T> index( int index );
 
-    public FieldDescrBuilder name( String name );
+    public FieldDescrBuilder<T> name( String name );
 
-    public FieldDescrBuilder type( String type );
+    public FieldDescrBuilder<T> type( String type );
 
-    public FieldDescrBuilder initialValue( String value );
+    public FieldDescrBuilder<T> initialValue( String value );
 
-    public FieldDescrBuilder processAnnotations();
+    public FieldDescrBuilder<T> processAnnotations();
     
 }

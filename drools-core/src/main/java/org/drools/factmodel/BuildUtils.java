@@ -19,6 +19,7 @@ package org.drools.factmodel;
 import org.drools.RuntimeDroolsException;
 import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
+import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
 public class BuildUtils {
@@ -42,8 +43,8 @@ public class BuildUtils {
     public static String getGenericTypes(String[] interfaces) {
 
         StringBuilder sb = new StringBuilder();
-            sb.append("<K:").append( getTypeDescriptor( Object.class.getName() ) ).append( ">" );
-            sb.append( getTypeDescriptor( Object.class.getName() ) );
+        sb.append("<K:").append( getTypeDescriptor( Object.class.getName() ) ).append( ">" );
+        sb.append( getTypeDescriptor( Object.class.getName() ) );
 
         for ( String intf : interfaces ) {
             String temp = getTypeDescriptor( intf );
@@ -359,7 +360,7 @@ public class BuildUtils {
     }
 
     public static int zero( String type ) {
-         if ( "byte".equals( type ) ) {
+        if ( "byte".equals( type ) ) {
             return Opcodes.ICONST_0;
         } else if ( "char".equals( type ) ) {
             return Opcodes.ICONST_0;
@@ -456,5 +457,23 @@ public class BuildUtils {
             throw new RuntimeDroolsException("Not a numeric type " + type);
         }
 
+    }
+
+    public static void pushInt(MethodVisitor mv, int j) {
+        switch ( j ) {
+            case 0 : mv.visitInsn( Opcodes.ICONST_0 );
+                break;
+            case 1 : mv.visitInsn( Opcodes.ICONST_1 );
+                break;
+            case 2 : mv.visitInsn( Opcodes.ICONST_2 );
+                break;
+            case 3 : mv.visitInsn( Opcodes.ICONST_3 );
+                break;
+            case 4 : mv.visitInsn( Opcodes.ICONST_4 );
+                break;
+            case 5 : mv.visitInsn( Opcodes.ICONST_5 );
+                break;
+            default : mv.visitIntInsn( Opcodes.BIPUSH, j );
+        }
     }
 }
