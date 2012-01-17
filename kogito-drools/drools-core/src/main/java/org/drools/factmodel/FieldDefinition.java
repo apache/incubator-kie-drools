@@ -87,6 +87,9 @@ public class FieldDefinition
         this.key = in.readBoolean();
         this.accessor = (ClassFieldAccessor) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
+        this.inherited = in.readBoolean();
+        this.index = in.readInt();
+        this.initExpr = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -95,6 +98,9 @@ public class FieldDefinition
         out.writeBoolean( this.key );
         out.writeObject( this.accessor );
         out.writeObject( this.annotations );
+        out.writeBoolean( this.inherited );
+        out.writeInt( this.index );
+        out.writeObject( this.initExpr );
     }
 
     /**

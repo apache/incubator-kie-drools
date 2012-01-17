@@ -47,4 +47,12 @@ public interface DeclareDescrBuilder
      */
     public WindowDeclarationDescrBuilder window();
 
+
+    /**
+     * Declares a new enum
+     *
+     * @return the descriptor builder for the enum
+     */
+    public EnumDeclarationDescrBuilder enumerative();
+
 }
