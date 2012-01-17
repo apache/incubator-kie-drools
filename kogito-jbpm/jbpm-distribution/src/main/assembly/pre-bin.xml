@@ -17,6 +17,9 @@
         <include>org.jbpm:jbpm-workitems</include>
         <include>org.jbpm:jbpm-test</include>
       </includes>
+      <excludes>
+        <exclude>*:sources</exclude>
+      </excludes>
       <outputDirectory></outputDirectory>
     </dependencySet>
     <dependencySet>
@@ -30,6 +33,8 @@
         <exclude>org.jbpm:jbpm-workitems</exclude>
         <!-- Exclude docs -->
         <exclude>org.jbpm:jbpm-docs</exclude>
+        <exclude>org.jbpm:jbpm-examples</exclude>
+        <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>
