@@ -16,7 +16,6 @@
 
 package org.drools.command.builder;
 
-import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -56,7 +55,6 @@ public class NewKnowledgeBuilderCommand
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbuilderConf );
         }
-        ((KnowledgeCommandContext) context).setKnowledgeBuilder(kbuilder);
         
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
