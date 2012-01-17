@@ -55,6 +55,9 @@ public class NewKnowledgeBuilderCommand
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbuilderConf );
         }
+        if( context instanceof KnowledgeCommandContext ) { 
+            ((KnowledgeCommandContext) context).setKnowledgeBuilder(kbuilder);
+        }
         
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
