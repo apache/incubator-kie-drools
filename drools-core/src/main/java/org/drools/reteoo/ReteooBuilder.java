@@ -114,6 +114,12 @@ public class ReteooBuilder
         this.rules.put( rule,
                         terminals.toArray( new BaseNode[terminals.size()] ) );
     }
+    
+    public void addEntryPoint( String id ) {
+        this.ruleBuilder.addEntryPoint( id,
+                                        this.ruleBase,
+                                        this.idGenerator );
+    }
 
     public IdGenerator getIdGenerator() {
         return this.idGenerator;

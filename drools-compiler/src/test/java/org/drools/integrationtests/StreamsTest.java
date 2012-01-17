@@ -68,22 +68,22 @@ import org.mockito.ArgumentCaptor;
 public class StreamsTest {
 
     private KnowledgeBase loadKnowledgeBase( final String fileName ) throws IOException,
-                                                                    DroolsParserException,
-                                                                    Exception {
+            DroolsParserException,
+            Exception {
         return loadKnowledgeBase( fileName,
                                   KnowledgeBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
     private KnowledgeBase loadKnowledgeBase( final String fileName,
-                                             KnowledgeBaseConfiguration kconf ) throws IOException,
-                                                                               DroolsParserException,
-                                                                               Exception {
+            KnowledgeBaseConfiguration kconf ) throws IOException,
+            DroolsParserException,
+            Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
                                                             getClass() ),
                       ResourceType.DRL );
 
-        if ( kbuilder.hasErrors() ) {
+        if (kbuilder.hasErrors()) {
             System.out.println( kbuilder.getErrors() );
             return null;
         }
@@ -95,12 +95,12 @@ public class StreamsTest {
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for ( String drlContentString : drlContentStrings ) {
+        for (String drlContentString : drlContentStrings) {
             kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
                           ResourceType.DRL );
         }
 
-        if ( kbuilder.hasErrors() ) {
+        if (kbuilder.hasErrors()) {
             fail( kbuilder.getErrors().toString() );
         }
 
@@ -116,7 +116,7 @@ public class StreamsTest {
         //final RuleBase ruleBase = loadRuleBase( reader );
 
         KnowledgeSessionConfiguration conf = new SessionConfiguration();
-        ((SessionConfiguration) conf).setClockType( ClockType.PSEUDO_CLOCK );
+        ( (SessionConfiguration) conf ).setClockType( ClockType.PSEUDO_CLOCK );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
                                                                               null );
 
@@ -264,7 +264,7 @@ public class StreamsTest {
         KnowledgeBase kbase = loadKnowledgeBase( "test_modifyRetractEntryPoint.drl" );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        final List< ? extends Number> results = new ArrayList<Number>();
+        final List<? extends Number> results = new ArrayList<Number>();
         session.setGlobal( "results",
                            results );
 
@@ -308,9 +308,9 @@ public class StreamsTest {
         assertEquals( 2,
                       results.size() );
         assertEquals( 30,
-                      ((Number) results.get( 0 )).intValue() );
+                      ( (Number) results.get( 0 ) ).intValue() );
         assertEquals( 110,
-                      ((Number) results.get( 1 )).intValue() );
+                      ( (Number) results.get( 1 ) ).intValue() );
 
         // the 3 non-matched facts continue to exist in the entry point
         assertEquals( 3,
@@ -399,7 +399,7 @@ public class StreamsTest {
         WorkingMemoryEntryPoint s1 = session.getWorkingMemoryEntryPoint( "stream1" );
         WorkingMemoryEntryPoint s2 = session.getWorkingMemoryEntryPoint( "stream2" );
         WorkingMemoryEntryPoint s3 = session.getWorkingMemoryEntryPoint( "stream3" );
-        Collection< ? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
+        Collection<? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
 
         assertEquals( 4,
                       eps.size() );
@@ -424,7 +424,7 @@ public class StreamsTest {
         WorkingMemoryEventListener wml = mock( WorkingMemoryEventListener.class );
         ksession.addEventListener( wml );
 
-        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
                                                       "RHT",
@@ -473,7 +473,7 @@ public class StreamsTest {
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
                                                       "RHT",
@@ -543,14 +543,36 @@ public class StreamsTest {
         kconf.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
-        List<ObjectTypeNode> otns = ((ReteooRuleBase)((KnowledgeBaseImpl)kbase).getRuleBase()).getRete().getObjectTypeNodes();
+
+        List<ObjectTypeNode> otns = ( (ReteooRuleBase) ( (KnowledgeBaseImpl) kbase ).getRuleBase() ).getRete().getObjectTypeNodes();
         ObjectType stot = new ClassObjectType( StockTick.class );
-        for( ObjectTypeNode otn : otns ) {
-            if( otn.getObjectType().isAssignableFrom( stot ) ) {
-                assertEquals( -1, otn.getExpirationOffset() );
+        for (ObjectTypeNode otn : otns) {
+            if (otn.getObjectType().isAssignableFrom( stot )) {
+                assertEquals( -1,
+                              otn.getExpirationOffset() );
             }
         }
+    }
+
+    @Test
+    public void testDeclaredEntryPoint() {
+        final String drl = "package org.jboss.qa.brms.declaredep\n" +
+                           "declare entry-point UnusedEntryPoint\n" +
+                           "end\n" +
+                           "rule HelloWorld\n" +
+                           "    when\n" +
+                           "        String( ) from entry-point UsedEntryPoint\n" +
+                           "    then\n" +
+                           "        # consequences\n" +
+                           "end\n";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertNotNull( ksession.getWorkingMemoryEntryPoint( "UsedEntryPoint" ) );
+        assertNotNull( ksession.getWorkingMemoryEntryPoint( "UnusedEntryPoint" ) );
+
+        ksession.dispose();
     }
 
 }

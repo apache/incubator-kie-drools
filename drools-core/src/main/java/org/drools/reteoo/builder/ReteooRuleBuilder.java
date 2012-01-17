@@ -20,15 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ActivationListenerFactory;
-import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.conf.EventProcessingOption;
-import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooBuilder;
-import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
@@ -39,7 +36,6 @@ import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
-import org.drools.rule.Query;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.time.TemporalDependencyMatrix;
@@ -87,29 +83,29 @@ public class ReteooRuleBuilder {
      *             the <code>Rule</code>.
      * @throws InvalidPatternException
      */
-    public List<TerminalNode> addRule(final Rule rule,
-                        final InternalRuleBase rulebase,
-                        final ReteooBuilder.IdGenerator idGenerator) throws InvalidPatternException {
+    public List<TerminalNode> addRule( final Rule rule,
+            final InternalRuleBase rulebase,
+            final ReteooBuilder.IdGenerator idGenerator ) throws InvalidPatternException {
         // the list of terminal nodes
         final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs();
 
-        for ( int i = 0; i < subrules.length; i++ ) {
-            
+        for (int i = 0; i < subrules.length; i++) {
+
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( rulebase,
                                                            idGenerator );
             context.setRule( rule );
-            
+
             // if running in STREAM mode, calculate temporal distance for events
-            if( EventProcessingOption.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() ) ) {
+            if (EventProcessingOption.STREAM.equals( rulebase.getConfiguration().getEventProcessingMode() )) {
                 TemporalDependencyMatrix temporal = this.utils.calculateTemporalDistance( subrules[i] );
                 context.setTemporalDistance( temporal );
             }
-           
-            if ( rulebase.getConfiguration().isSequential() ) {
+
+            if (rulebase.getConfiguration().isSequential()) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
                 context.setAlphaNodeMemoryAllowed( false );
@@ -118,7 +114,7 @@ public class ReteooRuleBuilder {
                 context.setObjectTypeNodeMemoryEnabled( true );
                 context.setAlphaNodeMemoryAllowed( true );
             }
-            
+
             // adds subrule
             final TerminalNode node = this.addSubRule( context,
                                                        subrules[i],
@@ -133,16 +129,16 @@ public class ReteooRuleBuilder {
         return nodes;
     }
 
-    private TerminalNode addSubRule(final BuildContext context,
-                                    final GroupElement subrule,
-                                    final int subruleIndex,
-                                    final Rule rule) throws InvalidPatternException {
+    private TerminalNode addSubRule( final BuildContext context,
+            final GroupElement subrule,
+            final int subruleIndex,
+            final Rule rule ) throws InvalidPatternException {
         // gets the appropriate builder
         final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
 
         // checks if an initial-fact is needed
-        if ( builder.requiresLeftActivation( this.utils,
-                                             subrule ) ) {
+        if (builder.requiresLeftActivation( this.utils,
+                                            subrule )) {
             this.addInitialFactPattern( context,
                                         subrule,
                                         rule );
@@ -160,17 +156,17 @@ public class ReteooRuleBuilder {
                                                                   subrule,
                                                                   subruleIndex,
                                                                   context );
-        
-        if ( context.getWorkingMemories().length == 0 ) {
-            ((BaseNode) terminal).attach();
+
+        if (context.getWorkingMemories().length == 0) {
+            ( (BaseNode) terminal ).attach();
         } else {
-            ((BaseNode) terminal).attach( context.getWorkingMemories() );
+            ( (BaseNode) terminal ).attach( context.getWorkingMemories() );
         }
 
-        ((BaseNode) terminal).networkUpdated();
-        
+        ( (BaseNode) terminal ).networkUpdated();
+
         // adds the terminal no to the list of nodes created/added by this sub-rule
-        context.getNodes().add((BaseNode) terminal );
+        context.getNodes().add( (BaseNode) terminal );
 
         // assigns partition IDs to the new nodes
         //assignPartitionId(context);
@@ -185,10 +181,10 @@ public class ReteooRuleBuilder {
      * @param subrule
      * @param rule
      */
-    private void addInitialFactPattern(final BuildContext context,
-                                       final GroupElement subrule,
-                                       final Rule rule) {
-        
+    private void addInitialFactPattern( final BuildContext context,
+            final GroupElement subrule,
+            final Rule rule ) {
+
         // creates a pattern for initial fact
         final Pattern pattern = new Pattern( 0,
                                              ClassObjectType.InitialFact_ObjectType );
@@ -196,6 +192,20 @@ public class ReteooRuleBuilder {
         // adds the pattern as the first child of the given AND group element
         subrule.addChild( 0,
                           pattern );
+    }
+
+    public void addEntryPoint( final String id,
+            final InternalRuleBase rulebase,
+            final ReteooBuilder.IdGenerator idGenerator ) {
+        // creates a clean build context for each subrule
+        final BuildContext context = new BuildContext( rulebase,
+                                                       idGenerator );
+        EntryPoint ep = new EntryPoint( id );
+        ReteooComponentBuilder builder = utils.getBuilderFor( ep );
+        builder.build( context,
+                       utils,
+                       ep );
+
     }
 
 }

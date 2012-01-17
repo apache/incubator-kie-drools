@@ -124,7 +124,11 @@ public class PatternBuilder
                            source );
             // restoring offset
             context.setCurrentPatternOffset( currentOffset );
-
+        } else {
+            // default entry point
+            PatternSource source = EntryPoint.DEFAULT;
+            ReteooComponentBuilder builder = utils.getBuilderFor( source );
+            builder.build( context, utils, source );
         }
 
         if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
@@ -313,11 +317,6 @@ public class PatternBuilder
                 context.setAlphaNodeMemoryAllowed( false );
             }
         }
-
-        context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                  new EntryPointNode( context.getNextId(),
-                                                                                      context.getRuleBase().getRete(),
-                                                                                      context ) ) );
 
         ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
                                                  (EntryPointNode) context.getObjectSource(),
