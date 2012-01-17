@@ -32,7 +32,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
  * InputMarshaller, that delegates in a ProcessInstanceMarshaller to stream in/out runtime
  * information.
  * 
- * @see OutPutMarshaller
+ * @see org.drools.marshalling.impl.OutputMarshaller
  * @see InputMarshaller
  * @see ProcessMarshallerRegistry
  * 

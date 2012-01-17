@@ -54,7 +54,7 @@ public interface WorkflowProcess extends org.drools.definition.process.WorkflowP
     /**
      * Sets the imports of this RuleFlow process
      * 
-     * @param imports	the imports as a List of fully qualified class names
+     * @param functionImports	the imports as a List of fully qualified class names
      */
     void setFunctionImports(List<String> functionImports);
 
@@ -69,7 +69,7 @@ public interface WorkflowProcess extends org.drools.definition.process.WorkflowP
     /**
      * Sets the imports of this RuleFlow process
      * 
-     * @param imports	the globals as a Map with the name as key and the type as value
+     * @param globals	the globals as a Map with the name as key and the type as value
      */
     void setGlobals(Map<String, String> globals);
 
