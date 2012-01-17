@@ -50,6 +50,31 @@ public class ClassBuilderFactory {
 
 
 
+    private static EnumClassBuilder enumClassBuilderProvider;
+
+        public static synchronized EnumClassBuilder getEnumClassBuilderService( ) {
+            if ( enumClassBuilderProvider == null) {
+                loadEnumClassBuilderProvider( );
+            }
+            return enumClassBuilderProvider;
+        }
+
+
+        public static synchronized void setEnumClassBuilderService( EnumClassBuilder provider ) {
+            ClassBuilderFactory.enumClassBuilderProvider = provider;
+        }
+
+        private static void loadEnumClassBuilderProvider( ) {
+            String defaultName = "org.drools.factmodel.DefaultEnumClassBuilder";
+            try {
+                ServiceRegistryImpl.getInstance().addDefault( EnumClassBuilder.class, defaultName );
+                setEnumClassBuilderService( ServiceRegistryImpl.getInstance().get( EnumClassBuilder.class ) );
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+
+
     // Trait interfaces
 
 
