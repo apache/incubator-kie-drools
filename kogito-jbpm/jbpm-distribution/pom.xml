@@ -21,8 +21,28 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <configuration>
+              <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
+              <includeDependencySources>true</includeDependencySources>
+              <dependencySourceIncludes>
+                <dependencySourceInclude>org.jbpm:*</dependencySourceInclude>
+                <dependencySourceInclude>org.drools:knowledge-api</dependencySourceInclude>
+              </dependencySourceIncludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.2.1</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -142,6 +162,21 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-docs</artifactId>
       <type>jdocbook</type>
+    </dependency>
+    <dependency><!-- Workaround for http://jira.codehaus.org/browse/MJAVADOC-340 -->
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency><!-- Workaround for http://jira.codehaus.org/browse/MJAVADOC-340 -->
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency><!-- Workaround, maybe for http://jira.codehaus.org/browse/MJAVADOC-340 -->
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 
