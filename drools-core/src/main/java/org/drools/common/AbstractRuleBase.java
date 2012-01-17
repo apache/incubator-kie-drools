@@ -51,6 +51,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
+import org.drools.reteoo.builder.EntryPointBuilder;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
@@ -68,9 +69,10 @@ import org.drools.util.CompositeClassLoader;
  * @version $Id: RuleBaseImpl.java,v 1.5 2005/08/14 22:44:12 mproctor Exp $
  */
 abstract public class AbstractRuleBase
-    implements
-    InternalRuleBase,
-    Externalizable {
+                                      implements
+                                      InternalRuleBase,
+                                      Externalizable {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -81,7 +83,7 @@ abstract public class AbstractRuleBase
     private RuleBaseConfiguration                         config;
 
     protected Map<String, Package>                        pkgs;
-    
+
     private Map<String, Process>                          processes;
 
     private Map                                           agendaGroupRuleTotals;
@@ -93,7 +95,7 @@ abstract public class AbstractRuleBase
      */
     private FactHandleFactory                             factHandleFactory;
 
-    private transient Map<String, Class< ? >>             globals;
+    private transient Map<String, Class<?>>               globals;
 
     private final transient Queue<DialectRuntimeRegistry> reloadPackageCompilationData = new ConcurrentLinkedQueue<DialectRuntimeRegistry>();
 
@@ -112,7 +114,7 @@ abstract public class AbstractRuleBase
     private int                                           additionsSinceLock;
     private int                                           removalsSinceLock;
 
-    private transient Map<Class< ? >, TypeDeclaration>    classTypeDeclaration;
+    private transient Map<Class<?>, TypeDeclaration>      classTypeDeclaration;
 
     private List<RuleBasePartitionId>                     partitionIDs;
 
@@ -140,15 +142,15 @@ abstract public class AbstractRuleBase
      * @param id The rete network.
      */
     public AbstractRuleBase(final String id,
-                            final RuleBaseConfiguration config,
-                            final FactHandleFactory factHandleFactory) {
+            final RuleBaseConfiguration config,
+            final FactHandleFactory factHandleFactory) {
 
-        this.config = (config != null) ? config : new RuleBaseConfiguration();
+        this.config = ( config != null ) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         createRulebaseId( id );
         this.factHandleFactory = factHandleFactory;
 
-        if ( this.config.isSequential() ) {
+        if (this.config.isSequential()) {
             this.agendaGroupRuleTotals = new HashMap();
         }
 
@@ -157,21 +159,21 @@ abstract public class AbstractRuleBase
 
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
-        this.globals = new HashMap<String, Class< ? >>();
+        this.globals = new HashMap<String, Class<?>>();
         this.statefulSessions = new ObjectHashSet();
 
-        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
+        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
     }
 
     private void createRulebaseId( final String id ) {
-        if ( id != null ) {
+        if (id != null) {
             this.id = id;
         } else {
             String key = "";
-            if ( config.isMBeansEnabled() ) {
+            if (config.isMBeansEnabled()) {
                 DroolsManagementAgent agent = DroolsManagementAgent.getInstance();
                 key = String.valueOf( agent.getNextKnowledgeBaseId() );
             }
@@ -192,7 +194,7 @@ abstract public class AbstractRuleBase
         boolean isDrools = out instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes;
 
-        if ( isDrools ) {
+        if (isDrools) {
             droolsStream = out;
             bytes = null;
         } else {
@@ -218,7 +220,7 @@ abstract public class AbstractRuleBase
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         droolsStream.writeObject( this.eventSupport );
-        if ( !isDrools ) {
+        if (!isDrools) {
             droolsStream.flush();
             droolsStream.close();
             bytes.close();
@@ -228,7 +230,7 @@ abstract public class AbstractRuleBase
 
     private Map<String, String> buildGlobalMapForSerialization() {
         Map<String, String> gl = new HashMap<String, String>();
-        for ( Map.Entry<String, Class< ? >> entry : this.globals.entrySet() ) {
+        for (Map.Entry<String, Class<?>> entry : this.globals.entrySet()) {
             gl.put( entry.getKey(),
                     entry.getValue().getName() );
         }
@@ -241,13 +243,13 @@ abstract public class AbstractRuleBase
      * A custom ObjectInputStream, able to resolve classes against the bytecode in the PackageCompilationData, is used to restore the Rules.
      */
     public void readExternal( final ObjectInput in ) throws IOException,
-                                                    ClassNotFoundException {
+            ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         DroolsObjectInput droolsStream;
         boolean isDrools = in instanceof DroolsObjectInputStream;
         ByteArrayInputStream bytes = null;
 
-        if ( isDrools ) {
+        if (isDrools) {
             droolsStream = (DroolsObjectInput) in;
         } else {
             bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
@@ -269,8 +271,8 @@ abstract public class AbstractRuleBase
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
-        for ( final Object object : this.pkgs.values() ) {
-            ((Package) object).getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
+        for (final Object object : this.pkgs.values()) {
+            ( (Package) object ).getDialectRuntimeRegistry().onAdd( this.rootClassLoader );
         }
 
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
@@ -283,18 +285,18 @@ abstract public class AbstractRuleBase
         try {
             cls = droolsStream.getParentClassLoader().loadClass( droolsStream.readUTF() );
             this.factHandleFactory = (FactHandleFactory) cls.newInstance();
-        } catch ( InstantiationException e ) {
+        } catch (InstantiationException e) {
             DroolsObjectInputStream.newInvalidClassException( cls,
                                                               e );
-        } catch ( IllegalAccessException e ) {
+        } catch (IllegalAccessException e) {
             DroolsObjectInputStream.newInvalidClassException( cls,
                                                               e );
         }
 
-        for ( final Object object : this.pkgs.values() ) {
-            ((Package) object).getDialectRuntimeRegistry().onBeforeExecute();
-            ((Package) object).getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
-            ((Package) object).getClassFieldAccessorStore().wire();
+        for (final Object object : this.pkgs.values()) {
+            ( (Package) object ).getDialectRuntimeRegistry().onBeforeExecute();
+            ( (Package) object ).getClassFieldAccessorStore().setClassFieldAccessorCache( this.classFieldAccessorCache );
+            ( (Package) object ).getClassFieldAccessorStore().wire();
         }
 
         this.populateTypeDeclarationMaps();
@@ -309,7 +311,7 @@ abstract public class AbstractRuleBase
         this.eventSupport.setRuleBase( this );
         this.statefulSessions = new ObjectHashSet();
 
-        if ( !isDrools ) {
+        if (!isDrools) {
             droolsStream.close();
         }
     }
@@ -321,8 +323,8 @@ abstract public class AbstractRuleBase
      * @throws ClassNotFoundException
      */
     private void populateGlobalsMap( Map<String, String> globs ) throws ClassNotFoundException {
-        this.globals = new HashMap<String, Class< ? >>();
-        for ( Map.Entry<String, String> entry : globs.entrySet() ) {
+        this.globals = new HashMap<String, Class<?>>();
+        for (Map.Entry<String, String> entry : globs.entrySet()) {
             this.globals.put( entry.getKey(),
                               this.rootClassLoader.loadClass( entry.getValue() ) );
         }
@@ -335,9 +337,9 @@ abstract public class AbstractRuleBase
      */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
         // FIXME: readLock
-        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
-        for ( Package pkg : this.pkgs.values() ) {
-            for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        for (Package pkg : this.pkgs.values()) {
+            for (TypeDeclaration type : pkg.getTypeDeclarations().values()) {
                 type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
                 this.classTypeDeclaration.put( type.getTypeClass(),
                                                type );
@@ -369,7 +371,7 @@ abstract public class AbstractRuleBase
 
         try {
             this.statefulSessions.remove( statefulSession );
-            for ( Object listener : statefulSession.getRuleBaseUpdateListeners() ) {
+            for (Object listener : statefulSession.getRuleBaseUpdateListeners()) {
                 this.removeEventListener( (RuleBaseEventListener) listener );
             }
         } finally {
@@ -389,7 +391,7 @@ abstract public class AbstractRuleBase
     }
 
     public FactHandleFactory newFactHandleFactory( int id,
-                                                   long counter ) {
+            long counter ) {
         return this.factHandleFactory.newInstance( id,
                                                    counter );
     }
@@ -437,7 +439,7 @@ abstract public class AbstractRuleBase
         // The lock is reentrant, so we need additional magic here to skip
         // notifications for locked if this thread already has locked it.
         boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
-        if ( firstLock ) {
+        if (firstLock) {
             this.eventSupport.fireBeforeRuleBaseLocked();
         }
         // Always lock to increase the counter
@@ -451,7 +453,7 @@ abstract public class AbstractRuleBase
 
     public void unlock() {
         boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
-        if ( lastUnlock ) {
+        if (lastUnlock) {
             this.eventSupport.fireBeforeRuleBaseUnlocked();
         }
         this.lock.writeUnlock();
@@ -480,13 +482,13 @@ abstract public class AbstractRuleBase
         lock();
         try {
             // we need to merge all byte[] first, so that the root classloader can resolve classes
-            for ( Package newPkg : newPkgs ) {
+            for (Package newPkg : newPkgs) {
                 newPkg.checkValidity();
                 this.additionsSinceLock++;
                 this.eventSupport.fireBeforePackageAdded( newPkg );
 
                 Package pkg = this.pkgs.get( newPkg.getName() );
-                if ( pkg == null ) {
+                if (pkg == null) {
                     pkg = new Package( newPkg.getName() );
 
                     // @TODO we really should have a single root cache
@@ -501,12 +503,12 @@ abstract public class AbstractRuleBase
             }
 
             // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
-            for ( Package newPkg : newPkgs ) {
+            for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
                 // this needs to go here, as functions will set a java dialect to dirty
-                if ( newPkg.getFunctions() != null ) {
-                    for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                if (newPkg.getFunctions() != null) {
+                    for (Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet()) {
                         pkg.addFunction( entry.getValue() );
                     }
                 }
@@ -516,21 +518,21 @@ abstract public class AbstractRuleBase
                 pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
             }
 
-            for ( Package newPkg : newPkgs ) {
+            for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
                 // we have to do this before the merging, as it does some classloader resolving
                 TypeDeclaration lastType = null;
                 try {
                     // Add the type declarations to the RuleBase
-                    if ( newPkg.getTypeDeclarations() != null ) {
+                    if (newPkg.getTypeDeclarations() != null) {
                         // add type declarations
-                        for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
+                        for (TypeDeclaration newDecl : newPkg.getTypeDeclarations().values()) {
                             lastType = newDecl;
                             newDecl.setTypeClass( this.rootClassLoader.loadClass( newDecl.getTypeClassName() ) );
                             // @TODO should we allow overrides? only if the class is not in use.
                             TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClass() );
-                            if ( typeDeclaration == null ) {
+                            if (typeDeclaration == null) {
                                 // add to rulebase list of type declarations                        
                                 this.classTypeDeclaration.put( newDecl.getTypeClass(),
                                                                newDecl );
@@ -541,28 +543,36 @@ abstract public class AbstractRuleBase
                                                        newDecl );
                             }
                             // update existing OTNs
-                            updateDependentTypes( newPkg, typeDeclaration );
+                            updateDependentTypes( newPkg,
+                                                  typeDeclaration );
                         }
                     }
-                } catch ( ClassNotFoundException e ) {
-                    throw new RuntimeDroolsException( "unable to resolve Type Declaration class '" + lastType.getTypeName() + "'" );
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeDroolsException(
+                                                      "unable to resolve Type Declaration class '" + lastType.getTypeName() +
+                                                              "'" );
                 }
 
                 // now merge the new package into the existing one
                 mergePackage( pkg,
                               newPkg );
 
+                // add entry points to the kbase
+                for (String id : newPkg.getEntryPointIds()) {
+                    addEntryPoint( id );
+                }
+
                 // add the rules to the RuleBase
                 final Rule[] rules = newPkg.getRules();
-                for ( int i = 0; i < rules.length; ++i ) {
+                for (int i = 0; i < rules.length; ++i) {
                     addRule( newPkg,
                              rules[i] );
                 }
 
                 // add the flows to the RuleBase
-                if ( newPkg.getRuleFlows() != null ) {
+                if (newPkg.getRuleFlows() != null) {
                     final Map<String, org.drools.definition.process.Process> flows = newPkg.getRuleFlows();
-                    for ( org.drools.definition.process.Process process : flows.values() ) {
+                    for (org.drools.definition.process.Process process : flows.values()) {
                         // XXX: is this cast safe?
                         // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
                         addProcess( (Process) process );
@@ -577,19 +587,21 @@ abstract public class AbstractRuleBase
     }
 
     protected abstract void updateDependentTypes( Package newPkg,
-                                                  TypeDeclaration typeDeclaration );
+            TypeDeclaration typeDeclaration );
 
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
-                                        TypeDeclaration newDecl ) {
-        if ( !nullSafeEquals( existingDecl.getFormat(),
-                              newDecl.getFormat() ) ||
-             !nullSafeEquals( existingDecl.getObjectType(),
-                              newDecl.getObjectType() ) ||
-             !nullSafeEquals( existingDecl.getTypeClassName(),
-                              newDecl.getTypeClassName() ) ||
-             !nullSafeEquals( existingDecl.getTypeName(),
-                              newDecl.getTypeName() ) ) {
-            throw new RuntimeDroolsException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() + "'" );
+            TypeDeclaration newDecl ) {
+        if (!nullSafeEquals( existingDecl.getFormat(),
+                             newDecl.getFormat() ) ||
+            !nullSafeEquals( existingDecl.getObjectType(),
+                             newDecl.getObjectType() ) ||
+            !nullSafeEquals( existingDecl.getTypeClassName(),
+                             newDecl.getTypeClassName() ) ||
+            !nullSafeEquals( existingDecl.getTypeName(),
+                             newDecl.getTypeName() )) {
+            throw new RuntimeDroolsException(
+                                              "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() +
+                                                      "'" );
         }
         existingDecl.setDurationAttribute( mergeLeft( existingDecl.getTypeName(),
                                                       "Unable to merge @duration attribute for type declaration of class:",
@@ -636,17 +648,17 @@ abstract public class AbstractRuleBase
     }
 
     private <T> T mergeLeft( String typeClass,
-                             String errorMsg,
-                             T leftVal,
-                             T rightVal,
-                             boolean errorOnDiff ) {
+            String errorMsg,
+            T leftVal,
+            T rightVal,
+            boolean errorOnDiff ) {
         T newValue = leftVal;
-        if ( !nullSafeEquals( leftVal,
-                              rightVal ) ) {
-            if ( leftVal == null && rightVal != null ) {
+        if (!nullSafeEquals( leftVal,
+                             rightVal )) {
+            if (leftVal == null && rightVal != null) {
                 newValue = rightVal;
-            } else if ( leftVal != null && rightVal != null ) {
-                if ( errorOnDiff ) {
+            } else if (leftVal != null && rightVal != null) {
+                if (errorOnDiff) {
                     throw new RuntimeDroolsException( errorMsg + " '" + typeClass + "'" );
                 } else {
                     // do nothing, just use the left value
@@ -657,8 +669,8 @@ abstract public class AbstractRuleBase
     }
 
     private boolean nullSafeEquals( Object o1,
-                                    Object o2 ) {
-        return (o1 == null) ? o2 == null : o1.equals( o2 );
+            Object o2 ) {
+        return ( o1 == null ) ? o2 == null : o1.equals( o2 );
     }
 
     /**
@@ -668,7 +680,7 @@ abstract public class AbstractRuleBase
      * and the actual Rule objects into the package).
      */
     private void mergePackage( final Package pkg,
-                               final Package newPkg ) {
+            final Package newPkg ) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
@@ -677,15 +689,15 @@ abstract public class AbstractRuleBase
         String lastType = null;
         try {
             // merge globals
-            if ( newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP ) {
+            if (newPkg.getGlobals() != null && newPkg.getGlobals() != Collections.EMPTY_MAP) {
                 Map<String, String> globals = pkg.getGlobals();
                 // Add globals
-                for ( final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet() ) {
+                for (final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet()) {
                     final String identifier = entry.getKey();
                     final String type = entry.getValue();
                     lastIdent = identifier;
                     lastType = type;
-                    if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
+                    if (globals.containsKey( identifier ) && !globals.get( identifier ).equals( type )) {
                         throw new PackageIntegrationException( pkg );
                     } else {
                         pkg.addGlobal( identifier,
@@ -696,24 +708,25 @@ abstract public class AbstractRuleBase
                     }
                 }
             }
-        } catch ( ClassNotFoundException e ) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeDroolsException( "Unable to resolve class '" + lastType +
                                               "' for global '" + lastIdent + "'" );
         }
-        
+
         // merge entry point declarations
-        if ( newPkg.getEntryPointIds() != null ) {
-            for( String ep : newPkg.getEntryPointIds() ) {
+        if (newPkg.getEntryPointIds() != null) {
+            for (String ep : newPkg.getEntryPointIds()) {
                 pkg.addEntryPointId( ep );
+
             }
         }
 
         // merge the type declarations
-        if ( newPkg.getTypeDeclarations() != null ) {
+        if (newPkg.getTypeDeclarations() != null) {
             // add type declarations
-            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+            for (TypeDeclaration type : newPkg.getTypeDeclarations().values()) {
                 // @TODO should we allow overrides? only if the class is not in use.
-                if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                if (!pkg.getTypeDeclarations().containsKey( type.getTypeName() )) {
                     // add to package list of type declarations
                     pkg.addTypeDeclaration( type );
                 }
@@ -723,11 +736,11 @@ abstract public class AbstractRuleBase
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
-        for ( int i = 0; i < newRules.length; i++ ) {
+        for (int i = 0; i < newRules.length; i++) {
             final Rule newRule = newRules[i];
 
             // remove the rule if it already exists
-            if ( pkg.getRule( newRule.getName() ) != null ) {
+            if (pkg.getRule( newRule.getName() ) != null) {
                 removeRule( pkg,
                             pkg.getRule( newRule.getName() ) );
             }
@@ -736,9 +749,9 @@ abstract public class AbstractRuleBase
         }
 
         //Merge The Rule Flows
-        if ( newPkg.getRuleFlows() != null ) {
+        if (newPkg.getRuleFlows() != null) {
             final Map flows = newPkg.getRuleFlows();
-            for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
+            for (final Iterator iter = flows.values().iterator(); iter.hasNext();) {
                 final Process flow = (Process) iter.next();
                 pkg.addProcess( flow );
             }
@@ -746,37 +759,38 @@ abstract public class AbstractRuleBase
     }
 
     private static class TypeDeclarationCandidate {
+
         public TypeDeclaration candidate = null;
         public int             score     = Integer.MAX_VALUE;
     }
 
-    public TypeDeclaration getTypeDeclaration( Class< ? > clazz ) {
+    public TypeDeclaration getTypeDeclaration( Class<?> clazz ) {
         TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( clazz );
-        if ( typeDeclaration == null ) {
+        if (typeDeclaration == null) {
             // check super classes and keep a score of how up in the hierarchy is there a declaration
             TypeDeclarationCandidate candidate = checkSuperClasses( clazz );
             // now check interfaces
             candidate = checkInterfaces( clazz,
                                          candidate,
                                          1 );
-            if ( candidate != null ) {
+            if (candidate != null) {
                 typeDeclaration = candidate.candidate;
             }
         }
         return typeDeclaration;
     }
 
-    private TypeDeclarationCandidate checkSuperClasses( Class< ? > clazz ) {
+    private TypeDeclarationCandidate checkSuperClasses( Class<?> clazz ) {
         TypeDeclarationCandidate candidate = null;
         TypeDeclaration typeDeclaration = null;
-        Class< ? > current = clazz.getSuperclass();
+        Class<?> current = clazz.getSuperclass();
         int score = 0;
-        while ( typeDeclaration == null && current != null ) {
+        while (typeDeclaration == null && current != null) {
             score++;
             typeDeclaration = this.classTypeDeclaration.get( current );
             current = current.getSuperclass();
         }
-        if ( typeDeclaration == null ) {
+        if (typeDeclaration == null) {
             // no type declaration found for superclasses
             score = Integer.MAX_VALUE;
         } else {
@@ -787,16 +801,16 @@ abstract public class AbstractRuleBase
         return candidate;
     }
 
-    private TypeDeclarationCandidate checkInterfaces( Class< ? > clazz,
-                                                      TypeDeclarationCandidate baseline,
-                                                      int level ) {
+    private TypeDeclarationCandidate checkInterfaces( Class<?> clazz,
+            TypeDeclarationCandidate baseline,
+            int level ) {
         TypeDeclarationCandidate candidate = null;
         TypeDeclaration typeDeclaration = null;
-        if ( baseline == null || level < baseline.score ) {
+        if (baseline == null || level < baseline.score) {
             // search
-            for ( Class< ? > ifc : clazz.getInterfaces() ) {
+            for (Class<?> ifc : clazz.getInterfaces()) {
                 typeDeclaration = this.classTypeDeclaration.get( ifc );
-                if ( typeDeclaration != null ) {
+                if (typeDeclaration != null) {
                     candidate = new TypeDeclarationCandidate();
                     candidate.candidate = typeDeclaration;
                     candidate.score = level;
@@ -818,7 +832,7 @@ abstract public class AbstractRuleBase
     }
 
     public void addRule( final Package pkg,
-                         final Rule rule ) throws InvalidPatternException {
+            final Rule rule ) throws InvalidPatternException {
         lock();
         try {
             this.eventSupport.fireBeforeRuleAdded( pkg,
@@ -834,6 +848,16 @@ abstract public class AbstractRuleBase
         }
     }
 
+    protected void addEntryPoint( final Package pkg,
+                                  final String id ) throws InvalidPatternException {
+        lock();
+        try {
+            addEntryPoint( id );
+        } finally {
+            unlock();
+        }
+    }
+
     /**
      * This method is called with the rulebase lock held.
      *
@@ -842,12 +866,21 @@ abstract public class AbstractRuleBase
      */
     protected abstract void addRule( final Rule rule ) throws InvalidPatternException;
 
+    /**
+     * This method is called with the rulebase lock held.
+     *
+     * @param id the entry point ID
+     * @throws InvalidPatternException
+     */
+    protected abstract void addEntryPoint( final String id );
+
     public void removePackage( final String packageName ) {
         lock();
         try {
             final Package pkg = this.pkgs.get( packageName );
-            if ( pkg == null ) {
-                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                                                    "' does not exist for this Rule Base." );
             }
             this.removalsSinceLock++;
 
@@ -855,27 +888,27 @@ abstract public class AbstractRuleBase
 
             final Rule[] rules = pkg.getRules();
 
-            for ( int i = 0; i < rules.length; ++i ) {
+            for (int i = 0; i < rules.length; ++i) {
                 removeRule( pkg,
                             rules[i] );
             }
 
             // getting the list of referenced globals
             final Set<String> referencedGlobals = new HashSet<String>();
-            for ( Package pkgref : this.pkgs.values() ) {
-                if ( pkgref != pkg ) {
+            for (Package pkgref : this.pkgs.values()) {
+                if (pkgref != pkg) {
                     referencedGlobals.addAll( pkgref.getGlobals().keySet() );
                 }
             }
             // removing globals declared inside the package that are not shared
-            for ( String globalName : pkg.getGlobals().keySet() ) {
-                if ( !referencedGlobals.contains( globalName ) ) {
+            for (String globalName : pkg.getGlobals().keySet()) {
+                if (!referencedGlobals.contains( globalName )) {
                     this.globals.remove( globalName );
                 }
             }
             //and now the rule flows
             final Map flows = pkg.getRuleFlows();
-            for ( final Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
+            for (final Iterator iter = flows.keySet().iterator(); iter.hasNext();) {
                 removeProcess( (String) iter.next() );
             }
             // removing the package itself from the list
@@ -893,23 +926,27 @@ abstract public class AbstractRuleBase
     }
 
     public void removeQuery( final String packageName,
-                             final String ruleName ) {
+            final String ruleName ) {
         removeRule( packageName,
                     ruleName );
     }
 
     public void removeRule( final String packageName,
-                            final String ruleName ) {
+            final String ruleName ) {
         lock();
         try {
             final Package pkg = this.pkgs.get( packageName );
-            if ( pkg == null ) {
-                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                                                    "' does not exist for this Rule Base." );
             }
 
             final Rule rule = pkg.getRule( ruleName );
-            if ( rule == null ) {
-                throw new IllegalArgumentException( "Rule name '" + ruleName + "' does not exist in the Package '" + packageName + "'." );
+            if (rule == null) {
+                throw new IllegalArgumentException( "Rule name '" + ruleName +
+                                                    "' does not exist in the Package '" +
+                                                    packageName +
+                                                    "'." );
             }
 
             this.removalsSinceLock++;
@@ -931,7 +968,7 @@ abstract public class AbstractRuleBase
      */
     // FIXME: removeRule(String, String) and removeRule(Package, Rule) do totally different things!
     public void removeRule( final Package pkg,
-                            final Rule rule ) {
+            final Rule rule ) {
         lock();
         try {
             this.eventSupport.fireBeforeRuleRemoved( pkg,
@@ -957,16 +994,20 @@ abstract public class AbstractRuleBase
     protected abstract void removeRule( Rule rule );
 
     public void removeFunction( final String packageName,
-                                final String functionName ) {
+            final String functionName ) {
         lock();
         try {
             final Package pkg = this.pkgs.get( packageName );
-            if ( pkg == null ) {
-                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            if (pkg == null) {
+                throw new IllegalArgumentException( "Package name '" + packageName +
+                                                    "' does not exist for this Rule Base." );
             }
 
-            if ( !pkg.getFunctions().containsKey( functionName ) ) {
-                throw new IllegalArgumentException( "function name '" + packageName + "' does not exist in the Package '" + packageName + "'." );
+            if (!pkg.getFunctions().containsKey( functionName )) {
+                throw new IllegalArgumentException( "function name '" + packageName +
+                                                    "' does not exist in the Package '" +
+                                                    packageName +
+                                                    "'." );
             }
 
             removeFunction( pkg,
@@ -1001,7 +1042,7 @@ abstract public class AbstractRuleBase
      * @param rule
      */
     private void removeFunction( final Package pkg,
-                                 final String functionName ) {
+            final String functionName ) {
         this.eventSupport.fireBeforeFunctionRemoved( pkg,
                                                      functionName );
         removeFunction( functionName );
@@ -1024,7 +1065,7 @@ abstract public class AbstractRuleBase
 
     public void removeProcess( final String id ) {
         Process process = this.processes.get( id );
-        if ( process == null ) {
+        if (process == null) {
             throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
         }
         this.eventSupport.fireBeforeProcessRemoved( process );
@@ -1092,14 +1133,14 @@ abstract public class AbstractRuleBase
 
     public void executeQueuedActions() {
         DialectRuntimeRegistry registry;
-        while ( (registry = reloadPackageCompilationData.poll()) != null ) {
+        while (( registry = reloadPackageCompilationData.poll() ) != null) {
             registry.onBeforeExecute();
         }
     }
 
     public RuleBasePartitionId createNewPartitionId() {
         RuleBasePartitionId p;
-        synchronized ( this.partitionIDs ) {
+        synchronized (this.partitionIDs) {
             p = new RuleBasePartitionId( "P-" + this.partitionIDs.size() );
             this.partitionIDs.add( p );
         }
@@ -1126,11 +1167,11 @@ abstract public class AbstractRuleBase
         return this.eventSupport.getEventListeners();
     }
 
-    public boolean isEvent( Class< ? > clazz ) {
+    public boolean isEvent( Class<?> clazz ) {
         readLock();
         try {
-            for ( Package pkg : this.pkgs.values() ) {
-                if ( pkg.isEvent( clazz ) ) {
+            for (Package pkg : this.pkgs.values()) {
+                if (pkg.isEvent( clazz )) {
                     return true;
                 }
             }
@@ -1143,9 +1184,9 @@ abstract public class AbstractRuleBase
     public FactType getFactType( final String name ) {
         readLock();
         try {
-            for ( Package pkg : this.pkgs.values() ) {
+            for (Package pkg : this.pkgs.values()) {
                 FactType type = pkg.getFactType( name );
-                if ( type != null ) {
+                if (type != null) {
                     return type;
                 }
             }
@@ -1160,18 +1201,19 @@ abstract public class AbstractRuleBase
     }
 
     public static interface RuleBaseAction
-        extends
-        Externalizable {
+                                          extends
+                                          Externalizable {
+
         public void execute( InternalRuleBase ruleBase );
     }
 
     public ClassFieldAccessorCache getClassFieldAccessorCache() {
         return this.classFieldAccessorCache;
     }
-    
+
     public Set<String> getEntryPointIds() {
         Set<String> entryPointIds = new HashSet<String>();
-        for( Package pkg : this.pkgs.values() ) {
+        for (Package pkg : this.pkgs.values()) {
             entryPointIds.addAll( pkg.getEntryPointIds() );
         }
         return entryPointIds;
