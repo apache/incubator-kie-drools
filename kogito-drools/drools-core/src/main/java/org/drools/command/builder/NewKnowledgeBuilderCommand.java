@@ -21,6 +21,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.command.Context;
+import org.drools.command.ResolvingKnowledgeCommandContext;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -89,7 +90,10 @@ public class NewKnowledgeBuilderCommand
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase,
                                                                     this.kbuilderConf );
         }
-        ((FixedKnowledgeCommandContext) context).setKbuilder(kbuilder);
+        
+        if( context instanceof KnowledgeCommandContext ) { 
+            ((KnowledgeCommandContext) context).setKnowledgeBuilder(kbuilder);
+        }
         
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
