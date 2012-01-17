@@ -5,6 +5,7 @@ import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.api.EnumDeclarationDescrBuilder;
 
 public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
     implements
@@ -26,5 +27,9 @@ public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
         return tddb;
     }
 
-
+    public EnumDeclarationDescrBuilder enumeration() {
+        EnumDeclarationDescrBuilder eddb = new EnumDeclarationDescrBuilderImpl( parent );
+        descr.addEnumDeclaration( eddb.getDescr() );
+        return eddb;
+    }
 }

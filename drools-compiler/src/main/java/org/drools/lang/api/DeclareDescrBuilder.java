@@ -41,4 +41,12 @@ public interface DeclareDescrBuilder
      */
     public TypeDeclarationDescrBuilder type();
 
+
+    /**
+     * Declares a new enum
+     *
+     * @return the descriptor builder for the enum
+     */
+    public EnumDeclarationDescrBuilder enumeration();
+
 }

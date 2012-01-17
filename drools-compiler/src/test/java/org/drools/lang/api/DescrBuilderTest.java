@@ -191,16 +191,28 @@ public class DescrBuilderTest {
         PackageDescr pkg = DescrFactory.newPackage()
                 .name( "org.beans" )
                 // declare
-                .newDeclare().type().name( "StockTick" )
+                .newDeclare()
+                    .type().name( "StockTick" )
                     .newAnnotation( "role" ).value( "event" ).end()
                     .newAnnotation( "author" ).value( "bob" ).end()
                     .newField( "symbol" ).type( "String" ).end()
                     .newField( "price" ).type( "double" ).end()
                 .end()
+                .newDeclare()
+                    .enumeration().name( "Planets" )
+                    .newAnnotation( "kind" ).value( "enum" ).end()
+                    .newEnumLiteral( "earth" ).constructorArg( "6.0" ).constructorArg( "10.0" ).end()
+                    .newEnumLiteral( "jupiter" ).constructorArg( "44.0" ).constructorArg( "50.0" ).end()
+                    .newField( "mass" ).type( "double" ).end()
+                    .newField( "radius" ).type( "double" ).end()
+                .end()
                 .getDescr();
 
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
+
+        assertEquals( 1,
+                      pkg.getEnumDeclarations().size() );
 
         KnowledgePackage kpkg = compilePkgDescr( pkg );
         assertEquals( "org.beans",

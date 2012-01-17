@@ -44,6 +44,7 @@ public class PackageDescr extends BaseDescr
     private List<RuleDescr>                 rules                  = Collections.emptyList();
     private List<TypeDeclarationDescr>      typeDeclarations       = Collections.emptyList();
     private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
+    private List<EnumDeclarationDescr>      enumDeclarations       = Collections.emptyList();
 
     public PackageDescr() {
         this( "", 
@@ -75,6 +76,7 @@ public class PackageDescr extends BaseDescr
         rules = (List<RuleDescr>) in.readObject();
         entryPointDeclarations = (Set<EntryPointDeclarationDescr>) in.readObject();
         typeDeclarations = (List<TypeDeclarationDescr>) in.readObject();
+        enumDeclarations = (List<EnumDeclarationDescr>) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
@@ -89,6 +91,7 @@ public class PackageDescr extends BaseDescr
         out.writeObject( rules );
         out.writeObject( entryPointDeclarations );
         out.writeObject( typeDeclarations );
+        out.writeObject( enumDeclarations );
     }
 
     public String getNamespace() {
@@ -208,8 +211,26 @@ public class PackageDescr extends BaseDescr
         }
         this.entryPointDeclarations.add( epDescr );
     }
-    
+
     public Set<EntryPointDeclarationDescr> getEntryPointDeclarations() {
         return this.entryPointDeclarations;
     }
+
+    public void addEnumDeclaration( EnumDeclarationDescr declaration ) {
+        if ( this.enumDeclarations == Collections.EMPTY_LIST ) {
+            this.enumDeclarations = new ArrayList<EnumDeclarationDescr>();
+        }
+        this.enumDeclarations.add( declaration );
+    }
+
+    public List<EnumDeclarationDescr> getEnumDeclarations() {
+        return this.enumDeclarations;
+    }
+    
+    
+    public List<AbstractClassTypeDeclarationDescr> getClassAndEnumDeclarationDescrs() {
+        List<AbstractClassTypeDeclarationDescr> list = new ArrayList<AbstractClassTypeDeclarationDescr>( getEnumDeclarations() );
+        list.addAll( getTypeDeclarations() );
+        return Collections.unmodifiableList( list );
+    } 
 }
