@@ -108,7 +108,7 @@ public class MVELEvalBuilder
             return eval;
         } catch ( final Exception e ) {
             copyErrorLocation(e, evalDescr);
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           evalDescr,
                                                           e,
                                                           "Unable to build expression for 'eval':" + e.getMessage() + " '" + evalDescr.getContent() + "'" ) );

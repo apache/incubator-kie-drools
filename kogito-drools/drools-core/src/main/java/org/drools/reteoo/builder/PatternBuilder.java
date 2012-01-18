@@ -106,6 +106,8 @@ public class PatternBuilder
                                 alphaConstraints,
                                 betaConstraints );
 
+        context.setListenedProperties(pattern.getListenedProperties());
+
         // Create BetaConstraints object
         context.setBetaconstraints( betaConstraints );
 

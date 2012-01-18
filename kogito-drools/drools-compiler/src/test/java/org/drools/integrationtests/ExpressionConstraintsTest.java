@@ -171,23 +171,4 @@ public class ExpressionConstraintsTest extends CommonTestMethodBase {
         rules = ksession.fireAllRules();
         Assert.assertEquals( 2, rules );
     }
-
-    
-    
-    private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for ( String drlContentString : drlContentStrings ) {
-            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
-                          ResourceType.DRL );
-        }
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
 }

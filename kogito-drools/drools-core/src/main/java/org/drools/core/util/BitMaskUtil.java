@@ -8,6 +8,15 @@ public class BitMaskUtil {
 
     public static long set(long mask, int pos) {
         if (pos < 0) throw new IllegalArgumentException("negative position");
-        return mask | 1L << pos;
+        return mask | (1L << pos);
+    }
+
+    public static long reset(long mask, int pos) {
+        if (pos < 0) throw new IllegalArgumentException("negative position");
+        return mask & (Long.MAX_VALUE - (1L << pos));
+    }
+
+    public static boolean isSet(long mask, long bit) {
+        return (mask & bit) == bit;
     }
 }

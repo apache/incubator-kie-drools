@@ -17,26 +17,6 @@ import org.junit.Test;
 
 public class FunctionsTest extends CommonTestMethodBase {
 
-    private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for ( String drlContentString : drlContentStrings ) {
-            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
-                          ResourceType.DRL );
-        }
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
-    private KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
-        return loadKnowledgeBase( null, classPathResources );
-    }
-
     private KnowledgeBase loadKnowledgeBase( KnowledgeBuilderConfiguration kbconf, String... classPathResources ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbconf );
         for ( String classPathResource : classPathResources ) {
@@ -52,7 +32,7 @@ public class FunctionsTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void testFunction() throws Exception {

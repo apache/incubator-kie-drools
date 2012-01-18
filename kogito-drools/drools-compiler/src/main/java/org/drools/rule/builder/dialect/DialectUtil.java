@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -466,7 +465,7 @@ public final class DialectUtil {
         } else if (ep.getType() == JavaBlockDescr.BlockType.CHANNEL) {
             consequence.append("Channel( ");
         } else {
-            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+            context.addError(new DescrBuildError(context.getParentDescr(),
                     context.getRuleDescr(),
                     ep,
                     "Unable to rewrite code block: " + ep + "\n"));
@@ -512,10 +511,10 @@ public final class DialectUtil {
                         localTypes.put( id.getIdentifier(), type );
                     }
                 } catch ( ClassNotFoundException e ) {
-                    context.getErrors().add( new DescrBuildError( context.getRuleDescr(),
-                                                                  context.getParentDescr(),
-                                                                  null,
-                                                                  "Unable to resolve type " + local.getType() + ":\n" + e.getMessage() ) );
+                    context.addError(new DescrBuildError(context.getRuleDescr(),
+                            context.getParentDescr(),
+                            null,
+                            "Unable to resolve type " + local.getType() + ":\n" + e.getMessage()));
                 }
             }
         }
@@ -538,10 +537,10 @@ public final class DialectUtil {
 
            if ( ret == null ) {
                // not possible to evaluate expression return value
-               context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                             context.getRuleDescr(),
-                                                             originalCode,
-                                                             "Unable to determine the resulting type of the expression: " + d.getTargetExpression() + "\n" ) );
+               context.addError(new DescrBuildError(context.getParentDescr(),
+                       context.getRuleDescr(),
+                       originalCode,
+                       "Unable to determine the resulting type of the expression: " + d.getTargetExpression() + "\n"));
 
                return false;
            }
@@ -599,23 +598,24 @@ public final class DialectUtil {
                                               Declaration declr,
                                               String obj) {
         boolean isInternalFact = declr != null && !declr.isInternalFact();
-        boolean isPropSpecific = false;
+        boolean isPropertySpecific = false;
+        TypeDeclaration typeDeclaration = null;
         List<String> settableProperties = null;
         if (isInternalFact) {
             Class<?> typeClass = ((ClassObjectType) declr.getPattern().getObjectType()).getClassType();
-            TypeDeclaration typeDeclaration = context.getPackageBuilder().getTypeDeclaration(typeClass);
-            if (typeDeclaration != null && typeDeclaration.isPropSpecific()) {
-                isPropSpecific = true;
+            typeDeclaration = context.getPackageBuilder().getTypeDeclaration(typeClass);
+            if (typeDeclaration != null && typeDeclaration.isPropertySpecific()) {
+                isPropertySpecific = true;
                 typeDeclaration.setTypeClass(typeClass);
                 settableProperties = typeDeclaration.getSettableProperties();
             }
         }
-        long modificationMask = isPropSpecific ? 0 : Long.MAX_VALUE;
+        long modificationMask = isPropertySpecific ? 0 : Long.MAX_VALUE;
 
         int end = originalBlock.indexOf("{");
         if (end == -1) {
             // no block
-            context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+            context.addError(new DescrBuildError(context.getParentDescr(),
                     context.getRuleDescr(),
                     null,
                     "Block missing after modify" + d.getTargetExpression() + " ?\n"));
@@ -634,16 +634,25 @@ public final class DialectUtil {
             consequence.append("; ");
             start = end + exprStr.length();
 
-            if (isPropSpecific) {
+            if (isPropertySpecific) {
                 int endMethodName = exprStr.indexOf('(');
                 String methodName = exprStr.substring(0, endMethodName).trim();
                 String propertyName = setter2property(methodName);
                 if (propertyName != null) {
                     int pos = settableProperties.indexOf(propertyName);
-                    modificationMask = BitMaskUtil.set(modificationMask, pos);
-                } else {
-                    // Invocation of a non-setter => cannot calculate the mask
-                    modificationMask = Long.MAX_VALUE;
+                    if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                }
+
+                String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')'));
+                int argsNr = methodParams.trim().length() == 0 ? 0 : methodParams.split(",").length;
+
+                String methodWithArgsNr = methodName + "_" + argsNr;
+                List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
+                if (modifiedProps != null) {
+                    for (String modifiedProp : modifiedProps) {
+                        int pos = settableProperties.indexOf(modifiedProp);
+                        if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                    }
                 }
             }
         }

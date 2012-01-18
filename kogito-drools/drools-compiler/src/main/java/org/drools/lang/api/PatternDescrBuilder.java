@@ -33,6 +33,7 @@ import org.drools.lang.descr.PatternDescr;
  */
 public interface PatternDescrBuilder<P extends DescrBuilder<?, ?>>
     extends
+    AnnotatedDescrBuilder<PatternDescrBuilder<P>>,
     DescrBuilder<P, PatternDescr> {
 
     public PatternDescrBuilder<P> id( String id, boolean isUnification );

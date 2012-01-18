@@ -19,6 +19,7 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
@@ -150,12 +151,12 @@ public class QuadroupleNonIndexSkipBetaConstraints
         return this.constraints.isAllowedCachedRight( context, tuple );
     }
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
+    public long getListenedPropertyMask(List<String> settableProperties) {
         if (constraint0 instanceof MvelConstraint && constraint1 instanceof MvelConstraint && constraint2 instanceof MvelConstraint && constraint3 instanceof MvelConstraint) {
-            return ((MvelConstraint)constraint0).getListenedPropertyMask(nodeClass) |
-                    ((MvelConstraint)constraint1).getListenedPropertyMask(nodeClass) |
-                    ((MvelConstraint)constraint2).getListenedPropertyMask(nodeClass) |
-                    ((MvelConstraint)constraint3).getListenedPropertyMask(nodeClass);
+            return ((MvelConstraint)constraint0).getListenedPropertyMask(settableProperties) |
+                    ((MvelConstraint)constraint1).getListenedPropertyMask(settableProperties) |
+                    ((MvelConstraint)constraint2).getListenedPropertyMask(settableProperties) |
+                    ((MvelConstraint)constraint3).getListenedPropertyMask(settableProperties);
         }
         return Long.MAX_VALUE;
     }

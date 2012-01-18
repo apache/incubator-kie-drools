@@ -36,7 +36,7 @@ import static org.drools.core.util.ClassUtils.*;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
-    private static final int JIT_THRESOLD = 1; // Integer.MAX_VALUE;
+    private static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
     private transient AtomicInteger invocationCounter = new AtomicInteger(1);
     private transient boolean jitted = false;
@@ -216,32 +216,32 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     // Slot specific
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
+    public long getListenedPropertyMask(List<String> settableProperties) {
         if (conditionEvaluator == null) return 0L;
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
         }
-        return calculateMask(analyzedCondition, nodeClass, getSettableProperties(nodeClass));
+        return calculateMask(analyzedCondition, settableProperties);
     }
 
-    private long calculateMask(Condition condition, Class<?> nodeClass, List<String> settableProperties) {
+    private long calculateMask(Condition condition, List<String> settableProperties) {
         if (condition instanceof SingleCondition) {
-            return calculateMask((SingleCondition)condition, nodeClass, settableProperties);
+            return calculateMask((SingleCondition)condition, settableProperties);
         }
         long mask = 0L;
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
-            mask |= calculateMask(c, nodeClass, settableProperties);
+            mask |= calculateMask(c, settableProperties);
         }
         return mask;
     }
 
-    private long calculateMask(SingleCondition condition, Class<?> nodeClass, List<String> settableProperties) {
+    private long calculateMask(SingleCondition condition, List<String> settableProperties) {
         Method method = getFirstInvokedMethod(condition.getLeft());
         if (method == null) return Long.MAX_VALUE;
         String propertyName = getter2property(method.getName());
         if (propertyName != null) {
             int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0) throw new RuntimeException("Unknown property " + propertyName + " for " + nodeClass);
+            if (pos < 0) throw new RuntimeException("Unknown property: " + propertyName);
             return 1L << pos;
         }
 

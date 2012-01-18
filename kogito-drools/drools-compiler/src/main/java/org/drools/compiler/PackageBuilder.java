@@ -67,7 +67,9 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
+import org.drools.definition.type.Modifies;
 import org.drools.definition.type.Position;
+import org.drools.definition.type.PropertySpecific;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassBuilderFactory;
@@ -132,6 +134,8 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -1124,110 +1128,164 @@ public class PackageBuilder {
         this.pkgRegistryMap.remove( packageDescr.getName() );
         this.pkgRegistryMap.put( packageDescr.getName(),
                                  pkgRegistry );
+    }
 
+    public TypeDeclaration getAndRegisterTypeDeclaration( Class< ? > cls, String packageName ) {
+        if ( cls.isPrimitive() || cls.isArray() ) return null;
+        TypeDeclaration typeDeclaration = getCachedTypeDeclaration(cls);
+        if (typeDeclaration != null) return typeDeclaration;
+        typeDeclaration = getExistingTypeDeclaration( cls );
+        if (typeDeclaration != null) {
+            initTypeDeclaration(cls, typeDeclaration);
+            return typeDeclaration;
+        }
+
+        typeDeclaration = createTypeDeclarationForBean(cls);
+        initTypeDeclaration(cls, typeDeclaration);
+        PackageRegistry packageRegistry = pkgRegistryMap.get(packageName);
+        if (packageRegistry != null) {
+            packageRegistry.getPackage().addTypeDeclaration(typeDeclaration);
+        }
+        return typeDeclaration;
     }
 
     public TypeDeclaration getTypeDeclaration( Class< ? > cls ) {
-        if ( cls.isPrimitive() || cls.isArray() ) {
-            return null;
-        }
+        if ( cls.isPrimitive() || cls.isArray() ) return null;
 
         // If this class has already been accessed, it'll be in the cache
-        TypeDeclaration tdecl = null;
-        PackageRegistry pkgReg = null;
+        TypeDeclaration tdecl = getCachedTypeDeclaration(cls);
+        return tdecl != null ? tdecl : createTypeDeclaration(cls);
+    }
+
+    private TypeDeclaration createTypeDeclaration( Class< ? > cls ) {
+        TypeDeclaration typeDeclaration = getExistingTypeDeclaration( cls );
+
+        if ( typeDeclaration == null ) {
+            typeDeclaration = createTypeDeclarationForBean(cls);
+        }
+
+        initTypeDeclaration(cls, typeDeclaration);
+        return typeDeclaration;
+    }
+
+    private TypeDeclaration getCachedTypeDeclaration( Class< ? > cls ) {
         if ( this.cacheTypes == null ) {
             this.cacheTypes = new HashMap<String, TypeDeclaration>();
+            return null;
         } else {
-            tdecl = cacheTypes.get( cls.getName() );
-            if ( tdecl != null ) {
-                return tdecl;
-            }
+            return cacheTypes.get( cls.getName() );
         }
+    }
 
+    private TypeDeclaration getExistingTypeDeclaration( Class< ? > cls ) {
         // Check if we are in the built-ins
-        tdecl = this.builtinTypes.get( (cls.getName()) );
-        if ( tdecl == null ) {
+        TypeDeclaration typeDeclaration = this.builtinTypes.get( (cls.getName()) );
+        if ( typeDeclaration == null ) {
             // No built-in
             // Check if there is a user specified typedeclr
-            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
+            PackageRegistry pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if ( pkgReg != null ) {
-                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                typeDeclaration = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
         }
+        return typeDeclaration;
+    }
 
-        if ( tdecl == null ) {
-            // no typedeclr exists, so create one, which will be added to the cache
-            tdecl = new TypeDeclaration( cls.getSimpleName() );
-
-            // it's a new type declaration, so generate the @Position for it
-            ClassDefinition clsDef = tdecl.getTypeClassDef();
-            if ( clsDef == null ) {
-                clsDef = new ClassDefinition();
-
-                Collection<Field> fields = new LinkedList<Field>();
-                Class< ? > tempKlass = cls;
-                while ( tempKlass != null && tempKlass != Object.class ) {
-                    for ( Field f : tempKlass.getDeclaredFields() ) {
-                        fields.add( f );
-                    }
-                    tempKlass = tempKlass.getSuperclass();
-                }
-
-                List<FieldDefinition> orderedFields = new ArrayList<FieldDefinition>( fields.size() );
-                for ( int i = 0; i < fields.size(); i++ ) {
-                    // as these could be set in any order, initialise first, to allow setting later.
-                    orderedFields.add( null );
-                }
-
-                for ( Field fld : fields ) {
-                    Position pos = fld.getAnnotation( Position.class );
-                    if ( pos != null ) {
-                        FieldDefinition fldDef = new FieldDefinition( fld.getName(),
-                                                                      fld.getType().getName() );
-                        fldDef.setIndex( pos.value() );
-                        orderedFields.set( pos.value(),
-                                           fldDef );
-                    }
-                }
-                for ( FieldDefinition fld : orderedFields ) {
-                    if ( fld != null ) {
-                        // it's null if there is no @Position
-                        clsDef.addField( fld );
-                    }
-                }
-
-                tdecl.setTypeClassDef( clsDef );
-
-            }
-        }
-
+    private void initTypeDeclaration(Class< ? > cls, TypeDeclaration typeDeclaration) {
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
 
-        tdecls.add( tdecl );
-        buildTypeDeclarations( cls,
-                               tdecls );
+        tdecls.add( typeDeclaration );
+        buildTypeDeclarations( cls, tdecls );
 
         // Iterate and for each typedeclr assign it's value if it's not already set
         // We start from the rear as those are the furthest away classes and interfaces
         TypeDeclaration[] tarray = tdecls.toArray( new TypeDeclaration[tdecls.size()] );
         for ( int i = tarray.length - 1; i >= 0; i-- ) {
             TypeDeclaration currentTDecl = tarray[i];
-            if ( (tdecl.getSetMask() & TypeDeclaration.ROLE_BIT) != TypeDeclaration.ROLE_BIT ) {
-                tdecl.setRole( currentTDecl.getRole() );
+            if (!isSet(typeDeclaration.getSetMask(), TypeDeclaration.ROLE_BIT) && isSet(currentTDecl.getSetMask(), TypeDeclaration.ROLE_BIT) ) {
+                typeDeclaration.setRole( currentTDecl.getRole() );
             }
-            if ( (tdecl.getSetMask() & TypeDeclaration.FORMAT_BIT) != TypeDeclaration.FORMAT_BIT ) {
-                tdecl.setFormat( currentTDecl.getFormat() );
+            if (!isSet(typeDeclaration.getSetMask(), TypeDeclaration.FORMAT_BIT) && isSet(currentTDecl.getSetMask(), TypeDeclaration.FORMAT_BIT) ) {
+                typeDeclaration.setFormat( currentTDecl.getFormat() );
             }
-            if ( (tdecl.getSetMask() & TypeDeclaration.TYPESAFE_BIT) != TypeDeclaration.TYPESAFE_BIT ) {
-                tdecl.setTypesafe( currentTDecl.isTypesafe() );
+            if (!isSet(typeDeclaration.getSetMask(), TypeDeclaration.TYPESAFE_BIT) && isSet(currentTDecl.getSetMask(), TypeDeclaration.TYPESAFE_BIT) ) {
+                typeDeclaration.setTypesafe( currentTDecl.isTypesafe() );
             }
         }
 
-        this.cacheTypes.put( cls.getName(),
-                             tdecl );
+        this.cacheTypes.put( cls.getName(), typeDeclaration );
+    }
 
-        return tdecl;
+    private TypeDeclaration createTypeDeclarationForBean(Class<?> cls) {
+        String typeName = cls.getName();
+        int lastDot = typeName.lastIndexOf('.');
+        typeName = lastDot >= 0 ? typeName.substring(lastDot+1) : typeName;
+        TypeDeclaration typeDeclaration = new TypeDeclaration( typeName );
+        typeDeclaration.setTypeClass(cls);
+
+        typeDeclaration.setPropertySpecific(cls.isAnnotationPresent(PropertySpecific.class));
+
+        ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
+        if ( clsDef == null ) {
+            clsDef = new ClassDefinition();
+            if (typeDeclaration.isPropertySpecific()) {
+                processModifiedProps(cls, clsDef);
+            }
+            processFieldsPosition(cls, clsDef);
+            typeDeclaration.setTypeClassDef(clsDef);
+        }
+
+        return typeDeclaration;
+    }
+
+    private void processModifiedProps(Class<?> cls, ClassDefinition clsDef) {
+        for (Method method : cls.getDeclaredMethods()) {
+            Modifies modifies = method.getAnnotation(Modifies.class);
+            if (modifies != null) {
+                String[] props = modifies.value();
+                List<String> properties = new ArrayList<String>(props.length);
+                for (String prop : props) {
+                    properties.add(prop.trim());
+                }
+                clsDef.addModifiedPropsByMethod(method, properties);
+            }
+        }
+    }
+
+    private void processFieldsPosition(Class<?> cls, ClassDefinition clsDef) {
+        // it's a new type declaration, so generate the @Position for it
+        Collection<Field> fields = new LinkedList<Field>();
+        Class< ? > tempKlass = cls;
+        while ( tempKlass != null && tempKlass != Object.class ) {
+            for ( Field f : tempKlass.getDeclaredFields() ) {
+                fields.add( f );
+            }
+            tempKlass = tempKlass.getSuperclass();
+        }
+
+        List<FieldDefinition> orderedFields = new ArrayList<FieldDefinition>( fields.size() );
+        for ( int i = 0; i < fields.size(); i++ ) {
+            // as these could be set in any order, initialise first, to allow setting later.
+            orderedFields.add( null );
+        }
+
+        for ( Field fld : fields ) {
+            Position pos = fld.getAnnotation( Position.class );
+            if ( pos != null ) {
+                FieldDefinition fldDef = new FieldDefinition( fld.getName(),
+                                                              fld.getType().getName() );
+                fldDef.setIndex( pos.value() );
+                orderedFields.set( pos.value(),
+                                   fldDef );
+            }
+        }
+        for ( FieldDefinition fld : orderedFields ) {
+            if ( fld != null ) {
+                // it's null if there is no @Position
+                clsDef.addField( fld );
+            }
+        }
     }
 
     public void buildTypeDeclarations( Class< ? > cls,
@@ -1854,8 +1912,8 @@ public class PackageBuilder {
             boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
             type.setDynamic( dynamic );
 
-            boolean propSpecific = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_SPECIFIC );
-            type.setPropSpecific( propSpecific );
+            boolean propertySpecific = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_SPECIFIC );
+            type.setPropertySpecific(propertySpecific);
 
             pkgRegistry.getPackage().addTypeDeclaration( type );
         }

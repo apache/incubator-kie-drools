@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.drools.rule.builder.dialect.DialectUtil.*;
@@ -36,7 +33,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.PatternExtractor;
 
 public class JavaConsequenceBuilderTest {
 
@@ -166,7 +162,7 @@ public class JavaConsequenceBuilderTest {
                                             new HashMap(),
                                             0);
 
-            context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropSpecific(true);
+            context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertySpecific(true);
             String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
@@ -273,7 +269,7 @@ public class JavaConsequenceBuilderTest {
 
         analysis.setBoundIdentifiers(bindings);
 
-        context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropSpecific(true);
+        context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertySpecific(true);
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations(context.getRule()), descrs );
 
         String expected = 

@@ -191,7 +191,7 @@ public class ConstraintBuilder {
 
         final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
         if ( def == null ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
                                                           "Unable to determine the Evaluator for ID '" + evaluatorString + "'" ) );
@@ -206,7 +206,7 @@ public class ConstraintBuilder {
                                                       right );
 
         if ( evaluator == null ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
                                                           "Evaluator '" + (isNegated ? "not " : "") + evaluatorString + "' does not support type '" + valueType ) );

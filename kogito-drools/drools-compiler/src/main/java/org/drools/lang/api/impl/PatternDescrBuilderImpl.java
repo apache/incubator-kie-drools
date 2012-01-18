@@ -16,10 +16,7 @@
 
 package org.drools.lang.api.impl;
 
-import org.drools.lang.api.BehaviorDescrBuilder;
-import org.drools.lang.api.DescrBuilder;
-import org.drools.lang.api.PatternDescrBuilder;
-import org.drools.lang.api.SourceDescrBuilder;
+import org.drools.lang.api.*;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -93,4 +90,9 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends Bas
         return new BehaviorDescrBuilderImpl<PatternDescrBuilder<P>>( this );
     }
 
+    public AnnotationDescrBuilder<PatternDescrBuilder<P>> newAnnotation(String name) {
+        AnnotationDescrBuilder<PatternDescrBuilder<P>> annotation = new AnnotationDescrBuilderImpl<PatternDescrBuilder<P>>( this, name );
+        descr.addAnnotation( annotation.getDescr() );
+        return annotation;
+    }
 }

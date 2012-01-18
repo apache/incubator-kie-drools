@@ -733,28 +733,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
 
     }
 
-    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            logger.info( parser.getErrors().toString() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
-        }
-        // pre build the package 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase 
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        // load up the rulebase 
-        return ruleBase;
-    }
-
     @Test
     @Ignore("This test requires us to fix the propagation order")
     public void testForallSinglePattern() throws Exception {

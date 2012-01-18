@@ -299,10 +299,10 @@ public class DoubleBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
+    public long getListenedPropertyMask(List<String> settableProperties) {
         if (constraint0 instanceof MvelConstraint && constraint1 instanceof MvelConstraint) {
-            return ((MvelConstraint)constraint0).getListenedPropertyMask(nodeClass) |
-                    ((MvelConstraint)constraint1).getListenedPropertyMask(nodeClass);
+            return ((MvelConstraint)constraint0).getListenedPropertyMask(settableProperties) |
+                    ((MvelConstraint)constraint1).getListenedPropertyMask(settableProperties);
         }
         return Long.MAX_VALUE;
     }

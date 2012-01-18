@@ -80,6 +80,8 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
 
+    private List<String>                     listenedProperties;
+
     // the current entry point
     private EntryPoint                       currentEntryPoint;
 
@@ -335,6 +337,14 @@ public class BuildContext {
 
     public void setAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
         this.alphaConstraints = alphaConstraints;
+    }
+
+    public List<String> getListenedProperties() {
+        return listenedProperties;
+    }
+
+    public void setListenedProperties(List<String> listenedProperties) {
+        this.listenedProperties = listenedProperties;
     }
 
     public boolean isTupleMemoryEnabled() {

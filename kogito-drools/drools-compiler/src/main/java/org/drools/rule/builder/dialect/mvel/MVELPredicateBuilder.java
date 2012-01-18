@@ -51,7 +51,7 @@ public class MVELPredicateBuilder
         if (typesafe && analysis instanceof MVELAnalysisResult) {
             Class<?> returnClass = ((MVELAnalysisResult)analysis).getReturnType();
             if (returnClass != Boolean.class && returnClass != Boolean.TYPE) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               predicateDescr,
                                                               null,
                                                               "Predicate '" + predicateDescr.getContent() + "' must be a Boolean expression\n" + predicateDescr.positionAsString() ) );
@@ -89,7 +89,7 @@ public class MVELPredicateBuilder
             expr.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           predicateDescr,
                                                           e,
                                                           "Unable to build expression for 'inline-eval' : " + e.getMessage() + "'" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );

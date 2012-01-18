@@ -47,6 +47,7 @@ public class JoinNode extends BetaNode {
                binder );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
+        this.listenedProperties = context.getListenedProperties();
     }
 
     public void assertLeftTuple( final LeftTuple leftTuple,

@@ -78,7 +78,7 @@ public class MVELReturnValueBuilder
             expr.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'returnValue' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );

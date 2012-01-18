@@ -35,7 +35,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -63,6 +62,8 @@ import org.drools.rule.WindowDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
+
+import static org.drools.core.util.BitMaskUtil.isSet;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -620,11 +621,11 @@ abstract public class AbstractRuleBase
                                             existingDecl.isDynamic(),
                                             newDecl.isDynamic(),
                                             true ) );
-        existingDecl.setPropSpecific( mergeLeft( existingDecl.getTypeName(),
-                                                 "Unable to merge @propSpecific attribute for type declaration of class:",
-                                                 existingDecl.isPropSpecific(),
-                                                 newDecl.isPropSpecific(),
-                                                 true ) );
+        existingDecl.setPropertySpecific(mergeLeft(existingDecl.getTypeName(),
+                "Unable to merge @propertySpecific attribute for type declaration of class:",
+                existingDecl.isPropertySpecific(),
+                newDecl.isPropertySpecific(),
+                true));
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
         existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
@@ -639,7 +640,7 @@ abstract public class AbstractRuleBase
                                              true ) );
         existingDecl.setRole( mergeLeft( existingDecl.getTypeName(),
                                          "Unable to merge @role attribute for type declaration of class:",
-                                         existingDecl.getRole(),
+                                         isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT) ? existingDecl.getRole() : null,
                                          newDecl.getRole(),
                                          true ) );
         existingDecl.setTimestampAttribute( mergeLeft( existingDecl.getTypeName(),
@@ -647,11 +648,11 @@ abstract public class AbstractRuleBase
                                                        existingDecl.getTimestampAttribute(),
                                                        newDecl.getTimestampAttribute(),
                                                        true ) );
-        existingDecl.setTypesafe( mergeLeft( existingDecl.getTypeName(),
-                                             "Unable to merge @typesafe attribute for type declaration of class:",
-                                             existingDecl.isTypesafe(),
-                                             newDecl.isTypesafe(),
-                                             true ) );
+        existingDecl.setTypesafe(mergeLeft(existingDecl.getTypeName(),
+                "Unable to merge @typesafe attribute for type declaration of class:",
+                existingDecl.isTypesafe(),
+                newDecl.isTypesafe(),
+                true));
     }
 
     private <T> T mergeLeft( String typeClass,

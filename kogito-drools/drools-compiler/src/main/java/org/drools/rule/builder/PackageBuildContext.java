@@ -145,6 +145,10 @@ public class PackageBuildContext {
         return this.errors;
     }
 
+    public void addError(DroolsError error) {
+        errors.add(error);
+    }
+
     /**
      * Returns the current package being built
      * @return

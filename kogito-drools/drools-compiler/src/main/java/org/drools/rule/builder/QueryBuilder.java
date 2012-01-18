@@ -70,7 +70,7 @@ public class QueryBuilder implements EngineElementBuilder {
             ((Query)context.getRule()).setParameters( declarations );
             
         } catch ( ClassNotFoundException e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           queryDescr,
                                                           e,
                                                           "Unable to resolve type '" + types[i] + " for parameter" + params[i] ) );
