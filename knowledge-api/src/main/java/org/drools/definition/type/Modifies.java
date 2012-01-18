@@ -16,4 +16,3 @@ public @interface Modifies {
 
     String[] value();
 }
-gi
