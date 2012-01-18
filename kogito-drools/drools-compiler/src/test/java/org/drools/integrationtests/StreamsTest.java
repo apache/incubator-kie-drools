@@ -355,7 +355,8 @@ public class StreamsTest extends CommonTestMethodBase {
                      "end\n";
 
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( null,
+                                                           str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         org.drools.event.rule.AgendaEventListener ael = mock(org.drools.event.rule.AgendaEventListener.class);
@@ -571,7 +572,8 @@ public class StreamsTest extends CommonTestMethodBase {
                            "        # consequences\n" +
                            "end\n";
         
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( null,
+                                                           drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         assertNotNull( ksession.getWorkingMemoryEntryPoint( "UsedEntryPoint" ) );

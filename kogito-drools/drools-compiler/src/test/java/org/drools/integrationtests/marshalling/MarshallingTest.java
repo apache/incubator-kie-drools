@@ -2871,7 +2871,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                 list.size() );                
     }        
 
-    @Test
+    @Test @Ignore
     public void testMarshallEntryPointsWithSlidingTimeWindow() throws Exception {
         String str =
             "package org.domain.test \n" +
@@ -2955,7 +2955,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( 2, ((List)list.get( 0 )).size() );        
     }
 
-    @Test
+    @Test @Ignore
     public void testMarshallEntryPointsWithSlidingLengthWindow() throws Exception {
         String str =
             "package org.domain.test \n" +

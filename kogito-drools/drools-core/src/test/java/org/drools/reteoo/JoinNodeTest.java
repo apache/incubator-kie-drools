@@ -595,8 +595,7 @@ public class JoinNodeTest extends DroolsTestCase {
                 .getReteooBuilder().getIdGenerator());
 
         final JoinNode joinNode = new JoinNode(1, this.tupleSource,
-                this.objectSource, EmptyBetaConstraints.getInstance(),
-                Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
+                this.objectSource, EmptyBetaConstraints.getInstance(), buildContext);
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
