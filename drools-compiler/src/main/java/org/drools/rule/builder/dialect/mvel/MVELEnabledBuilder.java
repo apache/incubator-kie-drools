@@ -79,7 +79,7 @@ public class MVELEnabledBuilder
             expr.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'enabled' : " + e.getMessage() + " '" + context.getRuleDescr().getEnabled() + "'" ) );

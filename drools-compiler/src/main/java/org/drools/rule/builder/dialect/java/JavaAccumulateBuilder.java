@@ -137,7 +137,7 @@ public class JavaAccumulateBuilder
             // find the corresponding function
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( fc.getFunction() );
             if ( function == null ) {
-                context.getErrors().add( new DescrBuildError( accumDescr,
+                context.addError( new DescrBuildError( accumDescr,
                                                               context.getRuleDescr(),
                                                               null,
                                                               "Unknown accumulate function: '" + fc.getFunction() + "' on rule '" + context.getRuleDescr().getName() + "'. All accumulate functions must be registered before building a resource." ) );

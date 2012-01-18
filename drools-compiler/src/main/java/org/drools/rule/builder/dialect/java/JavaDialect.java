@@ -257,7 +257,7 @@ public class JavaDialect
             result = this.analyzer.analyzeExpression( (String) content,
                                                       availableIdentifiers );
         } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           e,
                                                           "Unable to determine the used declarations.\n" + e ) );
@@ -274,7 +274,7 @@ public class JavaDialect
             result = this.analyzer.analyzeBlock( text,
                                                  availableIdentifiers );
         } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           e,
                                                           "Unable to determine the used declarations.\n" + e ) );

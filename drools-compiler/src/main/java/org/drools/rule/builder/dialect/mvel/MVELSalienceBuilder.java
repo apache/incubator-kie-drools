@@ -67,7 +67,7 @@ public class MVELSalienceBuilder
             expr.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, context.getRuleDescr());
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'salience' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );

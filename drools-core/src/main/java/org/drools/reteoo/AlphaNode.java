@@ -19,6 +19,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
@@ -319,12 +320,11 @@ public class AlphaNode extends ObjectSource
 
     }
 
-    long getListenedPropertyMask() {
+    long getListenedPropertyMask(List<String> settableProperties) {
         if (!(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
         if (listenedPropertyMask >= 0) return listenedPropertyMask;
 
-        Class<?> nodeClass = getNodeClass();
-        long mask = nodeClass == null ? Long.MAX_VALUE : ((MvelConstraint)constraint).getListenedPropertyMask(nodeClass);
+        long mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
         listenedPropertyMask = mask;
         return mask >= 0 ? mask : Long.MAX_VALUE;
     }

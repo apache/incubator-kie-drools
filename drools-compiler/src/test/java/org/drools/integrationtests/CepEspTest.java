@@ -77,13 +77,6 @@ import org.mockito.ArgumentCaptor;
 
 public class CepEspTest extends CommonTestMethodBase {
     
-    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        return loadRuleBase( reader,
-                             null );
-    }
-
     private RuleBase loadRuleBase( final Reader reader,
                                    final RuleBaseConfiguration conf ) throws IOException,
                                                                      DroolsParserException,

@@ -113,7 +113,7 @@ public class MVELExprAnalyzer {
             } catch ( Exception e ) {
                 BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
                 copyErrorLocation(e, context.getParentDescr());
-                context.getErrors().add( new DescrBuildError( base,
+                context.addError( new DescrBuildError( base,
                                                               context.getParentDescr(),
                                                               null,
                                                               "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
@@ -213,10 +213,10 @@ public class MVELExprAnalyzer {
                 if ( typesafe ) {
                     BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
                     copyErrorLocation(e, context.getParentDescr());
-                    context.getErrors().add( new DescrBuildError( base,
-                                                                  context.getParentDescr(),
-                                                                  null,
-                                                                  "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+                    context.addError( new DescrBuildError( base,
+                                                           context.getParentDescr(),
+                                                           null,
+                                                           "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
                     return null;                    
                 }
             }

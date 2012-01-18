@@ -238,7 +238,7 @@ public class RuleBuilder {
             } else {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Calendars attribute did not return a String or String[] '" + val + "'" );
-                context.getErrors().add( err  );
+                context.addError( err  );
             }
             if ( calNames != null ) {
                 rule.setCalendars( calNames );
@@ -246,7 +246,7 @@ public class RuleBuilder {
         } catch ( Exception e ) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
-            context.getErrors().add( err );
+            context.addError( err );
         }
     }
     
@@ -261,7 +261,7 @@ public class RuleBuilder {
             if (timerString.startsWith("int") || timerString.startsWith("cron")) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect timer definition '" + timerString + "' - missing colon?" );
-                context.getErrors().add( err );
+                context.addError( err );
                 return;
             }
             // no protocol so assume interval semantics
@@ -331,7 +331,7 @@ public class RuleBuilder {
             } catch ( ParseException e ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Unable to build set timer '" + timerString + "'" );                
-                context.getErrors().add( err );
+                context.addError( err );
                 return;
             }
         } else if ( "int".equals( protocol ) ) {
@@ -342,7 +342,7 @@ public class RuleBuilder {
             if ( times.length > 2 ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect number of arguments for interval timer '" + timerString + "'" );
-                context.getErrors().add( err );
+                context.addError( err );
                 return;
             }
 
@@ -358,7 +358,7 @@ public class RuleBuilder {
             } catch (RuntimeException e) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect timer definition '" + timerString + "' " + e.getMessage() );
-                context.getErrors().add( err );
+                context.addError( err );
                 return;
             }
 
@@ -366,7 +366,7 @@ public class RuleBuilder {
         } else {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   "Protocol for timer does not exist '" + timerString +"'" );
-            context.getErrors().add( err );
+            context.addError( err );
             return;
         }
         rule.setTimer( timer );

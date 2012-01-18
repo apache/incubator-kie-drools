@@ -50,13 +50,6 @@ import org.mockito.Mockito;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
-    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        return loadRuleBase( reader,
-                             new PackageBuilderConfiguration() );
-    }
-
     private RuleBase loadRuleBase( final Reader reader,
                                    final PackageBuilderConfiguration conf ) throws IOException,
                                                                            DroolsParserException,

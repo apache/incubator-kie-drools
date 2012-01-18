@@ -19,6 +19,7 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.util.LeftTupleList;
@@ -144,7 +145,7 @@ public class EmptyBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
+    public long getListenedPropertyMask(List<String> settableProperties) {
         return Long.MAX_VALUE;
     }
 }

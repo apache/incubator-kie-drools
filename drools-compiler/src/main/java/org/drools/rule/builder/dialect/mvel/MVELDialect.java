@@ -479,7 +479,7 @@ public class MVELDialect
                                                  KnowledgeHelper.class );
         } catch ( final Exception e ) {
             copyErrorLocation(e, descr);
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
                                                           "Unable to determine the used declarations.\n" + e.getMessage() ) );

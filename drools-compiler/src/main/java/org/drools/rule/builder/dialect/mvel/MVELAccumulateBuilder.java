@@ -140,7 +140,7 @@ public class MVELAccumulateBuilder
             return accumulate;
         } catch ( Exception e ) {
             copyErrorLocation(e, descr);
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           e,
                                                           "Unable to build expression for 'accumulate' : " + e.getMessage() ) );
@@ -169,7 +169,7 @@ public class MVELAccumulateBuilder
             // build an external function executor
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
             if ( function == null ) {
-                context.getErrors().add( new DescrBuildError( accumDescr,
+                context.addError( new DescrBuildError( accumDescr,
                                                               context.getRuleDescr(),
                                                               null,
                                                               "Unknown accumulate function: '" + func.getFunction() + "' on rule '" + context.getRuleDescr().getName()

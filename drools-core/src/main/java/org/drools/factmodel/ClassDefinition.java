@@ -19,6 +19,7 @@ package org.drools.factmodel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -48,6 +49,8 @@ public class ClassDefinition
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
     private List<AnnotationDefinition> annotations;
+
+    private Map<String, List<String>> modifiedPropsByMethod;
 
     public ClassDefinition() {
         this( null,
@@ -84,6 +87,7 @@ public class ClassDefinition
         this.interfaces = (String[]) in.readObject();
         this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
+        this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
         this.traitable = in.readBoolean();
     }
 
@@ -93,6 +97,7 @@ public class ClassDefinition
         out.writeObject( this.interfaces );
         out.writeObject( this.fields );
         out.writeObject( this.annotations );
+        out.writeObject( this.modifiedPropsByMethod);
         out.writeBoolean( this.traitable );
     }
 
@@ -246,10 +251,6 @@ public class ClassDefinition
         }
     }
 
-
-
-
-
     public void addAnnotation(AnnotationDefinition annotationDefinition) {
         if (this.annotations == null) {
             this.annotations = new ArrayList<AnnotationDefinition>();
@@ -261,8 +262,22 @@ public class ClassDefinition
         return annotations;
     }
 
+    public void addModifiedPropsByMethod(Method method, List<String> props) {
+        if (modifiedPropsByMethod == null) {
+            modifiedPropsByMethod = new HashMap<String, List<String>>();
+        }
+        String methodName = method.getName() + "_" + method.getParameterTypes().length;
+        modifiedPropsByMethod.put(methodName, props);
+    }
 
+    public List<String> getModifiedPropsByMethod(Method method) {
+        String methodName = method.getName() + "_" + method.getParameterTypes().length;
+        return getModifiedPropsByMethod(methodName);
+    }
 
+    public List<String> getModifiedPropsByMethod(String methodName) {
+        return modifiedPropsByMethod == null ? null : modifiedPropsByMethod.get(methodName);
+    }
 
     public boolean isTraitable() {
         return traitable;
@@ -271,8 +286,6 @@ public class ClassDefinition
     public void setTraitable(boolean traitable) {
         this.traitable = traitable;
     }
-
-
 
     public String toString() {
         return "ClassDefinition{" +

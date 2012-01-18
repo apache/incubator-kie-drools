@@ -345,7 +345,7 @@ public class DefaultBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
+    public long getListenedPropertyMask(List<String> settableProperties) {
         return Long.MAX_VALUE;
     }
 }

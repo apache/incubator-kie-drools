@@ -43,6 +43,9 @@ public class Pattern
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
+    private List<String>             listenedProperties;
+
+    public static final String ATTR_LISTENED_PROPS = "watch";
 
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple;
@@ -112,9 +115,10 @@ public class Pattern
         index = in.readInt();
         source = (PatternSource) in.readObject();
         offset = in.readInt();
+        listenedProperties = (List<String>) in.readObject();
         if ( source instanceof From ) {
             ((From)source).setResultPattern( this );
-        }          
+        }
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -126,6 +130,7 @@ public class Pattern
         out.writeInt( index );
         out.writeObject( source );
         out.writeInt( offset );
+        out.writeObject(getListenedProperties());
     }
     
     public void setClassObjectType(ClassObjectType objectType) {
@@ -429,5 +434,13 @@ public class Pattern
             this.behaviors = new ArrayList<Behavior>();
         }
         this.behaviors.add( behavior );
+    }
+
+    public List<String> getListenedProperties() {
+        return listenedProperties;
+    }
+
+    public void setListenedProperties(List<String> listenedProperties) {
+        this.listenedProperties = listenedProperties;
     }
 }

@@ -2644,6 +2644,12 @@ public class DRLParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return;
 
+        while ( input.LA( 1 ) == DRLLexer.AT ) {
+            // annotation*
+            annotation( pattern );
+            if ( state.failed ) return;
+        }
+
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) ) {
             //           || input.LA( 1 ) == DRLLexer.PIPE ) {
             patternFilter( pattern );

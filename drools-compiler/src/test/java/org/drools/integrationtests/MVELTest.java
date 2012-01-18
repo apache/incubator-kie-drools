@@ -845,32 +845,6 @@ public class MVELTest extends CommonTestMethodBase {
                                        new HashMap() );
     }
 
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                      DroolsParserException,
-                                                      Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors()  );
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        // load up the rulebase
-        return ruleBase;
-    }
-
     @Test
     public void test1() {
     	ParserContext pc = new ParserContext();

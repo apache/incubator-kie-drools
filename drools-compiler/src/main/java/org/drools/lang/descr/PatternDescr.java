@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PatternDescr extends BaseDescr
+public class PatternDescr extends AnnotatedBaseDescr
     implements
     Cloneable {
     private static final long       serialVersionUID     = 510l;

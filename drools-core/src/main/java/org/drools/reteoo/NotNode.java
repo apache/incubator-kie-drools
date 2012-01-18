@@ -49,6 +49,7 @@ public class NotNode extends BetaNode {
                rightInput,
                joinNodeBinder );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.listenedProperties = context.getListenedProperties();
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,

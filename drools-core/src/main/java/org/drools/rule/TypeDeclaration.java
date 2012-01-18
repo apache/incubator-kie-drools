@@ -55,7 +55,7 @@ public class TypeDeclaration
     public static final String ATTR_KEY                 = "key";
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
-    public static final String ATTR_PROP_SPECIFIC       = "propSpecific";
+    public static final String ATTR_PROP_SPECIFIC       = "propertySpecific";
 
     public int setMask                                  = 0;
     
@@ -106,7 +106,7 @@ public class TypeDeclaration
     private boolean                dynamic;
     private boolean                typesafe;
     private boolean                novel;
-    private boolean                propSpecific;
+    private boolean propertySpecific;
     private transient List<String> settableProprties;
 
     private transient ObjectType objectType;
@@ -141,7 +141,7 @@ public class TypeDeclaration
         this.expirationOffset = in.readLong();
         this.dynamic = in.readBoolean();
         this.typesafe = in.readBoolean();
-        this.propSpecific = in.readBoolean();
+        this.propertySpecific = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -159,7 +159,7 @@ public class TypeDeclaration
         out.writeLong(expirationOffset);
         out.writeBoolean(dynamic);
         out.writeBoolean( typesafe );
-        out.writeBoolean( propSpecific );
+        out.writeBoolean(propertySpecific);
     }
     
     public int getSetMask() {
@@ -411,12 +411,12 @@ public class TypeDeclaration
         this.typesafe = typesafe;
     }
 
-    public boolean isPropSpecific() {
-        return propSpecific;
+    public boolean isPropertySpecific() {
+        return propertySpecific;
     }
 
-    public void setPropSpecific(boolean propSpecific) {
-        this.propSpecific = propSpecific;
+    public void setPropertySpecific(boolean propertySpecific) {
+        this.propertySpecific = propertySpecific;
     }
 
     public boolean isNovel() {

@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import java.io.Externalizable;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.util.LinkedList;
@@ -60,5 +61,5 @@ public interface BetaConstraints
 
     void resetFactHandle(final ContextEntry[] context);
 
-    long getListenedPropertyMask(Class<?> nodeClass);
+    long getListenedPropertyMask(List<String> settableProperties);
 }

@@ -26,27 +26,6 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     private final static String TEST_RULE_FILE = "test_eventGenerator.drl";
 
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-        DroolsParserException,
-        Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            System.out.println( parser.getErrors() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-        final Package pkg = builder.getPackage();
-
-        // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        // load up the rulebase
-        return SerializationHelper.serializeObject(ruleBase);
-    }
-    
     @Test
     public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );

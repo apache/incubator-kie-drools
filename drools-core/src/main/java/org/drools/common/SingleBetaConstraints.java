@@ -19,6 +19,7 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.core.util.LeftTupleIndexHashTable;
@@ -233,7 +234,7 @@ public class SingleBetaConstraints
         throw new UnsupportedOperationException();
     }
 
-    public long getListenedPropertyMask(Class<?> nodeClass) {
-        return constraint instanceof MvelConstraint ? ((MvelConstraint)constraint).getListenedPropertyMask(nodeClass) : Long.MAX_VALUE;
+    public long getListenedPropertyMask(List<String> settableProperties) {
+        return constraint instanceof MvelConstraint ? ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties) : Long.MAX_VALUE;
     }
 }

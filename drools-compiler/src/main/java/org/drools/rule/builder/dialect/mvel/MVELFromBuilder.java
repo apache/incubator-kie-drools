@@ -110,7 +110,7 @@ public class MVELFromBuilder
             dataProvider.compile( data );
         } catch ( final Exception e ) {
             copyErrorLocation(e, fromDescr);
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           fromDescr,
                                                           null,
                                                           "Unable to build expression for 'from' : " + e.getMessage() + " '" + expr.getText() + "'" ) );

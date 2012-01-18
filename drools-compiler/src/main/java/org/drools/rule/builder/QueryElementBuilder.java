@@ -99,7 +99,7 @@ public class QueryElementBuilder
                                           expression );
                 if ( result == null ) {
                     // error, can't parse expression.
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                    context.addError( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   null,
                                                                   "Unable to parse constraint: \n" + expression ) );
@@ -113,14 +113,14 @@ public class QueryElementBuilder
 
             if ( (!isPositional) && (!isBinding) ) {
                 // error, can't have non binding slots.
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               descr,
                                                               null,
                                                               "Query's must use positional or bindings, not field constraints:\n" + expression ) );
                 continue;
             } else if ( isPositional && isBinding ) {
                 // error, can't have positional binding slots.
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               descr,
                                                               null,
                                                               "Query's can't use positional bindings:\n" + expression ) );
@@ -222,7 +222,7 @@ public class QueryElementBuilder
                 ConstraintConnectiveDescr bresult = parser.parse( bind.getExpression() );
                 if ( parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
-                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                        context.addError( new DescrBuildError( context.getParentDescr(),
                                                                       descr,
                                                                       null,
                                                                       "Unable to parser pattern expression:\n" + error.getMessage() ) );
@@ -238,7 +238,7 @@ public class QueryElementBuilder
                 arguments.set( pos,
                                o ); // for now we just work with literals
                 } catch ( Exception e ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                    context.addError( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   null,
                                                                   "Unable to compile expression:\n" + expr ) );
@@ -253,7 +253,7 @@ public class QueryElementBuilder
                           params );
             if ( pos < 0 ) {
                 // error this must be a binding on a slot
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               descr,
                                                               null,
                                                               "named argument does not exist:\n" + bind.getExpression() ) );
@@ -287,7 +287,7 @@ public class QueryElementBuilder
                                     ConstraintConnectiveDescr result ) {
         int position = ((ExprConstraintDescr) base).getPosition();
         if ( position >= arguments.size() ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            context.addError( new DescrBuildError( context.getParentDescr(),
                                                           base,
                                                           null,
                                                           "Unable to parse query '" + query.getName() + "', as postion " + (position-1) + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
@@ -351,7 +351,7 @@ public class QueryElementBuilder
         ConstraintConnectiveDescr result = parser.parse( expression );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,
                                                               null,
                                                               "Unable to parser pattern expression:\n" + error.getMessage() ) );

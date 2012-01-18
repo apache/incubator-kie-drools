@@ -109,7 +109,7 @@ public final class JavaRuleBuilderHelper {
             indexes[i] = i;
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
             if ( (indexes[i]).intValue() == -1 ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                context.addError( new DescrBuildError( context.getParentDescr(),
                                                               context.getRuleDescr(),
                                                               null,
                                                               "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );

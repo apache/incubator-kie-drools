@@ -76,7 +76,6 @@ public class ModifyInterceptor
             calculateModificationMask(knowledgeHelper, (WithNode)node);
         }
 
-
         knowledgeHelper.update(value, modificationMask);
         return 0;
     }
@@ -85,7 +84,7 @@ public class ModifyInterceptor
         Class<?> nodeClass = node.getEgressType();
         InternalRuleBase ruleBase = (InternalRuleBase)knowledgeHelper.getWorkingMemory().getRuleBase();
         TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
-        if (typeDeclaration == null || !typeDeclaration.isPropSpecific()) {
+        if (typeDeclaration == null || !typeDeclaration.isPropertySpecific()) {
             modificationMask = Long.MAX_VALUE;
             return;
         }
@@ -105,11 +104,15 @@ public class ModifyInterceptor
             String propertyName = setter2property(method.getName());
             if (propertyName != null) {
                 int pos = settableProperties.indexOf(propertyName);
-                modificationMask = BitMaskUtil.set(modificationMask, pos);
-            } else {
-                // Invocation of a non-setter => cannot calculate the mask
-                modificationMask = Long.MAX_VALUE;
-                return;
+                if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+            }
+
+            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(method);
+            if (modifiedProps != null) {
+                for (String modifiedProp : modifiedProps) {
+                    int pos = settableProperties.indexOf(modifiedProp);
+                    if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                }
             }
         }
     }
