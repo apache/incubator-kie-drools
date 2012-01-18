@@ -367,7 +367,7 @@ public class PackageBuilder {
      */
     public void addPackageFromDrl( final Reader reader ) throws DroolsParserException,
                                                         IOException {
-        this.resource = new ReaderResource( reader );
+        this.resource = new ReaderResource( reader, ResourceType.DRL );
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
@@ -416,7 +416,7 @@ public class PackageBuilder {
      */
     public void addPackageFromXml( final Reader reader ) throws DroolsParserException,
                                                         IOException {
-        this.resource = new ReaderResource( reader );
+        this.resource = new ReaderResource( reader, ResourceType.XDRL );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
         xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
@@ -462,7 +462,7 @@ public class PackageBuilder {
     public void addPackageFromDrl( final Reader source,
                                    final Reader dsl ) throws DroolsParserException,
                                                      IOException {
-        this.resource = new ReaderResource( source );
+        this.resource = new ReaderResource( source, ResourceType.DSLR );
 
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( source,
@@ -575,40 +575,32 @@ public class PackageBuilder {
     }
 
     public void addProcessFromXml( Reader processSource ) {
-        addProcessFromXml( new ReaderResource( processSource ) );
+        addProcessFromXml( new ReaderResource( processSource, ResourceType.DRF ) );
     }
 
     public void addKnowledgeResource( Resource resource,
                                       ResourceType type,
                                       ResourceConfiguration configuration ) {
         try {
+            ((InternalResource) resource).setResourceType( type );
             if ( ResourceType.DRL.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addPackageFromDrl( resource );
             } else if ( ResourceType.DESCR.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addPackageFromDrl( resource );
             } else if ( ResourceType.DSLR.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addPackageFromDslr( resource );
             } else if ( ResourceType.DSL.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addDsl( resource );
             } else if ( ResourceType.XDRL.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addPackageFromXml( resource );
             } else if ( ResourceType.BRL.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addPackageFromBrl( resource );
             } else if ( ResourceType.DRF.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 addProcessFromXml( resource );
             } else if ( ResourceType.BPMN2.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 BPMN2ProcessFactory.configurePackageBuilder( this );
                 addProcessFromXml( resource );
             } else if ( ResourceType.DTABLE.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
 
                 String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
@@ -621,7 +613,6 @@ public class PackageBuilder {
                 is.close();
                 addPackage( pkg );
             } else if ( ResourceType.CHANGE_SET.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
                 XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
                 if ( resource instanceof ClassPathResource ) {
                     reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),

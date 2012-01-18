@@ -23,20 +23,32 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Date;
 
+import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
 public class ReaderResource  extends BaseResource implements InternalResource {
+    private static final long serialVersionUID = -2554750160404141191L;
+    
     private transient Reader reader;
     private String encoding;
+    private long timestamp;
+    private long lastRead;
     
     public ReaderResource(Reader reader) {
-        this(reader, null);
+        this(reader, null, null );
     }
     
+    public ReaderResource(Reader reader, ResourceType type ) {
+        this(reader, null, type );
+    }
+
     public ReaderResource(Reader reader, String encoding) {
+        this( reader, encoding, null );
+    }
+    
+    public ReaderResource(Reader reader, String encoding, ResourceType type ) {
         if ( reader == null ) {
             throw new IllegalArgumentException( "reader cannot be null" );
         }
@@ -46,6 +58,11 @@ public class ReaderResource  extends BaseResource implements InternalResource {
         this.reader = reader;
 
         this.encoding = encoding;
+        
+        setResourceType( type );
+        
+        this.timestamp = System.currentTimeMillis();
+        this.lastRead = this.timestamp;
     }
     
     public URL getURL() throws IOException {
@@ -53,6 +70,7 @@ public class ReaderResource  extends BaseResource implements InternalResource {
     }
 
     public InputStream getInputStream() throws IOException {
+        this.reader.reset();
         if ( this.encoding != null ) {
             return new ReaderInputStream( this.reader, this.encoding);
         } else {
@@ -61,11 +79,11 @@ public class ReaderResource  extends BaseResource implements InternalResource {
     }
     
     public long getLastModified() {
-        throw new IllegalStateException( "reader does have a modified date" );
+        return this.timestamp;
     }
     
     public long getLastRead() {
-        throw new IllegalStateException( "reader does have a modified date" );
+        return this.lastRead;
     }
     
     public Reader getReader() {
