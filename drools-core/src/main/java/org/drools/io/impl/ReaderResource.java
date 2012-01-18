@@ -70,7 +70,12 @@ public class ReaderResource  extends BaseResource implements InternalResource {
     }
 
     public InputStream getInputStream() throws IOException {
-        this.reader.reset();
+        try {        
+            // try to reset the reader.
+            this.reader.reset();
+        } catch( IOException ioe ) {
+            // nothing to do... intentionally left empty
+        }
         if ( this.encoding != null ) {
             return new ReaderInputStream( this.reader, this.encoding);
         } else {
