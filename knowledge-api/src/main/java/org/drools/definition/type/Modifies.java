@@ -14,5 +14,6 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 public @interface Modifies {
 
-    String value();
+    String[] value();
 }
+gi
