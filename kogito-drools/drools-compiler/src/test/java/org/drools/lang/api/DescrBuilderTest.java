@@ -28,12 +28,20 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * DescrBuilderTest
@@ -296,6 +304,47 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         assertEquals( 1, rules );
     }
     
+    @Test
+    public void testTopLevelAccumulate() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "r1" )
+                    .lhs()
+                        .accumulate()
+                            .source()
+                                .pattern("StockTick").constraint( "company == \"RHT\"" ).bind( "$p", "price", false ).end()
+                            .end()
+                            .function( "sum", "$sum", "$p" )
+                            .function( "count", "$cnt", "$p" )
+                        .end()
+                    .end()
+                    .rhs( "// some comment" )
+                .end()
+                .getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
+        ksession.insert( new StockTick(2, "RHT", 100, 10 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+        
+        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( cap.capture() );
+        
+        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$sum" )).intValue(), is( 180 ) );
+        assertThat( ((Number) cap.getValue().getActivation().getDeclarationValue( "$cnt" )).intValue(), is( 2 ) );
+    }
     
     @Test
     public void testRule() throws InstantiationException,

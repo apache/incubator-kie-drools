@@ -218,7 +218,7 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public boolean hasValidInput() {
-        // TODO: need to check that there are no OR occurences
+        // TODO: need to check that there are no OR occurrences
         return this.input != null;
     }
 

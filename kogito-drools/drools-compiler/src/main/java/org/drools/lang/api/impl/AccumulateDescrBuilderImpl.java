@@ -63,7 +63,7 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends 
 
     public AccumulateDescrBuilder<P> function( String name,
                                                String bind,
-                                               String[] parameters ) {
+                                               String... parameters ) {
         descr.addFunction( name,
                            bind,
                            parameters );
