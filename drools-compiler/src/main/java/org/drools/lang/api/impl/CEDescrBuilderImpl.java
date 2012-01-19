@@ -16,6 +16,7 @@
 
 package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.EvalDescrBuilder;
@@ -89,6 +90,27 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends BaseD
         ForallDescrBuilder<CEDescrBuilder<P, T>> forall = new ForallDescrBuilderImpl<CEDescrBuilder<P, T>>( this );
         ((ConditionalElementDescr) descr).addDescr( forall.getDescr() );
         return forall;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate() {
+        // here we have to do a trick as a top level accumulate is just an accumulate
+        // whose result pattern is Object[] 
+        
+        // create a linked Object[] pattern and set it to query false
+        PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object[]").isQuery( false );
+        
+        // create the accumulate builder with this CE as its parent 
+        AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<CEDescrBuilder<P, T>>(this)
+                .multiFunction( true );
+        
+        // set the accumulate descriptor as the source of that pattern descr
+        pdb.getDescr().setSource( accumulate.getDescr() );
+        
+        // return the accumulate builder, that has the properly set parent
+        return accumulate;
     }
 
     /**
