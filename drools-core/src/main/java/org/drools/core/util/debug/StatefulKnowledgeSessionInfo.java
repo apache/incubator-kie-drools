@@ -26,12 +26,12 @@ import java.util.TreeMap;
 
 import org.drools.common.NetworkNode;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
 public class StatefulKnowledgeSessionInfo {
-    private ReteooWorkingMemory               session;
+    private ReteooWorkingMemoryInterface      session;
     private Map<NetworkNode, DefaultNodeInfo> nodesInfo;
     private List<String>                      log;
 
@@ -108,11 +108,11 @@ public class StatefulKnowledgeSessionInfo {
         return this.nodesInfo.values();
     }
 
-    public ReteooWorkingMemory getSession() {
+    public ReteooWorkingMemoryInterface getSession() {
         return session;
     }
 
-    public void setSession(ReteooWorkingMemory session) {
+    public void setSession(ReteooWorkingMemoryInterface session) {
         this.session = session;
     }
 
