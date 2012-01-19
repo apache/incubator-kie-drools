@@ -65,6 +65,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         this.attributes = new LinkedHashMap<String, AttributeDescr>();
         this.namedConsequence = new HashMap<String, Object>();
         this.lhs = new AndDescr();
+        this.consequence = "";
     }
 
     @SuppressWarnings("unchecked")
