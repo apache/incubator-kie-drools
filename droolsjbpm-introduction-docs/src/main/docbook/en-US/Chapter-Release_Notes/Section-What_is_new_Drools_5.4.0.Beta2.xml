@@ -12,15 +12,15 @@
     <section>
       <title>Guvnor requirements change</title>
 
-      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM will still run on Java 5.
-      Guvnor 5.3.x hotfixes will still run on Java 5 too.</para>
+      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM will still run on Java 5. Guvnor 5.3.x
+      hotfixes will still run on Java 5 too.</para>
     </section>
 
     <section>
       <title>Guvnor configuration change</title>
 
-      <para>Any custom configuration in the guvnor war in <filename>WEB-INF/components.xml</filename>
-      must now happen in <filename>WEB-INF/beans.xml</filename>.</para>
+      <para>Any custom configuration in the guvnor war in <filename>WEB-INF/components.xml</filename> must now happen in
+      <filename>WEB-INF/beans.xml</filename>.</para>
     </section>
 
     <section>
@@ -104,7 +104,47 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-columns.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Decision table \ Template data copy and paste rows</title>
+
+      <para>You can now copy and paste rows in both the guided Decision Table and Template Data editors.</para>
+
+      <para>Simply right-click a row in the tables' left hand-side selector column and choose the appropriate
+      operation.</para>
+
+      <figure>
+        <title>Copying a row</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-copy-paste-rows.png" format="PNG"
                        scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>BRL Editor - Remove Constraint\Action Value definition</title>
+
+      <para>When creating new constraints or actions in the BRL guided (rule) editor it is simple to define a value as
+      literal, or formula or expression. However, up until now, changing the value type required deletion of the whole
+      constraint or action. This release brings the ability to remove the value definition thus enabling you to change a
+      literal value to a formula etc without needing to delete the whole constraint or action.</para>
+
+      <figure>
+        <title>Copying a row</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/brl-remove-value-types.png" format="PNG"
+                       scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
