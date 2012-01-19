@@ -488,20 +488,16 @@ editing processes.</para>
     <section>
       <title>Using a different database</title>
       
-      <para>At the moment, I have to admit that I haven't gotten the demo to work with other 
-      databases, although applying the notes below to the steps above should work. [01/2012]
-      </para>
-
       <para>If you decide to use a different database with this demo, you need to remember 
       the following when going through the steps above:
         <itemizedlist>
-          <listitem>Change the JDBC URLs, usernames and passwords, to match your database information in 
-          the configuration files mentioned above. 
-          </listitem><listitem>You will need to download the correct driver jar for your database 
+          <listitem>Change the JDBC URLs, usernames and passwords, and Hibernate dialect lines 
+          to match your database information in the configuration files mentioned above.</listitem>
+          <listitem>You will need to download the correct driver jar for your database 
           and add it to the <code>db/drivers</code> directory. If you're using JBoss AS 5, 
           the installer ant script will make sure that your downloaded driver is installed 
-          in the server. If you're using JBoss AS 7, see the next step.
-          </listitem><listitem>In order make sure your driver will be correctly installed in 
+          in the server. If you're using JBoss AS 7, see the next step.</listitem>
+          <listitem>In order make sure your driver will be correctly installed in 
           the JBoss AS 7 server, you can do one of two things. Both ways are explained 
           <ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7">here</ulink>.
             <itemizedlist>
@@ -522,39 +518,50 @@ editing processes.</para>
               <listitem>Change the <code>db.driver.jar.name</code> property in <code>build.xml</code> 
               to the name of the downloaded jdbc driver jar you placed in <code>db/drivers</code>.
               For example: 
-              <programlisting>  &lt;property name="db.driver.jar.name" value="<emphasis role="bold">ojdbc5.jar</emphasis>" /&gt;</programlisting>
+              <programlisting>  &lt;property name="db.driver.jar.name" value="<emphasis role="bold">postgresql-8.4-701.jdbc3.jar</emphasis>" /&gt;</programlisting>
               </listitem><listitem>Change the <code>&lt;driver&gt;</code> information in
               the <code>&lt;datasource&gt;</code> section of <code>standalone.xml</code> so 
               that it refers to the name of your driver module (see next step). For example:
-              <programlisting>&lt;driver&gt;<emphasis role="bold">oracledriver</emphasis>&lt;/driver&gt;</programlisting>
+              <programlisting>&lt;driver&gt;<emphasis role="bold">postgresql</emphasis>&lt;/driver&gt;</programlisting>
               </listitem><listitem>Further on in <code>standalone.xml</code> is the 
               <code>&lt;drivers&gt;</code> section of the 
               <code>&lt;datasources&gt;</code> (note the plural: driver<emphasis>s</emphasis>, 
-              datasource<emphasis>s</emphasis>). Change the name of the driver to match the 
-              name in the last step, and add your own appropriate value (doesn't matter what 
-              it is) to modules. Also fill in the correct name of the XA datasource class to 
-              use. For example:
+              datasource<emphasis>s</emphasis>). We need to do the following with this file:
+              <itemizedlist>
+                <listitem>Change the name of the driver to match the name in the last step,</listitem> 
+                <listitem>Give an appropriate name to the module,</listitem>
+                <listitem>And fill in the correct name of the XA datasource class to use.</listitem>
+              </itemizedlist>
+              For example:
               <programlisting>    &lt;drivers&gt;
-        &lt;driver name="<emphasis role="bold">oracledriver</emphasis>" module="<emphasis role="bold">oracle.jdbc</emphasis>"&gt;
-            &lt;xa-datasource-class&gt;<emphasis role="bold">oracle.jdbc.xa.client.OracleXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+        &lt;driver name="<emphasis role="bold">postgresql</emphasis>" module="<emphasis role="bold">org.postgresql</emphasis>"&gt;
+            &lt;xa-datasource-class&gt;<emphasis role="bold">org.postgresql.xa.PGXADataSource</emphasis>&lt;/xa-datasource-class&gt;
         &lt;/driver&gt;
     &lt;/drivers&gt;</programlisting>
               </listitem><listitem>Change the <code>db.driver.module.prefix</code> property 
               in <code>build.xml</code> to the same <quote>value</quote> you used for the module name 
               in <code>standalone.xml</code>. In the example above, I used 
-              <quote><code>oracle.jdbc</code></quote> which means that I should then use
-              <code>oracle/jdbc</code> for the <code>db.driver.module.prefix</code> property. For example: 
-              <programlisting>  &lt;property name="db.driver.module.prefix" value="<emphasis role="bold">oracle/jdbc</emphasis>" /&gt;</programlisting>
+              <quote><code>org.postgresql</code></quote> which means that I should then use
+              <code>org/postgresql</code> for the <code>db.driver.module.prefix</code> property. For example: 
+              <programlisting>  &lt;property name="db.driver.module.prefix" value="<emphasis role="bold">org/postgresql</emphasis>" /&gt;</programlisting>
               </listitem><listitem>Lastly, you'll have to modify the <code>db/driver_jar_module.xml</code>
-              file. Change the name of the module jar to the name of the JDBC driver jar that you downloaded. 
-              The original lines look like this: 
-              <programlisting>  &lt;resources&gt;
-    &lt;resource-root path="mysql-connector-java.jar"/&gt;
-  &lt;/resources&gt;</programlisting>
+              file. We need to
+              <itemizedlist>
+                <listitem>Change the name of the <emphasis>module</emphasis> to match the 
+                          <code>db.driver.module.prefix</code> property above</listitem>
+                <listitem>Change the name of the module resource to the name of the JDBC driver 
+                          jar that you downloaded.</listitem>
+              </itemizedlist>
+              The top of the original file looks like this: 
+              <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="com.mysql"&gt;
+   &lt;resources&gt;
+     &lt;resource-root path="mysql-connector-java.jar"/&gt;
+   &lt;/resources&gt;</programlisting>
               Change those lines to look like this, for example: 
-              <programlisting>  &lt;resources&gt;
-    &lt;resource-root path="<emphasis role="bold">ojdbc5.jar</emphasis>"/&gt;
-  &lt;/resources&gt;</programlisting>
+              <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="<emphasis role="bold">org.postgresql</emphasis>"&gt;
+   &lt;resources&gt;
+     &lt;resource-root path="<emphasis role="bold">postgresql-8.4-701.jdbc3.jar</emphasis>"/&gt;
+   &lt;/resources&gt;</programlisting>
               </listitem>
             </itemizedlist>
           </listitem>

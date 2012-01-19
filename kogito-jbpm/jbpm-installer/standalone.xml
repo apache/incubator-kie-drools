@@ -106,14 +106,26 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
-                <datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" use-java-context="true">
+                <datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="H2DS" enabled="true" jta="true" use-java-context="true" use-ccm="true">
                     <connection-url>jdbc:h2:tcp://localhost/runtime/jbpm</connection-url>
                     <driver>h2</driver>
-                    <pool></pool>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>4</max-pool-size>
+                        <prefill>false</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
                     <security>
                        <user-name>sa</user-name>
                        <password></password>
                     </security>
+                    <validation>
+                       <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                       <validate-on-match>false</validate-on-match>
+                       <background-validation>false</background-validation>
+                       <useFastFail>false</useFastFail>
+                    </validation>
                 </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
