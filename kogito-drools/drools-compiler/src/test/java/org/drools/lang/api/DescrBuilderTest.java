@@ -32,6 +32,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
 
 /**
@@ -279,6 +280,33 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         ksession.insert( new StockTick(2, "RHT", 150, 1 ) );
         rules = ksession.fireAllRules();
         assertEquals( 1, rules );
+    }
+    
+    @Test
+    public void testFromEntryPoint() throws InstantiationException,
+                                            IllegalAccessException {
+        PackageDescr pkg = DescrFactory
+                .newPackage().name("org.drools")
+                .newRule().name("from rule")
+                    .lhs()
+                        .pattern("String").id("s", false).from().entryPoint("EventStream").end()
+                    .end()
+                .rhs("//System.out.println(s);")
+                .end().getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
+        ep.insert( "Hello World!" );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+
     }
     
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
