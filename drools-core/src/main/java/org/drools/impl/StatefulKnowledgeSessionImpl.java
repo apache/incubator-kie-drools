@@ -67,8 +67,10 @@ import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
+import org.drools.reteoo.DisposedReteooWorkingMemory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.runtime.Calendars;
@@ -102,7 +104,7 @@ public class StatefulKnowledgeSessionImpl
     InternalWorkingMemoryEntryPoint,
     InternalKnowledgeRuntime {
 
-    public ReteooWorkingMemory session;
+    public ReteooWorkingMemoryInterface session;
     public KnowledgeBase   kbase;
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
@@ -249,6 +251,7 @@ public class StatefulKnowledgeSessionImpl
 
     public void dispose() {
         this.session.dispose();
+        this.session = DisposedReteooWorkingMemory.INSTANCE;
     }
 
     public FactHandle insert(Object object) {

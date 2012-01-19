@@ -32,9 +32,9 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.VariableConstraint;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.junit.Test;
 
 
@@ -84,7 +84,7 @@ public class IndexingTest {
             }
         }
         
-        ReteooWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
         JoinNode j2 = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
@@ -200,7 +200,7 @@ public class IndexingTest {
             }
         }    
         
-        ReteooWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
         AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];

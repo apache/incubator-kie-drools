@@ -46,6 +46,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -1705,7 +1706,7 @@ public class BackwardChainingTest {
         NotNode notNode = (NotNode) riaNode3.getSinkPropagator().getSinks()[0];
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ReteooWorkingMemory wm = ((StatefulKnowledgeSessionImpl) ksession).session;
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl) ksession).session;
         AccumulateMemory accMemory = (AccumulateMemory) wm.getNodeMemory( accNode );
         BetaMemory existsMemory = (BetaMemory) wm.getNodeMemory( existsNode );
         FromMemory fromMemory = (FromMemory) wm.getNodeMemory( fromNode );

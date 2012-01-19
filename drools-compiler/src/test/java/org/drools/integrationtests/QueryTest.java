@@ -49,7 +49,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -538,7 +538,7 @@ public class QueryTest {
 
         StatefulKnowledgeSessionImpl sessionImpl = (StatefulKnowledgeSessionImpl) ksession;
 
-        ReteooWorkingMemory reteWorkingMemory = sessionImpl.session;
+        ReteooWorkingMemoryInterface reteWorkingMemory = sessionImpl.session;
         AbstractWorkingMemory abstractWorkingMemory = (AbstractWorkingMemory) reteWorkingMemory;
 
         InternalRuleBase ruleBase = (InternalRuleBase) abstractWorkingMemory.getRuleBase();
