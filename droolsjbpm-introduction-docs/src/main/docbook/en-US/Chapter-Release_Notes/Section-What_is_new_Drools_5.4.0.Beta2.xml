@@ -10,10 +10,24 @@
     <title>Guvnor</title>
 
     <section>
+      <title>Guvnor requirements change</title>
+
+      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM will still run on Java 5.
+      Guvnor 5.3.x hotfixes will still run on Java 5 too.</para>
+    </section>
+
+    <section>
+      <title>Guvnor configuration change</title>
+
+      <para>Any custom configuration in the guvnor war in <filename>WEB-INF/components.xml</filename>
+      must now happen in <filename>WEB-INF/beans.xml</filename>.</para>
+    </section>
+
+    <section>
       <title>Decision table analysis</title>
 
       <para>On the bottom of Web decision tables, the button <guilabel>Analyze...</guilabel> that checks for issues in
-      your decision table, now also checks for 2 new detection.</para>
+      your decision table, now also checks for 2 new detections:</para>
 
       <section>
         <title>Duplicate match detection</title>
@@ -29,7 +43,7 @@
         <title>Multiple values for one action detection</title>
 
         <para>A multiple values for one action match is 1 row in a decision table who's actions contradict itself. This
-        is a common problem in limited entry tables.</para>
+        is a common problem in limited entry tables, but rare in non-limited entry tables.</para>
 
         <para>For example: a person below 40 has to pay the standard fee (400) and also has to pay the youngster fee
         (200). Since fee can only be set once, that's a problem.</para>
