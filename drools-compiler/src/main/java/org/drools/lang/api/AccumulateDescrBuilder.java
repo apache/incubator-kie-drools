@@ -58,7 +58,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * 
      * @return itself, so that it can be used as a fluent API
      */
-    public AccumulateDescrBuilder<P> function( String name, String bind, String[] parameters);
+    public AccumulateDescrBuilder<P> function( String name, String bind, String... parameters);
     
     /**
      * For accumulate CEs that use custom code blocks, this call
@@ -123,8 +123,16 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
      * @return itself, so that it can be used as a fluent API
      */
     public AccumulateDescrBuilder<P> result( String expr );
+    
+    /**
+     * Sets this accumulate CE as a multi-function accumulate (true)
+     * or as a single function accumulate (false).
+     * 
+     * @param b true if multi-function accumulate
+     *  
+     * @return itself, so that it can be used as a fluent API
+     */
     public AccumulateDescrBuilder<P> multiFunction( boolean b );
     
     public P end();
-
 }
