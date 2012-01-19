@@ -548,7 +548,6 @@ public class PatternBuilder
                 continue;
             }
 
-            boolean simple = false;
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
             String expr = new MVELDumper().dump( d,
                                                  mvelCtx );
@@ -574,7 +573,7 @@ public class PatternBuilder
 
             // check if it is a simple expression or not
             RelationalExprDescr relDescr = d instanceof RelationalExprDescr ? (RelationalExprDescr) d : null;
-            simple = isSimpleExpr( relDescr );
+            boolean simple = isSimpleExpr( relDescr );
 
             if ( simple && // simple means also relDescr is != null
                  !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&

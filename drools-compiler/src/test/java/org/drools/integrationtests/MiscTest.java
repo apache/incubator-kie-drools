@@ -9669,4 +9669,84 @@ public class MiscTest extends CommonTestMethodBase {
             this.s = s;
         }
     }
+
+    @Test @Ignore // TODO remove @Ignore after release of 5.4.beta2
+    public void testUnwantedCoersion() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.MiscTest.InnerBean;\n" +
+                "import org.drools.integrationtests.MiscTest.OuterBean;\n" +
+                "rule \"Test.Code One\"\n" +
+                "when\n" +
+                "   OuterBean($code : inner.code in (\"1.50\", \"2.50\"))\n" +
+                "then\n" +
+                "   System.out.println(\"Code compared values: 1.50, 2.50 - actual code value: \" + $code);\n" +
+                "end\n" +
+                "rule \"Test.Code Two\"\n" +
+                "when\n" +
+                "   OuterBean($code : inner.code in (\"1.5\", \"2.5\"))\n" +
+                "then\n" +
+                "   System.out.println(\"Code compared values: 1.5, 2.5 - actual code value: \" + $code);\n" +
+                "end\n" +
+                "rule \"Big Test ID One\"\n" +
+                "when\n" +
+                "   OuterBean($id : id in (\"3.5\", \"4.5\"))\n" +
+                "then\n" +
+                "   System.out.println(\"ID compared values: 3.5, 4.5 - actual ID value: \" + $id);\n" +
+                "end\n" +
+                "rule \"Big Test ID Two\"\n" +
+                "when\n" +
+                "   OuterBean($id : id in ( \"3.0\", \"4.0\"))\n" +
+                "then\n" +
+                "   System.out.println(\"ID compared values: 3.0, 4.0 - actual ID value: \" + $id);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        InnerBean innerTest = new InnerBean();
+        innerTest.setCode("1.500");
+        ksession.insert(innerTest);
+
+        OuterBean outerTest = new OuterBean();
+        outerTest.setId("3");
+        outerTest.setInner(innerTest);
+        ksession.insert(outerTest);
+
+        OuterBean outerTest2 = new OuterBean();
+        outerTest2.setId("3.0");
+        outerTest2.setInner(innerTest);
+        ksession.insert(outerTest2);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    public static class InnerBean {
+        private String code;
+        public String getCode() {
+            return code;
+        }
+        public void setCode(String code) {
+            this.code = code;
+        }
+    }
+
+    public static class OuterBean {
+        private InnerBean inner;
+        private String id;
+
+        public InnerBean getInner() {
+            return inner;
+        }
+        public void setInner(InnerBean inner) {
+            this.inner = inner;
+        }
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
 }

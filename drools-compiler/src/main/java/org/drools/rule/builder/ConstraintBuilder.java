@@ -44,6 +44,7 @@ public class ConstraintBuilder {
                 add(">=");
                 add("<");
                 add("<=");
+                add("in");
                 add("str");
                 add("contains");
                 add("matches");
