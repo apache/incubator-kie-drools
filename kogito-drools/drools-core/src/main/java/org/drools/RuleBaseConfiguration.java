@@ -100,8 +100,6 @@ import org.mvel2.MVEL;
  * drools.consequenceExceptionHandler = &lt;qualified class name&gt;
  * drools.ruleBaseUpdateHandler = &lt;qualified class name&gt;
  * drools.sessionClock = &lt;qualified class name&gt;
- * drools.maxThreads = &lt;-1|1..n&gt;
- * drools.multithreadEvaluation = &lt;true|false&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
  * drools.lrUnlinkingEnabled = &lt;true|false&gt; 
@@ -671,6 +669,9 @@ public class RuleBaseConfiguration
      */
     public void setMultithreadEvaluation(boolean enableMultithread) {
         checkCanChange();
+        if( enableMultithread ) {
+            throw new IllegalArgumentException( "Multithread mode is currently not supported. Please disable it." );
+        }
         this.multithread = enableMultithread;
         if (multithread && isLRUnlinkingEnabled()) {
             throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
