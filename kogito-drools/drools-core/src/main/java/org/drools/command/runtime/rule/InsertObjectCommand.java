@@ -30,7 +30,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
@@ -86,7 +86,7 @@ public class InsertObjectCommand
             factHandle = ksession.getWorkingMemoryEntryPoint( this.entryPoint ).insert( object );
         }
         
-        ReteooWorkingMemory session = ((StatefulKnowledgeSessionImpl)ksession).session;
+        ReteooWorkingMemoryInterface session = ((StatefulKnowledgeSessionImpl)ksession).session;
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {

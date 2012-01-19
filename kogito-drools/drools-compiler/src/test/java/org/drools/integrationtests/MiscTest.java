@@ -5551,7 +5551,6 @@ public class MiscTest extends CommonTestMethodBase {
                       list.size() );
         assertEquals( "ackbar",
                       list.get( 0 ) );
-        ksession.retract( ph );
     }
 
     @Test
@@ -9463,6 +9462,35 @@ public class MiscTest extends CommonTestMethodBase {
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
         ksession.dispose();
+    }
+
+    @Test 
+    public void testDispose() throws Exception {
+        StringBuilder rule = new StringBuilder();
+        rule.append("package org.drools\n");
+        rule.append("rule X\n");
+        rule.append("when\n");
+        rule.append("    Message()\n");
+        rule.append("then\n");
+        rule.append("end\n");
+
+        //building stuff
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule.toString() );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        ksession.insert(new Message("test"));
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+        
+        ksession.dispose();
+        
+        try {
+            // the following should raise an IllegalStateException as the session was already disposed
+            ksession.fireAllRules();
+            fail("An IllegallStateException should have been raised as the session was disposed before the method call.");
+        } catch (IllegalStateException ise ) {
+            // success
+        }
     }
 
     @Test 

@@ -43,6 +43,7 @@ import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Rule;
@@ -50,7 +51,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class SessionInspector {
 
-    private ReteooWorkingMemory                                    session;
+    private ReteooWorkingMemoryInterface                           session;
     private Map<Class< ? extends NetworkNode>, NetworkNodeVisitor> visitors;
 
     // default initializer

@@ -83,7 +83,7 @@ import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Declaration;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.NodeInstance;
@@ -146,7 +146,7 @@ public abstract class WorkingMemoryLogger
             ((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
             ((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
-            ReteooWorkingMemory eventManager =
+            ReteooWorkingMemoryInterface eventManager =
                 ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
             eventManager.addEventListener( (WorkingMemoryEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );

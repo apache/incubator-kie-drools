@@ -21,11 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.QueryResults;
@@ -45,13 +43,11 @@ import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.QueryElementFactHandle;
 import org.drools.common.TupleStartEqualsConstraint;
-import org.drools.common.WorkingMemoryAction;
 import org.drools.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.RightTupleList;
-import org.drools.definition.rule.Query;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
@@ -61,17 +57,13 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.AccumulateNode.ActivitySource;
-import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
-import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.rule.LiveQuery;
-import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.LiveQueryImpl;
 import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
@@ -81,9 +73,7 @@ import org.drools.spi.PropagationContext;
 /**
  * Implementation of <code>WorkingMemory</code>.
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory {
-
-    private static final long serialVersionUID = 510l;
+public class ReteooWorkingMemory extends AbstractWorkingMemory implements ReteooWorkingMemoryInterface {
 
     public ReteooWorkingMemory() {
         super();
