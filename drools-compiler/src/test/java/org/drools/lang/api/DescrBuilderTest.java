@@ -246,6 +246,58 @@ public class DescrBuilderTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testRuleRHSOptional() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "r1" )
+                    .lhs()
+                        .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
+                    .end()
+                .end()
+                .getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+    
+    @Test
+    public void testRuleRHSComment() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "r1" )
+                    .lhs()
+                        .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
+                    .end()
+                    .rhs( "// some comment" )
+                .end()
+                .getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+    
+    
+    @Test
     public void testRule() throws InstantiationException,
                                        IllegalAccessException {
         PackageDescr pkg = DescrFactory.newPackage()
