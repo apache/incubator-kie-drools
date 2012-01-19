@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.StockTick;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -274,7 +275,7 @@ public class DescrBuilderTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0, rules );
@@ -304,7 +305,7 @@ public class DescrBuilderTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
