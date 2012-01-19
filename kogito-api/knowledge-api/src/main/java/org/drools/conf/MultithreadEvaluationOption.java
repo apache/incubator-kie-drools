@@ -20,9 +20,13 @@ package org.drools.conf;
 /**
  * An Enum for multithread evaluation option.
  * 
+ * IMPORTANT: this option is currently not supported. It might be enabled again in the future.
+ * 
  * drools.multithreadEvaluation = &lt;true|false&gt;
  * 
  * DEFAULT = false
+ * 
+ * @deprecated
  */
 public enum MultithreadEvaluationOption implements SingleValueKnowledgeBaseOption {
     
