@@ -35,6 +35,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
 
 /**
@@ -247,6 +248,70 @@ public class DescrBuilderTest {
 
     }
 
+    @Test
+    public void testRule() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "r1" )
+                    .lhs()
+                        .and()
+                            .or()
+                                .pattern( "StockTick" ).constraint( "price > 100" ).end()
+                                .pattern( "StockTick" ).constraint( "price < 10" ).end()
+                            .end()
+                            .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
+                        .end()
+                    .end()
+                    .rhs( "    System.out.println(\"foo\");\n" )
+                .end()
+                .getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 0, rules );
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new StockTick(2, "RHT", 150, 1 ) );
+        rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+    
+    @Test
+    public void testFromEntryPoint() throws InstantiationException,
+                                            IllegalAccessException {
+        PackageDescr pkg = DescrFactory
+                .newPackage().name("org.drools")
+                .newRule().name("from rule")
+                    .lhs()
+                        .pattern("String").id("s", false).from().entryPoint("EventStream").end()
+                    .end()
+                .rhs("//System.out.println(s);")
+                .end().getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "EventStream" );
+        ep.insert( "Hello World!" );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+
+    }
+    
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),

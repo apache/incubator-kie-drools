@@ -42,7 +42,7 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?, ?>>
     public PatternDescrBuilder<P> constraint( String constraint, boolean positional );
     public PatternDescrBuilder<P> bind( String var, String target, boolean isUnification );
     
-    public SourceDescrBuilder<?> from();
+    public SourceDescrBuilder<PatternDescrBuilder<P>> from();
     
     public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
 
