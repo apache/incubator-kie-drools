@@ -400,26 +400,32 @@ public class KnowledgeBaseConfigurationTest {
     
     @Test
     public void testMultithreadEvaluationConfiguration() {
-        // setting the option using the type safe method
-        config.setOption( MultithreadEvaluationOption.YES );
+        try {
+            // setting the option using the type safe method
+            config.setOption( MultithreadEvaluationOption.YES );
+            
+            fail( "An exception should have been raised as this configuration option is no longer supported. ");
 
-        // checking the type safe getOption() method
-        assertEquals( MultithreadEvaluationOption.YES,
-                      config.getOption( MultithreadEvaluationOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "true",
-                      config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
+            // checking the type safe getOption() method
+            assertEquals( MultithreadEvaluationOption.YES,
+                          config.getOption( MultithreadEvaluationOption.class ) );
+            // checking the string based getProperty() method
+            assertEquals( "true",
+                          config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
 
-        // setting the options using the string based setProperty() method
-        config.setProperty( MultithreadEvaluationOption.PROPERTY_NAME,
-                            "false" );
-        
-        // checking the type safe getOption() method
-        assertEquals( MultithreadEvaluationOption.NO,
-                      config.getOption( MultithreadEvaluationOption.class ) );
-        // checking the string based getProperty() method
-        assertEquals( "false",
-                      config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
+            // setting the options using the string based setProperty() method
+            config.setProperty( MultithreadEvaluationOption.PROPERTY_NAME,
+                                "false" );
+            
+            // checking the type safe getOption() method
+            assertEquals( MultithreadEvaluationOption.NO,
+                          config.getOption( MultithreadEvaluationOption.class ) );
+            // checking the string based getProperty() method
+            assertEquals( "false",
+                          config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
+        } catch( Exception ex ) {
+            // succeed, as this configuration option is not currently supported
+        }
     }
     
     @Test
