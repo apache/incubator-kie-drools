@@ -57,8 +57,6 @@ import org.drools.conf.KnowledgeBaseOptionsConfiguration;
  * <li>drools.indexLeftBetaMemory = &lt;true/false&gt;</li>
  * <li>drools.indexRightBetaMemory = &lt;true/false&gt;</li>
  * <li>drools.consequenceExceptionHandler = &lt;qualified class name&gt;</li>
- * <li>drools.maxThreads = &lt;-1|1..n&gt;</li>
- * <li>drools.multithreadEvaluation = &lt;true|false&gt;</li>
  * <li>drools.mbeans = &lt;enabled|disabled&gt;</li>
  * </ul>
  * </p>
