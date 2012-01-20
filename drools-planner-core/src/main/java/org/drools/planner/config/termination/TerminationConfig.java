@@ -177,7 +177,7 @@ public class TerminationConfig implements Cloneable {
             termination.setMaximumUnimprovedStepCount(maximumUnimprovedStepCount);
             terminationList.add(termination);
         }
-        if (terminationConfigList != null && terminationConfigList.isEmpty()) {
+        if (terminationConfigList != null && !terminationConfigList.isEmpty()) {
             for (TerminationConfig terminationConfig : terminationConfigList) {
                 Termination termination = terminationConfig.buildTermination(scoreDefinition);
                 if (termination != null) {
