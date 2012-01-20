@@ -306,8 +306,8 @@ public class StatefulKnowledgeSessionUtil {
         if ("Mina".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
             CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
             handler.setConnection(
-                    consoleProperties.getProperty("jbpm.console.task.service.host"),
-                    new Integer(consoleProperties.getProperty("jbpm.console.task.service.port")));
+                    consoleProperties.getProperty("jbpm.console.task.service.host").trim(),
+                    new Integer(consoleProperties.getProperty("jbpm.console.task.service.port").trim()));
             ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler);
             handler.connect();
         } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
