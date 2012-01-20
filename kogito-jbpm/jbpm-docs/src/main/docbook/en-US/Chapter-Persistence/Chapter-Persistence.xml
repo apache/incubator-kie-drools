@@ -59,36 +59,109 @@
     <section>
       <title>Binary Persistence</title>
 
-    <para>jBPM provides a binary persistence mechanism that allows
-    you to save the state of a process instance as a binary dataset.  This
-    way, the state of all running process instances can always be stored in
-    a persistent location.  Note that these binary datasets usually are
-    relatively small, as they only contain the minimal execution state of
-    the process instance.  For a simple process instance, this usually
-    contains one or a few node instances, i.e., any node that is currently
-    executing, and, possibly, some variable values.  The process instance is transformed
-    into a binary blob (for performance reasons, using a custom serialization
-    mechanism, not using normal Java serialization).  This blob is then stored,
-    alongside other metadata about this process instance (like for example the
-    process instance id, process id, start date, etc.).</para>
-    
-    <para>The database schema if you store this information into a database looks
-    like this:</para>
-    
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" width="70%"
-                     fileref="images/Chapter-Persistence/runtime_db.png" format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
+    <para>jBPM uses a binary persistence mechanism, otherwise known
+    as marshalling, which converts the state of the process instance
+    into a binary dataset. When you use persistence with jBPM, this 
+    mechanism is used to save or retrieve the process instance state 
+    from the database. The same mechanism is also applied to the 
+    session state and any work item states.</para> 
 
-    <para>Apart from the process instance state, the session itself can also store
-    some state, like for example timers, or if you are using business rules the session
-    data that the rules are evaluated over.  This session state is stored separately as
-    a binary blob, along with the id of the session and some metadata.  You always restore
-    session state by reloading the session with the given id.  The session id can be retrieved
-    using <code>ksession.getId()</code>.</para>
+    <para>When the process instance state is persisted, two things
+    happen: 
+    <itemizedlist>
+      <listitem>First, the process instance information is transformed 
+      into a binary blob. For performance reasons, a custom serialization 
+      mechanism is used and not normal Java serialization.</listitem>
+      <listitem>This blob is then stored, alongside other metadata about 
+      this process instance. This metadata includes, among other things, 
+      the process instance id, process id, and the process start date.</listitem>
+    </itemizedlist>
+    </para>
+
+    <para>Apart from the process instance state, the session itself can 
+    also store some state, such as the state of timer jobs, or the session 
+    data that the any business rules would be evaluated over.  
+    This session state is stored separately as a binary blob, along with 
+    the id of the session and some metadata. You can always restore session 
+    state by reloading the session with the given id.  The session id can 
+    be retrieved using <code>ksession.getId()</code>.</para>
+
+    <para>Note that the process instance binary datasets are usually 
+    relatively small, as they only contain the minimal execution state 
+    of the process instance.  For a simple process instance, this usually 
+    contains one or a few node instances, i.e., any node that is currently 
+    executing, and any existing variable values.</para>
     
+    <para>As a result of jBPM using marshalling, the data model is both 
+    simple and small:</para>
+
+    <!-- width && scalefit for pdf's -->
+    <ulink url="images/Chapter-Persistence/jbpm_schema.png">
+      <figure>
+        <title>jBPM data model</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Persistence/jbpm_schema_doc.png" format="PNG" 
+                       align="center" width="100%" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+
+    <para>The <code>sessioninfo</code> entity contains the state of the 
+    (knowledge) session in which the jBPM process instance is running. 
+    This entity contains the following fields:
+      <itemizedlist>
+        <listitem><code>id</code>: the primary key</listitem>
+        <listitem><code>lastmodificationdate</code>: the last time that 
+        the entity was saved to the database</listitem>
+        <listitem><code>rulesbytearray</code>: this is the binary dataset 
+        containing the state of the session</listitem>
+        <listitem><code>startdate</code>: The start time of the session 
+        </listitem>
+        <listitem><code>optlock</code>: the version field that serves as 
+        its optimistic lock value</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>The <code>processinstanceinfo</code> entity contains the state 
+    of the jBPM process instance, including the following fields:
+      <itemizedlist>
+        <listitem><code>instanceid</code>: the primary key</listitem>
+        <listitem><code>lastmodificationdate</code>: the last time that 
+        the entity was saved to the database</listitem>
+        <listitem><code>lastreaddate</code>: the last time that 
+        the entity was retrieved (read) from the database</listitem>
+        <listitem><code>processid</code>: the name (id) of the process
+        </listitem>
+        <listitem><code>processinstancebytearray</code>: this is the binary 
+        dataset containing the state of the process instance</listitem>
+        <listitem><code>startdate</code>: The start time of the process
+        </listitem>
+        <listitem><code>state</code>: an integer representing the state 
+        of the process instance</listitem>
+        <listitem><code>optlock</code>: the version field that serves as 
+        its optimistic lock value</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>The <code>workiteminfo</code> entity contains the state of a
+    work item, including the following fields:
+      <itemizedlist>
+        <listitem><code>workitemid</code>: the primary key</listitem>
+        <listitem><code>name</code>: the name of the work item</listitem>
+        <listitem><code>processinstanceid</code>: the (primary key) id
+        of the process. There is not a foreign key constraint on this 
+        field</listitem>
+        <listitem><code>state</code>: an integer representing the state 
+        of the work item</listitem>
+        <listitem><code>optlock</code>: the version field that serves as 
+        its optimistic lock value</listitem>
+        <listitem><code>workitembytearay</code>: this is the binary dataset 
+        containing the state of the work item</listitem>
+      </itemizedlist>
+    </para>
+
     </section>
 
     <section>
@@ -451,69 +524,117 @@ ut.commit();</programlisting>
     in production, we recommend using a knowledge repository that (logically)
     centralizes your knowledge in one or more knowledge repositories.</para>
 
-    <para>Guvnor is a Drools sub-project that provides exactly that. It consists of a
-    repository for storing different kinds of knowledge, not only process
-    definitions but also rules, object models, etc. It allows easy retrieval of
-    this knowledge using WebDAV or by employing a knowledge agent that
-    automatically downloads the information from Guvnor when creating a
-    knowledge base, and provides a web application that allows business users
-    to view and possibly update the information in the knowledge repository.
-    Check out the Drools Guvnor documentation for more information on how to
+    <para>Guvnor is a Drools sub-project that does exactly that. It 
+    consists of a repository for storing different kinds of knowledge, as 
+    well a web application that allows users to view and update the information 
+    in the repository. It not only stores process definitions but also 
+    can hold rule definitions, object models, and much more.</para>
+    
+    <para>Easy programmatic retrieval of knowledge packages is possible 
+    either using WebDAV or by using a knowledge agent. The knowledge
+    agent will automatically download the information from Guvnor, for example, 
+    during the creation of a knowledge base.</para>
+
+    <para>Check out the Drools Guvnor documentation for more information on how to
     do this.</para>
+
   </section>
 
   <section>
     <title>History Log</title>
 
-    <para>In many cases it is useful (if not necessary) to store information
-    about the execution of process instances, so that this information can
-    be used afterwards, for example, to verify what actions have been executed
-    for a particular process instance, or to monitor and analyze the efficiency
-    of a particular process.  Storing history information in the runtime
-    database is usually not a good idea, as this would result in ever-growing
-    runtime data, and monitoring and analysis queries might influence the
-    performance of your runtime engine.  That is why history information about
-    the execution of process instances is stored separately.</para>
+    <para>In many cases it will be useful (if not necessary) to store information
+    <emphasis>about</emphasis> the execution of process instances, so that 
+    this information can be used afterwards. For example, sometimes we 
+    want to verify which actions have been executed for a particular process 
+    instance, or in general, we want to be able to monitor and analyze 
+    the efficiency of a particular process.</para>
+    
+    <para>However, storing history information in the runtime database 
+    can result in the database rapidly increasing in size, not to mention 
+    the fact that monitoring and analysis queries might influence the performance 
+    of your runtime engine. This is why process execution history information 
+    can be stored separately.</para>
 
-    <para>This history log of execution information is created based on the
-    events generated by the process engine during execution.  The jBPM
-    runtime engine provides a generic mechanism to listen to different kinds
-    of events.  The necessary information can easily be extracted from these
-    events and made persistent, for example in a database.  Filters can be
-    used to only store the information you find relevant.</para>
+    <para>This history log of execution information is created based on 
+    events that the the process engine generates during execution. This is 
+    possible because the jBPM runtime engine provides a generic mechanism 
+    to listen to events. The necessary information can easily be extracted 
+    from these events and then persisted to a database. Filters can also be 
+    used to limit the scope of the logged information.</para>
 
     <section>
-      <title>Storing Process Events in a Database</title>
+      <title>The Business Activity Monitoring data model</title>
 
       <para>The jbpm-bam module contains an event listener that stores
       process-related information in a database using JPA or Hibernate directly.
-      The database contains two tables, one for process instance information
-      and one for node instance information (see the figure below):
+      The data model itself contains three entities, one for process instance 
+      information, one for node instance information, and one for (process) 
+      variable instance information (see the figure below):
       <orderedlist>
-        <listitem><emphasis>ProcessInstanceLog:</emphasis> This lists the
-        process instance id, the process (definition) id, the start date and
-        (if applicable) the end date of all process instances.
+        <listitem><emphasis>ProcessInstanceLog:</emphasis> This table contains
+        the following fields: 
+        <itemizedlist>
+          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
+          <listitem><code>end_date</code>: when applicable, the end date of the process instance</listitem>
+          <listitem><code>processinstanceid</code>: the process instance id</listitem>
+          <listitem><code>start_date</code>: the start date of the process instance</listitem>
+        </itemizedlist>
         </listitem>
+
         <listitem><emphasis>NodeInstanceLog:</emphasis> This table contains
-        more detailed information about which nodes were actually executed
-        inside each process instance.  Whenever a node instance is entered
-        from one of its incomming connections or is exited through one of
-        its outgoing connections, that information is stored in this table.
-        For this, it stores the process instance id and the process id of
-        the process instance it is being executed in, and the node
-        instance id and the corresponding node id (in the process definition)
-        of the node instance in question.  Finally, the type of event
-        (0 = enter, 1 = exit) and the date of the event is stored as well. 
+        more information about which nodes were actually executed inside 
+        each process instance.  Whenever a node instance is entered from 
+        one of its incomming connections or is exited through one of its 
+        outgoing connections, that information is stored in this table.
+
+        <itemizedlist>
+          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
+          <listitem><code>log_date</code>: the date of the event</listitem>
+          <listitem><code>nodeid</code>: the node id of the corresponding node in the process definition</listitem>
+          <listitem><code>nodeinstanceid</code>: the node instance id</listitem>
+          <listitem><code>nodename</code>: the name of the node</listitem>
+          <listitem><code>processid</code>: the id of the process that the process instance is executing</listitem>
+          <listitem><code>processinstanceid</code>: the process instance id</listitem>
+          <listitem><code>type</code>: the type of the event (0 = enter, 1 = exit)</listitem>
+        </itemizedlist>
         </listitem>
+
+        <listitem><emphasis>VariableInstanceLog:</emphasis> This table contains 
+        information about changes in variable instances. The defaul is to only
+        generate log entries when (after) a variable changes. It's also 
+        possible to log entries before the variable (value) changes. 
+        
+        <itemizedlist>
+          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
+          <listitem><code>log_date</code>: the date of the event</listitem>
+          <listitem><code>processid</code>: the id of the process that the process instance is executing</listitem>
+          <listitem><code>processinstanceid</code>: the process instance id</listitem>
+          <listitem><code>value</code>: the value of the variable at the time that the log is made</listitem>
+          <listitem><code>variableid</code>: the variable id in the process definition</listitem>
+          <listitem><code>variableinstanceid</code>: the id of the variable instance</listitem>
+        </itemizedlist>
+
+        </listitem>
+
       </orderedlist>
       </para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" width="100%"
-                     fileref="images/Chapter-Persistence/audit_db.png" format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
+      <!-- width && scalefit for pdf's -->
+      <figure>
+        <title>Business Activity Monitoring data model</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Persistence/bam_schema.png" format="PNG" 
+                       align="center" width="100%" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+  
+    </section>
+
+    <section>
+      <title>Storing Process Events in a Database</title>
 
       <para>To log process history information in a database like this, you
       need to register the logger on your session (or working memory) like

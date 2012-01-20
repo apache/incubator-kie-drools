@@ -710,8 +710,6 @@ thread.start();</programlisting>
   <section>
     <title>Human task clients</title>
 
-    <para></para>
-
     <section>
       <title>Eclipse demo task client</title>
 
@@ -746,5 +744,25 @@ thread.start();</programlisting>
     </section>
 
   </section>
+  <section>
+    <title>Human task persistence</title>
 
+    <para>The folowing entity relationship diagram (ERD) shows the persitent entities used 
+    by the Human Task service. Clicking on the image below will take you to an enlarged view 
+    of the image</para>
+
+    <!-- width && scalefit for pdf's -->
+    <ulink url="images/Chapter-HumanTasks/human_task_schema.png">
+      <figure>
+        <title>Human Task service data model</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-HumanTasks/human_task_schema_doc.png" format="PNG" 
+                       align="center" width="100%" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+
+  </section>
 </chapter>

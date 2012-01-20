@@ -998,7 +998,7 @@
     <column id="COL315" populated="true" UUID="f2f7eaae-77b7-4e1f-8b51-35d0c702db91" autoIncrement="false" defaultValue="" name="lastmodificationdate" nullable="1" physicalName="lastmodificationdate" precision="0" referenceCount="1" scale="0" source-column-ref="COL27" sourceDataTypeName="timestamp" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
      <remarks></remarks>
     </column>
-    <column id="COL316" populated="true" UUID="8bf9c749-58ea-4312-b920-8b1ba6e43293" autoIncrement="false" defaultValue="" name="rulesbytearray" nullable="1" physicalName="rulesbytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL28" sourceDataTypeName="oid" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL316" populated="true" UUID="8bf9c749-58ea-4312-b920-8b1ba6e43293" autoIncrement="false" defaultValue="" name="rulesbytearray" nullable="0" physicalName="rulesbytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL28" sourceDataTypeName="oid" type="2004" userDefinedTypeUUID="5c50e616-a448-40e1-abcd-5bfc04dcc607" >
      <remarks></remarks>
     </column>
     <column id="COL317" populated="true" UUID="81fcbc34-d9eb-49b2-8c7a-b73f20bfd1d1" autoIncrement="false" defaultValue="" name="startdate" nullable="1" physicalName="startdate" precision="0" referenceCount="1" scale="0" source-column-ref="COL29" sourceDataTypeName="timestamp" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
@@ -1052,7 +1052,7 @@
     <column id="COL329" populated="true" UUID="e0ff87b5-a6fc-4415-98eb-ee55c4432086" autoIncrement="false" defaultValue="" name="processid" nullable="1" physicalName="processid" precision="255" referenceCount="1" scale="0" source-column-ref="COL16" sourceDataTypeName="varchar" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL330" populated="true" UUID="6fac909e-772b-417d-9e10-686b483931db" autoIncrement="false" defaultValue="" name="processinstancebytearray" nullable="1" physicalName="processinstancebytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL17" sourceDataTypeName="oid" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL330" populated="true" UUID="6fac909e-772b-417d-9e10-686b483931db" autoIncrement="false" defaultValue="" name="processinstancebytearray" nullable="0" physicalName="processinstancebytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL17" sourceDataTypeName="oid" type="2004" userDefinedTypeUUID="5c50e616-a448-40e1-abcd-5bfc04dcc607" >
      <remarks></remarks>
     </column>
     <column id="COL331" populated="true" UUID="f928f2e0-3aa8-45a6-be59-48e2291df26c" autoIncrement="false" defaultValue="" name="startdate" nullable="1" physicalName="startdate" precision="0" referenceCount="1" scale="0" source-column-ref="COL18" sourceDataTypeName="timestamp" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
@@ -1096,7 +1096,7 @@
     <column id="COL342" populated="true" UUID="8c0c537f-c4f7-494d-a6a5-df5c32b34b9e" autoIncrement="false" defaultValue="" name="optlock" nullable="1" physicalName="optlock" precision="0" referenceCount="1" scale="0" source-column-ref="COL41" sourceDataTypeName="int4" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
      <remarks></remarks>
     </column>
-    <column id="COL343" populated="true" UUID="e9a67780-de59-4bb4-92bf-ccd32414f3c1" autoIncrement="false" defaultValue="" name="workitembytearray" nullable="1" physicalName="workitembytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL42" sourceDataTypeName="oid" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
+    <column id="COL343" populated="true" UUID="e9a67780-de59-4bb4-92bf-ccd32414f3c1" autoIncrement="false" defaultValue="" name="workitembytearray" nullable="0" physicalName="workitembytearray" precision="0" referenceCount="1" scale="0" source-column-ref="COL42" sourceDataTypeName="oid" type="2004" userDefinedTypeUUID="5c50e616-a448-40e1-abcd-5bfc04dcc607" >
      <remarks></remarks>
     </column>
     </folder>
@@ -1120,11 +1120,11 @@
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
  <play-pen zoom="1.0" viewportX="0" viewportY="0" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
-  <table-pane table-ref="TAB313" x="82" y="67" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB321" x="426" y="193" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB325" x="82" y="193" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB336" x="82" y="378" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-link relationship-ref="REL346" pkConnection="0.19642857142857142" fkConnection="0.6212121212121212" rLineColor="0x000000" pkLabelText="" fkLabelText="" orientation="33"/>
+  <table-pane table-ref="TAB313" x="82" y="63" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB321" x="618" y="63" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB325" x="310" y="63" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB336" x="795" y="63" bgColor="0xf0f0f0" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-link relationship-ref="REL346" pkConnection="0.17857142857142858" fkConnection="0.5606060606060606" rLineColor="0x000000" pkLabelText="" fkLabelText="" orientation="33"/>
  </play-pen>
  <critic-manager>
   <critic-grouping platformType="Generic" enabled="true">
