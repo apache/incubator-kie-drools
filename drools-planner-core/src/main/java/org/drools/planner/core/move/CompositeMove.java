@@ -37,10 +37,6 @@ public class CompositeMove implements Move, TabuPropertyEnabled {
 
     protected List<Move> moveList;
 
-    public List<Move> getMoveList() {
-        return moveList;
-    }
-
     /**
      * @param moveList cannot be null
      */
