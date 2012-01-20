@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.Depot;
 import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -94,24 +95,31 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                 cityList.add(city);
             }
             travelingSalesmanTour.setCityList(cityList);
-            travelingSalesmanTour.setStartCity(cityList.get(0));
         }
 
         private void createJourneyList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
-            List<Journey> journeyList = new ArrayList<Journey>(cityList.size());
+            int depotListSize = 1;
+            List<Depot> depotList = new ArrayList<Depot>(depotListSize);
+            List<Journey> journeyList = new ArrayList<Journey>(cityList.size() - depotListSize);
             long id = 0L;
             for (City city : cityList) {
-                Journey journey = new Journey();
-                journey.setId(id);
-                id++;
-                journey.setCity(city);
-                // Notice that we leave the PlanningVariable properties on null
-                journeyList.add(journey);
-                if (city.equals(travelingSalesmanTour.getStartCity())) {
-                    travelingSalesmanTour.setStartJourney(journey);
+                if (id < depotListSize) {
+                    Depot depot = new Depot();
+                    depot.setId(0L);
+                    id++;
+                    depot.setCity(city);
+                    depotList.add(depot);
+                } else {
+                    Journey journey = new Journey();
+                    journey.setId(id);
+                    id++;
+                    journey.setCity(city);
+                    // Notice that we leave the PlanningVariable properties on null
+                    journeyList.add(journey);
                 }
             }
+            travelingSalesmanTour.setDepotList(depotList);
             travelingSalesmanTour.setJourneyList(journeyList);
         }
 

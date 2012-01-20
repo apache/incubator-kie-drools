@@ -20,21 +20,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
-import org.drools.planner.api.domain.variable.DependentPlanningVariable;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.tsp.solver.variable.PreviousJourneyListener;
 
 @PlanningEntity
 @XStreamAlias("Journey")
-public class Journey extends AbstractPersistable {
+public class Journey extends AbstractPersistable implements Terminal {
 
     private City city; // the destinationCity
     
     // Planning variables: changes during planning, between score calculations.
-    private Journey previousJourney;
-    private Journey nextJourney;
+    private Terminal previousTerminal;
 
     public City getCity() {
         return city;
@@ -44,24 +41,16 @@ public class Journey extends AbstractPersistable {
         this.city = city;
     }
 
-//    @PlanningVariable(triggerChainCorrection = true)
-    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class})
+    @PlanningVariable(triggerChainCorrection = true)
+//    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class}) TODO
     @ValueRangeFromSolutionProperty(propertyName = "journeyList")
-    public Journey getPreviousJourney() {
-        return previousJourney;
+//    @ValueRangeFromSolutionProperty(propertyName = "depotList") TODO
+    public Terminal getPreviousTerminal() {
+        return previousTerminal;
     }
 
-    public void setPreviousJourney(Journey previousJourney) {
-        this.previousJourney = previousJourney;
-    }
-
-//    @DependentPlanningVariable(master = "previousJourney", mappedBy = "previousJourney")
-    public Journey getNextJourney() {
-        return nextJourney;
-    }
-
-    public void setNextJourney(Journey nextJourney) {
-        this.nextJourney = nextJourney;
+    public void setPreviousTerminal(Terminal previousTerminal) {
+        this.previousTerminal = previousTerminal;
     }
 
     /**
@@ -72,8 +61,7 @@ public class Journey extends AbstractPersistable {
         Journey clone = new Journey();
         clone.id = id;
         clone.city = city;
-        clone.previousJourney = previousJourney;
-        clone.nextJourney = nextJourney;
+        clone.previousTerminal = previousTerminal;
         return clone;
     }
 
@@ -90,8 +78,7 @@ public class Journey extends AbstractPersistable {
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(city, other.city) // TODO performance leak: not needed?
-                    .append(previousJourney, other.previousJourney) // TODO performance leak: not needed?
-                    .append(nextJourney, other.nextJourney)
+                    .append(previousTerminal, other.previousTerminal) // TODO performance leak: not needed?
                     .isEquals();
         } else {
             return false;
@@ -107,8 +94,7 @@ public class Journey extends AbstractPersistable {
         return new HashCodeBuilder()
                 .append(id)
                 .append(city) // TODO performance leak: not needed?
-                .append(previousJourney) // TODO performance leak: not needed?
-                .append(nextJourney)
+                .append(previousTerminal) // TODO performance leak: not needed?
                 .toHashCode();
     }
 
@@ -117,8 +103,12 @@ public class Journey extends AbstractPersistable {
         return city.toString();
     }
 
-    public int getDistanceToNextJourney() {
-        return city.getDistance(nextJourney.getCity());
+    public int getDistanceToPreviousTerminal() {
+        return getDistanceTo(previousTerminal);
+    }
+
+    public int getDistanceTo(Terminal terminal) {
+        return city.getDistance(terminal.getCity());
     }
 
 }

@@ -22,6 +22,7 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.Depot;
 import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -31,13 +32,24 @@ global SimpleScoreCalculator scoreCalculator;
 // Soft constraints
 // ############################################################################
 
-rule "distance"
+rule "distanceToPreviousTerminal"
     when
-        $leftJourney : Journey($distanceToNextJourney : distanceToNextJourney)
+        $journey : Journey($distanceToPreviousTerminal : distanceToPreviousTerminal)
     then
-        insertLogical(new IntConstraintOccurrence("distance", ConstraintType.NEGATIVE_SOFT,
-                $distanceToNextJourney,
-                $leftJourney));
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousTerminal", ConstraintType.NEGATIVE_SOFT,
+                $distanceToPreviousTerminal,
+                $journey));
+end
+
+rule "distanceFromLastJourneyToDepot"
+    when
+        $journey : Journey()
+        not Journey (previousTerminal == $journey)
+        $depot : Depot()
+    then
+        insertLogical(new IntConstraintOccurrence("distanceFromLastJourneyToDepot", ConstraintType.NEGATIVE_SOFT,
+                $journey.getDistanceTo($depot),
+                $journey));
 end
 
 // ############################################################################

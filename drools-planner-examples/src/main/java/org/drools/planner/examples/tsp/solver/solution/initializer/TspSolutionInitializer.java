@@ -28,7 +28,9 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.Depot;
 import org.drools.planner.examples.tsp.domain.Journey;
+import org.drools.planner.examples.tsp.domain.Terminal;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,76 +46,70 @@ public class TspSolutionInitializer implements CustomSolverPhaseCommand {
 
     private void initializeJourneyList(SolutionDirector solutionDirector,
             TravelingSalesmanTour travelingSalesmanTour) {
-        City startCity = travelingSalesmanTour.getStartCity();
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<Journey> journeyList = createJourneyList(travelingSalesmanTour);
-        List<Journey> assignedJourneyList = null;
+        List<Depot> depotList = travelingSalesmanTour.getDepotList();
+        List<Journey> initializedJourneyList = new ArrayList<Journey>(journeyList.size());
+        List<Terminal> initializedTerminalList = new ArrayList<Terminal>(depotList.size() + journeyList.size());
+        initializedTerminalList.addAll(depotList);
         for (Journey journey : journeyList) {
-            FactHandle journeyHandle = null;
-            if (assignedJourneyList == null) {
-                assignedJourneyList = new ArrayList<Journey>(journeyList.size());
-                journey.setNextJourney(journey);
-                journey.setPreviousJourney(journey);
-                journeyHandle = workingMemory.insert(journey);
-            } else {
-                Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
-                Journey bestAfterJourney = null;
-                FactHandle bestAfterJourneyFactHandle = null;
-                Journey bestBeforeJourney = null;
-                FactHandle bestBeforeJourneyFactHandle = null;
-                for (Journey afterJourney : assignedJourneyList) {
-                    Journey beforeJourney = afterJourney.getNextJourney();
-                    FactHandle afterJourneyFactHandle = workingMemory.getFactHandle(afterJourney);
-                    FactHandle beforeJourneyFactHandle = workingMemory.getFactHandle(beforeJourney);
-                    // Do changes
-                    afterJourney.setNextJourney(journey);
-                    journey.setPreviousJourney(afterJourney);
-                    journey.setNextJourney(beforeJourney);
-                    beforeJourney.setPreviousJourney(journey);
-                    if (journeyHandle == null) {
-                        journeyHandle = workingMemory.insert(journey);
-                    } else {
-                        workingMemory.update(journeyHandle, journey);
-                    }
-                    workingMemory.update(afterJourneyFactHandle, afterJourney);
-                    workingMemory.update(beforeJourneyFactHandle, beforeJourney);
-                    // Calculate score
-                    Score score = solutionDirector.calculateScoreFromWorkingMemory();
-                    if (score.compareTo(bestScore) > 0) {
-                        bestScore = score;
-                        bestAfterJourney = afterJourney;
-                        bestAfterJourneyFactHandle = afterJourneyFactHandle;
-                        bestBeforeJourney = beforeJourney;
-                        bestBeforeJourneyFactHandle = beforeJourneyFactHandle;
-                    }
-                    // Undo changes
-                    afterJourney.setNextJourney(beforeJourney);
-                    beforeJourney.setPreviousJourney(afterJourney);
-                    workingMemory.update(afterJourneyFactHandle, afterJourney);
-                    workingMemory.update(beforeJourneyFactHandle, beforeJourney);
-                }
-                if (bestAfterJourney == null) {
-                    throw new IllegalStateException("The bestAfterJourney (" + bestAfterJourney
-                            + ") cannot be null.");
-                }
-                bestAfterJourney.setNextJourney(journey);
-                journey.setPreviousJourney(bestAfterJourney);
-                journey.setNextJourney(bestBeforeJourney);
-                bestBeforeJourney.setPreviousJourney(journey);
+            FactHandle journeyHandle = workingMemory.insert(journey);
+            Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
+            Terminal bestPreviousTerminal = null;
+            FactHandle bestPreviousTerminalFactHandle = null;
+            for (Terminal previousTerminal : initializedTerminalList) {
+                FactHandle afterJourneyFactHandle = workingMemory.getFactHandle(previousTerminal);
+                // Do changes
+                journey.setPreviousTerminal(previousTerminal);
                 workingMemory.update(journeyHandle, journey);
-                workingMemory.update(bestAfterJourneyFactHandle, bestAfterJourney);
-                workingMemory.update(bestBeforeJourneyFactHandle, bestBeforeJourney);
+                Journey chainedJourney = getChainedJourney(initializedJourneyList, previousTerminal);
+                if (chainedJourney != null) {
+                    chainedJourney.setPreviousTerminal(journey);
+                    workingMemory.update(journeyHandle, chainedJourney);
+                }
+                // Calculate score
+                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                if (score.compareTo(bestScore) > 0) {
+                    bestScore = score;
+                    bestPreviousTerminal = previousTerminal;
+                    bestPreviousTerminalFactHandle = afterJourneyFactHandle;
+                }
+                // Undo changes
+                if (chainedJourney != null) {
+                    chainedJourney.setPreviousTerminal(previousTerminal);
+                    workingMemory.update(journeyHandle, chainedJourney);
+                }
+                journey.setPreviousTerminal(null);
+                workingMemory.update(journeyHandle, journey);
             }
-            assignedJourneyList.add(journey);
-            if (journey.getCity() == startCity) {
-                travelingSalesmanTour.setStartJourney(journey);
+            if (bestPreviousTerminal == null) {
+                throw new IllegalStateException("The bestPreviousJourney (" + bestPreviousTerminal
+                        + ") cannot be null.");
             }
+            journey.setPreviousTerminal(bestPreviousTerminal);
+            workingMemory.update(journeyHandle, journey);
+            Journey chainedJourney = getChainedJourney(initializedJourneyList, bestPreviousTerminal);
+            if (chainedJourney != null) {
+                chainedJourney.setPreviousTerminal(journey);
+                workingMemory.update(journeyHandle, chainedJourney);
+            }
+            initializedJourneyList.add(journey);
+            initializedTerminalList.add(journey);
             logger.debug("    Journey ({}) initialized.", journey);
         }
         Collections.sort(journeyList, new PersistableIdComparator());
         travelingSalesmanTour.setJourneyList(journeyList);
+    }
+
+    private Journey getChainedJourney(List<Journey> initializedJourneyList, Terminal previousTerminal) {
+        for (Journey journey : initializedJourneyList) {
+            if (journey.getPreviousTerminal() == previousTerminal) {
+                return journey;
+            }
+        }
+        return null;
     }
 
     public List<Journey> createJourneyList(TravelingSalesmanTour travelingSalesmanTour) {

@@ -16,30 +16,30 @@
 
 package org.drools.planner.examples.tsp.solver.move.factory;
 
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//import org.drools.planner.core.move.Move;
+//import org.drools.planner.core.move.factory.CachedMoveFactory;
+//import org.drools.planner.core.solution.Solution;
+//import org.drools.planner.examples.tsp.domain.Journey;
+//import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+//import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
-import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.tsp.domain.Journey;
-import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
-import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
-
-public class SubTourChangeMoveFactory extends CachedMoveFactory {
-
-    public List<Move> createCachedMoveList(Solution solution) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
-        List<Move> moveList = new ArrayList<Move>();
-        List<Journey> journeyList = travelingSalesmanTour.getJourneyList();
-        for (Journey startJourney : journeyList) {
-            for (Journey endJourney : journeyList) {
-                for (Journey toAfterJourney : journeyList) {
-                    moveList.add(new SubTourChangeMove(startJourney, endJourney, toAfterJourney));
-                }
-            }
-        }
-        return moveList;
-    }
-
-}
+//public class SubTourChangeMoveFactory extends CachedMoveFactory {
+//
+//    public List<Move> createCachedMoveList(Solution solution) {
+//        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
+//        List<Move> moveList = new ArrayList<Move>();
+//        List<Journey> journeyList = travelingSalesmanTour.getJourneyList();
+//        for (Journey startJourney : journeyList) {
+//            for (Journey endJourney : journeyList) {
+//                for (Journey toAfterJourney : journeyList) {
+//                    moveList.add(new SubTourChangeMove(startJourney, endJourney, toAfterJourney));
+//                }
+//            }
+//        }
+//        return moveList;
+//    }
+//
+//}

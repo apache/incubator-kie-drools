@@ -61,61 +61,17 @@ public class TspWorldPanel extends JPanel {
         }
         g.setColor(Color.BLACK);
         for (Journey journey : travelingSalesmanTour.getJourneyList()) {
-            if (journey.getNextJourney() != null) {
-                City city1 = journey.getCity();
+            if (journey.getPreviousTerminal() != null) {
+                City city1 = journey.getPreviousTerminal().getCity();
                 int x1 = translator.translateLongitude(city1.getLongitude());
                 int y1 = translator.translateLatitude(city1.getLatitude());
-                City city2 = journey.getNextJourney().getCity();
+                City city2 = journey.getCity();
                 int x2 = translator.translateLongitude(city2.getLongitude());
                 int y2 = translator.translateLatitude(city2.getLatitude());
                 g.drawLine(x1, y1, x2, y2);
             }
         }
         repaint();
-    }
-
-    private static class LatitudeLongitudeTranslator {
-
-        private double minimumLatitude = Double.MAX_VALUE;
-        private double maximumLatitude = -Double.MAX_VALUE;
-        private double minimumLongitude = Double.MAX_VALUE;
-        private double maximumLongitude = -Double.MAX_VALUE;
-        private double latitudeLength = 0.0;
-        private double longitudeLength = 0.0;
-
-        private double width = 0.0;
-        private double height = 0.0;
-
-        public void addCoordinates(double latitude, double longitude) {
-            if (latitude < minimumLatitude) {
-                minimumLatitude = latitude;
-            }
-            if (latitude > maximumLatitude) {
-                maximumLatitude = latitude;
-            }
-            if (longitude < minimumLongitude) {
-                minimumLongitude = longitude;
-            }
-            if (longitude > maximumLongitude) {
-                maximumLongitude = longitude;
-            }
-        }
-
-        public void prepareFor(double width, double height) {
-            this.width = width;
-            this.height = height;
-            latitudeLength = maximumLatitude - minimumLatitude;
-            longitudeLength = maximumLongitude - minimumLongitude;
-        }
-
-        public int translateLongitude(double value) {
-            return (int) Math.floor((value - minimumLongitude) * width / longitudeLength);
-        }
-
-        public int translateLatitude(double value) {
-            return (int) Math.floor((maximumLatitude - value) * height / latitudeLength);
-        }
-
     }
 
     private Graphics createCanvas(double width, double height) {
@@ -135,4 +91,5 @@ public class TspWorldPanel extends JPanel {
             g.drawImage(canvas, 0, 0, this);
         }
     }
+
 }

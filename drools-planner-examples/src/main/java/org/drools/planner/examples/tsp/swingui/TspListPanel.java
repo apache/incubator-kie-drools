@@ -29,9 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.tsp.domain.Depot;
 import org.drools.planner.examples.tsp.domain.Journey;
+import org.drools.planner.examples.tsp.domain.Terminal;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
-import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -62,11 +63,11 @@ public class TspListPanel extends JPanel {
             JButton button = new JButton(new JourneyAction(journey));
             journeyPanel.add(button);
             String distanceLabelString;
-            if (journey.getNextJourney() == null) {
+            if (journey.getPreviousTerminal() == null) {
                 distanceLabelString = "Unassigned";
             } else {
-                distanceLabelString = "Distance to next: "
-                        + journey.getDistanceToNextJourney();
+                distanceLabelString = "Distance from previous: "
+                        + journey.getDistanceToPreviousTerminal();
             }
             journeyPanel.add(new JLabel(distanceLabelString));
             add(journeyPanel);
@@ -83,18 +84,23 @@ public class TspListPanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<Journey> afterJourneyList = tspPanel.getTravelingSalesmanTour().getJourneyList();
-            JComboBox afterJourneyListField = new JComboBox(afterJourneyList.toArray());
-            afterJourneyListField.setSelectedItem(journey.getNextJourney());
-            listFieldsPanel.add(afterJourneyListField);
-            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), listFieldsPanel,
-                    "Select to move after city", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                Journey toAfterJourney = (Journey) afterJourneyListField.getSelectedItem();
-                tspPanel.doMove(new SubTourChangeMove(journey, journey, toAfterJourney));
-                tspPanel.getWorkflowFrame().resetScreen();
-            }
+            JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
+//            TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
+//            JComboBox previousTerminalListField = new JComboBox();
+//            for (Terminal previousTerminal : travelingSalesmanTour.getJourneyList()) {
+//                previousTerminalListField.addItem(previousTerminal);
+//            }
+//            for (Terminal previousTerminal : travelingSalesmanTour.getDepotList()) {
+//                previousTerminalListField.addItem(previousTerminal);
+//            }
+//            previousTerminalListField.setSelectedItem(journey.getPreviousTerminal());
+//            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousTerminalListField,
+//                    "Drive here after", JOptionPane.OK_CANCEL_OPTION);
+//            if (result == JOptionPane.OK_OPTION) {
+//                Terminal toTerminal = (Terminal) previousTerminalListField.getSelectedItem();
+//                tspPanel.doMove(new SubTourChangeMove(journey, journey, toTerminal));
+//                tspPanel.getWorkflowFrame().resetScreen();
+//            }
         }
 
     }

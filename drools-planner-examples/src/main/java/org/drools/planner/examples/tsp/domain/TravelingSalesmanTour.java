@@ -35,10 +35,9 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     private String name;
     private List<City> cityList;
-    private City startCity;
+    private List<Depot> depotList;
 
     private List<Journey> journeyList;
-    private Journey startJourney;
 
     private SimpleScore score;
 
@@ -58,12 +57,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.cityList = cityList;
     }
 
-    public City getStartCity() {
-        return startCity;
+    public List<Depot> getDepotList() {
+        return depotList;
     }
 
-    public void setStartCity(City startCity) {
-        this.startCity = startCity;
+    public void setDepotList(List<Depot> depotList) {
+        this.depotList = depotList;
     }
 
     @PlanningEntityCollectionProperty
@@ -73,15 +72,6 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     public void setJourneyList(List<Journey> journeyList) {
         this.journeyList = journeyList;
-    }
-
-    // Not annotated as a planning entity because it already included in journeyList
-    public Journey getStartJourney() {
-        return startJourney;
-    }
-
-    public void setStartJourney(Journey startJourney) {
-        this.startJourney = startJourney;
     }
 
     public SimpleScore getScore() {
@@ -95,7 +85,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
-        facts.add(startCity);
+        facts.addAll(depotList);
         // Do not add the planning entity's (journeyList) because that will be done automatically
         return facts;
     }
@@ -108,7 +98,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         clone.id = id;
         clone.name = name;
         clone.cityList = cityList;
-        clone.startCity = startCity;
+        clone.depotList = depotList;
         List<Journey> clonedJourneyList = new ArrayList<Journey>(journeyList.size());
         Map<Long, Journey> idToClonedJourneyMap = new HashMap<Long, Journey>(
                 journeyList.size());
@@ -116,16 +106,14 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
             Journey clonedJourney = journey.clone();
             clonedJourneyList.add(clonedJourney);
             idToClonedJourneyMap.put(clonedJourney.getId(), clonedJourney);
-            if (journey == startJourney) {
-                clone.startJourney = clonedJourney;
-            }
         }
-        // Fix: Previous and next should point to the new clones instead of the old instances
+        // Fix: Previous should point to the new clones instead of the old instances
         for (Journey clonedJourney : clonedJourneyList) {
-            clonedJourney.setPreviousJourney(idToClonedJourneyMap.get(
-                    clonedJourney.getPreviousJourney().getId()));
-            clonedJourney.setNextJourney(idToClonedJourneyMap.get(
-                    clonedJourney.getNextJourney().getId()));
+            Terminal previousTerminal = clonedJourney.getPreviousTerminal();
+            if (previousTerminal instanceof Journey) {
+                Long previousJourneyId = ((Journey) previousTerminal).getId();
+                clonedJourney.setPreviousTerminal(idToClonedJourneyMap.get(previousJourneyId));
+            }
         }
         clone.journeyList = clonedJourneyList;
         clone.score = score;
