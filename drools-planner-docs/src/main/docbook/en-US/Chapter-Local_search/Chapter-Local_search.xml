@@ -733,7 +733,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
     <programlisting language="xml">    &lt;selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/&gt;</programlisting>
 
-    <para>If you build a better implementation that's not domain specific, consider adding it as a patch in our issue
-    tracker and we'll take it along in future refactors and optimize it.</para>
+    <para>If you build a better implementation that's not domain specific, consider contributing it back as a pull
+    request on github and we'll take it along in future refactors and optimize it.</para>
   </section>
 </chapter>

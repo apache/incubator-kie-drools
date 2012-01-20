@@ -338,8 +338,7 @@ $ mvn exec:exec
 
     <para>Pull requests (and patches) are very welcome and get priority treatment! Include the pull request link to a
     JIRA issue and optionally send a mail to the dev mailing list to get the issue fixed fast. By open sourcing your
-    improvements, you 'll benefit from our peer review, improvements made upon your improvements and maybe even a thank
-    you on our blog.</para>
+    improvements, you 'll benefit from our peer review and from our improvements made upon your improvements.</para>
 
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link>, Google+(<link
     xlink:href="https://plus.google.com/112724449845406009021">Drools Planner</link>, <link
