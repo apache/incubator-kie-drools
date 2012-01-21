@@ -25,8 +25,8 @@ class LatitudeLongitudeTranslator {
     private double latitudeLength = 0.0;
     private double longitudeLength = 0.0;
 
-    private double width = 0.0;
-    private double height = 0.0;
+    private double adjustedWidth = 0.0;
+    private double adjustedHeight = 0.0;
 
     public void addCoordinates(double latitude, double longitude) {
         if (latitude < minimumLatitude) {
@@ -44,18 +44,24 @@ class LatitudeLongitudeTranslator {
     }
 
     public void prepareFor(double width, double height) {
-        this.width = width;
-        this.height = height;
         latitudeLength = maximumLatitude - minimumLatitude;
         longitudeLength = maximumLongitude - minimumLongitude;
+        // Keep ratio visually correct
+        if (width > height * longitudeLength / latitudeLength) {
+            adjustedWidth = height * longitudeLength / latitudeLength;
+            adjustedHeight = height;
+        } else {
+            adjustedWidth = width;
+            adjustedHeight = width * latitudeLength / longitudeLength;
+        }
     }
 
     public int translateLongitude(double value) {
-        return (int) Math.floor((value - minimumLongitude) * width / longitudeLength);
+        return (int) Math.floor((value - minimumLongitude) * adjustedWidth / longitudeLength);
     }
 
     public int translateLatitude(double value) {
-        return (int) Math.floor((maximumLatitude - value) * height / latitudeLength);
+        return (int) Math.floor((maximumLatitude - value) * adjustedHeight / latitudeLength);
     }
 
 }
