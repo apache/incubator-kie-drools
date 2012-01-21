@@ -1518,3 +1518,13 @@ After in *.java:
 
         ...
     }
+
+[MINOR] AcceptorConfig and ForagerConfig no longer support directly assigning an Acceptor or Forager instance.
+This breaks using the SolverFactory to build multiple Solver instances
+and it also breaks XML file serialization of a Solver configuration.
+Before in *.java:
+    acceptorConfig.setAcceptor(myAcceptor);
+Before in *.java:
+    foragerConfig.setForager(myForager);
+After:
+    Follow the instructions in the manual section "Using a custom Selector, Acceptor, Forager or Termination"

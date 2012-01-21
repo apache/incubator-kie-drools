@@ -35,8 +35,7 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 @XStreamAlias("acceptor")
 public class AcceptorConfig {
 
-    private Acceptor acceptor = null; // TODO make into a list
-    private Class<? extends Acceptor> acceptorClass = null;
+    private Class<? extends Acceptor> acceptorClass = null; // TODO make into a list
 
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
@@ -54,14 +53,6 @@ public class AcceptorConfig {
 
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
-
-    public Acceptor getAcceptor() {
-        return acceptor;
-    }
-
-    public void setAcceptor(Acceptor acceptor) {
-        this.acceptor = acceptor;
-    }
 
     public Class<? extends Acceptor> getAcceptorClass() {
         return acceptorClass;
@@ -173,9 +164,6 @@ public class AcceptorConfig {
 
     public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
-        if (acceptor != null) {
-            acceptorList.add(acceptor);
-        }
         if (acceptorClass != null) {
             try {
                 acceptorList.add(acceptorClass.newInstance());
@@ -282,9 +270,6 @@ public class AcceptorConfig {
 
     public void inherit(AcceptorConfig inheritedConfig) {
         // inherited acceptors get compositely added
-        if (acceptor == null) {
-            acceptor = inheritedConfig.getAcceptor();
-        }
         if (acceptorClass == null) {
             acceptorClass = inheritedConfig.getAcceptorClass();
         }

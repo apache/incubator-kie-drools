@@ -27,7 +27,6 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 @XStreamAlias("forager")
 public class ForagerConfig {
 
-    private Forager forager = null; // TODO remove this and document extending ForagerConfig
     private Class<? extends Forager> foragerClass = null;
     @XStreamAlias("deciderScoreComparatorFactory")
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
@@ -35,14 +34,6 @@ public class ForagerConfig {
     private PickEarlyType pickEarlyType = null;
 
     protected Integer minimalAcceptedSelection = null;
-
-    public Forager getForager() {
-        return forager;
-    }
-
-    public void setForager(Forager forager) {
-        this.forager = forager;
-    }
 
     public Class<? extends Forager> getForagerClass() {
         return foragerClass;
@@ -82,9 +73,7 @@ public class ForagerConfig {
     // ************************************************************************
 
     public Forager buildForager(ScoreDefinition scoreDefinition) {
-        if (forager != null) {
-            return forager;
-        } else if (foragerClass != null) {
+        if (foragerClass != null) {
             try {
                 return foragerClass.newInstance();
             } catch (InstantiationException e) {
@@ -106,8 +95,7 @@ public class ForagerConfig {
 
     public void inherit(ForagerConfig inheritedConfig) {
         // TODO this is messed up
-        if (forager == null && foragerClass == null && pickEarlyType == null && minimalAcceptedSelection == null) {
-            forager = inheritedConfig.getForager();
+        if (foragerClass == null && pickEarlyType == null && minimalAcceptedSelection == null) {
             foragerClass = inheritedConfig.getForagerClass();
             pickEarlyType = inheritedConfig.getPickEarlyType();
             minimalAcceptedSelection = inheritedConfig.getMinimalAcceptedSelection();
