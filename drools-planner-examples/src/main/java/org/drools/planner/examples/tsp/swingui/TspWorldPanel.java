@@ -26,7 +26,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.Depot;
 import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -63,13 +65,19 @@ public class TspWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics g = createCanvas(width, height);
-        g.setColor(Color.RED);
+        g.setColor(TangoColors.SKY_BLUE_1);
         for (City city : travelingSalesmanTour.getCityList()) {
             int x = translator.translateLongitude(city.getLongitude());
             int y = translator.translateLatitude(city.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
         }
-        g.setColor(Color.BLACK);
+        g.setColor(TangoColors.SCARLET_1);
+        for (Depot depot : travelingSalesmanTour.getDepotList()) {
+            int x = translator.translateLongitude(depot.getCity().getLongitude());
+            int y = translator.translateLatitude(depot.getCity().getLatitude());
+            g.fillRect(x - 2, y - 2, 5, 5);
+        }
+        g.setColor(TangoColors.CHOCOLATE_1);
         for (Journey journey : travelingSalesmanTour.getJourneyList()) {
             if (journey.getPreviousTerminal() != null) {
                 City city1 = journey.getPreviousTerminal().getCity();
