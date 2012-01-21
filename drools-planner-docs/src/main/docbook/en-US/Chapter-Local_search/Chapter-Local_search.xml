@@ -723,15 +723,41 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
   <section>
     <title>Using a custom Selector, Acceptor, Forager or Termination</title>
 
-    <para>It is easy to plug in a custom <literal>Selector</literal>, <literal>Acceptor</literal>,
-    <literal>Forager</literal> or <literal>Termination</literal> by extending the abstract class and also the config
+    <para>You can plug in a custom <literal>Selector</literal>, <literal>Acceptor</literal>, <literal>Forager</literal>
+    or <literal>Termination</literal> by extending the abstract class and also the <literal>*Config</literal>
     class.</para>
 
     <para>For example, to use a custom <literal>Selector</literal>, extend the <literal>AbstractSelector</literal> class
     (see <literal>AllMovesOfOneExamSelector</literal>), extend the <literal>SelectorConfig</literal> class (see
-    <literal>AllMovesOfOneExamSelectorConfig</literal>) and configure it in the configuration XML:</para>
+    <literal>AllMovesOfOneExamSelectorConfig</literal>) and configure it in the solver configuration:</para>
 
     <programlisting language="xml">    &lt;selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/&gt;</programlisting>
+
+    <note>
+      <para>It's not possible to directly inject a <literal>Selector</literal>, <literal>Acceptor</literal>,
+      <literal>Forager</literal> or <literal>Termination</literal> instance and instead required to also extend a
+      <literal>Config</literal> class because:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A <literal>SolverFactory</literal> can build multiple <literal>Solver</literal> instances, which each
+          require a distinct <literal>Selector</literal>, <literal>Acceptor</literal>, <literal>Forager</literal> and
+          <literal>Termination</literal> instance.</para>
+        </listitem>
+
+        <listitem>
+          <para>A solver configuration needs to be serializable to and from XML. This makes benchmarking with
+          <literal>PlannerBenchmark</literal> particularly easy because you can configure different
+          <literal>Solver</literal> variants in XML.</para>
+        </listitem>
+
+        <listitem>
+          <para>A <literal>Config</literal> class is often easier and clearer to configure. For example:
+          <literal>TerminationConfig</literal> translates <literal>maximumMinutesSpend</literal> and
+          <literal>maximumSecondsSpend</literal> into <literal>maximumTimeMillisSpend</literal>.</para>
+        </listitem>
+      </itemizedlist>
+    </note>
 
     <para>If you build a better implementation that's not domain specific, consider contributing it back as a pull
     request on github and we'll take it along in future refactors and optimize it.</para>
