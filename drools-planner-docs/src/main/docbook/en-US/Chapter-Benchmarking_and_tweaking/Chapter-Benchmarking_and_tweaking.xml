@@ -288,7 +288,7 @@
       <note>
         <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
         minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
-        implementation automatically determines it's velocity based on the amount of time that can be spend. On the
+        implementation automatically determines its velocity based on the amount of time that can be spend. On the
         other hand, for the tabu search, what you see is what you'd get.</para>
       </note>
     </section>
