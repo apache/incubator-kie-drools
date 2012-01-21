@@ -27,13 +27,11 @@ import java.util.Map;
 
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromPlanningEntityProperty;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
-import org.drools.planner.api.domain.variable.ValueRangeUndefined;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 public class PlanningVariableDescriptor {
 
@@ -120,37 +118,47 @@ public class PlanningVariableDescriptor {
         }
 
         Method propertyGetter = variablePropertyDescriptor.getReadMethod();
-        int valueRangeAnnotationCount = 0;
-        if (propertyGetter.isAnnotationPresent(ValueRangeFromSolutionProperty.class)) {
-            valueRangeDescriptor = new SolutionPropertyPlanningValueRangeDescriptor(this,
-                    propertyGetter.getAnnotation(ValueRangeFromSolutionProperty.class));
-            valueRangeAnnotationCount++;
-        }
-        if (propertyGetter.isAnnotationPresent(ValueRangeFromPlanningEntityProperty.class)) {
-            valueRangeDescriptor = new PlanningEntityPropertyPlanningValueRangeDescriptor(this,
-                    propertyGetter.getAnnotation(ValueRangeFromPlanningEntityProperty.class));
-            valueRangeAnnotationCount++;
-        }
-        if (propertyGetter.isAnnotationPresent(ValueRangeUndefined.class)) {
-            valueRangeDescriptor = new UndefinedPlanningValueRangeDescriptor(this,
-                    propertyGetter.getAnnotation(ValueRangeUndefined.class));
-            valueRangeAnnotationCount++;
-        }
-        // TODO Support plugging in other ValueRange implementations
-        if (valueRangeAnnotationCount <= 0) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") that has no ValueRange* annotation, such as ValueRangeFromSolutionProperty.");
-        }
-        if (valueRangeAnnotationCount > 1) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") that has multiple ValueRange* annotations.");
+        ValueRange valueRangeAnnotation = propertyGetter.getAnnotation(ValueRange.class);
+        ValueRanges valueRangesAnnotation = propertyGetter.getAnnotation(ValueRanges.class);
+        if (valueRangeAnnotation != null) {
+            if (valueRangesAnnotation != null) {
+                throw new IllegalArgumentException("The planningEntityClass ("
+                        + planningEntityDescriptor.getPlanningEntityClass()
+                        + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                        + ") that has a @ValueRange and @ValueRanges annotation: fold them into 1 @ValueRanges.");
+            }
+            valueRangeDescriptor = buildValueRangeDescriptor(valueRangeAnnotation);
+        } else {
+            if (valueRangesAnnotation == null) {
+                throw new IllegalArgumentException("The planningEntityClass ("
+                        + planningEntityDescriptor.getPlanningEntityClass()
+                        + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                        + ") that has no @ValueRange or @ValueRanges annotation.");
+            }
+            List<PlanningValueRangeDescriptor> valueRangeDescriptorList
+                    = new ArrayList<PlanningValueRangeDescriptor>(valueRangesAnnotation.value().length);
+            for (ValueRange partialValueRangeAnnotation : valueRangesAnnotation.value()) {
+                valueRangeDescriptorList.add(buildValueRangeDescriptor(partialValueRangeAnnotation));
+            }
+            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, valueRangeDescriptorList);
         }
     }
-    
+
+    private PlanningValueRangeDescriptor buildValueRangeDescriptor(ValueRange valueRangeAnnotation) {
+        switch (valueRangeAnnotation.type()) {
+            case FROM_SOLUTION_PROPERTY:
+                return new SolutionPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+            case FROM_PLANNING_ENTITY_PROPERTY:
+                return new PlanningEntityPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+            case UNDEFINED:
+                valueRangeDescriptor = new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+            default:
+                throw new IllegalStateException("The valueRangeType ("
+                        + valueRangeAnnotation.type() + ") is not implemented");
+        }
+        // TODO Support plugging in other ValueRange implementations
+    }
+
     public void addDependentPlanningVariableDescriptor(
             DependentPlanningVariableDescriptor dependentPlanningVariableDescriptor) {
         dependentPlanningVariableDescriptorMap.put(

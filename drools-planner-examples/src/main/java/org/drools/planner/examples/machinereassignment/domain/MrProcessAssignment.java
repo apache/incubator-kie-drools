@@ -22,11 +22,9 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.domain.solver.BedStrengthComparator;
 
 @PlanningEntity() // TODO difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
 @XStreamAlias("MrProcessAssignment")
@@ -54,7 +52,7 @@ public class MrProcessAssignment extends AbstractPersistable {
     }
 
     @PlanningVariable() // TODO strengthComparatorClass = BedStrengthComparator.class)
-    @ValueRangeFromSolutionProperty(propertyName = "machineList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "machineList")
     public MrMachine getMachine() {
         return machine;
     }

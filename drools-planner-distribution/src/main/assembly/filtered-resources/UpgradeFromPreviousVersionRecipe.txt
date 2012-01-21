@@ -1536,3 +1536,31 @@ Before in *.java:
     acceptorConfig.setAcceptorClass(myAcceptorClass);
 After in *.java:
     acceptorConfig.setAcceptorClassList(Collections.singletonList(myAcceptorClass));
+
+[MAJOR] All @ValueRange* annotations have been folded into a single @ValueRange annotation.
+Also, propertyName has been renamed to solutionProperty or planningEntityProperty accordingly.
+This was needed to support @ValueRanges, a plural annotation of @ValueRange and get around Java's annotation limits.
+Before in *.java:
+    @PlanningVariable(...)
+    @ValueRangeFromSolutionProperty(propertyName = "roomList")
+    public Room getRoom() {...}
+After in *.java:
+    @PlanningVariable(...)
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "roomList")
+    public Room getRoom() {...}
+Before in *.java:
+    @PlanningVariable(...)
+    @ValueRangeFromPlanningEntityProperty(propertyName = "roomList")
+    public Room getRoom() {...}
+After in *.java:
+    @PlanningVariable(...)
+    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "roomList")
+    public Room getRoom() {...}
+Before in *.java:
+    @PlanningVariable(...)
+    @ValueRangeUndefined()
+    public Room getRoom() {...}
+After in *.java:
+    @PlanningVariable(...)
+    @ValueRange(type = ValueRangeType.UNDEFINED)
+    public Room getRoom() {...}

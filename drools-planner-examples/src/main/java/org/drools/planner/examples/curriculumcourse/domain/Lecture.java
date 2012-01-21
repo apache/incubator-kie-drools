@@ -19,12 +19,12 @@ package org.drools.planner.examples.curriculumcourse.domain;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
 import org.drools.planner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
@@ -58,7 +58,7 @@ public class Lecture extends AbstractPersistable {
     }
 
     @PlanningVariable(strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
-    @ValueRangeFromSolutionProperty(propertyName = "periodList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "periodList")
     public Period getPeriod() {
         return period;
     }
@@ -68,7 +68,7 @@ public class Lecture extends AbstractPersistable {
     }
 
     @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
-    @ValueRangeFromSolutionProperty(propertyName = "roomList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "roomList")
     public Room getRoom() {
         return room;
     }

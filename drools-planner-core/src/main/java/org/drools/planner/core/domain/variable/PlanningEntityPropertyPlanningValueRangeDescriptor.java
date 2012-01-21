@@ -18,28 +18,41 @@ package org.drools.planner.core.domain.variable;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
-import java.util.Iterator;
 
-import org.drools.planner.api.domain.variable.ValueRangeFromPlanningEntityProperty;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 public class PlanningEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
     private PropertyDescriptor rangePropertyDescriptor;
 
     public PlanningEntityPropertyPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
-            ValueRangeFromPlanningEntityProperty valueRangeFromPlanningEntityPropertyAnnotation) {
+            ValueRange valueRangeAnnotation) {
         super(variableDescriptor);
-        processValueRangeFromPlanningEntityPropertyAnnotation(valueRangeFromPlanningEntityPropertyAnnotation);
+        validate(valueRangeAnnotation);
+        processValueRangeAnnotation(valueRangeAnnotation);
     }
 
-    private void processValueRangeFromPlanningEntityPropertyAnnotation(
-            ValueRangeFromPlanningEntityProperty valueRangeFromPlanningEntityPropertyAnnotation) {
-        String planningEntityProperty = valueRangeFromPlanningEntityPropertyAnnotation.propertyName();
+    private void validate(ValueRange valueRangeAnnotation) {
+        if (!valueRangeAnnotation.solutionProperty().equals("")) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") that with a non-empty solutionProperty (" + valueRangeAnnotation.solutionProperty() + ").");
+        }
+        if (valueRangeAnnotation.planningEntityProperty().equals("")) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") that with an empty planningEntityProperty ("
+                    + valueRangeAnnotation.planningEntityProperty() + ").");
+        }
+    }
+
+    private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
+        String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
         PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
         rangePropertyDescriptor = planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty);
         if (rangePropertyDescriptor == null) {

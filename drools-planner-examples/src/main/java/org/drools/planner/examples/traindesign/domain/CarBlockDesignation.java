@@ -19,13 +19,12 @@ package org.drools.planner.examples.traindesign.domain;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromPlanningEntityProperty;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.solver.RailPath;
 
@@ -45,7 +44,7 @@ public class CarBlockDesignation extends AbstractPersistable {
     }
 
     @PlanningVariable()
-    @ValueRangeFromPlanningEntityProperty(propertyName = "possibleRailPathList")
+    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "possibleRailPathList")
     public RailPath getRailPath() {
         return railPath;
     }

@@ -18,7 +18,8 @@ package org.drools.planner.examples.nqueens.domain;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 import org.drools.planner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
@@ -40,7 +41,7 @@ public class Queen extends AbstractPersistable {
     }
 
     @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
-    @ValueRangeFromSolutionProperty(propertyName = "rowList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "rowList")
     public Row getRow() {
         return row;
     }

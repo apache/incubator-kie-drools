@@ -20,24 +20,36 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Collection;
 
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that the planning value range for a planning variable is defined by a property on the planning entity.
- * <p/>
- * It is specified on a getter of a java bean property which already has a {@link PlanningVariable} annotation.
+ * Specifies which planning values can be used for a planning variable.
+ * This is specified on a getter of a java bean property which already has a {@link PlanningVariable} annotation.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface ValueRangeFromPlanningEntityProperty {
+public @interface ValueRange {
+
+    /**
+     * This is commonly {@link ValueRangeType#FROM_SOLUTION_PROPERTY}.
+     * @return never null
+     */
+    ValueRangeType type();
+
+    /**
+     * The property name for which exists a getter on the {@link Solution} that returns a {@link Collection}.
+     * @return never null for {@link ValueRangeType#FROM_SOLUTION_PROPERTY}, always null otherwise.
+     */
+    String solutionProperty() default "";
 
     /**
      * The property name for which exists a getter on the planning entity that returns a {@link Collection}.
-     * @return never null
+     * @return never null for {@link ValueRangeType#FROM_PLANNING_ENTITY_PROPERTY}, always null otherwise.
      */
-    String propertyName();
+    String planningEntityProperty() default "";
 
 }

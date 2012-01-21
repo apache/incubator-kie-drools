@@ -17,12 +17,12 @@
 package org.drools.planner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
-import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRange;
+import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 import org.drools.planner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
@@ -46,7 +46,7 @@ public class ShiftAssignment extends AbstractPersistable {
     }
 
     @PlanningVariable(strengthComparatorClass = EmployeeStrengthComparator.class)
-    @ValueRangeFromSolutionProperty(propertyName = "employeeList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "employeeList")
     public Employee getEmployee() {
         return employee;
     }

@@ -45,8 +45,8 @@
     <section>
       <title>Solver configuration by XML file</title>
 
-      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>.
-      Configure it with a solver configuration XML file:</para>
+      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverFactory</literal>. Configure
+      it with a solver configuration XML file:</para>
 
       <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
         solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
@@ -259,8 +259,8 @@
 
         <para>Each planning entity class has 1 or more <emphasis>planning variables</emphasis>. It usually also has 1 or
         more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is defined by
-        it's <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
-        column never changes during solving, while it's row does change.</para>
+        its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
+        column never changes during solving, while its row does change.</para>
 
         <programlisting>@PlanningEntity
 public class Queen {
@@ -274,8 +274,8 @@ public class Queen {
 }</programlisting>
 
         <para>A planning entity class can have multiple planning variables. For example, a <literal>Lecture</literal> is
-        defined by it's <literal>Course</literal> and it's index in that course (because 1 course has multiple
-        lectures). Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
+        defined by its <literal>Course</literal> and its index in that course (because 1 course has multiple lectures).
+        Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
         <literal>Room</literal> so it has 2 planning variables (period and room). For example: the course Mathematics
         has 8 lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
 
@@ -301,7 +301,7 @@ public class Lecture {
 &lt;/solver&gt;</programlisting>
 
         <para>Some uses cases have multiple planning entity classes. For example: route freight and trains into railway
-        network arcs, where each freight can use multiple trains over it's journey and each train can carry multiple
+        network arcs, where each freight can use multiple trains over its journey and each train can carry multiple
         freights per arc. Having multiple planning entity classes directly raises the implementation complexity of your
         use case.</para>
 
@@ -416,7 +416,7 @@ public class Queen {
         variable points to a planning value.</para>
 
         <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation.
-        Furthermore, it needs a <literal>@ValueRange*</literal> annotation too.</para>
+        Furthermore, it needs a <literal>@ValueRange</literal> annotation too.</para>
 
         <programlisting>@PlanningEntity
 public class Queen {
@@ -426,7 +426,7 @@ public class Queen {
     // ...
 
     @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "rowList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = rowList")
     public Row getRow() {
         return row;
     }
@@ -441,9 +441,9 @@ public class Queen {
       <section>
         <title>When is a planning entity initialized?</title>
 
-        <para>A planning entity is considered initialized if all it's planning variables are initialized.</para>
+        <para>A planning entity is considered initialized if all its planning variables are initialized.</para>
 
-        <para>By default, a planning variable is considered initialized if it's value is not
+        <para>By default, a planning variable is considered initialized if its value is not
         <literal>null</literal>.</para>
       </section>
     </section>
@@ -455,13 +455,14 @@ public class Queen {
         <title>Planning value</title>
 
         <para>A planning value is a possible value for a planning variable. Usually, a planning value is problem fact,
-        but it can also be any object, for example a double. Sometimes it can even be another planning entity.</para>
+        but it can also be any object, for example a double. It can even be another planning entity or even a interface
+        implemented by a planning entity and a problem fact.</para>
 
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
         discrete (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
         <literal>4</literal>) or continuous (for example any <literal>double</literal> between <literal>0.0</literal>
-        and <literal>1.0</literal>). There are several ways to define the value range of a planning variable, each with
-        it's own <literal>@ValueRange*</literal> annotation.</para>
+        and <literal>1.0</literal>). There are several ways to define the value range of a planning variable with the
+        <literal>@ValueRange</literal> annotation.</para>
 
         <para>If <literal>null</literal> is a valid planning value, it should be included in the value range and the
         default way to detect uninitialized planning variables must be changed.</para>
@@ -471,7 +472,7 @@ public class Queen {
         <title>Planning value range</title>
 
         <section>
-          <title><literal>ValueRangeFromSolutionProperty</literal></title>
+          <title><literal>ValueRange</literal> from <literal>Solution</literal> property</title>
 
           <para>All instances of the same planning entity class share the same set of possible planning values for that
           planning variable. This is the most common way to configure a value range.</para>
@@ -481,7 +482,7 @@ public class Queen {
           for this planning variable.</para>
 
           <programlisting>    @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "rowList")
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "rowList")
     public Row getRow() {
         return row;
     }</programlisting>
@@ -498,14 +499,14 @@ public class Queen {
         </section>
 
         <section>
-          <title><literal>ValueRangeFromPlanningEntityProperty</literal></title>
+          <title><literal>ValueRange</literal> from planning entity</title>
 
-          <para>Each planning entity has it's own set of possible planning values for a planning variable. For example,
+          <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
           department, lectures of that teacher can limit their room value range to the rooms of his department.</para>
 
           <programlisting>    @PlanningVariable
-    @ValueRangeFromPlanningEntityProperty(propertyName = "possibleRoomList")
+    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "possibleRoomList")
     public Room getRoom() {
         return room;
     }
@@ -526,17 +527,17 @@ public class Queen {
             optimization algorithms to temporarily break such a hard constraint.</para>
           </note>
 
-          <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate it's value
+          <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
           range. It would only try to solve the planning problem itself and interfere with the optimization
           algorithms.</para>
         </section>
 
         <section>
-          <title><literal>ValueRangeUndefined</literal></title>
+          <title><literal>ValueRange</literal> undefinied</title>
 
           <para>Leaves the value range undefined. Some optimization algorithms do not support this value
           range.<programlisting>    @PlanningVariable
-    @ValueRangeUndefined
+    @ValueRange(type = ValueRangeType.UNDEFINED)
     public Row getRow() {
         return row;
     }</programlisting></para>
