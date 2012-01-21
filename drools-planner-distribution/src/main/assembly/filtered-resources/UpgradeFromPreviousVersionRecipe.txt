@@ -1526,5 +1526,13 @@ Before in *.java:
     acceptorConfig.setAcceptor(myAcceptor);
 Before in *.java:
     foragerConfig.setForager(myForager);
-After:
-    Follow the instructions in the manual section "Using a custom Selector, Acceptor, Forager or Termination"
+After in *.java:
+    Follow the instructions in the manual section "Using a custom Selector, Acceptor, Forager or Termination".
+    You will need to extend the *Config class and the Abtract* class as stipulated in the manual.
+
+[MINOR] AcceptorConfig now accepts multiple acceptorClass instances.
+Solver configuration XML is unchanged.
+Before in *.java:
+    acceptorConfig.setAcceptorClass(myAcceptorClass);
+After in *.java:
+    acceptorConfig.setAcceptorClassList(Collections.singletonList(myAcceptorClass));

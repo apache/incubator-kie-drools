@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
@@ -35,7 +36,8 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 @XStreamAlias("acceptor")
 public class AcceptorConfig {
 
-    private Class<? extends Acceptor> acceptorClass = null; // TODO make into a list
+    @XStreamImplicit(itemFieldName = "acceptorClass")
+    private List<Class<? extends Acceptor>> acceptorClassList = null; // TODO make into a list
 
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
@@ -54,12 +56,12 @@ public class AcceptorConfig {
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
 
-    public Class<? extends Acceptor> getAcceptorClass() {
-        return acceptorClass;
+    public List<Class<? extends Acceptor>> getAcceptorClassList() {
+        return acceptorClassList;
     }
 
-    public void setAcceptorClass(Class<? extends Acceptor> acceptorClass) {
-        this.acceptorClass = acceptorClass;
+    public void setAcceptorClassList(List<Class<? extends Acceptor>> acceptorClassList) {
+        this.acceptorClassList = acceptorClassList;
     }
 
     public List<AcceptorType> getAcceptorTypeList() {
@@ -164,18 +166,19 @@ public class AcceptorConfig {
 
     public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
-        if (acceptorClass != null) {
-            try {
-                acceptorList.add(acceptorClass.newInstance());
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
+        if (acceptorClassList != null) {
+            for (Class<? extends Acceptor> acceptorClass : acceptorClassList) {
+                try {
+                    acceptorList.add(acceptorClass.newInstance());
+                } catch (InstantiationException e) {
+                    throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
+                            + ") does not have a public no-arg constructor", e);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalArgumentException("acceptorClass (" + acceptorClass.getName()
+                            + ") does not have a public no-arg constructor", e);
+                }
             }
         }
-
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
                 || moveTabuSize != null || partialMoveTabuSize != null) {
             MoveTabuAcceptor moveTabuAcceptor = new MoveTabuAcceptor();
@@ -269,10 +272,8 @@ public class AcceptorConfig {
     }
 
     public void inherit(AcceptorConfig inheritedConfig) {
-        // inherited acceptors get compositely added
-        if (acceptorClass == null) {
-            acceptorClass = inheritedConfig.getAcceptorClass();
-        }
+        acceptorClassList = ConfigUtils.inheritMergeableListProperty(acceptorClassList,
+                inheritedConfig.getAcceptorClassList());
         if (acceptorTypeList == null) {
             acceptorTypeList = inheritedConfig.getAcceptorTypeList();
         } else {
