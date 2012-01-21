@@ -23,6 +23,7 @@ import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
+import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
@@ -44,8 +45,9 @@ public class Journey extends AbstractPersistable implements Terminal {
 
     @PlanningVariable(triggerChainCorrection = true)
 //    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class}) TODO
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "journeyList")
-//    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList") TODO
+    @ValueRanges({
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "journeyList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList")})
     public Terminal getPreviousTerminal() {
         return previousTerminal;
     }
