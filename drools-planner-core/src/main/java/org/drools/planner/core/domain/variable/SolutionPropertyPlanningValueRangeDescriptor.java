@@ -40,33 +40,39 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with an empty solutionProperty (" + valueRangeAnnotation.solutionProperty() + ").");
+                    + ") of type (" + valueRangeAnnotation.type() + ") with an empty solutionProperty ("
+                    + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (!valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with a non-empty planningEntityProperty ("
+                    + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
     }
 
     private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
-        String solutionPropertyName = valueRangeAnnotation.solutionProperty();
+        processSolutionProperty(valueRangeAnnotation);
+        processExcludeUninitializedPlanningEntity(valueRangeAnnotation);
+    }
+
+    private void processSolutionProperty(ValueRange valueRangeAnnotation) {
+        String solutionProperty = valueRangeAnnotation.solutionProperty();
         PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
         rangePropertyDescriptor = planningEntityDescriptor.getSolutionDescriptor()
-                .getPropertyDescriptor(solutionPropertyName);
+                .getPropertyDescriptor(solutionProperty);
         if (rangePropertyDescriptor == null) {
             String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
                     + ") that refers to a solutionClass ("
                     + planningEntityDescriptor.getSolutionDescriptor().getSolutionClass()
-                    + ") solutionProperty (" + solutionPropertyName
+                    + ") solutionProperty (" + solutionProperty
                     + ") that does not exist.";
-            if (solutionPropertyName.length() >= 2 && Character.isUpperCase(solutionPropertyName.charAt(1))) {
-                String correctedSolutionProperty = solutionPropertyName.substring(0, 1).toUpperCase()
-                        + solutionPropertyName.substring(1);
+            if (solutionProperty.length() >= 2 && Character.isUpperCase(solutionProperty.charAt(1))) {
+                String correctedSolutionProperty = solutionProperty.substring(0, 1).toUpperCase()
+                        + solutionProperty.substring(1);
                 exceptionMessage += " But it probably needs to be correctedSolutionProperty ("
                         + correctedSolutionProperty + ") instead because the JavaBeans spec states" +
                         " the first letter should be a upper case if the second is upper case.";
@@ -79,22 +85,27 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
                     + ") that refers to a solutionClass ("
                     + planningEntityDescriptor.getSolutionDescriptor().getSolutionClass()
-                    + ") solutionProperty (" + solutionPropertyName
+                    + ") solutionProperty (" + solutionProperty
                     + ") that does not return a Collection.");
         }
     }
 
     public Collection<?> extractValues(Solution solution, Object planningEntity) {
+        Collection<?> values = extractValuesWithoutFiltering(solution);
+        return applyFiltering(values);
+    }
+
+    private Collection<?> extractValuesWithoutFiltering(Solution solution) {
         return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, solution);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {
-        return extractValues(solution, planningEntity).size();
+        return extractValuesWithoutFiltering(solution).size();
     }
 
     @Override
     public boolean isValuesCacheable() {
-        return true;
+        return !excludeUninitializedPlanningEntity;
     }
 
 }

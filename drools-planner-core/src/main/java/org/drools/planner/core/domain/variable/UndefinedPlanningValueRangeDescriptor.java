@@ -37,14 +37,22 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with a non-empty solutionProperty (" + valueRangeAnnotation.solutionProperty() + ").");
+                    + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
+                    + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (!valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with a non-empty planningEntityProperty ("
+                    + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
+        }
+        if (valueRangeAnnotation.excludeUninitializedPlanningEntity()) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") of type (" + valueRangeAnnotation.type() + ") with excludeUninitializedPlanningEntity ("
+                    + valueRangeAnnotation.excludeUninitializedPlanningEntity() + ").");
         }
     }
 

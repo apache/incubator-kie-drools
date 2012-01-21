@@ -58,6 +58,13 @@ public class PlanningVariableDescriptor {
     private void processPropertyAnnotations() {
         PlanningVariable planningVariableAnnotation = variablePropertyDescriptor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
+        valueSorter = new PlanningValueSorter();
+        processStrength(planningVariableAnnotation);
+        processTriggerChainCorrection(planningVariableAnnotation);
+        processValueRangeAnnotation();
+    }
+
+    private void processStrength(PlanningVariable planningVariableAnnotation) {
         Class<? extends Comparator> strengthComparatorClass = planningVariableAnnotation.strengthComparatorClass();
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
@@ -75,7 +82,6 @@ public class PlanningVariableDescriptor {
                     + ") and a strengthWeightFactoryClass (" + strengthWeightFactoryClass.getName()
                     + ") at the same time.");
         }
-        valueSorter = new PlanningValueSorter();
         if (strengthComparatorClass != null) {
             Comparator<Object> strengthComparator;
             try {
@@ -106,6 +112,9 @@ public class PlanningVariableDescriptor {
             }
             valueSorter.setStrengthWeightFactory(strengthWeightFactory);
         }
+    }
+
+    private void processTriggerChainCorrection(PlanningVariable planningVariableAnnotation) {
         triggerChainCorrection = planningVariableAnnotation.triggerChainCorrection();
         if (triggerChainCorrection && !variablePropertyDescriptor.getPropertyType().isAssignableFrom(
                 planningEntityDescriptor.getPlanningEntityClass())) {
@@ -116,7 +125,9 @@ public class PlanningVariableDescriptor {
                     + ") which is not a superclass/interface of or the same as the planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass() + ").");
         }
+    }
 
+    private void processValueRangeAnnotation() {
         Method propertyGetter = variablePropertyDescriptor.getReadMethod();
         ValueRange valueRangeAnnotation = propertyGetter.getAnnotation(ValueRange.class);
         ValueRanges valueRangesAnnotation = propertyGetter.getAnnotation(ValueRanges.class);
@@ -175,6 +186,10 @@ public class PlanningVariableDescriptor {
 
     public String getVariablePropertyName() {
         return variablePropertyDescriptor.getName();
+    }
+
+    public Class<?> getVariablePropertyType() {
+        return variablePropertyDescriptor.getPropertyType();
     }
 
     public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {

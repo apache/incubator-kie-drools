@@ -46,8 +46,9 @@ public class Journey extends AbstractPersistable implements Terminal {
     @PlanningVariable(triggerChainCorrection = true)
 //    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class}) TODO
     @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "journeyList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList")})
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "journeyList",
+                    excludeUninitializedPlanningEntity = true)})
     public Terminal getPreviousTerminal() {
         return previousTerminal;
     }

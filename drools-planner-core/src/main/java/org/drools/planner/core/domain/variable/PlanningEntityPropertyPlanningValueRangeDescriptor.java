@@ -40,18 +40,24 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with a non-empty solutionProperty (" + valueRangeAnnotation.solutionProperty() + ").");
+                    + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
+                    + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
-                    + ") that with an empty planningEntityProperty ("
+                    + ") of type (" + valueRangeAnnotation.type() + ") with an empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
     }
 
     private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
+        processPlanningEntityProperty(valueRangeAnnotation);
+        processExcludeUninitializedPlanningEntity(valueRangeAnnotation);
+    }
+
+    private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
         String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
         PlanningEntityDescriptor planningEntityDescriptor = variableDescriptor.getPlanningEntityDescriptor();
         rangePropertyDescriptor = planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty);
@@ -80,12 +86,16 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
     }
 
     public Collection<?> extractValues(Solution solution, Object planningEntity) {
-        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor,
-                planningEntity);
+        Collection<?> values = extractValuesWithoutFiltering(planningEntity);
+        return applyFiltering(values);
+    }
+
+    private Collection<?> extractValuesWithoutFiltering(Object planningEntity) {
+        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, planningEntity);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {
-        return extractValues(solution, planningEntity).size();
+        return extractValuesWithoutFiltering(planningEntity).size();
     }
 
 }

@@ -71,6 +71,11 @@ public class PlanningEntityDescriptor {
                     + ") has been specified as a planning entity in the configuration," +
                     " but does not have a PlanningEntity annotation.");
         }
+        planningEntitySorter = new PlanningEntitySorter();
+        processDifficulty(planningEntityAnnotation);
+    }
+
+    private void processDifficulty(PlanningEntity planningEntityAnnotation) {
         Class<? extends Comparator> difficultyComparatorClass = planningEntityAnnotation.difficultyComparatorClass();
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
@@ -86,7 +91,6 @@ public class PlanningEntityDescriptor {
                     + ") and a difficultyWeightFactoryClass (" + difficultyWeightFactoryClass.getName()
                     + ") at the same time.");
         }
-        planningEntitySorter = new PlanningEntitySorter();
         if (difficultyComparatorClass != null) {
             Comparator<Object> difficultyComparator;
             try {
