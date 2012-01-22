@@ -18,6 +18,8 @@ package org.drools.command;
 
 
 public interface ContextManager {
+    public static final String        ROOT             = "ROOT";
+
     public Context getContext(String identifier);
     
     public Context getDefaultContext();
