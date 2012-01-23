@@ -128,7 +128,7 @@ public class ProcessBuilderImpl implements ProcessBuilder {
             String rules = generateRules( process );
 //            System.out.println(rules);
             try {
-                packageBuilder.addPackageFromDrl( new StringReader( rules ) );
+                packageBuilder.addPackageFromDrl( new StringReader( rules ), resource );
             } catch ( IOException e ) {
                 // should never occur
                 e.printStackTrace( System.err );

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="bpmn" name="flow" tns:packageName="com.sample" >
+
+    <extensionElements>
+     <tns:import name="org.jbpm.bpmn2.ScannerChangeSetTest.Message" />
+     <tns:import name="org.jbpm.bpmn2.ScannerChangeSetTest.Person" />
+    </extensionElements>
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <businessRuleTask id="_2" name="InitialNode" g:ruleFlowGroup="init" >
+    </businessRuleTask>
+    <exclusiveGateway id="_19" name="testConverge" gatewayDirection="Converging" />
+    <endEvent id="_21" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <businessRuleTask id="_20" name="FinalNode" g:ruleFlowGroup="final" >
+    </businessRuleTask>
+    <endEvent id="_23" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <exclusiveGateway id="_22" name="testDiverge" gatewayDirection="Diverging" />
+    <callActivity id="_24" name="ANDTest" calledElement="bpmn_and" tns:independent="false" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </callActivity>
+    <callActivity id="_27" name="XORTest" calledElement="bpmn_xor" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </callActivity>
+    <scriptTask id="_26" name="FailScript" >
+      <script>System.out.println("Wrong or no gateway type specified");</script>
+    </scriptTask>
+    <subProcess id="_28" name="ORTestProcess"  >
+    <!-- nodes -->
+    <businessRuleTask id="_28-2" name="ORTest" g:ruleFlowGroup="or" >
+    </businessRuleTask>
+    <inclusiveGateway id="_28-3" name="ORTestDiverge" gatewayDirection="Diverging" />
+    <businessRuleTask id="_28-4" name="OR1" g:ruleFlowGroup="or1" >
+    </businessRuleTask>
+    <businessRuleTask id="_28-5" name="OR2" g:ruleFlowGroup="or2" >
+    </businessRuleTask>
+    <exclusiveGateway id="_28-6" name="ORTestConverge" gatewayDirection="Converging" />
+    <startEvent id="_28-7" name="Start" />
+    <endEvent id="_28-8" name="End" />
+    <!-- connections -->
+    <sequenceFlow id="_28-7-_28-2" sourceRef="_28-7" targetRef="_28-2" />
+    <sequenceFlow id="_28-2-_28-3" sourceRef="_28-2" targetRef="_28-3" />
+    <sequenceFlow id="_28-3-_28-4" sourceRef="_28-3" targetRef="_28-4" name="or1" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.ScannerChangeSetTest.Person( id &lt;= 5 )</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_28-3-_28-5" sourceRef="_28-3" targetRef="_28-5" name="or2" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.ScannerChangeSetTest.Person ( id &gt;= 5 )</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_28-5-_28-6" sourceRef="_28-5" targetRef="_28-6" />
+    <sequenceFlow id="_28-4-_28-6" sourceRef="_28-4" targetRef="_28-6" />
+    <sequenceFlow id="_28-6-_28-8" sourceRef="_28-6" targetRef="_28-8" />
+    </subProcess>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_24-_19" sourceRef="_24" targetRef="_19" />
+    <sequenceFlow id="_27-_19" sourceRef="_27" targetRef="_19" />
+    <sequenceFlow id="_28-_19" sourceRef="_28" targetRef="_19" />
+    <sequenceFlow id="_20-_21" sourceRef="_20" targetRef="_21" />
+    <sequenceFlow id="_19-_20" sourceRef="_19" targetRef="_20" />
+    <sequenceFlow id="_26-_23" sourceRef="_26" targetRef="_23" />
+    <sequenceFlow id="_2-_22" sourceRef="_2" targetRef="_22" />
+    <sequenceFlow id="_22-_24" sourceRef="_22" targetRef="_24" name="and" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.ScannerChangeSetTest.Message( message matches 'AND' )</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_22-_27" sourceRef="_22" targetRef="_27" name="xor" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.ScannerChangeSetTest.Message( message == "XOR" )</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_22-_26" sourceRef="_22" targetRef="_26" name="end" tns:priority="10" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >eval(true)</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_22-_28" sourceRef="_22" targetRef="_28" name="or" >
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.ScannerChangeSetTest.Message( message == "OR" )</conditionExpression>
+    </sequenceFlow>
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="bpmn" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="6" y="331" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="132" y="329" width="110" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_19" >
+        <dc:Bounds x="710" y="202" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_21" >
+        <dc:Bounds x="840" y="299" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_20" >
+        <dc:Bounds x="822" y="201" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_23" >
+        <dc:Bounds x="847" y="471" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_22" >
+        <dc:Bounds x="353" y="328" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_24" >
+        <dc:Bounds x="476" y="251" width="129" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_27" >
+        <dc:Bounds x="480" y="329" width="129" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_26" >
+        <dc:Bounds x="316" y="470" width="129" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28" >
+        <dc:Bounds x="0" y="0" width="516" height="215" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-2" >
+        <dc:Bounds x="27" y="74" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-3" >
+        <dc:Bounds x="148" y="71" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-4" >
+        <dc:Bounds x="266" y="39" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-5" >
+        <dc:Bounds x="265" y="120" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-6" >
+        <dc:Bounds x="408" y="79" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-7" >
+        <dc:Bounds x="23" y="147" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_28-8" >
+        <dc:Bounds x="433" y="149" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_28-7-_28-2" >
+        <di:waypoint x="47" y="171" />
+        <di:waypoint x="67" y="98" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-2-_28-3" >
+        <di:waypoint x="67" y="98" />
+        <di:waypoint x="172" y="95" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-3-_28-4" >
+        <di:waypoint x="172" y="95" />
+        <di:waypoint x="306" y="63" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-3-_28-5" >
+        <di:waypoint x="172" y="95" />
+        <di:waypoint x="305" y="144" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-5-_28-6" >
+        <di:waypoint x="305" y="144" />
+        <di:waypoint x="432" y="103" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-4-_28-6" >
+        <di:waypoint x="306" y="63" />
+        <di:waypoint x="432" y="103" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-6-_28-8" >
+        <di:waypoint x="432" y="103" />
+        <di:waypoint x="457" y="173" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="30" y="355" />
+        <di:waypoint x="187" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_24-_19" >
+        <di:waypoint x="540" y="275" />
+        <di:waypoint x="734" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_27-_19" >
+        <di:waypoint x="544" y="353" />
+        <di:waypoint x="734" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28-_19" >
+        <di:waypoint x="258" y="107" />
+        <di:waypoint x="734" y="226" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_20-_21" >
+        <di:waypoint x="862" y="225" />
+        <di:waypoint x="864" y="323" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_19-_20" >
+        <di:waypoint x="734" y="226" />
+        <di:waypoint x="862" y="225" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_26-_23" >
+        <di:waypoint x="380" y="494" />
+        <di:waypoint x="871" y="495" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_22" >
+        <di:waypoint x="187" y="353" />
+        <di:waypoint x="377" y="352" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_22-_24" >
+        <di:waypoint x="377" y="352" />
+        <di:waypoint x="540" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_22-_27" >
+        <di:waypoint x="377" y="352" />
+        <di:waypoint x="544" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_22-_26" >
+        <di:waypoint x="377" y="352" />
+        <di:waypoint x="380" y="494" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_22-_28" >
+        <di:waypoint x="377" y="352" />
+        <di:waypoint x="258" y="107" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
