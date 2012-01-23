@@ -5,9 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import org.mvel2.Operator;
@@ -43,6 +41,7 @@ public class ConditionAnalyzer {
 
     private ASTNode node;
     private ParserContext parserContext;
+    private Map<String, Object> vars;
 
     public ConditionAnalyzer(ExecutableStatement stmt) {
         if (stmt instanceof CompiledExpression) {
@@ -51,6 +50,11 @@ public class ConditionAnalyzer {
         } else {
             node = ((ExecutableAccessor)stmt).getNode();
         }
+    }
+
+    public ConditionAnalyzer(ExecutableStatement stmt, Map<String, Object> vars) {
+        this(stmt);
+        this.vars = vars;
     }
 
     public Condition analyzeCondition() {
@@ -127,7 +131,7 @@ public class ConditionAnalyzer {
         if (node instanceof BinaryOperation) {
             BinaryOperation op = (BinaryOperation)node;
             if (node.getClass() == BinaryOperation.class) {
-                return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
+                return new AritmeticExpression(node.getEgressType(), analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
             } else {
                 return new FixedExpression(op.getEgressType(), op.getReducedValue(parserContext, null, new ImmutableDefaultFactory()));
             }
@@ -149,7 +153,8 @@ public class ConditionAnalyzer {
             VariableAccessor variableAccessor = (VariableAccessor)accessor;
             accessorNode = variableAccessor.getNextNode();
             if (accessorNode == null || !isStaticAccessor(accessorNode)) {
-                return new VariableExpression((String)(variableAccessor.getProperty()), analyzeExpressionNode(accessorNode));
+                String variableName = (String)(variableAccessor.getProperty());
+                return new VariableExpression(variableName, analyzeExpressionNode(accessorNode), getVariableType(variableName));
             }
         }
 
@@ -307,6 +312,12 @@ public class ConditionAnalyzer {
         }
     }
 
+    private Class<?> getVariableType(String name) {
+        if (vars == null) return Object.class;
+        Object value = vars.get(name);
+        return value == null ? Object.class : value.getClass();
+    }
+
     public static abstract class Condition {
         private boolean negated;
 
@@ -432,10 +443,12 @@ public class ConditionAnalyzer {
     public static class VariableExpression implements Expression {
         final String variableName;
         final EvaluatedExpression subsequentInvocations;
+        final Class<?> type;
 
-        VariableExpression(String variableName, EvaluatedExpression subsequentInvocations) {
+        VariableExpression(String variableName, EvaluatedExpression subsequentInvocations, Class<?> type) {
             this.variableName = variableName;
             this.subsequentInvocations = subsequentInvocations;
+            this.type = type;
         }
 
         public boolean isFixed() {
@@ -448,6 +461,10 @@ public class ConditionAnalyzer {
 
         public Class<?> getType() {
             return subsequentInvocations != null ? subsequentInvocations.getType() : Object.class;
+        }
+
+        public Class<?> getVariableType() {
+            return subsequentInvocations != null ? subsequentInvocations.getType() : type;
         }
 
         public String toString() {
@@ -486,13 +503,18 @@ public class ConditionAnalyzer {
     }
 
     public static class AritmeticExpression implements Expression {
+        final Class<?> type;
         final Expression left;
         final AritmeticOperator operator;
         final Expression right;
 
-        public AritmeticExpression(Expression left, AritmeticOperator operation, Expression right) {
+        public AritmeticExpression(Class<?> type, Expression left, AritmeticOperator operator, Expression right) {
+            if (operator.isBitwiseOperation()) {
+                type = left instanceof VariableExpression ? ((VariableExpression)left).getVariableType() : left.getType();
+            }
+            this.type = type;
             this.left = left;
-            this.operator = operation;
+            this.operator = operator;
             this.right = right;
         }
 
@@ -505,7 +527,10 @@ public class ConditionAnalyzer {
         }
 
         public Class<?> getType() {
-            return isStringConcat() ? String.class : double.class;
+            if (isStringConcat()) return String.class;
+            if (type == Integer.class) return int.class;
+            if (type == Long.class) return long.class;
+            return double.class;
         }
 
         public String toString() {
@@ -708,7 +733,8 @@ public class ConditionAnalyzer {
     }
 
     public enum AritmeticOperator {
-        ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"), POW("^");
+        ADD("+"), SUB("-"), MUL("*"), DIV("/"), MOD("%"), POW("^"),
+        BW_AND("&"), BW_OR("|"), BW_XOR("^"), BW_SHIFT_RIGHT(">>"), BW_SHIFT_LEFT("<<"), BW_USHIFT_RIGHT(">>>"), BW_USHIFT_LEFT("<<<");
 
         private String symbol;
 
@@ -720,6 +746,10 @@ public class ConditionAnalyzer {
             return symbol;
         }
 
+        public boolean isBitwiseOperation() {
+            return this == BW_AND || this == BW_OR || this == BW_SHIFT_RIGHT || this == BW_SHIFT_LEFT || this == BW_USHIFT_RIGHT || this == BW_USHIFT_LEFT;
+        }
+
         public static AritmeticOperator fromMvelOpCode(int opCode) {
             switch (opCode) {
                 case Operator.ADD: return ADD;
@@ -727,7 +757,12 @@ public class ConditionAnalyzer {
                 case Operator.MULT: return MUL;
                 case Operator.DIV: return DIV;
                 case Operator.MOD: return MOD;
-                case Operator.POWER: return POW;
+                case Operator.BW_AND: return BW_AND;
+                case Operator.BW_OR: return BW_OR;
+                case Operator.BW_SHIFT_RIGHT: return BW_SHIFT_RIGHT;
+                case Operator.BW_SHIFT_LEFT: return BW_SHIFT_LEFT;
+                case Operator.BW_USHIFT_RIGHT: return BW_USHIFT_RIGHT;
+                case Operator.BW_USHIFT_LEFT: return BW_USHIFT_LEFT;
             }
             throw new RuntimeException("Unknown boolean operator");
         }

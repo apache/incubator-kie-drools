@@ -1992,7 +1992,6 @@ public class MiscTest extends CommonTestMethodBase {
         session.fireAllRules();
     }
 
-    @Ignore("22-JUN-2011 -Toni Rikkola-")
     @Test()
     public void testImport() throws Exception {
         // Same package as this test
@@ -9698,7 +9697,7 @@ public class MiscTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore // TODO remove @Ignore after release of 5.4.beta2
+    @Test
     public void testUnwantedCoersion() throws Exception {
         String rule = "package org.drools\n" +
                 "import org.drools.integrationtests.MiscTest.InnerBean;\n" +
@@ -9777,4 +9776,64 @@ public class MiscTest extends CommonTestMethodBase {
             this.id = id;
         }
     }
+
+    @Test
+    public void testShiftOperator() throws Exception {
+        String rule = "dialect \"mvel\"\n" +
+                "rule kickOff\n" +
+                "when\n" +
+                "then\n" +
+                "   insert( Integer.valueOf( 1 ) );\n" +
+                "   insert( Long.valueOf( 1 ) );\n" +
+                "   insert( Integer.valueOf( 65552 ) ); // 0x10010\n" +
+                "   insert( Long.valueOf( 65552 ) );\n" +
+                "   insert( Integer.valueOf( 65568 ) ); // 0x10020\n" +
+                "   insert( Long.valueOf( 65568 ) );\n" +
+                "   insert( Integer.valueOf( 65536 ) ); // 0x10000\n" +
+                "   insert( Long.valueOf( 65536L ) );\n" +
+                "   insert( Long.valueOf( 4294967296L ) ); // 0x100000000L\n" +
+                "end\n" +
+                "rule test1\n" +
+                "   salience -1\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test1 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test2\n" +
+                "   salience -2\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test2 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test3\n" +
+                "   salience -3\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test3 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test4\n" +
+                "   salience -4\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test4 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        int rules = ksession.fireAllRules();
+        assertEquals(13, rules);
+    }
+
 }
