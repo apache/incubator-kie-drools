@@ -1,6 +1,5 @@
 package org.drools.compiler;
 
-import org.drools.KnowledgeBaseFactoryService;
 import org.drools.util.ServiceRegistryImpl;
 
 
