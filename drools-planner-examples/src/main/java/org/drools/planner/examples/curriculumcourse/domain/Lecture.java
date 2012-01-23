@@ -98,7 +98,7 @@ public class Lecture extends AbstractPersistable {
 
     public int getTimeslotIndex() {
         if (period == null) {
-            return -1;
+            return Integer.MIN_VALUE;
         }
         return period.getTimeslot().getTimeslotIndex();
     }
