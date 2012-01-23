@@ -139,5 +139,25 @@ then
     // sound the alarm
 end</programlisting>
       </example>
+	  
+	  <para>The following rule expects every 10 seconds at least one
+	  “Heartbeat” event, if not the rule fires. The special case in this rule
+	  is that we use the same type of the object in the first pattern and in
+	  the negative pattern. The negative pattern has the temporal constraint to
+	  wait between 0 to 10 seconds before firing and it excludes the Heartbeat
+	  bound to $h. Excluding the bound Heartbeat is important since the
+	  temporal constraint [0s, ...] does not exclude by itself the bound event
+	  $h from being matched again, thus preventing the rule to fire.</para>
+	  <example>
+        <title>excluding bound events in negativ patterns</title>
+
+        <programlisting>rule "Sound the alarm"
+when
+    $h: Heartbeat( ) from entry-point "MonitoringStream"
+    not( Heartbeat( this != $h, this after[0s,10s] $h ) from entry-point "MonitoringStream" )
+then
+    // Sound the alarm
+end</programlisting>
+      </example>
   </section>
 </section>
