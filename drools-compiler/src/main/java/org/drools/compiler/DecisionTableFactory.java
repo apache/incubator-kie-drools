@@ -1,11 +1,8 @@
 package org.drools.compiler;
 
 import java.io.InputStream;
-import java.io.Reader;
 
-import org.drools.SystemEventListenerService;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.osgi.compiler.Activator;
 import org.drools.util.ServiceRegistryImpl;
 
 public class DecisionTableFactory {
