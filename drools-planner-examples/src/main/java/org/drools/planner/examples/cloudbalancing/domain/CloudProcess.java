@@ -72,6 +72,10 @@ public class CloudProcess extends AbstractPersistable {
         this.cloudComputer = cloudComputer;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public int getRequiredMultiplicand() {
         return requiredCpuPower * requiredMemory * requiredNetworkBandwidth;
     }

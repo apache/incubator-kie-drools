@@ -57,6 +57,18 @@ public class Journey extends AbstractPersistable implements Terminal {
         this.previousTerminal = previousTerminal;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public int getDistanceToPreviousTerminal() {
+        return getDistanceTo(previousTerminal);
+    }
+
+    public int getDistanceTo(Terminal terminal) {
+        return city.getDistance(terminal.getCity());
+    }
+
     /**
      * Warning: previous and next do not point to new clones.
      * @return never null
@@ -105,14 +117,6 @@ public class Journey extends AbstractPersistable implements Terminal {
     @Override
     public String toString() {
         return city.toString();
-    }
-
-    public int getDistanceToPreviousTerminal() {
-        return getDistanceTo(previousTerminal);
-    }
-
-    public int getDistanceTo(Terminal terminal) {
-        return city.getDistance(terminal.getCity());
     }
 
 }

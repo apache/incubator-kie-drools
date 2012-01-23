@@ -50,6 +50,25 @@ public class SeatDesignation extends AbstractPersistable {
         this.seat = seat;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public Job getGuestJob() {
+        return getGuest().getJob();
+    }
+
+    public JobType getGuestJobType() {
+        return getGuest().getJob().getJobType();
+    }
+
+    public Table getSeatTable() {
+        if (seat == null) {
+            return  null;
+        }
+        return seat.getTable();
+    }
+
     public SeatDesignation clone() {
         SeatDesignation clone = new SeatDesignation();
         clone.id = id;
@@ -94,18 +113,6 @@ public class SeatDesignation extends AbstractPersistable {
     @Override
     public String toString() {
         return guest + " @ " + seat;
-    }
-
-    public Job getGuestJob() {
-        return getGuest().getJob();
-    }
-
-    public JobType getGuestJobType() {
-        return getGuest().getJob().getJobType();
-    }
-
-    public Table getSeatTable() {
-        return getSeat().getTable();
     }
 
 }

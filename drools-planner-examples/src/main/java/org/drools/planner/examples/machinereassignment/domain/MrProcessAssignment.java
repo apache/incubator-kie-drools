@@ -61,6 +61,38 @@ public class MrProcessAssignment extends AbstractPersistable {
         this.machine = machine;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public MrService getService() {
+        return process.getService();
+    }
+
+    public boolean isMoved() {
+        return !ObjectUtils.equals(originalMachine, machine);
+    }
+
+    public int getProcessMoveCost() {
+        return process.getMoveCost();
+    }
+
+    public int getMachineMoveCost() {
+        return machine == null ? 0 : originalMachine.getMoveCostTo(machine);
+    }
+
+    public MrNeighborhood getNeighborhood() {
+        return machine == null ? null : machine.getNeighborhood();
+    }
+
+    public MrLocation getLocation() {
+        return machine == null ? null : machine.getLocation();
+    }
+
+    public String getLabel() {
+        return "Process " + getId();
+    }
+
     public MrProcessAssignment clone() {
         MrProcessAssignment clone = new MrProcessAssignment();
         clone.id = id;
@@ -104,34 +136,6 @@ public class MrProcessAssignment extends AbstractPersistable {
     @Override
     public String toString() {
         return process + " @ " + machine;
-    }
-
-    public String getLabel() {
-        return "Process " + getId();
-    }
-
-    public MrService getService() {
-        return process.getService();
-    }
-
-    public boolean isMoved() {
-        return !ObjectUtils.equals(originalMachine, machine);
-    }
-
-    public int getProcessMoveCost() {
-        return process.getMoveCost();
-    }
-
-    public int getMachineMoveCost() {
-        return machine == null ? 0 : originalMachine.getMoveCostTo(machine);
-    }
-
-    public MrNeighborhood getNeighborhood() {
-        return machine == null ? null : machine.getNeighborhood();
-    }
-
-    public MrLocation getLocation() {
-        return machine == null ? null : machine.getLocation();
     }
     
 }

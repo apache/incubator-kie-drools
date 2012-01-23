@@ -77,9 +77,9 @@ public class Lecture extends AbstractPersistable {
         this.room = room;
     }
 
-    public String getLabel() {
-        return course + "-" + lectureIndexInCourse;
-    }
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
 
     public int getStudentSize() {
         return course.getStudentSize();
@@ -101,6 +101,10 @@ public class Lecture extends AbstractPersistable {
             return Integer.MIN_VALUE;
         }
         return period.getTimeslot().getTimeslotIndex();
+    }
+
+    public String getLabel() {
+        return course + "-" + lectureIndexInCourse;
     }
 
     public Lecture clone() {

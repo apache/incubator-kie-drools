@@ -58,6 +58,10 @@ public class Match extends AbstractPersistable {
         this.day = day;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Match clone() {
         Match clone = new Match();
         clone.id = id;

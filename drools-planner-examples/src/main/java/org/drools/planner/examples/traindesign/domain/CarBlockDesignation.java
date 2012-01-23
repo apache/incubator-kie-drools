@@ -53,6 +53,25 @@ public class CarBlockDesignation extends AbstractPersistable {
         this.railPath = railPath;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public List<RailPath> getPossibleRailPathList() {
+        // TODO this is too 1 sided
+        return carBlock.getOrigin().getShortestPathTo(carBlock.getDestination()).getRailPathList();
+    }
+
+    public int calculateCarTravelCost(int carTravelCostPerDistance) {
+        int carTravelCost = carBlock.getNumberOfCars()
+                * railPath.getDistance() // in miles * 1000
+                * carTravelCostPerDistance; // per 1000 miles
+        if (carTravelCost % 1000000 != 0) {
+            throw new IllegalStateException("The carTravelCost (" + carTravelCost + ") / 1000000 is not an integer.");
+        }
+        return carTravelCost / 1000000;
+    }
+
     public CarBlockDesignation clone() {
         CarBlockDesignation clone = new CarBlockDesignation();
         clone.id = id;
@@ -97,21 +116,6 @@ public class CarBlockDesignation extends AbstractPersistable {
     @Override
     public String toString() {
         return carBlock + " @ " + railPath;
-    }
-
-    public List<RailPath> getPossibleRailPathList() {
-        // TODO this is too 1 sided
-        return carBlock.getOrigin().getShortestPathTo(carBlock.getDestination()).getRailPathList();
-    }
-
-    public int calculateCarTravelCost(int carTravelCostPerDistance) {
-        int carTravelCost = carBlock.getNumberOfCars()
-                * railPath.getDistance() // in miles * 1000
-                * carTravelCostPerDistance; // per 1000 miles
-        if (carTravelCost % 1000000 != 0) {
-            throw new IllegalStateException("The carTravelCost (" + carTravelCost + ") / 1000000 is not an integer.");
-        }
-        return carTravelCost / 1000000;
     }
 
 }

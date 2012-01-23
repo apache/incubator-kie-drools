@@ -52,6 +52,62 @@ public class BedDesignation extends AbstractPersistable {
         this.bed = bed;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public Patient getPatient() {
+        return admissionPart.getPatient();
+    }
+
+    public Gender getPatientGender() {
+        return admissionPart.getPatient().getGender();
+    }
+
+    public int getPatientAge() {
+        return admissionPart.getPatient().getAge();
+    }
+
+    public int getPatientPreferredMaximumRoomCapacity() {
+        return admissionPart.getPatient().getPreferredMaximumRoomCapacity();
+    }
+
+    public Specialism getAdmissionPartSpecialism() {
+        return admissionPart.getSpecialism();
+    }
+
+    public int getAdmissionPartNightCount() {
+        return admissionPart.getNightCount();
+    }
+
+    public Room getRoom() {
+        if (bed == null) {
+            return null;
+        }
+        return bed.getRoom();
+    }
+
+    public int getRoomCapacity() {
+        if (bed == null) {
+            return Integer.MIN_VALUE;
+        }
+        return bed.getRoom().getCapacity();
+    }
+
+    public Department getDepartment() {
+        if (bed == null) {
+            return null;
+        }
+        return bed.getRoom().getDepartment();
+    }
+
+    public GenderLimitation getRoomGenderLimitation() {
+        if (bed == null) {
+            return null;
+        }
+        return bed.getRoom().getGenderLimitation();
+    }
+
     public BedDesignation clone() {
         BedDesignation clone = new BedDesignation();
         clone.id = id;
@@ -96,46 +152,6 @@ public class BedDesignation extends AbstractPersistable {
     @Override
     public String toString() {
         return admissionPart + " @ " + bed;
-    }
-
-    public Patient getPatient() {
-        return admissionPart.getPatient();
-    }
-
-    public Gender getPatientGender() {
-        return admissionPart.getPatient().getGender();
-    }
-
-    public int getPatientAge() {
-        return admissionPart.getPatient().getAge();
-    }
-
-    public int getPatientPreferredMaximumRoomCapacity() {
-        return admissionPart.getPatient().getPreferredMaximumRoomCapacity();
-    }
-
-    public Specialism getAdmissionPartSpecialism() {
-        return admissionPart.getSpecialism();
-    }
-
-    public int getAdmissionPartNightCount() {
-        return admissionPart.getNightCount();
-    }
-
-    public Room getRoom() {
-        return bed.getRoom();
-    }
-
-    public int getRoomCapacity() {
-        return bed.getRoom().getCapacity();
-    }
-
-    public Department getDepartment() {
-        return bed.getRoom().getDepartment();
-    }
-
-    public GenderLimitation getRoomGenderLimitation() {
-        return bed.getRoom().getGenderLimitation();
     }
 
 }

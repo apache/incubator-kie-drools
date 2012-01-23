@@ -50,6 +50,10 @@ public class Queen extends AbstractPersistable {
         this.row = row;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public int getColumnIndex() {
         return column.getIndex();
     }

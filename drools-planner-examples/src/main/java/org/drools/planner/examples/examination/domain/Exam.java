@@ -85,9 +85,28 @@ public class Exam extends AbstractPersistable {
         this.room = room;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public boolean isCoincidenceLeader() {
         return examCoincidence == null
                 || examCoincidence.getFirstExam() == this;
+    }
+
+    public int getTopicDuration() {
+        return getTopic().getDuration();
+    }
+
+    public int getTopicStudentSize() {
+        return getTopic().getStudentSize();
+    }
+
+    public int getPeriodDuration() {
+        if (period == null) {
+            return Integer.MIN_VALUE;
+        }
+        return period.getDuration();
     }
 
     public Exam clone() {
@@ -137,18 +156,6 @@ public class Exam extends AbstractPersistable {
     @Override
     public String toString() {
         return topic + " @ " + period + " + " + room;
-    }
-
-    public int getTopicDuration() {
-        return getTopic().getDuration();
-    }
-
-    public int getTopicStudentSize() {
-        return getTopic().getStudentSize();
-    }
-
-    public int getPeriodDuration() {
-        return getPeriod().getDuration();
     }
 
 }

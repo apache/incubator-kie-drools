@@ -55,6 +55,46 @@ public class ShiftAssignment extends AbstractPersistable {
         this.employee = employee;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public ShiftDate getShiftDate() {
+        return shift.getShiftDate();
+    }
+
+    public ShiftType getShiftType() {
+        return shift.getShiftType();
+    }
+
+    public int getShiftDateDayIndex() {
+        return shift.getShiftDate().getDayIndex();
+    }
+
+    public DayOfWeek getShiftDateDayOfWeek() {
+        return shift.getShiftDate().getDayOfWeek();
+    }
+
+    public Contract getContract() {
+        if (employee == null) {
+            return null;
+        }
+        return employee.getContract();
+    }
+
+    public boolean isWeekend() {
+        if (employee == null) {
+            return false;
+        }
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shift.getShiftDate().getDayOfWeek();
+        return weekendDefinition.isWeekend(dayOfWeek);
+    }
+
+    public int getWeekendSundayIndex() {
+        return shift.getShiftDate().getWeekendSundayIndex();
+    }
+
     public String getLabel() {
         return shift.getShiftType().getCode();
     }
@@ -103,42 +143,6 @@ public class ShiftAssignment extends AbstractPersistable {
     @Override
     public String toString() {
         return shift + "->" + employee;
-    }
-
-    public ShiftDate getShiftDate() {
-        return shift.getShiftDate();
-    }
-
-    public ShiftType getShiftType() {
-        return shift.getShiftType();
-    }
-
-    public int getShiftDateDayIndex() {
-        return shift.getShiftDate().getDayIndex();
-    }
-
-    public DayOfWeek getShiftDateDayOfWeek() {
-        return shift.getShiftDate().getDayOfWeek();
-    }
-
-    public Contract getContract() {
-        if (employee == null) {
-            return null;
-        }
-        return employee.getContract();
-    }
-
-    public boolean isWeekend() {
-        if (employee == null) {
-            return false;
-        }
-        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
-        DayOfWeek dayOfWeek = shift.getShiftDate().getDayOfWeek();
-        return weekendDefinition.isWeekend(dayOfWeek);
-    }
-
-    public int getWeekendSundayIndex() {
-        return shift.getShiftDate().getWeekendSundayIndex();
     }
 
 }
