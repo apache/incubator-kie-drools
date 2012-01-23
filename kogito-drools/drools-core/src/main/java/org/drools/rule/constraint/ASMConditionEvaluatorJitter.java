@@ -323,9 +323,13 @@ public class ASMConditionEvaluatorJitter {
             if (aritmeticExpression.isStringConcat()) {
                 jitStringConcat(aritmeticExpression.left, aritmeticExpression.right);
             } else {
-                jitExpressionToDouble(aritmeticExpression.left);
-                jitExpressionToDouble(aritmeticExpression.right);
-                jitAritmeticOperation(aritmeticExpression.operator);
+                Class<?> operationType = double.class;
+                if (aritmeticExpression.type == Integer.class) operationType = int.class;
+                else if (aritmeticExpression.type == Long.class) operationType = long.class;
+
+                jitExpressionToPrimitiveType(aritmeticExpression.left, operationType);
+                jitExpressionToPrimitiveType(aritmeticExpression.right, aritmeticExpression.operator.isBitwiseOperation() ? int.class : operationType);
+                jitAritmeticOperation(operationType, aritmeticExpression.operator);
             }
         }
 
@@ -338,29 +342,73 @@ public class ASMConditionEvaluatorJitter {
             invokeVirtual(StringBuilder.class, "toString", String.class);
         }
 
-        private void jitExpressionToDouble(Expression expression) {
+        private void jitExpressionToPrimitiveType(Expression expression, Class<?> primitiveType) {
             jitExpression(expression, Object.class);
             if (expression.isFixed() || expression.getType().isPrimitive()) {
-                castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), double.class);
+                castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), primitiveType);
             } else {
-                castToPrimitive(double.class);
+                castToPrimitive(primitiveType);
             }
         }
 
-        private void jitAritmeticOperation(AritmeticOperator operator) {
-            switch(operator) {
-                case ADD:
-                    mv.visitInsn(DADD);
-                    break;
-                case SUB:
-                    mv.visitInsn(DSUB);
-                    break;
-                case MUL:
-                    mv.visitInsn(DMUL);
-                    break;
-                case DIV:
-                    mv.visitInsn(DDIV);
-                    break;
+        private void jitAritmeticOperation(Class<?> operationType, AritmeticOperator operator) {
+            if (operationType == int.class) {
+                switch(operator) {
+                    case ADD:
+                        mv.visitInsn(IADD);
+                        break;
+                    case SUB:
+                        mv.visitInsn(ISUB);
+                        break;
+                    case MUL:
+                        mv.visitInsn(IMUL);
+                        break;
+                    case DIV:
+                        mv.visitInsn(IDIV);
+                        break;
+                    case BW_SHIFT_LEFT:
+                        mv.visitInsn(ISHL);
+                        break;
+                    case BW_SHIFT_RIGHT:
+                        mv.visitInsn(ISHR);
+                        break;
+                }
+            } else if (operationType == long.class) {
+                switch(operator) {
+                    case ADD:
+                        mv.visitInsn(LADD);
+                        break;
+                    case SUB:
+                        mv.visitInsn(LSUB);
+                        break;
+                    case MUL:
+                        mv.visitInsn(LMUL);
+                        break;
+                    case DIV:
+                        mv.visitInsn(LDIV);
+                        break;
+                    case BW_SHIFT_LEFT:
+                        mv.visitInsn(LSHL);
+                        break;
+                    case BW_SHIFT_RIGHT:
+                        mv.visitInsn(LSHR);
+                        break;
+                }
+            } else {
+                switch(operator) {
+                    case ADD:
+                        mv.visitInsn(DADD);
+                        break;
+                    case SUB:
+                        mv.visitInsn(DSUB);
+                        break;
+                    case MUL:
+                        mv.visitInsn(DMUL);
+                        break;
+                    case DIV:
+                        mv.visitInsn(DDIV);
+                        break;
+                }
             }
         }
 
@@ -520,9 +568,10 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> findCommonClass(Class<?> class1, Class<?> class2, boolean canBePrimitive) {
             if (class1.isAssignableFrom(class2)) return class1;
 
-            if (class1 == boolean.class) {
-                if (class2 == Boolean.class) return canBePrimitive ? boolean.class : Boolean.class;
-            }
+            if (class1 == boolean.class && class2 == Boolean.class) return canBePrimitive ? boolean.class : Boolean.class;
+            if (class1 == char.class && class2 == Character.class) return canBePrimitive ? char.class : Character.class;
+            if (class1 == byte.class && class2 == Byte.class) return canBePrimitive ? byte.class : Byte.class;
+            if (class1 == short.class && class2 == Short.class) return canBePrimitive ? short.class : Short.class;
 
             if (class1 == Number.class && class2.isPrimitive()) {
                 return Double.class;

@@ -41,7 +41,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
 
     ConditionAnalyzer.Condition getAnalyzedCondition(Object object, Map<String, Object> vars) {
         ensureCompleteEvaluation(object, vars);
-        return new ConditionAnalyzer(stmt).analyzeCondition();
+        return new ConditionAnalyzer(stmt, vars).analyzeCondition();
     }
 
     private void ensureCompleteEvaluation(Object object, Map<String, Object> vars) {
