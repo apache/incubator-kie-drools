@@ -34,8 +34,10 @@ public class KnowledgeBaseAddKnowledgePackagesCommand
 
     public Void execute(Context context) {
         KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
+        if (kbuilder.hasErrors()) {
+            throw new IllegalStateException("There are rule compilation errors:\n" + kbuilder.getErrors().toString());
+        }
         KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
-        
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return null;
     }
