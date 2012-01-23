@@ -16,19 +16,20 @@
 
 package org.drools.planner.core.heuristic.selector.variable;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.move.generic.GenericChainedChangeMove;
 import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solution.Solution;
 
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
@@ -36,6 +37,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private final PlanningValueSelector planningValueSelector;
 
     private WorkingMemory workingMemory;
+    private Solution workingSolution;
 
     private Object planningEntity;
     private FactHandle planningEntityFactHandle;
@@ -61,6 +63,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         planningValueSelector.phaseStarted(solverPhaseScope);
         workingMemory = solverPhaseScope.getWorkingMemory();
+        workingSolution = solverPhaseScope.getWorkingSolution();
     }
 
     public void beforeDeciding(AbstractStepScope stepScope) {
@@ -134,21 +137,77 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     // TODO refactor variableWalker to this
     public Iterator<Move> moveIterator(final Object planningEntity) {
         final Iterator<?> planningValueIterator = planningValueSelector.iterator(planningEntity);
-        return new Iterator<Move>() {
-            public boolean hasNext() {
-                return planningValueIterator.hasNext();
+        if (!planningVariableDescriptor.isTriggerChainCorrection()) {
+            return new ChangeMoveIterator(planningValueIterator, planningEntity);
+        } else {
+            Object chainedEntity = null;
+            PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
+            SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+            for (Object suspectedChainedEntity : solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
+                    workingSolution, entityDescriptor.getPlanningEntityClass())) {
+                if (planningVariableDescriptor.getValue(suspectedChainedEntity) == planningEntity) {
+                    if (chainedEntity != null) {
+                        throw new IllegalStateException("The planningEntity (" + planningEntity
+                                + ") has multiple chained entities (" + chainedEntity + ") ("
+                                + suspectedChainedEntity + ") pointing to it.");
+                    }
+                    chainedEntity = suspectedChainedEntity;
+                }
             }
+            if (chainedEntity == null) {
+                return new ChangeMoveIterator(planningValueIterator, planningEntity);
+            }
+            FactHandle chainedEntityFactHandle = workingMemory.getFactHandle(chainedEntity);
+            return new ChainedChangeMoveIterator(planningValueIterator, planningEntity,
+                    chainedEntity, chainedEntityFactHandle);
+        }
+    }
 
-            public Move next() {
-                Object toPlanningValue = planningValueIterator.next();
-                return new GenericChangeMove(planningEntity, planningEntityFactHandle,
-                        planningVariableDescriptor, toPlanningValue);
-            }
+    private class ChangeMoveIterator implements Iterator<Move> {
 
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
+        protected final Iterator<?> planningValueIterator;
+        protected final Object planningEntity;
+
+        public ChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity) {
+            this.planningValueIterator = planningValueIterator;
+            this.planningEntity = planningEntity;
+        }
+
+        public boolean hasNext() {
+            return planningValueIterator.hasNext();
+        }
+
+        public Move next() {
+            Object toPlanningValue = planningValueIterator.next();
+            return new GenericChangeMove(planningEntity, planningEntityFactHandle,
+                    planningVariableDescriptor, toPlanningValue);
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
+    private class ChainedChangeMoveIterator extends ChangeMoveIterator {
+
+        private final Object chainedEntity;
+        private final FactHandle chainedEntityFactHandle;
+
+        public ChainedChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity,
+                Object chainedEntity, FactHandle chainedEntityFactHandle) {
+            super(planningValueIterator, planningEntity);
+            this.chainedEntity = chainedEntity;
+            this.chainedEntityFactHandle = chainedEntityFactHandle;
+        }
+
+        @Override
+        public Move next() {
+            Object toPlanningValue = planningValueIterator.next();
+            return new GenericChainedChangeMove(planningEntity, planningEntityFactHandle,
+                    planningVariableDescriptor, toPlanningValue, chainedEntity, chainedEntityFactHandle);
+        }
+
     }
 
 }

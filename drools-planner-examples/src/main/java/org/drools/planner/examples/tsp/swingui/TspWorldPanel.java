@@ -47,7 +47,10 @@ public class TspWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                resetPanel(TspWorldPanel.this.tspPanel.getTravelingSalesmanTour());
+                TravelingSalesmanTour travelingSalesmanTour = TspWorldPanel.this.tspPanel.getTravelingSalesmanTour();
+                if (travelingSalesmanTour != null) {
+                    resetPanel(travelingSalesmanTour);
+                }
             }
         });
     }

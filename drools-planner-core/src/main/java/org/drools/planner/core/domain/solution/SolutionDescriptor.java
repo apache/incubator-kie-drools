@@ -159,6 +159,29 @@ public class SolutionDescriptor {
         return planningEntityList;
     }
 
+    public List<Object> getPlanningEntityListByPlanningEntityClass(Solution solution, Class<?> planningEntityClass) {
+        List<Object> planningEntityList = new ArrayList<Object>();
+        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
+            if (entityPropertyDescriptor.getPropertyType().isAssignableFrom(planningEntityClass)) {
+                Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+                if (entity != null && planningEntityClass.isInstance(entity)) {
+                    planningEntityList.add(entity);
+                }
+            }
+        }
+        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+            // TODO if (entityCollectionPropertyDescriptor.getPropertyType().getElementType().isAssignableFrom(planningEntityClass)) {
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyDescriptor, solution);
+            for (Object entity : entityCollection) {
+                if (planningEntityClass.isInstance(entity)) {
+                    planningEntityList.add(entity);
+                }
+            }
+        }
+        return planningEntityList;
+    }
+
     /**
      * @param solution never null
      * @return >= 0

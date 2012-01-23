@@ -192,6 +192,10 @@ public class PlanningVariableDescriptor {
         return variablePropertyDescriptor.getPropertyType();
     }
 
+    public boolean isTriggerChainCorrection() {
+        return triggerChainCorrection;
+    }
+
     public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {
         return dependentPlanningVariableDescriptorMap.values();
     }
