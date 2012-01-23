@@ -193,160 +193,160 @@
       <longitude>42973.3333</longitude>
     </City>
   </cityList>
-  <startCity reference="3"/>
-  <cityAssignmentList id="41">
-    <CityAssignment id="42">
+  <depotList id="41">
+    <Depot id="42">
       <id>0</id>
       <city reference="3"/>
-    </CityAssignment>
-    <CityAssignment id="43">
+    </Depot>
+  </depotList>
+  <journeyList id="43">
+    <Journey id="44">
       <id>1</id>
       <city reference="4"/>
-    </CityAssignment>
-    <CityAssignment id="44">
+    </Journey>
+    <Journey id="45">
       <id>2</id>
       <city reference="5"/>
-    </CityAssignment>
-    <CityAssignment id="45">
+    </Journey>
+    <Journey id="46">
       <id>3</id>
       <city reference="6"/>
-    </CityAssignment>
-    <CityAssignment id="46">
+    </Journey>
+    <Journey id="47">
       <id>4</id>
       <city reference="7"/>
-    </CityAssignment>
-    <CityAssignment id="47">
+    </Journey>
+    <Journey id="48">
       <id>5</id>
       <city reference="8"/>
-    </CityAssignment>
-    <CityAssignment id="48">
+    </Journey>
+    <Journey id="49">
       <id>6</id>
       <city reference="9"/>
-    </CityAssignment>
-    <CityAssignment id="49">
+    </Journey>
+    <Journey id="50">
       <id>7</id>
       <city reference="10"/>
-    </CityAssignment>
-    <CityAssignment id="50">
+    </Journey>
+    <Journey id="51">
       <id>8</id>
       <city reference="11"/>
-    </CityAssignment>
-    <CityAssignment id="51">
+    </Journey>
+    <Journey id="52">
       <id>9</id>
       <city reference="12"/>
-    </CityAssignment>
-    <CityAssignment id="52">
+    </Journey>
+    <Journey id="53">
       <id>10</id>
       <city reference="13"/>
-    </CityAssignment>
-    <CityAssignment id="53">
+    </Journey>
+    <Journey id="54">
       <id>11</id>
       <city reference="14"/>
-    </CityAssignment>
-    <CityAssignment id="54">
+    </Journey>
+    <Journey id="55">
       <id>12</id>
       <city reference="15"/>
-    </CityAssignment>
-    <CityAssignment id="55">
+    </Journey>
+    <Journey id="56">
       <id>13</id>
       <city reference="16"/>
-    </CityAssignment>
-    <CityAssignment id="56">
+    </Journey>
+    <Journey id="57">
       <id>14</id>
       <city reference="17"/>
-    </CityAssignment>
-    <CityAssignment id="57">
+    </Journey>
+    <Journey id="58">
       <id>15</id>
       <city reference="18"/>
-    </CityAssignment>
-    <CityAssignment id="58">
+    </Journey>
+    <Journey id="59">
       <id>16</id>
       <city reference="19"/>
-    </CityAssignment>
-    <CityAssignment id="59">
+    </Journey>
+    <Journey id="60">
       <id>17</id>
       <city reference="20"/>
-    </CityAssignment>
-    <CityAssignment id="60">
+    </Journey>
+    <Journey id="61">
       <id>18</id>
       <city reference="21"/>
-    </CityAssignment>
-    <CityAssignment id="61">
+    </Journey>
+    <Journey id="62">
       <id>19</id>
       <city reference="22"/>
-    </CityAssignment>
-    <CityAssignment id="62">
+    </Journey>
+    <Journey id="63">
       <id>20</id>
       <city reference="23"/>
-    </CityAssignment>
-    <CityAssignment id="63">
+    </Journey>
+    <Journey id="64">
       <id>21</id>
       <city reference="24"/>
-    </CityAssignment>
-    <CityAssignment id="64">
+    </Journey>
+    <Journey id="65">
       <id>22</id>
       <city reference="25"/>
-    </CityAssignment>
-    <CityAssignment id="65">
+    </Journey>
+    <Journey id="66">
       <id>23</id>
       <city reference="26"/>
-    </CityAssignment>
-    <CityAssignment id="66">
+    </Journey>
+    <Journey id="67">
       <id>24</id>
       <city reference="27"/>
-    </CityAssignment>
-    <CityAssignment id="67">
+    </Journey>
+    <Journey id="68">
       <id>25</id>
       <city reference="28"/>
-    </CityAssignment>
-    <CityAssignment id="68">
+    </Journey>
+    <Journey id="69">
       <id>26</id>
       <city reference="29"/>
-    </CityAssignment>
-    <CityAssignment id="69">
+    </Journey>
+    <Journey id="70">
       <id>27</id>
       <city reference="30"/>
-    </CityAssignment>
-    <CityAssignment id="70">
+    </Journey>
+    <Journey id="71">
       <id>28</id>
       <city reference="31"/>
-    </CityAssignment>
-    <CityAssignment id="71">
+    </Journey>
+    <Journey id="72">
       <id>29</id>
       <city reference="32"/>
-    </CityAssignment>
-    <CityAssignment id="72">
+    </Journey>
+    <Journey id="73">
       <id>30</id>
       <city reference="33"/>
-    </CityAssignment>
-    <CityAssignment id="73">
+    </Journey>
+    <Journey id="74">
       <id>31</id>
       <city reference="34"/>
-    </CityAssignment>
-    <CityAssignment id="74">
+    </Journey>
+    <Journey id="75">
       <id>32</id>
       <city reference="35"/>
-    </CityAssignment>
-    <CityAssignment id="75">
+    </Journey>
+    <Journey id="76">
       <id>33</id>
       <city reference="36"/>
-    </CityAssignment>
-    <CityAssignment id="76">
+    </Journey>
+    <Journey id="77">
       <id>34</id>
       <city reference="37"/>
-    </CityAssignment>
-    <CityAssignment id="77">
+    </Journey>
+    <Journey id="78">
       <id>35</id>
       <city reference="38"/>
-    </CityAssignment>
-    <CityAssignment id="78">
+    </Journey>
+    <Journey id="79">
       <id>36</id>
       <city reference="39"/>
-    </CityAssignment>
-    <CityAssignment id="79">
+    </Journey>
+    <Journey id="80">
       <id>37</id>
       <city reference="40"/>
-    </CityAssignment>
-  </cityAssignmentList>
-  <startCityAssignment reference="42"/>
+    </Journey>
+  </journeyList>
 </TravelingSalesmanTour>
