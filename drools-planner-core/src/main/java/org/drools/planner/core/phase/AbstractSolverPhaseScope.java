@@ -80,7 +80,8 @@ public abstract class AbstractSolverPhaseScope {
     public void reset() {
         startingSystemTimeMillis = System.currentTimeMillis();
         bestSolutionStepIndex = -1;
-        startingScore = solverScope.getBestScore();
+        // TODO Usage of solverScope.getBestScore() would be better performance wise but is null with a uninitialized score
+        startingScore = solverScope.calculateScoreFromWorkingMemory();
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
