@@ -27,7 +27,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMLResource;
-import org.jbpm.bpmn2.emfextmodel.util.EmfextmodelResourceFactoryImpl;
+import org.jboss.drools.DocumentRoot;
+import org.jboss.drools.DroolsFactory;
+import org.jboss.drools.DroolsPackage;
+import org.jboss.drools.GlobalType;
+import org.jboss.drools.ImportType;
+import org.jboss.drools.OnEntryScriptType;
+import org.jboss.drools.OnExitScriptType;
+import org.jboss.drools.util.DroolsResourceFactoryImpl;
 
 import junit.framework.TestCase;
 
@@ -40,10 +47,10 @@ public class BPMN2EmfExtTest extends TestCase {
         
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put
             (Resource.Factory.Registry.DEFAULT_EXTENSION, 
-             new EmfextmodelResourceFactoryImpl());
+             new DroolsResourceFactoryImpl());
         resourceSet.getPackageRegistry().put
-            (EmfextmodelPackage.eNS_URI, 
-             EmfextmodelPackage.eINSTANCE);
+            (DroolsPackage.eNS_URI, 
+            		DroolsPackage.eINSTANCE);
     }
     
     @Override
@@ -55,8 +62,8 @@ public class BPMN2EmfExtTest extends TestCase {
         XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
         inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
         inResource.setEncoding("UTF-8");
-        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
-        OnEntryScriptType root = EmfextmodelFactory.eINSTANCE.createOnEntryScriptType();
+        DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
+        OnEntryScriptType root = DroolsFactory.eINSTANCE.createOnEntryScriptType();
         root.setScript("script");
         root.setScriptFormat("format");
         documentRoot.setOnEntryScript(root);
@@ -90,8 +97,8 @@ public class BPMN2EmfExtTest extends TestCase {
         XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
         inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
         inResource.setEncoding("UTF-8");
-        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
-        OnExitScriptType root = EmfextmodelFactory.eINSTANCE.createOnExitScriptType();
+        DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
+        OnExitScriptType root = DroolsFactory.eINSTANCE.createOnExitScriptType();
         root.setScript("script");
         root.setScriptFormat("format");
         documentRoot.setOnExitScript(root);
@@ -125,8 +132,8 @@ public class BPMN2EmfExtTest extends TestCase {
         XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
         inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
         inResource.setEncoding("UTF-8");
-        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
-        ImportType root = EmfextmodelFactory.eINSTANCE.createImportType();
+        DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
+        ImportType root = DroolsFactory.eINSTANCE.createImportType();
         root.setName("import");
         documentRoot.setImport(root);
         inResource.getContents().add(documentRoot);
@@ -158,8 +165,8 @@ public class BPMN2EmfExtTest extends TestCase {
         XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
         inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
         inResource.setEncoding("UTF-8");
-        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
-        GlobalType root = EmfextmodelFactory.eINSTANCE.createGlobalType();
+        DocumentRoot documentRoot = DroolsFactory.eINSTANCE.createDocumentRoot();
+        GlobalType root = DroolsFactory.eINSTANCE.createGlobalType();
         root.setIdentifier("identifier");
         root.setType("type");
         documentRoot.setGlobal(root);

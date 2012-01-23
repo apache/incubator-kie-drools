@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="emfextmodel"
-    nsURI="http://www.jbpm.org/bpmn2/emfextmodel" nsPrefix="emfextmodel">
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="drools"
+    nsURI="http://www.jboss.org/drools" nsPrefix="drools">
   <eClassifiers xsi:type="ecore:EClass" name="DocumentRoot">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value=""/>
