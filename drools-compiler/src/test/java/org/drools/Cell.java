@@ -84,6 +84,14 @@ public class Cell implements Serializable {
         this.state = state;
     }
     
+    public int getRow() {
+        return this.row;
+    }
+    
+    public int getCol() {
+        return this.col;
+    }
+    
     @Override
     public String toString() {
         return "Cell( ["+row+","+col+"] "+( (state==DEAD)?"DEAD":"LIVE") +" = "+value+" )";
