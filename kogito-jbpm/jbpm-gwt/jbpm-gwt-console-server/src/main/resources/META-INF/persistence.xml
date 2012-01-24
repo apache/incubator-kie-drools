@@ -24,10 +24,13 @@
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
+    <class>org.jbpm.process.audit.ProcessInstanceLog</class>
+    <class>org.jbpm.process.audit.NodeInstanceLog</class>
+    <class>org.jbpm.process.audit.VariableInstanceLog</class>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>          
       <property name="hibernate.max_fetch_depth" value="3"/>
-      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.show_sql" value="false" />  
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
     </properties>        
