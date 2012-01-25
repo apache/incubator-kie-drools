@@ -1,0 +1,57 @@
+package org.drools.examples.wumpus
+
+import org.drools.examples.wumpus.Move
+import org.drools.examples.wumpus.MoveCommand
+import org.drools.examples.wumpus.Cell
+
+dialect "mvel"
+
+declare Hero
+	@propertySpecific
+end	
+
+rule "Move Up"  when
+    $mc : MoveCommand( move == Move.UP )   
+    $h  : Hero()
+    $c  : Cell(row == ($h.row + 1), col == $h.col )
+then
+    modify( $h ) { row = $h.row + 1 };
+    $c.setHidden( false ); 
+	retract ( $mc );  
+end
+
+rule "Move Down" when
+    $mc : MoveCommand( move == Move.DOWN )   
+    $h  : Hero() 
+    $c  : Cell(row == ($h.row - 1), col == $h.col )
+then
+    modify( $h ) { row = $h.row - 1 };
+    $c.setHidden( false );    
+	retract ( $mc );   
+end
+
+rule "Move Left" when
+    $mc : MoveCommand( move == Move.LEFT )   
+    $h  : Hero() 
+    $c  : Cell(row == $h.row, col == ($h.col - 1) )
+then
+    modify( $h ) { col = $h.col - 1 };
+    $c.setHidden( false );    
+	retract ( $mc );   
+end
+
+rule "Move Right" when
+    $mc : MoveCommand( move == Move.RIGHT )   
+    $h  : Hero() 
+    $c  : Cell(row == $h.row, col == ($h.col + 1) )
+then
+    modify( $h ) { col = $h.col + 1 };
+	$c.setHidden( false );
+	retract ( $mc );   
+end
+
+rule "Invalid Move" salience -100 when
+    $mc : MoveCommand()   
+then
+	System.out.println( "Invalid Move " + $mc );  
+end
