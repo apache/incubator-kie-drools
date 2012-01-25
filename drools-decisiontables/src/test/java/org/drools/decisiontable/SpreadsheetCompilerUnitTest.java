@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.parser.DataListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -131,5 +133,26 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "myObject.setIsValid(\"19-Jul-1992\")" ) > -1 );
 
     }
+
+
+    @Test
+    public void testProcessSheetForExtremeLowNumbers() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        final InputStream stream = this.getClass().getResourceAsStream("/data/BasicWorkbook_with_low_values.xls" );
+        final String drl = converter.compile( stream,
+                                              InputType.XLS );
+        assertNotNull( drl );
+        System.out.println(drl);
+
+
+        // Should parse the correct number
+        assertTrue( drl.indexOf( "myObject.size() < 0" ) == -1 );
+        
+        assertTrue( drl.indexOf( "myObject.size() < 8.0E-11" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.size() < 9.0E-7" ) > -1 );
+        assertTrue( drl.indexOf( "myObject.size() < 3.0E-4" ) > -1 );
+        
+    }
+
 
 }
