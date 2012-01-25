@@ -28,12 +28,13 @@ public class JMSSessionWriter implements SessionWriter {
 			
 			clientMessage.setStringProperty(TaskServiceConstants.SELECTOR_NAME, this.selector);
 			this.producer.send(clientMessage);
-			this.session.commit();
 		} catch (JMSException e) {
 			throw new IOException("Unable to create message: " + e.getMessage());
 		} finally {
 			try {
-				this.session.commit();
+				if(this.session.getTransacted()) {
+					this.session.commit();
+				}
 			} catch (JMSException e) {
 				throw new IOException("Unable to commit message: " + e.getMessage());
 			}

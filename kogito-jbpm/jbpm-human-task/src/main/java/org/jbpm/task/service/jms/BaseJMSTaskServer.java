@@ -95,7 +95,7 @@ public abstract class BaseJMSTaskServer extends TaskServer {
 			this.session = connection.createQueueSession(transacted, ackMode);
 			this.queue = this.session.createQueue(queueName);
 			this.responseQueue = this.session.createQueue(responseQueueName);
-			this.consumer = this.session.createReceiver(this.queue);
+			this.consumer = this.session.createConsumer(this.queue);
 			this.connection.start();
 		} catch (JMSException e) {
 			throw new RuntimeException("No se pudo levantar la cola servidora del JMSTaskServer", e);
