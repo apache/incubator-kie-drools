@@ -132,4 +132,27 @@ public class SpreadsheetCompilerUnitTest {
 
     }
 
+    @Test
+    public void testDeclaresXLS() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "DeclaresWorkbook.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+        
+        assertTrue( drl.indexOf( "declare Smurf name : String end" ) > -1 );
+    }
+    
+    @Test
+    public void testDeclaresCSV() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "DeclaresWorkbook.csv",
+                                        InputType.CSV );
+        
+        assertNotNull( drl );
+        
+        assertTrue( drl.indexOf( "declare Smurf name : String end" ) > -1 );
+    }
+
+    
 }

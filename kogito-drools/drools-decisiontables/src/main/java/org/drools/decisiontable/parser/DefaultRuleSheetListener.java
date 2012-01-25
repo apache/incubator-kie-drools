@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ implements RuleSheetListener {
     //keywords
     public static final String            QUERIES_TAG            = "Queries";
     public static final String            FUNCTIONS_TAG          = "Functions";
+    public static final String            DECLARES_TAG           = "Declare";
     public static final String            IMPORT_TAG             = "Import";
     public static final String            SEQUENTIAL_FLAG        = "Sequential";
     public static final String            ESCAPE_QUOTES_FLAG     = "EscapeQuotes";
@@ -177,6 +178,13 @@ implements RuleSheetListener {
             }
         }
 
+        final List<String> declarations = getProperties().getProperty( DECLARES_TAG );
+        if( declarations != null ){
+            for( String declaration: declarations ){
+                ruleset.addDeclaredType( declaration );
+            }
+        }
+        
         for( Code code: ActionType.ATTRIBUTE_CODE_SET ){
             List<String> values = getProperties().getProperty( code.getColHeader() );
             if( values != null ){

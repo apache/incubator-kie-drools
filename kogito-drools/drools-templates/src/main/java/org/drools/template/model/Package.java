@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
  * This is the top of the parse tree. Represents a package of rules once it has
  * been parsed from the spreadsheet. Also is the launching point for dumping out
  * the DRL.
@@ -29,17 +28,19 @@ public class Package extends AttributedDRLElement
     implements
     DRLJavaEmitter {
 
-    private String       _name;
+    private String        _name;
 
-    private List<Import> _imports;
+    private List<Import>  _imports;
 
-    private List<Global> _variables; // List of the application data Variable Objects
+    private List<Global>  _variables;    // List of the application data Variable Objects
 
-    private List<Rule>   _rules;
+    private List<Rule>    _rules;
 
-    private Functions _functions;
+    private Functions     _functions;
 
-    private Queries _queries;
+    private Queries       _queries;
+
+    private DeclaredType  _declaredTypes;
 
     public Package(final String name) {
         this._name = name;
@@ -48,6 +49,7 @@ public class Package extends AttributedDRLElement
         this._rules = new LinkedList<Rule>();
         this._functions = new Functions();
         this._queries = new Queries();
+        this._declaredTypes = new DeclaredType();
     }
 
     public void addImport(final Import imp) {
@@ -65,8 +67,13 @@ public class Package extends AttributedDRLElement
     public void addFunctions(final String listing) {
         this._functions.setFunctionsListing( listing );
     }
+
     public void addQueries(final String listing) {
         this._queries.setQueriesListing( listing );
+    }
+
+    public void addDeclaredType(final String declaration) {
+        this._declaredTypes.setDeclaredTypeListing( declaration );
     }
 
     public String getName() {
@@ -86,9 +93,9 @@ public class Package extends AttributedDRLElement
     }
 
     public void renderDRL(final DRLOutput out) {
-        if (_name != null) {
+        if ( _name != null ) {
             out.writeLine( "package " + this._name.replace( ' ',
-                                                       '_' ) + ";" );
+                                                            '_' ) + ";" );
         }
         out.writeLine( "#generated from Decision Table" );
         renderDRL( this._imports,
@@ -96,17 +103,18 @@ public class Package extends AttributedDRLElement
         renderDRL( this._variables,
                    out );
         this._functions.renderDRL( out );
-        this._queries.renderDRL(out);
-        
+        this._queries.renderDRL( out );
+        this._declaredTypes.renderDRL( out );
+
         // attributes
         super.renderDRL( out );
-        
+
         renderDRL( this._rules,
                    out );
 
     }
 
-    private void renderDRL(final List<? extends DRLJavaEmitter> list,
+    private void renderDRL(final List< ? extends DRLJavaEmitter> list,
                            final DRLOutput out) {
         for ( DRLJavaEmitter emitter : list ) {
             emitter.renderDRL( out );
