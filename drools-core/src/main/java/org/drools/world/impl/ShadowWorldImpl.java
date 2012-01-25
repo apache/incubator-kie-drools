@@ -23,7 +23,7 @@ public class ShadowWorldImpl implements ShadowWorld {
     public Context createContext(String identifier) {
         Context actualCtx = world.getContext( identifier );
         if ( actualCtx == null ) {
-            actualCtx = world.createContext( identifier );
+//            actualCtx = world.createContext( identifier );
         }
         
         ShadowContext shadowCtx = contexts.get( identifier );
