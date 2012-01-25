@@ -1,0 +1,38 @@
+package org.drools.examples.wumpus
+
+import org.drools.examples.wumpus.Move
+import org.drools.examples.wumpus.Cell
+
+import org.drools.examples.wumpus.Wumpus
+import org.drools.examples.wumpus.Pitt
+import org.drools.examples.wumpus.Gold
+import org.drools.examples.wumpus.SeeGlitter
+import org.drools.examples.wumpus.SmellStench
+import org.drools.examples.wumpus.FeelBreeze
+
+dialect "mvel"
+
+
+rule "Wumpus Death"  when 
+    $g  : GameData()
+    $h  : Hero()
+          Wumpus(row == $h.row, col == $h.col )
+then
+	$g.wumpusDeath = true; 
+end
+
+rule "Pitt Death"  when
+    $g  : GameData()
+    $h  : Hero()
+          Pitt(row == $h.row, col == $h.col )
+then
+	$g.pittDeath = true; 
+end
+
+rule "Gold Win"  when
+    $g  : GameData()
+    $h  : Hero()
+          Gold(row == $h.row, col == $h.col )
+then
+	$g.goldWin = true;
+end
