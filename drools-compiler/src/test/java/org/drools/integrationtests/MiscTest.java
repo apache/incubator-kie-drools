@@ -9025,6 +9025,7 @@ public class MiscTest extends CommonTestMethodBase {
                       rules );
     }
 
+    @Test
     public void testFreeFormExpressions() {
         String str = "package org.drools\n" +
                          "rule r1\n" +
@@ -9043,6 +9044,29 @@ public class MiscTest extends CommonTestMethodBase {
                                   61 );
         ksession.insert( bob );
         ksession.insert( mark );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                          rules );
+    }
+
+    @Test
+    public void testFreeFormExpressions2() {
+        String str = "package org.drools\n" +
+                         "rule r1\n" +
+                         "when\n" +
+                         "    $p1 : Cell( row == 2 )\n" +
+                         "    $p2 : Cell( row == $p1.row + 1, row == ($p1.row + 1), row == 1 + $p1.row, row == (1 + $p1.row) )\n" +
+                         "then\n" +
+                         "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        Cell c1 = new Cell(1, 2, 0 );
+        Cell c2 = new Cell(1, 3, 0 );
+        ksession.insert( c1 );
+        ksession.insert( c2 );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1,
