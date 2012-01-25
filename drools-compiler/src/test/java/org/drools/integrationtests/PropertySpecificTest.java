@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PropertySpecificTest extends CommonTestMethodBase {
 
@@ -182,13 +183,13 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "s", "y" );
-        ksession.insert( factA );
+        ksession.insert(factA);
 
         FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
         factTypeB.set( factB, "on", false );
         factTypeB.set( factB, "s", "x" );
-        ksession.insert( factB );
+        ksession.insert(factB);
 
         int rules = ksession.fireAllRules();
         assertEquals(2, rules);
@@ -332,8 +333,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test(timeout = 5000) @Ignore
-    public void testInfiniteLoop() throws Exception {
+    @Test(timeout = 5000)
+    public void testPropertySpecificOnAlphaNode() throws Exception {
         String rule = "package org.drools\n" +
                 "import org.drools.integrationtests.PropertySpecificTest.C\n" +
                 "rule R1\n" +
@@ -351,8 +352,42 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         c.setS("test");
         ksession.insert( c );
 
-        ksession.fireAllRules();
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertEquals(true, c.isOn());
         ksession.dispose();
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testInfiniteLoop() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $c : C(s == \"test\") @watch( on )\n" +
+                "then\n" +
+                "    modify($c) { turnOn() }\n" +
+                "    if (counter.incrementAndGet() > 10) throw new RuntimeException();\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        ksession.setGlobal( "counter", counter );
+
+        C c = new C();
+        c.setOn(false);
+        c.setS("test");
+        ksession.insert( c );
+
+        try {
+            ksession.fireAllRules();
+        } finally {
+            assertTrue(counter.get() >= 10);
+            ksession.dispose();
+        }
     }
 
     @PropertySpecific

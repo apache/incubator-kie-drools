@@ -35,6 +35,8 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
  * to apply <code>FieldConstraint<.code>s on asserted fact
@@ -56,6 +58,8 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           nextRightTupleSinkNode;
 
     private long listenedPropertyMask = -1L;
+
+    private List<String> listenedProperties;
 
     public AlphaNode() {
 
@@ -82,6 +86,7 @@ public class AlphaNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
+        this.listenedProperties = context.getListenedProperties();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -147,15 +152,19 @@ public class AlphaNode extends ObjectSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-        if ( this.constraint.isAllowed( factHandle,
-                                        workingMemory,
-                                        memory.context ) ) {
+        if (context.getModificationMask() == Long.MAX_VALUE ||
+                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
 
-            this.sink.propagateModifyObject( factHandle,
-                                             modifyPreviousTuples,
-                                             context,
-                                             workingMemory );
+            final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+            if ( this.constraint.isAllowed( factHandle,
+                    workingMemory,
+                    memory.context ) ) {
+
+                this.sink.propagateModifyObject( factHandle,
+                        modifyPreviousTuples,
+                        context,
+                        workingMemory );
+            }
         }
     }
 
@@ -320,20 +329,44 @@ public class AlphaNode extends ObjectSource
 
     }
 
+    long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
+        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        List<String> settableProperties = BetaNode.getSettableProperties(workingMemory, getObjectTypeNode());
+        return getListenedPropertyMask(settableProperties);
+    }
+
     long getListenedPropertyMask(List<String> settableProperties) {
         if (!(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
         if (listenedPropertyMask >= 0) return listenedPropertyMask;
 
-        long mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        long mask = calculateMask(settableProperties);
         listenedPropertyMask = mask;
         return mask >= 0 ? mask : Long.MAX_VALUE;
     }
 
-    private Class<?> getNodeClass() {
-        ObjectTypeNode objectTypeNode = getObjectTypeNode();
-        if (objectTypeNode == null) return null;
-        ObjectType objectType = objectTypeNode.getObjectType();
-        return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
+    private long calculateMask(List<String> settableProperties) {
+        if (listenedProperties != null && listenedProperties.size() == 1 && listenedProperties.equals("*")) {
+            return Long.MAX_VALUE;
+        }
+
+        long mask = 0L;
+        if (listenedProperties != null && listenedProperties.contains("*")) {
+            mask = Long.MAX_VALUE;
+        } else if (listenedProperties == null || !listenedProperties.contains("!*")) {
+            mask = inferListenedMask(settableProperties);
+        }
+        return BetaNode.calculateListenedMaskFromPattern(listenedProperties, mask, settableProperties);
+    }
+
+    private long inferListenedMask(List<String> settableProperties) {
+        if (settableProperties == null) return Long.MAX_VALUE;
+        long mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        for (ObjectSink objectSink : sink.getSinks()) {
+            if (objectSink instanceof AlphaNode) {
+                mask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
+            }
+        }
+        return mask;
     }
 
     private ObjectTypeNode getObjectTypeNode() {
