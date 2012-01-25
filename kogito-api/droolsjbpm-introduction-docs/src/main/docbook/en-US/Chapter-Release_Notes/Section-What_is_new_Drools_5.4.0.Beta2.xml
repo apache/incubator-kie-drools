@@ -82,6 +82,28 @@
       will happen if you mention an unknown property name inside @watch or use the same name more than once like for
       example in: @watch( lastName, !lastName )</para>
     </section>
+
+    <section>
+      <title>XLS \ CSV Decision tables support declared types</title>
+
+      <para>A new RuleSet property has been added called "Declare".</para>
+
+      <para>This provides a slot in the RuleSet definition to define declared types.</para>
+
+      <para>In essence the slot provides a descrete location to add type declarations where, previously, they may have
+      been added to a Queries or Functions definition.</para>
+
+      <figure>
+        <title>RuleSet "Declare"</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls-declare.png" format="PNG"
+                       scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 
   <section>
@@ -141,28 +163,6 @@ then
     // there has been $cnt RHT ticks over the last 10 ticks
 end
 </programlisting>
-    </section>
-
-    <section>
-      <title>XLS \ CSV Decision tables support declared types</title>
-
-      <para>A new RuleSet property has been added called "Declare". </para>
-
-      <para>This provides a slot in the RuleSet definition to define declared types.</para>
-
-      <para>In essence the slot provides a descrete location to add type declarations where, previously, they may have
-      been added to a Queries or Functions definition. </para>
-
-      <figure>
-        <title>RuleSet "Declare"</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls-declare.png" format="PNG"
-                       scalefit="0"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
     </section>
   </section>
 
