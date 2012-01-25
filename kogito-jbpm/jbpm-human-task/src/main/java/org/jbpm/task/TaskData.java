@@ -655,7 +655,7 @@ public class TaskData
      * @param comment comment to add
      */
     public void addComment(Comment comment) {
-        if (comments == null || comments == Collections.<Comment>emptyList()) {
+        if (comments == null || comments.size() == 0) {
             comments = new ArrayList<Comment>();
         }
 

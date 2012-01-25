@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -53,8 +50,7 @@ public class TaskHandler extends AbstractNodeHandler {
         return new WorkItemNode();
     }
     
-    @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+	public Class<?> generateNodeFor() {
         return Node.class;
     }
 
@@ -129,28 +125,30 @@ public class TaskHandler extends AbstractNodeHandler {
 			String to = subNode.getTextContent();
 			// assignment
 			subNode = subNode.getNextSibling();
-    		org.w3c.dom.Node subSubNode = subNode.getFirstChild();
-    		NodeList nl = subSubNode.getChildNodes();
-    		if (nl.getLength() > 1) {
-    		    // not supported ?
-    		    workItemNode.getWork().setParameter(dataInputs.get(to), subSubNode.getTextContent());
-    		    return;
-    		} else if (nl.getLength() == 0) {
-    		    return;
-    		}
-    		Object result = null;
-    		Object from = nl.item(0);
-    		if (from instanceof Text) {
-    		    String text = ((Text) from).getTextContent();
-    		    if (text.startsWith("\"") && text.endsWith("\"")) {
-                    result = text.substring(1, text.length() -1);
-    		    } else {
-    		        result = text;
-    		    }
-			} else {
-			    result = nl.item(0);
+			if (subNode != null) {
+	    		org.w3c.dom.Node subSubNode = subNode.getFirstChild();
+	    		NodeList nl = subSubNode.getChildNodes();
+	    		if (nl.getLength() > 1) {
+	    		    // not supported ?
+	    		    workItemNode.getWork().setParameter(dataInputs.get(to), subSubNode.getTextContent());
+	    		    return;
+	    		} else if (nl.getLength() == 0) {
+	    		    return;
+	    		}
+	    		Object result = null;
+	    		Object from = nl.item(0);
+	    		if (from instanceof Text) {
+	    		    String text = ((Text) from).getTextContent();
+	    		    if (text.startsWith("\"") && text.endsWith("\"")) {
+	                    result = text.substring(1, text.length() -1);
+	    		    } else {
+	    		        result = text;
+	    		    }
+				} else {
+				    result = nl.item(0);
+				}
+	    		workItemNode.getWork().setParameter(dataInputs.get(to), result);
 			}
-    		workItemNode.getWork().setParameter(dataInputs.get(to), result);
 		}
     }
     
@@ -234,6 +232,7 @@ public class TaskHandler extends AbstractNodeHandler {
         }
     }
 
+	@SuppressWarnings("unchecked")
 	protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();

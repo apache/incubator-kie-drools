@@ -13,7 +13,9 @@
 
   <process processType="Private" isExecutable="true" id="OnEntryExitScriptProcess" name="On-Entry / On-Exit Script Process" >
   
-    <tns:global identifier="list" type="java.util.List" />
+    <extensionElements>
+      <tns:global identifier="list" type="java.util.List" />
+    </extensionElements>
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />

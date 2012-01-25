@@ -31,6 +31,7 @@ import org.jbpm.bpmn2.core.Interface;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -50,6 +51,7 @@ public class ErrorHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(Escalation.class);
             this.validPeers.add(Error.class);
             this.validPeers.add(DataStore.class);
+            this.validPeers.add(RuleFlowProcess.class);
 
 			this.allowNesting = false;
 		}
