@@ -1,0 +1,10 @@
+"RuleSet","org.drools.decisiontable",,,
+,,,,
+,,,,
+"RuleTable agenda-group",,,,
+"NAME","CONDITION","Lock-On-Active","Auto-Focus","ACTION"
+,,,,
+,"String(this == ""$param"")",,,
+"rule names","string for test",,,
+"lockOnActiveRule","lockOnActiveRule","true",,
+"autoFocusRule","autoFocusRule",,"true",
