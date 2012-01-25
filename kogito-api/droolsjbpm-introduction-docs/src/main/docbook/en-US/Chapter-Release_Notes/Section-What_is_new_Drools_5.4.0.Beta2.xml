@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is New and Noteworthy in Drools 5.4.0.Beta2</title>
 
   <section>
     <title>Drools Expert</title>
 
     <section>
-      <title>Fine Grained Property Change Listeners (Property Specific)</title>
+      <title>Fine Grained Property Change Listeners (Property
+      Specific)</title>
 
-      <para>Currently, when you in a RHS you call modify() on a given fact it triggers a revaluation of all Patterns of the
-      matching object type in the knowledeg base. As some have found this can be a problem, forcing you to split up your
-      objects into smaller 1 to 1 objects, to avoid unwanted evaluation of objects like recursion or excessive evaluation issues.
-      This new feature allows a pattern to react (and then be re-eavluated) only to modifications made on fields constrained or
-      bound inside the pattern itself.</para>
+      <para>Currently, when you in a RHS you call modify() on a given fact it
+      triggers a revaluation of all Patterns of the matching object type in
+      the knowledeg base. As some have found this can be a problem, forcing
+      you to split up your objects into smaller 1 to 1 objects, to avoid
+      unwanted evaluation of objects like recursion or excessive evaluation
+      issues. This new feature allows a pattern to react (and then be
+      re-eavluated) only to modifications made on fields constrained or bound
+      inside the pattern itself.</para>
 
-      <para>The implementation is bit mask based, so very efficient. When the engine executes a modify statement it uses a bit
-      mask of fields being changed, the pattern will only respond if it has an overlapping bit mask. This does not work for update(),
-      and is one of the reason why we promote modify() as it encapsulates the field changes within the statement.</para>
+      <para>The implementation is bit mask based, so very efficient. When the
+      engine executes a modify statement it uses a bit mask of fields being
+      changed, the pattern will only respond if it has an overlapping bit
+      mask. This does not work for update(), and is one of the reason why we
+      promote modify() as it encapsulates the field changes within the
+      statement.</para>
 
-      <para>feature is off by default in order to make the behavior of the rule engine backward compatible with the former releases.
-      If you want to activate it on a specific bean you have to annotate it with @propertySpecific.
-      This annotation works both on drl type declarations:</para>
+      <para>feature is off by default in order to make the behavior of the
+      rule engine backward compatible with the former releases. If you want to
+      activate it on a specific bean you have to annotate it with
+      @propertySpecific. This annotation works both on drl type
+      declarations:</para>
 
       <programlisting>declare Person
             @propertySpecific
@@ -40,44 +52,115 @@
             private String lastName;
         }</programlisting>
 
-      <para>Given this simple type declaration, the most evident advantage of this new Property Specific feature, will be,
-      for instance, that the following rule:</para>
+      <para>Given this simple type declaration, the most evident advantage of
+      this new Property Specific feature, will be, for instance, that the
+      following rule:</para>
 
       <programlisting>rule "Modify last name" when
-        Person( firstName == &quot;Mario&quot; )
+        Person( firstName == "Mario" )
         then
-        modify($person) { setLastName(&quot;Fusco&quot;) }
+        modify($person) { setLastName("Fusco") }
         end</programlisting>
 
       <para>will no longer end up in an infinite loop.</para>
 
-      <para>Moreover on Java classes you can also annotate any method to say that its invocation actually modifies other properties.
-      For instance in the former Person class you could have a method like:</para>
+      <para>Moreover on Java classes you can also annotate any method to say
+      that its invocation actually modifies other properties. For instance in
+      the former Person class you could have a method like:</para>
 
-      <programlisting>@Modifies( { &quot;firstName&quot;, &quot;lastName&quot; } )
+      <programlisting>@Modifies( { "firstName", "lastName" } )
         public void setName(String name) {
-        String[] names = name.split(&quot;\\s&quot;);
+        String[] names = name.split("\\s");
         this.firstName = names[0];
         this.lastName = names[1];
         }</programlisting>
 
       <para>That means that if a rule has a RHS like the following:</para>
 
-      <programlisting>modify($person) { setName(&quot;Mario Fusco&quot;) }</programlisting>
+      <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
 
-      <para>it will correctly recognize that both the firstName and lastName have been modified and act accordingly.
-      Of course the @Modifies annotation on a method has no effect if the declaring class isn't annotated with @PropertySpecific.</para>
+      <para>it will correctly recognize that both the firstName and lastName
+      have been modified and act accordingly. Of course the @Modifies
+      annotation on a method has no effect if the declaring class isn't
+      annotated with @PropertySpecific.</para>
 
-      <para>The third newly introduced annotation is on patterns and allows you to modify the inferred set of properties
-      &quot;listened&quot; by it. So, for example, you can annotate a pattern in the LHS of a rule like:</para>
+      <para>The third newly introduced annotation is on patterns and allows
+      you to modify the inferred set of properties "listened" by it. So, for
+      example, you can annotate a pattern in the LHS of a rule like:</para>
 
-      <programlisting>Person( firstName == $expectedFirstName ) @watch( lastName ) // --> listens for changes on both firstName (inferred) and lastName
-        Person( firstName == $expectedFirstName ) @watch( * ) // --> listens for all the properties of the Person bean
-        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName ) // --> listens for changes on lastName and explicitly exclude firstName
-        Person( firstName == $expectedFirstName ) @watch( *, !age ) // --> listens for changes on all the properties except the age one</programlisting>
+      <programlisting>Person( firstName == $expectedFirstName ) @watch( lastName ) // --&gt; listens for changes on both firstName (inferred) and lastName
+        Person( firstName == $expectedFirstName ) @watch( * ) // --&gt; listens for all the properties of the Person bean
+        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName ) // --&gt; listens for changes on lastName and explicitly exclude firstName
+        Person( firstName == $expectedFirstName ) @watch( *, !age ) // --&gt; listens for changes on all the properties except the age one</programlisting>
 
-      <para>The usage of @watch on a type not annotated as @PropertySpecific will raise a compilation error. The same will happen if you
-      mention an unknown property name inside @watch or use the same name more than once like for example in: @watch( lastName, !lastName )</para>
+      <para>The usage of @watch on a type not annotated as @PropertySpecific
+      will raise a compilation error. The same will happen if you mention an
+      unknown property name inside @watch or use the same name more than once
+      like for example in: @watch( lastName, !lastName )</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Drools Fusion</title>
+
+    <section>
+      <title>Entry-Point Declaration</title>
+
+      <para>The engine now supports the declaration of entry-points. This
+      allow tools and the application to inspect, select and restrict the use
+      of entry-points in rules.</para>
+
+      <para>The simplified EBNF to declare an entry-point is:</para>
+
+      <programlisting>entryPointDeclaration := DECLARE ENTRY-POINT epName annotation* END
+epName := stringId
+</programlisting>
+
+      <para>Example:</para>
+
+      <programlisting>declare entry-point STStream
+    @doc("A stream of StockTicks")
+end
+</programlisting>
+    </section>
+
+    <section>
+      <title>Window Declaration</title>
+
+      <para>The engine now supports the declaration of Windows. This promotes
+      a clear separation between what are the filters applied to the window
+      and what are the constraints applied to the result of window. It also
+      allows easy reuse of windows among multiple rules.</para>
+
+      <para>Another benefit is a new implementation of the basic window
+      support in the engine, increasing the overall performance of the rules
+      that use sliding windows.</para>
+
+      <para>The simplified EBNF to declare a window is:</para>
+
+      <programlisting>windowDeclaration := DECLARE WINDOW ID annotation* lhsPatternBind END</programlisting>
+
+      <para>Example:</para>
+
+      <programlisting>declare window Ticks
+    @doc("last 10 stock ticks")
+    StockTick( source == "NYSE" )
+        over window:length( 10 )
+        from entry-point STStream
+end
+</programlisting>
+
+      <para>Rules can then use the declared window by referencing using a FROM
+      CE. Example:</para>
+
+      <programlisting>rule "RHT ticks in the window"
+when
+    accumulate( StockTick( symbol == "RHT" ) from window Ticks,
+                $cnt : count(1) )
+then
+    // there has been $cnt RHT ticks over the last 10 ticks
+end
+</programlisting>
     </section>
   </section>
 
@@ -87,71 +170,83 @@
     <section>
       <title>Guvnor requirements change</title>
 
-      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM will still run on Java 5. Guvnor 5.3.x
-      hotfixes will still run on Java 5 too.</para>
+      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM
+      will still run on Java 5. Guvnor 5.3.x hotfixes will still run on Java 5
+      too.</para>
     </section>
 
     <section>
       <title>Guvnor configuration change</title>
 
-      <para>Any custom configuration in the guvnor war in <filename>WEB-INF/components.xml</filename> must now happen in
+      <para>Any custom configuration in the guvnor war in
+      <filename>WEB-INF/components.xml</filename> must now happen in
       <filename>WEB-INF/beans.xml</filename>.</para>
     </section>
 
     <section>
       <title>Decision table analysis</title>
 
-      <para>On the bottom of Web decision tables, the button <guilabel>Analyze...</guilabel> that checks for issues in
-      your decision table, now also checks for 2 new detections:</para>
+      <para>On the bottom of Web decision tables, the button
+      <guilabel>Analyze...</guilabel> that checks for issues in your decision
+      table, now also checks for 2 new detections:</para>
 
       <section>
         <title>Duplicate match detection</title>
 
-        <para>A duplicate match are 2 rows in a decision table that can both match but have the same actions.</para>
+        <para>A duplicate match are 2 rows in a decision table that can both
+        match but have the same actions.</para>
 
-        <para>For example: a person between 20 and 40 has to pay a fee of 400 and a person between 30 and 50 has to pay
-        a fee of 400 too. These 2 rows duplicate each other. If the fee would be different between them, then they would
-        conflict each other.</para>
+        <para>For example: a person between 20 and 40 has to pay a fee of 400
+        and a person between 30 and 50 has to pay a fee of 400 too. These 2
+        rows duplicate each other. If the fee would be different between them,
+        then they would conflict each other.</para>
       </section>
 
       <section>
         <title>Multiple values for one action detection</title>
 
-        <para>A multiple values for one action match is 1 row in a decision table who's actions contradict itself. This
-        is a common problem in limited entry tables, but rare in non-limited entry tables.</para>
+        <para>A multiple values for one action match is 1 row in a decision
+        table who's actions contradict itself. This is a common problem in
+        limited entry tables, but rare in non-limited entry tables.</para>
 
-        <para>For example: a person below 40 has to pay the standard fee (400) and also has to pay the youngster fee
-        (200). Since fee can only be set once, that's a problem.</para>
+        <para>For example: a person below 40 has to pay the standard fee (400)
+        and also has to pay the youngster fee (200). Since fee can only be set
+        once, that's a problem.</para>
       </section>
     </section>
 
     <section>
       <title>Decision table - BRL fragments</title>
 
-      <para>BRL fragments can now be used for Condition and/or Action columns.</para>
+      <para>BRL fragments can now be used for Condition and/or Action
+      columns.</para>
 
       <figure>
         <title>Adding a BRL fragment</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-advanced-columns.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-advanced-columns.png"
+                       format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>A BRL fragment is a section of a rule created using Guvnor's (BRL) Guided Rule Editor: Condition columns
-      permit the definition of "WHEN" sections and Action columns the definition of "THEN" sections. Fields defined
-      therein as "Template Keys" become columns in the decision table.</para>
+      <para>A BRL fragment is a section of a rule created using Guvnor's (BRL)
+      Guided Rule Editor: Condition columns permit the definition of "WHEN"
+      sections and Action columns the definition of "THEN" sections. Fields
+      defined therein as "Template Keys" become columns in the decision
+      table.</para>
 
       <figure>
         <title>A Condition BRL fragment</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-condition.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-condition.png"
+                       format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -161,25 +256,29 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-action.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-action.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>Consequently any rule that could be defined with the (BRL) Guided Rule Editor can now be defined with a
-      decision table; including free-format DRL and DSL Sentences.</para>
+      <para>Consequently any rule that could be defined with the (BRL) Guided
+      Rule Editor can now be defined with a decision table; including
+      free-format DRL and DSL Sentences.</para>
 
-      <para>BRL fragments are fully integrated with other columns in the decision table, so that a Pattern or field
-      defined in a regular column can be referenced in the BRL fragments and vice-versa.</para>
+      <para>BRL fragments are fully integrated with other columns in the
+      decision table, so that a Pattern or field defined in a regular column
+      can be referenced in the BRL fragments and vice-versa.</para>
 
       <figure>
         <title>A decision table with BRL fragments and regular columns</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-brl-columns.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-columns.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -188,18 +287,20 @@
     <section>
       <title>Decision table \ Template data copy and paste rows</title>
 
-      <para>You can now copy and paste rows in both the guided Decision Table and Template Data editors.</para>
+      <para>You can now copy and paste rows in both the guided Decision Table
+      and Template Data editors.</para>
 
-      <para>Simply right-click a row in the tables' left hand-side selector column and choose the appropriate
-      operation.</para>
+      <para>Simply right-click a row in the tables' left hand-side selector
+      column and choose the appropriate operation.</para>
 
       <figure>
         <title>Copying a row</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-copy-paste-rows.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-copy-paste-rows.png"
+                       format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -208,61 +309,65 @@
     <section>
       <title>BRL Editor - Remove Constraint\Action Value definition</title>
 
-      <para>When creating new constraints or actions in the BRL guided (rule) editor it is simple to define a value as
-      literal, or formula or expression. However, up until now, changing the value type required deletion of the whole
-      constraint or action. This release brings the ability to remove the value definition thus enabling you to change a
-      literal value to a formula etc without needing to delete the whole constraint or action.</para>
+      <para>When creating new constraints or actions in the BRL guided (rule)
+      editor it is simple to define a value as literal, or formula or
+      expression. However, up until now, changing the value type required
+      deletion of the whole constraint or action. This release brings the
+      ability to remove the value definition thus enabling you to change a
+      literal value to a formula etc without needing to delete the whole
+      constraint or action.</para>
 
       <figure>
         <title>Copying a row</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/brl-remove-value-types.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/brl-remove-value-types.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
-    
+
     <section>
       <title>New Change-Set Editor</title>
 
       <para>A new Editor to create Change-Sets was added in Guvnor. Using this
-      new editor you can create change-sets referencing packages, snapshots and
-      even particular assets inside a package and expose them to external applications.
-      For further information refer to the documentation.
-      </para>
-      
+      new editor you can create change-sets referencing packages, snapshots
+      and even particular assets inside a package and expose them to external
+      applications. For further information refer to the documentation.</para>
+
       <figure>
         <title>Change-Set Editor</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/NewChangeSet1.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/NewChangeSet1.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
-    
+
     <section>
       <title>Custom Forms in DSL sentences</title>
 
-      <para>Custom Forms is a feature that exists in Guvnor since 5.1.1. It 
-      basically allows you to define external applications that will be invoked
-      by Rule Editor when a particular field of a particular Fact Type is being
-      used in a rule.</para>
+      <para>Custom Forms is a feature that exists in Guvnor since 5.1.1. It
+      basically allows you to define external applications that will be
+      invoked by Rule Editor when a particular field of a particular Fact Type
+      is being used in a rule.</para>
+
       <para>This feature is now also available to be used in DSL sentences.
-      When definin a variabe in a sentence you can now use this syntax for 
+      When definin a variabe in a sentence you can now use this syntax for
       variable's definition:</para>
-      
+
       <programlisting>{&lt;varName&gt;:CF:&lt;factType.fieldName&gt;}</programlisting>
-      
-      <para>If you have an active Working-Set defining a Custom Form configuration
-      for factType.fieldName, the Custom Form will be invoked by Rule Editor
-      while setting the value of that variable.</para>
-      
+
+      <para>If you have an active Working-Set defining a Custom Form
+      configuration for factType.fieldName, the Custom Form will be invoked by
+      Rule Editor while setting the value of that variable.</para>
     </section>
   </section>
 
@@ -272,8 +377,9 @@
     <section>
       <title>Benchmarker supports custom input and output files</title>
 
-      <para>The Benchmarker can now read and write the input and output files from any format, through the
-      <literal>ProblemIO</literal> interface. The default is still an XStream implementation.</para>
+      <para>The Benchmarker can now read and write the input and output files
+      from any format, through the <literal>ProblemIO</literal> interface. The
+      default is still an XStream implementation.</para>
     </section>
   </section>
 </section>
