@@ -359,11 +359,12 @@ public class AlphaNode extends ObjectSource
     }
 
     private long inferListenedMask(List<String> settableProperties) {
-        if (settableProperties == null) return Long.MAX_VALUE;
+        if (settableProperties == null || !(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
         long mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
         for (ObjectSink objectSink : sink.getSinks()) {
             if (objectSink instanceof AlphaNode) {
                 mask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
+                if (mask == Long.MAX_VALUE) break;
             }
         }
         return mask;
