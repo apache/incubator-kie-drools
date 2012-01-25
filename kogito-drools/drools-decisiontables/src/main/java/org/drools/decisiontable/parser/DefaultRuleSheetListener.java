@@ -605,7 +605,7 @@ implements RuleSheetListener {
             this._currentRule.setLockOnActive( RuleSheetParserUtil.isStringMeaningTrue( value ) );
             break;
         case AUTOFOCUS:
-            this._currentRule.setLockOnActive( RuleSheetParserUtil.isStringMeaningTrue( value ) );
+            this._currentRule.setAutoFocus( RuleSheetParserUtil.isStringMeaningTrue( value ) );
             break;
         case DURATION:
             try {
