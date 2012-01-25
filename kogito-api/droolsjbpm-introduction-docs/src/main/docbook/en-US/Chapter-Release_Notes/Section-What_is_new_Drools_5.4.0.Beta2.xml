@@ -7,6 +7,81 @@
   <title>What is New and Noteworthy in Drools 5.4.0.Beta2</title>
 
   <section>
+    <title>Drools Expert</title>
+
+    <section>
+      <title>Fine Grained Property Change Listeners (Property Specific)</title>
+
+      <para>Currently, when you in a RHS you call modify() on a given fact it triggers a revaluation of all Patterns of the
+      matching object type in the knowledeg base. As some have found this can be a problem, forcing you to split up your
+      objects into smaller 1 to 1 objects, to avoid unwanted evaluation of objects like recursion or excessive evaluation issues.
+      This new feature allows a pattern to react (and then be re-eavluated) only to modifications made on fields constrained or
+      bound inside the pattern itself.</para>
+
+      <para>The implementation is bit mask based, so very efficient. When the engine executes a modify statement it uses a bit
+      mask of fields being changed, the pattern will only respond if it has an overlapping bit mask. This does not work for update(),
+      and is one of the reason why we promote modify() as it encapsulates the field changes within the statement.</para>
+
+      <para>feature is off by default in order to make the behavior of the rule engine backward compatible with the former releases.
+      If you want to activate it on a specific bean you have to annotate it with @propertySpecific.
+      This annotation works both on drl type declarations:</para>
+
+      <programlisting>declare Person
+            @propertySpecific
+            firstName : String
+            lastName : String
+        end</programlisting>
+
+      <para>and on Java classes:</para>
+
+      <programlisting>@PropertySpecific
+        public static class Person {
+            private String firstName;
+            private String lastName;
+        }</programlisting>
+
+      <para>Given this simple type declaration, the most evident advantage of this new Property Specific feature, will be,
+      for instance, that the following rule:</para>
+
+      <programlisting>rule "Modify last name" when
+        Person( firstName == &quot;Mario&quot; )
+        then
+        modify($person) { setLastName(&quot;Fusco&quot;) }
+        end</programlisting>
+
+      <para>will no longer end up in an infinite loop.</para>
+
+      <para>Moreover on Java classes you can also annotate any method to say that its invocation actually modifies other properties.
+      For instance in the former Person class you could have a method like:</para>
+
+      <programlisting>@Modifies( { &quot;firstName&quot;, &quot;lastName&quot; } )
+        public void setName(String name) {
+        String[] names = name.split(&quot;\\s&quot;);
+        this.firstName = names[0];
+        this.lastName = names[1];
+        }</programlisting>
+
+      <para>That means that if a rule has a RHS like the following:</para>
+
+      <programlisting>modify($person) { setName(&quot;Mario Fusco&quot;) }</programlisting>
+
+      <para>it will correctly recognize that both the firstName and lastName have been modified and act accordingly.
+      Of course the @Modifies annotation on a method has no effect if the declaring class isn't annotated with @PropertySpecific.</para>
+
+      <para>The third newly introduced annotation is on patterns and allows you to modify the inferred set of properties
+      &quot;listened&quot; by it. So, for example, you can annotate a pattern in the LHS of a rule like:</para>
+
+      <programlisting>Person( firstName == $expectedFirstName ) @watch( lastName ) // --> listens for changes on both firstName (inferred) and lastName
+        Person( firstName == $expectedFirstName ) @watch( * ) // --> listens for all the properties of the Person bean
+        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName ) // --> listens for changes on lastName and explicitly exclude firstName
+        Person( firstName == $expectedFirstName ) @watch( *, !age ) // --> listens for changes on all the properties except the age one</programlisting>
+
+      <para>The usage of @watch on a type not annotated as @PropertySpecific will raise a compilation error. The same will happen if you
+      mention an unknown property name inside @watch or use the same name more than once like for example in: @watch( lastName, !lastName )</para>
+    </section>
+  </section>
+
+  <section>
     <title>Guvnor</title>
 
     <section>
