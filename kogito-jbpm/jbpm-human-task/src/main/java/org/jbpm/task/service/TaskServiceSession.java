@@ -447,7 +447,11 @@ public class TaskServiceSession {
         			try {
         				UserTransaction ut = (UserTransaction)
         					new InitialContext().lookup( "java:comp/UserTransaction" );
-            			ut.commit();
+        				if (ut.getStatus() == javax.transaction.Status.STATUS_MARKED_ROLLBACK) {
+							ut.rollback();
+        				} else {
+        					ut.commit();
+        				}
         			} catch (Exception e) {
         				throw new RuntimeException(e);
         			}
