@@ -10,6 +10,7 @@ import org.drools.definition.type.Modifies;
 import org.drools.definition.type.PropertySpecific;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -117,6 +118,54 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "when\n" +
                 "    A($s : s)\n" +
                 "    $b : B(s != $s) @watch( ! s, on )\n" +
+                "then\n" +
+                "    modify($b) { setS($s) }\n" +
+                "end\n" +
+                "rule R2\n" +
+                "when\n" +
+                "    $b : B(on == false)\n" +
+                "then\n" +
+                "    modify($b) { setOn(true) }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
+        Object factA = factTypeA.newInstance();
+        factTypeA.set( factA, "s", "y" );
+        ksession.insert( factA );
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        factTypeB.set( factB, "on", false );
+        factTypeB.set( factB, "s", "x" );
+        ksession.insert( factB );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(2, rules);
+
+        assertEquals(true, factTypeB.get(factB, "on"));
+        assertEquals("y", factTypeB.get(factB, "s"));
+        ksession.dispose();
+    }
+
+    @Test
+    public void testWatchNothing() throws Exception {
+        String rule = "package org.drools\n" +
+                "dialect \"mvel\"\n" +
+                "declare A\n" +
+                "    s : String\n" +
+                "end\n" +
+                "declare B\n" +
+                "    @propertySpecific\n" +
+                "    on : boolean\n" +
+                "    s : String\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    A($s : s)\n" +
+                "    $b : B(s != $s) @watch( !* )\n" +
                 "then\n" +
                 "    modify($b) { setS($s) }\n" +
                 "end\n" +
@@ -280,6 +329,29 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         assertEquals(true, c.isOn());
         assertEquals("y", c.getS());
+        ksession.dispose();
+    }
+
+    @Test(timeout = 5000) @Ignore
+    public void testInfiniteLoop() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.C\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $c : C(s == \"test\")\n" +
+                "then\n" +
+                "    modify($c) { turnOn() }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        C c = new C();
+        c.setOn(false);
+        c.setS("test");
+        ksession.insert( c );
+
+        ksession.fireAllRules();
         ksession.dispose();
     }
 

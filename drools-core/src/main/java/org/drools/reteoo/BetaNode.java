@@ -437,7 +437,13 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         List<String> settableProperties = getSettableProperties(workingMemory);
-        long mask = listenedProperties != null && listenedProperties.contains("*") ? Long.MAX_VALUE : inferListenedMask(settableProperties);
+
+        long mask = 0L;
+        if (listenedProperties != null && listenedProperties.contains("*")) {
+            mask = Long.MAX_VALUE;
+        } else if (listenedProperties == null || !listenedProperties.contains("!*")) {
+            mask = inferListenedMask(settableProperties);
+        }
         mask = calculateListenedMaskFromPattern(mask, settableProperties);
 
         setListenedPropertyMask(mask);
@@ -447,7 +453,7 @@ public abstract class BetaNode extends LeftTupleSource
     private long calculateListenedMaskFromPattern(long mask, List<String> settableProperties) {
         if (listenedProperties == null) return mask;
         for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*")) continue;
+            if (propertyName.equals("*") || propertyName.equals("!*")) continue;
             boolean isNegative = propertyName.startsWith("!");
             if (isNegative) {
                 propertyName = propertyName.substring(1).trim();
