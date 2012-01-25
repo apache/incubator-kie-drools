@@ -407,7 +407,8 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
         if ( rightTuple != null ) rightTuple.reAdd();
 
-        if (context.getModificationMask() == Long.MAX_VALUE || intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
+        if (context.getModificationMask() == Long.MAX_VALUE ||
+                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
             // Propagate only if listened property mask intersects the modification one (slot specific)
             if ( rightTuple != null ) {
                 // RightTuple previously existed, so continue as modify
@@ -428,15 +429,18 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
-        if (listenedPropertyMask >= 0) {
-            return listenedPropertyMask;
-        }
-        if (listenedProperties != null && listenedProperties.size() == 0 && listenedProperties.equals("*")) {
-            setListenedPropertyMask(Long.MAX_VALUE);
+        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        long mask = calculateMask(workingMemory);
+        setListenedPropertyMask(mask);
+        return mask >= 0 ? mask : Long.MAX_VALUE;
+    }
+
+    private long calculateMask(InternalWorkingMemory workingMemory) {
+        if (listenedProperties != null && listenedProperties.size() == 1 && listenedProperties.equals("*")) {
             return Long.MAX_VALUE;
         }
 
-        List<String> settableProperties = getSettableProperties(workingMemory);
+        List<String> settableProperties = getSettableProperties(workingMemory, getObjectTypeNode());
 
         long mask = 0L;
         if (listenedProperties != null && listenedProperties.contains("*")) {
@@ -444,13 +448,22 @@ public abstract class BetaNode extends LeftTupleSource
         } else if (listenedProperties == null || !listenedProperties.contains("!*")) {
             mask = inferListenedMask(settableProperties);
         }
-        mask = calculateListenedMaskFromPattern(mask, settableProperties);
-
-        setListenedPropertyMask(mask);
-        return mask >= 0 ? mask : Long.MAX_VALUE;
+        return calculateListenedMaskFromPattern(listenedProperties, mask, settableProperties);
     }
 
-    private long calculateListenedMaskFromPattern(long mask, List<String> settableProperties) {
+    private long inferListenedMask(List<String> settableProperties) {
+        long mask = settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
+/* Should add mask from right AlphaNode ?
+        if (mask >= 0 && mask != Long.MAX_VALUE) {
+            if (rightInput instanceof AlphaNode) {
+                mask |= ((AlphaNode)rightInput).getListenedPropertyMask(settableProperties);
+            }
+        }
+*/
+        return mask;
+    }
+
+    static long calculateListenedMaskFromPattern(List<String> listenedProperties, long mask, List<String> settableProperties) {
         if (listenedProperties == null) return mask;
         for (String propertyName : listenedProperties) {
             if (propertyName.equals("*") || propertyName.equals("!*")) continue;
@@ -466,20 +479,8 @@ public abstract class BetaNode extends LeftTupleSource
         return mask;
     }
 
-    private long inferListenedMask(List<String> settableProperties) {
-        long mask = settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
-/* Should add mask from right AlphaNode ?
-        if (mask >= 0 && mask != Long.MAX_VALUE) {
-            if (rightInput instanceof AlphaNode) {
-                mask |= ((AlphaNode)rightInput).getListenedPropertyMask(settableProperties);
-            }
-        }
-*/
-        return mask;
-    }
-
-    private List<String> getSettableProperties(InternalWorkingMemory workingMemory) {
-        Class<?> nodeClass = getNodeClass();
+    static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
+        Class<?> nodeClass = getNodeClass(objectTypeNode);
         if (nodeClass == null) return null;
         InternalRuleBase ruleBase = (InternalRuleBase)workingMemory.getRuleBase();
         TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
@@ -487,8 +488,7 @@ public abstract class BetaNode extends LeftTupleSource
         return typeDeclaration.getSettableProperties();
     }
 
-    private Class<?> getNodeClass() {
-        ObjectTypeNode objectTypeNode = getObjectTypeNode();
+    static Class<?> getNodeClass(ObjectTypeNode objectTypeNode) {
         if (objectTypeNode == null) return null;
         ObjectType objectType = objectTypeNode.getObjectType();
         return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;

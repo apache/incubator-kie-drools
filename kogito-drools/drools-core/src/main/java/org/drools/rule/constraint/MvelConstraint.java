@@ -217,11 +217,44 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     // Slot specific
 
     public long getListenedPropertyMask(List<String> settableProperties) {
-        if (conditionEvaluator == null) return 0L;
+        if (conditionEvaluator == null) return calculateMaskFromExpression(settableProperties);
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
         }
         return calculateMask(analyzedCondition, settableProperties);
+    }
+
+    private long calculateMaskFromExpression(List<String> settableProperties) {
+        StringBuilder propertyNameBuilder = new StringBuilder();
+        int cursor = extractPropertyNameFromExpression(propertyNameBuilder, 0);
+
+        String propertyName = propertyNameBuilder.toString();
+        if (propertyName.equals("this")) {
+            extractPropertyNameFromExpression(propertyNameBuilder, cursor);
+            propertyName = propertyNameBuilder.toString();
+        }
+
+        int pos = settableProperties.indexOf(propertyName);
+        if (pos < 0) throw new RuntimeException("Unknown property: " + propertyName);
+        return 1L << pos;
+    }
+
+    private int extractPropertyNameFromExpression(StringBuilder propertyNameBuilder, int start) {
+        boolean started = false;
+        int i = start;
+        for (; i < expression.length(); i++) {
+            char ch = expression.charAt(i);
+            if (Character.isJavaIdentifierStart(ch)) {
+                propertyNameBuilder.append(ch);
+                started = true;
+            }
+            else if (started && Character.isJavaIdentifierPart(ch)) {
+                propertyNameBuilder.append(ch);
+            } else if (started) {
+                break;
+            }
+        }
+        return i;
     }
 
     private long calculateMask(Condition condition, List<String> settableProperties) {
