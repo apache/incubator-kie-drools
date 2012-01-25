@@ -353,8 +353,15 @@ public class PatternBuilder
             String listenedPropertyPattern = listenedProps.getValue().toString();
             for (String propertyName : listenedPropertyPattern.split(",")) {
                 propertyName = propertyName.trim();
-                if (propertyName.equals("*")) {
-                    listenedProperties.add(propertyName);
+                if (propertyName.equals("*") || propertyName.equals("!*")) {
+                    if (listenedProperties.contains("*") || listenedProperties.contains("!*")) {
+                        context.addError( new DescrBuildError( context.getParentDescr(),
+                                patternDescr,
+                                null,
+                                "Duplicate usage of wildcard * in @" + Pattern.ATTR_LISTENED_PROPS + " annotation" ) );
+                    } else {
+                        listenedProperties.add(propertyName);
+                    }
                     continue;
                 }
                 boolean isNegative = propertyName.startsWith("!");
