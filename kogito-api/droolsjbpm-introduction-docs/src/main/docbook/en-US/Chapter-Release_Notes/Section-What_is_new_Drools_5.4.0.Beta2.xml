@@ -149,6 +149,46 @@
         </mediaobject>
       </figure>
     </section>
+    
+    <section>
+      <title>New Change-Set Editor</title>
+
+      <para>A new Editor to create Change-Sets was added in Guvnor. Using this
+      new editor you can create change-sets referencing packages, snapshots and
+      even particular assets inside a package and expose them to external applications.
+      For further information refer to the documentation.
+      </para>
+      
+      <figure>
+        <title>Change-Set Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/NewChangeSet1.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+    
+    <section>
+      <title>Custom Forms in DSL sentences</title>
+
+      <para>Custom Forms is a feature that exists in Guvnor since 5.1.1. It 
+      basically allows you to define external applications that will be invoked
+      by Rule Editor when a particular field of a particular Fact Type is being
+      used in a rule.</para>
+      <para>This feature is now also available to be used in DSL sentences.
+      When definin a variabe in a sentence you can now use this syntax for 
+      variable's definition:</para>
+      
+      <programlisting>{&lt;varName&gt;:CF:&lt;factType.fieldName&gt;}</programlisting>
+      
+      <para>If you have an active Working-Set defining a Custom Form configuration
+      for factType.fieldName, the Custom Form will be invoked by Rule Editor
+      while setting the value of that variable.</para>
+      
+    </section>
   </section>
 
   <section>
