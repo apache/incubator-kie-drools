@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_clsLwEcKEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_First_Event_ResponseItem" structureRef="String"/>
+  <bpmn2:process id="Import" drools:packageName="com.sample" name="Import Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="First_Event_Response" itemSubjectRef="_First_Event_ResponseItem"/>
+    <bpmn2:startEvent id="_9FF649D7-151C-4A7A-91B5-D2680511017D" name="StartProcess">
+      <bpmn2:outgoing>_4A4A95DC-BCF9-45D6-9789-798F4910B00A</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_91748126-8A00-40BC-BEBD-04AE6843AC71" name="Hello" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_4A4A95DC-BCF9-45D6-9789-798F4910B00A</bpmn2:incoming>
+      <bpmn2:outgoing>_6E57A679-BB31-44BB-B74D-A131C9BCF3D9</bpmn2:outgoing>
+      <bpmn2:script>List l = new ArrayList(); System.out.println(l);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:endEvent id="_BC9BF64E-B2FB-4265-A70E-7142EBC6A45A" name="EndProcess">
+      <bpmn2:incoming>_6E57A679-BB31-44BB-B74D-A131C9BCF3D9</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_clsLwUcKEeG-Z8AhuVIXaA"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_4A4A95DC-BCF9-45D6-9789-798F4910B00A" sourceRef="_9FF649D7-151C-4A7A-91B5-D2680511017D" targetRef="_91748126-8A00-40BC-BEBD-04AE6843AC71"/>
+    <bpmn2:sequenceFlow id="_6E57A679-BB31-44BB-B74D-A131C9BCF3D9" sourceRef="_91748126-8A00-40BC-BEBD-04AE6843AC71" targetRef="_BC9BF64E-B2FB-4265-A70E-7142EBC6A45A"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_clsLwkcKEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_clsLw0cKEeG-Z8AhuVIXaA" bpmnElement="Import">
+      <bpmndi:BPMNShape id="_clsLxEcKEeG-Z8AhuVIXaA" bpmnElement="_9FF649D7-151C-4A7A-91B5-D2680511017D">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_clsLxUcKEeG-Z8AhuVIXaA" bpmnElement="_91748126-8A00-40BC-BEBD-04AE6843AC71">
+        <dc:Bounds height="48.0" width="80.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_clsLxkcKEeG-Z8AhuVIXaA" bpmnElement="_BC9BF64E-B2FB-4265-A70E-7142EBC6A45A">
+        <dc:Bounds height="28.0" width="28.0" x="217.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_clsLx0cKEeG-Z8AhuVIXaA" bpmnElement="_4A4A95DC-BCF9-45D6-9789-798F4910B00A">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_clsLyEcKEeG-Z8AhuVIXaA" bpmnElement="_6E57A679-BB31-44BB-B74D-A131C9BCF3D9">
+        <di:waypoint xsi:type="dc:Point" x="136.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="231.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

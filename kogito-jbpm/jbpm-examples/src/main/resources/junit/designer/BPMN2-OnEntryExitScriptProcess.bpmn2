@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_SNQQ8EcNEeG-Z8AhuVIXaA" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_listItem"/>
+  <bpmn2:process id="OnEntryExitScriptProcess" drools:packageName="com.sample" name="On-Entry / On-Exit Script Process" isExecutable="true">
+    <bpmn2:extensionElements>
+      <drools:import name="java.util.List"/>
+      <drools:import name="java.util.ArrayList"/>
+      <drools:global identifier="list" type="java.util.List"/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="list" itemSubjectRef="_listItem"/>
+    <bpmn2:startEvent id="_6885A397-6D71-43DD-BAB2-8E0FC1347A13" name="StartProcess">
+      <bpmn2:outgoing>_E0C94265-54AB-4FC0-8149-9CEB65A57920</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:task id="_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0" drools:taskName="MyTask" name="Task">
+      <bpmn2:extensionElements>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script>list.add(&quot;On-entry1&quot;);</drools:script>
+        </drools:onEntry-script>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script>list.add(&quot;On-entry2&quot;);</drools:script>
+        </drools:onEntry-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script>list.add(&quot;On-exit1&quot;);</drools:script>
+        </drools:onExit-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script>list.add(&quot;On-exit2&quot;);</drools:script>
+        </drools:onExit-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_E0C94265-54AB-4FC0-8149-9CEB65A57920</bpmn2:incoming>
+      <bpmn2:outgoing>_51D0C1DA-A90E-47B8-BF32-8E235D476C7E</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_SNQQ8UcNEeG-Z8AhuVIXaA">
+        <bpmn2:dataInput id="_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0_TaskNameInput" name="TaskName"/>
+        <bpmn2:inputSet id="_SNQQ8kcNEeG-Z8AhuVIXaA"/>
+        <bpmn2:outputSet id="_SNQQ80cNEeG-Z8AhuVIXaA"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_SNQQ9EcNEeG-Z8AhuVIXaA">
+        <bpmn2:targetRef>_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_SNQQ9UcNEeG-Z8AhuVIXaA">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_SNQQ9kcNEeG-Z8AhuVIXaA">MyTask</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_SNQQ90cNEeG-Z8AhuVIXaA">_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+    </bpmn2:task>
+    <bpmn2:endEvent id="_2603A0EF-52F5-4D4D-B904-6F5B26C08450" name="EndProcess">
+      <bpmn2:incoming>_51D0C1DA-A90E-47B8-BF32-8E235D476C7E</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_SNQQ-EcNEeG-Z8AhuVIXaA"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_E0C94265-54AB-4FC0-8149-9CEB65A57920" sourceRef="_6885A397-6D71-43DD-BAB2-8E0FC1347A13" targetRef="_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0"/>
+    <bpmn2:sequenceFlow id="_51D0C1DA-A90E-47B8-BF32-8E235D476C7E" sourceRef="_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0" targetRef="_2603A0EF-52F5-4D4D-B904-6F5B26C08450"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_SNQQ-UcNEeG-Z8AhuVIXaA">
+    <bpmndi:BPMNPlane id="_SNQQ-kcNEeG-Z8AhuVIXaA" bpmnElement="OnEntryExitScriptProcess">
+      <bpmndi:BPMNShape id="_SNQQ-0cNEeG-Z8AhuVIXaA" bpmnElement="_6885A397-6D71-43DD-BAB2-8E0FC1347A13">
+        <dc:Bounds height="30.0" width="30.0" x="25.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_SNQQ_EcNEeG-Z8AhuVIXaA" bpmnElement="_802DC67F-BCBE-4CDB-89AA-F48E63D1D7F0">
+        <dc:Bounds height="48.0" width="100.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_SNQQ_UcNEeG-Z8AhuVIXaA" bpmnElement="_2603A0EF-52F5-4D4D-B904-6F5B26C08450">
+        <dc:Bounds height="28.0" width="28.0" x="237.0" y="25.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_SNQQ_kcNEeG-Z8AhuVIXaA" bpmnElement="_E0C94265-54AB-4FC0-8149-9CEB65A57920">
+        <di:waypoint xsi:type="dc:Point" x="40.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_SNQQ_0cNEeG-Z8AhuVIXaA" bpmnElement="_51D0C1DA-A90E-47B8-BF32-8E235D476C7E">
+        <di:waypoint xsi:type="dc:Point" x="146.0" y="40.0"/>
+        <di:waypoint xsi:type="dc:Point" x="251.0" y="39.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
