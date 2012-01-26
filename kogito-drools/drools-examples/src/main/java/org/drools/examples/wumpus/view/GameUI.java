@@ -28,6 +28,7 @@ import org.drools.examples.wumpus.Hero;
 import org.drools.examples.wumpus.Move;
 import org.drools.examples.wumpus.MoveCommand;
 import org.drools.examples.wumpus.Pitt;
+import org.drools.examples.wumpus.ShootCommand;
 import org.drools.examples.wumpus.Wumpus;
 import org.drools.examples.wumpus.WumpusApplicationWindow;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -161,9 +162,17 @@ public class GameUI {
         } );         
         actionPanel.add( btnNewButton_4 );
 
-//        JButton btnNewButton_5 = new JButton( "SHOOT" );
-//        btnNewButton_5.setBackground( Color.LIGHT_GRAY );
-//        actionPanel.add( btnNewButton_5 );
+        JButton btnNewButton_5 = new JButton( "SHOOT" );
+        btnNewButton_5.setBackground( Color.LIGHT_GRAY );
+        btnNewButton_5.addMouseListener( new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                gameData.getKsession().insert( new ShootCommand() );
+                gameData.getKsession().fireAllRules();
+                updateCave();
+                updateSensors();
+            }
+        } );             
+        actionPanel.add( btnNewButton_5 );
 
 //        JButton btnNewButton_6 = new JButton( "GRAB" );
 //        btnNewButton_6.setBackground( Color.LIGHT_GRAY );
@@ -358,7 +367,11 @@ public class GameUI {
                             if ( gameData.getPits().contains( new Pitt( row, col ) ) ) {
                                 image = javax.imageio.ImageIO.read( getClass().getResource( "pitt.png" ) );
                             } else if ( row == gameData.getWumpus().getRow() && col == gameData.getWumpus().getCol() ) {
-                                image = javax.imageio.ImageIO.read( getClass().getResource( "wumpus.png" ) );
+                                if ( gameData.getWumpus().isAlive() ) {
+                                    image = javax.imageio.ImageIO.read( getClass().getResource( "alive_wumpus.png" ) );
+                                } else {
+                                    image = javax.imageio.ImageIO.read( getClass().getResource( "dead_wumpus.png" ) );
+                                }
                             } else if ( row == gameData.getGold().getRow() && col == gameData.getGold().getCol() ) {
                                 image = javax.imageio.ImageIO.read( getClass().getResource( "g.png" ) );
                             } else if ( row == gameData.getHero().getRow() && col == gameData.getHero().getCol() ) {

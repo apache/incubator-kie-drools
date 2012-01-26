@@ -17,9 +17,19 @@ dialect "mvel"
 
 rule "Wumpus Death" when
     $h  : Hero()
-          Wumpus(row == $h.row, col == $h.col )
+          Wumpus(row == $h.row, col == $h.col, alive == true )
 then
     insert( new WumpusDeath() );
+end
+
+rule "Wumpus Killed" no-loop when
+    $a  : Arrow()
+    $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
+    $c  : Cell(row == $a.row, col == $a.col )        
+then
+    $c.setHidden( false );     
+    retract( $a );
+    modify( $w ) { alive = false };
 end
 
 rule "Pitt Death" when

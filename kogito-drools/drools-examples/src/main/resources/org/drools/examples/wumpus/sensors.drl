@@ -9,6 +9,7 @@ import org.drools.examples.wumpus.Gold
 import org.drools.examples.wumpus.SeeGlitter
 import org.drools.examples.wumpus.SmellStench
 import org.drools.examples.wumpus.FeelBreeze
+import org.drools.examples.wumpus.HearScream
 
 dialect "mvel"
 
@@ -40,4 +41,11 @@ rule "See Glitter"  when
           Gold(row == $h.row, col == ($h.col - 1) )
 then
     insertLogical( new SeeGlitter() );
+end
+
+rule "Hear Scream"  when 
+    $h  : Hero()
+          Wumpus( alive == false )
+then
+    insertLogical( new HearScream() );
 end
