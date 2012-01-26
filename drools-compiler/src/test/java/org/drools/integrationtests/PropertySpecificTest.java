@@ -438,22 +438,16 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         hero.setPosition(0);
         hero.setCanMove(true);
         ksession.insert(hero);
-
-        System.out.println("FIRE 1");
         ksession.fireAllRules();
 
         MoveCommand moveCommand = new MoveCommand();
         moveCommand.setMove(1);
         ksession.insert(moveCommand);
-
-        System.out.println("FIRE 2");
         ksession.fireAllRules();
 
         moveCommand = moveCommand = new MoveCommand();
         moveCommand.setMove(1);
         ksession.insert(moveCommand);
-
-        System.out.println("FIRE 3");
         ksession.fireAllRules();
 
         assertEquals(2, hero.getPosition());

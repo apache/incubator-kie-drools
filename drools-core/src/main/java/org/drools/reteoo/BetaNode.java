@@ -460,16 +460,8 @@ public abstract class BetaNode extends LeftTupleSource
         return calculateListenedMaskFromPattern(listenedProperties, mask, settableProperties);
     }
 
-    private long inferListenedMask(List<String> settableProperties) {
-        long mask = settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
-/* Should add mask from right AlphaNode ?
-        if (mask >= 0 && mask != Long.MAX_VALUE) {
-            if (rightInput instanceof AlphaNode) {
-                mask |= ((AlphaNode)rightInput).getListenedPropertyMask(settableProperties);
-            }
-        }
-*/
-        return mask;
+    long inferListenedMask(List<String> settableProperties) {
+        return settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
     }
 
     static long calculateListenedMaskFromPattern(List<String> listenedProperties, long mask, List<String> settableProperties) {
