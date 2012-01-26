@@ -104,6 +104,14 @@
         </mediaobject>
       </figure>
     </section>
+
+    <section>
+      <title>Wumpus World</title>
+
+      <para>A working version of Wumpus World, an AI example covered in in the book "Artificial Intelligence : A Modern
+       Approach", is now available among the other examples. A more detailed overview of Wumpus World can be found
+      <link xlink:href="http://www.cis.temple.edu/~giorgio/cis587/readings/wumpus.shtml">here</link></para>
+    </section>
   </section>
 
   <section>
