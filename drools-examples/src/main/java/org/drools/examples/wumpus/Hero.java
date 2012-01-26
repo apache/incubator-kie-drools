@@ -3,6 +3,7 @@ package org.drools.examples.wumpus;
 public class Hero {
     private int row;
     private int col;
+    private Direction direction;
     private int arrows;
     private int score;
 
@@ -11,6 +12,7 @@ public class Hero {
         this.row = row;
         this.col = col;
         this.arrows = 1;
+        this.direction = Direction.RIGHT;
     }
 
     public int getRow() {
@@ -45,9 +47,17 @@ public class Hero {
         this.score = score;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     @Override
     public String toString() {
-        return "Hero [row=" + row + ", col=" + col + ", arrows=" + arrows + ", score=" + score + "]";
+        return "Hero [row=" + row + ", col=" + col + ", direction=" + direction + ", arrows=" + arrows + ", score=" + score + "]";
     }
 
 }

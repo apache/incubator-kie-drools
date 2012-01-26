@@ -13,7 +13,6 @@ import org.drools.examples.wumpus.FeelBreeze
 dialect "mvel"
 
 rule "Smell Stench"  when 
-    $s  : Sensors()
     $h  : Hero()
           Wumpus(row == ($h.row + 1), col == $h.col ) or
           Wumpus(row == ($h.row - 1), col == $h.col ) or          
@@ -21,18 +20,9 @@ rule "Smell Stench"  when
           Wumpus(row == $h.row, col == ($h.col - 1) )
 then
     insertLogical( new SmellStench() );
-    $s.smellStench = true;
-end
-
-rule "Stench Gone" when
-    $s  : Sensors()
-    not SmellStench()
-then
-    $s.smellStench = false;
-end    
+end 
 
 rule "Feel Breeze"  when 
-    $s  : Sensors()
     $h  : Hero()
           Pitt(row == ($h.row + 1), col == $h.col ) or
           Pitt(row == ($h.row - 1), col == $h.col ) or          
@@ -40,18 +30,9 @@ rule "Feel Breeze"  when
           Pitt(row == $h.row, col == ($h.col - 1) )
 then
     insertLogical( new FeelBreeze() );
-    $s.feelBreeze = true; 
 end
 
-rule "Breeze Gone" when
-    $s  : Sensors()
-    not FeelBreeze()
-then
-    $s.feelBreeze = false;
-end 
-
 rule "See Glitter"  when 
-    $s  : Sensors()
     $h  : Hero()
           Gold(row == ($h.row + 1), col == $h.col ) or
           Gold(row == ($h.row - 1), col == $h.col ) or          
@@ -59,12 +40,4 @@ rule "See Glitter"  when
           Gold(row == $h.row, col == ($h.col - 1) )
 then
     insertLogical( new SeeGlitter() );
-    $s.seeGlitter = true; 
 end
-
-rule "Glitter Gone" when
-    $s  : Sensors()
-    not SeeGlitter()
-then
-    $s.seeGlitter = false;
-end 

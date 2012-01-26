@@ -16,8 +16,8 @@ public class ShadowContextTest {
         
         world.set( "k1", "v1" );
         assertEquals( "v1", world.get( "k1" ) );
-/*
-        Context ctx1 = world.createContext( "p1" );
+/*        
+        Context ctx1 = null; //world.createContext( "p1" );
         
         ctx1.set( "k2", "v2" );
                 

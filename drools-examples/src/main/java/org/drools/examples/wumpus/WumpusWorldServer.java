@@ -8,6 +8,9 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.examples.wumpus.view.GameUI;
+import org.drools.examples.wumpus.view.GameView;
+import org.drools.examples.wumpus.view.SensorsView;
 import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
@@ -40,18 +43,19 @@ public class WumpusWorldServer {
             throw new RuntimeException( "failed to build:\n" + kbuilder.getErrors().toString() );
         }
         
-        kbuilder.add( ResourceFactory.newClassPathResource( "sensors.drl", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "ui.drl", GameView.class ), ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( "failed to build:\n" + kbuilder.getErrors().toString() );
-        }                  
+        }      
+        
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
 
         
-        GameData data = new GameData();
+        GameView data = new GameView();
         data.setKbase( kbase );
         data.setWumpusWorld( this );
         setData(data);
@@ -59,7 +63,7 @@ public class WumpusWorldServer {
         //Thread.sleep( 10 * 10000 );
     }
     
-    public void setData(GameData data) {
+    public void setData(GameView data) {
         KnowledgeBase kbase = data.getKbase();
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
@@ -103,7 +107,7 @@ public class WumpusWorldServer {
         Gold gold = new Gold( row, col );
         Hero hero = new Hero( 0, 0 );
 
-        Sensors sensors = new Sensors();
+        SensorsView sensors = new SensorsView();
         
         ksession.insert( wumpus );
         ksession.insert( gold );

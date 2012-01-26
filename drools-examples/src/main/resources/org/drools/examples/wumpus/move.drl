@@ -1,57 +1,144 @@
 package org.drools.examples.wumpus
 
 import org.drools.examples.wumpus.Move
+import org.drools.examples.wumpus.Direction
 import org.drools.examples.wumpus.MoveCommand
 import org.drools.examples.wumpus.Cell
 
 dialect "mvel"
 
+/*
 declare Hero
-	@propertySpecific
+	@propSpecific
 end	
+*/
+
+rule "Direction.UP, Move.TURN_LEFT"  when
+    $h  : Hero( direction == Direction.UP)
+    $mc : MoveCommand( move == Move.TURN_LEFT )   
+then
+	retract ( $mc ); 
+    modify( $h ) { direction = Direction.LEFT };  
+end
+
+rule "Direction.LEFT, MOVE.TURN_LEFT"  when
+    $h  : Hero( direction == Direction.LEFT)
+    $mc : MoveCommand( move == Move.TURN_LEFT )   
+then
+	retract ( $mc );
+    modify( $h ) { direction = Direction.DOWN };   
+end
+
+rule "Direction DOWN,  MOVE.TURN_LEFT"  when
+    $h  : Hero( direction == Direction.DOWN)
+    $mc : MoveCommand( move == Move.TURN_LEFT )   
+then
+	retract ( $mc );
+    modify( $h ) { direction = Direction.RIGHT };   
+end
+
+rule "Direction.RIGHT, MOVE.TURN_LEFT"  when
+    $h  : Hero( direction == Direction.RIGHT )
+    $mc : MoveCommand( move == Move.TURN_LEFT )   
+then
+	retract ( $mc );  
+    modify( $h ) { direction = Direction.UP }; 
+end
+
+rule "Direction.UP, Move.TURN_RIGHT"  when
+    $h  : Hero( direction == Direction.UP)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+then
+	retract ( $mc );  
+    modify( $h ) { direction = Direction.RIGHT }; 
+end
+
+rule "Direction.RIGHT, MOVE.TURN_RIGHT"  when
+    $h  : Hero( direction == Direction.RIGHT)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+then
+	retract ( $mc );  
+    modify( $h ) { direction = Direction.DOWN }; 
+end
+
+rule "Direction DOWN,  MOVE.TURN_RIGHT"  when
+    $h  : Hero( direction == Direction.DOWN)
+    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+then
+	retract ( $mc );
+    modify( $h ) { direction = Direction.LEFT };   
+end
+
+rule "Direction.LEFT, MOVE.TURN_RIGHT"  when
+    $h  : Hero( direction == Direction.LEFT )
+    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+then
+	retract ( $mc );
+    modify( $h ) { direction = Direction.UP };   
+end
+
 
 rule "Move Up"  when
-    $mc : MoveCommand( move == Move.UP )   
-    $h  : Hero()
-    $c  : Cell(row == ($h.row + 1), col == $h.col )
+    ($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     $h  : Hero(direction == Direction.UP)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     $h  : Hero(direction == Direction.DOWN)) 
+     $c  : Cell(row == $h.row + 1, col == $h.col )
 then
+	retract ( $mc );  
     modify( $h ) { row = $h.row + 1 };
     $c.setHidden( false ); 
+end
+
+rule "Move Down"  when
+    ($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     $h  : Hero(direction == Direction.DOWN)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     $h  : Hero(direction == Direction.UP)) 
+     $c  : Cell(row == $h.row - 1, col == $h.col )
+then
 	retract ( $mc );  
-end
-
-rule "Move Down" when
-    $mc : MoveCommand( move == Move.DOWN )   
-    $h  : Hero() 
-    $c  : Cell(row == ($h.row - 1), col == $h.col )
-then
     modify( $h ) { row = $h.row - 1 };
-    $c.setHidden( false );    
-	retract ( $mc );   
+    $c.setHidden( false ); 	
 end
 
-rule "Move Left" when
-    $mc : MoveCommand( move == Move.LEFT )   
-    $h  : Hero() 
-    $c  : Cell(row == $h.row, col == ($h.col - 1) )
+rule "Move Left"  when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     $h  : Hero(direction == Direction.LEFT)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     $h  : Hero(direction == Direction.RIGHT)))
+     and 
+     $c  : Cell(row == $h.row, col == $h.col - 1 )
 then
+	retract ( $mc );  
     modify( $h ) { col = $h.col - 1 };
-    $c.setHidden( false );    
-	retract ( $mc );   
+    $c.setHidden( false ); 
 end
 
-rule "Move Right" when
-    $mc : MoveCommand( move == Move.RIGHT )   
-    $h  : Hero() 
-    $c  : Cell(row == $h.row, col == ($h.col + 1) )
+rule "Move Right"  when
+    ($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     $h  : Hero(direction == Direction.RIGHT)) or
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     $h  : Hero(direction == Direction.LEFT)) 
+     $c  : Cell(row == $h.row, col == $h.col + 1 )
 then
+	retract ( $mc );  
     modify( $h ) { col = $h.col + 1 };
-	$c.setHidden( false );
-	retract ( $mc );   
+    $c.setHidden( false ); 
 end
 
-rule "Invalid Move" salience -100 when
+rule "Invalid Move, Feel Bump" salience -100 when
     $mc : MoveCommand()   
 then
-	System.out.println( "Invalid Move " + $mc );  
+    System.out.println( "bump " + $mc );
+    retract( $mc );
+    insert( new FeelBump() )
+end
+
+rule "New Move, Remove old Bump" salience 100 when
+    exists MoveCommand() 
+    $fp : FeelBump()
+then
+    System.out.println( "retract bump " );
+    retract( $fp )
 end
