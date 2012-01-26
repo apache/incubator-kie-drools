@@ -1,0 +1,8 @@
+"RuleSet","org.drools.decisiontable",
+,,
+"RuleTable emptyActionTest",,
+"NAME","CONDITION","ACTION"
+,,
+,"$s : String()",
+"rule names","a string to activate rule","action above is empty, throws NPE, could by bypassed by $param above"
+"testRule","x","retract($s);"
