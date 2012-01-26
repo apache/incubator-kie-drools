@@ -1,0 +1,96 @@
+package org.drools.examples.wumpus.view
+
+import org.drools.examples.wumpus.Move
+import org.drools.examples.wumpus.Cell
+
+import org.drools.examples.wumpus.Wumpus
+import org.drools.examples.wumpus.Pitt
+import org.drools.examples.wumpus.Gold
+import org.drools.examples.wumpus.SeeGlitter
+import org.drools.examples.wumpus.SmellStench
+import org.drools.examples.wumpus.FeelBreeze
+import org.drools.examples.wumpus.FeelBump
+import org.drools.examples.wumpus.WumpusDeath
+import org.drools.examples.wumpus.PittDeath
+import org.drools.examples.wumpus.GoldWin
+import org.drools.examples.wumpus.view.GameView
+
+
+dialect "mvel"
+
+rule "Smell Stench View"  when 
+    $s  : SensorsView()
+          SmellStench()
+then
+    $s.smellStench = true;
+end
+
+rule "Stench Gone View" when
+    $s  : SensorsView()
+          not SmellStench()
+then
+    $s.smellStench = false;
+end    
+
+rule "Feel Breeze View"  when 
+    $s  : SensorsView()
+          FeelBreeze()
+then   
+    $s.feelBreeze = true; 
+end
+
+rule "Breeze Gone View" when
+    $s  : SensorsView()
+          not FeelBreeze()
+then
+    $s.feelBreeze = false;
+end 
+
+rule "Feel Bump View"  when 
+    $s  : SensorsView()
+          FeelBump()
+then   
+    $s.feelBump = true; 
+end
+
+rule "Bump Gone View" when
+    $s  : SensorsView()
+          not FeelBump()
+then
+    $s.feelBump = false;
+end 
+
+rule "See Glitter View"  when 
+    $s  : SensorsView()
+          SeeGlitter()
+then
+    $s.seeGlitter = true; 
+end
+
+rule "Glitter Gone View" when
+    $s  : SensorsView()
+          not SeeGlitter()
+then
+    $s.seeGlitter = false;
+end 
+
+rule "Wumpus Death View"   when
+    $g  : GameView()
+          WumpusDeath() 
+then
+	$g.wumpusDeath = true; 
+end
+
+rule "Pitt Game View" when
+    $g : GameView()
+         PittDeath()
+then    
+	$g.pittDeath = true; 
+end
+
+rule "Gold Win View"  when
+    $g : GameView()
+		 GoldWin()
+then
+	$g.goldWin = true;
+end

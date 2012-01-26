@@ -8,31 +8,30 @@ import org.drools.examples.wumpus.Pitt
 import org.drools.examples.wumpus.Gold
 import org.drools.examples.wumpus.SeeGlitter
 import org.drools.examples.wumpus.SmellStench
-import org.drools.examples.wumpus.FeelBreeze
+import org.drools.examples.wumpus.WumpusDeath
+import org.drools.examples.wumpus.PittDeath
+import org.drools.examples.wumpus.GoldWin
 
 dialect "mvel"
 
 
-rule "Wumpus Death"  when 
-    $g  : GameData()
+rule "Wumpus Death" when
     $h  : Hero()
           Wumpus(row == $h.row, col == $h.col )
 then
-	$g.wumpusDeath = true; 
+    insert( new WumpusDeath() );
 end
 
-rule "Pitt Death"  when
-    $g  : GameData()
+rule "Pitt Death" when
     $h  : Hero()
           Pitt(row == $h.row, col == $h.col )
 then
-	$g.pittDeath = true; 
+    insert( new PittDeath() ); 
 end
 
-rule "Gold Win"  when
-    $g  : GameData()
+rule "Gold Win" when
     $h  : Hero()
           Gold(row == $h.row, col == $h.col )
 then
-	$g.goldWin = true;
+    insert( new GoldWin() );
 end
