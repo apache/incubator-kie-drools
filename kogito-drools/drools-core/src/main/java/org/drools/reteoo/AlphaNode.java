@@ -153,28 +153,36 @@ public class AlphaNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
-        boolean mustPropagateAlpha = context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory));
+        if ( context.getModificationMask() == Long.MAX_VALUE ||
+                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory)) ) {
 
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-        if ( this.constraint.isAllowed( factHandle,
-                workingMemory,
-                memory.context ) ) {
-
-            if (mustPropagateAlpha) {
+            final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+            if ( this.constraint.isAllowed( factHandle,
+                    workingMemory,
+                    memory.context ) ) {
                 this.sink.propagateModifyObject( factHandle,
                         modifyPreviousTuples,
                         context,
                         workingMemory );
-            } else {
-                for (ObjectSink objectSink : sink.getSinks()) {
-                    if (objectSink instanceof BetaNode) {
-                        objectSink.modifyObject( factHandle,
-                                                 modifyPreviousTuples,
-                                                 context,
-                                                 workingMemory );
-                    }
-                }
+            }
+        } else {
+            byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+        }
+    }
+
+    private void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                 final ModifyPreviousTuples modifyPreviousTuples,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+        for (ObjectSink objectSink : sink.getSinks()) {
+            if (objectSink instanceof BetaNode) {
+                RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
+                if ( rightTuple != null ) rightTuple.reAdd();
+            } else if (objectSink instanceof AlphaNode) {
+                ((AlphaNode)sink).byPassModifyToBetaNode( factHandle,
+                                                          modifyPreviousTuples,
+                                                          context,
+                                                          workingMemory );
             }
         }
     }
@@ -375,6 +383,9 @@ public class AlphaNode extends ObjectSource
         for (ObjectSink objectSink : sink.getSinks()) {
             if (objectSink instanceof AlphaNode) {
                 mask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
+                if (mask == Long.MAX_VALUE) break;
+            } else if (objectSink instanceof BetaNode) {
+                mask |= ((BetaNode)objectSink).inferListenedMask(settableProperties);
                 if (mask == Long.MAX_VALUE) break;
             }
         }
