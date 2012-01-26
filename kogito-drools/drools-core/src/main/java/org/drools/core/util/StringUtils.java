@@ -1264,4 +1264,28 @@ public class StringUtils {
         for (int i = 0, j = 0; i < 32; j++) if (chars[j] != '-') uuid[i++] = chars[j];
         return new String(uuid);
     }
+
+    public static String extractFirstIdentifier(String string, int start) {
+        StringBuilder builder = new StringBuilder();
+        extractFirstIdentifier(string, builder, start);
+        return builder.toString();
+    }
+
+    public static int extractFirstIdentifier(String string, StringBuilder builder, int start) {
+        boolean started = false;
+        int i = start;
+        for (; i < string.length(); i++) {
+            char ch = string.charAt(i);
+            if (Character.isJavaIdentifierStart(ch)) {
+                builder.append(ch);
+                started = true;
+            }
+            else if (started && Character.isJavaIdentifierPart(ch)) {
+                builder.append(ch);
+            } else if (started) {
+                break;
+            }
+        }
+        return i;
+    }
 }

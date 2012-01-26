@@ -404,8 +404,7 @@ public abstract class BetaNode extends LeftTupleSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
-        if ( rightTuple != null ) rightTuple.reAdd();
+        RightTuple rightTuple = removeRightTuple(modifyPreviousTuples);
 
         if (context.getModificationMask() == Long.MAX_VALUE ||
                 intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
@@ -424,12 +423,22 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    private RightTuple removeRightTuple(ModifyPreviousTuples modifyPreviousTuples) {
+        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
+        if ( rightTuple != null ) {
+            rightTuple.reAdd();
+        }
+        return rightTuple;
+    }
+
     void setListenedPropertyMask(long listenedPropertyMask) {
         this.listenedPropertyMask = listenedPropertyMask;
     }
 
     long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
-        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        if (listenedPropertyMask >= 0) {
+            return listenedPropertyMask;
+        }
         long mask = calculateMask(workingMemory);
         setListenedPropertyMask(mask);
         return mask >= 0 ? mask : Long.MAX_VALUE;
