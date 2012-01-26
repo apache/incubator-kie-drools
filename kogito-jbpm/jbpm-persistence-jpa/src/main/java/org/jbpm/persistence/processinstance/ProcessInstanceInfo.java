@@ -63,10 +63,10 @@ public class ProcessInstanceInfo{
 //  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 //  @JoinColumn(name = "processInstanceId")
 //  private Set<EventType>                    eventTypes         = new HashSet<EventType>();    
-    private @CollectionOfElements
-
+    @CollectionOfElements
     @JoinTable(name = "EventTypes", joinColumns = @JoinColumn(name = "InstanceId"))
-    Set<String>                               eventTypes         = new HashSet<String>();
+    private Set<String>                       eventTypes         = new HashSet<String>();
+    
     private @Transient
     ProcessInstance                           processInstance;
     private @Transient
