@@ -152,18 +152,29 @@ public class AlphaNode extends ObjectSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if (context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
 
-            final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
-            if ( this.constraint.isAllowed( factHandle,
-                    workingMemory,
-                    memory.context ) ) {
+        boolean mustPropagateAlpha = context.getModificationMask() == Long.MAX_VALUE ||
+                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory));
 
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+        if ( this.constraint.isAllowed( factHandle,
+                workingMemory,
+                memory.context ) ) {
+
+            if (mustPropagateAlpha) {
                 this.sink.propagateModifyObject( factHandle,
                         modifyPreviousTuples,
                         context,
                         workingMemory );
+            } else {
+                for (ObjectSink objectSink : sink.getSinks()) {
+                    if (objectSink instanceof BetaNode) {
+                        objectSink.modifyObject( factHandle,
+                                                 modifyPreviousTuples,
+                                                 context,
+                                                 workingMemory );
+                    }
+                }
             }
         }
     }
