@@ -812,23 +812,26 @@ public class PatternBuilder
             return false;
         }
 
-        if (declr == null) {
-            ReturnValueRestriction returnValueRestriction = (ReturnValueRestriction)restriction;
-            Declaration[] requiredDeclarations = restriction.getRequiredDeclarations();
-            String[] requiredGlobals = returnValueRestriction.getRequiredGlobals();
-            declarations = new Declaration[(requiredDeclarations != null ? requiredDeclarations.length : 0) + (requiredGlobals != null ? requiredGlobals.length : 0)];
-            int i = 0;
-            if (requiredDeclarations != null) {
-                for (Declaration requiredDeclaration : requiredDeclarations)
-                    declarations[i++] = requiredDeclaration;
+        if (declarations == null) {
+            if (declr == null) {
+                ReturnValueRestriction returnValueRestriction = (ReturnValueRestriction)restriction;
+                Declaration[] requiredDeclarations = restriction.getRequiredDeclarations();
+                String[] requiredGlobals = returnValueRestriction.getRequiredGlobals();
+                declarations = new Declaration[(requiredDeclarations != null ? requiredDeclarations.length : 0) + (requiredGlobals != null ? requiredGlobals.length : 0)];
+                int i = 0;
+                if (requiredDeclarations != null) {
+                    for (Declaration requiredDeclaration : requiredDeclarations)
+                        declarations[i++] = requiredDeclaration;
+                }
+                if (requiredGlobals != null) {
+                    for (String requiredGlobal : requiredGlobals)
+                        declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), requiredGlobal);
+                }
+            } else {
+                declarations = new Declaration[] { declr };
             }
-            if (requiredGlobals != null) {
-                for (String requiredGlobal : requiredGlobals)
-                    declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), requiredGlobal);
-            }
-        } else {
-            if (declarations == null) declarations = new Declaration[] { declr };
         }
+
         pattern.addConstraint(buildVariableConstraint(context, expr, declarations, value1, operator, value2, extractor, restriction));
         return true;
     }
