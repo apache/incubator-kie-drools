@@ -213,7 +213,7 @@ public class InputMarshaller {
                                                                    config,
                                                                    agenda,
                                                                    environment );
-        session.setKnowledgeRuntime( new StatefulKnowledgeSessionImpl( session ) );
+        new StatefulKnowledgeSessionImpl( session );
 
         initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
 
