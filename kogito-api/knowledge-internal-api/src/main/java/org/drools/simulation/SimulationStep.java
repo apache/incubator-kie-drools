@@ -17,12 +17,14 @@
 package org.drools.simulation;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.command.Command;
 
 public interface SimulationStep {
 
-    long getTemporalDistance();
-    Collection<Command> getCommands();
+    long getDistanceMillis();
+
+    List<Command> getCommands();
 
 }
