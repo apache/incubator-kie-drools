@@ -25,7 +25,7 @@ public class WumpusWorldServer {
 
     public void init() throws InterruptedException {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "move.drl", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "commands.drl", getClass() ), ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( "failed to build:\n" + kbuilder.getErrors().toString() );

@@ -1,8 +1,10 @@
 package org.drools.examples.wumpus
 
+import org.drools.examples.wumpus.Arrow
 import org.drools.examples.wumpus.Move
 import org.drools.examples.wumpus.Direction
 import org.drools.examples.wumpus.MoveCommand
+import org.drools.examples.wumpus.ShootCommand
 import org.drools.examples.wumpus.Cell
 
 dialect "mvel"
@@ -130,7 +132,6 @@ end
 rule "Invalid Move, Feel Bump" salience -100 when
     $mc : MoveCommand()   
 then
-    System.out.println( "bump " + $mc );
     retract( $mc );
     insert( new FeelBump() )
 end
@@ -139,6 +140,45 @@ rule "New Move, Remove old Bump" salience 100 when
     exists MoveCommand() 
     $fp : FeelBump()
 then
-    System.out.println( "retract bump " );
     retract( $fp )
 end
+
+
+rule "Shoot Arrow"  when
+    $sc : ShootCommand();
+    $h  : Hero()
+then
+    retract ( $sc );
+    insert( new Arrow($h.row, $h.col, $h.direction) );
+end 
+
+rule "Move Arrow Up"  when
+     $a :  Arrow( direction == Direction.UP)    
+then
+    modify( $a ) { row = $a.row + 1 };
+end   
+
+rule "Move Arrow Down"  when
+     $a :  Arrow( direction == Direction.DOWN)    
+then
+    modify( $a ) { row = $a.row - 1 };
+end   
+
+rule "Move Arrow Left"  when
+     $a :  Arrow( direction == Direction.LEFT)    
+then
+    modify( $a ) { col = $a.col - 1 };
+end    
+
+rule "Move Arrow Right"  when
+     $a :  Arrow( direction == Direction.RIGHT)
+then
+    modify( $a ) { col = $a.col + 1 };
+end  
+
+rule "Remove Arrow"  when
+     $a : Arrow() 
+     not Cell(row == $a.row, col == $a.col )            
+then
+    retract ( $a );
+end  
