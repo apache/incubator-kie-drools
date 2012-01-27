@@ -67,7 +67,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
-import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -822,11 +821,9 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( 2,
                       list.size() );
 
-        assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+        assertEquals( 5, list.get( 0 ) );
 
-        assertEquals( new Integer( 6 ),
-                      list.get( 1 ) );
+        assertEquals( 6, list.get( 1 ) );
     }
 
     @Test
@@ -841,9 +838,7 @@ public class MiscTest extends CommonTestMethodBase {
         evalSharingTest( drl );
     }
 
-    private void evalSharingTest( final String drl ) throws DroolsParserException,
-                                                    IOException,
-                                                    Exception {
+    private void evalSharingTest( final String drl ) throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
         if ( builder.hasErrors() ) {
@@ -9859,4 +9854,46 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(13, rules);
     }
 
+    @Test
+    public void testRecursiveDeclaration() throws Exception {
+        String rule = "package org.drools\n" +
+                "declare Node\n" +
+                "    value: String\n" +
+                "    parent: Node\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   $parent: Node( value == \"parent\" )\n" +
+                "   $child: Node( $value : value, parent == $parent )\n" +
+                "then\n" +
+                "   System.out.println( $value );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType nodeType = kbase.getFactType( "org.drools", "Node" );
+        Object parent = nodeType.newInstance();
+        nodeType.set( parent, "value", "parent" );
+        ksession.insert( parent );
+
+        Object child = nodeType.newInstance();
+        nodeType.set( child, "value", "child" );
+        nodeType.set( child, "parent", parent );
+        ksession.insert( child );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test
+    public void testCircularDeclaration() throws Exception {
+        String rule = "declare FactA\n" +
+                "    fieldB: FactB\n" +
+                "end\n" +
+                "declare FactB\n" +
+                "    fieldA: FactA\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+    }
 }
