@@ -34,7 +34,7 @@ global SimpleScoreCalculator scoreCalculator;
 
 rule "distanceToPreviousTerminal"
     when
-        $journey : Journey($distanceToPreviousTerminal : distanceToPreviousTerminal)
+        $journey : Journey(previousTerminal != null, $distanceToPreviousTerminal : distanceToPreviousTerminal)
     then
         insertLogical(new IntConstraintOccurrence("distanceToPreviousTerminal", ConstraintType.NEGATIVE_SOFT,
                 $distanceToPreviousTerminal,
@@ -43,13 +43,13 @@ end
 
 rule "distanceFromLastJourneyToDepot"
     when
-        $journey : Journey()
+        $journey : Journey(previousTerminal != null)
         not Journey (previousTerminal == $journey)
         $depot : Depot()
     then
         insertLogical(new IntConstraintOccurrence("distanceFromLastJourneyToDepot", ConstraintType.NEGATIVE_SOFT,
                 $journey.getDistanceTo($depot),
-                $journey));
+                $journey, $depot));
 end
 
 // ############################################################################
