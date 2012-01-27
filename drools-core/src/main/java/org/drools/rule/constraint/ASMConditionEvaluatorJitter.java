@@ -195,7 +195,7 @@ public class ASMConditionEvaluatorJitter {
             load(RIGHT_OPERAND);
             mv.visitJumpInsn(IFNULL, nullLabel);
             if (type != null && !right.isFixed() && rightType != type) {
-                castOrCoerceTo(RIGHT_OPERAND, rightType, type);
+                castOrCoerceTo(RIGHT_OPERAND, rightType, type, nullLabel);
             }
             mv.visitJumpInsn(GOTO, notNullLabel);
             mv.visitLabel(nullLabel);
@@ -227,7 +227,7 @@ public class ASMConditionEvaluatorJitter {
             Label nullLabel = new Label();
             load(LEFT_OPERAND);
             mv.visitJumpInsn(IFNULL, nullLabel);
-            castOrCoerceTo(LEFT_OPERAND, fromType, toType);
+            castOrCoerceTo(LEFT_OPERAND, fromType, toType, nullLabel);
             return nullLabel;
         }
 
@@ -238,7 +238,7 @@ public class ASMConditionEvaluatorJitter {
             return notNullLabel;
         }
 
-        private void castOrCoerceTo(int regNr, Class<?> fromType, Class<?> toType) {
+        private void castOrCoerceTo(int regNr, Class<?> fromType, Class<?> toType, Label nullLabel) {
             Label nonInstanceOfLabel = new Label();
             Label endOfCoercionLabel = new Label();
             load(regNr);
@@ -250,11 +250,37 @@ public class ASMConditionEvaluatorJitter {
             mv.visitJumpInsn(GOTO, endOfCoercionLabel);
 
             mv.visitLabel(nonInstanceOfLabel);
+
+            boolean isNumber = Number.class.isAssignableFrom(toType);
+
+            Label tryOk = null;
+            Label inCatch = null;
+            if (isNumber) {
+                Label beforeTry = new Label();
+                tryOk = new Label();
+                inCatch = new Label();
+                mv.visitTryCatchBlock(beforeTry, tryOk, inCatch, "java/lang/NumberFormatException");
+                mv.visitLabel(beforeTry);
+            }
+
             mv.visitTypeInsn(NEW, internalName(toType));
             mv.visitInsn(DUP);
             load(regNr);
             coerceByConstructor(fromType, toType);
             store(regNr, toType);
+
+            if (isNumber) {
+                Label afterCatch = new Label();
+                mv.visitLabel(tryOk);
+                mv.visitJumpInsn(GOTO, afterCatch);
+                mv.visitLabel(inCatch);
+                mv.visitInsn(POP);
+                mv.visitInsn(ACONST_NULL);
+                mv.visitVarInsn(ASTORE, regNr);
+                mv.visitJumpInsn(GOTO, nullLabel);
+                mv.visitLabel(afterCatch);
+            }
+
             mv.visitLabel(endOfCoercionLabel);
         }
 
