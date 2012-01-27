@@ -9,12 +9,10 @@ public class BooleanConversionHandler implements ConversionHandler {
     private BooleanConversionHandler() { }
 
     public Object convertFrom(Object in) {
-        if (in.getClass() == Boolean.class || in.getClass() == boolean.class) return in;
-        if (in instanceof String) {
-            if (((String)in).equalsIgnoreCase("true")) return true;
-            if (((String)in).equalsIgnoreCase("false")) return false;
+        if (in.getClass() == Boolean.class || in.getClass() == boolean.class) {
+            return in;
         }
-        throw new ClassCastException("Cannot convert " + in + " into a Boolean");
+        return in instanceof String && ((String)in).equalsIgnoreCase("true");
     }
 
     public boolean canConvertFrom(Class cls) {

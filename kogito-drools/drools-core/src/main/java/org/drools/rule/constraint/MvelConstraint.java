@@ -138,13 +138,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
 
-        try {
-            return conditionEvaluator.evaluate(object, vars);
-        } catch (ClassCastException cce) {
-            return false;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
+        return conditionEvaluator.evaluate(object, vars);
     }
 
     private void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
