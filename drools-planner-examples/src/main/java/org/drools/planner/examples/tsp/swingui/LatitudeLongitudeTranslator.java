@@ -56,12 +56,20 @@ class LatitudeLongitudeTranslator {
         }
     }
 
-    public int translateLongitude(double value) {
-        return (int) Math.floor((value - minimumLongitude) * adjustedWidth / longitudeLength);
+    public int translateLongitudeToX(double longitude) {
+        return (int) Math.floor((longitude - minimumLongitude) * adjustedWidth / longitudeLength);
     }
 
-    public int translateLatitude(double value) {
-        return (int) Math.floor((maximumLatitude - value) * adjustedHeight / latitudeLength);
+    public int translateLatitudeToY(double latitude) {
+        return (int) Math.floor((maximumLatitude - latitude) * adjustedHeight / latitudeLength);
+    }
+
+    public double translateXToLongitude(int x) {
+        return minimumLongitude + (((double) x) * longitudeLength / adjustedWidth);
+    }
+
+    public double translateYToLatitude(double y) {
+        return maximumLatitude - (((double) y) * latitudeLength / adjustedHeight);
     }
 
 }

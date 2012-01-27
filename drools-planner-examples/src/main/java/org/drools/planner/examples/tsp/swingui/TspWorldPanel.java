@@ -21,7 +21,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
@@ -40,6 +41,7 @@ public class TspWorldPanel extends JPanel {
     private final TspPanel tspPanel;
 
     private BufferedImage canvas = null;
+    private LatitudeLongitudeTranslator translator = null;
 
     public TspWorldPanel(TspPanel tspPanel) {
         this.tspPanel = tspPanel;
@@ -53,11 +55,21 @@ public class TspWorldPanel extends JPanel {
                 }
             }
         });
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (translator != null) {
+                    double longitude = translator.translateXToLongitude(e.getX());
+                    double latitude = translator.translateYToLatitude(e.getY());
+                    TspWorldPanel.this.tspPanel.insertCityAndJourney(longitude, latitude);
+                }
+            }
+        });
     }
 
     public void resetPanel(Solution solution) {
         TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
-        LatitudeLongitudeTranslator translator = new LatitudeLongitudeTranslator();
+        translator = new LatitudeLongitudeTranslator();
         for (City city : travelingSalesmanTour.getCityList()) {
             translator.addCoordinates(city.getLatitude(), city.getLongitude());
         }
@@ -70,25 +82,25 @@ public class TspWorldPanel extends JPanel {
         Graphics g = createCanvas(width, height);
         g.setColor(TangoColors.SKY_BLUE_1);
         for (City city : travelingSalesmanTour.getCityList()) {
-            int x = translator.translateLongitude(city.getLongitude());
-            int y = translator.translateLatitude(city.getLatitude());
+            int x = translator.translateLongitudeToX(city.getLongitude());
+            int y = translator.translateLatitudeToY(city.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
         }
         g.setColor(TangoColors.SCARLET_1);
         for (Depot depot : travelingSalesmanTour.getDepotList()) {
-            int x = translator.translateLongitude(depot.getCity().getLongitude());
-            int y = translator.translateLatitude(depot.getCity().getLatitude());
+            int x = translator.translateLongitudeToX(depot.getCity().getLongitude());
+            int y = translator.translateLatitudeToY(depot.getCity().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
         }
         g.setColor(TangoColors.CHOCOLATE_1);
         for (Journey journey : travelingSalesmanTour.getJourneyList()) {
             if (journey.getPreviousTerminal() != null) {
                 City city1 = journey.getPreviousTerminal().getCity();
-                int x1 = translator.translateLongitude(city1.getLongitude());
-                int y1 = translator.translateLatitude(city1.getLatitude());
+                int x1 = translator.translateLongitudeToX(city1.getLongitude());
+                int y1 = translator.translateLatitudeToY(city1.getLatitude());
                 City city2 = journey.getCity();
-                int x2 = translator.translateLongitude(city2.getLongitude());
-                int y2 = translator.translateLatitude(city2.getLatitude());
+                int x2 = translator.translateLongitudeToX(city2.getLongitude());
+                int y2 = translator.translateLatitudeToY(city2.getLatitude());
                 g.drawLine(x1, y1, x2, y2);
             }
         }

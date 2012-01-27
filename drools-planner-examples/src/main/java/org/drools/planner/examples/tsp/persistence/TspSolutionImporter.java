@@ -102,22 +102,21 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             int depotListSize = 1;
             List<Depot> depotList = new ArrayList<Depot>(depotListSize);
             List<Journey> journeyList = new ArrayList<Journey>(cityList.size() - depotListSize);
-            long id = 0L;
+            int count = 0;
             for (City city : cityList) {
-                if (id < depotListSize) {
+                if (count < depotListSize) {
                     Depot depot = new Depot();
-                    depot.setId(0L);
-                    id++;
+                    depot.setId(city.getId());
                     depot.setCity(city);
                     depotList.add(depot);
                 } else {
                     Journey journey = new Journey();
-                    journey.setId(id);
-                    id++;
+                    journey.setId(city.getId());
                     journey.setCity(city);
                     // Notice that we leave the PlanningVariable properties on null
                     journeyList.add(journey);
                 }
+                count++;
             }
             travelingSalesmanTour.setDepotList(depotList);
             travelingSalesmanTour.setJourneyList(journeyList);

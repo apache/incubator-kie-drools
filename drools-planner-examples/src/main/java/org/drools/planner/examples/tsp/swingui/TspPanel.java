@@ -17,13 +17,24 @@
 package org.drools.planner.examples.tsp.swingui;
 
 import java.awt.BorderLayout;
+import java.util.Iterator;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.solver.ProblemFactChange;
+import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
+import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.Journey;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
@@ -66,6 +77,33 @@ public class TspPanel extends SolutionPanel {
 
     public SolverAndPersistenceFrame getWorkflowFrame() {
         return solverAndPersistenceFrame;
+    }
+
+    public void insertCityAndJourney(double longitude, double latitude) {
+        final City newCity = new City();
+        Long cityId = 0L;
+        for (City city : getTravelingSalesmanTour().getCityList()) {
+            if (cityId <= city.getId()) {
+                cityId = city.getId() + 1L;
+            }
+        }
+        newCity.setId(cityId);
+        newCity.setLongitude(longitude);
+        newCity.setLatitude(latitude);
+        logger.info("Scheduling insertion of newCity ({}).", newCity);
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(SolutionDirector solutionDirector) {
+                TravelingSalesmanTour solution = (TravelingSalesmanTour) solutionDirector.getWorkingSolution();
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                solution.getCityList().add(newCity);
+                workingMemory.insert(newCity);
+                Journey newJourney = new Journey();
+                newJourney.setId(newCity.getId());
+                newJourney.setCity(newCity);
+                solution.getJourneyList().add(newJourney);
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
     }
 
 }
