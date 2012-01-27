@@ -168,9 +168,28 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
     public void visitKnowledgeDefinition(final KnowledgeDefinition oldDefinition){
         listener.debug("BinaryResourceDiffProducerImpl: Couldn't handle "+oldDefinition+". We must leave it in the new Package.");
     }
+    
+    public void visitObject(final Object object) {
+    	if (object instanceof WorkflowProcess) {
+    		visitWorkflowProcess((WorkflowProcess) object);
+    	}
+    }
 
-    public void visitWorkflowProcess(final WorkflowProcess oldDefinition){
-        listener.debug("BinaryResourceDiffProducerImpl: Couldn't handle "+oldDefinition+". We must leave it in the new Package.");
+    public void visitWorkflowProcess(final WorkflowProcess oldDefinition) {
+    	String oldProcessId = oldDefinition.getId();
+    	boolean found = false;
+    	for (org.drools.definition.process.Process process: newPkg.getProcesses()) {
+    		if (oldProcessId.equals(process.getId())) {
+    			found = true;
+    			break;
+    		}
+    	}
+
+        if (!found){
+            listener.debug("BinaryResourceDiffProducerImpl: Process "+oldProcessId+" is not present anymore. Adding to removed list.");
+            this.removedDefinitions.add(oldDefinition);
+            return;
+        }
     }
 
     private boolean compareRules(Rule r1, Rule r2){
