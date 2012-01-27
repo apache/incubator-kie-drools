@@ -95,13 +95,29 @@ public class TspWorldPanel extends JPanel {
         g.setColor(TangoColors.CHOCOLATE_1);
         for (Journey journey : travelingSalesmanTour.getJourneyList()) {
             if (journey.getPreviousTerminal() != null) {
-                City city1 = journey.getPreviousTerminal().getCity();
-                int x1 = translator.translateLongitudeToX(city1.getLongitude());
-                int y1 = translator.translateLatitudeToY(city1.getLatitude());
-                City city2 = journey.getCity();
-                int x2 = translator.translateLongitudeToX(city2.getLongitude());
-                int y2 = translator.translateLatitudeToY(city2.getLatitude());
-                g.drawLine(x1, y1, x2, y2);
+                City previousCity = journey.getPreviousTerminal().getCity();
+                int previousX = translator.translateLongitudeToX(previousCity.getLongitude());
+                int previousY = translator.translateLatitudeToY(previousCity.getLatitude());
+                City city = journey.getCity();
+                int x = translator.translateLongitudeToX(city.getLongitude());
+                int y = translator.translateLatitudeToY(city.getLatitude());
+                g.drawLine(previousX, previousY, x, y);
+                // Back to depot line
+                boolean needsBackToDepotLineDraw = true;
+                for (Journey chainedJourney : travelingSalesmanTour.getJourneyList()) {
+                    if (chainedJourney.getPreviousTerminal() == journey) {
+                        needsBackToDepotLineDraw = false;
+                        break;
+                    }
+                }
+                if (needsBackToDepotLineDraw) {
+                    // TODO support more than 1 depot
+                    Depot depot = travelingSalesmanTour.getDepotList().get(0);
+                    City depotCity = depot.getCity();
+                    int depotX = translator.translateLongitudeToX(depotCity.getLongitude());
+                    int depotY = translator.translateLatitudeToY(depotCity.getLatitude());
+                    g.drawLine(x, y,depotX, depotY);
+                }
             }
         }
         repaint();
