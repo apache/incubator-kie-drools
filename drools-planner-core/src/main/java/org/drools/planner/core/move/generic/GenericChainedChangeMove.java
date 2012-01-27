@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.move.generic;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -37,6 +38,11 @@ public class GenericChainedChangeMove extends GenericChangeMove {
         this.oldChainedEntityFactHandle = oldChainedEntityFactHandle;
         this.newChainedEntity = newChainedEntity;
         this.newChainedEntityFactHandle = newChainedEntityFactHandle;
+    }
+
+    @Override
+    public boolean isMoveDoable(WorkingMemory workingMemory) {
+        return super.isMoveDoable(workingMemory) && !ObjectUtils.equals(planningEntity, toPlanningValue);
     }
 
     @Override
