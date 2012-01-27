@@ -50,17 +50,18 @@ public class GenericChainedChangeMove extends GenericChangeMove {
     @Override
     public void doMove(WorkingMemory workingMemory) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
+
         // Change the entity
         planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
         workingMemory.update(planningEntityFactHandle, planningEntity);
         // Close the old chain
-        if (oldPlanningValue != null) {
+        if (oldChainedEntity != null) {
             planningVariableDescriptor.setValue(oldChainedEntity, oldPlanningValue);
             workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
         }
         // Reroute the new chain
         if (newChainedEntity != null) {
-            planningVariableDescriptor.setValue(newChainedEntity, toPlanningValue);
+            planningVariableDescriptor.setValue(newChainedEntity, planningEntity);
             workingMemory.update(newChainedEntityFactHandle, newChainedEntity);
         }
     }

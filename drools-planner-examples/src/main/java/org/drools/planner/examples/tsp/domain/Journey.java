@@ -62,6 +62,9 @@ public class Journey extends AbstractPersistable implements Terminal {
     // ************************************************************************
 
     public int getDistanceToPreviousTerminal() {
+        if (previousTerminal == null) {
+            return 0;
+        }
         return getDistanceTo(previousTerminal);
     }
 

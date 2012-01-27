@@ -54,7 +54,7 @@ public class City extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return id + "(" + latitude + "," + longitude + ")";
+        return id.toString();
     }
 
 }
