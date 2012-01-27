@@ -140,26 +140,11 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         if (!planningVariableDescriptor.isTriggerChainCorrection()) {
             return new ChangeMoveIterator(planningValueIterator, planningEntity);
         } else {
-            Object chainedEntity = null;
-            PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
-            SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
-            for (Object suspectedChainedEntity : solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
-                    workingSolution, entityDescriptor.getPlanningEntityClass())) {
-                if (planningVariableDescriptor.getValue(suspectedChainedEntity) == planningEntity) {
-                    if (chainedEntity != null) {
-                        throw new IllegalStateException("The planningEntity (" + planningEntity
-                                + ") has multiple chained entities (" + chainedEntity + ") ("
-                                + suspectedChainedEntity + ") pointing to it.");
-                    }
-                    chainedEntity = suspectedChainedEntity;
-                }
-            }
-            if (chainedEntity == null) {
-                return new ChangeMoveIterator(planningValueIterator, planningEntity);
-            }
-            FactHandle chainedEntityFactHandle = workingMemory.getFactHandle(chainedEntity);
+            Object oldChainedEntity = findChainedEntity(planningEntity);
+            FactHandle oldChainedEntityFactHandle = oldChainedEntity == null
+                    ? null : workingMemory.getFactHandle(oldChainedEntity);
             return new ChainedChangeMoveIterator(planningValueIterator, planningEntity,
-                    chainedEntity, chainedEntityFactHandle);
+                    oldChainedEntity, oldChainedEntityFactHandle);
         }
     }
 
@@ -189,23 +174,46 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     }
 
+    private Object findChainedEntity(Object planningEntity) {
+        Object chainedEntity = null;
+        PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
+        SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
+        for (Object suspectedChainedEntity : solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
+                workingSolution, entityDescriptor.getPlanningEntityClass())) {
+            if (planningVariableDescriptor.getValue(suspectedChainedEntity) == planningEntity) {
+                if (chainedEntity != null) {
+                    throw new IllegalStateException("The planningEntity (" + planningEntity
+                            + ") has multiple chained entities (" + chainedEntity + ") ("
+                            + suspectedChainedEntity + ") pointing to it.");
+                }
+                chainedEntity = suspectedChainedEntity;
+            }
+        }
+        return chainedEntity;
+    }
+
     private class ChainedChangeMoveIterator extends ChangeMoveIterator {
 
-        private final Object chainedEntity;
-        private final FactHandle chainedEntityFactHandle;
+        private final Object oldChainedEntity;
+        private final FactHandle oldChainedEntityFactHandle;
 
         public ChainedChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity,
-                Object chainedEntity, FactHandle chainedEntityFactHandle) {
+                Object oldChainedEntity, FactHandle oldChainedEntityFactHandle) {
             super(planningValueIterator, planningEntity);
-            this.chainedEntity = chainedEntity;
-            this.chainedEntityFactHandle = chainedEntityFactHandle;
+            this.oldChainedEntity = oldChainedEntity;
+            this.oldChainedEntityFactHandle = oldChainedEntityFactHandle;
         }
 
         @Override
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
+            Object newChainedEntity = findChainedEntity(toPlanningValue);
+            FactHandle newChainedEntityFactHandle = newChainedEntity == null
+                    ? null : workingMemory.getFactHandle(newChainedEntity);
+
             return new GenericChainedChangeMove(planningEntity, planningEntityFactHandle,
-                    planningVariableDescriptor, toPlanningValue, chainedEntity, chainedEntityFactHandle);
+                    planningVariableDescriptor, toPlanningValue,
+                    oldChainedEntity, oldChainedEntityFactHandle, newChainedEntity, newChainedEntityFactHandle);
         }
 
     }
