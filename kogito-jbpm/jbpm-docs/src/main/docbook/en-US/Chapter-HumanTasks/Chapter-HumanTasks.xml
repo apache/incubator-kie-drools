@@ -421,7 +421,7 @@ public void complete( long taskId, String userId, ContentData outputData,
                       TaskOperationResponseHandler responseHandler )
 ...</programlisting>
 
-      <para>If you take a look a the method signatures you will notice that almost all of
+      <para>If you take a look at the method signatures you will notice that almost all of
       these methods take the following arguments:</para>
 
       <itemizedlist>
@@ -490,10 +490,11 @@ responseHandler.waitTillDone(1000);
       assigned to one or more groups.  This means that any user that is part of the group
       can claim and execute the task.</para>
       
-      <para>The human task service needs to know about valid user and group
-      ids (to make sure tasks are assigned to existing users and/or groups to avoid
-      errors and tasks that end up assigned to non-existing users). User and group registration has to be done before tasks can be assigned to them.  
-      One possible registration method is to dynamically adding users and groups to the task service session:</para>
+      <para>The human task service needs to know about valid user and group ids (to make 
+      sure tasks are assigned to existing users and/or groups to avoid errors and tasks 
+      that end up assigned to non-existing users). User and group registration has to be 
+      done before tasks can be assigned to them. One possible registration method is to 
+      dynamically adding users and groups to the task service session:</para>
       
 <programlisting language="java">EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
 TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
@@ -527,9 +528,11 @@ taskClient.getTasksAssignedAsPotentialOwner("sales-rep", groups, "en-UK", taskSu
       registering the list of valid users at the task service.</para>
       
       <para>
-      It is often necessary to hook into existing systems and/or services (such as LDAP) where users and groups 
-      are maintained in order to perform validation without having to manually register all users and group with the task service. 
-      jBPM provides the UserGroupCallback interface which allows you to create your own implementation for user and group management:</para>
+      It is often necessary to hook into existing systems and/or services (such as LDAP) 
+      where users and groups are maintained in order to perform validation without having 
+      to manually register all users and group with the task service. jBPM provides the 
+      UserGroupCallback interface which allows you to create your own implementation for 
+      user and group management:</para>
       
 <programlisting language="java">
 public interface UserGroupCallback {
@@ -558,8 +561,10 @@ public interface UserGroupCallback {
 }</programlisting>      
       
       <para>
-      	If you register your own implementation of the UserGroupCallback interface, the human task service will call it whenever it needs to 
-      	perform user and group validation. Here is a very simple example implementation which treats all users and groups as being valid:  
+      	If you register your own implementation of the UserGroupCallback interface, the 
+        human task service will call it whenever it needs to perform user and group validation. 
+        Here is a very simple example implementation which treats all users and groups as 
+        being valid:  
       </para>
 
 <programlisting language="java">
@@ -597,7 +602,9 @@ public class DefaultUserGroupCallbackImpl implements UserGroupCallback {
 </programlisting>     
       
       <para> 
-      You can register your own implementation of the UserGroupCallback interface in a properties file called jbpm.usergroup.callback.properties which should be available on the classpath, for example:
+      You can register your own implementation of the UserGroupCallback interface in a 
+      properties file called jbpm.usergroup.callback.properties which should be available 
+      on the classpath, for example:
       </para>
 
 <programlisting language="java">
@@ -605,8 +612,11 @@ jbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl
 </programlisting>
    
       <para>
-      or via a system property, for example -Djbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl. If you are using the jBPM installer, you can also modify
-      $jbpm-installer-dir$/task-service/resources/org/jbpm/jbpm.usergroup.callback.properties directly to register your own callback implementation.
+      or via a system property, for example 
+      <code>-Djbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl</code>. 
+      If you are using the jBPM installer, you can also modify
+      <code>$jbpm-installer-dir$/task-service/resources/org/jbpm/jbpm.usergroup.callback.properties</code>
+      directly to register your own callback implementation.
       </para>
     </section>
 
@@ -748,8 +758,8 @@ thread.start();</programlisting>
     <title>Human task persistence</title>
 
     <para>The folowing entity relationship diagram (ERD) shows the persitent entities used 
-    by the Human Task service. Clicking on the image below will take you to an enlarged view 
-    of the image</para>
+    by the Human Task service. (Clicking on the image below will take you to an enlarged view 
+    of the image.)</para>
 
     <!-- width && scalefit for pdf's -->
     <ulink url="images/Chapter-HumanTasks/human_task_schema.png">
@@ -764,5 +774,1058 @@ thread.start();</programlisting>
       </figure>
     </ulink>
 
+    <para>The data model above is organized around 2 groups of entities: 
+    <itemizedlist>
+      <listitem>The <code>task</code> entity which represents the main information for a 
+      task. </listitem>
+      <listitem>The <code>deadline</code>, <code>escalation</code> and <code>notification</code> 
+      entities which represent deadlines and escalations for a task as well as any notifications 
+      associated with those deadlines.</listitem>
+      <listitem>The <code>notification</code> entity which represents a notification (for 
+      example by e-mail) generated by a task. </listitem>
+    </itemizedlist>
+
+    Two other main entities in the data model are the <code>i18ntext</code> and 
+    <code>organizationalentity</code>.  
+    <itemizedlist>
+      <listitem>The <code>i18ntext</code> entity is used to store text which may be language 
+      related, such as names or descriptions entered by users.</listitem>
+      <listitem>The <code>organizationalentity</code> entity represents a user in some 
+      way.</listitem>
+    </itemizedlist>
+    </para>
+
+    <para>The following paragraphs and tables describe the group of entities including
+    and associated with the <code>task</code> entity. These entities are shown on the right 
+    hand side of the ERD. (See below for information about the <code>deadline</code>, 
+    <code>escalation</code> and <code>notification</code> group of entities).</para>
+
+    <para>The column <quote>FK</quote> in the tables below, indicates whether or not a column
+    in a database table has a foreign key constraint on it. If the <quote>Nullable</quote>
+    column is empty, then the described database table column <emphasis>is</emphasis> 
+    nullable.</para>
+
+    <para>While a number of foreign key columns of different tables are specified as 
+    non-nullable, many of these columns will simply contain the value <code>-1</code> or 
+    <code>0</code> if there is no associated entity.</para> 
+
+    <section>
+      <title>Task related entities</title>
+
+    <para>The <code>task</code> entity contains much of the essential information for 
+    describing a task. Although a number of columns are not nullable, many of them 
+    are simply set to "-1" if the value used in the column hasn't been set by
+    the task service.</para>
+
+    <table>
+      <title>Task</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <!-- task -->
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key of the task identity</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>priority</code></entry>
+          <entry>The priority of the task</entry>
+          <entry>NOT</entry>
+        </row>
+
+        <!-- delegation -->
+        <row>
+          <entry><code>allowedtodelegate</code></entry>
+          <entry>The group to whom this task may be delegated</entry>
+        </row>
+
+        <!-- task data -->
+        <row>
+          <entry><code>status</code></entry>
+          <entry>The status of the task</entry>
+        </row>
+        <row>
+          <entry><code>previousstatus</code></entry>
+          <entry>The previous status of the task</entry>
+        </row>
+        <row>
+          <entry><code>actualowner_id</code></entry>
+          <entry>The id of the organizational entity who owns the task</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>createdby_id</code></entry>
+          <entry>The id of the organizational entity who created the task</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>createdon</code></entry>
+          <entry>The timestamp describing when this task was created</entry>
+        </row>
+        <row>
+          <entry><code>activationtime</code></entry>
+          <entry>The timestamp describing when this task was activated</entry>
+        </row>
+        <row>
+          <entry><code>expirationtime</code></entry>
+          <entry>The timestamp describing when this task will expire</entry>
+        </row>
+        <row>
+          <entry><code>skipable</code></entry>
+          <entry>Whether or not this task may be skipped</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>workitemid</code></entry>
+          <entry>The id of the work item associated with this task (see jBPM core schema)</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>processinstanceid</code></entry>
+          <entry>The id of the process instance associated with this task (see jBPM core schema)</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>documentaccesstype</code></entry>
+          <entry>How a document associated with the task can be accessed</entry>
+        </row>
+        <row>
+          <entry><code>documenttype</code></entry>
+          <entry>The type of data in the document</entry>
+        </row>
+        <row>
+          <entry><code>documentcontentid</code></entry>
+          <entry>The id of the <code>content</code> entity containing the document data</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>outputaccesstype</code></entry>
+          <entry>How the output document associated with the task can be accessed</entry>
+        </row>
+        <row>
+          <entry><code>outputtype</code></entry>
+          <entry>The type of data in the output document</entry>
+        </row>
+        <row>
+          <entry><code>outputcontentid</code></entry>
+          <entry>The id of the <code>content</code> entity containing the output document data</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>faultname</code></entry>
+          <entry>The name of the fault generated, if a fault occurs</entry>
+        </row>
+        <row>
+          <entry><code>faultaccesstype</code></entry>
+          <entry>How the document associated with the fault can be accessed</entry>
+        </row>
+        <row>
+          <entry><code>faulttype</code></entry>
+          <entry>The type of data in the fault document</entry>
+        </row>
+        <row>
+          <entry><code>faultcontentid</code></entry>
+          <entry>The id of the <code>content</code> entity containing the fault document data</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>parentid</code></entry>
+          <entry>This is the id of the parent task</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>processid</code></entry>
+          <entry>The name (id) of the associated process</entry>
+        </row>
+        <row>
+          <entry><code>processsessionid</code></entry>
+          <entry>The id of the associated (knowledge) session</entry>
+          <entry>NOT</entry>
+        </row>
+
+        <!-- people assignments -->
+        <row>
+          <entry><code>taskinitiator_id</code></entry>
+          <entry>The id of the organizational entity who created the task</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+   
+    <para>The <code>subtasksstrategy</code> entity is used to save the strategy that 
+    describes how parent and sub-tasks should react when either parent or sub-tasks
+    are ended.</para>
+
+    <table>
+      <title>SubTasksStrategy</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>dtype</code></entry>
+          <entry>A discriminator column</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>name</code></entry>
+          <entry>The name of the strategy</entry>
+        </row>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code></entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>organizationalentity</code> entity is extended to represent the different 
+    people assignments that are part of the task.</para>
+
+    <table>
+      <title>OrganizationalEntity</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>dtype</code></entry>
+          <entry>The discriminator column</entry>
+          <entry>NOT</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>attachment</code> entity describes attachments that have
+    been added to the task.</para>
+
+    <table>
+      <title>Attachment</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>name</code></entry>
+          <entry>The (file) name of the attachment</entry>
+        </row>
+        <row>
+          <entry><code>accesstype</code></entry>
+          <entry>How the attachment can be accessed</entry>
+        </row>
+        <row>
+          <entry><code>attachedat</code></entry>
+          <entry>When the attachment was attached to the task</entry>
+        </row>
+        <row>
+          <entry><code>attachment_size</code></entry>
+          <entry>The size (in bytes) of the attachment</entry>
+        </row>
+        <row>
+          <entry><code>attachmentcontentid</code></entry>
+          <entry>The id of the <code>content</code> entity storing the raw data of the attachment</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>contenttype</code></entry>
+          <entry>The MIME type of the attachment data</entry>
+        </row>
+        <row>
+          <entry><code>attachedby_id</code></entry>
+          <entry>The id of the <code>organizationalentity</code> entity that attached the attachment</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>taskdata_attachments_id</code></entry>
+          <entry>The id of the <code>task</code> entity to which this attachment belongs</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>task_comment</code> entity describes comments added to tasks.</para>
+
+    <table>
+      <title>task_comment</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>addedat</code></entry>
+          <entry>The timestamp of when the comment was added to the task</entry>
+        </row>
+        <row>
+          <entry><code>text</code></entry>
+          <entry>The text of the comment</entry>
+        </row>
+        <row>
+          <entry><code>addedby_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>taskdata_comments_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>delegation_delegates</code> table is a join table for relationships between 
+    the <code>task</code> entity and the <code>organizationalentity</code>.</para>
+
+    <table>
+      <title>delegation_delegates</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code></entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code></entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>peopleassignments_stakeholders</code> table is a join table that describes 
+    which <code>organizationalentity</code> entities are <emphasis>task stakeholders</emphasis>
+    of a particular task.</para>
+
+    <table>
+      <title>peopleassignments_stakeholders</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>peopleassignments_potowners</code> table is a join table that describes 
+    which <code>organizationalentity</code> entities are <emphasis>potential</emphasis>
+    owners of a particular task.</para>
+
+    <table>
+      <title>peopleassignments_potowners</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>peopleassignments_exclowners</code> table is a join table that describes 
+    which <code>organizationalentity</code> entities are the <emphasis>excluded</emphasis>
+    owners of a particular task.</para>
+
+    <table>
+      <title>peopleassignments_exclowners</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>peopleassignments_bas</code> table is a join table that describes which 
+    <code>organizationalentity</code> entities are <emphasis>business administrators</emphasis>
+    of a particular task.</para>
+
+    <table>
+      <title>peopleassignments_bas</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>peopleassignments_recipients</code> table is a join table that describes 
+    which <code>organizationalentity</code> entities are <emphasis>notification 
+    recipients</emphasis> for a particular task.</para>
+
+    <table>
+      <title>peopleassignments_recipients</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>task</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    </section>
+
+    <section>
+      <title>Deadline, Escalation and Notification related entities</title>
+
+    <para>The following paragraphs and tables describe the group of entities having to 
+    do with deadline, escalation, and notification information. These entities
+    are shown on the left hand side of the ERD diagram above.</para>
+
+    <para>The <code>deadline</code> entity represents a deadline for a task.</para>
+
+    <table>
+      <title>deadline</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>deadline_date</code></entry>
+          <entry>The deadline date</entry>
+        </row>
+        <row>
+          <entry><code>escalated</code></entry>
+          <entry>Whether or not the deadline has been escalated</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>deadlines_startdeadline_id</code></entry>
+          <entry>The id of the associated <code>task</code> entity which uses this deadline 
+          as its start deadline.</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>deadlines_enddeadline_id</code></entry>
+          <entry>The id of the associated <code>task</code> entity which uses this deadline 
+          as its end deadline.</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>escalation</code> entity descibes an escalation action that should be 
+    taken for a particular deadline.</para>
+
+    <table>
+      <title>escalation</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>name</code></entry>
+          <entry>The name of the escalation event</entry>
+        </row>
+        <row>
+          <entry><code>deadline_escalation_id</code></entry>
+          <entry>The id of the associated <code>deadline</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>booleanexpression</code> entity represents an expression that evaluates 
+    to a boolean. These expressions are used in order to determine whether or not a 
+    constraint should be applied.</para>
+
+    <table>
+      <title>booleanexpression</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>expression</code></entry>
+          <entry>The expression text</entry>
+        </row>
+        <row>
+          <entry><code>type</code></entry>
+          <entry>The type of expression</entry>
+        </row>
+        <row>
+          <entry><code>escalation_constraints_id</code></entry>
+          <entry>The id of the <code>escalation</code> entity 
+          for which this expression is used as a constraint</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>notification</code> entity describes a notification generated by an 
+    escalation action.</para>
+
+    <table>
+      <title>notification</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>dtype</code></entry>
+          <entry>The discriminator column</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>priority</code></entry>
+          <entry>The priority of the notification</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>escalation_notifications_id</code></entry>
+          <entry>The id of the associated <code>escalation</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>email_header</code> entity describes an
+    e-mail that will be sent as part of a notification.</para>
+
+    <table>
+      <title>email_header</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>fromaddress</code></entry>
+          <entry>The e-mail address from which the e-mail is sent</entry>
+        </row>
+        <row>
+          <entry><code>replytoaddress</code></entry>
+          <entry>The reply-to address used in the e-mail</entry>
+        </row>
+        <row>
+          <entry><code>language</code></entry>
+          <entry>The language in which the e-mail is written</entry>
+        </row>
+        <row>
+          <entry><code>subject</code></entry>
+          <entry>The subject of the e-mail</entry>
+        </row>
+        <row>
+          <entry><code>body</code></entry>
+          <entry>The body of the e-mail</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>notification_email_header</code> table is a join table that 
+    describes and qualifies which <code>email_header</code> entities are part of a 
+    notification.</para>
+
+    <table>
+      <title>notification_email_header</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>notification_id</code></entry>
+          <entry>Together with the <code>mapkey</code>, this field is part of the 
+          primary key. This field refers to the <code>notification</code> entity that 
+          the <code>email_header</code> is associated with.</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>mapkey</code></entry>
+          <entry>Together with the <code>mapkey</code>, this field is part of the 
+          primary key. This field describes what the type is of the associated 
+          <code>email_header</code>.</entry> 
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>emailheaders_id</code></entry>
+          <entry>The id of the associated <code>email_header</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>reassignment</code> entity describes reassignments associated with 
+    escalations.</para>
+
+    <table>
+      <title>reassignment</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>escalation_reassignments_id</code></entry>
+          <entry>The id of the associated <code>escalation</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>reassignments_potentialowners</code> table is a join table that describes 
+    which <code>organizationalentity</code> entities are <emphasis>potential</emphasis>
+    owners if a reassignment happens as part of an escalation.</para>
+
+    <table>
+      <title>reassignment_potentialowners</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>reassignment</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>notification_bas</code> table is a join table that describes which 
+    <emphasis>business administrators</emphasis> will be notified by a 
+    <code>notification</code>.</para>
+
+    <table>
+      <title>notification_bas</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>notification</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>notification_recipients</code> table is a join table that describes which 
+    <code>recipients</code> entities will be received a <code>notification</code>.</para>
+
+    <table>
+      <title>notification_recipients</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>task_id</code></entry>
+          <entry>The primary key of the associated <code>notification</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>entity_id</code></entry>
+          <entry>The primary key of the associated <code>organizationalentity</code> entity</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>content</code> entity represents the content of a document, output 
+    document, fault or other object.</para>
+
+    <table>
+      <title>content</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>content</code></entry>
+          <entry>The content data</entry>
+          <entry>NOT</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>i18ntext</code> entity is used by a number of different other entities 
+    to store text fields. The <code>deadline</code>, <code>notification</code>,
+    <code>reassignment</code> and <code>task</code> entities use this entity to store
+    descriptions, subjects, names and other documentation.</para>
+
+    <para>Although all foreign keys are not nullable, they will be set to 0 if not
+    being used</para>
+
+    <table>
+      <title>i18ntext</title>
+      <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+          <entry>FK</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT</entry>
+        </row>
+        <row>
+          <entry><code>language</code></entry>
+          <entry>The language that the text is in.</entry>
+        </row>
+        <row>
+          <entry><code>text</code></entry>
+          <entry>The text</entry>
+        </row>
+        <row>
+          <entry><code>task_subjects_id</code></entry>
+          <entry>The id of the <code>task</code> entity for which this is a subject</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>task_names_id</code></entry>
+          <entry>The id of the <code>task</code> entity for which this is a name</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>task_descriptions_id</code></entry>
+          <entry>The id of the <code>task</code> entity for which this is a description</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>reassignment_documentation_id</code></entry>
+          <entry>The id of the <code>reassignment</code> entity for which this is documentation</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>notification_subjects_id</code></entry>
+          <entry>The id of the <code>notification</code> entity for which this is a subject</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>notification_names_id</code></entry>
+          <entry>The id of the <code>notification</code> entity for which this is a name</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>notification_documentation_id</code></entry>
+          <entry>The id of the <code>notification</code> entity for which this is documentation</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>notification_descriptions_id</code></entry>
+          <entry>The id of the <code>notification</code> entity for which this is a description</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+        <row>
+          <entry><code>deadline_documentation_id</code></entry>
+          <entry>The id of the <code>deadline</code> entity for which this is documentation</entry>
+          <entry>NOT</entry>
+          <entry>FK</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    </section>
+
   </section>
+
 </chapter>

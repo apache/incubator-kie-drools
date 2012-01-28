@@ -109,58 +109,171 @@
     </ulink>
 
     <para>The <code>sessioninfo</code> entity contains the state of the 
-    (knowledge) session in which the jBPM process instance is running. 
-    This entity contains the following fields:
-      <itemizedlist>
-        <listitem><code>id</code>: the primary key</listitem>
-        <listitem><code>lastmodificationdate</code>: the last time that 
-        the entity was saved to the database</listitem>
-        <listitem><code>rulesbytearray</code>: this is the binary dataset 
-        containing the state of the session</listitem>
-        <listitem><code>startdate</code>: The start time of the session 
-        </listitem>
-        <listitem><code>optlock</code>: the version field that serves as 
-        its optimistic lock value</listitem>
-      </itemizedlist>
-    </para>
+    (knowledge) session in which the jBPM process instance is running.</para>
 
+    <table>
+      <title>SessionInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>lastmodificationdate</code></entry>
+          <entry>The last time that the entity was saved to the database</entry>
+        </row>
+        <row>
+          <entry><code>rulesbytearray</code></entry>
+          <entry>The binary dataset containing the state of the session</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>startdate</code></entry>
+          <entry>The start time of the session</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+    
     <para>The <code>processinstanceinfo</code> entity contains the state 
-    of the jBPM process instance, including the following fields:
-      <itemizedlist>
-        <listitem><code>instanceid</code>: the primary key</listitem>
-        <listitem><code>lastmodificationdate</code>: the last time that 
-        the entity was saved to the database</listitem>
-        <listitem><code>lastreaddate</code>: the last time that 
-        the entity was retrieved (read) from the database</listitem>
-        <listitem><code>processid</code>: the name (id) of the process
-        </listitem>
-        <listitem><code>processinstancebytearray</code>: this is the binary 
-        dataset containing the state of the process instance</listitem>
-        <listitem><code>startdate</code>: The start time of the process
-        </listitem>
-        <listitem><code>state</code>: an integer representing the state 
-        of the process instance</listitem>
-        <listitem><code>optlock</code>: the version field that serves as 
-        its optimistic lock value</listitem>
-      </itemizedlist>
-    </para>
+    of the jBPM process instance.</para>
 
-    <para>The <code>workiteminfo</code> entity contains the state of a
-    work item, including the following fields:
-      <itemizedlist>
-        <listitem><code>workitemid</code>: the primary key</listitem>
-        <listitem><code>name</code>: the name of the work item</listitem>
-        <listitem><code>processinstanceid</code>: the (primary key) id
-        of the process. There is not a foreign key constraint on this 
-        field</listitem>
-        <listitem><code>state</code>: an integer representing the state 
-        of the work item</listitem>
-        <listitem><code>optlock</code>: the version field that serves as 
-        its optimistic lock value</listitem>
-        <listitem><code>workitembytearay</code>: this is the binary dataset 
-        containing the state of the work item</listitem>
-      </itemizedlist>
-    </para>
+    <table>
+      <title>ProcessInstanceInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>instanceid</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>lastmodificationdate</code></entry>
+          <entry>The last time that the entity was saved to the database</entry>
+        </row>
+        <row>
+          <entry><code>lastreaddate</code></entry>
+          <entry>The last time that the entity was retrieved (read) from the database</entry>
+        </row>
+        <row>
+          <entry><code>processid</code></entry>
+          <entry>The name (id) of the process</entry>
+        </row>
+        <row>
+          <entry><code>processinstancebytearray</code></entry>
+          <entry>This is the binary dataset containing the state of the process instance</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>startdate</code></entry>
+          <entry>The start time of the process</entry>
+        </row>
+        <row>
+          <entry><code>state</code></entry>
+          <entry>An integer representing the state of the process instance</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>eventtypes</code> entity contains information
+    about events that a process instance will undergo or has undergone.</para>
+
+    <table>
+      <title>EventTypes</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>instanceid</code></entry>
+          <entry>This references the <code>processinstanceinfo</code> primary 
+          key and there is a foreign key constraint on this column.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>element</code></entry>
+          <entry>A text field related to an event that the process has undergone.</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>workiteminfo</code> entity contains the state of a work item.</para>
+
+    <table>
+      <title>WorkItemInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>workitemid</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>name</code></entry>
+          <entry>The name of the work item</entry>
+        </row>
+        <row>
+          <entry><code>processinstanceid</code></entry>
+          <entry>The (primary key) id of the process: there is no foreign key constraint 
+          on this field.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>state</code></entry>
+          <entry>An integer representing the state of the work item</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+        <row>
+          <entry><code>workitembytearay</code></entry>
+          <entry>This is the binary dataset containing the state of the work item</entry>
+          <entry>NOT NULL</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
 
     </section>
 
@@ -339,7 +452,8 @@ ksession.dispose();</programlisting>
 ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
     sessionId, kbase, null, env );</programlisting>
 
-    <!--para>You can also configure your engine to use persistence by simply specifying this in your session
+    <!--
+    <para>You can also configure your engine to use persistence by simply specifying this in your session
     configuration.  There are various ways to do this, but using a simple drools.session.conf file in a
     META-INF directory on your classpath is probably the easiest way (check the documentation for other
     ways of configuring your session, for example by providing a KnowledgeSessionConfiguration when first creating your
@@ -354,7 +468,8 @@ ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
 drools.commandService = org.drools.persistence.session.SingleSessionCommandService
 drools.processInstanceManagerFactory = org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory
 drools.workItemManagerFactory = org.drools.persistence.processinstance.JPAWorkItemManagerFactory
-drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting-->
+drools.processSignalManagerFactory = org.drools.persistence.processinstance.JPASignalManagerFactory</programlisting>
+    -->
 
     <!--para>Note that we only save the minimal state that is needed to continue
     execution of the process instance at some later point.  This means, for example, that
@@ -570,56 +685,8 @@ ut.commit();</programlisting>
       process-related information in a database using JPA or Hibernate directly.
       The data model itself contains three entities, one for process instance 
       information, one for node instance information, and one for (process) 
-      variable instance information (see the figure below):
-      <orderedlist>
-        <listitem><emphasis>ProcessInstanceLog:</emphasis> This table contains
-        the following fields: 
-        <itemizedlist>
-          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
-          <listitem><code>end_date</code>: when applicable, the end date of the process instance</listitem>
-          <listitem><code>processinstanceid</code>: the process instance id</listitem>
-          <listitem><code>start_date</code>: the start date of the process instance</listitem>
-        </itemizedlist>
-        </listitem>
-
-        <listitem><emphasis>NodeInstanceLog:</emphasis> This table contains
-        more information about which nodes were actually executed inside 
-        each process instance.  Whenever a node instance is entered from 
-        one of its incomming connections or is exited through one of its 
-        outgoing connections, that information is stored in this table.
-
-        <itemizedlist>
-          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
-          <listitem><code>log_date</code>: the date of the event</listitem>
-          <listitem><code>nodeid</code>: the node id of the corresponding node in the process definition</listitem>
-          <listitem><code>nodeinstanceid</code>: the node instance id</listitem>
-          <listitem><code>nodename</code>: the name of the node</listitem>
-          <listitem><code>processid</code>: the id of the process that the process instance is executing</listitem>
-          <listitem><code>processinstanceid</code>: the process instance id</listitem>
-          <listitem><code>type</code>: the type of the event (0 = enter, 1 = exit)</listitem>
-        </itemizedlist>
-        </listitem>
-
-        <listitem><emphasis>VariableInstanceLog:</emphasis> This table contains 
-        information about changes in variable instances. The defaul is to only
-        generate log entries when (after) a variable changes. It's also 
-        possible to log entries before the variable (value) changes. 
-        
-        <itemizedlist>
-          <listitem><code>id</code>: the primary key and id of the log entity</listitem>
-          <listitem><code>log_date</code>: the date of the event</listitem>
-          <listitem><code>processid</code>: the id of the process that the process instance is executing</listitem>
-          <listitem><code>processinstanceid</code>: the process instance id</listitem>
-          <listitem><code>value</code>: the value of the variable at the time that the log is made</listitem>
-          <listitem><code>variableid</code>: the variable id in the process definition</listitem>
-          <listitem><code>variableinstanceid</code>: the id of the variable instance</listitem>
-        </itemizedlist>
-
-        </listitem>
-
-      </orderedlist>
-      </para>
-
+      variable instance information.</para>
+     
       <!-- width && scalefit for pdf's -->
       <figure>
         <title>Business Activity Monitoring data model</title>
@@ -630,7 +697,151 @@ ut.commit();</programlisting>
           </imageobject>
         </mediaobject>
       </figure>
-  
+ 
+      <para>The <code>ProcessInstanceLog</code> table contains the basic
+      log information about a process instance.</para>
+
+      <table>
+        <title>ProcessInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>end_date</code></entry>
+            <entry>When applicable, the end date of the process instance</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The name (id) of the process</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>start_date</code></entry>
+            <entry>The start date of the process instance</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+
+      <para>The <code>NodeInstanceLog</code> table contains more information about which 
+      nodes were actually executed inside each process instance. Whenever a node instance 
+      is entered from one of its incomming connections or is exited through one of its outgoing 
+      connections, that information is stored in this table.</para>
+
+      <table>
+        <title>NodeInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>log_date</code></entry>
+            <entry>The date of the event</entry>
+          </row>
+          <row>
+            <entry><code>nodeid</code></entry>
+            <entry>The node id of the corresponding node in the process definition</entry>
+          </row>
+          <row>
+            <entry><code>nodeinstanceid</code></entry>
+            <entry>The node instance id</entry>
+          </row>
+          <row>
+            <entry><code>nodename</code></entry>
+            <entry>The name of the node</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The id of the process that the process instance is executing</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>type</code></entry>
+            <entry>The type of the event (0 = enter, 1 = exit)</entry>
+            <entry>NOT NULL</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+
+      <para>The <code>VariableInstanceLog</code> table contains information about changes 
+      in variable instances. The defaul is to only generate log entries when (after) a variable 
+      changes. It's also possible to log entries before the variable (value) changes.</para>
+
+      <table>
+        <title>VariableInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>log_date</code></entry>
+            <entry>The date of the event</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The id of the process that the process instance is executing</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>value</code></entry>
+            <entry>The value of the variable at the time that the log is made</entry>
+          </row>
+          <row>
+            <entry><code>variableid</code></entry>
+            <entry>The variable id in the process definition</entry> 
+          </row>
+          <row>
+            <entry><code>variableinstanceid</code></entry>
+            <entry>The id of the variable instance</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+        
     </section>
 
     <section>
@@ -639,6 +850,7 @@ ut.commit();</programlisting>
       <para>To log process history information in a database like this, you
       need to register the logger on your session (or working memory) like
       this:</para>
+
       <programlisting language="java">
 StatefulKnowledgeSession ksession = ...;
 JPAWorkingMemoryDbLogger logger = new JPAWorkingMemoryDbLogger(ksession);
