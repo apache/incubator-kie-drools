@@ -18,6 +18,7 @@ package org.drools.planner.core.move.generic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -45,34 +46,38 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
+        Solution workingSolution = solutionDirector.getWorkingSolution();
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
-        for (Object planningEntity : solutionDescriptor.getPlanningEntityList(solution)) {
-            FactHandle planningEntityFactHandle = workingMemory.getFactHandle(planningEntity);
-            PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                    planningEntity.getClass());
-            for (PlanningVariableDescriptor planningVariableDescriptor
-                    : planningEntityDescriptor.getPlanningVariableDescriptors()) {
-                if (!planningVariableDescriptor.isTriggerChainCorrection()) {
-                    for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
-                            solutionDirector.getWorkingSolution(), planningEntity)) {
-                        moveList.add(new GenericChangeMove(planningEntity, planningEntityFactHandle,
-                                planningVariableDescriptor, toPlanningValue));
-                    }
-                } else {
-                    Object oldChainedEntity = findChainedEntity(planningVariableDescriptor, solution, planningEntity);
-                    FactHandle oldChainedEntityFactHandle = oldChainedEntity == null
-                            ? null : workingMemory.getFactHandle(oldChainedEntity);
-                    for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
-                            solutionDirector.getWorkingSolution(), planningEntity)) {
-                        //TODO performance penalty - does not scale
-                        Object newChainedEntity = findChainedEntity(
-                                planningVariableDescriptor, solution, toPlanningValue);
-                        FactHandle newChainedEntityFactHandle = newChainedEntity == null
-                                ? null : workingMemory.getFactHandle(newChainedEntity);
-                        moveList.add(new GenericChainedChangeMove(planningEntity, planningEntityFactHandle,
-                                planningVariableDescriptor, toPlanningValue,
-                                oldChainedEntity, oldChainedEntityFactHandle,
-                                newChainedEntity, newChainedEntityFactHandle));
+        for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getPlanningEntityDescriptors()) {
+            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
+                Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
+                        variableDescriptor);
+                // TODO this fetches the list twice
+                List<Object> entityList = solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
+                        workingSolution,
+                        variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass());
+                for (Object entity : entityList) {
+                    FactHandle entityFactHandle = workingMemory.getFactHandle(entity);
+                    if (!variableDescriptor.isTriggerChainCorrection()) {
+                        for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
+                                workingSolution, entity)) {
+                            moveList.add(new GenericChangeMove(entity, entityFactHandle,
+                                    variableDescriptor, toPlanningValue));
+                        }
+                    } else {
+                        Object oldChainedEntity = findChainedEntity(variableToEntitiesMap, entity);
+                        FactHandle oldChainedEntityFactHandle = oldChainedEntity == null
+                                ? null : workingMemory.getFactHandle(oldChainedEntity);
+                        for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
+                                workingSolution, entity)) {
+                            Object newChainedEntity = findChainedEntity(variableToEntitiesMap, toPlanningValue);
+                            FactHandle newChainedEntityFactHandle = newChainedEntity == null
+                                    ? null : workingMemory.getFactHandle(newChainedEntity);
+                            moveList.add(new GenericChainedChangeMove(entity, entityFactHandle,
+                                    variableDescriptor, toPlanningValue,
+                                    oldChainedEntity, oldChainedEntityFactHandle,
+                                    newChainedEntity, newChainedEntityFactHandle));
+                        }
                     }
                 }
             }
@@ -80,23 +85,16 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
         return moveList;
     }
 
-    private Object findChainedEntity(PlanningVariableDescriptor planningVariableDescriptor,
-            Solution solution, Object planningEntity) {
-        Object chainedEntity = null;
-        PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
-        SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
-        for (Object suspectedChainedEntity : solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
-                solution, entityDescriptor.getPlanningEntityClass())) {
-            if (planningVariableDescriptor.getValue(suspectedChainedEntity) == planningEntity) {
-                if (chainedEntity != null) {
-                    throw new IllegalStateException("The planningEntity (" + planningEntity
-                            + ") has multiple chained entities (" + chainedEntity + ") ("
-                            + suspectedChainedEntity + ") pointing to it.");
-                }
-                chainedEntity = suspectedChainedEntity;
-            }
+    private Object findChainedEntity(Map<Object,List<Object>> variableToEntitiesMap, Object planningValue) {
+        List<Object> chainedEntities = variableToEntitiesMap.get(planningValue);
+        if (chainedEntities == null) {
+            return null;
         }
-        return chainedEntity;
+        if (chainedEntities.size() > 1) {
+            throw new IllegalStateException("The planningValue (" + planningValue
+                    + ") has multiple chained entities (" + chainedEntities + ") pointing to it.");
+        }
+        return chainedEntities.get(0);
     }
 
     @Override

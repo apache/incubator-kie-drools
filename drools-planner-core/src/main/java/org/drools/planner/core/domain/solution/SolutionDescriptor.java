@@ -105,6 +105,10 @@ public class SolutionDescriptor {
         return planningEntityDescriptorMap.keySet();
     }
 
+    public Collection<PlanningEntityDescriptor> getPlanningEntityDescriptors() {
+        return planningEntityDescriptorMap.values();
+    }
+
     public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
         PlanningEntityDescriptor planningEntityDescriptor = null;
         Class<?> planningEntityClass = planningEntityImplementationClass;

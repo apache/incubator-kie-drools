@@ -19,6 +19,7 @@ package org.drools.planner.core.solution.director;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,7 +31,9 @@ import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
@@ -143,6 +146,22 @@ public class DefaultSolutionDirector implements SolutionDirector {
         workingSolution.setScore(score);
         calculateCount++;
         return score;
+    }
+    
+    public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
+        List<Object> entityList = solutionDescriptor.getPlanningEntityListByPlanningEntityClass(workingSolution,
+                variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass());
+        Map<Object, List<Object>> variableToEntitiesMap = new HashMap<Object, List<Object>>(entityList.size());
+        for (Object entity : entityList) {
+            Object variable = variableDescriptor.getValue(entity);
+            List<Object> subEntities = variableToEntitiesMap.get(variable);
+            if (subEntities == null) {
+                subEntities = new ArrayList<Object>();
+                variableToEntitiesMap.put(variable, subEntities);
+            }
+            subEntities.add(entity);
+        }
+        return variableToEntitiesMap;
     }
 
     public void dispose() {

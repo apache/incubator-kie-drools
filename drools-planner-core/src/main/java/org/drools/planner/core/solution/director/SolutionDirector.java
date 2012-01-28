@@ -16,7 +16,11 @@
 
 package org.drools.planner.core.solution.director;
 
+import java.util.List;
+import java.util.Map;
+
 import org.drools.WorkingMemory;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
@@ -45,5 +49,7 @@ public interface SolutionDirector {
      * @return never null, the score of the working solution
      */
     Score calculateScoreFromWorkingMemory();
+
+    Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor);
 
 }
