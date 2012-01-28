@@ -64,6 +64,7 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
                             ? null : workingMemory.getFactHandle(oldChainedEntity);
                     for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
                             solutionDirector.getWorkingSolution(), planningEntity)) {
+                        //TODO performance penalty - does not scale
                         Object newChainedEntity = findChainedEntity(
                                 planningVariableDescriptor, solution, toPlanningValue);
                         FactHandle newChainedEntityFactHandle = newChainedEntity == null

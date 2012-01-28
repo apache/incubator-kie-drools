@@ -18,6 +18,8 @@ package org.drools.planner.examples.tsp.swingui;
 
 class LatitudeLongitudeTranslator {
 
+    public static final double MARGIN_RATIO = 0.04;
+
     private double minimumLatitude = Double.MAX_VALUE;
     private double maximumLatitude = -Double.MAX_VALUE;
     private double minimumLongitude = Double.MAX_VALUE;
@@ -25,8 +27,12 @@ class LatitudeLongitudeTranslator {
     private double latitudeLength = 0.0;
     private double longitudeLength = 0.0;
 
-    private double adjustedWidth = 0.0;
-    private double adjustedHeight = 0.0;
+    private double innerWidth = 0.0;
+    private double innerHeight = 0.0;
+    private double innerWidthMargin = 0.0;
+    private double innerHeightMargin = 0.0;
+    private int imageWidth = -1;
+    private int imageHeight = -1;
 
     public void addCoordinates(double latitude, double longitude) {
         if (latitude < minimumLatitude) {
@@ -46,30 +52,42 @@ class LatitudeLongitudeTranslator {
     public void prepareFor(double width, double height) {
         latitudeLength = maximumLatitude - minimumLatitude;
         longitudeLength = maximumLongitude - minimumLongitude;
+        innerWidthMargin = width * MARGIN_RATIO;
+        innerHeightMargin = height * MARGIN_RATIO;
+        innerWidth = width - (2.0 * innerWidthMargin);
+        innerHeight = height - (2.0 * innerHeightMargin);
         // Keep ratio visually correct
-        if (width > height * longitudeLength / latitudeLength) {
-            adjustedWidth = height * longitudeLength / latitudeLength;
-            adjustedHeight = height;
+        if (innerWidth > innerHeight * longitudeLength / latitudeLength) {
+            innerWidth = innerHeight * longitudeLength / latitudeLength;
         } else {
-            adjustedWidth = width;
-            adjustedHeight = width * latitudeLength / longitudeLength;
+            innerHeight = innerWidth * latitudeLength / longitudeLength;
         }
+        imageWidth = (int) Math.floor((2.0 * innerWidthMargin) + innerWidth);
+        imageHeight = (int) Math.floor((2.0 * innerHeightMargin) + innerHeight);
     }
 
     public int translateLongitudeToX(double longitude) {
-        return (int) Math.floor((longitude - minimumLongitude) * adjustedWidth / longitudeLength);
+        return (int) Math.floor(((longitude - minimumLongitude) * innerWidth / longitudeLength) + innerWidthMargin);
     }
 
     public int translateLatitudeToY(double latitude) {
-        return (int) Math.floor((maximumLatitude - latitude) * adjustedHeight / latitudeLength);
+        return (int) Math.floor(((maximumLatitude - latitude) * innerHeight / latitudeLength) + innerHeightMargin);
     }
 
     public double translateXToLongitude(int x) {
-        return minimumLongitude + (((double) x) * longitudeLength / adjustedWidth);
+        return minimumLongitude + ((((double) x) - innerWidthMargin) * longitudeLength / innerWidth);
     }
 
     public double translateYToLatitude(double y) {
-        return maximumLatitude - (((double) y) * latitudeLength / adjustedHeight);
+        return maximumLatitude - ((((double) y) - innerHeightMargin) * latitudeLength / innerHeight);
+    }
+
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
     }
 
 }

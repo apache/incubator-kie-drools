@@ -24,6 +24,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
@@ -42,6 +43,8 @@ public class TspWorldPanel extends JPanel {
 
     private BufferedImage canvas = null;
     private LatitudeLongitudeTranslator translator = null;
+
+    private ImageIcon europaBackground;
 
     public TspWorldPanel(TspPanel tspPanel) {
         this.tspPanel = tspPanel;
@@ -65,6 +68,8 @@ public class TspWorldPanel extends JPanel {
                 }
             }
         });
+        europaBackground = new ImageIcon(getClass().getResource(
+                "/org/drools/planner/examples/tsp/swingui/europaBackground.png"));
     }
 
     public void resetPanel(Solution solution) {
@@ -80,13 +85,17 @@ public class TspWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics g = createCanvas(width, height);
-        g.setColor(TangoColors.SKY_BLUE_1);
+        String tourName = travelingSalesmanTour.getName();
+        if (tourName.startsWith("europe")) {
+            g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
+        }
+        g.setColor(TangoColors.PLUM_2);
         for (City city : travelingSalesmanTour.getCityList()) {
             int x = translator.translateLongitudeToX(city.getLongitude());
             int y = translator.translateLatitudeToY(city.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
         }
-        g.setColor(TangoColors.SCARLET_1);
+        g.setColor(TangoColors.SCARLET_2);
         for (Depot depot : travelingSalesmanTour.getDepotList()) {
             int x = translator.translateLongitudeToX(depot.getCity().getLongitude());
             int y = translator.translateLatitudeToY(depot.getCity().getLatitude());
