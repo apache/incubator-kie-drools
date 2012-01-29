@@ -90,9 +90,13 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
         }
     }
 
-    public Collection<?> extractValues(Solution solution, Object planningEntity) {
+    public Collection<?> extractAllValues(Solution solution) {
         Collection<?> values = extractValuesWithoutFiltering(solution);
         return applyFiltering(values);
+    }
+
+    public Collection<?> extractValues(Solution solution, Object planningEntity) {
+        return extractAllValues(solution);
     }
 
     private Collection<?> extractValuesWithoutFiltering(Solution solution) {

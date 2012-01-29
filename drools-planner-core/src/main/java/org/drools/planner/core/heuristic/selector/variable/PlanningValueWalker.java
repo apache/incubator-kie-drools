@@ -21,7 +21,6 @@ import java.util.Iterator;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.generic.GenericChainedChangeMove;
@@ -177,9 +176,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private Object findChainedEntity(Object planningEntity) {
         Object chainedEntity = null;
         PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
-        SolutionDescriptor solutionDescriptor = entityDescriptor.getSolutionDescriptor();
-        for (Object suspectedChainedEntity : solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
-                workingSolution, entityDescriptor.getPlanningEntityClass())) {
+        for (Object suspectedChainedEntity : entityDescriptor.extractEntities(workingSolution)) {
             if (planningVariableDescriptor.getValue(suspectedChainedEntity) == planningEntity) {
                 if (chainedEntity != null) {
                     throw new IllegalStateException("The planningEntity (" + planningEntity

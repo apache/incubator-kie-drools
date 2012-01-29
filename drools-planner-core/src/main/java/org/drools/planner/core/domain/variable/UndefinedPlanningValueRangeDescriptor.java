@@ -56,6 +56,13 @@ public class UndefinedPlanningValueRangeDescriptor extends AbstractPlanningValue
         }
     }
 
+    public Collection<?> extractAllValues(Solution solution) {
+        throw new IllegalStateException("The planningEntityClass ("
+                + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                + ") which uses a @ValueRangeUndefined.");
+    }
+
     public Collection<?> extractValues(Solution solution, Object planningEntity) {
         throw new IllegalStateException("The planningEntityClass ("
                 + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()

@@ -219,6 +219,10 @@ public class PlanningVariableDescriptor {
         DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, value);
     }
 
+    public Collection<?> extractAllPlanningValues(Solution solution) {
+        return valueRangeDescriptor.extractAllValues(solution);
+    }
+
     public Collection<?> extractPlanningValues(Solution solution, Object planningEntity) {
         return valueRangeDescriptor.extractValues(solution, planningEntity);
     }

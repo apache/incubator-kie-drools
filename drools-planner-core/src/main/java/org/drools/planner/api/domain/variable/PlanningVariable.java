@@ -36,7 +36,8 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 public @interface PlanningVariable {
 
-    // TODO Add null
+    // TODO Add nullable
+    // TODO nullable=true is NOT compatible with triggerChainCorrection=true
     // boolean nullable() default false;
 
     /**

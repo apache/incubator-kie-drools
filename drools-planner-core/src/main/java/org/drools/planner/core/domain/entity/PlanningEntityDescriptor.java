@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
@@ -202,6 +203,10 @@ public class PlanningEntityDescriptor {
     
     public PlanningVariableDescriptor getPlanningVariableDescriptor(String propertyName) {
         return planningVariableDescriptorMap.get(propertyName);
+    }
+
+    public List<Object> extractEntities(Solution solution) {
+        return solutionDescriptor.getPlanningEntityListByPlanningEntityClass(solution, planningEntityClass);
     }
 
     public long getProblemScale(Solution solution, Object planningEntity) {

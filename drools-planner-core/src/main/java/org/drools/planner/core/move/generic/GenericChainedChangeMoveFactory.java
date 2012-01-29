@@ -28,7 +28,6 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
@@ -53,9 +52,7 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
                 Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
                         variableDescriptor);
                 // TODO this fetches the list twice
-                List<Object> entityList = solutionDescriptor.getPlanningEntityListByPlanningEntityClass(
-                        workingSolution,
-                        variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass());
+                List<Object> entityList =  entityDescriptor.extractEntities(workingSolution);
                 for (Object entity : entityList) {
                     FactHandle entityFactHandle = workingMemory.getFactHandle(entity);
                     if (!variableDescriptor.isTriggerChainCorrection()) {

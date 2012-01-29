@@ -18,29 +18,22 @@ package org.drools.planner.core.solution.director;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
-import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
@@ -149,8 +142,8 @@ public class DefaultSolutionDirector implements SolutionDirector {
     }
     
     public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
-        List<Object> entityList = solutionDescriptor.getPlanningEntityListByPlanningEntityClass(workingSolution,
-                variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass());
+        List<Object> entityList = variableDescriptor.getPlanningEntityDescriptor().extractEntities(
+                workingSolution);
         Map<Object, List<Object>> variableToEntitiesMap = new HashMap<Object, List<Object>>(entityList.size());
         for (Object entity : entityList) {
             Object variable = variableDescriptor.getValue(entity);

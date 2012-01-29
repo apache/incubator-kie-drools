@@ -23,6 +23,8 @@ import org.drools.planner.core.solution.director.SolutionDirector;
 
 public interface PlanningValueRangeDescriptor {
 
+    Collection<?> extractAllValues(Solution solution);
+
     Collection<?> extractValues(Solution solution, Object planningEntity);
 
     long getProblemScale(Solution solution, Object planningEntity);

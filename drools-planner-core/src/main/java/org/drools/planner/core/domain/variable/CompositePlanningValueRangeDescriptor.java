@@ -32,6 +32,14 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
         this.valueRangeDescriptorList = valueRangeDescriptorList;
     }
 
+    public Collection<?> extractAllValues(Solution solution) {
+        Collection<Object> values = new ArrayList<Object>(0);
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+            values.addAll(valueRangeDescriptor.extractAllValues(solution));
+        }
+        return values;
+    }
+
     public Collection<?> extractValues(Solution solution, Object planningEntity) {
         Collection<Object> values = new ArrayList<Object>(0);
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {

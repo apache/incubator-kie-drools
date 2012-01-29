@@ -18,6 +18,8 @@ package org.drools.planner.core.domain.variable;
 
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.core.domain.common.DescriptorUtils;
@@ -83,6 +85,14 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
                     + ") that refers to a planningEntityProperty (" + planningEntityProperty
                     + ") that does not return a Collection.");
         }
+    }
+
+    public Collection<?> extractAllValues(Solution solution) {
+        Set<Object> valueSet = new LinkedHashSet<Object>();
+        for (Object entity : variableDescriptor.getPlanningEntityDescriptor().extractEntities(solution)) {
+            valueSet.addAll(extractValues(solution, entity));
+        }
+        return valueSet;
     }
 
     public Collection<?> extractValues(Solution solution, Object planningEntity) {
