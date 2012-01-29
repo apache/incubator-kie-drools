@@ -119,7 +119,7 @@ public class Journey extends AbstractPersistable implements Terminal {
 
     @Override
     public String toString() {
-        return city.toString();
+        return city + "(after " + (previousTerminal == null ? "null" : previousTerminal.getCity()) + ")";
     }
 
 }
