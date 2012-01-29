@@ -2049,38 +2049,47 @@ end</programlisting>
 
         <para>Accumulate supports both the use of pre-defined accumulate
         functions, or the use of inline custom code. Inline custom code should
-        be avoided though, as it is extremely hard to maintain, and frequently
-        leads to code duplication. Accumulate functions are easier to test and
-        reuse.</para>
+        be avoided though, as it is harder for rule authors to maintain, and
+        frequently leads to code duplication. Accumulate functions are easier
+        to test and reuse.</para>
+
+        <para>The Accumulate CE also supports multiple different syntaxes. The
+        preferred syntax is the top level accumulate, as noted bellow, but all
+        other syntaxes are supported for backward compatibility.</para>
 
         <section>
-          <title>Accumulate Functions</title>
+          <title>Accumulate CE (preferred syntax)</title>
 
-          <para>The accumulate CE is a very powerful CE, but it gets real
-          declarative and easy to use when using predefined functions that are
-          known as Accumulate Functions. They work exactly like accumulate,
-          but instead of explicitly writing custom code in every accumulate
-          CE, the user can use predefined code for common operations.</para>
+          <para>The top level accumulate syntax is the most compact and
+          flexible syntax. The simplified syntax is as follows:</para>
 
-          <para>For instance, a rule to apply a 10% discount on orders over
-          $100 could be written in the following way, using Accumulate
-          Functions:</para>
+          <programlisting><literal>accumulate( </literal><replaceable>&lt;source pattern&gt;</replaceable><literal>; </literal><replaceable>&lt;functions&gt;</replaceable><literal> [;</literal><replaceable>&lt;constraints&gt;</replaceable><literal>] )</literal>
+</programlisting>
 
-          <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+          <para>For instance, a rule to calculate the minimum, maximum and
+          average temperatur reading for a given sensor and that raises an
+          alarm if the minimum temperature is under 20C degrees and the
+          average is over 70C degrees could be written in the following way,
+          using Accumulate:</para>
+
+          <programlisting>rule "Raise alarm"
 when
-    $order : Order()
-    $total : Number( doubleValue &gt; 100 ) 
-             from accumulate( OrderItem( order == $order, $value : value ),
-                              sum( $value ) )
+    $s : Sensor()
+    accumulate( Reading( sensor == $s, $temp : temperature );
+                $min : min( $temp ),
+                $max : max( $temp ),
+                $avg : average( $temp );
+                $min &lt; 20, $avg &gt; 70 )
 then
-    # apply discount to $order
+    # raise the alarm
 end</programlisting>
 
-          <para>In the above example, sum is an Accumulate Function and will
-          sum the $value of all OrderItems and return the result.</para>
+          <para>In the above example, min, max and average are Accumulate
+          Functions and will calculate the minimum, maximum and average
+          temperature values over all the readings for each sensor.</para>
 
-          <para>Drools ships with the following built-in accumulate
-          functions:</para>
+          <para>Drools ships with several built-in accumulate functions,
+          including:</para>
 
           <itemizedlist>
             <listitem>
@@ -2120,18 +2129,17 @@ end</programlisting>
           <programlisting>rule "Average profit"
 when
     $order : Order()
-    $profit : Number() 
-              from accumulate( OrderItem( order == $order, $cost : cost, $price : price )
-                               average( 1 - $cost / $price ) )
+    accumulate( OrderItem( order == $order, $cost : cost, $price : price );
+                $avgProfit : average( 1 - $cost / $price ) )
 then
-    # average profit for $order is $profit
+    # average profit for $order is $avgProfit
 end</programlisting>
 
           <para>Accumulate Functions are all pluggable. That means that if
           needed, custom, domain specific functions can easily be added to the
           engine and rules can start to use them without any restrictions. To
-          implement a new Accumulate Functions all one needs to do is to
-          create a Java class that implements the
+          implement a new Accumulate Function all one needs to do is to create
+          a Java class that implements the
           <code>org.drools.runtime.rule.TypedAccumulateFunction</code>
           interface and add a line to the configuration file or set a system
           property to let the engine know about the new function. As an
@@ -2142,7 +2150,7 @@ end</programlisting>
           <programlisting language="java">/**
  * An implementation of an accumulator capable of calculating average values
  */
-public class AverageAccumulateFunction implements AccumulateFunction {
+public class AverageAccumulateFunction implements org.drools.runtime.rule.TypedAccumulateFunction {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
@@ -2248,6 +2256,38 @@ public class AverageAccumulateFunction implements AccumulateFunction {
         </section>
 
         <section>
+          <title>Alternate Syntax: single function with return type</title>
+
+          <para>The accumulate syntax evolved over time with the goal of
+          becoming more compact and expressive. Nevertheless, Drools still
+          supports previous sintaxes for backward compatibility purposes.
+          </para>
+
+          <para>In case the rule is using a single accumulate function on a
+          given accumulate, the author may add a pattern for the result object
+          and use the "from" keyword to link it to the accumulate result.
+          Example: a rule to apply a 10% discount on orders over $100 could be
+          written in the following way:</para>
+
+          <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue &gt; 100 ) 
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              sum( $value ) )
+then
+    # apply discount to $order
+end</programlisting>
+
+          <para>In the above example, the accumulate element is using only one
+          function (sum), and so, the rules author opted to explicitly write a
+          pattern for the result type of the accumulate function (Number) and
+          write the constraints inside it. There are no problems in using this
+          syntax over the compact syntax presented before, except that is is a
+          bit more verbose.</para>
+        </section>
+
+        <section>
           <title>Accumulate with inline custom code</title>
 
           <warning>
@@ -2259,6 +2299,11 @@ public class AverageAccumulateFunction implements AccumulateFunction {
             use. This form of accumulate is supported for backward
             compatibility only.</para>
           </warning>
+
+          <para>Another possible syntax for the accumulate is to define inline
+          custom code, instead of using accumulate functions. As noted on the
+          previous warned, this is discouraged though for the stated
+          reasons.</para>
 
           <para>The general syntax of the <literal>accumulate</literal> CE
           with inline custom code is:</para>
@@ -2379,26 +2424,6 @@ then
     // do something
 end</programlisting>
         </section>
-
-        <section>
-          <title>Multi-function Accumulates</title>
-
-          <para>The accumulate CE now supports multiple functions. For
-          instance, if one needs to find the minimum, maximum and average
-          value for the same set of data, instead of having to repeat the
-          accumulate statement 3 times, a single accumulate can be
-          used.</para>
-
-          <programlisting>rule "Max, min and average" 
-    when
-        accumulate( Cheese( $price : price ),
-                    $max : max( $price ),
-                    $min : min( $price ),
-                    $avg : average( $price ) )
-    then
-        // do something
-end </programlisting>
-        </section>
       </section>
     </section>
 
@@ -2450,465 +2475,647 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Annotation.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Arguments.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Block.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementEval.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Constraints.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Creator.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Definition.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Digit.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Exponent.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Expression.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Field.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Fraction.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FromClause.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FromCollectClause.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Literal.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ModifyStatement.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/OverClause.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Parameters.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Pattern.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Primary.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RealLiteral.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Selector.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/SourcePattern.svg," format="SVG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/StringId.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Type.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Value.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.png" format="PNG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.png"
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Annotation.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Arguments.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Block.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementEval.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Constraints.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Creator.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Definition.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Digit.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Exponent.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Expression.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Field.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Fraction.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromClause.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromCollectClause.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Literal.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ModifyStatement.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OverClause.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Parameters.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Pattern.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Primary.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealLiteral.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Selector.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SourcePattern.svg,"
+                     format="SVG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/StringId.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Type.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Value.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
     </section>
   </section>
 
