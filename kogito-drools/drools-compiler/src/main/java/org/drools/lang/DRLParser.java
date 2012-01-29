@@ -2440,8 +2440,9 @@ public class DRLParser {
     }
 
     /**
-     * lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
+     * lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
      *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
+     *                      (SEMICOLON constraints)?
      *                  RIGHT_PAREN SEMICOLON?
      *  
      * @param ce
@@ -2512,12 +2513,23 @@ public class DRLParser {
                                 source );
                 }
 
-                match( input,
-                       DRLLexer.COMMA,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
-                if ( state.failed ) return null;
+                if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                } else if( input.LA( -1 ) != DRLLexer.SEMICOLON ) {
+                    // lhsUnary will consume an optional SEMICOLON, so we need to check if it was consumed already
+                    // or if we must fail consuming it now
+                    match( input,
+                           DRLLexer.SEMICOLON,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
 
                 // accumulate functions
                 accumulateFunctionBinding( accumulate );
@@ -2535,6 +2547,16 @@ public class DRLParser {
                     if ( state.failed ) return null;
                 }
 
+                if( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+                    match( input,
+                           DRLLexer.SEMICOLON,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                    
+                    constraints( pattern );
+                }
                 match( input,
                        DRLLexer.RIGHT_PAREN,
                        null,
