@@ -112,8 +112,8 @@
         </listitem>
       </itemizedlist>
 
-      <para><emphasis role="bold">Drools Planner does find a good solution in reasonable time for such planning
-      problems.</emphasis></para>
+      <para>By using advanced optimization algorithms, <emphasis role="bold">Drools Planner does find a good solution in
+      reasonable time for such planning problems.</emphasis></para>
     </section>
 
     <section>
@@ -139,10 +139,10 @@
         <listitem>
           <para>A <emphasis>positive soft constraint (or reward)</emphasis> should be fulfilled if possible. For
           example: <emphasis>Teacher B likes to teach on Monday morning</emphasis>.</para>
-
-          <para>In practice, these are just like negative soft constraints, but with a positive weight.</para>
         </listitem>
       </itemizedlist>
+
+      <para>In practice, these are just like negative soft constraints, but with a positive weight.</para>
 
       <para>Some toy problems (such as N Queens) only have hard constraints. Some problems have 3 or more levels of
       constraints, for example hard, medium and soft constraints.</para>
@@ -161,8 +161,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>A <emphasis>possible solution</emphasis> is a solution that does or does not break any number of
-          constraints. Planning problems tend to have a incredibly large number of possible solutions. Most of those
+          <para>A <emphasis>possible solution</emphasis> is any solution, wheter or not it breaks any number of
+          constraints. Planning problems tend to have a incredibly large number of possible solutions. Many of those
           solutions are worthless.</para>
         </listitem>
 
@@ -180,12 +180,13 @@
 
         <listitem>
           <para>The <emphasis>best solution found</emphasis> is the solution with the highest score found by an
-          implementation in a given amount of time. The best solution found is likely to be feasible.</para>
+          implementation in a given amount of time. The best solution found is likely to be feasible and, given enough
+          time, it's an optimal solution.</para>
         </listitem>
       </itemizedlist>
 
       <para>Counterintuitively, the number of possible solutions is huge (if calculated correctly), even with a small
-      dataset. As you'll see in the examples, most instances have a lot more possible solutions than the minimal number
+      dataset. As you can see in the examples, most instances have a lot more possible solutions than the minimal number
       of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any
       implementation is forced to evaluate at least a subset of all those possible solutions.</para>
 
