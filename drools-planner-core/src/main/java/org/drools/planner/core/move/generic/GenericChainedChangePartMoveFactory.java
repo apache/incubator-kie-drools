@@ -87,14 +87,20 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                                     }
                                     for (Object toValue : values) {
                                         // Subchains can only be moved into other (sub)chains
-                                        // Moving to the same oldToValue has no effect
-                                        // TODO also filter out moves done by GenericChainedChangeMoveFactory
-                                        // where the entire subchain is only moved 1 position back or forth
-                                        if (!entitiesSubChain.contains(toValue) && !oldToValue.equals((toValue))) {
+                                        if (!entitiesSubChain.contains(toValue)) {
                                             Object newChainedEntity = findChainedEntity(variableToEntitiesMap, toValue);
                                             FactHandle newChainedEntityFactHandle = newChainedEntity == null
                                                     ? null : workingMemory.getFactHandle(newChainedEntity);
-                                            moveList.add(new GenericChainedChangePartMove(entitiesSubChain,
+                                            // Moving to the same oldToValue has no effect
+                                            // TODO also filter out moves done by GenericChainedChangeMoveFactory
+                                            // where the entire subchain is only moved 1 position back or forth
+                                            if (!oldToValue.equals((toValue))) {
+                                                moveList.add(new GenericChainedChangePartMove(entitiesSubChain,
+                                                        variableDescriptor, toValue,
+                                                        oldChainedEntity, oldChainedEntityFactHandle,
+                                                        newChainedEntity, newChainedEntityFactHandle));
+                                            }
+                                            moveList.add(new GenericReverseChainedChangePartMove(entitiesSubChain,
                                                     variableDescriptor, toValue,
                                                     oldChainedEntity, oldChainedEntityFactHandle,
                                                     newChainedEntity, newChainedEntityFactHandle));
