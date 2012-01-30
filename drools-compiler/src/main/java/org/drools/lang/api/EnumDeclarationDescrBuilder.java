@@ -14,12 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.factmodel.traits;
+package org.drools.lang.api;
 
-public interface CoreWrapper<K> extends TraitableBean<K> {
 
-    public void init( K core );
-    
-    public K getCore();
+import org.drools.lang.descr.EnumDeclarationDescr;
 
+public interface EnumDeclarationDescrBuilder extends
+    AnnotatedDescrBuilder<EnumDeclarationDescrBuilder>,
+    AbstractClassTypeDeclarationBuilder<EnumDeclarationDescr> {
+
+
+    /**
+     * Defines the type name
+     *
+     * @param type the type name
+     *
+     * @return itself
+     */
+    public EnumDeclarationDescrBuilder name( String type );
+
+    /**
+     * Adds an enum literal
+     *
+     * @param lit
+     * @return
+     */
+    public EnumLiteralDescrBuilder newEnumLiteral( String lit );
 }

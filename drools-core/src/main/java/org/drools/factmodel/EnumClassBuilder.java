@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.factmodel.traits;
+package org.drools.factmodel;
 
-public interface CoreWrapper<K> extends TraitableBean<K> {
+import org.drools.factmodel.ClassBuilder;
 
-    public void init( K core );
-    
-    public K getCore();
-
+public interface EnumClassBuilder extends ClassBuilder {
 }

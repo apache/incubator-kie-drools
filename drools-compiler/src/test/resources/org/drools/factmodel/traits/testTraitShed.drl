@@ -8,13 +8,11 @@ global java.util.List list;
  
 
 
-declare Student
-    @format(trait)
+declare trait Student
     school  : String
 end
 
-declare Worker
-    @format(trait)
+declare trait Worker
     wage    : double
 end
  

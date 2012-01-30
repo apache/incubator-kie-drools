@@ -102,6 +102,7 @@ public class KnowledgeAgentImpl
     private Map<Resource, String>          dslResources        = new HashMap<Resource, String>();
     private KnowledgeAgentEventSupport     eventSupport        = new KnowledgeAgentEventSupport();
     private KnowledgeBuilderConfiguration  builderConfiguration;
+    private int                            validationTimeout   = 0;
 
     /**
      * Default constructor for KnowledgeAgentImpl
@@ -141,6 +142,7 @@ public class KnowledgeAgentImpl
                 this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
                 monitor = true; // if scanning, monitor must be true;
             }
+            this.validationTimeout = configuration.getValidationTimeout();
         }
 
         monitorResourceChangeEvents( monitor );
@@ -425,7 +427,9 @@ public class KnowledgeAgentImpl
             this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
         }
 
-        XmlChangeSetReader reader = new XmlChangeSetReader( this.semanticModules );
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.semanticModules,
+                                                            null,
+                                                            this.validationTimeout );
         if ( resource instanceof ClassPathResource ) {
             reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
                                    null );

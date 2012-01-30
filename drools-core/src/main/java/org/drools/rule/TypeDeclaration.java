@@ -42,10 +42,11 @@ public class TypeDeclaration
     implements
     KnowledgeDefinition,
     Externalizable {
-    
+
     public static final int ROLE_BIT                    = 1;
     public static final int TYPESAFE_BIT                = 2;
     public static final int FORMAT_BIT                  = 4;
+    public static final int KIND_BIT                    = 8;
 
     public static final String ATTR_CLASS               = "class";
     public static final String ATTR_TYPESAFE            = "typesafe";
@@ -58,7 +59,24 @@ public class TypeDeclaration
     public static final String ATTR_PROP_SPECIFIC       = "propertySpecific";
 
     public int setMask                                  = 0;
-    
+
+    public static enum Kind {
+        CLASS, TRAIT, ENUM;
+
+        public static final String ID = "kind";
+
+        public static Kind parseKind( String kind ) {
+            if ( "class".equalsIgnoreCase( kind ) ) {
+                return CLASS;
+            } else if ( "trait".equalsIgnoreCase( kind ) ) {
+                return TRAIT;
+            }else if ( "enum".equalsIgnoreCase( kind ) ) {
+                return ENUM;
+            }
+            return null;
+        }
+    }
+
     public static enum Role {
         FACT, EVENT;
 
@@ -75,7 +93,7 @@ public class TypeDeclaration
     }
 
     public static enum Format {
-        POJO, TRAIT, TEMPLATE;
+        POJO, TEMPLATE;
 
         public static final String ID = "format";
 
@@ -84,8 +102,6 @@ public class TypeDeclaration
                 return POJO;
             } else if ( "template".equalsIgnoreCase( format ) ) {
                 return TEMPLATE;
-            } else if ( "trait".equalsIgnoreCase( format ) ) {
-                return TRAIT;
             }
             return null;
         }
@@ -94,6 +110,7 @@ public class TypeDeclaration
     private String                 typeName;
     private Role                   role;
     private Format                 format;
+    private Kind                   kind;
     private String                 timestampAttribute;
     private String                 durationAttribute;
     private InternalReadAccessor   durationExtractor;
@@ -113,12 +130,16 @@ public class TypeDeclaration
     private long                 expirationOffset = -1;
 
     public TypeDeclaration() {
+        this.role = Role.FACT;
+        this.format = Format.POJO;
+        this.kind = Kind.CLASS;
     }
 
     public TypeDeclaration(String typeName) {
         this.typeName = typeName;
         this.role = Role.FACT;
         this.format = Format.POJO;
+        this.kind = Kind.CLASS;
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeTemplate = null;
@@ -130,6 +151,7 @@ public class TypeDeclaration
         this.typeName = (String) in.readObject();
         this.role = (Role) in.readObject();
         this.format = (Format) in.readObject();
+        this.kind = (Kind) in.readObject();
         this.durationAttribute = (String) in.readObject();
         this.timestampAttribute = (String) in.readObject();
         this.typeClassName = (String) in.readObject();
@@ -148,6 +170,7 @@ public class TypeDeclaration
         out.writeObject( typeName );
         out.writeObject( role );
         out.writeObject( format );
+        out.writeObject( kind );
         out.writeObject( durationAttribute );
         out.writeObject( timestampAttribute );
         out.writeObject( typeClassName );
@@ -161,7 +184,7 @@ public class TypeDeclaration
         out.writeBoolean( typesafe );
         out.writeBoolean(propertySpecific);
     }
-    
+
     public int getSetMask() {
         return this.setMask;
     }
@@ -201,6 +224,21 @@ public class TypeDeclaration
     public void setFormat(Format format) {
         this.setMask = this.setMask | FORMAT_BIT;
         this.format = format;
+    }
+
+    /**
+     * @return the kind
+     */
+    public Kind getKind() {
+        return kind;
+    }
+
+    /**
+     * @param kind the kind to set
+     */
+    public void setKind(Kind kind) {
+        this.setMask = this.setMask | KIND_BIT;
+        this.kind = kind;
     }
 
     /**
@@ -267,7 +305,7 @@ public class TypeDeclaration
 
     /**
      * Returns true if the given parameter matches this type declaration
-     * 
+     *
      * @param clazz
      * @return
      */

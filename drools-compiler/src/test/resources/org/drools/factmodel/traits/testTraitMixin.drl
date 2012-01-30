@@ -8,8 +8,8 @@ import org.drools.factmodel.traits.ISomethingWithBehaviour;
 global java.util.List list;
 
 
-declare ISomethingWithBehaviour
-    @format( trait )
+declare trait ISomethingWithBehaviour
+
 end
  
  

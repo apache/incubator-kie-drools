@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.factmodel.traits;
+package org.drools.lang.api;
 
-public interface CoreWrapper<K> extends TraitableBean<K> {
 
-    public void init( K core );
-    
-    public K getCore();
+import org.drools.lang.descr.BaseDescr;
 
+public interface AbstractClassTypeDeclarationBuilder<T extends BaseDescr>
+    extends
+    DescrBuilder<PackageDescrBuilder, T> {
+
+
+
+    /**
+     * Adds a field to this type declaration
+     *
+     * @param name the name of the field
+     *
+     * @return a descriptor builder for the field
+     */
+    public FieldDescrBuilder<AbstractClassTypeDeclarationBuilder<T>> newField( String name );
 }
