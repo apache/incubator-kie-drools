@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -1234,7 +1235,9 @@ public class PackageBuilder {
             // Check if there is a user specified typedeclr
             PackageRegistry pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if (pkgReg != null) {
-                typeDeclaration = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                String className = cls.getName();
+                String typeName = className.substring( className.lastIndexOf(".") + 1 );
+                typeDeclaration = pkgReg.getPackage().getTypeDeclaration( typeName );
             }
         }
         return typeDeclaration;
@@ -1746,9 +1749,8 @@ public class PackageBuilder {
      * @param packageDescr
      */
     private void processTypeDeclarations( final PackageDescr packageDescr ) {
-        PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
-        PackageRegistry pkgRegistry = null;
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
             if (isEmpty( typeDescr.getNamespace() )) {
@@ -1956,21 +1958,7 @@ public class PackageBuilder {
 
                 type.setTypeClass( clazz );
 
-                if (type.getTypeClassDef() != null) {
-                    try {
-                        buildFieldAccessors( type,
-                                             pkgRegistry );
-                    } catch (Exception e) {
-                        this.results.add( new TypeDeclarationError(
-                                                                    "Error creating field accessors for TypeDeclaration '" + className +
-                                                                            "' for type '" +
-                                                                            type.getTypeName() +
-                                                                            "' " +
-																			e.getMessage(),
-                                                                    typeDescr.getLine() ) );
-                        continue;
-                    }
-                }
+
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( "Class '" + className +
                                                             "' not found for type declaration of '" +
@@ -1982,7 +1970,7 @@ public class PackageBuilder {
 
             if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
                 if (unresolvedTypeDescrs == null) {
-                    unresolvedTypeDescrs = new ArrayList<TypeDeclarationDescr>();
+                    unresolvedTypeDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
                     unresolvedTypes = new ArrayList<TypeDeclaration>();
                 }
                 unresolvedTypeDescrs.add(typeDescr);
@@ -1992,13 +1980,13 @@ public class PackageBuilder {
 
         if (unresolvedTypeDescrs != null) {
             Iterator<TypeDeclaration> typesIterator = unresolvedTypes.iterator();
-            for (TypeDeclarationDescr typeDescr : unresolvedTypeDescrs) {
+            for (AbstractClassTypeDeclarationDescr typeDescr : unresolvedTypeDescrs) {
                 processTypeFields(pkgRegistry, typeDescr, typesIterator.next(), false);
             }
         }
     }
 
-    private boolean processTypeFields(PackageRegistry pkgRegistry, TypeDeclarationDescr typeDescr, TypeDeclaration type, boolean firstAttempt) {
+    private boolean processTypeFields(PackageRegistry pkgRegistry, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, boolean firstAttempt) {
         if (type.getTypeClassDef() != null) {
             try {
                 buildFieldAccessors( type,
@@ -3044,12 +3032,13 @@ public class PackageBuilder {
         }
 
 
-        Iterator<Node<AbstractClassTypeDeclarationDescr>> iter = map.values().iterator();
-        while ( iter.hasNext() ) {
-            Node<AbstractClassTypeDeclarationDescr> n = iter.next();
-            if ( n.getData() == null ) root.addChild( n );
-
+        for ( Node<AbstractClassTypeDeclarationDescr> n : map.values() ) {
+            if ( n.getData() == null ) {
+                root.addChild(n);
+            }
         }
+
+
 
         List<AbstractClassTypeDeclarationDescr> sortedList = new LinkedList<AbstractClassTypeDeclarationDescr>();
         root.accept( sortedList );
