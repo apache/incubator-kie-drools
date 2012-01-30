@@ -76,18 +76,6 @@ public class EnumTest extends CommonTestMethodBase {
     @Test
     public void testEnums() throws Exception {
 
-//        Serializable x = org.mvel2.MVEL.compileExpression( "2+2" );
-//
-//
-//        String comp = Base64.encodeSerializableAsString( x );
-////
-//                System.err.println( comp );
-//
-//         System.out.println( MVEL.executeExpression( Base64.decodeSerializableFromString( comp ) ) );
-
-
-
-
         StatefulKnowledgeSession ksession = genSession("test_Enums.drl");
         java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
