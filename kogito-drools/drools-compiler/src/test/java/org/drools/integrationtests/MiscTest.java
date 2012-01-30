@@ -9896,4 +9896,24 @@ public class MiscTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
     }
+
+    @Test
+    public void testPatternMatchingOnThis() throws Exception {
+        String rule = "package org.drools\n" +
+                "rule R1 when\n" +
+                "    $i1: Integer()\n" +
+                "    $i2: Integer( this > $i1 )\n" +
+                "then\n" +
+                "   System.out.println( $i2 + \" > \" + $i1 );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Integer(1) );
+        ksession.insert( new Integer(2) );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
 }

@@ -97,6 +97,10 @@ public class ASMConditionEvaluatorJitter {
                     findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull()) :
                     null;
 
+            if (commonType == Object.class && singleCondition.getOperation().isComparison()) {
+                commonType = Comparable.class;
+            }
+
             if (commonType != null && commonType.isPrimitive()) {
                 jitPrimitiveBinary(singleCondition, left, right, commonType);
             } else {
@@ -153,7 +157,7 @@ public class ASMConditionEvaluatorJitter {
                 }
             } else {
                 if (type.isInterface()) {
-                    invokeInterface(type, "compareTo", int.class, type);
+                    invokeInterface(type, "compareTo", int.class, type == Comparable.class ? Object.class : type);
                 } else {
                     invokeVirtual(type, "compareTo", int.class, type);
                 }
