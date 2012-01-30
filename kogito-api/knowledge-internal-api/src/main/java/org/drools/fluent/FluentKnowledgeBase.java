@@ -16,19 +16,8 @@
 
 package org.drools.fluent;
 
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
-import org.drools.io.Resource;
-
 public interface FluentKnowledgeBase<T> {
     
     T addKnowledgePackages();
-    
-    T addKnowledgePackages(Resource resource,
-                           ResourceType type);
-    
-    T addKnowledgePackages(Resource resource,
-                           ResourceType type,
-                           ResourceConfiguration configuration);   
     
 }
