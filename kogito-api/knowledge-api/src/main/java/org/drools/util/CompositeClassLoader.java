@@ -151,11 +151,18 @@ public class CompositeClassLoader extends ClassLoader {
             }
         }
 
-        if ( enumerations.size() == 0 ) {
-            return null;
-        } else {
-            return enumerations;
+        if (enumerations.size() == 0) {
+            return new Enumeration<URL>() {
+                public boolean hasMoreElements() {
+                    return false;
+                }
+                public URL nextElement() {
+                    throw new NoSuchElementException();
+                }
+            };
         }
+        
+        return enumerations;
     }
 
     public void dumpStats() {
