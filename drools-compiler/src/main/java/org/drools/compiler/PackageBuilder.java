@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -1191,7 +1192,9 @@ public class PackageBuilder {
             // Check if there is a user specified typedeclr
             pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if ( pkgReg != null ) {
-                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                String className = cls.getName();
+                String typeName = className.substring( className.lastIndexOf(".") + 1 );
+                tdecl = pkgReg.getPackage().getTypeDeclaration( typeName );
             }
         }
 
@@ -1623,9 +1626,8 @@ public class PackageBuilder {
      * @param packageDescr
      */
     private void processTypeDeclarations( final PackageDescr packageDescr ) {
-        PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
-        PackageRegistry pkgRegistry = null;
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
             if (isEmpty( typeDescr.getNamespace() )) {
                 for (ImportDescr id : packageDescr.getImports()) {
@@ -1830,21 +1832,7 @@ public class PackageBuilder {
 
                 type.setTypeClass( clazz );
 
-                if (type.getTypeClassDef() != null) {
-                    try {
-                        buildFieldAccessors( type,
-                                             pkgRegistry );
-                    } catch (Exception e) {
-                        this.results.add( new TypeDeclarationError(
-                                                                    "Error creating field accessors for TypeDeclaration '" + className +
-                                                                            "' for type '" +
-                                                                            type.getTypeName() +
-                                                                            "' " +
-																			e.getMessage(),
-                                                                    typeDescr.getLine() ) );
-                        continue;
-                    }
-                }
+
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( "Class '" + className +
                                                             "' not found for type declaration of '" +
@@ -1854,52 +1842,88 @@ public class PackageBuilder {
                 continue;
             }
 
-            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-            String timestamp = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
-            if (timestamp != null) {
-                type.setTimestampAttribute( timestamp );
-                ClassDefinition cd = type.getTypeClassDef();
-                Package pkg = pkgRegistry.getPackage();
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                              type.getTypeClass().getName(),
-                                                                                              timestamp,
-                                                                                              type.isTypesafe() );
-                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
-                data.addCompileable( (MVELCompileable) reader );
-                ( (MVELCompileable) reader ).compile( data );
-                type.setTimestampExtractor( reader );
-            }
-
-            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
-            String duration = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
-            if (duration != null) {
-                type.setDurationAttribute( duration );
-                ClassDefinition cd = type.getTypeClassDef();
-                Package pkg = pkgRegistry.getPackage();
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                              type.getTypeClass().getName(),
-                                                                                              duration,
-                                                                                              type.isTypesafe() );
-                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
-                data.addCompileable( (MVELCompileable) reader );
-                ( (MVELCompileable) reader ).compile( data );
-                type.setDurationExtractor( reader );
-            }
-
-            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
-            String expiration = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
-            if (expiration != null) {
-                if (timeParser == null) {
-                    timeParser = new TimeIntervalParser();
+            if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
+                if (unresolvedTypeDescrs == null) {
+                    unresolvedTypeDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
+                    unresolvedTypes = new ArrayList<TypeDeclaration>();
                 }
-                type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
+                unresolvedTypeDescrs.add(typeDescr);
+                unresolvedTypes.add(type);
             }
-
-            boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
-            type.setDynamic( dynamic );
-
-            pkgRegistry.getPackage().addTypeDeclaration( type );
         }
+
+        if (unresolvedTypeDescrs != null) {
+            Iterator<TypeDeclaration> typesIterator = unresolvedTypes.iterator();
+            for (AbstractClassTypeDeclarationDescr typeDescr : unresolvedTypeDescrs) {
+                processTypeFields(pkgRegistry, typeDescr, typesIterator.next(), false);
+            }
+        }
+    }
+
+    private boolean processTypeFields(PackageRegistry pkgRegistry, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, boolean firstAttempt) {
+        if (type.getTypeClassDef() != null) {
+            try {
+                buildFieldAccessors( type,
+                        pkgRegistry );
+            } catch (Throwable e) {
+                if (!firstAttempt) {
+                    this.results.add( new TypeDeclarationError(
+                            "Error creating field accessors for TypeDeclaration '" + type.getTypeName() +
+                                    "' for type '" +
+                                    type.getTypeName() +
+                                    "'",
+                            typeDescr.getLine() ) );
+                }
+                return false;
+            }
+        }
+        
+        AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
+        String timestamp = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
+        if (timestamp != null) {
+            type.setTimestampAttribute( timestamp );
+            ClassDefinition cd = type.getTypeClassDef();
+            Package pkg = pkgRegistry.getPackage();
+            InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                          type.getTypeClass().getName(),
+                                                                                          timestamp,
+                                                                                          type.isTypesafe() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            data.addCompileable( (MVELCompileable) reader );
+            ( (MVELCompileable) reader ).compile( data );
+            type.setTimestampExtractor( reader );
+        }
+
+        annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
+        String duration = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
+        if (duration != null) {
+            type.setDurationAttribute( duration );
+            ClassDefinition cd = type.getTypeClassDef();
+            Package pkg = pkgRegistry.getPackage();
+            InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                          type.getTypeClass().getName(),
+                                                                                          duration,
+                                                                                          type.isTypesafe() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+            data.addCompileable( (MVELCompileable) reader );
+            ( (MVELCompileable) reader ).compile( data );
+            type.setDurationExtractor( reader );
+        }
+
+        annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
+        String expiration = ( annotationDescr != null ) ? annotationDescr.getSingleValue() : null;
+        if (expiration != null) {
+            if (timeParser == null) {
+                timeParser = new TimeIntervalParser();
+            }
+            type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
+        }
+
+        boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
+        type.setDynamic( dynamic );
+
+        pkgRegistry.getPackage().addTypeDeclaration( type );
+        return true;
     }
 
     void registerGeneratedType(AbstractClassTypeDeclarationDescr typeDescr) {
@@ -2888,10 +2912,10 @@ public class PackageBuilder {
 
         }
 
-        Iterator<Node<AbstractClassTypeDeclarationDescr>> iter = map.values().iterator();
-        while ( iter.hasNext() ) {
-            Node<AbstractClassTypeDeclarationDescr> n = iter.next();
-            if ( n.getData() == null ) root.addChild( n );
+        for ( Node<AbstractClassTypeDeclarationDescr> n : map.values() ) {
+            if ( n.getData() == null ) {
+                root.addChild(n);
+            }
         }
 
         List<AbstractClassTypeDeclarationDescr> sortedList = new LinkedList<AbstractClassTypeDeclarationDescr>();
