@@ -9887,14 +9887,33 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testCircularDeclaration() throws Exception {
-        String rule = "declare FactA\n" +
+        String rule = "package org.drools.test\n" +
+                "declare FactA\n" +
                 "    fieldB: FactB\n" +
                 "end\n" +
                 "declare FactB\n" +
                 "    fieldA: FactA\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   $fieldA : FactA( $fieldB : fieldB )\n" +
+                "   FactB( this == $fieldB, fieldA == $fieldA )\n" +
+                "then\n" +
                 "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        Object a = aType.newInstance();
+        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        Object b = bType.newInstance();
+        aType.set( a, "fieldB", b );
+        bType.set( b, "fieldA", a );
+        ksession.insert( a );
+        ksession.insert( b );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
     }
 
     @Test
