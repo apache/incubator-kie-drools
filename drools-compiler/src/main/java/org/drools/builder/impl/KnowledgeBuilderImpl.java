@@ -32,13 +32,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void add(Resource resource, ResourceType type) {
-        ResourceConfiguration resourceConfiguration;
-        if (resource instanceof BaseResource) {
-            resourceConfiguration = ((BaseResource) resource).getConfiguration();
-        } else {
-            resourceConfiguration = null;
-        }
+        ResourceConfiguration resourceConfiguration = resource instanceof BaseResource ? ((BaseResource) resource).getConfiguration() : null;
         pkgBuilder.addKnowledgeResource( resource, type, resourceConfiguration )  ;
+    }
+
+    public void add(ResourceType type, Resource ... resources) {
+        ResourceConfiguration resourceConfiguration = resources.length > 0 && resources[0] instanceof BaseResource ? ((BaseResource) resources[0]).getConfiguration() : null;
+        pkgBuilder.addKnowledgeResources( type, resourceConfiguration, resources )  ;
     }
 
     public void add(Resource resource,

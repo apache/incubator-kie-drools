@@ -17,6 +17,7 @@
 package org.drools.lang.descr;
 
 
+import org.drools.io.Resource;
 import org.drools.rule.Namespaceable;
 
 import java.io.IOException;
@@ -36,7 +37,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
     private static final long            serialVersionUID = 510l;
     private QualifiedName                type;
     private Map<String, TypeFieldDescr>  fields;
-
+    private Resource                     resource;
 
     public AbstractClassTypeDeclarationDescr( String name ) {
         this.type = new QualifiedName( name, null );
@@ -54,6 +55,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         super.readExternal(in);
         type = (QualifiedName) in.readObject();
         fields =  (Map<String, TypeFieldDescr>) in.readObject();
+        resource = (Resource) in.readObject();
     }
 
     @Override
@@ -61,6 +63,15 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         super.writeExternal(out);
         out.writeObject( type );
         out.writeObject( fields );
+        out.writeObject( resource );
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public void setNamespace( String namespace ) {
@@ -116,8 +127,6 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         return l;
     }
 
-
-
     /**
      * @return the fields
      */
@@ -141,7 +150,6 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
                 field );
     }
 
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -153,12 +161,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         return true;
     }
 
-
     public int hashCode() {
         return getType()  != null ? getType() .hashCode() : 0;
     }
-
-
-
-
 }

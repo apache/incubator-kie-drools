@@ -20,21 +20,18 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
 import org.drools.core.util.StringUtils;
+import org.drools.io.Resource;
 import org.drools.rule.Namespaceable;
  
 public class TypeDeclarationDescr
     extends AbstractClassTypeDeclarationDescr
     implements Comparable<TypeDeclarationDescr> {
 
-
     private List<QualifiedName>          superTypes;
-
 
     public TypeDeclarationDescr() {
         this( null );
