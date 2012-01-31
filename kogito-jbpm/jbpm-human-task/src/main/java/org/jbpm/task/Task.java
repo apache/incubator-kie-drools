@@ -25,15 +25,15 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import org.jbpm.task.utils.CollectionUtils;
 
@@ -46,6 +46,10 @@ public class Task implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long                 id;
+    
+    @Version
+    @Column(name = "OPTLOCK")
+    private int                  version;
 
     /**
      * While WSHT says this is an expression, it always resolves to an integer, so resolve before setting
@@ -177,6 +181,10 @@ public class Task implements Externalizable {
         this.id = id;
     }
 
+    public int getVersion() {
+        return this.version;
+    }
+
     public int getPriority() {
         return priority;
     }
@@ -245,6 +253,7 @@ public class Task implements Externalizable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + version;
         result = prime * result + priority;
         result = prime * result + CollectionUtils.hashCode( descriptions );
         result = prime * result + CollectionUtils.hashCode( names );
@@ -262,6 +271,9 @@ public class Task implements Externalizable {
         if ( obj == null ) return false;
         if ( !(obj instanceof Task) ) return false;
         Task other = (Task) obj;
+        if ( this.version != other.version ) {
+            return false;
+        }
         if ( deadlines == null ) {
             if ( other.deadlines != null ) {
 
