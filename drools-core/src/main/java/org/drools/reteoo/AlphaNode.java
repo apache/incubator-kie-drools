@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -32,7 +31,6 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
@@ -166,23 +164,17 @@ public class AlphaNode extends ObjectSource
                         workingMemory );
             }
         } else {
-            byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
+            byPassModifyToBetaNode(modifyPreviousTuples);
         }
     }
 
-    private void byPassModifyToBetaNode (final InternalFactHandle factHandle,
-                                 final ModifyPreviousTuples modifyPreviousTuples,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+    private void byPassModifyToBetaNode (ModifyPreviousTuples modifyPreviousTuples) {
         for (ObjectSink objectSink : sink.getSinks()) {
             if (objectSink instanceof BetaNode) {
                 RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
                 if ( rightTuple != null ) rightTuple.reAdd();
             } else if (objectSink instanceof AlphaNode) {
-                ((AlphaNode)sink).byPassModifyToBetaNode( factHandle,
-                                                          modifyPreviousTuples,
-                                                          context,
-                                                          workingMemory );
+                ((AlphaNode)objectSink).byPassModifyToBetaNode( modifyPreviousTuples );
             }
         }
     }
