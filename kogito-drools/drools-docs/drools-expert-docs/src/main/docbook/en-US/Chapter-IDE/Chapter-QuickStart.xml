@@ -61,7 +61,7 @@
           </listitem>
 
           <listitem>
-            <para>An editor that is aware of DSL (domain specific langauge)
+            <para>An editor that is aware of DSL (domain specific language)
             extensions, and provides content assistance.</para>
           </listitem>
         </orderedlist>
