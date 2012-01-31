@@ -23,7 +23,7 @@ import org.drools.simulation.Simulation;
 public interface InternalSimulation extends Simulation, CommandScript {
 
     void addCommand(Command cmd);
-    
-    void newStep(long distance);
+
+    void newInternalStep(long distance);
 
 }

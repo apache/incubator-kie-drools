@@ -16,12 +16,12 @@
 
 package org.drools.simulation;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface SimulationPath {
 
     String getName();
     
-    Collection<SimulationStep> getSteps();
+    List<SimulationStep> getSteps();
 
 }
