@@ -24,13 +24,14 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 public interface TypeDeclarationDescrBuilder
     extends
     AnnotatedDescrBuilder<TypeDeclarationDescrBuilder>,
-    DescrBuilder<PackageDescrBuilder, TypeDeclarationDescr> {
+    AbstractClassTypeDeclarationBuilder<TypeDeclarationDescr> {
+
 
     /**
      * Defines the type name
-     *  
+     *
      * @param type the type name
-     * 
+     *
      * @return itself
      */
     public TypeDeclarationDescrBuilder name( String type );
@@ -45,13 +46,6 @@ public interface TypeDeclarationDescrBuilder
      */
     public TypeDeclarationDescrBuilder superType( String type );
     
-    /**
-     * Adds a field to this type declaration
-     * 
-     * @param name the name of the field
-     * 
-     * @return a descriptor builder for the field 
-     */
-    public FieldDescrBuilder newField( String name );
+
 
 }

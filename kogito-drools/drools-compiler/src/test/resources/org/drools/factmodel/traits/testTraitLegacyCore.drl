@@ -3,6 +3,7 @@ package org.test;
 
 // Individual is an empty traitable, based solely on a property map.
 import org.drools.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Traitable;
 
 import org.drools.factmodel.traits.Imp;
 
@@ -13,8 +14,8 @@ global java.util.List list;
 
 
 
-declare IRole
-    @format(trait)
+declare trait IRole
+
 end
 
 declare Imp
@@ -28,8 +29,7 @@ end
 
 
 // declared interface
-declare Person
-    @format(trait)
+declare trait Person
     name : String
     age  : int
 end

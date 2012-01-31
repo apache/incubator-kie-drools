@@ -19,7 +19,16 @@ package org.drools.agent.impl;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.ChangeSet;
@@ -93,6 +102,7 @@ public class KnowledgeAgentImpl
     private Map<Resource, String>          dslResources        = new HashMap<Resource, String>();
     private KnowledgeAgentEventSupport     eventSupport        = new KnowledgeAgentEventSupport();
     private KnowledgeBuilderConfiguration  builderConfiguration;
+    private int                            validationTimeout   = 0;
 
     /**
      * Default constructor for KnowledgeAgentImpl
@@ -132,6 +142,7 @@ public class KnowledgeAgentImpl
                 this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
                 monitor = true; // if scanning, monitor must be true;
             }
+            this.validationTimeout = configuration.getValidationTimeout();
         }
 
         monitorResourceChangeEvents( monitor );
@@ -416,7 +427,9 @@ public class KnowledgeAgentImpl
             this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
         }
 
-        XmlChangeSetReader reader = new XmlChangeSetReader( this.semanticModules );
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.semanticModules,
+                                                            null,
+                                                            this.validationTimeout );
         if ( resource instanceof ClassPathResource ) {
             reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
                                    null );
@@ -737,6 +750,9 @@ public class KnowledgeAgentImpl
                 }
                 for ( Rule rule : kpkg.pkg.getRules() ) {
                     rule.setResource( resource );
+                }
+                for ( Process process: kpkg.pkg.getRuleFlows().values() ) {
+                	((ResourcedObject) process).setResource( resource );
                 }
 
             } catch ( Exception ex ) {

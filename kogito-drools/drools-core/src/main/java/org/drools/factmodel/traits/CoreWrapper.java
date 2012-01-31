@@ -19,5 +19,7 @@ package org.drools.factmodel.traits;
 public interface CoreWrapper<K> extends TraitableBean<K> {
 
     public void init( K core );
+    
+    public K getCore();
 
 }

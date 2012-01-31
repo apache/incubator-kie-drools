@@ -47,6 +47,7 @@ import org.drools.runtime.rule.Activation;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mockito.exceptions.verification.NeverWantedButInvoked;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
@@ -923,6 +924,11 @@ public class AccumulateTest extends CommonTestMethodBase {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctionsMVEL.drl" );
     }
 
+    @Test
+    public void testAccumulateMultipleFunctionsConstraint() throws Exception {
+        execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
+    }
+
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -1722,6 +1728,80 @@ public class AccumulateTest extends CommonTestMethodBase {
                     is( 17 ) );
         assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
                     is( 17 ) );
+    }
+
+    public void execTestAccumulateMultipleFunctionsConstraint( String fileName ) throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( fileName,
+                                                 null );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                          10 ),
+                                              new Cheese( "stilton",
+                                                          3 ),
+                                              new Cheese( "stilton",
+                                                          5 ),
+                                              new Cheese( "brie",
+                                                          3 ),
+                                              new Cheese( "brie",
+                                                          17 ),
+                                              new Cheese( "provolone",
+                                                          8 )};
+        final Person bob = new Person( "Bob",
+                                       "stilton" );
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = (FactHandle) ksession.insert( cheese[i] );
+        }
+        final FactHandle bobHandle = (FactHandle) ksession.insert( bob );
+
+        // ---------------- 1st scenario
+        ksession.fireAllRules();
+
+        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+
+        Activation activation = cap.getValue().getActivation();
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 18 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 6 ) );
+
+        Mockito.reset( ael );
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 9 );
+        ksession.update( cheeseHandles[index],
+                         cheese[index] );
+        ksession.fireAllRules();
+
+        Mockito.verify( ael, Mockito.never() ).afterActivationFired( Mockito.any(AfterActivationFiredEvent.class) );
+
+        Mockito.reset( ael );
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        ksession.update( bobHandle,
+                         bob );
+        ksession.fireAllRules();
+
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+
+        activation = cap.getValue().getActivation();
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 20 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 10 ) );
+        
+        ksession.dispose();
+
     }
 
     public static class DataSet {

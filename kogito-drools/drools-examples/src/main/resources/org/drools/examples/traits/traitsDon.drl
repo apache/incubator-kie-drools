@@ -28,8 +28,7 @@ declare Person
 end
 
 
-declare IPerson
-    @format( trait )
+declare trait IPerson
 
     name    : String
 
@@ -40,15 +39,13 @@ declare IPerson
 end
 
 
-declare IStudent extends IPerson
-    @format( trait )
+declare trait IStudent extends IPerson
 
     school  : String
 end
 
 
-declare IWorker extends IPerson
-    @format( trait )
+declare trait IWorker extends IPerson
 
     wage    : int
 end

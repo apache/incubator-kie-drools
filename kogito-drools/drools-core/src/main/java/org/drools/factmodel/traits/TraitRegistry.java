@@ -47,10 +47,10 @@ public class TraitRegistry {
 
     private TraitRegistry() {
         ClassDefinition individualDef = new ClassDefinition();
-            individualDef.setClassName( Entity.class.getName() );
-            individualDef.setDefinedClass(Entity.class);
-            individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
-            individualDef.setTraitable( true );
+        individualDef.setClassName( Entity.class.getName() );
+        individualDef.setDefinedClass(Entity.class);
+        individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
+        individualDef.setTraitable( true );
         addTraitable( individualDef );
 
     }
@@ -95,6 +95,11 @@ public class TraitRegistry {
     }
 
 
+
+    public static boolean isSoftField( FieldDefinition field, int index, long mask ) {
+        return (mask & (1 << index)) == 0;
+    }
+
     public long getFieldMask( String trait, String traitable ) {
         if ( masks == null ) {
             masks = new HashMap<String, Long>();
@@ -112,20 +117,23 @@ public class TraitRegistry {
 
     private Long bind( String trait, String traitable ) throws UnsupportedOperationException {
         ClassDefinition traitDef = getTrait( trait );
-            if ( traitDef == null ) {
-                throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a trait " );
-            }
+        if ( traitDef == null ) {
+            throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a trait " );
+        }
         ClassDefinition traitableDef = getTraitable( traitable );
-            if ( traitableDef == null ) {
-                throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a traitable " );
-            }
+        if ( traitableDef == null ) {
+            throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a traitable " );
+        }
 
         int j = 0;
         long bitmask = 0;
         for ( FactField field : traitDef.getFields() ) {
             FieldDefinition concreteField = traitableDef.getField( field.getName() );
-                if ( concreteField != null
-                     && concreteField.getType().isAssignableFrom( field.getType() ) ) {
+            Class concreteType = concreteField != null ? concreteField.getType() : null;
+            Class virtualType = field.getType();
+
+            if ( concreteType != null
+                    && concreteType.isAssignableFrom( virtualType ) ) {
                 bitmask |= 1 << j;
             }
             j++;

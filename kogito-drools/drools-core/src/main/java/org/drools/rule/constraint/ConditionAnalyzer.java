@@ -719,6 +719,10 @@ public class ConditionAnalyzer {
             return this != CONTAINS;
         }
 
+        public boolean isComparison() {
+            return this == GT || this == GE || this == LT || this == LE;
+        }
+
         public static BooleanOperator fromMvelOpCode(int opCode) {
             switch (opCode) {
                 case Operator.EQUAL: return EQ;

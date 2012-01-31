@@ -404,8 +404,7 @@ public abstract class BetaNode extends LeftTupleSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
-        if ( rightTuple != null ) rightTuple.reAdd();
+        RightTuple rightTuple = removeRightTuple(modifyPreviousTuples);
 
         if (context.getModificationMask() == Long.MAX_VALUE ||
                 intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
@@ -424,12 +423,22 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    private RightTuple removeRightTuple(ModifyPreviousTuples modifyPreviousTuples) {
+        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( this );
+        if ( rightTuple != null ) {
+            rightTuple.reAdd();
+        }
+        return rightTuple;
+    }
+
     void setListenedPropertyMask(long listenedPropertyMask) {
         this.listenedPropertyMask = listenedPropertyMask;
     }
 
     long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
-        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        if (listenedPropertyMask >= 0) {
+            return listenedPropertyMask;
+        }
         long mask = calculateMask(workingMemory);
         setListenedPropertyMask(mask);
         return mask >= 0 ? mask : Long.MAX_VALUE;
@@ -451,16 +460,8 @@ public abstract class BetaNode extends LeftTupleSource
         return calculateListenedMaskFromPattern(listenedProperties, mask, settableProperties);
     }
 
-    private long inferListenedMask(List<String> settableProperties) {
-        long mask = settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
-/* Should add mask from right AlphaNode ?
-        if (mask >= 0 && mask != Long.MAX_VALUE) {
-            if (rightInput instanceof AlphaNode) {
-                mask |= ((AlphaNode)rightInput).getListenedPropertyMask(settableProperties);
-            }
-        }
-*/
-        return mask;
+    long inferListenedMask(List<String> settableProperties) {
+        return settableProperties == null ? Long.MAX_VALUE : constraints.getListenedPropertyMask(settableProperties);
     }
 
     static long calculateListenedMaskFromPattern(List<String> listenedProperties, long mask, List<String> settableProperties) {

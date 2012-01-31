@@ -21,7 +21,6 @@ import org.drools.core.util.StringUtils;
 import org.mvel2.MVEL;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
 
 public class BuildUtils {
 
@@ -44,8 +43,8 @@ public class BuildUtils {
     public static String getGenericTypes(String[] interfaces) {
 
         StringBuilder sb = new StringBuilder();
-            sb.append("<K:").append( getTypeDescriptor( Object.class.getName() ) ).append( ">" );
-            sb.append( getTypeDescriptor( Object.class.getName() ) );
+        sb.append("<K:").append( getTypeDescriptor( Object.class.getName() ) ).append( ">" );
+        sb.append( getTypeDescriptor( Object.class.getName() ) );
 
         for ( String intf : interfaces ) {
             String temp = getTypeDescriptor( intf );
@@ -361,7 +360,7 @@ public class BuildUtils {
     }
 
     public static int zero( String type ) {
-         if ( "byte".equals( type ) ) {
+        if ( "byte".equals( type ) ) {
             return Opcodes.ICONST_0;
         } else if ( "char".equals( type ) ) {
             return Opcodes.ICONST_0;
@@ -438,6 +437,43 @@ public class BuildUtils {
             return "setBooleanValue";
         } else {
             return "setValue";
+        }
+    }
+
+    public static String numericMorph(String type) {
+        if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
+            return "byteValue";
+        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
+            return "doubleValue";
+        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
+            return "floatValue";
+        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
+            return "intValue";
+        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
+            return "longValue";
+        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
+            return "shortBalue";
+        } else {
+            throw new RuntimeDroolsException("Not a numeric type " + type);
+        }
+
+    }
+
+    public static void pushInt(MethodVisitor mv, int j) {
+        switch ( j ) {
+            case 0 : mv.visitInsn( Opcodes.ICONST_0 );
+                break;
+            case 1 : mv.visitInsn( Opcodes.ICONST_1 );
+                break;
+            case 2 : mv.visitInsn( Opcodes.ICONST_2 );
+                break;
+            case 3 : mv.visitInsn( Opcodes.ICONST_3 );
+                break;
+            case 4 : mv.visitInsn( Opcodes.ICONST_4 );
+                break;
+            case 5 : mv.visitInsn( Opcodes.ICONST_5 );
+                break;
+            default : mv.visitIntInsn( Opcodes.BIPUSH, j );
         }
     }
 }

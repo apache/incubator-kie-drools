@@ -16,11 +16,8 @@
 
 package org.drools.factmodel;
 
-import org.drools.base.TypeResolver;
 import org.drools.factmodel.traits.*;
 import org.drools.util.ServiceRegistryImpl;
-
-import java.util.concurrent.Callable;
 
 public class ClassBuilderFactory {
 
@@ -53,6 +50,31 @@ public class ClassBuilderFactory {
 
 
 
+    private static EnumClassBuilder enumClassBuilderProvider;
+
+        public static synchronized EnumClassBuilder getEnumClassBuilderService( ) {
+            if ( enumClassBuilderProvider == null) {
+                loadEnumClassBuilderProvider( );
+            }
+            return enumClassBuilderProvider;
+        }
+
+
+        public static synchronized void setEnumClassBuilderService( EnumClassBuilder provider ) {
+            ClassBuilderFactory.enumClassBuilderProvider = provider;
+        }
+
+        private static void loadEnumClassBuilderProvider( ) {
+            String defaultName = "org.drools.factmodel.DefaultEnumClassBuilder";
+            try {
+                ServiceRegistryImpl.getInstance().addDefault( EnumClassBuilder.class, defaultName );
+                setEnumClassBuilderService( ServiceRegistryImpl.getInstance().get( EnumClassBuilder.class ) );
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+
+
     // Trait interfaces
 
 
@@ -82,7 +104,7 @@ public class ClassBuilderFactory {
     // Trait property wrappers
 
 
-    private static ClassBuilder propertyWrapperBuilderProvider = new TraitPropertyWrapperClassBuilderImpl();
+    private static ClassBuilder propertyWrapperBuilderProvider = new TraitTriplePropertyWrapperClassBuilderImpl();
 
     public static synchronized ClassBuilder getPropertyWrapperBuilderService() {
         if ( propertyWrapperBuilderProvider == null) {
@@ -97,7 +119,7 @@ public class ClassBuilderFactory {
 
     private static void loadPropertyWrapperClassBuilderProvider() {
         try {
-           ServiceRegistryImpl.getInstance().addDefault( TraitPropertyWrapperClassBuilder.class, "org.drools.factmodel.TraitPropertyWrapperClassBuilderImpl" );
+           ServiceRegistryImpl.getInstance().addDefault( TraitPropertyWrapperClassBuilder.class, "org.drools.factmodel.TraitTriplePropertyWrapperClassBuilderImpl" );
            setPropertyWrapperBuilderService(ServiceRegistryImpl.getInstance().get(TraitPropertyWrapperClassBuilder.class));
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -110,7 +132,7 @@ public class ClassBuilderFactory {
     // Trait proxy wrappers
 
 
-    private static TraitProxyClassBuilder traitProxyBuilderProvider = new TraitProxyClassBuilderImpl();
+    private static TraitProxyClassBuilder traitProxyBuilderProvider = new TraitTripleProxyClassBuilderImpl();
 
     public static synchronized ClassBuilder getTraitProxyBuilderService() {
         if ( traitProxyBuilderProvider == null) {
@@ -125,7 +147,7 @@ public class ClassBuilderFactory {
 
     private static void loadTraitProxyClassBuilderProvider() {
         try {
-           ServiceRegistryImpl.getInstance().addDefault( TraitProxyClassBuilder.class, "org.drools.factmodel.TraitProxyClassBuilderImpl" );
+           ServiceRegistryImpl.getInstance().addDefault( TraitProxyClassBuilder.class, "org.drools.factmodel.TraitTripleProxyClassBuilderImpl" );
            setTraitProxyBuilderService(ServiceRegistryImpl.getInstance().get(TraitProxyClassBuilder.class));
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -137,30 +159,30 @@ public class ClassBuilderFactory {
 
 
 
-    // Trait legacy core wrappers
-
-
-    private static TraitCoreWrapperClassBuilder traitCoreWrapperBuilderProvider = new TraitCoreWrapperClassBuilderImpl();
-
-    public static synchronized TraitCoreWrapperClassBuilder getTraitCoreWrapperBuilderService() {
-        if ( traitCoreWrapperBuilderProvider == null) {
-            loadTraitCoreWrapperClassBuilderProvider();
-        }
-        return traitCoreWrapperBuilderProvider;
-    }
-
-    public static synchronized void setTraitCoreWrapperBuilderService( TraitCoreWrapperClassBuilder provider ) {
-        ClassBuilderFactory.traitCoreWrapperBuilderProvider = provider;
-    }
-
-    private static void loadTraitCoreWrapperClassBuilderProvider() {
-        try {
-           ServiceRegistryImpl.getInstance().addDefault( TraitCoreWrapperClassBuilder.class, "org.drools.factmodel.TraitCoreWrapperClassBuilderImpl" );
-           setTraitCoreWrapperBuilderService(ServiceRegistryImpl.getInstance().get(TraitCoreWrapperClassBuilder.class));
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-    }
+//    // Trait legacy core wrappers
+//
+//
+//    private static TraitCoreWrapperClassBuilder traitCoreWrapperBuilderProvider = new TraitCoreWrapperClassBuilderImpl();
+//
+//    public static synchronized TraitCoreWrapperClassBuilder getTraitCoreWrapperBuilderService() {
+//        if ( traitCoreWrapperBuilderProvider == null) {
+//            loadTraitCoreWrapperClassBuilderProvider();
+//        }
+//        return traitCoreWrapperBuilderProvider;
+//    }
+//
+//    public static synchronized void setTraitCoreWrapperBuilderService( TraitCoreWrapperClassBuilder provider ) {
+//        ClassBuilderFactory.traitCoreWrapperBuilderProvider = provider;
+//    }
+//
+//    private static void loadTraitCoreWrapperClassBuilderProvider() {
+//        try {
+//           ServiceRegistryImpl.getInstance().addDefault( TraitCoreWrapperClassBuilder.class, "org.drools.factmodel.TraitCoreWrapperClassBuilderImpl" );
+//           setTraitCoreWrapperBuilderService(ServiceRegistryImpl.getInstance().get(TraitCoreWrapperClassBuilder.class));
+//        } catch ( Exception e ) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 

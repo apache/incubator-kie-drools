@@ -27,31 +27,29 @@ end
 
 
 // legacy "semantic" interface
-declare IStudent
-    @format(trait)
+declare trait IStudent
+
 end
 
 // legacy interface, does not extend IThing
-declare IRole
-    @format(trait)
+declare trait IRole
+
 end
 
 
 // legacy "semantic" interface
-declare IPerson
-    @format(trait)
+declare trait IPerson
+
 end
 
 // declared interface
-declare Person
-    @format(trait)
+declare trait Person
     name : String
     age  : int
 end
 
 // declared interface
-declare Worker
-    @format(trait)
+declare trait Worker
     name : String
     age  : int
 end

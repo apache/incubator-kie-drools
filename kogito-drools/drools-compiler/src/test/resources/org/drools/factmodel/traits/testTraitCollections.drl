@@ -10,13 +10,11 @@ global java.util.List list;
 
 
 
-declare SimpleTrait
-@format( trait )
+declare trait SimpleTrait
     name : String
 end
  
-declare ComplexTrait
-@format( trait )
+declare trait ComplexTrait
 //    doubles : double[]
 //    names   : String[]
     ages    : List
@@ -35,8 +33,7 @@ declare Bean
     addrex  : Set               = new java.util.HashSet()
 end
 
-declare AnotherTrait
-@format( trait )
+declare trait AnotherTrait
     field : List
 end
 

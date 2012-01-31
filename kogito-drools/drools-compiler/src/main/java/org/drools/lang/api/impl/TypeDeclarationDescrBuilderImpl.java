@@ -16,6 +16,7 @@
 
 package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
@@ -47,8 +48,8 @@ public class TypeDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<Packag
         return annotation;
     }
 
-    public FieldDescrBuilder newField( String name ) {
-        FieldDescrBuilder field = new FieldDescrBuilderImpl( this, name );
+    public FieldDescrBuilder<AbstractClassTypeDeclarationBuilder<TypeDeclarationDescr>> newField( String name ) {
+        FieldDescrBuilder<AbstractClassTypeDeclarationBuilder<TypeDeclarationDescr>> field = new FieldDescrBuilderImpl( this, name );
         descr.addField( field.getDescr() );
         return field;
     }

@@ -82,6 +82,9 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
     }
 
 
+    public Imp getCore() {
+        return core;
+    }
 
 
 

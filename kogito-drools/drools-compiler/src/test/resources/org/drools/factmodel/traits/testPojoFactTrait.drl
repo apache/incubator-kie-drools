@@ -1,0 +1,56 @@
+package org.test;
+
+import java.util.List;
+import org.drools.factmodel.traits.*;
+
+global List trueTraits;
+global List untrueTraits;
+
+
+declare PojoFact
+	@Traitable
+end
+
+declare trait TrueTrait
+	flag : boolean
+end
+
+
+rule "Init"
+	when
+	then
+		insert(new PojoFact(1, true));
+		insert(new PojoFact(2, false));
+end
+
+rule "Don"
+	salience 100
+	no-loop
+	when
+		$d : PojoFact( flag == true )
+	then
+		don( $d, TrueTrait.class, true );
+		update($d);
+end
+
+rule "True Traits"
+	when
+		PojoFact( $id : id, this isA TrueTrait )
+	then
+		trueTraits.add($id);
+end
+
+rule "Untrue Traits"
+	when
+		PojoFact( $id : id, this not isA TrueTrait )
+	then
+		untrueTraits.add($id);
+end
+
+rule "By thing"
+    when
+        $d : PojoFact()
+        exists Thing( core == $d )
+    then
+        System.out.println(" !!QQE!");
+end
