@@ -150,17 +150,6 @@ public class CompositeClassLoader extends ClassLoader {
                 enumerations.addEnumeration( e );
             }
         }
-
-        if (enumerations.size() == 0) {
-            return new Enumeration<URL>() {
-                public boolean hasMoreElements() {
-                    return false;
-                }
-                public URL nextElement() {
-                    throw new NoSuchElementException();
-                }
-            };
-        }
         
         return enumerations;
     }
