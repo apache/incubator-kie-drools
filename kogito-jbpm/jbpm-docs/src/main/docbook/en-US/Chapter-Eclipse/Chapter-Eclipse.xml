@@ -11,7 +11,7 @@
   <para>We are working on a new BPMN 2.0 Eclipse editor that allows you to specify
   business processes, choreographies, etc. using the BPMN 2.0 XML syntax (including BPMNDI
   for the graphical information).  The editor itself is based on the Eclipse Graphiti
-  framework and the Eclipse BPMN 2.0 model.</para>
+  framework and the Eclipse BPMN 2.0 EMF meta-model.</para>
   
   <para>Features:</para>
   <itemizedlist>
@@ -32,18 +32,20 @@
     
   <para>Requirements</para>
   <itemizedlist>
-    <listitem>Eclipse 3.6 or newer</listitem>
-    <listitem>Graphiti framework, using update site <ulink url="http://download.eclipse.org/graphiti/updates/0.7.1/">http://download.eclipse.org/graphiti/updates/0.7.1/</ulink></listitem>
+    <listitem>Eclipse 3.6 (Helios) or newer</listitem>
   </itemizedlist>
 
-  <para>To install, startup Eclipse and install Graphiti from the update site above
-  (from menu Help -> Install new software and then add the update site in question and 
-  select and install the Graphiti runtime) and then use the following update site 
-  <ulink url="http://codehoop.com/bpmn2">http://codehoop.com/bpmn2</ulink> to 
-  install the latest version of the BPMN 2.0 editor in Eclipse. A screencast that shows
-  all this in action can be found <ulink url="http://vimeo.com/22022128">here</ulink>.</para>
+  <para>To install, startup Eclipse and install the Eclipse BPMN2 Modeler from the following
+  update site (from menu Help -> Install new software and then add the update site in question
+  by clicking the Add button, filling in a name and the correct URL as shown below).  It will
+  automatically download all other dependencies as well (e.g. Graphiti etc.)</para>
+  
+  <para>Eclipse 3.6 (Helios): <ulink url="http://download.eclipse.org/bpmn2-modeler/site-helios/">http://download.eclipse.org/bpmn2-modeler/site-helios/</ulink></para>
+  <para>Eclipse 3.7 (Indigo):  <ulink url="http://download.eclipse.org/bpmn2-modeler/site/">http://download.eclipse.org/bpmn2-modeler/site/</ulink></para>
 
-  <para>Sources can be found here: <ulink url="https://github.com/droolsjbpm/bpmn2-eclipse-editor">https://github.com/droolsjbpm/bpmn2-eclipse-editor</ulink></para>
+  <para>The project is hosted at eclipse.org and open for anyone to contribute.  The project home
+  page can he found <ulink url="http://eclipse.org/projects/project.php?id=soa.bpmn2-modeler">here</ulink>.
+  Sources are available <ulink url="http://git.eclipse.org/c/bpmn2-modeler/org.eclipse.bpmn2-modeler.git">here</ulink></para>
 
   </section>
   
