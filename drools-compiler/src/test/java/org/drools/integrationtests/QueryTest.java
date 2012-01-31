@@ -54,6 +54,7 @@ import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class QueryTest extends CommonTestMethodBase {
@@ -1083,6 +1084,55 @@ public class QueryTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+    @Test
+    @Ignore
+    public void testQueryInterception() {
+
+        String str = "import org.drools.base.DroolsQuery;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "" +
+                "query extract( String s )\n" +
+                "    Object()    \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Intercept\"\n" +
+                "when\n" +
+                "    DroolsQuery( name == \"extract\", $args : elements )\n" +
+                "    $s : String( this == $args[0] )\n" +
+                "then\n" +
+                "    retract( $s );  \n" +
+                "    list.add( $s );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Exec\"\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "    ?extract( $s ; )\n" +
+                "then\n" +
+                "    \n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        int N = 100;
+        for ( int j = 0; j < N; j++ ) {
+            ksession.insert( "x" + j );
+            ksession.fireAllRules();
+        }
+
+        assertEquals( N, list.size() );
+
+        ksession.dispose();
+    }
+
 
     private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
