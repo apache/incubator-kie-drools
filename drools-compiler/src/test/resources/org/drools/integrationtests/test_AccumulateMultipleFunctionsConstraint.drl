@@ -1,0 +1,14 @@
+package org.drools
+
+rule "Constraints everywhere" 
+    when
+        $person : Person( $likes : likes )
+        accumulate( Cheese( type == $likes, $price : price );
+                    $sum : sum( $price ),
+                    $avg : average( $price ),
+                    $min : min( $price );
+                    $min == 3,
+                    $sum > 10 )
+    then
+        // do something
+end  

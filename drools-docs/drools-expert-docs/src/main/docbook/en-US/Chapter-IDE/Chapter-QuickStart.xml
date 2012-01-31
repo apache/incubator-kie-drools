@@ -61,7 +61,7 @@
           </listitem>
 
           <listitem>
-            <para>An editor that is aware of DSL (domain specific langauge)
+            <para>An editor that is aware of DSL (domain specific language)
             extensions, and provides content assistance.</para>
           </listitem>
         </orderedlist>
@@ -566,15 +566,14 @@
       when executing the rules engine. To create an audit log, use the
       following code:</para>
 
-      <programlisting language="java">WorkingMemory workingMemory = ruleBase.newWorkingMemory();
+      <programlisting language="java">StatefulSession session = ruleBase.newStatefulSession();
 // Create a new Working Memory Logger, that logs to file.
-WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
-// An event.log file is created in the subdirectory log (which must exist)
-// of the working directory.
-logger.setFileName( "log/event" );
+WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
+// An event.log file is created in the subdirectory log dir (which must exist) of the working directory
+logger.setFileName("log/event");
 
-workingMemory.assertObject(...);
-workingMemory.fireAllRules();
+        session.insert(...);
+        session.fireAllRules();
 
 // stop logging
 logger.writeToDisk();</programlisting>

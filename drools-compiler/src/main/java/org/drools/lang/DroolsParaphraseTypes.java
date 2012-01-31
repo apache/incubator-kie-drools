@@ -33,5 +33,7 @@ public enum DroolsParaphraseTypes {
     TYPE_DECLARE, 
     EVAL, 
     ENTRYPOINT_DECLARE, 
-    WINDOW_DECLARE;
+    WINDOW_DECLARE,
+	ENUM_DECLARE;
+
 }

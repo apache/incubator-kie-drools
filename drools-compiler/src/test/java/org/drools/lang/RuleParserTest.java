@@ -3083,6 +3083,59 @@ public class RuleParserTest extends TestCase {
     }
 
     @Test
+    public void testAccumulateMultipleFunctionsConstraint() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "accumulateMultipleFunctionsConstraint.drl" );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Object[]",
+                      out.getObjectType() );
+        assertEquals( 2, 
+                      out.getConstraint().getDescrs().size() );
+        assertEquals( "$a1 > 10 && $M1 <= 100",
+                      out.getConstraint().getDescrs().get( 0 ).toString() );
+        assertEquals( "$m1 == 5",
+                      out.getConstraint().getDescrs().get( 1 ).toString() );
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertTrue( accum.isExternalFunction() );
+
+        List<AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertEquals( 3,
+                      functions.size() );
+        assertEquals( "average",
+                      functions.get( 0 ).getFunction() );
+        assertEquals( "$a1",
+                      functions.get( 0 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 0 ).getParams()[0] );
+
+        assertEquals( "min",
+                      functions.get( 1 ).getFunction() );
+        assertEquals( "$m1",
+                      functions.get( 1 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 1 ).getParams()[0] );
+
+        assertEquals( "max",
+                      functions.get( 2 ).getFunction() );
+        assertEquals( "$M1",
+                      functions.get( 2 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 2 ).getParams()[0] );
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+    }
+    
+    @Test
     public void testOrCE() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_ce.drl" );

@@ -4,8 +4,7 @@ package org.test;
 global java.util.List list;
 
  
-declare Trait
-@format( trait )
+declare trait Trait
     byteh : Byte
     charh : Character
     doubleh : Double

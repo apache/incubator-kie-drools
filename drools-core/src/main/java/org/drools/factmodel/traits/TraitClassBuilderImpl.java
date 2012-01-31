@@ -22,12 +22,12 @@ import org.drools.factmodel.FieldDefinition;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 
-import java.util.Arrays;
-
 public class TraitClassBuilderImpl implements TraitClassBuilder {
 
 
     public byte[] buildClass( ClassDefinition classDef ) {
+
+        init( classDef );
 
         ClassWriter cw = new ClassWriter(0);
         MethodVisitor mv;
@@ -41,7 +41,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
                 intfaces = BuildUtils.getInternalTypes( classDef.getInterfaces() );
             } else {
-                String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() ); 
+                String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
                 intfaces = new String[ tmp.length + 1 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ intfaces.length - 1 ] = BuildUtils.getInternalType( classDef.getSuperClass() );
@@ -54,18 +54,10 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
                     intfaces );
 
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
-                String name = field.getName();
-                name = name.substring(0,1).toUpperCase() + name.substring(1);
-                String target = BuildUtils.getTypeDescriptor(field.getTypeName());
-
-                String prefix = BuildUtils.isBoolean( field.getTypeName() ) ? "is" : "get";
-
-                mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, prefix + name, "()" + target, null, null);
-                mv.visitEnd();
-
-                mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "set" + name, "(" + target + ")V", null, null);
-                mv.visitEnd();
+                buildField( cw, field );
             }
+
+            finalizeCreation(classDef);
 
             cw.visitEnd();
         } catch (Exception e) {
@@ -75,7 +67,51 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
         return cw.toByteArray();
     }
 
+    protected void init(ClassDefinition classDef) {
 
+    }
 
+    private void buildField(ClassWriter cw, FieldDefinition field ) {
+
+        String name = field.getName();
+        name = name.substring(0,1).toUpperCase() + name.substring(1);
+        String type = field.getTypeName();
+
+        buildGetter( cw, field, name, type, null );
+
+        buildSetter( cw, field, name, type, null );
+
+    }
+
+    protected void buildSetter(ClassWriter cw, FieldDefinition field, String name, String type, String generic) {
+        name = name.substring(0,1).toUpperCase() + name.substring(1);
+
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_ABSTRACT,
+                "set" + name,
+                "(" + BuildUtils.getTypeDescriptor( type ) + ")V",
+                generic == null ? null :
+                        "(" + BuildUtils.getTypeDescriptor( type ).replace( ";", "<" + BuildUtils.getTypeDescriptor( generic ) + ">;") + ")V",
+                null );
+        mv.visitEnd();
+
+    }
+
+    protected void buildGetter(ClassWriter cw, FieldDefinition field, String name, String type, String generic) {
+        String prefix = BuildUtils.isBoolean( type ) ? "is" : "get";
+
+        name = name.substring(0,1).toUpperCase() + name.substring(1);
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC + ACC_ABSTRACT,
+                prefix + name,
+                "()" + BuildUtils.getTypeDescriptor( type ),
+                generic == null ? null :
+                        "()" + BuildUtils.getTypeDescriptor( type ).replace( ";", "<" + BuildUtils.getTypeDescriptor( generic ) + ">;" ),
+                null );
+        mv.visitEnd();
+
+    }
+
+    protected void finalizeCreation(ClassDefinition trait) {
+
+    }
 
 }

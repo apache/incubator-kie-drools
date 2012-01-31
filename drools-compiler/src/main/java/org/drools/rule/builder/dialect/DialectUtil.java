@@ -45,6 +45,7 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 import static org.drools.core.util.ClassUtils.setter2property;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.generateUUID;
 
 public final class DialectUtil {
@@ -636,21 +637,29 @@ public final class DialectUtil {
 
             if (isPropertySpecific) {
                 int endMethodName = exprStr.indexOf('(');
-                String methodName = exprStr.substring(0, endMethodName).trim();
-                String propertyName = setter2property(methodName);
-                if (propertyName != null) {
-                    int pos = settableProperties.indexOf(propertyName);
-                    if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
-                }
+                if (endMethodName >= 0) {
+                    String methodName = exprStr.substring(0, endMethodName).trim();
+                    String propertyName = setter2property(methodName);
+                    if (propertyName != null) {
+                        int pos = settableProperties.indexOf(propertyName);
+                        if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                    }
 
-                String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')'));
-                int argsNr = methodParams.trim().length() == 0 ? 0 : methodParams.split(",").length;
+                    String methodParams = exprStr.substring(endMethodName+1, exprStr.indexOf(')'));
+                    int argsNr = methodParams.trim().length() == 0 ? 0 : methodParams.split(",").length;
 
-                String methodWithArgsNr = methodName + "_" + argsNr;
-                List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
-                if (modifiedProps != null) {
-                    for (String modifiedProp : modifiedProps) {
-                        int pos = settableProperties.indexOf(modifiedProp);
+                    String methodWithArgsNr = methodName + "_" + argsNr;
+                    List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
+                    if (modifiedProps != null) {
+                        for (String modifiedProp : modifiedProps) {
+                            int pos = settableProperties.indexOf(modifiedProp);
+                            if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
+                        }
+                    }
+                } else {
+                    String propertyName = extractFirstIdentifier(exprStr, 0);
+                    if (propertyName != null) {
+                        int pos = settableProperties.indexOf(propertyName);
                         if (pos >= 0) modificationMask = BitMaskUtil.set(modificationMask, pos);
                     }
                 }

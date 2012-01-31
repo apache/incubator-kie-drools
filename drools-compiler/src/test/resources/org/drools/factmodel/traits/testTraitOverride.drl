@@ -16,8 +16,7 @@ end
 
 
 
-declare Person
-    @format(trait)
+declare trait Person
     @typesafe(false)
     name    : String
     code    : int

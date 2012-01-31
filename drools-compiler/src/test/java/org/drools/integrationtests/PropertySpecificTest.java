@@ -416,4 +416,86 @@ public class PropertySpecificTest extends CommonTestMethodBase {
             this.s = s;
         }
     }
+
+    @Test
+    public void testBetaNodePropagation() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Hero\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.MoveCommand\n" +
+                "rule \"Move\" when\n" +
+                "   $mc : MoveCommand( move == 1 )" +
+                "   $h  : Hero( canMove == true )" +
+                "then\n" +
+                "   modify( $h ) { setPosition($h.getPosition() + 1) };\n" +
+                "   retract ( $mc );\n" +
+                "   System.out.println( \"Move: \" + $h + \" : \" + $mc );" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Hero hero = new Hero();
+        hero.setPosition(0);
+        hero.setCanMove(true);
+        ksession.insert(hero);
+        ksession.fireAllRules();
+
+        MoveCommand moveCommand = new MoveCommand();
+        moveCommand.setMove(1);
+        ksession.insert(moveCommand);
+        ksession.fireAllRules();
+
+        moveCommand = moveCommand = new MoveCommand();
+        moveCommand.setMove(1);
+        ksession.insert(moveCommand);
+        ksession.fireAllRules();
+
+        assertEquals(2, hero.getPosition());
+    }
+
+    @PropertySpecific
+    public static class Hero {
+        private boolean canMove;
+        private int position;
+
+        public boolean isCanMove() {
+            return canMove;
+        }
+
+        public void setCanMove(boolean canMove) {
+            this.canMove = canMove;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public String toString() {
+            return "Hero{" + "position=" + position + '}';
+        }
+    }
+
+    @PropertySpecific
+    public static class MoveCommand {
+        private int move;
+
+        public int getMove() {
+            return move;
+        }
+
+        public void setMove(int move) {
+            this.move = move;
+        }
+
+        @Override
+        public String toString() {
+            return "MoveCommand{" + "move=" + move + '}';
+        }
+    }
+
 }
