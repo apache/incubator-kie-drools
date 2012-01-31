@@ -22,6 +22,28 @@ then
     retract( $c );
 end   
 
+rule "Reset Wumpus Death" when
+    Reset()
+    $wd : WumpusDeath()
+then
+    retract( $wd );
+end 
+
+rule "Reset Pit Death" when
+    Reset()
+    $pd : PitDeath()
+then
+    retract( $pd );
+end   
+
+
+rule "Gold Win" when
+    Reset()
+    $gw : GoldWin()
+then
+    retract( $gw );
+end  
+
 rule "Reset Done" salience -100 when
     $r : Reset()
     not Pit()
