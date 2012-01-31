@@ -409,15 +409,14 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       created when executing the rules engine. To create an audit log, use the
       following code:</para>
 
-      <programlisting language="java">    WorkingMemory workingMemory = ruleBase.newWorkingMemory();
-    // create a new Working Memory Logger, that logs to file.
-    WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(workingMemory);
-    // an event.log file is created in the log dir (which must exist)
-    // in the working directory
+      <programlisting language="java">    StatefulSession session = ruleBase.newStatefulSession();
+    // Create a new Working Memory Logger, that logs to file.
+    WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
+    // An event.log file is created in the log dir (which must exist) in the working directory
     logger.setFileName("log/event");
 
-    workingMemory.assertObject( ... );
-    workingMemory.fireAllRules();
+    session.insert(...);
+    session.fireAllRules();
 
     // stop logging
     logger.writeToDisk();</programlisting>
