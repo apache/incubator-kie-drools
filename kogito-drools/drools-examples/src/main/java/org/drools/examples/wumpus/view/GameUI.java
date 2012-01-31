@@ -289,7 +289,8 @@ public class GameUI {
                 updateSensors();
                 int answre = JOptionPane.showConfirmDialog( null,
                                                             "Play Again1?", "DEAD", JOptionPane.OK_OPTION );
-                gameView.getWumpusWorld().setData( gameView );
+                gameView.getKsession().insert( new Reset() );
+                gameView.getKsession().fireAllRules();
                 updateCave();
                 updateSensors();
             } else if ( gameView.isGoldWin() ) {
@@ -299,7 +300,8 @@ public class GameUI {
                 updateSensors();
                 int answre = JOptionPane.showConfirmDialog( null,
                                                             "Play Again1?", "WIN", JOptionPane.OK_OPTION );
-                gameView.getWumpusWorld().setData( gameView );
+                gameView.getKsession().insert( new Reset() );
+                gameView.getKsession().fireAllRules();
                 updateCave();
                 updateSensors();
             }

@@ -179,7 +179,7 @@ public class AlphaNode extends ObjectSource
                 RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
                 if ( rightTuple != null ) rightTuple.reAdd();
             } else if (objectSink instanceof AlphaNode) {
-                ((AlphaNode)sink).byPassModifyToBetaNode( factHandle,
+                ((AlphaNode)objectSink).byPassModifyToBetaNode( factHandle,
                                                           modifyPreviousTuples,
                                                           context,
                                                           workingMemory );
