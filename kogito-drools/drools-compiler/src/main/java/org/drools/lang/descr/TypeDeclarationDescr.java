@@ -62,16 +62,17 @@ public class TypeDeclarationDescr
         out.writeObject( superTypes );
     }
 
-
-
-
     public String toString() {
         return "TypeDeclaration[ " + this.getType().getFullName() + " ]";
     }
 
+    public String getSuperTypeName() {
+        return superTypes == null ? null : superTypes.get(0).getName();
+    }
 
-
-
+    public String getSuperTypeNamespace() {
+        return superTypes == null ? null : superTypes.get(0).getNamespace();
+    }
 
     public List<QualifiedName> getSuperTypes() {
         return superTypes != null ? superTypes : Collections.<QualifiedName>emptyList();
@@ -87,10 +88,6 @@ public class TypeDeclarationDescr
         }
         this.superTypes.add( type );
     }
-
-
-
-
 
     public int compareTo(TypeDeclarationDescr descr) {
         System.out.println("Comp");
@@ -119,11 +116,4 @@ public class TypeDeclarationDescr
         }
         return 0;
     }
-
-
-
-
-
-
-
 }
