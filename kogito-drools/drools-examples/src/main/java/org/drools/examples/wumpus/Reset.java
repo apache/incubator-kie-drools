@@ -1,5 +1,5 @@
 package org.drools.examples.wumpus;
 
-public class PittDeath {
+public class Reset {
 
 }

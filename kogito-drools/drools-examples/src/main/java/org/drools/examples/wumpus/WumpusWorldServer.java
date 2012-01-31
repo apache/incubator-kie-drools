@@ -25,6 +25,13 @@ public class WumpusWorldServer {
 
     public void init() throws InterruptedException {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        kbuilder.add( ResourceFactory.newClassPathResource( "init.drl", getClass() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( "failed to build:\n" + kbuilder.getErrors().toString() );
+        }        
+        
         kbuilder.add( ResourceFactory.newClassPathResource( "commands.drl", getClass() ), ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
@@ -53,24 +60,19 @@ public class WumpusWorldServer {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-
-        
-        GameView data = new GameView();
-        data.setKbase( kbase );
-        data.setWumpusWorld( this );
-        setData(data);
-        GameUI.run(data );
-        //Thread.sleep( 10 * 10000 );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("randomInteger",new java.util.Random() );
+        ksession.fireAllRules();
     }
     
-    public void setData(GameView data) {
-        KnowledgeBase kbase = data.getKbase();
+    public void setData(GameView view) {
+        KnowledgeBase kbase = view.getKbase();
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
         KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/wumpus");   
-        data.setKlogger( klogger );
+        view.setKlogger( klogger );
 
-        List<Pitt> pitts = new ArrayList<Pitt>();
+        List<Pit> pitts = new ArrayList<Pit>();
         java.util.Random gen = new java.util.Random();
         Cell[][] cells = new Cell[5][5];
         for ( int i = 0; i < 5; i++ ) {
@@ -83,7 +85,7 @@ public class WumpusWorldServer {
                 ksession.insert( cell );
                 if ( j != 0 && i != 0 && gen.nextInt( 99 ) <= 19 ) {
                     // 20% chance of pitt
-                    Pitt pitt = new Pitt( i, j );
+                    Pit pitt = new Pit( i, j );
                     ksession.insert( pitt );
                     pitts.add( pitt );
                 }
@@ -92,7 +94,7 @@ public class WumpusWorldServer {
 
         int row = 0;
         int col = 0;
-        while ( (row == 0 && col == 0) || pitts.contains( new Pitt( row, col ) ) ) {
+        while ( row == 0 && col == 0 ) {
             row = gen.nextInt( 4 );
             col = gen.nextInt( 4 );
         }
@@ -100,7 +102,7 @@ public class WumpusWorldServer {
 
         row = 0;
         col = 0;
-        while ( (row == 0 && col == 0) || (wumpus.getRow() == row && wumpus.getCol() == col) || pitts.contains( new Pitt( row, col ) ) ) {
+        while ( row == 0 && col == 0 ) {
             row = gen.nextInt( 4 );
             col = gen.nextInt( 4 );
         }
@@ -113,10 +115,10 @@ public class WumpusWorldServer {
         ksession.insert( gold );
         ksession.insert( hero );
         ksession.insert( sensors );
-        ksession.insert( data );
+        ksession.insert( view );
         
         ksession.fireAllRules();    
-        data.init(cells, sensors, pitts, wumpus, gold, hero );
-        data.setKsession( ksession );
+        view.init(cells, sensors, pitts, wumpus, gold, hero, 50, 50, 3, 20, 5, 5 );
+        view.setKsession( ksession );
     }
 }

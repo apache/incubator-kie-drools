@@ -4,20 +4,91 @@ import org.drools.examples.wumpus.Move
 import org.drools.examples.wumpus.Cell
 
 import org.drools.examples.wumpus.Wumpus
-import org.drools.examples.wumpus.Pitt
+import org.drools.examples.wumpus.Pit
 import org.drools.examples.wumpus.Gold
+import org.drools.examples.wumpus.Hero
 import org.drools.examples.wumpus.SeeGlitter
 import org.drools.examples.wumpus.SmellStench
 import org.drools.examples.wumpus.FeelBreeze
 import org.drools.examples.wumpus.FeelBump
 import org.drools.examples.wumpus.HearScream
 import org.drools.examples.wumpus.WumpusDeath
-import org.drools.examples.wumpus.PittDeath
+import org.drools.examples.wumpus.PitDeath
 import org.drools.examples.wumpus.GoldWin
+import org.drools.examples.wumpus.Reset
 import org.drools.examples.wumpus.view.GameView
+import org.drools.examples.wumpus.view.SensorsView
 
+import org.drools.runtime.StatefulKnowledgeSession
+import org.drools.logger.KnowledgeRuntimeLogger
+import org.drools.logger.KnowledgeRuntimeLoggerFactory
+
+import java.util.ArrayList
 
 dialect "mvel"
+
+/*
+rule "Create Sensors View" when
+    not SensorsView()
+then
+    insert( new SensorsView() );
+end
+*/
+
+rule "Reset View" when
+    Reset()
+    $gv : GameView()
+    $sv : SensorsView();
+then
+    retract( $sv );
+    retract( $gv );
+end
+
+rule "Init Game View" salience -200 when
+    not Reset()
+    not GameView()
+    accumulate( not Reset() and
+                $p : Pit(),
+                $pits : collectList( $p ) )
+    $w : Wumpus()
+    $g : Gold()
+    $h : Hero()    
+then
+    SensorsView $sv = new SensorsView();
+    insert( $sv );
+    
+    GameView $gv = new GameView();
+    $gv.init( new Cell[5][5], $sv, new ArrayList( $pits ), $w, $g, $h, 50, 50, 3, 20, 5, 5);
+    $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
+    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
+    
+    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
+    $gv.setKlogger( klogger );    
+    insert( $gv );
+end    
+
+rule "init Cells" when
+    $gv : GameView()
+    $c :  Cell()
+then
+    Cell[] row = $gv.cells[$c.row];
+    row[$c.col] = $c;
+end  
+
+rule "Create GUI" salience -100 when
+    $gv : GameView()
+    not GameUI()
+then
+    insert( new GameUI( ) ); 
+    
+end   
+
+rule "Set GUI Game View" salience -100 when
+    $gv : GameView()
+    $ui : GameUI()
+then
+    $ui.setGameView( $gv );
+end         
 
 rule "Smell Stench View"  when 
     $s  : SensorsView()
@@ -91,9 +162,9 @@ end
 
 rule "Pitt Game View" when
     $g : GameView()
-         PittDeath()
+         PitDeath()
 then    
-	$g.pittDeath = true; 
+	$g.pitDeath = true; 
 end
 
 rule "Gold Win View"  when

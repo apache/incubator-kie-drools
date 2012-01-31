@@ -1,0 +1,96 @@
+package org.drools.examples.wumpus
+
+global java.util.Random randomInteger;
+
+dialect "mvel"
+
+declare Cell
+	@propertySpecific
+end		
+
+rule "Reset Pits" when
+    Reset()
+    $p : Pit()
+then
+    retract( $p );
+end  
+
+rule "Reset Cells" when
+    Reset()
+    $c : Cell()
+then
+    retract( $c );
+end   
+
+rule "Reset Done" salience -100 when
+    $r : Reset()
+    not Pit()
+    not Cell()
+    $w : Wumpus()
+    $g : Gold()
+    $h : Hero()
+then
+    retract( $w );
+    retract( $g );
+    retract( $r );
+    retract( $h );
+end     
+	
+rule CreateCells when
+    not Reset()
+	$i : Integer() from [0, 1, 2, 3, 4]
+	$j : Integer() from [0, 1, 2, 3, 4]
+	$c : Cell() from new Cell($i, $j)
+then
+    insert( $c );
+end
+
+rule ShowFirstCell when
+    $c : Cell( row == 0, col == 0 )
+then
+    modify( $c ) { hidden = false };
+end    
+
+rule CreatePitt when
+    $c : Cell( row != 0, col != 0 )
+    Number( this > 0 && <= 20 ) from randomInteger.nextInt( 100 )
+then
+    Pit pit = new Pit( $c.row, $c.col )    
+    insert( pit );
+end    
+
+rule CreateWumpus when
+    not Wumpus()// here to break sharing, to force new random numbers, also retriggers on retraction
+    $row : Integer() from randomInteger.nextInt( 4 )
+    $col : Integer() from randomInteger.nextInt( 4 )
+then
+    Wumpus wumpus = new Wumpus($row, $col);
+    insert( wumpus );
+end
+
+rule InvalidWumpus when
+    $w : Wumpus( row == 0, col == 0 )    
+then
+    retract( $w ); // retraction triggers the "not" CE
+end    
+
+rule CreateGold when
+    not Gold() // here to break sharing, to force new random numbers, also retriggers on retraction
+    $row : Integer() from randomInteger.nextInt( 4 )
+    $col : Integer() from randomInteger.nextInt( 4 )
+then
+    Gold gold = new Gold($row, $col);
+    insert( gold );
+end
+
+rule InvalidGold when
+    $g : Gold( row == 0, col == 0 )    
+then
+    retract( $g ); // retraction triggers the "not" CE
+end 
+
+rule CreateHero when
+    not Reset()
+then
+    insert( new Hero( 0, 0 ) );
+end    

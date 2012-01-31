@@ -1,6 +1,6 @@
 package org.drools.examples.wumpus;
 
-public class Pitt {
+public class Pit {
     @Override
     public String toString() {
         return "Pitt [row=" + row + ", col=" + col + "]";
@@ -9,7 +9,7 @@ public class Pitt {
     private int row;
     private int col;
 
-    public Pitt(int row,
+    public Pit(int row,
                 int col) {
         this.row = row;
         this.col = col;
@@ -45,7 +45,7 @@ public class Pitt {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        Pitt other = (Pitt) obj;
+        Pit other = (Pit) obj;
         if ( col != other.col ) return false;
         if ( row != other.row ) return false;
         return true;
