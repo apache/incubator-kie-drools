@@ -6,7 +6,7 @@ import org.drools.KnowledgeBase;
 import org.drools.examples.wumpus.Cell;
 import org.drools.examples.wumpus.Gold;
 import org.drools.examples.wumpus.Hero;
-import org.drools.examples.wumpus.Pitt;
+import org.drools.examples.wumpus.Pit;
 import org.drools.examples.wumpus.Wumpus;
 import org.drools.examples.wumpus.WumpusWorldServer;
 import org.drools.logger.KnowledgeRuntimeLogger;
@@ -15,21 +15,29 @@ import org.drools.runtime.StatefulKnowledgeSession;
 public class GameView {
     private WumpusWorldServer        wumpusWorld;
     private Cell[][]                 cells;
-    private List<Pitt>               pits;
+    private List<Pit>               pits;
     private Wumpus                   wumpus;
     private Gold                     gold;
     private Hero                     hero;
     private SensorsView              sensors;
 
-    private boolean                  pittDeath;
+    private boolean                  pitDeath;
     private boolean                  wumpusDeath;
     private boolean                  goldWin;
+    
+    private int                      cellheight;
+    private int                      cellWidth;
+    private int                      cellPadding;
 
     KnowledgeRuntimeLogger           klogger;
 
     private StatefulKnowledgeSession ksession;
     private KnowledgeBase            kbase;
     private boolean                  showAllCells;
+    
+    private int                      pittPercentage;
+    private int                      rows;
+    private int                      cols;    
 
     public GameView() {
 
@@ -43,14 +51,25 @@ public class GameView {
         this.kbase = kbase;
     }
 
+    
+    public void init(Cell[][] cells) {
+        
+    }
+    
     public void init(Cell[][] cells,
                      SensorsView sensors,
-                     List<Pitt> pits,
+                     List<Pit> pits,
                      Wumpus wumpus,
                      Gold gold,
-                     Hero hero) {
+                     Hero hero,
+                     int cellheight,
+                     int cellWidth,
+                     int cellPadding,
+                     int pittPercentage,
+                     int rows,
+                     int cols) {
         this.showAllCells = false;
-        this.pittDeath = false;
+        this.pitDeath = false;
         this.goldWin = false;
         this.wumpusDeath = false;
         this.cells = cells;
@@ -59,6 +78,12 @@ public class GameView {
         this.wumpus = wumpus;
         this.gold = gold;
         this.hero = hero;
+        this.cellheight = cellheight;
+        this.cellWidth = cellWidth;
+        this.cellPadding = cellPadding;
+        this.pittPercentage = pittPercentage;
+        this.rows = rows;
+        this.cols = cols;
     }
 
     public WumpusWorldServer getWumpusWorld() {
@@ -85,11 +110,11 @@ public class GameView {
         this.cells = cells;
     }
 
-    public List<Pitt> getPits() {
+    public List<Pit> getPits() {
         return pits;
     }
 
-    public void setPits(List<Pitt> pits) {
+    public void setPits(List<Pit> pits) {
         this.pits = pits;
     }
 
@@ -133,12 +158,12 @@ public class GameView {
         this.showAllCells = showAllCells;
     }
 
-    public boolean isPittDeath() {
-        return pittDeath;
+    public boolean isPitDeath() {
+        return pitDeath;
     }
 
-    public void setPittDeath(boolean pittDeath) {
-        this.pittDeath = pittDeath;
+    public void setPitDeath(boolean pitDeath) {
+        this.pitDeath = pitDeath;
     }
 
     public boolean isWumpusDeath() {
@@ -165,4 +190,61 @@ public class GameView {
         this.klogger = klogger;
     }
 
+    public SensorsView getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(SensorsView sensors) {
+        this.sensors = sensors;
+    }
+
+    public int getCellheight() {
+        return cellheight;
+    }
+
+    public void setCellheight(int cellheight) {
+        this.cellheight = cellheight;
+    }
+
+    public int getCellWidth() {
+        return cellWidth;
+    }
+
+    public void setCellWidth(int cellWidth) {
+        this.cellWidth = cellWidth;
+    }
+
+    public int getCellPadding() {
+        return cellPadding;
+    }
+
+    public void setCellPadding(int cellPadding) {
+        this.cellPadding = cellPadding;
+    }
+
+    public int getPittPercentage() {
+        return pittPercentage;
+    }
+
+    public void setPittPercentage(int pittPercentage) {
+        this.pittPercentage = pittPercentage;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
+    }
+
+    
 }
