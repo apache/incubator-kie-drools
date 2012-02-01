@@ -574,6 +574,11 @@ implements RuleSheetListener {
         case CONDITION:
         case ACTION:
         case METADATA:
+            if (actionType.getSourceBuilder() == null) {
+                throw new DecisionTableParseException( "Data cell " +
+                        RuleSheetParserUtil.rc2name( row, column ) +
+                        " has an empty column header." );
+            }
             actionType.addCellValue( row, column, value, _currentEscapeQuotesFlag );
             break;
         case SALIENCE:
