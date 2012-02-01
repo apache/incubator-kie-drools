@@ -45,7 +45,6 @@ import java.util.NoSuchElementException;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
-import org.drools.core.util.DroolsClassLoader;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Wireable;
