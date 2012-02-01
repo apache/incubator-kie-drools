@@ -110,9 +110,10 @@ public class KnwoledgeBuilderTest {
 
         KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.batch()
-                .add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL)
-                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()), ResourceType.DRL)
-                .add(ResourceFactory.newByteArrayResource(declarationB.getBytes()), ResourceType.DRL)
+                .type(ResourceType.DRL)
+                .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationB.getBytes()))
                 .build();
 
         if ( kbuilder.hasErrors() ) {

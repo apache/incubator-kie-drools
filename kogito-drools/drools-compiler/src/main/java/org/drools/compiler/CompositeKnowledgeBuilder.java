@@ -23,8 +23,22 @@ public class CompositeKnowledgeBuilder {
 
     private Map<ResourceType, List<ResourceDescr>> resources = new HashMap<ResourceType, List<ResourceDescr>>();
 
+    public ResourceType currentType = null;
+
     public CompositeKnowledgeBuilder(PackageBuilder pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
+    }
+
+    public CompositeKnowledgeBuilder type(ResourceType type) {
+        currentType = type;
+        return this;
+    }
+
+    public CompositeKnowledgeBuilder add(Resource resource) {
+        if (currentType == null) {
+            throw new RuntimeException("You must declare the type of the resource");
+        }
+        return add(resource, currentType);
     }
 
     public CompositeKnowledgeBuilder add(Resource resource, ResourceType type) {

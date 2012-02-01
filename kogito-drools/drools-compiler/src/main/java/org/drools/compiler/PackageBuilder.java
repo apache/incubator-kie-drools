@@ -435,30 +435,6 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDrls( Resource ... resources ) throws DroolsParserException, IOException {
-        if (resources == null || resources.length == 0) {
-            return;
-        }
-        if (resources.length == 1) {
-            addPackageFromDrl(resources[0]);
-        }
-        CompositePackageDescr compositePackageDescr = null;
-        for (Resource resource : resources) {
-            PackageDescr pkg = drlToPackageDescr(resource);
-            if (pkg == null) {
-                continue;
-            }
-            if (compositePackageDescr == null) {
-                compositePackageDescr = new CompositePackageDescr(resource, pkg);
-            } else {
-                compositePackageDescr.addPackageDescr(resource, pkg);
-            }
-        }
-        if (compositePackageDescr != null) {
-            addPackage( compositePackageDescr );
-        }
-    }
-
     PackageDescr drlToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         PackageDescr pkg;
         boolean hasErrors = false;
@@ -650,23 +626,6 @@ public class PackageBuilder {
 
     public void addProcessFromXml( Reader processSource ) {
         addProcessFromXml( new ReaderResource( processSource, ResourceType.DRF ) );
-    }
-
-    public void addKnowledgeResources( ResourceType type,
-                                       ResourceConfiguration configuration,
-                                       Resource ... resources ) {
-        try {
-            for (Resource resource : resources) {
-                ( (InternalResource) resource ).setResourceType( type );
-            }
-            if (ResourceType.DRL.equals( type ) || ResourceType.DESCR.equals( type )) {
-                addPackageFromDrls( resources );
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException( e );
-        }
     }
 
     public void addKnowledgeResource( Resource resource,
