@@ -19,6 +19,9 @@ import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.mvel2.optimizers.dynamic.DynamicGetAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessorNest;
+import org.mvel2.optimizers.impl.refl.nodes.ArrayLength;
 import org.mvel2.optimizers.impl.refl.nodes.ConstructorAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.FieldAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.GetterAccessor;
@@ -131,7 +134,7 @@ public class ConditionAnalyzer {
         if (node instanceof BinaryOperation) {
             BinaryOperation op = (BinaryOperation)node;
             if (node.getClass() == BinaryOperation.class) {
-                return new AritmeticExpression(node.getEgressType(), analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
+                return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
             } else {
                 return new FixedExpression(op.getEgressType(), op.getReducedValue(parserContext, null, new ImmutableDefaultFactory()));
             }
@@ -232,6 +235,21 @@ public class ConditionAnalyzer {
             ConstructorInvocation invocation = new ConstructorInvocation(constructor);
             readInvocationParams(invocation, constructorAccessor.getParameters(), constructorAccessor.getParameterTypes());
             return invocation;
+        }
+
+        if (accessorNode instanceof ArrayAccessor) {
+            ArrayAccessor arrayAccessor = (ArrayAccessor)accessorNode;
+            return new ArrayAccessInvocation(new FixedExpression(int.class, arrayAccessor.getIndex()));
+        }
+
+        if (accessorNode instanceof ArrayAccessorNest) {
+            ArrayAccessorNest arrayAccessorNest = (ArrayAccessorNest)accessorNode;
+            ExecutableAccessor index = (ExecutableAccessor)arrayAccessorNest.getIndex();
+            return new ArrayAccessInvocation(analyzeNode(index.getNode()));
+        }
+
+        if (accessorNode instanceof ArrayLength) {
+            return new ArrayLengthInvocation();
         }
 
         if (accessorNode instanceof ListAccessor) {
@@ -503,19 +521,16 @@ public class ConditionAnalyzer {
     }
 
     public static class AritmeticExpression implements Expression {
-        final Class<?> type;
+        private final Class<?> type;
         final Expression left;
         final AritmeticOperator operator;
         final Expression right;
 
-        public AritmeticExpression(Class<?> type, Expression left, AritmeticOperator operator, Expression right) {
-            if (operator.isBitwiseOperation()) {
-                type = left instanceof VariableExpression ? ((VariableExpression)left).getVariableType() : left.getType();
-            }
-            this.type = type;
+        public AritmeticExpression(Expression left, AritmeticOperator operator, Expression right) {
             this.left = left;
             this.operator = operator;
             this.right = right;
+            this.type = inferType();
         }
 
         public boolean isFixed() {
@@ -527,10 +542,7 @@ public class ConditionAnalyzer {
         }
 
         public Class<?> getType() {
-            if (isStringConcat()) return String.class;
-            if (type == Integer.class) return int.class;
-            if (type == Long.class) return long.class;
-            return double.class;
+            return type;
         }
 
         public String toString() {
@@ -539,6 +551,23 @@ public class ConditionAnalyzer {
 
         public boolean isStringConcat() {
             return operator == AritmeticOperator.ADD && (left.getType() == String.class || right.getType() == String.class);
+        }
+
+        private Class<?> inferType() {
+            if (isStringConcat()) {
+                return String.class;
+            }
+
+            if (operator.isBitwiseOperation()) {
+                Class<?> type = left instanceof VariableExpression ? ((VariableExpression)left).getVariableType() : left.getType();
+                return type == Long.class ? long.class : int.class;
+            }
+
+            if (left.getType().isPrimitive() && left.getType() == right.getType()) {
+                return left.getType();
+            }
+
+            return double.class;
         }
     }
 
@@ -628,11 +657,37 @@ public class ConditionAnalyzer {
         }
 
         public String toString() {
-            return "[" + index + "]";
+            return ".get(" + index + ")";
         }
 
         public Class<?> getReturnType() {
             return listType;
+        }
+    }
+
+    public static class ArrayAccessInvocation extends Invocation {
+        private final Expression index;
+
+        public ArrayAccessInvocation(Expression index) {
+            this.index = index;
+        }
+
+        public Expression getIndex() {
+            return index;
+        }
+
+        public String toString() {
+            return "[" + index + "]";
+        }
+
+        public Class<?> getReturnType() {
+            return Object.class;
+        }
+    }
+
+    public static class ArrayLengthInvocation extends Invocation {
+        public Class<?> getReturnType() {
+            return int.class;
         }
     }
 

@@ -1,14 +1,11 @@
 package org.drools.rule.constraint;
 
-
-import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.BitMaskUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -20,7 +17,6 @@ import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
-import org.mvel2.compiler.ExecutableStatement;
 import org.drools.rule.constraint.ConditionAnalyzer.*;
 
 import java.io.IOException;
@@ -108,7 +104,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         MvelContextEntry mvelContextEntry = (MvelContextEntry)context;
-        return evaluate(handle.getObject(), mvelContextEntry.workingMemory, mvelContextEntry.vars);
+        Object object = handle.getObject();
+        return evaluate(object, mvelContextEntry.workingMemory, mvelContextEntry.getVars(object));
     }
 
     public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
@@ -334,6 +331,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         private transient Map<String, Object> vars;
         private transient InternalWorkingMemory workingMemory;
+        private transient Declaration unresolvedDeclaration;
 
         public MvelContextEntry() { }
 
@@ -376,6 +374,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                     vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, tuple.get(declaration).getObject()));
                 } catch (NullPointerException npe) {
                     vars.put(declaration.getBindingName(), declarations[0].getExtractor().getValue(workingMemory, tuple.get(declarations[0]).getObject()));
+                    unresolvedDeclaration = declaration;
                 }
             }
             return vars;
@@ -389,15 +388,24 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             return vars;
         }
 
+        Map<String, Object> getVars(Object object) {
+            if (unresolvedDeclaration != null && unresolvedDeclaration.getValueType().getClassType().isInstance(object)) {
+                vars.put(unresolvedDeclaration.getBindingName(), object);
+            }
+            return vars;
+        }
+
         public void resetTuple() {
             left = null;
             if (vars != null) vars.clear();
+            unresolvedDeclaration = null;
         }
 
         public void resetFactHandle() {
             workingMemory = null;
             right = null;
             if (vars != null) vars.clear();
+            unresolvedDeclaration = null;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

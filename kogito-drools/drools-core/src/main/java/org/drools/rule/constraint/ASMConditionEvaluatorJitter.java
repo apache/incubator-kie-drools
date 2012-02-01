@@ -353,10 +353,7 @@ public class ASMConditionEvaluatorJitter {
             if (aritmeticExpression.isStringConcat()) {
                 jitStringConcat(aritmeticExpression.left, aritmeticExpression.right);
             } else {
-                Class<?> operationType = double.class;
-                if (aritmeticExpression.type == Integer.class) operationType = int.class;
-                else if (aritmeticExpression.type == Long.class) operationType = long.class;
-
+                Class<?> operationType = aritmeticExpression.getType();
                 jitExpressionToPrimitiveType(aritmeticExpression.left, operationType);
                 jitExpressionToPrimitiveType(aritmeticExpression.right, aritmeticExpression.operator.isBitwiseOperation() ? int.class : operationType);
                 jitAritmeticOperation(operationType, aritmeticExpression.operator);
@@ -447,6 +444,10 @@ public class ASMConditionEvaluatorJitter {
                 jitMethodInvocation((MethodInvocation)invocation, currentClass, firstInvocation);
             } else if (invocation instanceof ConstructorInvocation) {
                 jitConstructorInvocation((ConstructorInvocation) invocation);
+            } else if (invocation instanceof ArrayAccessInvocation) {
+                jitArrayAccessInvocation((ArrayAccessInvocation) invocation);
+            } else if (invocation instanceof ArrayLengthInvocation) {
+                jitArrayLenghtInvocation();
             } else if (invocation instanceof ListAccessInvocation) {
                 jitListAccessInvocation((ListAccessInvocation) invocation);
             } else if (invocation instanceof MapAccessInvocation) {
@@ -464,8 +465,10 @@ public class ASMConditionEvaluatorJitter {
             }
 
             if (method == null) {
-                if (firstInvocation) return; // this...
-                else throw new RuntimeException("access to this not in first position");
+                if (!firstInvocation) {
+                    mv.visitVarInsn(ALOAD, 1);
+                }
+                return;
             }
 
             if (!method.getDeclaringClass().isAssignableFrom(currentClass) && (method.getModifiers() & Modifier.STATIC) == 0) {
@@ -489,6 +492,17 @@ public class ASMConditionEvaluatorJitter {
                 jitExpression(argument);
             }
             invokeSpecial(clazz, "<init>", null, constructor.getParameterTypes());
+        }
+
+        private void jitArrayAccessInvocation(ArrayAccessInvocation invocation) {
+            cast(Object[].class);
+            jitExpression(invocation.getIndex(), int.class);
+            mv.visitInsn(AALOAD);
+        }
+
+        private void jitArrayLenghtInvocation() {
+            cast(Object[].class);
+            mv.visitInsn(ARRAYLENGTH);
         }
 
         private void jitListAccessInvocation(ListAccessInvocation invocation) {
