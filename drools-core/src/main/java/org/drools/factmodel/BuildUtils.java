@@ -24,10 +24,6 @@ import org.mvel2.asm.Opcodes;
 
 public class BuildUtils {
 
-
-
-
-
     public static String[] getInternalTypes( String[] superClasses ) {
         if ( superClasses == null ) {
             return null;
