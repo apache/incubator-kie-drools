@@ -71,8 +71,7 @@ public class DialectCompiletimeRegistry {
         if ( list == null ) {
             list = new ArrayList();
         }
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
+        for (Dialect dialect : map.values()) {
             List results = dialect.getResults();
             if ( results != null ) {
                 list.addAll( results );

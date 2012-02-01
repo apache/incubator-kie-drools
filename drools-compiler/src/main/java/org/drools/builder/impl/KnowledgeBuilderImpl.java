@@ -13,6 +13,7 @@ import org.drools.builder.KnowledgeBuilderResults;
 import org.drools.builder.ResultSeverity;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
+import org.drools.compiler.CompositeKnowledgeBuilder;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
@@ -38,7 +39,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public void add(ResourceType type, Resource ... resources) {
         ResourceConfiguration resourceConfiguration = resources.length > 0 && resources[0] instanceof BaseResource ? ((BaseResource) resources[0]).getConfiguration() : null;
-        pkgBuilder.addKnowledgeResources( type, resourceConfiguration, resources )  ;
+        pkgBuilder.addKnowledgeResources(type, resourceConfiguration, resources)  ;
+    }
+
+    public CompositeKnowledgeBuilder batch() {
+        return new CompositeKnowledgeBuilder(pkgBuilder);
     }
 
     public void add(Resource resource,

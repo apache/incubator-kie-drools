@@ -382,8 +382,7 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader reader ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromDrl( final Reader reader ) throws DroolsParserException, IOException {
         addPackageFromDrl( reader, new ReaderResource( reader, ResourceType.DRL ) );
     }
 
@@ -396,16 +395,13 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader reader, final Resource sourceResource ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromDrl( final Reader reader, final Resource sourceResource ) throws DroolsParserException, IOException {
         this.resource = sourceResource;
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
-            this.results.add( new ParserError( "Parser returned a null Package",
-                                               0,
-                                               0 ) );
+            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
         }
 
         if (!parser.hasErrors()) {
@@ -414,39 +410,28 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDecisionTable( Resource resource, ResourceConfiguration configuration ) throws DroolsParserException,
-            IOException {
-        
+    public void addPackageFromDecisionTable( Resource resource, ResourceConfiguration configuration ) throws DroolsParserException, IOException {
         this.resource = resource;
-        PackageDescr pkg;
-        boolean hasErrors = false;
+        addPackage( decisionTableToPackageDescr(resource, configuration) );
+        this.resource = null;
+    }
 
+    PackageDescr decisionTableToPackageDescr(Resource resource, ResourceConfiguration configuration) throws DroolsParserException, IOException {
         DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
-        String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
-                                                                  dtableConfiguration );
-        
-        final DrlParser parser = new DrlParser();
-        pkg = parser.parse( new StringReader( string ) );
+        String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(), dtableConfiguration );
+
+        DrlParser parser = new DrlParser();
+        PackageDescr pkg = parser.parse( new StringReader( string ) );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
-            this.results.add( new ParserError( "Parser returned a null Package",
-                                               0,
-                                               0 ) );
+            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
         }
-        hasErrors = parser.hasErrors();
-
-        if (!hasErrors) {
-            addPackage( pkg );
-        }
-        this.resource = null;
+        return parser.hasErrors() ? null : pkg;
     }
 
     public void addPackageFromDrl( Resource resource ) throws DroolsParserException, IOException {
         this.resource = resource;
-        PackageDescr pkg = createPackageDescrFromDrl( resource );
-        if (pkg != null) {
-            addPackage( pkg );
-        }
+        addPackage( drlToPackageDescr(resource) );
         this.resource = null;
     }
 
@@ -459,7 +444,7 @@ public class PackageBuilder {
         }
         CompositePackageDescr compositePackageDescr = null;
         for (Resource resource : resources) {
-            PackageDescr pkg = createPackageDescrFromDrl( resource );
+            PackageDescr pkg = drlToPackageDescr(resource);
             if (pkg == null) {
                 continue;
             }
@@ -474,7 +459,7 @@ public class PackageBuilder {
         }
     }
 
-    private PackageDescr createPackageDescrFromDrl( Resource resource ) throws DroolsParserException, IOException {
+    PackageDescr drlToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         PackageDescr pkg;
         boolean hasErrors = false;
         if (resource instanceof DescrResource) {
@@ -498,8 +483,7 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromXml( final Reader reader ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromXml( final Reader reader ) throws DroolsParserException, IOException {
         this.resource = new ReaderResource( reader, ResourceType.XDRL );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
         xmlReader.getParser().setClassLoader( this.rootClassLoader );
@@ -515,10 +499,13 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromXml( final Resource resource ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromXml( final Resource resource ) throws DroolsParserException, IOException {
         this.resource = resource;
+        addPackage( xmlToPackageDescr(resource) );
+        this.resource = null;
+    }
 
+    PackageDescr xmlToPackageDescr(Resource resource) throws DroolsParserException, IOException {
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
         xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
@@ -526,11 +513,9 @@ public class PackageBuilder {
             xmlReader.read( resource.getReader() );
         } catch (final SAXException e) {
             throw new DroolsParserException( e.toString(),
-                                             e.getCause() );
+                    e.getCause() );
         }
-
-        addPackage( xmlReader.getPackageDescr() );
-        this.resource = null;
+        return xmlReader.getPackageDescr();
     }
 
     /**
@@ -543,14 +528,11 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader source,
-            final Reader dsl ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromDrl( final Reader source, final Reader dsl ) throws DroolsParserException, IOException {
         this.resource = new ReaderResource( source, ResourceType.DSLR );
 
         final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( source,
-                                               dsl );
+        final PackageDescr pkg = parser.parse( source, dsl );
         this.results.addAll( parser.getErrors() );
         if (!parser.hasErrors()) {
             addPackage( pkg );
@@ -558,11 +540,17 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDslr( final Resource resource ) throws DroolsParserException,
-            IOException {
+    public void addPackageFromDslr( final Resource resource ) throws DroolsParserException, IOException {
         this.resource = resource;
+        addPackage( dslrToPackageDescr(resource) );
+        this.resource = null;
+    }
 
-        final DrlParser parser = new DrlParser();
+    PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException {
+        boolean hasErrors = false;
+        PackageDescr pkg;
+
+        DrlParser parser = new DrlParser();
         DefaultExpander expander = getDslExpander();
 
         try {
@@ -574,47 +562,48 @@ public class PackageBuilder {
                 this.results.addAll( expander.getErrors() );
             }
 
-            final PackageDescr pkg = parser.parse( str );
+            pkg = parser.parse( str );
             this.results.addAll( parser.getErrors() );
-            if (!parser.hasErrors()) {
-                addPackage( pkg );
-            }
+            hasErrors = parser.hasErrors();
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
-        this.resource = null;
+        return hasErrors ? null : pkg;
     }
 
     public void addPackageFromBrl( final Resource resource ) throws DroolsParserException {
         this.resource = resource;
         try {
-            BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
-            Reader knowledge = provider.getKnowledgeReader( resource );
-
-            DrlParser parser = new DrlParser();
-
-            if (provider.hasDSLSentences()) {
-                DefaultExpander expander = getDslExpander();
-
-                if (null != expander) {
-                    knowledge = new StringReader( expander.expand( knowledge ) );
-                    if (expander.hasErrors())
-                        this.results.addAll( expander.getErrors() );
-                }
-            }
-
-            PackageDescr pkg = parser.parse( knowledge );
-            if (parser.hasErrors()) {
-                this.results.addAll( parser.getErrors() );
-            } else {
-                addPackage( pkg );
-            }
-
+            addPackage( brlToPackageDescr(resource) );
         } catch (Exception e) {
             throw new DroolsParserException( e );
         } finally {
             this.resource = null;
         }
+    }
+
+    PackageDescr brlToPackageDescr(Resource resource) throws Exception {
+        BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
+        Reader knowledge = provider.getKnowledgeReader( resource );
+
+        DrlParser parser = new DrlParser();
+
+        if (provider.hasDSLSentences()) {
+            DefaultExpander expander = getDslExpander();
+
+            if (null != expander) {
+                knowledge = new StringReader( expander.expand( knowledge ) );
+                if (expander.hasErrors())
+                    this.results.addAll( expander.getErrors() );
+            }
+        }
+
+        PackageDescr pkg = parser.parse( knowledge );
+        if (parser.hasErrors()) {
+            this.results.addAll( parser.getErrors() );
+            return null;
+        }
+        return pkg;
     }
 
     public void addDsl( Resource resource ) throws IOException {
@@ -705,82 +694,100 @@ public class PackageBuilder {
             } else if (ResourceType.DTABLE.equals( type )) {
                 addPackageFromDecisionTable( resource, configuration );
             } else if (ResourceType.PKG.equals( type )) {
-                InputStream is = resource.getInputStream();
-                Package pkg = (Package) DroolsStreamUtils.streamIn( is,
-                                                                    this.configuration.getClassLoader() );
-                is.close();
-                addPackage( pkg );
+                addPackageFromInputStream(resource);
             } else if (ResourceType.CHANGE_SET.equals( type )) {
-                XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
-                if (resource instanceof ClassPathResource) {
-                    reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
-                                           ( (ClassPathResource) resource ).getClazz() );
-                } else {
-                    reader.setClassLoader( this.configuration.getClassLoader(),
-                                           null );
-                }
-                ChangeSet changeSet = reader.read( resource.getReader() );
-                if (changeSet == null) {
-                    // @TODO should log an error
-                }
-                for (Resource nestedResource : changeSet.getResourcesAdded()) {
-                    InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                    if (iNestedResourceResource.isDirectory()) {
-                        this.resourceDirectories.add( iNestedResourceResource );
-                        for (Resource childResource : iNestedResourceResource.listResources()) {
-                            if (( (InternalResource) childResource ).isDirectory()) {
-                                continue; // ignore sub directories
-                            }
-                            ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
-                            addKnowledgeResource( childResource,
-                                                  iNestedResourceResource.getResourceType(),
-                                                  iNestedResourceResource.getConfiguration() );
-                        }
-                    } else {
-                        addKnowledgeResource( iNestedResourceResource,
-                                              iNestedResourceResource.getResourceType(),
-                                              iNestedResourceResource.getConfiguration() );
-                    }
-                }
+                addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals( type )) {
-                JaxbConfigurationImpl confImpl = (JaxbConfigurationImpl) configuration;
-                String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel( resource,
-                                                                             this,
-                                                                             confImpl.getXjcOpts(),
-                                                                             confImpl.getSystemId() );
-                for (String cls : classes) {
-                    confImpl.getClasses().add( cls );
-                }
+                addPackageFromXSD(resource, (JaxbConfigurationImpl) configuration);
             } else if (ResourceType.PMML.equals( type )) {
-                PMMLCompiler compiler = getPMMLCompiler();
-                if (compiler != null) {
-
-                    String theory = compiler.compile( resource.getInputStream(),
-                                                      getPackageRegistry() );
-
-                    addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
-                                          ResourceType.DRL,
-                                          configuration );
-                } else {
-                    throw new RuntimeException( "Unknown resource type: " + type );
-                }
-
+                addPackageFromPMML(resource, type, configuration);
             } else {
-                ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
-                if (builder != null) {
-                    builder.setPackageBuilder( this );
-                    builder.addKnowledgeResource( resource,
-                                                  type,
-                                                  configuration );
-                } else {
-                    throw new RuntimeException( "Unknown resource type: " + type );
-                }
+                addPackageForExternalType(resource, type, configuration);
             }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException( e );
         }
+    }
+
+    void addPackageForExternalType(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
+        if (builder != null) {
+            builder.setPackageBuilder( this );
+            builder.addKnowledgeResource( resource,
+                                          type,
+                                          configuration );
+        } else {
+            throw new RuntimeException( "Unknown resource type: " + type );
+        }
+    }
+
+    void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws IOException {
+        PMMLCompiler compiler = getPMMLCompiler();
+        if (compiler != null) {
+
+            String theory = compiler.compile( resource.getInputStream(),
+                                              getPackageRegistry() );
+
+            addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
+                                  ResourceType.DRL,
+                                  configuration );
+        } else {
+            throw new RuntimeException( "Unknown resource type: " + type );
+        }
+    }
+
+    void addPackageFromXSD(Resource resource, JaxbConfigurationImpl configuration) throws IOException {
+        JaxbConfigurationImpl confImpl = (JaxbConfigurationImpl) configuration;
+        String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
+                this,
+                confImpl.getXjcOpts(),
+                confImpl.getSystemId());
+        for (String cls : classes) {
+            confImpl.getClasses().add( cls );
+        }
+    }
+
+    void addPackageFromChangeSet(Resource resource) throws SAXException, IOException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                                   ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                                   null );
+        }
+        ChangeSet changeSet = reader.read( resource.getReader() );
+        if (changeSet == null) {
+            // @TODO should log an error
+        }
+        for (Resource nestedResource : changeSet.getResourcesAdded()) {
+            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+            if (iNestedResourceResource.isDirectory()) {
+                this.resourceDirectories.add( iNestedResourceResource );
+                for (Resource childResource : iNestedResourceResource.listResources()) {
+                    if (( (InternalResource) childResource ).isDirectory()) {
+                        continue; // ignore sub directories
+                    }
+                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                    addKnowledgeResource( childResource,
+                                          iNestedResourceResource.getResourceType(),
+                                          iNestedResourceResource.getConfiguration() );
+                }
+            } else {
+                addKnowledgeResource( iNestedResourceResource,
+                                      iNestedResourceResource.getResourceType(),
+                                      iNestedResourceResource.getConfiguration() );
+            }
+        }
+    }
+
+    void addPackageFromInputStream(Resource resource) throws IOException, ClassNotFoundException {
+        InputStream is = resource.getInputStream();
+        Package pkg = (Package) DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
+        is.close();
+        addPackage( pkg );
     }
 
     private Set<Resource> resourceDirectories = new HashSet<Resource>();
@@ -790,6 +797,46 @@ public class PackageBuilder {
      * there are any generated classes to compile of course.
      */
     public void addPackage( final PackageDescr packageDescr ) {
+        PackageRegistry pkgRegistry = initPackageRegistry(packageDescr);
+        if (pkgRegistry == null) {
+            return;
+        }
+
+        // merge into existing package
+        mergePackage(pkgRegistry, packageDescr);
+
+        compileAllRules(packageDescr, pkgRegistry);
+    }
+
+    void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        pkgRegistry.setDialect( getPackageDialect(packageDescr) );
+
+        // only try to compile if there are no parse errors
+        if (!hasErrors()) {
+            compileRules(packageDescr, pkgRegistry);
+        }
+
+        compileAll();
+        try {
+            reloadAll();
+        } catch (Exception e) {
+            this.results.add( new DialectError( "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
+        }
+        updateResults();
+
+        // iterate and compile
+        if (this.ruleBase != null) {
+            for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
+                this.ruleBase.addRule(pkgRegistry.getPackage(), pkgRegistry.getPackage().getRule(ruleDescr.getName()));
+            }
+        }
+    }
+
+    PackageRegistry initPackageRegistry(PackageDescr packageDescr) {
+        if (packageDescr == null) {
+            return null;
+        }
 
         //Derive namespace
         if (isEmpty( packageDescr.getNamespace() )) {
@@ -797,11 +844,73 @@ public class PackageBuilder {
         }
         validateUniqueRuleNames( packageDescr );
         if (!checkNamespace( packageDescr.getNamespace() )) {
-            return;
+            return null;
         }
 
+        initPackage(packageDescr);
+
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        if (pkgRegistry == null) {
+            // initialise the package and namespace if it hasn't been used before
+            pkgRegistry = newPackage( packageDescr );
+        }
+
+        return pkgRegistry;
+    }
+
+    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        List<FunctionDescr> functions = packageDescr.getFunctions();
+        if (!functions.isEmpty()) {
+
+            for (FunctionDescr functionDescr : functions) {
+                if (isEmpty(functionDescr.getNamespace())) {
+                    // make sure namespace is set on components
+                    functionDescr.setNamespace(packageDescr.getNamespace());
+                }
+                if (isEmpty(functionDescr.getDialect())) {
+                    // make sure namespace is set on components
+                    functionDescr.setDialect(pkgRegistry.getDialect());
+                }
+                preCompileAddFunction(functionDescr);
+            }
+
+            // iterate and compile
+            for (FunctionDescr functionDescr : functions) {
+                // inherit the dialect from the package
+                addFunction(functionDescr);
+            }
+
+            // We need to compile all the functions now, so scripting
+            // languages like mvel can find them
+            compileAll();
+
+            for (FunctionDescr functionDescr : functions) {
+                postCompileAddFunction( functionDescr );
+            }
+        }
+
+        // iterate and compile
+        for (RuleDescr ruleDescr : packageDescr.getRules()) {
+            if (isEmpty(ruleDescr.getNamespace())) {
+                // make sure namespace is set on components
+                ruleDescr.setNamespace(packageDescr.getNamespace());
+            }
+
+            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
+            inheritPackageAttributes(pkgAttributes,
+                    ruleDescr);
+
+            if (isEmpty(ruleDescr.getDialect())) {
+                ruleDescr.addAttribute(new AttributeDescr("dialect",
+                        pkgRegistry.getDialect()));
+            }
+            addRule(ruleDescr);
+        }
+    }
+
+    private void initPackage(PackageDescr packageDescr) {
         //Gather all imports for all PackageDescrs for the current package and replicate into
-        //all PackageDescrs for the current package, thus maintaining a complete list of 
+        //all PackageDescrs for the current package, thus maintaining a complete list of
         //ImportDescrs for all PackageDescrs for the current package.
         List<PackageDescr> packageDescrsForPackage = packages.get( packageDescr.getName() );
         if (packageDescrsForPackage == null) {
@@ -816,11 +925,7 @@ public class PackageBuilder {
         }
         for (PackageDescr pd : packageDescrsForPackage) {
             pd.getImports().clear();
-            //PackageDescr.getImports() can return a Collections.EmptyList which doesn't
-            //support addAll(). PackageDescr.addImport() ensures the list can be appended 
-            for (ImportDescr id : imports) {
-                pd.addImport( id );
-            }
+            pd.addAllImports(imports);
         }
 
         //Copy package level attributes for inclusion on individual rules
@@ -837,6 +942,9 @@ public class PackageBuilder {
             }
         }
 
+    }
+
+    private String getPackageDialect(PackageDescr packageDescr) {
         String dialectName = this.defaultDialect;
         // see if this packageDescr overrides the current default dialect
         for (Iterator it = packageDescr.getAttributes().iterator(); it.hasNext();) {
@@ -846,87 +954,7 @@ public class PackageBuilder {
                 break;
             }
         }
-
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
-        if (pkgRegistry == null) {
-            // initialise the package and namespace if it hasn't been used before
-            pkgRegistry = newPackage( packageDescr );
-        }
-
-        // merge into existing package
-        mergePackage( packageDescr );
-
-        // set the default dialect for this package
-        pkgRegistry.setDialect( dialectName );
-
-        // only try to compile if there are no parse errors
-        if (!hasErrors()) {
-            List<FunctionDescr> functions = packageDescr.getFunctions();
-            if (!functions.isEmpty()) {
-
-                for (FunctionDescr functionDescr : functions) {
-                    if (isEmpty(functionDescr.getNamespace())) {
-                        // make sure namespace is set on components
-                        functionDescr.setNamespace(packageDescr.getNamespace());
-                    }
-                    if (isEmpty(functionDescr.getDialect())) {
-                        // make sure namespace is set on components
-                        functionDescr.setDialect(pkgRegistry.getDialect());
-                    }
-                    preCompileAddFunction(functionDescr);
-                }
-
-                // iterate and compile
-                for (FunctionDescr functionDescr : functions) {
-                    // inherit the dialect from the package
-                    addFunction(functionDescr);
-                }
-
-                // We need to compile all the functions now, so scripting
-                // languages like mvel can find them
-                compileAll();
-
-                for (FunctionDescr functionDescr : functions) {
-                    postCompileAddFunction( functionDescr );
-                }
-            }
-
-            // iterate and compile
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (isEmpty(ruleDescr.getNamespace())) {
-                    // make sure namespace is set on components
-                    ruleDescr.setNamespace(packageDescr.getNamespace());
-                }
-
-                Map<String, AttributeDescr> pkgAttributes = packageAttributes.get(packageDescr.getNamespace());
-                inheritPackageAttributes(pkgAttributes,
-                        ruleDescr);
-
-                if (isEmpty(ruleDescr.getDialect())) {
-                    ruleDescr.addAttribute(new AttributeDescr("dialect",
-                            pkgRegistry.getDialect()));
-                }
-                addRule(ruleDescr);
-            }
-        }
-
-        compileAll();
-        try {
-            reloadAll();
-        } catch (Exception e) {
-            this.results.add( new DialectError(
-                                                "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
-        }
-        updateResults();
-
-        // iterate and compile
-        if (this.ruleBase != null) {
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                pkgRegistry = this.pkgRegistryMap.get(ruleDescr.getNamespace());
-                this.ruleBase.addRule(pkgRegistry.getPackage(),
-                        pkgRegistry.getPackage().getRule(ruleDescr.getName()));
-            }
-        }
+        return dialectName;
     }
 
     //  test
@@ -981,7 +1009,7 @@ public class PackageBuilder {
         if (pkg == null) {
             PackageDescr packageDescr = new PackageDescr( newPkg.getName() );
             pkgRegistry = newPackage( packageDescr );
-            mergePackage( packageDescr );
+            mergePackage( this.pkgRegistryMap.get( packageDescr.getNamespace() ), packageDescr );
             pkg = pkgRegistry.getPackage();
         }
 
@@ -1156,42 +1184,38 @@ public class PackageBuilder {
         return pkgRegistry;
     }
 
-    private void mergePackage( final PackageDescr packageDescr ) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
-
+    private void mergePackage( PackageRegistry pkgRegistry, PackageDescr packageDescr ) {
         for (final ImportDescr importEntry : packageDescr.getImports()) {
             pkgRegistry.addImport( importEntry.getTarget() );
         }
 
-        processEntryPointDeclarations( packageDescr );
+        processEntryPointDeclarations(pkgRegistry, packageDescr);
 
-        processTypeDeclarations( packageDescr );
+        // process types in 2 steps to deal with circular and recursive declarations
+        processUnresolvedTypes(pkgRegistry, processTypeDeclarations(pkgRegistry, packageDescr));
 
-        processWindowDeclarations( packageDescr );
+        processOtherDeclarations(pkgRegistry, packageDescr);
+    }
 
-        for (FunctionDescr function : packageDescr.getFunctions()) {
-            Function existingFunc = pkgRegistry.getPackage().getFunctions().get( function.getName() );
-            if (existingFunc != null && function.getNamespace().equals( existingFunc.getNamespace() )) {
-                this.results.add(
-                        new DuplicateFunction( function,
-                                               this.configuration ) );
-            }
-        }
+    void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        processWindowDeclarations(pkgRegistry, packageDescr);
+        processFunctions(pkgRegistry, packageDescr);
+        processGlobals(pkgRegistry, packageDescr);
 
-        for (final FunctionImportDescr functionImport : packageDescr.getFunctionImports()) {
-            String importEntry = functionImport.getTarget();
-            pkgRegistry.addStaticImport( importEntry );
-            pkgRegistry.getPackage().addStaticImport( importEntry );
-        }
+        // need to reinsert this to ensure that the package is the first/last one in the ordered map
+        // this feature is exploited by the knowledgeAgent
+        this.pkgRegistryMap.remove( packageDescr.getName() );
+        this.pkgRegistryMap.put( packageDescr.getName(), pkgRegistry );
+    }
 
+    private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for (final GlobalDescr global : packageDescr.getGlobals()) {
             final String identifier = global.getIdentifier();
             String className = global.getType();
 
             // JBRULES-3039: can't handle type name with generic params
             while (className.indexOf( '<' ) >= 0) {
-                className = className.replaceAll( "<[^<>]+?>",
-                                                  "" );
+                className = className.replaceAll( "<[^<>]+?>", "" );
             }
 
             Class<?> clazz;
@@ -1207,12 +1231,31 @@ public class PackageBuilder {
                 e.printStackTrace();
             }
         }
+    }
 
-        // need to reinsert this to ensure that the package is the first/last one in the ordered map
-        // this feature is exploited by the knowledgeAgent
-        this.pkgRegistryMap.remove( packageDescr.getName() );
-        this.pkgRegistryMap.put( packageDescr.getName(),
-                                 pkgRegistry );
+    private void processFunctions(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        for (FunctionDescr function : packageDescr.getFunctions()) {
+            Function existingFunc = pkgRegistry.getPackage().getFunctions().get( function.getName() );
+            if (existingFunc != null && function.getNamespace().equals( existingFunc.getNamespace() )) {
+                this.results.add(
+                        new DuplicateFunction( function,
+                                               this.configuration ) );
+            }
+        }
+
+        for (final FunctionImportDescr functionImport : packageDescr.getFunctionImports()) {
+            String importEntry = functionImport.getTarget();
+            pkgRegistry.addStaticImport( importEntry );
+            pkgRegistry.getPackage().addStaticImport( importEntry );
+        }
+    }
+
+    void processUnresolvedTypes(PackageRegistry pkgRegistry, List<TypeDefinition> unresolvedTypeDefinitions) {
+        if (unresolvedTypeDefinitions != null) {
+            for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
+                processTypeFields(pkgRegistry, typeDef.typeDescr, typeDef.type, false);
+            }
+        }
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
@@ -1744,15 +1787,13 @@ public class PackageBuilder {
     /**
      * @param packageDescr
      */
-    private void processEntryPointDeclarations( final PackageDescr packageDescr ) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+    void processEntryPointDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr ) {
         for (EntryPointDeclarationDescr epDescr : packageDescr.getEntryPointDeclarations()) {
             pkgRegistry.getPackage().addEntryPointId( epDescr.getEntryPointId() );
         }
     }
 
-    private void processWindowDeclarations( final PackageDescr packageDescr ) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+    private void processWindowDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr ) {
         for (WindowDeclarationDescr wd : packageDescr.getWindowDeclarations()) {
             WindowDeclaration window = new WindowDeclaration( wd.getName() );
             // TODO: process annotations
@@ -1783,11 +1824,14 @@ public class PackageBuilder {
         }
     }
 
+    void registerGeneratedType(AbstractClassTypeDeclarationDescr typeDescr) {
+        generatedTypes.add(typeDescr.getType().getFullName());
+    }
+
     /**
      * @param packageDescr
      */
-    private void processTypeDeclarations( final PackageDescr packageDescr ) {
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
             if (isEmpty( typeDescr.getNamespace() )) {
@@ -1890,7 +1934,7 @@ public class PackageBuilder {
                 if (!getPackageRegistry().containsKey( altDescr.getNamespace() )) {
                     newPackage(altDescr);
                 }
-                mergePackage( altDescr );
+                mergePackage( this.pkgRegistryMap.get( altDescr.getNamespace() ), altDescr );
             }
 
         }
@@ -1899,11 +1943,10 @@ public class PackageBuilder {
         Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors = sortByHierarchy( packageDescr.getClassAndEnumDeclarationDescrs() );
 
         for (AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors) {
-            generatedTypes.add(typeDescr.getType().getFullName());
+            registerGeneratedType(typeDescr);
         }
 
-        List<AbstractClassTypeDeclarationDescr> unresolvedTypeDescrs = null;
-        List<TypeDeclaration> unresolvedTypes = null;
+        List<TypeDefinition> unresolvedTypeDefinitions = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
@@ -2004,28 +2047,20 @@ public class PackageBuilder {
             }
 
             if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
-                if (unresolvedTypeDescrs == null) {
-                    unresolvedTypeDescrs = new ArrayList<AbstractClassTypeDeclarationDescr>();
-                    unresolvedTypes = new ArrayList<TypeDeclaration>();
+                if (unresolvedTypeDefinitions == null) {
+                    unresolvedTypeDefinitions = new ArrayList<TypeDefinition>();
                 }
-                unresolvedTypeDescrs.add(typeDescr);
-                unresolvedTypes.add(type);
+                unresolvedTypeDefinitions.add(new TypeDefinition(type, typeDescr));
             }
         }
 
-        if (unresolvedTypeDescrs != null) {
-            Iterator<TypeDeclaration> typesIterator = unresolvedTypes.iterator();
-            for (AbstractClassTypeDeclarationDescr typeDescr : unresolvedTypeDescrs) {
-                processTypeFields(pkgRegistry, typeDescr, typesIterator.next(), false);
-            }
-        }
+        return unresolvedTypeDefinitions;
     }
 
     private boolean processTypeFields(PackageRegistry pkgRegistry, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, boolean firstAttempt) {
         if (type.getTypeClassDef() != null) {
             try {
-                buildFieldAccessors( type,
-                        pkgRegistry );
+                buildFieldAccessors( type, pkgRegistry );
             } catch (Throwable e) {
                 if (!firstAttempt) {
                     this.results.add( new TypeDeclarationError(
@@ -3155,4 +3190,13 @@ public class PackageBuilder {
         }
     }
 
+    static class TypeDefinition {
+        private final AbstractClassTypeDeclarationDescr typeDescr;
+        private final TypeDeclaration type;
+
+        private TypeDefinition(TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr) {
+            this.type = type;
+            this.typeDescr = typeDescr;
+        }
+    }
 }
