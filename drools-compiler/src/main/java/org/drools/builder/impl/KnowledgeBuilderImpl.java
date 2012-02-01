@@ -37,11 +37,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         pkgBuilder.addKnowledgeResource( resource, type, resourceConfiguration )  ;
     }
 
-    public void add(ResourceType type, Resource ... resources) {
-        ResourceConfiguration resourceConfiguration = resources.length > 0 && resources[0] instanceof BaseResource ? ((BaseResource) resources[0]).getConfiguration() : null;
-        pkgBuilder.addKnowledgeResources(type, resourceConfiguration, resources)  ;
-    }
-
     public CompositeKnowledgeBuilder batch() {
         return new CompositeKnowledgeBuilder(pkgBuilder);
     }
