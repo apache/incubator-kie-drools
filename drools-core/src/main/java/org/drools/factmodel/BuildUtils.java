@@ -126,6 +126,11 @@ public class BuildUtils {
             internalType = "Z";
         } else if ( "void".equals( type ) ) {
             internalType = "V";
+        } else if ( type.startsWith( "[L" ) ) {
+            internalType = type.replace( '.', '/' );
+        } else if ( type.startsWith( "[") ) {
+            // do nothing as this would be a primitive array
+            internalType = type;
         } else if ( type != null ) {
             // I think this will fail for inner classes, but we don't really
             // support inner class generation at the moment
@@ -134,6 +139,19 @@ public class BuildUtils {
         }
         return internalType;
     }
+
+    
+    
+    public static String arrayType(String type) {
+        if ( isArray( type ) )
+            if ( type.length() == 2 ) {
+                return type;
+            } else {
+                return "[Ljava/lang/Object;";
+            }
+        return null;
+    }
+
 
     /**
      * Returns true if the provided type is a primitive type
@@ -151,6 +169,15 @@ public class BuildUtils {
 
 
 
+    /**
+     * Returns true if the provided type is an arrayType
+     *
+     * @param type
+     * @return
+     */
+    public static boolean isArray( String type ) {
+        return type.startsWith( "[" );
+    }
 
 
     public static Object getDefaultValue( FieldDefinition fld ) {
@@ -193,7 +220,8 @@ public class BuildUtils {
             return fld.getDefaultValueAsBoolean();
         }
 
-        return StringUtils.isEmpty( fld.getInitExpr() ) ? null : MVEL.eval( fld.getInitExpr() );
+//        return StringUtils.isEmpty( fld.getInitExpr() ) ? null : MVEL.eval( fld.getInitExpr() );
+        return null;
 
     }
 
