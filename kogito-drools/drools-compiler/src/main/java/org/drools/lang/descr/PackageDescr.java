@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -115,6 +116,13 @@ public class PackageDescr extends BaseDescr
 
     public String getDocumentation() {
         return this.documentation;
+    }
+
+    public void addAllImports( final Collection<ImportDescr> importEntries ) {
+        if ( this.imports == Collections.EMPTY_LIST ) {
+            this.imports = new ArrayList<ImportDescr>();
+        }
+        this.imports.addAll( importEntries );
     }
 
     public void addImport( final ImportDescr importEntry ) {
