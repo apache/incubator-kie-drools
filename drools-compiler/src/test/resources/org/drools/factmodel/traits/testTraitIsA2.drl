@@ -1,0 +1,31 @@
+package org.test;
+
+import org.drools.Person
+
+declare trait Student
+    school : String
+end
+
+rule "create student" 
+    when
+        $student : Person( age < 26, this not isA Student )
+    then
+        Student s = don( $student, Student.class );
+        s.setSchool("Masaryk University");
+        update( $student );
+end
+
+rule "print student"
+    salience 10
+    when
+        student : Person( this isA Student )
+    then
+        // System.out.println("Person is a student: " + student);
+end
+
+rule "print school"
+    when
+        Student( $school : school )
+    then
+        // System.out.println("Student is attending " + $school);
+end
