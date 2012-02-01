@@ -9916,4 +9916,50 @@ public class MiscTest extends CommonTestMethodBase {
         int rules = ksession.fireAllRules();
         assertEquals(1, rules);
     }
+
+    @Test
+    public void testArrayUsage() {
+        String str = "import org.drools.base.DroolsQuery;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "query extract( String s )\n" +
+                "    Object()    \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Intercept\"\n" +
+                "when\n" +
+                "    DroolsQuery( name == \"extract\", $args : elements )\n" +
+                "    $s : String( this == $args[$s.length() - $s.length()] )\n" +
+                "    $s1 : String( this == $args[0] )\n" +
+                "    $s2 : String( this == $args[$args.length - $args.length] )\n" +
+                "then\n" +
+                "    retract( $s );  \n" +
+                "    list.add( $s );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Exec\"\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "    ?extract( $s ; )\n" +
+                "then\n" +
+                "    \n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        int N = 2;
+        for ( int j = 0; j < N; j++ ) {
+            ksession.insert( "x" + j );
+            ksession.fireAllRules();
+        }
+
+        assertEquals( N, list.size() );
+
+        ksession.dispose();
+    }
 }
