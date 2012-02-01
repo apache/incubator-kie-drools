@@ -465,47 +465,63 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             boolean hasObjects = false;
             for (FieldDefinition field : classDef.getFieldsDefinitions()) {
 
-                    Object val = BuildUtils.getDefaultValue(field);
+                // get simple init expression value
+                Object val = BuildUtils.getDefaultValue(field);
 
-                    if (val != null) {
-                        mv.visitVarInsn(Opcodes.ALOAD, 0);
-                        if ( BuildUtils.isPrimitive( field.getTypeName() )
-                             || BuildUtils.isBoxed( field.getTypeName() )
-                             || String.class.getName().equals( field.getTypeName() ) ) {
-                            mv.visitLdcInsn(val);
-                            if ( BuildUtils.isBoxed(field.getTypeName()) ) {
-                                mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                if (val != null) {
+                    // there's a simple init expression
+                    mv.visitVarInsn(Opcodes.ALOAD, 0);
+                    if ( BuildUtils.isPrimitive( field.getTypeName() )
+                            || BuildUtils.isBoxed( field.getTypeName() )
+                            || String.class.getName().equals( field.getTypeName() ) ) {
+                        mv.visitLdcInsn(val);
+                        if ( BuildUtils.isBoxed(field.getTypeName()) ) {
+                            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
                                     BuildUtils.getInternalType(field.getTypeName()),
                                     "valueOf",
                                     "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
-                            }
-                        } else {
-                            hasObjects = true;
-                            String type = BuildUtils.getInternalType( val.getClass().getName() );
-                            mv.visitTypeInsn( NEW, type );
-                            mv.visitInsn(DUP);
-                            mv.visitMethodInsn( INVOKESPECIAL,
-                                                type,
-                                                "<init>",
-                                                "()V");
                         }
-
-
-                        if (! field.isInherited()) {
-                            mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                    BuildUtils.getInternalType( classDef.getClassName() ),
-                                    field.getName(),
-                                    BuildUtils.getTypeDescriptor( field.getTypeName() ) );
-                        } else {
-                            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                                    BuildUtils.getInternalType(classDef.getClassName()),
-                                    field.getWriteMethod(),
-                                    Type.getMethodDescriptor(Type.VOID_TYPE,
-                                            new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
-                                    ));
-                        }
-
+                    } else {
+                        hasObjects = true;
+                        String type = BuildUtils.getInternalType( val.getClass().getName() );
+                        mv.visitTypeInsn( NEW, type );
+                        mv.visitInsn(DUP);
+                        mv.visitMethodInsn( INVOKESPECIAL,
+                                type,
+                                "<init>",
+                                "()V");
                     }
+                } else {
+                    // there's a complex init expression
+                    if ( field.getInitExpr() != null ) {
+                        mv.visitVarInsn( ALOAD, 0 );
+                        mv.visitLdcInsn( field.getInitExpr() );
+                        mv.visitMethodInsn( INVOKESTATIC, 
+                                "org/mvel2/MVEL", 
+                                "eval", 
+                                "(Ljava/lang/String;)Ljava/lang/Object;");
+                        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
+                        val = field.getInitExpr();
+                    }
+                }
+
+
+                if ( val != null ) {
+                    if (! field.isInherited()) {
+                        mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                BuildUtils.getInternalType( classDef.getClassName() ),
+                                field.getName(),
+                                BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    } else {
+                        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                                BuildUtils.getInternalType(classDef.getClassName()),
+                                field.getWriteMethod(),
+                                Type.getMethodDescriptor(Type.VOID_TYPE,
+                                        new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
+                                ));
+                    }
+
+                }
             }
 
 
@@ -909,10 +925,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         visitFieldOrGetter(mv, classDef, field);
 
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                BuildUtils.getInternalType( field.getTypeName() ),
-                                "equals",
-                                "(Ljava/lang/Object;)Z" );
+                        if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
+                            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    BuildUtils.getInternalType( field.getTypeName() ),
+                                    "equals",
+                                    "(Ljava/lang/Object;)Z" );
+                        } else {
+                            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                    "java/util/Arrays",
+                                    "equals",
+                                    "(" +
+                                            BuildUtils.arrayType( field.getTypeName() ) +
+                                            BuildUtils.arrayType( field.getTypeName() ) +
+                                    ")Z" );
+                        }
                         mv.visitJumpInsn( Opcodes.IFNE,
                                 goNext );
 
@@ -1059,10 +1085,17 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         visitFieldOrGetter(mv, classDef, field);
 
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                BuildUtils.getInternalType( field.getTypeName() ),
-                                "hashCode",
-                                "()I" );
+                        if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
+                            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    BuildUtils.getInternalType( field.getTypeName() ),
+                                    "hashCode",
+                                    "()I" );
+                        } else {
+                            mv.visitMethodInsn( INVOKESTATIC,
+                                    "java/util/Arrays",
+                                    "hashCode",
+                                    "(" + BuildUtils.arrayType( field.getTypeName() ) + ")I");
+                        }
                         mv.visitLabel( olabel2 );
                     }
 
@@ -1189,6 +1222,19 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                             "append",
                             Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
                                     new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
+                } else if ( BuildUtils.isArray( field.getTypeName() ) ) {
+
+
+                    mv.visitMethodInsn( INVOKESTATIC, 
+                            "java/util/Arrays", 
+                            "toString", 
+                            "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
+
+                    mv.visitMethodInsn( INVOKEVIRTUAL,
+                            "java/lang/StringBuilder",
+                            "append",
+                            "(Ljava/lang/Object;)Ljava/lang/StringBuilder;" );
+
                 } else {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                             Type.getInternalName( StringBuilder.class ),
@@ -1373,7 +1419,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             );
         }
     }
-   
 
 
 
@@ -1384,6 +1429,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
 
 
-   
+
+
 }
 

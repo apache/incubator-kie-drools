@@ -10014,6 +10014,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, rules);
     }
 
+
     @Test
     public void testArrayUsage() {
         String str = "import org.drools.base.DroolsQuery;\n" +
@@ -10230,6 +10231,7 @@ public class MiscTest extends CommonTestMethodBase {
         }
     }
 
+
     @Test
     public void testPatternOffset() throws Exception {
         // JBRULES-3427
@@ -10371,6 +10373,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(3, ksession.fireAllRules());
     }
 
+
     @Test
     public void testVariableBindingWithOR() throws Exception {
         // JBRULES-3390
@@ -10445,6 +10448,85 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         ksession.dispose();
+
+    public void testDeclaresWithArrayFields() throws Exception {
+        String rule = "package org.drools.test; \n" +
+                "import org.drools.test.Person;" +
+                "\n" +
+                " global java.util.List list;" +
+                "\n" +
+                "declare Cheese\n" +
+                "   name : String = \"ched\" \n" +
+                "end \n" +
+                "" +
+                "declare X\n" +
+                "    fld \t: String   = \"xx\"                                      @key \n" +
+                "    achz\t: Cheese[] \n" +
+                "    astr\t: String[] \n" + "\t= new String[] {\"x\", \"y11\" } \n" +
+                "    aint\t: int[] \n" +
+                "    sint\t: short[] \n" +
+                "    bint\t: byte[] \n" +
+                "    lint\t: long[] \n" +
+                "    dint\t: double[] \n" +
+                "    fint\t: float[] \n" +
+                "    zint\t: Integer[] \n" + "\t= new int[] {2,3}                   @key \n" +
+                "    aprs\t: Person[] \n" + "\t= new org.drools.test.Person[] { new org.drools.test.Man() }" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "\n" +
+                "then\n" +
+                "    X x = new X( \"xx\", " +
+                "                 new Cheese[0], " +
+                "                 new String[] { \"x\", \"y22\" }, " +
+                "                 new int[] { 7, 9 }, " +
+                "                 new short[] { 3, 4 }, " +
+                "                 new byte[] { 1, 2 }, " +
+                "                 new long[] { 100L, 200L }, " +
+                "                 new double[] { 3.2, 4.4 }, " +
+                "                 new float[] { 3.2f, 4.4f }, " +
+                "                 new Integer[] { 2, 3 }," +
+                "                 null " +
+                "    ); \n" +
+                "   insert( x );\n" +
+                "   " +
+                "   X x2 = new X(); \n" +
+                "   x2.setAint( new int[2] ); \n " +
+                "   x2.getAint()[0] = 7; \n" +
+                "   insert( x2 );\n" +
+                "   " +
+                "   if ( x.hashCode() == x2.hashCode() ) list.add( \"hash\" );  \n" +
+                "   " +
+                "   if( x.equals( x2 ) ) list.add( \"equals\" );  \n" +
+                "   " +
+                "   list.add( x.getAint(  )[0] );  \n" +
+                "end \n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "    X( astr.length > 0,            \n" +
+                "       astr[0] == \"x\",           \n" +
+                "       $x : astr[1],               \n" +
+                "       aint[0] == 7  )             \n" +
+                "then\n" +
+                "    list.add( $x );\n" +
+                "end \n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        ksession.fireAllRules();
+
+        assertTrue( list.contains( "hash" ) );
+        assertTrue( list.contains( "equals" ) );
+        assertTrue( list.contains( 7 ) );
+        assertTrue( list.contains( "y11" ) );
+        assertTrue( list.contains( "y22" ) );
+
     }
 
     public static class Parent { }
