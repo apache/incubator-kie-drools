@@ -865,7 +865,7 @@ public class DRLParser {
     
     
     /**
-     * field := label qualifiedIdentifier (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
+     * field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
      */
     private void field( AbstractClassTypeDeclarationBuilder declare ) {
         FieldDescrBuilder field = null;
@@ -883,7 +883,7 @@ public class DRLParser {
                                   fname );
 
             // type
-            String type = qualifiedIdentifier();
+            String type = fieldType();
             if ( state.failed ) return;
             if ( state.backtracking == 0 ) field.type( type );
 
@@ -930,6 +930,31 @@ public class DRLParser {
                         field );
         }
     }
+
+
+    /**
+     * fieldType := qualifiedIdentifier (LEFT_SQUARE RIGHT_SQUARE)?
+     */
+    private String fieldType( ) throws RecognitionException {
+        String type = qualifiedIdentifier();
+        if ( input.LA( 1 ) == DRLLexer.LEFT_SQUARE) {
+            match( input,
+                   DRLLexer.LEFT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            match( input,
+                   DRLLexer.RIGHT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return type;
+
+            type += "[]";
+        }
+        return type;
+    }
+    
 
     /* ------------------------------------------------------------------------------------------------
      *                         FUNCTION STATEMENT
