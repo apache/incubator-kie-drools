@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -119,6 +120,17 @@ public class KnwoledgeBuilderTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
+
+        String declarationC = "package org.drools.testA\n" +
+                "declare FactC\n" +
+                "    field : UnknownClass\n" +
+                "end\n";
+
+        kbuilder.add(ResourceFactory.newByteArrayResource(declarationC.getBytes()), ResourceType.DRL);
+
+        assertTrue(kbuilder.hasErrors());
+        kbuilder.undo();
+        assertFalse(kbuilder.hasErrors());
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

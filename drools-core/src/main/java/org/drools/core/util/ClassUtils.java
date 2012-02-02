@@ -16,7 +16,16 @@
 
 package org.drools.core.util;
 
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -304,5 +313,28 @@ public final class ClassUtils {
     public static String setter2property(String methodName) {
         if (!methodName.startsWith("set") || methodName.length() < 4) return null;
         return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
+    }
+
+    public static <T extends Externalizable> T deepClone(T origin) {
+        return origin == null ? null : deepClone(origin, origin.getClass().getClassLoader());
+    }
+
+    public static <T extends Externalizable> T deepClone(T origin, ClassLoader classLoader) {
+        if (origin == null) {
+            return null;
+        }
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new DroolsObjectOutputStream(baos);
+            oos.writeObject(origin);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new DroolsObjectInputStream(bais, classLoader);
+            Object deepCopy = ois.readObject();
+            return (T)deepCopy;
+        } catch(IOException ioe) {
+            throw new RuntimeException(ioe);
+        } catch (ClassNotFoundException cnfe) {
+            throw new RuntimeException(cnfe);
+        }
     }
 }
