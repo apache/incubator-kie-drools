@@ -606,6 +606,7 @@ public class DefaultAgenda
         while ( true ) {
             agendaGroup = (InternalAgendaGroup) this.focusStack.getLast();
 
+            
             final boolean empty = agendaGroup.isEmpty();
 
             // No populated queues found so pop the focusStack and repeat
@@ -1023,6 +1024,16 @@ public class DefaultAgenda
                     final AgendaItem item = (AgendaItem) group.getNext();
                     // if there is an item to fire from that group
                     if ( item != null ) {
+                    	
+                        //if the rule will be fired or not, it is necessary the routine bellow to clean up ruleflow activations
+                    	if ( item.getActivationNode() != null ) {
+                        	InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
+                            // it is possible that the ruleflow group is no longer active if it was
+                            // cleared during execution of this activation
+                            ruleFlowGroup.removeActivation( item );
+                            ruleFlowGroup.deactivateIfEmpty();
+                        }                 	
+                    	                  	
                         // if that item is allowed to fire
                         if ( filter == null || filter.accept( item ) ) {
                             // fire it
@@ -1030,12 +1041,18 @@ public class DefaultAgenda
                             result = true;
                         } else {
                             // otherwise cancel it and try the next
+                        	
+                            //necessary to perfom queued actions like signal to a next node in a ruleflow/jbpm process
+                            this.workingMemory.executeQueuedActions();
+                            
                             final EventSupport eventsupport = (EventSupport) this.workingMemory;
-
+                            
                             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                                          this.workingMemory,
-                                                                                          ActivationCancelledCause.FILTER );
+                                    this.workingMemory,
+                                    ActivationCancelledCause.FILTER );                            
+                            
                             tryagain = true;
+                          
                         }
                     }
                 }
@@ -1076,14 +1093,6 @@ public class DefaultAgenda
                 clearAndCancelActivationGroup( activationGroup );
             }
             activation.setActivated( false );
-
-            InternalRuleFlowGroup ruleFlowGroup = null;
-            if ( activation.getActivationNode() != null ) {
-                ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
-                // it is possible that the ruleflow group is no longer active if it was
-                // cleared during execution of this activation
-                ruleFlowGroup.removeActivation( activation );
-            }
 
             try {
                                
@@ -1127,10 +1136,6 @@ public class DefaultAgenda
                 }
             }
             
-            if( ruleFlowGroup != null ) {
-                ruleFlowGroup.deactivateIfEmpty();
-            }
-
             eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
                                                                            this.workingMemory );
             
