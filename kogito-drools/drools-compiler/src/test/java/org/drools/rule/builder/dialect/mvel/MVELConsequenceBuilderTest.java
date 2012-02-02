@@ -397,7 +397,7 @@ public class MVELConsequenceBuilderTest {
         		"c3 = new Cheese().{ type = $map['key'] };";
         setupTest( consequence, new HashMap<String, Object>() );
         assertNotNull( context.getRule().getConsequence() );
-        assertTrue( context.getRule().getNamedConsequences().isEmpty() );
+        assertFalse( context.getRule().hasNamedConsequences() );
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
     }
     

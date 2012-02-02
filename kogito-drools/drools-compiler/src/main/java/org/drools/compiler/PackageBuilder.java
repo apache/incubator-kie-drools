@@ -65,6 +65,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.xml.XmlPackageReader;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.DeepCloneable;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
@@ -163,9 +164,9 @@ import org.xml.sax.SAXException;
  * package level attributes will still apply even if the resource added to
  * PackageBuilder does not explicitly include package level attributes.
  */
-public class PackageBuilder {
+public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
-    private Map<String, PackageRegistry>             pkgRegistryMap;
+    private final Map<String, PackageRegistry>       pkgRegistryMap;
 
     private List<KnowledgeBuilderResult>             results;
 
@@ -185,7 +186,7 @@ public class PackageBuilder {
 
     private CompositeClassLoader                     rootClassLoader;
 
-    private Map<String, Class<?>>                    globals;
+    private final Map<String, Class<?>>              globals;
 
     private Resource                                 resource;
 
@@ -195,13 +196,13 @@ public class PackageBuilder {
 
     protected DateFormats                            dateFormats;
 
-    private ProcessBuilder                           processBuilder;
+    private final ProcessBuilder                     processBuilder;
 
     private IllegalArgumentException                 processBuilderCreationFailure;
 
     private PMMLCompiler                             pmmlCompiler;
 
-    private Map<String, TypeDeclaration>             builtinTypes;
+    private final Map<String, TypeDeclaration>       builtinTypes;
 
     private Map<String, TypeDeclaration>             cacheTypes;
 
@@ -209,12 +210,12 @@ public class PackageBuilder {
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
     //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the 
     //AttributeDescr's name.
-    private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
+    private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
     //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
-    private Map<String, List<PackageDescr>>          packages          = new HashMap<String, List<PackageDescr>>();
+    private final Map<String, List<PackageDescr>>    packages          = new HashMap<String, List<PackageDescr>>();
 
-    private Set<String> generatedTypes = new HashSet<String>();
+    private final Set<String>                        generatedTypes    = new HashSet<String>();
 
     /**
      * Use this when package is starting from scratch.
@@ -303,7 +304,7 @@ public class PackageBuilder {
             this.rootClassLoader = this.configuration.getClassLoader();
         }
 
-        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
+        this.rootClassLoader.addClassLoader(getClass().getClassLoader());
 
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if (this.dateFormats == null) {
@@ -326,6 +327,33 @@ public class PackageBuilder {
 
         builtinTypes = new HashMap<String, TypeDeclaration>();
         initBuiltinTypeDeclarations();
+    }
+
+    public PackageBuilder deepClone() {
+        PackageBuilder clone = new PackageBuilder(configuration);
+        clone.rootClassLoader = rootClassLoader;
+
+        for (Map.Entry<String, PackageRegistry> entry : pkgRegistryMap.entrySet()) {
+            clone.pkgRegistryMap.put(entry.getKey(), entry.getValue().clonePackage(rootClassLoader));
+        }
+        clone.results.addAll(results);
+        clone.ruleBase = ClassUtils.deepClone(ruleBase, rootClassLoader);
+        clone.globals.putAll(globals);
+        if (dslFiles != null) {
+            clone.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
+            clone.dslFiles.addAll(dslFiles);
+        }
+        if (cacheTypes != null) {
+            clone.cacheTypes = new HashMap<String, TypeDeclaration>();
+            clone.cacheTypes.putAll(cacheTypes);
+        }
+        clone.packageAttributes.putAll(packageAttributes);
+        for (Map.Entry<String, List<PackageDescr>> entry : packages.entrySet()) {
+            clone.packages.put(entry.getKey(), new ArrayList<PackageDescr>(entry.getValue()));
+        }
+        clone.packages.putAll(packages);
+
+        return clone;
     }
 
     private void initBuiltinTypeDeclarations() {
@@ -724,7 +752,6 @@ public class PackageBuilder {
         for (Resource nestedResource : changeSet.getResourcesAdded()) {
             InternalResource iNestedResourceResource = (InternalResource) nestedResource;
             if (iNestedResourceResource.isDirectory()) {
-                this.resourceDirectories.add( iNestedResourceResource );
                 for (Resource childResource : iNestedResourceResource.listResources()) {
                     if (( (InternalResource) childResource ).isDirectory()) {
                         continue; // ignore sub directories
@@ -748,8 +775,6 @@ public class PackageBuilder {
         is.close();
         addPackage( pkg );
     }
-
-    private Set<Resource> resourceDirectories = new HashSet<Resource>();
 
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
@@ -900,15 +925,13 @@ public class PackageBuilder {
                                    attr );
             }
         }
-
     }
 
     private String getPackageDialect(PackageDescr packageDescr) {
         String dialectName = this.defaultDialect;
         // see if this packageDescr overrides the current default dialect
-        for (Iterator it = packageDescr.getAttributes().iterator(); it.hasNext();) {
-            AttributeDescr value = (AttributeDescr) it.next();
-            if ("dialect".equals( value.getName() )) {
+        for (AttributeDescr value : packageDescr.getAttributes()) {
+            if ("dialect".equals(value.getName())) {
                 dialectName = value.getValue();
                 break;
             }
@@ -1221,12 +1244,12 @@ public class PackageBuilder {
         if (cls.isPrimitive() || cls.isArray())
             return null;
         TypeDeclaration typeDeclaration = getCachedTypeDeclaration( cls );
-        if (typeDeclaration != null)
+        if (typeDeclaration != null) {
             return typeDeclaration;
+        }
         typeDeclaration = getExistingTypeDeclaration( cls );
         if (typeDeclaration != null) {
-            initTypeDeclaration( cls,
-                                 typeDeclaration );
+            initTypeDeclaration( cls, typeDeclaration );
             return typeDeclaration;
         }
 

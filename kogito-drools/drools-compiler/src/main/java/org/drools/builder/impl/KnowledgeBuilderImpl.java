@@ -15,6 +15,7 @@ import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.CompositeKnowledgeBuilder;
 import org.drools.compiler.PackageBuilder;
+import org.drools.core.util.Memento;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
@@ -22,19 +23,15 @@ import org.drools.io.impl.BaseResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
-    public PackageBuilder pkgBuilder;
+    private Memento<PackageBuilder> pkgBuilder;
 
-    public KnowledgeBuilderImpl() {
-        
-    }
-    
     public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
-        this.pkgBuilder = pkgBuilder;
+        this.pkgBuilder = new Memento<PackageBuilder>(pkgBuilder);
     }
 
     public void add(Resource resource, ResourceType type) {
         ResourceConfiguration resourceConfiguration = resource instanceof BaseResource ? ((BaseResource) resource).getConfiguration() : null;
-        pkgBuilder.addKnowledgeResource( resource, type, resourceConfiguration )  ;
+        add(resource, type, resourceConfiguration)  ;
     }
 
     public CompositeKnowledgeBuilder batch() {
@@ -44,15 +41,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void add(Resource resource,
                             ResourceType type,
                             ResourceConfiguration configuration) {
-        pkgBuilder.addKnowledgeResource( resource, type, configuration );
+        pkgBuilder.record();
+        getPackageBuilder().addKnowledgeResource( resource, type, configuration );
+    }
+
+    public void undo() {
+        pkgBuilder.undo();
     }
 
     public Collection<KnowledgePackage> getKnowledgePackages() {
-        if ( pkgBuilder.hasErrors() ) {
+        if ( getPackageBuilder().hasErrors() ) {
             return new ArrayList<KnowledgePackage>( 0 );
         }
 
-        Package[] pkgs = pkgBuilder.getPackages();
+        Package[] pkgs = getPackageBuilder().getPackages();
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
 
         for ( Package pkg : pkgs ) {
@@ -76,22 +78,22 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public boolean hasErrors() {
-        return this.pkgBuilder.hasErrors();
+        return getPackageBuilder().hasErrors();
     }
 
     public KnowledgeBuilderErrors getErrors() {
-        return this.pkgBuilder.getErrors();
+        return getPackageBuilder().getErrors();
     }
     
     public PackageBuilder getPackageBuilder() {
-        return this.pkgBuilder;
+        return pkgBuilder.get();
     }
 
     public KnowledgeBuilderResults getResults(ResultSeverity... severities) {
-        return this.pkgBuilder.getProblems(severities);
+        return getPackageBuilder().getProblems(severities);
     }
 
     public boolean hasResults(ResultSeverity... severities) {
-        return this.pkgBuilder.hasProblems(severities);
+        return getPackageBuilder().hasProblems(severities);
     }
 }

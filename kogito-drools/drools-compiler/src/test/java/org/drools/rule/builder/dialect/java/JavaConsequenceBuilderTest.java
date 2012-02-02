@@ -590,7 +590,7 @@ public class JavaConsequenceBuilderTest {
         String consequence = " System.out.println(\"this is a test\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
         assertNotNull( context.getRule().getConsequence() );
-        assertTrue( context.getRule().getNamedConsequences().isEmpty() );
+        assertFalse( context.getRule().hasNamedConsequences() );
         assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
         assertTrue( context.getRule().getConsequence() instanceof Consequence );
     }

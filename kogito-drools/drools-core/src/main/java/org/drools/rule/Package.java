@@ -239,6 +239,10 @@ public class Package
         return this.dialectRuntimeRegistry;
     }
 
+    public void setDialectRuntimeRegistry(DialectRuntimeRegistry dialectRuntimeRegistry) {
+        this.dialectRuntimeRegistry = dialectRuntimeRegistry;
+    }
+
     public void addImport( final ImportDeclaration importDecl ) {
         this.imports.put( importDecl.getTarget(),
                           importDecl );

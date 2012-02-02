@@ -156,7 +156,7 @@ public class MVELConsequenceBuilder
             if ( "default".equals( consequenceName ) ) {
                 context.getRule().setConsequence( expr );
             } else {
-                context.getRule().getNamedConsequences().put(consequenceName, expr);
+                context.getRule().addNamedConsequence(consequenceName, expr);
             }
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );

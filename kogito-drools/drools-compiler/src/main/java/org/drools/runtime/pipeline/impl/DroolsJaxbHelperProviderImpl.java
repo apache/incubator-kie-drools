@@ -170,7 +170,7 @@ public class DroolsJaxbHelperProviderImpl
                                 KnowledgeBuilder kbuilder,
                                 Options xjcOpts,
                                 String systemId) throws IOException {
-        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).pkgBuilder;
+        PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl) kbuilder).getPackageBuilder();
         return addXsdModel( resource, pkgBuilder, xjcOpts, systemId );
     }
 

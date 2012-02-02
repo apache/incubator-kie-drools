@@ -3,6 +3,7 @@ package org.drools.compiler;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
+import org.drools.core.util.Memento;
 import org.drools.io.Resource;
 import org.drools.io.impl.BaseResource;
 import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
@@ -19,13 +20,13 @@ import java.util.Map;
 
 public class CompositeKnowledgeBuilder {
 
-    private PackageBuilder pkgBuilder;
+    private Memento<PackageBuilder> pkgBuilder;
 
     private Map<ResourceType, List<ResourceDescr>> resources = new HashMap<ResourceType, List<ResourceDescr>>();
 
     public ResourceType currentType = null;
 
-    public CompositeKnowledgeBuilder(PackageBuilder pkgBuilder) {
+    public CompositeKnowledgeBuilder(Memento<PackageBuilder> pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
     }
 
@@ -58,18 +59,21 @@ public class CompositeKnowledgeBuilder {
     }
 
     public void build() {
-        buildPackages();
-        buildResources();
-        buildOthers();
+        pkgBuilder.record();
+        PackageBuilder currentBuilder = pkgBuilder.get();
+        buildPackages(currentBuilder);
+        buildResources(currentBuilder);
+        buildOthers(currentBuilder);
+        resources.clear();
     }
 
-    private void buildPackages() {
-        Collection<CompositePackageDescr> packages = buildPackageDescr();
-        buildTypeDeclarations(packages);
-        buildRules(packages);
+    private void buildPackages(PackageBuilder pkgBuilder) {
+        Collection<CompositePackageDescr> packages = buildPackageDescr(pkgBuilder);
+        buildTypeDeclarations(pkgBuilder, packages);
+        buildRules(pkgBuilder, packages);
     }
 
-    private void buildResources() {
+    private void buildResources(PackageBuilder pkgBuilder) {
         try {
             List<ResourceDescr> resourcesByType = resources.remove(ResourceType.DSL);
             if (resourcesByType != null) {
@@ -127,7 +131,7 @@ public class CompositeKnowledgeBuilder {
         }
     }
 
-    private void buildOthers() {
+    private void buildOthers(PackageBuilder pkgBuilder) {
         try {
             for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resources.entrySet()) {
                 for (ResourceDescr resourceDescr : entry.getValue()) {
@@ -141,7 +145,7 @@ public class CompositeKnowledgeBuilder {
         }
     }
 
-    private void buildRules(Collection<CompositePackageDescr> packages) {
+    private void buildRules(PackageBuilder pkgBuilder, Collection<CompositePackageDescr> packages) {
         for (PackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry(packageDescr.getNamespace());
             pkgBuilder.processOtherDeclarations(pkgRegistry, packageDescr);
@@ -149,7 +153,7 @@ public class CompositeKnowledgeBuilder {
         }
     }
 
-    private void buildTypeDeclarations(Collection<CompositePackageDescr> packages) {
+    private void buildTypeDeclarations(PackageBuilder pkgBuilder, Collection<CompositePackageDescr> packages) {
         for (PackageDescr packageDescr : packages) {
             for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
                 if (pkgBuilder.isEmpty( typeDeclarationDescr.getNamespace() )) {
@@ -161,7 +165,7 @@ public class CompositeKnowledgeBuilder {
 
         Map<String, List<PackageBuilder.TypeDefinition>> unresolvedTypes = new HashMap<String, List<PackageBuilder.TypeDefinition>>();
         for (PackageDescr packageDescr : packages) {
-            List<PackageBuilder.TypeDefinition> unresolvedTypesForPkg = buildTypeDeclarations(packageDescr);
+            List<PackageBuilder.TypeDefinition> unresolvedTypesForPkg = buildTypeDeclarations(pkgBuilder, packageDescr);
             if (unresolvedTypesForPkg != null) {
                 unresolvedTypes.put(packageDescr.getNamespace(), unresolvedTypesForPkg);
             }
@@ -178,7 +182,7 @@ public class CompositeKnowledgeBuilder {
         }
     }
 
-    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageDescr packageDescr) {
+    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageBuilder pkgBuilder, PackageDescr packageDescr) {
         PackageRegistry pkgRegistry = pkgBuilder.initPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return null;
@@ -188,7 +192,7 @@ public class CompositeKnowledgeBuilder {
         return pkgBuilder.processTypeDeclarations(pkgRegistry, packageDescr);
     }
 
-    private Collection<CompositePackageDescr> buildPackageDescr() {
+    private Collection<CompositePackageDescr> buildPackageDescr(PackageBuilder pkgBuilder) {
         Map<String, CompositePackageDescr> packages = new HashMap<String, CompositePackageDescr>();
         try {
             List<ResourceDescr> resourcesByType = resources.remove(ResourceType.DRL);

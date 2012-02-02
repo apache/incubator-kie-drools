@@ -231,7 +231,7 @@ public class TypeDeclarationMergingTest {
             fail( kbuilder.getErrors().toString() );
         }
         
-        PackageBuilder builder = ((KnowledgeBuilderImpl)kbuilder).pkgBuilder;
+        PackageBuilder builder = ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
         return builder;
         
     }

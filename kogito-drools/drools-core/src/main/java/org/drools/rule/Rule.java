@@ -598,8 +598,7 @@ public class Rule
             if ( "default".equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
-                getNamedConsequences().put( c.getName(),
-                                            c );
+                addNamedConsequence(c.getName(), c);
             }
 
         }
@@ -627,12 +626,19 @@ public class Rule
         return this.consequence;
     }
 
+    public boolean hasNamedConsequences() {
+        return namedConsequence != null && !namedConsequence.isEmpty();
+    }
+
     public Map<String, Consequence> getNamedConsequences() {
+        return this.namedConsequence;
+    }
+
+    public void addNamedConsequence(String name, Consequence consequence) {
         if ( this.namedConsequence == null ) {
             this.namedConsequence = new HashMap<String, Consequence>();
         }
-
-        return this.namedConsequence;
+        this.namedConsequence.put(name, consequence);
     }
 
     public long getLoadOrder() {
