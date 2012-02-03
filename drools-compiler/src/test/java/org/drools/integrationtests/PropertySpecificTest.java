@@ -453,6 +453,42 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(2, hero.getPosition());
     }
 
+    @Test(timeout = 5000)
+    public void testPropSpecOnPatternWithThis() throws Exception {
+        String rule = "package org.drools\n" +
+                "declare A\n" +
+                "    @propertySpecific\n" +
+                "    i : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "    @propertySpecific\n" +
+                "    a : A\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $b : B();\n" +
+                "    $a : A(this == $b.a);\n" +
+                "then\n" +
+                "    modify($b) { setA(null) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
+        Object factA = factTypeA.newInstance();
+        factTypeA.set( factA, "i", 1 );
+        ksession.insert( factA );
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        factTypeB.set( factB, "a", factA );
+        ksession.insert( factB );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
     @PropertySpecific
     public static class Hero {
         private boolean canMove;

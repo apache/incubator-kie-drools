@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.core.util.ClassUtils.*;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
+import static org.drools.core.util.StringUtils.skipBlanks;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
@@ -222,6 +223,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         String propertyName = propertyNameBuilder.toString();
         if (propertyName.equals("this")) {
+            cursor = skipBlanks(expression, cursor);
+            if (expression.charAt(cursor) != '.') {
+                return Long.MAX_VALUE;
+            }
+            propertyNameBuilder = new StringBuilder();
             extractFirstIdentifier(expression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
         }

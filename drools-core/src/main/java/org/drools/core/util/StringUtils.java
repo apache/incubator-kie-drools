@@ -1288,4 +1288,12 @@ public class StringUtils {
         }
         return i;
     }
+
+    public static int skipBlanks(String string, int start) {
+        int i = start;
+        while (i < string.length() && (string.charAt(i) == ' ' || string.charAt(i) == '\t')) {
+            i++;
+        }
+        return i;
+    }
 }
