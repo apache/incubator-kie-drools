@@ -1470,6 +1470,10 @@ After in *SolverConfig.xml:
         </forager>
       </localSearch>
 
+
+From 5.4.0.Beta2 to 5.4.0.CR1
+-----------------------------
+
 [MAJOR] An uninitialized planning entity should be allowed to be put into the working memory
 without causing a NullPointerException because a planning variable is still null.
 Before in *.java:
