@@ -883,7 +883,7 @@ public class DRLParser {
                                   fname );
 
             // type
-            String type = fieldType();
+            String type = type();
             if ( state.failed ) return;
             if ( state.backtracking == 0 ) field.type( type );
 
@@ -931,30 +931,6 @@ public class DRLParser {
         }
     }
 
-
-    /**
-     * fieldType := qualifiedIdentifier (LEFT_SQUARE RIGHT_SQUARE)?
-     */
-    private String fieldType( ) throws RecognitionException {
-        String type = qualifiedIdentifier();
-        if ( input.LA( 1 ) == DRLLexer.LEFT_SQUARE) {
-            match( input,
-                   DRLLexer.LEFT_SQUARE,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            match( input,
-                   DRLLexer.RIGHT_SQUARE,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return type;
-
-            type += "[]";
-        }
-        return type;
-    }
-    
 
     /* ------------------------------------------------------------------------------------------------
      *                         FUNCTION STATEMENT
