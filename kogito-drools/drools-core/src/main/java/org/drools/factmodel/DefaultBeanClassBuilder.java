@@ -1222,7 +1222,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                             "append",
                             Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
                                     new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
-                } else if ( BuildUtils.isArray( field.getTypeName() ) ) {
+                } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
 
 
                     mv.visitMethodInsn( INVOKESTATIC, 
