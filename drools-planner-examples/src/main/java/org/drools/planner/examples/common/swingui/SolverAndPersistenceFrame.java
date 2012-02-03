@@ -236,6 +236,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         progressBar.setStringPainted(solving);
         progressBar.setString(solving ? "Solving..." : null);
         showConstraintScoreMapDialogAction.setEnabled(!solving);
+        solutionPanel.setSolvingState(solving);
     }
 
     private class SolveAction extends AbstractAction {

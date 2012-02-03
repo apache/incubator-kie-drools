@@ -55,6 +55,10 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
         resetPanel(solution);
     }
 
+    public void setSolvingState(boolean solving) {
+        // Hook method
+    }
+
     public Dimension getPreferredScrollableViewportSize() {
         return PREFERRED_SCROLLABLE_VIEWPORT_SIZE;
     }

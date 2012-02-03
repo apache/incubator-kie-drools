@@ -69,4 +69,11 @@ public class City extends AbstractPersistable {
         return id.toString() + "-" + name;
     }
 
+    public String getSafeName() {
+        if (name == null) {
+            return id.toString();
+        }
+        return name;
+    }
+
 }

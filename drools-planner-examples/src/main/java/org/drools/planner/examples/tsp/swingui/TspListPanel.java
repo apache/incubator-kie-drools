@@ -22,11 +22,14 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.tsp.domain.Appearance;
+import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -54,6 +57,10 @@ public class TspListPanel extends JPanel {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
+        for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
+            JLabel domicileLabel = new JLabel(domicile.getCity().getSafeName());
+            add(domicileLabel);
+        }
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             JPanel visitPanel = new JPanel(new GridLayout(1, 2));
             JButton button = new JButton(new VisitAction(visit));
@@ -62,8 +69,8 @@ public class TspListPanel extends JPanel {
             if (visit.getPreviousAppearance() == null) {
                 distanceLabelString = "Unassigned";
             } else {
-                distanceLabelString = "Distance from previous: "
-                        + visit.getDistanceToPreviousAppearance();
+                distanceLabelString = "After " + visit.getPreviousAppearance().getCity().getSafeName()
+                        + " with distance " + visit.getDistanceToPreviousAppearance();
             }
             visitPanel.add(new JLabel(distanceLabelString));
             add(visitPanel);
@@ -75,28 +82,28 @@ public class TspListPanel extends JPanel {
         private Visit visit;
 
         public VisitAction(Visit visit) {
-            super(visit.getCity().toString());
+            super(visit.getCity().getSafeName());
             this.visit = visit;
         }
 
         public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
-//            TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
-//            JComboBox previousAppearanceListField = new JComboBox();
-//            for (Appearance previousAppearance : travelingSalesmanTour.getVisitList()) {
-//                previousAppearanceListField.addItem(previousAppearance);
-//            }
-//            for (Appearance previousAppearance : travelingSalesmanTour.getDomicileList()) {
-//                previousAppearanceListField.addItem(previousAppearance);
-//            }
-//            previousAppearanceListField.setSelectedItem(visit.getPreviousAppearance());
-//            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousAppearanceListField,
-//                    "Drive here after", JOptionPane.OK_CANCEL_OPTION);
-//            if (result == JOptionPane.OK_OPTION) {
-//                Appearance toAppearance = (Appearance) previousAppearanceListField.getSelectedItem();
-//                tspPanel.doMove(new SubTourChangeMove(visit, visit, toAppearance));
-//                tspPanel.getWorkflowFrame().resetScreen();
-//            }
+            TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
+            JComboBox previousAppearanceListField = new JComboBox();
+            for (Appearance previousAppearance : travelingSalesmanTour.getVisitList()) {
+                previousAppearanceListField.addItem(previousAppearance);
+            }
+            for (Appearance previousAppearance : travelingSalesmanTour.getDomicileList()) {
+                previousAppearanceListField.addItem(previousAppearance);
+            }
+            previousAppearanceListField.setSelectedItem(visit.getPreviousAppearance());
+            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousAppearanceListField,
+                    "Visit " + visit.getCity().getSafeName() + " after", JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                Appearance toAppearance = (Appearance) previousAppearanceListField.getSelectedItem();
+//                tspPanel.doMove(visit, toAppearance);
+                JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
+                tspPanel.getWorkflowFrame().resetScreen();
+            }
         }
 
     }

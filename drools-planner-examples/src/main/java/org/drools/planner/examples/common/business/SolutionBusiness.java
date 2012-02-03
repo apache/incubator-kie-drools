@@ -212,8 +212,12 @@ public class SolutionBusiness {
     }
 
     public void doMove(Move move) {
+        if (solver.isSolving()) {
+            logger.error("Not doing user move ({}) because the solver is solving.", move);
+            return;
+        }
         if (!move.isMoveDoable(solverScope.getWorkingMemory())) {
-            logger.info("Not doing user move ({}) because it is not doable.", move);
+            logger.warn("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         logger.info("Doing user move ({}).", move);

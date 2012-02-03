@@ -27,6 +27,7 @@ import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.drools.planner.examples.tsp.domain.Appearance;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
