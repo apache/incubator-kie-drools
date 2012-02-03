@@ -19,19 +19,15 @@ package org.drools.planner.examples.tsp.swingui;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.tsp.domain.Depot;
-import org.drools.planner.examples.tsp.domain.Journey;
-import org.drools.planner.examples.tsp.domain.Terminal;
+import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
@@ -58,47 +54,47 @@ public class TspListPanel extends JPanel {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        for (Journey journey : travelingSalesmanTour.getJourneyList()) {
-            JPanel journeyPanel = new JPanel(new GridLayout(1, 2));
-            JButton button = new JButton(new JourneyAction(journey));
-            journeyPanel.add(button);
+        for (Visit visit : travelingSalesmanTour.getVisitList()) {
+            JPanel visitPanel = new JPanel(new GridLayout(1, 2));
+            JButton button = new JButton(new VisitAction(visit));
+            visitPanel.add(button);
             String distanceLabelString;
-            if (journey.getPreviousTerminal() == null) {
+            if (visit.getPreviousTerminal() == null) {
                 distanceLabelString = "Unassigned";
             } else {
                 distanceLabelString = "Distance from previous: "
-                        + journey.getDistanceToPreviousTerminal();
+                        + visit.getDistanceToPreviousTerminal();
             }
-            journeyPanel.add(new JLabel(distanceLabelString));
-            add(journeyPanel);
+            visitPanel.add(new JLabel(distanceLabelString));
+            add(visitPanel);
         }
     }
 
-    private class JourneyAction extends AbstractAction {
+    private class VisitAction extends AbstractAction {
 
-        private Journey journey;
+        private Visit visit;
 
-        public JourneyAction(Journey journey) {
-            super(journey.getCity().toString());
-            this.journey = journey;
+        public VisitAction(Visit visit) {
+            super(visit.getCity().toString());
+            this.visit = visit;
         }
 
         public void actionPerformed(ActionEvent e) {
             JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
 //            TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
 //            JComboBox previousTerminalListField = new JComboBox();
-//            for (Terminal previousTerminal : travelingSalesmanTour.getJourneyList()) {
+//            for (Terminal previousTerminal : travelingSalesmanTour.getVisitList()) {
 //                previousTerminalListField.addItem(previousTerminal);
 //            }
 //            for (Terminal previousTerminal : travelingSalesmanTour.getDepotList()) {
 //                previousTerminalListField.addItem(previousTerminal);
 //            }
-//            previousTerminalListField.setSelectedItem(journey.getPreviousTerminal());
+//            previousTerminalListField.setSelectedItem(visit.getPreviousTerminal());
 //            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousTerminalListField,
 //                    "Drive here after", JOptionPane.OK_CANCEL_OPTION);
 //            if (result == JOptionPane.OK_OPTION) {
 //                Terminal toTerminal = (Terminal) previousTerminalListField.getSelectedItem();
-//                tspPanel.doMove(new SubTourChangeMove(journey, journey, toTerminal));
+//                tspPanel.doMove(new SubTourChangeMove(visit, visit, toTerminal));
 //                tspPanel.getWorkflowFrame().resetScreen();
 //            }
         }

@@ -37,7 +37,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     private List<City> cityList;
     private List<Depot> depotList;
 
-    private List<Journey> journeyList;
+    private List<Visit> visitList;
 
     private SimpleScore score;
 
@@ -66,12 +66,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     }
 
     @PlanningEntityCollectionProperty
-    public List<Journey> getJourneyList() {
-        return journeyList;
+    public List<Visit> getVisitList() {
+        return visitList;
     }
 
-    public void setJourneyList(List<Journey> journeyList) {
-        this.journeyList = journeyList;
+    public void setVisitList(List<Visit> visitList) {
+        this.visitList = visitList;
     }
 
     public SimpleScore getScore() {
@@ -86,12 +86,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
         facts.addAll(depotList);
-        // Do not add the planning entity's (journeyList) because that will be done automatically
+        // Do not add the planning entity's (visitList) because that will be done automatically
         return facts;
     }
 
     /**
-     * Clone will only deep copy the {@link #journeyList}.
+     * Clone will only deep copy the {@link #visitList}.
      */
     public TravelingSalesmanTour cloneSolution() {
         TravelingSalesmanTour clone = new TravelingSalesmanTour();
@@ -99,23 +99,23 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         clone.name = name;
         clone.cityList = cityList;
         clone.depotList = depotList;
-        List<Journey> clonedJourneyList = new ArrayList<Journey>(journeyList.size());
-        Map<Long, Journey> idToClonedJourneyMap = new HashMap<Long, Journey>(
-                journeyList.size());
-        for (Journey journey : journeyList) {
-            Journey clonedJourney = journey.clone();
-            clonedJourneyList.add(clonedJourney);
-            idToClonedJourneyMap.put(clonedJourney.getId(), clonedJourney);
+        List<Visit> clonedVisitList = new ArrayList<Visit>(visitList.size());
+        Map<Long, Visit> idToClonedVisitMap = new HashMap<Long, Visit>(
+                visitList.size());
+        for (Visit visit : visitList) {
+            Visit clonedVisit = visit.clone();
+            clonedVisitList.add(clonedVisit);
+            idToClonedVisitMap.put(clonedVisit.getId(), clonedVisit);
         }
         // Fix: Previous should point to the new clones instead of the old instances
-        for (Journey clonedJourney : clonedJourneyList) {
-            Terminal previousTerminal = clonedJourney.getPreviousTerminal();
-            if (previousTerminal instanceof Journey) {
-                Long previousJourneyId = ((Journey) previousTerminal).getId();
-                clonedJourney.setPreviousTerminal(idToClonedJourneyMap.get(previousJourneyId));
+        for (Visit clonedVisit : clonedVisitList) {
+            Terminal previousTerminal = clonedVisit.getPreviousTerminal();
+            if (previousTerminal instanceof Visit) {
+                Long previousVisitId = ((Visit) previousTerminal).getId();
+                clonedVisit.setPreviousTerminal(idToClonedVisitMap.get(previousVisitId));
             }
         }
-        clone.journeyList = clonedJourneyList;
+        clone.visitList = clonedVisitList;
         clone.score = score;
         return clone;
     }
@@ -128,14 +128,14 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
             return false;
         } else {
             TravelingSalesmanTour other = (TravelingSalesmanTour) o;
-            if (journeyList.size() != other.journeyList.size()) {
+            if (visitList.size() != other.visitList.size()) {
                 return false;
             }
-            for (Iterator<Journey> it = journeyList.iterator(), otherIt = other.journeyList.iterator(); it.hasNext();) {
-                Journey journey = it.next();
-                Journey otherJourney = otherIt.next();
+            for (Iterator<Visit> it = visitList.iterator(), otherIt = other.visitList.iterator(); it.hasNext();) {
+                Visit visit = it.next();
+                Visit otherVisit = otherIt.next();
                 // Notice: we don't use equals()
-                if (!journey.solutionEquals(otherJourney)) {
+                if (!visit.solutionEquals(otherVisit)) {
                     return false;
                 }
             }
@@ -145,9 +145,9 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Journey journey : journeyList) {
+        for (Visit visit : visitList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(journey.solutionHashCode());
+            hashCodeBuilder.append(visit.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

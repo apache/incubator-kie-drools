@@ -27,8 +27,8 @@ import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-@XStreamAlias("Journey")
-public class Journey extends AbstractPersistable implements Terminal {
+@XStreamAlias("Visit")
+public class Visit extends AbstractPersistable implements Terminal {
 
     private City city; // the destinationCity
     
@@ -44,10 +44,9 @@ public class Journey extends AbstractPersistable implements Terminal {
     }
 
     @PlanningVariable(triggerChainCorrection = true)
-//    @PlanningVariable(listenerClasses = {PreviousJourneyListener.class}) TODO
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "journeyList",
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
     public Terminal getPreviousTerminal() {
         return previousTerminal;
@@ -76,8 +75,8 @@ public class Journey extends AbstractPersistable implements Terminal {
      * Warning: previous and next do not point to new clones.
      * @return never null
      */
-    public Journey clone() {
-        Journey clone = new Journey();
+    public Visit clone() {
+        Visit clone = new Visit();
         clone.id = id;
         clone.city = city;
         clone.previousTerminal = previousTerminal;
@@ -92,8 +91,8 @@ public class Journey extends AbstractPersistable implements Terminal {
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof Journey) {
-            Journey other = (Journey) o;
+        } else if (o instanceof Visit) {
+            Visit other = (Visit) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(city, other.city) // TODO performance leak: not needed?

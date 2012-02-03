@@ -31,7 +31,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Depot;
-import org.drools.planner.examples.tsp.domain.Journey;
+import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
@@ -64,7 +64,7 @@ public class TspWorldPanel extends JPanel {
                 if (translator != null) {
                     double longitude = translator.translateXToLongitude(e.getX());
                     double latitude = translator.translateYToLatitude(e.getY());
-                    TspWorldPanel.this.tspPanel.insertCityAndJourney(longitude, latitude);
+                    TspWorldPanel.this.tspPanel.insertCityAndVisit(longitude, latitude);
                 }
             }
         });
@@ -111,19 +111,19 @@ public class TspWorldPanel extends JPanel {
             g.fillRect(x - 2, y - 2, 5, 5);
         }
         g.setColor(TangoColors.CHOCOLATE_1);
-        for (Journey journey : travelingSalesmanTour.getJourneyList()) {
-            if (journey.getPreviousTerminal() != null) {
-                City previousCity = journey.getPreviousTerminal().getCity();
+        for (Visit visit : travelingSalesmanTour.getVisitList()) {
+            if (visit.getPreviousTerminal() != null) {
+                City previousCity = visit.getPreviousTerminal().getCity();
                 int previousX = translator.translateLongitudeToX(previousCity.getLongitude());
                 int previousY = translator.translateLatitudeToY(previousCity.getLatitude());
-                City city = journey.getCity();
+                City city = visit.getCity();
                 int x = translator.translateLongitudeToX(city.getLongitude());
                 int y = translator.translateLatitudeToY(city.getLatitude());
                 g.drawLine(previousX, previousY, x, y);
                 // Back to depot line
                 boolean needsBackToDepotLineDraw = true;
-                for (Journey chainedJourney : travelingSalesmanTour.getJourneyList()) {
-                    if (chainedJourney.getPreviousTerminal() == journey) {
+                for (Visit chainedVisit : travelingSalesmanTour.getVisitList()) {
+                    if (chainedVisit.getPreviousTerminal() == visit) {
                         needsBackToDepotLineDraw = false;
                         break;
                     }

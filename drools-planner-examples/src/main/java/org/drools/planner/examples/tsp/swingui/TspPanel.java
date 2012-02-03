@@ -17,24 +17,18 @@
 package org.drools.planner.examples.tsp.swingui;
 
 import java.awt.BorderLayout;
-import java.util.Iterator;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
-import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.Journey;
+import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
@@ -79,7 +73,7 @@ public class TspPanel extends SolutionPanel {
         return solverAndPersistenceFrame;
     }
 
-    public void insertCityAndJourney(double longitude, double latitude) {
+    public void insertCityAndVisit(double longitude, double latitude) {
         final City newCity = new City();
         Long cityId = 0L;
         for (City city : getTravelingSalesmanTour().getCityList()) {
@@ -97,10 +91,10 @@ public class TspPanel extends SolutionPanel {
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
                 solution.getCityList().add(newCity);
                 workingMemory.insert(newCity);
-                Journey newJourney = new Journey();
-                newJourney.setId(newCity.getId());
-                newJourney.setCity(newCity);
-                solution.getJourneyList().add(newJourney);
+                Visit newVisit = new Visit();
+                newVisit.setId(newCity.getId());
+                newVisit.setCity(newCity);
+                solution.getVisitList().add(newVisit);
             }
         });
         updatePanel(solutionBusiness.getSolution());

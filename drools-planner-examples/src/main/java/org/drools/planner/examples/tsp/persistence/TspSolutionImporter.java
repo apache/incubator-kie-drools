@@ -25,7 +25,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Depot;
-import org.drools.planner.examples.tsp.domain.Journey;
+import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
@@ -61,7 +61,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             readHeaders();
             readCityList();
             readConstantLine("EOF");
-            createJourneyList();
+            createVisitList();
             logger.info("TravelingSalesmanTour with {} cities.",
                     travelingSalesmanTour.getCityList().size());
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
@@ -100,11 +100,11 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             travelingSalesmanTour.setCityList(cityList);
         }
 
-        private void createJourneyList() {
+        private void createVisitList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
             int depotListSize = 1;
             List<Depot> depotList = new ArrayList<Depot>(depotListSize);
-            List<Journey> journeyList = new ArrayList<Journey>(cityList.size() - depotListSize);
+            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - depotListSize);
             int count = 0;
             for (City city : cityList) {
                 if (count < depotListSize) {
@@ -113,16 +113,16 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                     depot.setCity(city);
                     depotList.add(depot);
                 } else {
-                    Journey journey = new Journey();
-                    journey.setId(city.getId());
-                    journey.setCity(city);
+                    Visit visit = new Visit();
+                    visit.setId(city.getId());
+                    visit.setCity(city);
                     // Notice that we leave the PlanningVariable properties on null
-                    journeyList.add(journey);
+                    visitList.add(visit);
                 }
                 count++;
             }
             travelingSalesmanTour.setDepotList(depotList);
-            travelingSalesmanTour.setJourneyList(journeyList);
+            travelingSalesmanTour.setVisitList(visitList);
         }
 
         private BigInteger factorial(int base) {
