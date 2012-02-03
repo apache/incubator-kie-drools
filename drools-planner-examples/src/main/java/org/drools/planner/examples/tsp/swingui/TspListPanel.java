@@ -86,7 +86,7 @@ public class TspListPanel extends JPanel {
 //            for (Terminal previousTerminal : travelingSalesmanTour.getVisitList()) {
 //                previousTerminalListField.addItem(previousTerminal);
 //            }
-//            for (Terminal previousTerminal : travelingSalesmanTour.getDepotList()) {
+//            for (Terminal previousTerminal : travelingSalesmanTour.getDomicileList()) {
 //                previousTerminalListField.addItem(previousTerminal);
 //            }
 //            previousTerminalListField.setSelectedItem(visit.getPreviousTerminal());

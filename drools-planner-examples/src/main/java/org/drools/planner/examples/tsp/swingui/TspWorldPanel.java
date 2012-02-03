@@ -30,7 +30,7 @@ import javax.swing.JPanel;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.Depot;
+import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -105,9 +105,9 @@ public class TspWorldPanel extends JPanel {
             g.fillRect(x - 1, y - 1, 3, 3);
         }
         g.setColor(TangoColors.SCARLET_2);
-        for (Depot depot : travelingSalesmanTour.getDepotList()) {
-            int x = translator.translateLongitudeToX(depot.getCity().getLongitude());
-            int y = translator.translateLatitudeToY(depot.getCity().getLatitude());
+        for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
+            int x = translator.translateLongitudeToX(domicile.getCity().getLongitude());
+            int y = translator.translateLatitudeToY(domicile.getCity().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
         }
         g.setColor(TangoColors.CHOCOLATE_1);
@@ -120,21 +120,21 @@ public class TspWorldPanel extends JPanel {
                 int x = translator.translateLongitudeToX(city.getLongitude());
                 int y = translator.translateLatitudeToY(city.getLatitude());
                 g.drawLine(previousX, previousY, x, y);
-                // Back to depot line
-                boolean needsBackToDepotLineDraw = true;
+                // Back to domicile line
+                boolean needsBackToDomicileLineDraw = true;
                 for (Visit chainedVisit : travelingSalesmanTour.getVisitList()) {
                     if (chainedVisit.getPreviousTerminal() == visit) {
-                        needsBackToDepotLineDraw = false;
+                        needsBackToDomicileLineDraw = false;
                         break;
                     }
                 }
-                if (needsBackToDepotLineDraw) {
-                    // TODO support more than 1 depot
-                    Depot depot = travelingSalesmanTour.getDepotList().get(0);
-                    City depotCity = depot.getCity();
-                    int depotX = translator.translateLongitudeToX(depotCity.getLongitude());
-                    int depotY = translator.translateLatitudeToY(depotCity.getLatitude());
-                    g.drawLine(x, y,depotX, depotY);
+                if (needsBackToDomicileLineDraw) {
+                    // TODO support more than 1 domicile
+                    Domicile domicile = travelingSalesmanTour.getDomicileList().get(0);
+                    City domicileCity = domicile.getCity();
+                    int domicileX = translator.translateLongitudeToX(domicileCity.getLongitude());
+                    int domicileY = translator.translateLatitudeToY(domicileCity.getLatitude());
+                    g.drawLine(x, y,domicileX, domicileY);
                 }
             }
         }

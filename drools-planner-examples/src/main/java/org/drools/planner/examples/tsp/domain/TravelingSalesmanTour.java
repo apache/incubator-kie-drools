@@ -35,7 +35,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
 
     private String name;
     private List<City> cityList;
-    private List<Depot> depotList;
+    private List<Domicile> domicileList;
 
     private List<Visit> visitList;
 
@@ -57,12 +57,12 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.cityList = cityList;
     }
 
-    public List<Depot> getDepotList() {
-        return depotList;
+    public List<Domicile> getDomicileList() {
+        return domicileList;
     }
 
-    public void setDepotList(List<Depot> depotList) {
-        this.depotList = depotList;
+    public void setDomicileList(List<Domicile> domicileList) {
+        this.domicileList = domicileList;
     }
 
     @PlanningEntityCollectionProperty
@@ -85,7 +85,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
-        facts.addAll(depotList);
+        facts.addAll(domicileList);
         // Do not add the planning entity's (visitList) because that will be done automatically
         return facts;
     }
@@ -98,7 +98,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         clone.id = id;
         clone.name = name;
         clone.cityList = cityList;
-        clone.depotList = depotList;
+        clone.domicileList = domicileList;
         List<Visit> clonedVisitList = new ArrayList<Visit>(visitList.size());
         Map<Long, Visit> idToClonedVisitMap = new HashMap<Long, Visit>(
                 visitList.size());

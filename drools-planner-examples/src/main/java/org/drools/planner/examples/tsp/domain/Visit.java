@@ -45,7 +45,7 @@ public class Visit extends AbstractPersistable implements Terminal {
 
     @PlanningVariable(triggerChainCorrection = true)
     @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "depotList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
     public Terminal getPreviousTerminal() {

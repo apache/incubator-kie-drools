@@ -22,7 +22,7 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.Depot;
+import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -41,15 +41,15 @@ rule "distanceToPreviousTerminal"
                 $visit));
 end
 
-rule "distanceFromLastVisitToDepot"
+rule "distanceFromLastVisitToDomicile"
     when
         $visit : Visit(previousTerminal != null)
         not Visit (previousTerminal == $visit)
-        $depot : Depot()
+        $domicile : Domicile()
     then
-        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDepot", ConstraintType.NEGATIVE_SOFT,
-                $visit.getDistanceTo($depot),
-                $visit, $depot));
+        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.NEGATIVE_SOFT,
+                $visit.getDistanceTo($domicile),
+                $visit, $domicile));
 end
 
 // ############################################################################

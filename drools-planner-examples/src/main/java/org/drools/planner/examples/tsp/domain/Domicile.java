@@ -19,8 +19,8 @@ package org.drools.planner.examples.tsp.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("Depot")
-public class Depot extends AbstractPersistable implements Terminal {
+@XStreamAlias("Domicile")
+public class Domicile extends AbstractPersistable implements Terminal {
 
     private City city;
 

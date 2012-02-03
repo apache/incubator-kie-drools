@@ -24,7 +24,7 @@ import java.util.List;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.Depot;
+import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
@@ -102,16 +102,16 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
 
         private void createVisitList() {
             List<City> cityList = travelingSalesmanTour.getCityList();
-            int depotListSize = 1;
-            List<Depot> depotList = new ArrayList<Depot>(depotListSize);
-            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - depotListSize);
+            int domicileListSize = 1;
+            List<Domicile> domicileList = new ArrayList<Domicile>(domicileListSize);
+            List<Visit> visitList = new ArrayList<Visit>(cityList.size() - domicileListSize);
             int count = 0;
             for (City city : cityList) {
-                if (count < depotListSize) {
-                    Depot depot = new Depot();
-                    depot.setId(city.getId());
-                    depot.setCity(city);
-                    depotList.add(depot);
+                if (count < domicileListSize) {
+                    Domicile domicile = new Domicile();
+                    domicile.setId(city.getId());
+                    domicile.setCity(city);
+                    domicileList.add(domicile);
                 } else {
                     Visit visit = new Visit();
                     visit.setId(city.getId());
@@ -121,7 +121,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                 }
                 count++;
             }
-            travelingSalesmanTour.setDepotList(depotList);
+            travelingSalesmanTour.setDomicileList(domicileList);
             travelingSalesmanTour.setVisitList(visitList);
         }
 
