@@ -57,6 +57,11 @@ public class TspPanel extends SolutionPanel {
         return false;
     }
 
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
+    }
+
     public TravelingSalesmanTour getTravelingSalesmanTour() {
         return (TravelingSalesmanTour) solutionBusiness.getSolution();
     }

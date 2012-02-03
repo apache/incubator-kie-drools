@@ -180,7 +180,8 @@ public class SolverAndPersistenceFrame extends JFrame {
         terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
         terminateSolvingEarlyAction.setEnabled(false);
         panel.add(new JButton(terminateSolvingEarlyAction));
-        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving", false);
+        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
+                solutionPanel.isRefreshScreenDuringSolving());
         panel.add(refreshScreenDuringSolvingCheckBox);
         openAction = new OpenAction();
         openAction.setEnabled(true);

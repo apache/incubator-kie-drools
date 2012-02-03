@@ -49,6 +49,10 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
         return true;
     }
 
+    public boolean isRefreshScreenDuringSolving() {
+        return false;
+    }
+
     public abstract void resetPanel(Solution solution);
 
     public void updatePanel(Solution solution) {

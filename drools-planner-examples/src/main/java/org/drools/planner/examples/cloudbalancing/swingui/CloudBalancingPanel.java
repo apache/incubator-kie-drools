@@ -98,6 +98,11 @@ public class CloudBalancingPanel extends SolutionPanel {
         return computersPanel;
     }
 
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
+    }
+
     private CloudBalance getCloudBalance() {
         return (CloudBalance) solutionBusiness.getSolution();
     }
