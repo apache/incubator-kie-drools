@@ -5,242 +5,242 @@
     <City id="3">
       <id>1</id>
       <name>Brussels</name>
-      <latitude>50.79714</latitude>
-      <longitude>4.361572</longitude>
+      <latitude>50797.14</latitude>
+      <longitude>4361.572</longitude>
     </City>
     <City id="4">
       <id>2</id>
       <name>Dublin</name>
-      <latitude>53.309435</latitude>
-      <longitude>-6.28418</longitude>
+      <latitude>53309.435</latitude>
+      <longitude>-6284.18</longitude>
     </City>
     <City id="5">
       <id>3</id>
       <name>London</name>
-      <latitude>51.465872</latitude>
-      <longitude>-0.131836</longitude>
+      <latitude>51465.872</latitude>
+      <longitude>-131.836</longitude>
     </City>
     <City id="6">
       <id>4</id>
       <name>Paris</name>
-      <latitude>48.797698</latitude>
-      <longitude>2.351074</longitude>
+      <latitude>48797.698</latitude>
+      <longitude>2351.074</longitude>
     </City>
     <City id="7">
       <id>5</id>
       <name>Reykjavik</name>
-      <latitude>64.133219</latitude>
-      <longitude>-21.886139</longitude>
+      <latitude>64133.219</latitude>
+      <longitude>-21886.139</longitude>
     </City>
     <City id="8">
       <id>6</id>
       <name>Luxembourg</name>
-      <latitude>49.537568</latitude>
-      <longitude>6.130371</longitude>
+      <latitude>49537.568</latitude>
+      <longitude>6130.371</longitude>
     </City>
     <City id="9">
       <id>7</id>
       <name>Amsterdam</name>
-      <latitude>52.32012</latitude>
-      <longitude>4.888916</longitude>
+      <latitude>52320.12</latitude>
+      <longitude>4888.916</longitude>
     </City>
     <City id="10">
       <id>8</id>
       <name>Berlin</name>
-      <latitude>52.480996</latitude>
-      <longitude>13.414307</longitude>
+      <latitude>52480.996</latitude>
+      <longitude>13414.307</longitude>
     </City>
     <City id="11">
       <id>9</id>
       <name>Copenhagen</name>
-      <latitude>55.620139</latitude>
-      <longitude>12.579346</longitude>
+      <latitude>55620.139</latitude>
+      <longitude>12579.346</longitude>
     </City>
     <City id="12">
       <id>10</id>
       <name>Oslo</name>
-      <latitude>59.876442</latitude>
-      <longitude>10.766602</longitude>
+      <latitude>59876.442</latitude>
+      <longitude>10766.602</longitude>
     </City>
     <City id="13">
       <id>11</id>
       <name>Stockholm</name>
-      <latitude>59.292446</latitude>
-      <longitude>18.061523</longitude>
+      <latitude>59292.446</latitude>
+      <longitude>18061.523</longitude>
     </City>
     <City id="14">
       <id>12</id>
       <name>Helsinki</name>
-      <latitude>60.134576</latitude>
-      <longitude>24.949951</longitude>
+      <latitude>60134.576</latitude>
+      <longitude>24949.951</longitude>
     </City>
     <City id="15">
       <id>13</id>
       <name>Tallinn</name>
-      <latitude>59.363808</latitude>
-      <longitude>24.763184</longitude>
+      <latitude>59363.808</latitude>
+      <longitude>24763.184</longitude>
     </City>
     <City id="16">
       <id>14</id>
       <name>Riga</name>
-      <latitude>56.845768</latitude>
-      <longitude>24.082031</longitude>
+      <latitude>56845.768</latitude>
+      <longitude>24082.031</longitude>
     </City>
     <City id="17">
       <id>15</id>
       <name>Vilnius</name>
-      <latitude>54.581401</latitude>
-      <longitude>25.268555</longitude>
+      <latitude>54581.401</latitude>
+      <longitude>25268.555</longitude>
     </City>
     <City id="18">
       <id>16</id>
       <name>Minsk</name>
-      <latitude>53.810166</latitude>
-      <longitude>27.553711</longitude>
+      <latitude>53810.166</latitude>
+      <longitude>27553.711</longitude>
     </City>
     <City id="19">
       <id>17</id>
       <name>Warsaw</name>
-      <latitude>52.129891</latitude>
-      <longitude>21.005859</longitude>
+      <latitude>52129.891</latitude>
+      <longitude>21005.859</longitude>
     </City>
     <City id="20">
       <id>18</id>
       <name>Moscow</name>
-      <latitude>55.661888</latitude>
-      <longitude>37.617188</longitude>
+      <latitude>55661.888</latitude>
+      <longitude>37617.188</longitude>
     </City>
     <City id="21">
       <id>19</id>
       <name>Kiev</name>
-      <latitude>50.355742</latitude>
-      <longitude>30.541992</longitude>
+      <latitude>50355.742</latitude>
+      <longitude>30541.992</longitude>
     </City>
     <City id="22">
       <id>20</id>
       <name>Chisinau</name>
-      <latitude>46.916253</latitude>
-      <longitude>28.828125</longitude>
+      <latitude>46916.253</latitude>
+      <longitude>28828.125</longitude>
     </City>
     <City id="23">
       <id>21</id>
       <name>Bucharest</name>
-      <latitude>44.319656</latitude>
-      <longitude>26.05957</longitude>
+      <latitude>44319.656</latitude>
+      <longitude>26059.57</longitude>
     </City>
     <City id="24">
       <id>22</id>
       <name>Sofia</name>
-      <latitude>42.58113</latitude>
-      <longitude>23.312988</longitude>
+      <latitude>42581.13</latitude>
+      <longitude>23312.988</longitude>
     </City>
     <City id="25">
       <id>23</id>
       <name>Istanbul</name>
-      <latitude>40.892477</latitude>
-      <longitude>28.981934</longitude>
+      <latitude>40892.477</latitude>
+      <longitude>28981.934</longitude>
     </City>
     <City id="26">
       <id>24</id>
       <name>Athens</name>
-      <latitude>37.852881</latitude>
-      <longitude>23.730469</longitude>
+      <latitude>37852.881</latitude>
+      <longitude>23730.469</longitude>
     </City>
     <City id="27">
       <id>25</id>
       <name>Nicosia</name>
-      <latitude>35.099537</latitude>
-      <longitude>33.365479</longitude>
+      <latitude>35099.537</latitude>
+      <longitude>33365.479</longitude>
     </City>
     <City id="28">
       <id>26</id>
       <name>Tirana</name>
-      <latitude>41.283861</latitude>
-      <longitude>19.80835</longitude>
+      <latitude>41283.861</latitude>
+      <longitude>19808.35</longitude>
     </City>
     <City id="29">
       <id>27</id>
       <name>Skopje</name>
-      <latitude>41.949141</latitude>
-      <longitude>21.456299</longitude>
+      <latitude>41949.141</latitude>
+      <longitude>21456.299</longitude>
     </City>
     <City id="30">
       <id>28</id>
       <name>Podgorica</name>
-      <latitude>42.38073</latitude>
-      <longitude>19.281006</longitude>
+      <latitude>42380.73</latitude>
+      <longitude>19281.006</longitude>
     </City>
     <City id="31">
       <id>29</id>
       <name>Belgrade</name>
-      <latitude>44.752455</latitude>
-      <longitude>20.456543</longitude>
+      <latitude>44752.455</latitude>
+      <longitude>20456.543</longitude>
     </City>
     <City id="32">
       <id>30</id>
       <name>Sarajevo</name>
-      <latitude>43.784843</latitude>
-      <longitude>18.347168</longitude>
+      <latitude>43784.843</latitude>
+      <longitude>18347.168</longitude>
     </City>
     <City id="33">
       <id>31</id>
       <name>Zagreb</name>
-      <latitude>45.757815</latitude>
-      <longitude>15.974121</longitude>
+      <latitude>45757.815</latitude>
+      <longitude>15974.121</longitude>
     </City>
     <City id="34">
       <id>32</id>
       <name>Ljubljana</name>
-      <latitude>45.994926</latitude>
-      <longitude>14.490967</longitude>
+      <latitude>45994.926</latitude>
+      <longitude>14490.967</longitude>
     </City>
     <City id="35">
       <id>33</id>
       <name>Rome</name>
-      <latitude>41.84283</latitude>
-      <longitude>12.491455</longitude>
+      <latitude>41842.83</latitude>
+      <longitude>12491.455</longitude>
     </City>
     <City id="36">
       <id>34</id>
       <name>Madrid</name>
-      <latitude>40.369427</latitude>
-      <longitude>-3.691406</longitude>
+      <latitude>40369.427</latitude>
+      <longitude>-3691.406</longitude>
     </City>
     <City id="37">
       <id>35</id>
       <name>Lisbon</name>
-      <latitude>38.64891</latitude>
-      <longitude>-9.140625</longitude>
+      <latitude>38648.91</latitude>
+      <longitude>-9140.625</longitude>
     </City>
     <City id="38">
       <id>36</id>
       <name>Bern</name>
-      <latitude>46.895737</latitude>
-      <longitude>7.437744</longitude>
+      <latitude>46895.737</latitude>
+      <longitude>7437.744</longitude>
     </City>
     <City id="39">
       <id>37</id>
       <name>Vienna</name>
-      <latitude>48.142143</latitude>
-      <longitude>16.380615</longitude>
+      <latitude>48142.143</latitude>
+      <longitude>16380.615</longitude>
     </City>
     <City id="40">
       <id>38</id>
       <name>Prague</name>
-      <latitude>50.066778</latitude>
-      <longitude>14.419556</longitude>
+      <latitude>50066.778</latitude>
+      <longitude>14419.556</longitude>
     </City>
     <City id="41">
       <id>39</id>
       <name>Bratislava</name>
-      <latitude>48.098138</latitude>
-      <longitude>17.105713</longitude>
+      <latitude>48098.138</latitude>
+      <longitude>17105.713</longitude>
     </City>
     <City id="42">
       <id>40</id>
       <name>Budapest</name>
-      <latitude>47.440969</latitude>
-      <longitude>19.039307</longitude>
+      <latitude>47440.969</latitude>
+      <longitude>19039.307</longitude>
     </City>
   </cityList>
   <domicileList id="43">

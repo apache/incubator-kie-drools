@@ -1,0 +1,452 @@
+<TravelingSalesmanTour id="1">
+  <id>0</id>
+  <name>europe40</name>
+  <cityList id="2">
+    <City id="3">
+      <id>1</id>
+      <name>Brussels</name>
+      <latitude>50797.14</latitude>
+      <longitude>4361.572</longitude>
+    </City>
+    <City id="4">
+      <id>2</id>
+      <name>Dublin</name>
+      <latitude>53309.435</latitude>
+      <longitude>-6284.18</longitude>
+    </City>
+    <City id="5">
+      <id>3</id>
+      <name>London</name>
+      <latitude>51465.872</latitude>
+      <longitude>-131.836</longitude>
+    </City>
+    <City id="6">
+      <id>4</id>
+      <name>Paris</name>
+      <latitude>48797.698</latitude>
+      <longitude>2351.074</longitude>
+    </City>
+    <City id="7">
+      <id>5</id>
+      <name>Reykjavik</name>
+      <latitude>64133.219</latitude>
+      <longitude>-21886.139</longitude>
+    </City>
+    <City id="8">
+      <id>6</id>
+      <name>Luxembourg</name>
+      <latitude>49537.568</latitude>
+      <longitude>6130.371</longitude>
+    </City>
+    <City id="9">
+      <id>7</id>
+      <name>Amsterdam</name>
+      <latitude>52320.12</latitude>
+      <longitude>4888.916</longitude>
+    </City>
+    <City id="10">
+      <id>8</id>
+      <name>Berlin</name>
+      <latitude>52480.996</latitude>
+      <longitude>13414.307</longitude>
+    </City>
+    <City id="11">
+      <id>9</id>
+      <name>Copenhagen</name>
+      <latitude>55620.139</latitude>
+      <longitude>12579.346</longitude>
+    </City>
+    <City id="12">
+      <id>10</id>
+      <name>Oslo</name>
+      <latitude>59876.442</latitude>
+      <longitude>10766.602</longitude>
+    </City>
+    <City id="13">
+      <id>11</id>
+      <name>Stockholm</name>
+      <latitude>59292.446</latitude>
+      <longitude>18061.523</longitude>
+    </City>
+    <City id="14">
+      <id>12</id>
+      <name>Helsinki</name>
+      <latitude>60134.576</latitude>
+      <longitude>24949.951</longitude>
+    </City>
+    <City id="15">
+      <id>13</id>
+      <name>Tallinn</name>
+      <latitude>59363.808</latitude>
+      <longitude>24763.184</longitude>
+    </City>
+    <City id="16">
+      <id>14</id>
+      <name>Riga</name>
+      <latitude>56845.768</latitude>
+      <longitude>24082.031</longitude>
+    </City>
+    <City id="17">
+      <id>15</id>
+      <name>Vilnius</name>
+      <latitude>54581.401</latitude>
+      <longitude>25268.555</longitude>
+    </City>
+    <City id="18">
+      <id>16</id>
+      <name>Minsk</name>
+      <latitude>53810.166</latitude>
+      <longitude>27553.711</longitude>
+    </City>
+    <City id="19">
+      <id>17</id>
+      <name>Warsaw</name>
+      <latitude>52129.891</latitude>
+      <longitude>21005.859</longitude>
+    </City>
+    <City id="20">
+      <id>18</id>
+      <name>Moscow</name>
+      <latitude>55661.888</latitude>
+      <longitude>37617.188</longitude>
+    </City>
+    <City id="21">
+      <id>19</id>
+      <name>Kiev</name>
+      <latitude>50355.742</latitude>
+      <longitude>30541.992</longitude>
+    </City>
+    <City id="22">
+      <id>20</id>
+      <name>Chisinau</name>
+      <latitude>46916.253</latitude>
+      <longitude>28828.125</longitude>
+    </City>
+    <City id="23">
+      <id>21</id>
+      <name>Bucharest</name>
+      <latitude>44319.656</latitude>
+      <longitude>26059.57</longitude>
+    </City>
+    <City id="24">
+      <id>22</id>
+      <name>Sofia</name>
+      <latitude>42581.13</latitude>
+      <longitude>23312.988</longitude>
+    </City>
+    <City id="25">
+      <id>23</id>
+      <name>Istanbul</name>
+      <latitude>40892.477</latitude>
+      <longitude>28981.934</longitude>
+    </City>
+    <City id="26">
+      <id>24</id>
+      <name>Athens</name>
+      <latitude>37852.881</latitude>
+      <longitude>23730.469</longitude>
+    </City>
+    <City id="27">
+      <id>25</id>
+      <name>Nicosia</name>
+      <latitude>35099.537</latitude>
+      <longitude>33365.479</longitude>
+    </City>
+    <City id="28">
+      <id>26</id>
+      <name>Tirana</name>
+      <latitude>41283.861</latitude>
+      <longitude>19808.35</longitude>
+    </City>
+    <City id="29">
+      <id>27</id>
+      <name>Skopje</name>
+      <latitude>41949.141</latitude>
+      <longitude>21456.299</longitude>
+    </City>
+    <City id="30">
+      <id>28</id>
+      <name>Podgorica</name>
+      <latitude>42380.73</latitude>
+      <longitude>19281.006</longitude>
+    </City>
+    <City id="31">
+      <id>29</id>
+      <name>Belgrade</name>
+      <latitude>44752.455</latitude>
+      <longitude>20456.543</longitude>
+    </City>
+    <City id="32">
+      <id>30</id>
+      <name>Sarajevo</name>
+      <latitude>43784.843</latitude>
+      <longitude>18347.168</longitude>
+    </City>
+    <City id="33">
+      <id>31</id>
+      <name>Zagreb</name>
+      <latitude>45757.815</latitude>
+      <longitude>15974.121</longitude>
+    </City>
+    <City id="34">
+      <id>32</id>
+      <name>Ljubljana</name>
+      <latitude>45994.926</latitude>
+      <longitude>14490.967</longitude>
+    </City>
+    <City id="35">
+      <id>33</id>
+      <name>Rome</name>
+      <latitude>41842.83</latitude>
+      <longitude>12491.455</longitude>
+    </City>
+    <City id="36">
+      <id>34</id>
+      <name>Madrid</name>
+      <latitude>40369.427</latitude>
+      <longitude>-3691.406</longitude>
+    </City>
+    <City id="37">
+      <id>35</id>
+      <name>Lisbon</name>
+      <latitude>38648.91</latitude>
+      <longitude>-9140.625</longitude>
+    </City>
+    <City id="38">
+      <id>36</id>
+      <name>Bern</name>
+      <latitude>46895.737</latitude>
+      <longitude>7437.744</longitude>
+    </City>
+    <City id="39">
+      <id>37</id>
+      <name>Vienna</name>
+      <latitude>48142.143</latitude>
+      <longitude>16380.615</longitude>
+    </City>
+    <City id="40">
+      <id>38</id>
+      <name>Prague</name>
+      <latitude>50066.778</latitude>
+      <longitude>14419.556</longitude>
+    </City>
+    <City id="41">
+      <id>39</id>
+      <name>Bratislava</name>
+      <latitude>48098.138</latitude>
+      <longitude>17105.713</longitude>
+    </City>
+    <City id="42">
+      <id>40</id>
+      <name>Budapest</name>
+      <latitude>47440.969</latitude>
+      <longitude>19039.307</longitude>
+    </City>
+  </cityList>
+  <domicileList id="43">
+    <Domicile id="44">
+      <id>1</id>
+      <city reference="3"/>
+    </Domicile>
+  </domicileList>
+  <visitList id="45">
+    <Visit id="46">
+      <id>2</id>
+      <city reference="4"/>
+      <previousAppearance class="Visit" id="47">
+        <id>5</id>
+        <city reference="7"/>
+        <previousAppearance class="Visit" id="48">
+          <id>3</id>
+          <city reference="5"/>
+          <previousAppearance class="Visit" id="49">
+            <id>7</id>
+            <city reference="9"/>
+            <previousAppearance class="Domicile" reference="44"/>
+          </previousAppearance>
+        </previousAppearance>
+      </previousAppearance>
+    </Visit>
+    <Visit reference="48"/>
+    <Visit id="50">
+      <id>4</id>
+      <city reference="6"/>
+      <previousAppearance class="Visit" id="51">
+        <id>34</id>
+        <city reference="36"/>
+        <previousAppearance class="Visit" id="52">
+          <id>35</id>
+          <city reference="37"/>
+          <previousAppearance class="Visit" reference="46"/>
+        </previousAppearance>
+      </previousAppearance>
+    </Visit>
+    <Visit reference="47"/>
+    <Visit id="53">
+      <id>6</id>
+      <city reference="8"/>
+      <previousAppearance class="Visit" reference="50"/>
+    </Visit>
+    <Visit reference="49"/>
+    <Visit id="54">
+      <id>8</id>
+      <city reference="10"/>
+      <previousAppearance class="Visit" id="55">
+        <id>38</id>
+        <city reference="40"/>
+        <previousAppearance class="Visit" id="56">
+          <id>36</id>
+          <city reference="38"/>
+          <previousAppearance class="Visit" reference="53"/>
+        </previousAppearance>
+      </previousAppearance>
+    </Visit>
+    <Visit id="57">
+      <id>9</id>
+      <city reference="11"/>
+      <previousAppearance class="Visit" reference="54"/>
+    </Visit>
+    <Visit id="58">
+      <id>10</id>
+      <city reference="12"/>
+      <previousAppearance class="Visit" id="59">
+        <id>11</id>
+        <city reference="13"/>
+        <previousAppearance class="Visit" id="60">
+          <id>12</id>
+          <city reference="14"/>
+          <previousAppearance class="Visit" id="61">
+            <id>13</id>
+            <city reference="15"/>
+            <previousAppearance class="Visit" id="62">
+              <id>14</id>
+              <city reference="16"/>
+              <previousAppearance class="Visit" id="63">
+                <id>18</id>
+                <city reference="20"/>
+                <previousAppearance class="Visit" id="64">
+                  <id>19</id>
+                  <city reference="21"/>
+                  <previousAppearance class="Visit" id="65">
+                    <id>20</id>
+                    <city reference="22"/>
+                    <previousAppearance class="Visit" id="66">
+                      <id>25</id>
+                      <city reference="27"/>
+                      <previousAppearance class="Visit" id="67">
+                        <id>23</id>
+                        <city reference="25"/>
+                        <previousAppearance class="Visit" id="68">
+                          <id>21</id>
+                          <city reference="23"/>
+                          <previousAppearance class="Visit" id="69">
+                            <id>24</id>
+                            <city reference="26"/>
+                            <previousAppearance class="Visit" id="70">
+                              <id>26</id>
+                              <city reference="28"/>
+                              <previousAppearance class="Visit" id="71">
+                                <id>28</id>
+                                <city reference="30"/>
+                                <previousAppearance class="Visit" id="72">
+                                  <id>33</id>
+                                  <city reference="35"/>
+                                  <previousAppearance class="Visit" id="73">
+                                    <id>32</id>
+                                    <city reference="34"/>
+                                    <previousAppearance class="Visit" id="74">
+                                      <id>37</id>
+                                      <city reference="39"/>
+                                      <previousAppearance class="Visit" id="75">
+                                        <id>39</id>
+                                        <city reference="41"/>
+                                        <previousAppearance class="Visit" id="76">
+                                          <id>31</id>
+                                          <city reference="33"/>
+                                          <previousAppearance class="Visit" id="77">
+                                            <id>30</id>
+                                            <city reference="32"/>
+                                            <previousAppearance class="Visit" id="78">
+                                              <id>27</id>
+                                              <city reference="29"/>
+                                              <previousAppearance class="Visit" id="79">
+                                                <id>22</id>
+                                                <city reference="24"/>
+                                                <previousAppearance class="Visit" id="80">
+                                                  <id>29</id>
+                                                  <city reference="31"/>
+                                                  <previousAppearance class="Visit" id="81">
+                                                    <id>40</id>
+                                                    <city reference="42"/>
+                                                    <previousAppearance class="Visit" id="82">
+                                                      <id>16</id>
+                                                      <city reference="18"/>
+                                                      <previousAppearance class="Visit" id="83">
+                                                        <id>15</id>
+                                                        <city reference="17"/>
+                                                        <previousAppearance class="Visit" id="84">
+                                                          <id>17</id>
+                                                          <city reference="19"/>
+                                                          <previousAppearance class="Visit" reference="57"/>
+                                                        </previousAppearance>
+                                                      </previousAppearance>
+                                                    </previousAppearance>
+                                                  </previousAppearance>
+                                                </previousAppearance>
+                                              </previousAppearance>
+                                            </previousAppearance>
+                                          </previousAppearance>
+                                        </previousAppearance>
+                                      </previousAppearance>
+                                    </previousAppearance>
+                                  </previousAppearance>
+                                </previousAppearance>
+                              </previousAppearance>
+                            </previousAppearance>
+                          </previousAppearance>
+                        </previousAppearance>
+                      </previousAppearance>
+                    </previousAppearance>
+                  </previousAppearance>
+                </previousAppearance>
+              </previousAppearance>
+            </previousAppearance>
+          </previousAppearance>
+        </previousAppearance>
+      </previousAppearance>
+    </Visit>
+    <Visit reference="59"/>
+    <Visit reference="60"/>
+    <Visit reference="61"/>
+    <Visit reference="62"/>
+    <Visit reference="83"/>
+    <Visit reference="82"/>
+    <Visit reference="84"/>
+    <Visit reference="63"/>
+    <Visit reference="64"/>
+    <Visit reference="65"/>
+    <Visit reference="68"/>
+    <Visit reference="79"/>
+    <Visit reference="67"/>
+    <Visit reference="69"/>
+    <Visit reference="66"/>
+    <Visit reference="70"/>
+    <Visit reference="78"/>
+    <Visit reference="71"/>
+    <Visit reference="80"/>
+    <Visit reference="77"/>
+    <Visit reference="76"/>
+    <Visit reference="73"/>
+    <Visit reference="72"/>
+    <Visit reference="51"/>
+    <Visit reference="52"/>
+    <Visit reference="56"/>
+    <Visit reference="74"/>
+    <Visit reference="55"/>
+    <Visit reference="75"/>
+    <Visit reference="81"/>
+  </visitList>
+  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="85">
+    <score>-254965</score>
+  </score>
+</TravelingSalesmanTour>
