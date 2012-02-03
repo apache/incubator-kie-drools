@@ -44,11 +44,13 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.common.swingui.TangoColors;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
     public static final Color[] PROCESS_COLORS = {
-            Color.GREEN, Color.YELLOW, Color.BLUE, Color.RED, Color.CYAN, Color.ORANGE, Color.MAGENTA
+            TangoColors.CHAMELEON_1, TangoColors.BUTTER_1, TangoColors.SKY_BLUE_1, TangoColors.SCARLET_1,
+            TangoColors.CHOCOLATE_1, TangoColors.ORANGE_1, TangoColors.PLUM_1
     };
 
     private JPanel computersPanel;
