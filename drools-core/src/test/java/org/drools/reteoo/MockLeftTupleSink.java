@@ -28,6 +28,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.spi.PropagationContext;
 
 public class MockLeftTupleSink extends LeftTupleSource
@@ -158,7 +159,7 @@ public class MockLeftTupleSink extends LeftTupleSource
         
     }
 
-    public void networkUpdated() {
+    public void networkUpdated(UpdateContext updateContext) {
         // TODO Auto-generated method stub
         
     }

@@ -24,6 +24,7 @@ import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.TerminalNode;
@@ -168,7 +169,7 @@ public class ReteooRuleBuilder {
             ( (BaseNode) terminal ).attach( context.getWorkingMemories() );
         }
 
-        ( (BaseNode) terminal ).networkUpdated();
+        ( (BaseNode) terminal ).networkUpdated(new UpdateContext());
 
         // adds the terminal no to the list of nodes created/added by this sub-rule
         context.getNodes().add( (BaseNode) terminal );
@@ -207,9 +208,9 @@ public class ReteooRuleBuilder {
                                                        idGenerator );
         EntryPoint ep = new EntryPoint( id );
         ReteooComponentBuilder builder = utils.getBuilderFor( ep );
-        builder.build( context,
-                       utils,
-                       ep );
+        builder.build(context,
+                utils,
+                ep);
     }
 
     public WindowNode addWindowNode( WindowDeclaration window, 

@@ -30,6 +30,7 @@ import org.drools.common.LeftTupleIterator;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
@@ -135,8 +136,8 @@ public class EvalConditionNode extends LeftTupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     // ------------------------------------------------------------

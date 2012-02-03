@@ -33,6 +33,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -168,7 +169,7 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
-    public void networkUpdated() {
+    public void networkUpdated(UpdateContext updateContext) {
         // nothing to do
     }
 

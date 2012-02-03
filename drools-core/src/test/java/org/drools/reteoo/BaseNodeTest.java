@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import org.drools.common.UpdateContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class BaseNodeTest {
         }
 
         @Override
-        public void networkUpdated() {
+        public void networkUpdated(UpdateContext updateContext) {
             // TODO Auto-generated method stub
             
         }

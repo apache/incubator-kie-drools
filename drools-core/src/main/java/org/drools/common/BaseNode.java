@@ -95,7 +95,7 @@ public abstract class BaseNode
      * changed, after the change is complete, providing them with an oportunity
      * for state update
      */
-    public abstract void networkUpdated();
+    public abstract void networkUpdated(UpdateContext updateContext);
 
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,

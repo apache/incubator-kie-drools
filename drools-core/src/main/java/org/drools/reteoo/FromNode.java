@@ -33,6 +33,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleList;
@@ -388,8 +389,8 @@ public class FromNode extends LeftTupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,

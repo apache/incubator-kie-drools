@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends LeftTupleSource {
@@ -63,7 +64,7 @@ public class MockTupleSource extends LeftTupleSource {
     }
 
     @Override
-    public void networkUpdated() {
+    public void networkUpdated(UpdateContext updateContext) {
         // TODO Auto-generated method stub
         
     }

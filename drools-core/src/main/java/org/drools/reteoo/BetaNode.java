@@ -257,9 +257,13 @@ public abstract class BetaNode extends LeftTupleSource
         this.leftInput.addTupleSink(this);
     }
 
-    public void networkUpdated() {
-        this.rightInput.networkUpdated();
-        this.leftInput.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        updateContext.startVisitNode(leftInput);
+        rightInput.networkUpdated(updateContext);
+        updateContext.endVisit();
+        if (!updateContext.isVisiting(leftInput)) {
+            leftInput.networkUpdated(updateContext);
+        }
     }
 
     public List<String> getRules() {

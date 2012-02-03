@@ -26,6 +26,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -183,8 +184,8 @@ public abstract class ObjectSource extends BaseNode
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
 
-    public void networkUpdated() {
-        this.source.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.source.networkUpdated(updateContext);
     }
 
     public ObjectSinkPropagator getSinkPropagator() {
