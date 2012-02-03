@@ -80,15 +80,24 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
             workingMemory.update(workingMemory.getFactHandle(previousEntity), previousEntity);
             previousEntity = entity;
         }
-        // Close the old chain
-        if (oldChainedEntity != null) {
-            planningVariableDescriptor.setValue(oldChainedEntity, oldFirstPlanningValue);
-            workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
-        }
-        // Reroute the new chain
-        if (newChainedEntity != null) {
-            planningVariableDescriptor.setValue(newChainedEntity, firstEntity);
-            workingMemory.update(newChainedEntityFactHandle, newChainedEntity);
+        if (firstEntity.equals(newChainedEntity)) {
+            // Unmoved reverse
+            // Reroute the old chain
+            if (oldChainedEntity != null) {
+                planningVariableDescriptor.setValue(oldChainedEntity, firstEntity);
+                workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
+            }
+        } else {
+            // Close the old chain
+            if (oldChainedEntity != null) {
+                planningVariableDescriptor.setValue(oldChainedEntity, oldFirstPlanningValue);
+                workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
+            }
+            // Reroute the new chain
+            if (newChainedEntity != null) {
+                planningVariableDescriptor.setValue(newChainedEntity, firstEntity);
+                workingMemory.update(newChainedEntityFactHandle, newChainedEntity);
+            }
         }
     }
 
