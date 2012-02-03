@@ -10470,6 +10470,8 @@ public class MiscTest extends CommonTestMethodBase {
                 "    dint\t: double[] \n" +
                 "    fint\t: float[] \n" +
                 "    zint\t: Integer[] \n" + "\t= new int[] {2,3}                   @key \n" +
+                "    aaaa\t: String[][] \n" +
+                "    bbbb\t: int[][] \n" +
                 "    aprs\t: Person[] \n" + "\t= new org.drools.test.Person[] { new org.drools.test.Man() }" +
                 "end\n" +
                 "\n" +
@@ -10487,6 +10489,8 @@ public class MiscTest extends CommonTestMethodBase {
                 "                 new double[] { 3.2, 4.4 }, " +
                 "                 new float[] { 3.2f, 4.4f }, " +
                 "                 new Integer[] { 2, 3 }," +
+                "                 new String[2][3],"  +
+                "                 new int[5][3],"  +
                 "                 null " +
                 "    ); \n" +
                 "   insert( x );\n" +

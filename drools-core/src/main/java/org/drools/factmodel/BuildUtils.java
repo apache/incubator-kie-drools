@@ -126,32 +126,45 @@ public class BuildUtils {
             internalType = "Z";
         } else if ( "void".equals( type ) ) {
             internalType = "V";
-        } else if ( type.startsWith( "[L" ) ) {
-            internalType = type.replace( '.', '/' );
-        } else if ( type.startsWith( "[") ) {
-            // do nothing as this would be a primitive array
-            internalType = type;
+        } else if ( type != null && type.startsWith( "[" ) ) {
+            int j = 0;
+            while ( type.charAt( ++j ) == '[' ) {}
+            if ( type.charAt( j ) == 'L' ) {
+                internalType = type.replace( '.', '/' );
+            } else {
+                internalType = type;
+            }
         } else if ( type != null ) {
             // I think this will fail for inner classes, but we don't really
             // support inner class generation at the moment
-            internalType = "L" + type.replace( '.',
-                    '/' ) + ";";
+            internalType = "L" + type.replace( '.', '/' ) + ";";
         }
         return internalType;
     }
 
     
     
-    public static String arrayType(String type) {
+    public static String arrayType( String type ) {
         if ( isArray( type ) )
-            if ( type.length() == 2 ) {
+            if ( type.length() == arrayDimSize(type) +1  ) {
                 return type;
             } else {
-                return "[Ljava/lang/Object;";
+                String ans = "Ljava/lang/Object;";
+                for ( int j = 0; j < arrayDimSize( type ); j++ ) {
+                    ans = "[" + ans;
+                }
+                return ans;
             }
         return null;
     }
 
+    public static int arrayDimSize(String type) {
+        int j = 0;
+        while ( type.charAt( j ) == '[' ) {
+            j++;
+        }
+        return j;
+    }
 
     /**
      * Returns true if the provided type is a primitive type
@@ -504,4 +517,6 @@ public class BuildUtils {
             default : mv.visitIntInsn( Opcodes.BIPUSH, j );
         }
     }
+
+
 }
