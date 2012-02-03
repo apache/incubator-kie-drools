@@ -10,7 +10,7 @@
   </scoreDefinition>
 
   <termination>
-    <maximumMinutesSpend>10</maximumMinutesSpend>
+    <maximumMinutesSpend>2</maximumMinutesSpend>
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
@@ -33,4 +33,20 @@
       <minimalAcceptedSelection>10000</minimalAcceptedSelection>
     </forager>
   </localSearch>
+  <!--<localSearch>-->
+    <!--<selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+    <!--</selector>-->
+    <!--<acceptor>-->
+      <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+    <!--</forager>-->
+  <!--</localSearch>-->
 </solver>
