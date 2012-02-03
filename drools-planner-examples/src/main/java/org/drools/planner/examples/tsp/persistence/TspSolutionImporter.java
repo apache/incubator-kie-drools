@@ -87,11 +87,14 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             List<City> cityList = new ArrayList<City>(cityListSize);
             for (int i = 0; i < cityListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpace(line, 3);
+                String[] lineTokens = splitBySpace(line, 3, 4);
                 City city = new City();
                 city.setId(Long.parseLong(lineTokens[0]));
                 city.setLatitude(Double.parseDouble(lineTokens[1]));
                 city.setLongitude(Double.parseDouble(lineTokens[2]));
+                if (lineTokens.length >= 4) {
+                    city.setName(lineTokens[3]);
+                }
                 cityList.add(city);
             }
             travelingSalesmanTour.setCityList(cityList);

@@ -89,6 +89,15 @@ public class TspWorldPanel extends JPanel {
         if (tourName.startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
+        g.setColor(TangoColors.ALUMINIUM_6);
+        g.setFont(g.getFont().deriveFont(8.0f));
+        for (City city : travelingSalesmanTour.getCityList()) {
+            if (city.getName() != null) {
+                int x = translator.translateLongitudeToX(city.getLongitude());
+                int y = translator.translateLatitudeToY(city.getLatitude());
+                g.drawString(city.getName(), x + 3, y - 3);
+            }
+        }
         g.setColor(TangoColors.PLUM_2);
         for (City city : travelingSalesmanTour.getCityList()) {
             int x = translator.translateLongitudeToX(city.getLongitude());

@@ -74,12 +74,11 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new Manners2009App().init(false);
             }
         }));
-        // TODO TSP needs to be rewritten
-//        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
-//            public void actionPerformed(ActionEvent e) {
-//                new TspApp().init(false);
-//            }
-//        }));
+        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
+            public void actionPerformed(ActionEvent e) {
+                new TspApp().init(false);
+            }
+        }));
         contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)") {
             public void actionPerformed(ActionEvent e) {
                 new SmartTravelingTournamentApp().init(false);

@@ -23,8 +23,17 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("City")
 public class City extends AbstractPersistable {
 
+    private String name = null;
     private double latitude;
     private double longitude;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public double getLatitude() {
         return latitude;
@@ -54,7 +63,10 @@ public class City extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return id.toString();
+        if (name == null) {
+            return id.toString();
+        }
+        return id.toString() + "-" + name;
     }
 
 }

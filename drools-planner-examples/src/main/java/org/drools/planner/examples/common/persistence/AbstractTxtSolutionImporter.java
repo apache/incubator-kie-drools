@@ -172,6 +172,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return splitBy(line, "\\ ", "a space ( )", numberOfTokens, false, false);
         }
 
+        public String[] splitBySpace(String line, Integer minimumNumberOfTokens, Integer maximumNumberOfTokens) {
+            return splitBy(line, "\\ ", "a space ( )", minimumNumberOfTokens, maximumNumberOfTokens, false, false);
+        }
+
         public String[] splitBySpacesOrTabs(String line) {
             return splitBySpacesOrTabs(line, null);
         }
@@ -190,11 +194,21 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public String[] splitBy(String line, String tokenRegex, String tokenName,
                 Integer numberOfTokens, boolean trim, boolean removeQuotes) {
+            return splitBy(line, tokenRegex, tokenName, numberOfTokens, numberOfTokens, trim, removeQuotes);
+        }
+
+        public String[] splitBy(String line, String tokenRegex, String tokenName,
+                Integer minimumNumberOfTokens, Integer maximumNumberOfTokens, boolean trim, boolean removeQuotes) {
             String[] lineTokens = line.split(tokenRegex);
-            if (numberOfTokens != null && lineTokens.length != numberOfTokens) {
+            if (minimumNumberOfTokens != null && lineTokens.length < minimumNumberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length
-                        + " tokens but is expected to contain " + numberOfTokens + " tokens separated by "
-                        + tokenName + ".");
+                        + " tokens but is expected to contain at least " + minimumNumberOfTokens
+                        + " tokens separated by " + tokenName + ".");
+            }
+            if (maximumNumberOfTokens != null && lineTokens.length > maximumNumberOfTokens) {
+                throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length
+                        + " tokens but is expected to contain at most " + maximumNumberOfTokens
+                        + " tokens separated by " + tokenName + ".");
             }
             if (trim) {
                 for (int i = 0; i < lineTokens.length; i++) {
@@ -209,7 +223,6 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                 }
             }
             return lineTokens;
-
         }
 
         public boolean parseBooleanFromNumber(String token) {
