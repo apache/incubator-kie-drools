@@ -51,6 +51,11 @@ public class City extends AbstractPersistable {
         this.longitude = longitude;
     }
 
+    /**
+     * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
+     * @param city never null
+     * @return a positive number
+     */
     public int getDistance(City city) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
