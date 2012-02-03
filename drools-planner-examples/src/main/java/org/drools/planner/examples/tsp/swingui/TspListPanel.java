@@ -59,11 +59,11 @@ public class TspListPanel extends JPanel {
             JButton button = new JButton(new VisitAction(visit));
             visitPanel.add(button);
             String distanceLabelString;
-            if (visit.getPreviousTerminal() == null) {
+            if (visit.getPreviousAppearance() == null) {
                 distanceLabelString = "Unassigned";
             } else {
                 distanceLabelString = "Distance from previous: "
-                        + visit.getDistanceToPreviousTerminal();
+                        + visit.getDistanceToPreviousAppearance();
             }
             visitPanel.add(new JLabel(distanceLabelString));
             add(visitPanel);
@@ -82,19 +82,19 @@ public class TspListPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             JOptionPane.showMessageDialog(TspListPanel.this, "Unsupported operation."); // TODO FIXME
 //            TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
-//            JComboBox previousTerminalListField = new JComboBox();
-//            for (Terminal previousTerminal : travelingSalesmanTour.getVisitList()) {
-//                previousTerminalListField.addItem(previousTerminal);
+//            JComboBox previousAppearanceListField = new JComboBox();
+//            for (Appearance previousAppearance : travelingSalesmanTour.getVisitList()) {
+//                previousAppearanceListField.addItem(previousAppearance);
 //            }
-//            for (Terminal previousTerminal : travelingSalesmanTour.getDomicileList()) {
-//                previousTerminalListField.addItem(previousTerminal);
+//            for (Appearance previousAppearance : travelingSalesmanTour.getDomicileList()) {
+//                previousAppearanceListField.addItem(previousAppearance);
 //            }
-//            previousTerminalListField.setSelectedItem(visit.getPreviousTerminal());
-//            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousTerminalListField,
+//            previousAppearanceListField.setSelectedItem(visit.getPreviousAppearance());
+//            int result = JOptionPane.showConfirmDialog(TspListPanel.this.getRootPane(), previousAppearanceListField,
 //                    "Drive here after", JOptionPane.OK_CANCEL_OPTION);
 //            if (result == JOptionPane.OK_OPTION) {
-//                Terminal toTerminal = (Terminal) previousTerminalListField.getSelectedItem();
-//                tspPanel.doMove(new SubTourChangeMove(visit, visit, toTerminal));
+//                Appearance toAppearance = (Appearance) previousAppearanceListField.getSelectedItem();
+//                tspPanel.doMove(new SubTourChangeMove(visit, visit, toAppearance));
 //                tspPanel.getWorkflowFrame().resetScreen();
 //            }
         }

@@ -112,8 +112,8 @@ public class TspWorldPanel extends JPanel {
         }
         g.setColor(TangoColors.CHOCOLATE_1);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
-            if (visit.getPreviousTerminal() != null) {
-                City previousCity = visit.getPreviousTerminal().getCity();
+            if (visit.getPreviousAppearance() != null) {
+                City previousCity = visit.getPreviousAppearance().getCity();
                 int previousX = translator.translateLongitudeToX(previousCity.getLongitude());
                 int previousY = translator.translateLatitudeToY(previousCity.getLatitude());
                 City city = visit.getCity();
@@ -123,7 +123,7 @@ public class TspWorldPanel extends JPanel {
                 // Back to domicile line
                 boolean needsBackToDomicileLineDraw = true;
                 for (Visit chainedVisit : travelingSalesmanTour.getVisitList()) {
-                    if (chainedVisit.getPreviousTerminal() == visit) {
+                    if (chainedVisit.getPreviousAppearance() == visit) {
                         needsBackToDomicileLineDraw = false;
                         break;
                     }

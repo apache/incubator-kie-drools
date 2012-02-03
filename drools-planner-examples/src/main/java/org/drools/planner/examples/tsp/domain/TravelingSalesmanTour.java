@@ -109,10 +109,10 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         }
         // Fix: Previous should point to the new clones instead of the old instances
         for (Visit clonedVisit : clonedVisitList) {
-            Terminal previousTerminal = clonedVisit.getPreviousTerminal();
-            if (previousTerminal instanceof Visit) {
-                Long previousVisitId = ((Visit) previousTerminal).getId();
-                clonedVisit.setPreviousTerminal(idToClonedVisitMap.get(previousVisitId));
+            Appearance previousAppearance = clonedVisit.getPreviousAppearance();
+            if (previousAppearance instanceof Visit) {
+                Long previousVisitId = ((Visit) previousAppearance).getId();
+                clonedVisit.setPreviousAppearance(idToClonedVisitMap.get(previousVisitId));
             }
         }
         clone.visitList = clonedVisitList;

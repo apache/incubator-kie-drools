@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Domicile")
-public class Domicile extends AbstractPersistable implements Terminal {
+public class Domicile extends AbstractPersistable implements Appearance {
 
     private City city;
 

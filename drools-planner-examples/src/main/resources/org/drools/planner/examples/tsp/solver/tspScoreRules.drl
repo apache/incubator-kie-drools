@@ -32,19 +32,19 @@ global SimpleScoreCalculator scoreCalculator;
 // Soft constraints
 // ############################################################################
 
-rule "distanceToPreviousTerminal"
+rule "distanceToPreviousAppearance"
     when
-        $visit : Visit(previousTerminal != null, $distanceToPreviousTerminal : distanceToPreviousTerminal)
+        $visit : Visit(previousAppearance != null, $distanceToPreviousAppearance : distanceToPreviousAppearance)
     then
-        insertLogical(new IntConstraintOccurrence("distanceToPreviousTerminal", ConstraintType.NEGATIVE_SOFT,
-                $distanceToPreviousTerminal,
+        insertLogical(new IntConstraintOccurrence("distanceToPreviousAppearance", ConstraintType.NEGATIVE_SOFT,
+                $distanceToPreviousAppearance,
                 $visit));
 end
 
 rule "distanceFromLastVisitToDomicile"
     when
-        $visit : Visit(previousTerminal != null)
-        not Visit (previousTerminal == $visit)
+        $visit : Visit(previousAppearance != null)
+        not Visit (previousAppearance == $visit)
         $domicile : Domicile()
     then
         insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.NEGATIVE_SOFT,

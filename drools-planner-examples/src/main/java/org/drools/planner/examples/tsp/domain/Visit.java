@@ -28,12 +28,12 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
 @XStreamAlias("Visit")
-public class Visit extends AbstractPersistable implements Terminal {
+public class Visit extends AbstractPersistable implements Appearance {
 
     private City city; // the destinationCity
     
     // Planning variables: changes during planning, between score calculations.
-    private Terminal previousTerminal;
+    private Appearance previousAppearance;
 
     public City getCity() {
         return city;
@@ -48,27 +48,27 @@ public class Visit extends AbstractPersistable implements Terminal {
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
                     excludeUninitializedPlanningEntity = true)})
-    public Terminal getPreviousTerminal() {
-        return previousTerminal;
+    public Appearance getPreviousAppearance() {
+        return previousAppearance;
     }
 
-    public void setPreviousTerminal(Terminal previousTerminal) {
-        this.previousTerminal = previousTerminal;
+    public void setPreviousAppearance(Appearance previousAppearance) {
+        this.previousAppearance = previousAppearance;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public int getDistanceToPreviousTerminal() {
-        if (previousTerminal == null) {
+    public int getDistanceToPreviousAppearance() {
+        if (previousAppearance == null) {
             return 0;
         }
-        return getDistanceTo(previousTerminal);
+        return getDistanceTo(previousAppearance);
     }
 
-    public int getDistanceTo(Terminal terminal) {
-        return city.getDistance(terminal.getCity());
+    public int getDistanceTo(Appearance appearance) {
+        return city.getDistance(appearance.getCity());
     }
 
     /**
@@ -79,7 +79,7 @@ public class Visit extends AbstractPersistable implements Terminal {
         Visit clone = new Visit();
         clone.id = id;
         clone.city = city;
-        clone.previousTerminal = previousTerminal;
+        clone.previousAppearance = previousAppearance;
         return clone;
     }
 
@@ -96,7 +96,7 @@ public class Visit extends AbstractPersistable implements Terminal {
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(city, other.city) // TODO performance leak: not needed?
-                    .append(previousTerminal, other.previousTerminal) // TODO performance leak: not needed?
+                    .append(previousAppearance, other.previousAppearance) // TODO performance leak: not needed?
                     .isEquals();
         } else {
             return false;
@@ -112,13 +112,13 @@ public class Visit extends AbstractPersistable implements Terminal {
         return new HashCodeBuilder()
                 .append(id)
                 .append(city) // TODO performance leak: not needed?
-                .append(previousTerminal) // TODO performance leak: not needed?
+                .append(previousAppearance) // TODO performance leak: not needed?
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return city + "(after " + (previousTerminal == null ? "null" : previousTerminal.getCity()) + ")";
+        return city + "(after " + (previousAppearance == null ? "null" : previousAppearance.getCity()) + ")";
     }
 
 }

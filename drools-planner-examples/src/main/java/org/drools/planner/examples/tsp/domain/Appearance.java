@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.tsp.domain;
 
-public interface Terminal {
+public interface Appearance {
 
     /**
      * @return never null
