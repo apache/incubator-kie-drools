@@ -27,6 +27,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -127,8 +128,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.objectSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.objectSource.networkUpdated(updateContext);
     }
 
     /**

@@ -27,6 +27,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.UpdateContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -209,8 +210,8 @@ public class RightInputAdapterNode extends ObjectSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     public void updateSink(final ObjectSink sink,

@@ -9981,4 +9981,55 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test(timeout = 5000)
+    public void testEfficientBetaNodeNetworkUpdate() {
+        // [JBRULES-3372]
+        String str =
+                "declare SimpleMembership\n" +
+                "    listId : String\n" +
+                "    patientId : String\n" +
+                "end\n" +
+                "declare SimplePatientFact\n" +
+                "    value : int\n" +
+                "    patientId : String\n" +
+                "end\n" +
+                "rule \"A\"\n" +
+                "when\n" +
+                "$slm : SimpleMembership($pid : patientId, listId == \"5072\" )\n" +
+                "and not (\n" +
+                "    (\n" +
+                "        (\n" +
+                "            SimplePatientFact(value == 1, patientId == $pid)\n" +
+                "        ) or (\n" +
+                "            SimplePatientFact(value == 2, patientId == $pid)\n" +
+                "        )\n" +
+                "    ) and (\n" +
+                "        (\n" +
+                "            SimplePatientFact(value == 6, patientId == $pid)\n" +
+                "        ) or (\n" +
+                "            SimplePatientFact(value == 7, patientId == $pid)\n" +
+                "        ) or (\n" +
+                "            SimplePatientFact(value == 8, patientId == $pid)\n" +
+                "        )\n" +
+                "    ) and (\n" +
+                "       (\n" +
+                "           SimplePatientFact(value == 9, patientId == $pid)\n" +
+                "       ) or (\n" +
+                "           SimplePatientFact(value == 10, patientId == $pid)\n" +
+                "       ) or (\n" +
+                "           SimplePatientFact(value == 11, patientId == $pid)\n" +
+                "       ) or (\n" +
+                "           SimplePatientFact(value == 12, patientId == $pid)\n" +
+                "       ) or (\n" +
+                "           SimplePatientFact(value == 13, patientId == $pid)\n" +
+                "       )\n" +
+                "   )\n" +
+                ")\n" +
+                "then\n" +
+                "   System.out.println(\"activated\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+    }
 }

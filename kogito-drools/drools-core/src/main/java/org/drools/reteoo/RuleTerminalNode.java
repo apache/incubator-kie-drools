@@ -35,6 +35,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.common.UpdateContext;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
@@ -434,8 +435,8 @@ public class RuleTerminalNode extends BaseNode
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,

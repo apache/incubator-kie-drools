@@ -31,6 +31,7 @@ import org.drools.common.LeftTupleIterator;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.UpdateContext;
 import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
@@ -151,8 +152,8 @@ public class QueryElementNode extends LeftTupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
+    public void networkUpdated(UpdateContext updateContext) {
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     public short getType() {
