@@ -93,8 +93,7 @@ public class DefaultSolver implements Solver {
     }
 
     public void setPlanningProblem(Solution planningProblem) {
-        // TODO Should this be a clone or not? Currently not, but that changes what the user gave us.
-        solverScope.getSolutionDirector().setWorkingSolution(planningProblem);
+        solverScope.setBestSolution(planningProblem);
     }
 
     public Solution getBestSolution() {
@@ -145,11 +144,13 @@ public class DefaultSolver implements Solver {
             solvingEnded(solverScope);
             checkProblemFactChanges();
         }
+        // Must be kept open for doProblemFactChange
+        solverScope.getSolutionDirector().disposeWorkingSolution();
         solving.set(false);
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        if (solverScope.getSolutionDirector().getWorkingSolution() == null) {
+        if (solverScope.getBestSolution() == null) {
             throw new IllegalStateException("The planningProblem must not be null." +
                     " Use Solver.setPlanningProblem(Solution).");
         }
@@ -159,6 +160,7 @@ public class DefaultSolver implements Solver {
         } else {
             solverScope.setWorkingRandom(new Random());
         }
+        solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         logger.info("Solving started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
@@ -170,12 +172,15 @@ public class DefaultSolver implements Solver {
         while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
             SolverPhase solverPhase = it.next();
             solverPhase.solve(solverScope);
+            if (it.hasNext()) {
+                solverScope.setWorkingSolutionFromBestSolution();
+            }
         }
         // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
-        bestSolutionRecaller.solvingEnded(solverScope);;
+        bestSolutionRecaller.solvingEnded(solverScope);
         long timeMillisSpend = solverScope.calculateTimeMillisSpend();
         if (timeMillisSpend == 0L) {
             // Avoid divide by zero exception on a fast CPU
@@ -193,6 +198,7 @@ public class DefaultSolver implements Solver {
                 = basicPlumbingTermination.getProblemFactChangeQueue();
         if (!problemFactChangeQueue.isEmpty()) {
             solverScope.setRestartSolver(true);
+            solverScope.setWorkingSolutionFromBestSolution();
             Score score = null;
             int count = 0;
             ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
@@ -201,6 +207,7 @@ public class DefaultSolver implements Solver {
                 count++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
+            bestSolutionRecaller.updateBestSolution(solverScope, solverScope.getWorkingSolution().cloneSolution());
             logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
                     count, score);
         }

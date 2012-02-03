@@ -1568,3 +1568,43 @@ After in *.java:
     @PlanningVariable(...)
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public Room getRoom() {...}
+
+[MINOR] If you copied the examples GUI's HACKs with DefaultSolverScope,
+transform them to use the less worse SolutionDirector HACK. But it's still a hack: avoid if you can.
+An important change is that the GUI and the Solver should never share the same workingSolution instance any more.
+Also, the Solver implementation has been adjusted so that the workingSolution is a clone of setPlanningProblem(),
+instead of the bestSolution being the clone of it.
+Before in *.java:
+    public void setSolver(Solver solver) {
+        this.solver = solver;
+        // TODO HACK Planner internal API: don't do this
+        this.solverScope = ((DefaultSolver) solver).getSolverScope();
+    }
+    ...
+    public void openSolution(File file) {
+        Solution solution = solutionDao.readSolution(file);
+        solver.setPlanningProblem(solution);
+    }
+    ...
+    public void solve() {
+        solver.solve();
+    }
+After in *.java:
+    public void setSolver(Solver solver) {
+        this.solver = solver;
+        // TODO HACK Planner internal API: don't do this
+        this.guiSolutionDirector = ((DefaultSolver) solver).getSolverScope()
+                .getSolutionDirector().cloneWithoutWorkingSolution();
+    }
+    ...
+    public void openSolution(File file) {
+        Solution solution = solutionDao.readSolution(file);
+        guiSolutionDirector.setWorkingSolution(solution);
+    }
+    ...
+    public void solve() {
+        solver.setPlanningProblem(guiSolutionDirector.getWorkingSolution());
+        solver.solve();
+        Solution bestSolution = solver.getBestSolution();
+        guiSolutionDirector.setWorkingSolution(bestSolution);
+    }

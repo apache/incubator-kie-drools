@@ -88,6 +88,10 @@ public class DefaultSolutionDirector implements SolutionDirector {
         return workingSolution;
     }
 
+    /**
+     * The workingSolution must never be the same instance as the bestSolution, it should be a (un)changed clone.
+     * @param workingSolution never null
+     */
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
         resetWorkingMemory();
@@ -157,10 +161,10 @@ public class DefaultSolutionDirector implements SolutionDirector {
         return variableToEntitiesMap;
     }
 
-    public void dispose() {
-        // TODO call from Solver too
+    public void disposeWorkingSolution() {
         if (workingMemory != null) {
             workingMemory.dispose();
+            workingMemory = null;
         }
     }
 
@@ -168,27 +172,27 @@ public class DefaultSolutionDirector implements SolutionDirector {
      * @param presumedScore never null
      */
     public void assertWorkingScore(Score presumedScore) {
-        DefaultSolutionDirector uncorruptedSolutionDirector = buildUncorruptedSolutionDirector();
+        DefaultSolutionDirector uncorruptedSolutionDirector = cloneWithoutWorkingSolution();
+        uncorruptedSolutionDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
         if (!presumedScore.equals(uncorruptedScore)) {
             String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
-            uncorruptedSolutionDirector.dispose();
+            uncorruptedSolutionDirector.disposeWorkingSolution();
             throw new IllegalStateException(
                     "Score corruption: the presumedScore (" + presumedScore + ") is not the uncorruptedScore ("
                             + uncorruptedScore + "):\n"
                             + scoreCorruptionAnalysis);
         } else {
-            uncorruptedSolutionDirector.dispose();
+            uncorruptedSolutionDirector.disposeWorkingSolution();
         }
     }
 
-    private DefaultSolutionDirector buildUncorruptedSolutionDirector() {
-        DefaultSolutionDirector uncorruptedSolutionDirector = new DefaultSolutionDirector();
-        uncorruptedSolutionDirector.setSolutionDescriptor(solutionDescriptor);
-        uncorruptedSolutionDirector.setRuleBase(ruleBase);
-        uncorruptedSolutionDirector.setScoreDefinition(scoreDefinition);
-        uncorruptedSolutionDirector.setWorkingSolution(workingSolution);
-        return uncorruptedSolutionDirector;
+    public DefaultSolutionDirector cloneWithoutWorkingSolution() {
+        DefaultSolutionDirector clone = new DefaultSolutionDirector();
+        clone.setSolutionDescriptor(solutionDescriptor);
+        clone.setRuleBase(ruleBase);
+        clone.setScoreDefinition(scoreDefinition);
+        return clone;
     }
 
     private String buildScoreCorruptionAnalysis(DefaultSolutionDirector uncorruptedSolutionDirector) {

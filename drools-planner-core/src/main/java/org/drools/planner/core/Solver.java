@@ -21,6 +21,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
 import org.drools.planner.core.event.SolverEventListener;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.ProblemFactChange;
@@ -39,7 +40,7 @@ public interface Solver {
     void setPlanningProblem(Solution planningProblem);
 
     /**
-     * @return never null after solving
+     * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
      */
     Solution getBestSolution();
 

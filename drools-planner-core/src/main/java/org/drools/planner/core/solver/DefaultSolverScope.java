@@ -129,6 +129,10 @@ public class DefaultSolverScope {
         return bestSolution;
     }
 
+    /**
+     * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
+     * @param bestSolution never null
+     */
     public void setBestSolution(Solution bestSolution) {
         this.bestSolution = bestSolution;
     }
@@ -153,6 +157,11 @@ public class DefaultSolverScope {
     public long calculateTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
+    }
+
+    public void setWorkingSolutionFromBestSolution() {
+        // The workingSolution must never be the same instance as the bestSolution.
+        getSolutionDirector().setWorkingSolution(getBestSolution().cloneSolution());
     }
 
 }

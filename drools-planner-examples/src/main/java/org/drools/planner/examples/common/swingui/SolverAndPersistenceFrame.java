@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -45,8 +44,6 @@ import javax.swing.JProgressBar;
 import javax.swing.filechooser.FileFilter;
 
 import org.drools.planner.examples.common.business.SolutionBusiness;
-import org.drools.planner.core.event.SolverEventListener;
-import org.drools.planner.core.event.BestSolutionChangedEvent;
 import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +71,6 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JLabel resultLabel;
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
 
-    private AtomicReference<Solution> latestBestSolutionReference = new AtomicReference<Solution>(null);
-
     public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super(exampleName + " Drools Planner example");
         this.solutionBusiness = solutionBusiness;
@@ -88,31 +83,22 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void registerListeners() {
-        solutionBusiness.addSolverEventLister(new SolverEventListener() {
-            public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                // TODO the screen refresh is not always in sync with the best score
-                // TODO event.getNewBestSolution() should probably be cloned, but that alone is not enough
-                latestBestSolutionReference.getAndSet(event.getNewBestSolution());
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        Solution latestBestSolution = latestBestSolutionReference.getAndSet(null);
-                        if (latestBestSolution != null) {
-                            if (refreshScreenDuringSolvingCheckBox.isSelected()) {
-                                solutionPanel.updatePanel(solutionBusiness.getSolution());
-                                validate(); // TODO remove me?
-                            }
-                            resultLabel.setText("Latest best score: " + latestBestSolution.getScore());
-                        }
-                    }
-                });
-            }
-        });
+        solutionBusiness.registerForBestSolutionChanges(this);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 // This async, so it doesn't stop the solving immediately
                 solutionBusiness.terminateSolvingEarly();
             }
         });
+    }
+
+    public void bestSolutionChanged() {
+        Solution solution = solutionBusiness.getSolution();
+        if (refreshScreenDuringSolvingCheckBox.isSelected()) {
+            solutionPanel.updatePanel(solution);
+            validate(); // TODO remove me?
+        }
+        resultLabel.setText("Latest best score: " + solution.getScore());
     }
 
     public void init() {

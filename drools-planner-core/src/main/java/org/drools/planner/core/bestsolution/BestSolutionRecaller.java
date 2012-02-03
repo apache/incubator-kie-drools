@@ -45,18 +45,15 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
     // ************************************************************************
 
     public void solvingStarted(DefaultSolverScope solverScope) {
+        // Starting bestSolution is already set by Solver.setPlanningProblem()
         boolean workingSolutionInitialized = solverScope.isWorkingSolutionInitialized();
         Score startingInitializedScore;
-        Solution bestSolution;
         if (workingSolutionInitialized) {
             startingInitializedScore = solverScope.calculateScoreFromWorkingMemory();
-            bestSolution = solverScope.getWorkingSolution().cloneSolution();
         } else {
             startingInitializedScore = null;
-            bestSolution = null;
         }
         solverScope.setStartingInitializedScore(startingInitializedScore);
-        solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(startingInitializedScore);
     }
 
@@ -79,10 +76,14 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
         if (bestScoreImproved) {
             solverPhaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution newBestSolution = stepScope.createOrGetClonedSolution();
-            solverScope.setBestSolution(newBestSolution);
-            solverScope.setBestScore(newBestSolution.getScore());
-            solverEventSupport.fireBestSolutionChanged(newBestSolution);
+            updateBestSolution(solverScope, newBestSolution);
         }
+    }
+
+    public void updateBestSolution(DefaultSolverScope solverScope, Solution newBestSolution) {
+        solverScope.setBestSolution(newBestSolution);
+        solverScope.setBestScore(newBestSolution.getScore());
+        solverEventSupport.fireBestSolutionChanged(newBestSolution);
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
