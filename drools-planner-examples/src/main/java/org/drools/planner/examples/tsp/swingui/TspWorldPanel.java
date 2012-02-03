@@ -138,6 +138,14 @@ public class TspWorldPanel extends JPanel {
                 }
             }
         }
+        // Legend
+        g.setFont(g.getFont().deriveFont(8.0f));
+        g.setColor(TangoColors.PLUM_2);
+        g.fillRect(6, (int) height - 19, 3, 3);
+        g.drawString("Visit", 15, (int) height - 15);
+        g.setColor(TangoColors.SCARLET_2);
+        g.fillRect(5, (int) height - 10, 5, 5);
+        g.drawString("Domicile", 15, (int) height - 5);
         repaint();
     }
 
