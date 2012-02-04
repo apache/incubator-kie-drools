@@ -534,4 +534,46 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
+    @Test
+    public void testPropSpecOnBetaNode() throws Exception {
+        String rule = "package org.drools\n" +
+                "declare A\n" +
+                "    @propertySpecific\n" +
+                "    i : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "    @propertySpecific\n" +
+                "    i : int\n" +
+                "    j : int\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $a : A()\n" +
+                "    $b : B($i : i < 4, j < 2, j == $a.i)\n" +
+                "then\n" +
+                "    modify($b) { setI($i+1) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType typeA = kbase.getFactType( "org.drools", "A" );
+        FactType typeB = kbase.getFactType( "org.drools", "B" );
+
+        Object a1 = typeA.newInstance();
+        typeA.set( a1, "i", 1 );
+        ksession.insert( a1 );
+
+        Object a2 = typeA.newInstance();
+        typeA.set( a2, "i", 2 );
+        ksession.insert( a2 );
+
+        Object b1 = typeB.newInstance();
+        typeB.set( b1, "i", 1 );
+        typeB.set( b1, "j", 1 );
+        ksession.insert( b1 );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(3, rules);
+    }
 }

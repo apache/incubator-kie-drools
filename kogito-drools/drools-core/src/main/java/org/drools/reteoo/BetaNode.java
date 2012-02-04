@@ -411,7 +411,9 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple rightTuple = removeRightTuple(modifyPreviousTuples);
 
         if (context.getModificationMask() == Long.MAX_VALUE ||
+                intersect(context.getModificationMask(), context.getPropagationMask()) ||
                 intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory))) {
+
             // Propagate only if listened property mask intersects the modification one (slot specific)
             if ( rightTuple != null ) {
                 // RightTuple previously existed, so continue as modify

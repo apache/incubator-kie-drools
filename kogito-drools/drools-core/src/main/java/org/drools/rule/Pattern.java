@@ -154,6 +154,7 @@ public class Pattern
                                            this.objectType,
                                            identifier,
                                            this.declaration != null ? this.declaration.isInternalFact() : false );
+        clone.setListenedProperties( getListenedProperties() );
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
             if ( source instanceof From ) {

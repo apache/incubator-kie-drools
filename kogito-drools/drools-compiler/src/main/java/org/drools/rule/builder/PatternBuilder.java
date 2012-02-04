@@ -350,8 +350,7 @@ public class PatternBuilder
             List<String> settableProperties = getSettableProperties(context, patternDescr, pattern);
 
             List<String> listenedProperties = new ArrayList<String>();
-            String listenedPropertyPattern = listenedProps.getValue().toString();
-            for (String propertyName : listenedPropertyPattern.split(",")) {
+            for (String propertyName : listenedProps.getValue().toString().split(",")) {
                 propertyName = propertyName.trim();
                 if (propertyName.equals("*") || propertyName.equals("!*")) {
                     if (listenedProperties.contains("*") || listenedProperties.contains("!*")) {
