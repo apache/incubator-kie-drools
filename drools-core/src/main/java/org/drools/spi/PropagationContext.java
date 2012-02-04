@@ -90,4 +90,7 @@ public interface PropagationContext
     public void setActiveWindowTupleList( WindowTupleList list );
 
     long getModificationMask();
+
+    long getPropagationMask();
+    void setPropagationMask(long propagationMask);
 }

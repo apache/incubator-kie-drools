@@ -66,6 +66,8 @@ public class PropagationContextImpl
 
     private long modificationMask = Long.MAX_VALUE;
 
+    private transient long propagationMask = 0L;
+
     private WindowTupleList windowTupleList;
 
     public PropagationContextImpl() {
@@ -302,6 +304,14 @@ public class PropagationContextImpl
 
     public long getModificationMask() {
         return modificationMask;
+    }
+
+    public long getPropagationMask() {
+        return propagationMask;
+    }
+
+    public void setPropagationMask(long propagationMask) {
+        this.propagationMask = propagationMask;
     }
 
     public WindowTupleList getActiveWindowTupleList() {

@@ -56,6 +56,7 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           nextRightTupleSinkNode;
 
     private long listenedPropertyMask = -1L;
+    private long inferredMask = -1L;
 
     private List<String> listenedProperties;
 
@@ -151,8 +152,13 @@ public class AlphaNode extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
+        long propagationMask = context.getPropagationMask();
         if ( context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), getListenedPropertyMask(workingMemory)) ) {
+                intersect(context.getModificationMask(), propagationMask | getListenedPropertyMask(workingMemory)) ) {
+
+            if (listenedPropertyMask > 0) {
+                context.setPropagationMask(propagationMask | listenedPropertyMask);
+            }
 
             final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
             if ( this.constraint.isAllowed( factHandle,
@@ -163,6 +169,8 @@ public class AlphaNode extends ObjectSource
                         context,
                         workingMemory );
             }
+
+            context.setPropagationMask(propagationMask);
         } else {
             byPassModifyToBetaNode(modifyPreviousTuples);
         }
@@ -370,18 +378,19 @@ public class AlphaNode extends ObjectSource
     }
 
     private long inferListenedMask(List<String> settableProperties) {
+        if (inferredMask >= 0L) return inferredMask;
         if (settableProperties == null || !(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
-        long mask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+        inferredMask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
         for (ObjectSink objectSink : sink.getSinks()) {
             if (objectSink instanceof AlphaNode) {
-                mask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
-                if (mask == Long.MAX_VALUE) break;
+                inferredMask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
+                if (inferredMask == Long.MAX_VALUE) break;
             } else if (objectSink instanceof BetaNode) {
-                mask |= ((BetaNode)objectSink).inferListenedMask(settableProperties);
-                if (mask == Long.MAX_VALUE) break;
+                inferredMask |= ((BetaNode)objectSink).inferListenedMask(settableProperties);
+                if (inferredMask == Long.MAX_VALUE) break;
             }
         }
-        return mask;
+        return inferredMask;
     }
 
     private ObjectTypeNode getObjectTypeNode() {
