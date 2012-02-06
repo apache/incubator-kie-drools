@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#created on: 31.10.2007
+//created on: 31.10.2007
 package org.drools.test
 
-#list any import classes here.
+//list any import classes here.
 
 
 
-#declare any global variables here
+//declare any global variables here
 
 
 

@@ -1,5 +1,5 @@
-#the purpose of this is to see what happens when we have some partially damaged syntax
-#as the IDE uses the parsers AST to work out completion suggestions.
+//the purpose of this is to see what happens when we have some partially damaged syntax
+//as the IDE uses the parsers AST to work out completion suggestions.
 package test
 
 

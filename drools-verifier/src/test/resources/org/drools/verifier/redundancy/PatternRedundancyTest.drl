@@ -74,9 +74,9 @@ rule "Pattern redundancy without restrictions 4b"
         System.out.println( "Test" );
 end
 
-#
-# With restrictions.
-#
+//
+// With restrictions.
+//
 
 rule "Pattern redundancy with restrictions 1a"
     when

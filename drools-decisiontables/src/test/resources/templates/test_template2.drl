@@ -6,7 +6,7 @@ valida
 validb[]
 
 package rulesetName;
-#generated from Decision Table
+//generated from Decision Table
 
 
 template "mine"

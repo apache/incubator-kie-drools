@@ -4,7 +4,7 @@ type
 log
 
 package Some_business_rules;
-#generated from Decision Table
+//generated from Decision Table
 import org.drools.decisiontable.Cheese;
 import org.drools.decisiontable.Person;
 global java.util.List list;

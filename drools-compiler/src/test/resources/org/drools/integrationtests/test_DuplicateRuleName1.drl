@@ -1,9 +1,9 @@
 package Some_business_rules;
-#generated from Decision Table
+//generated from Decision Table
 import org.drools.Cheese;
 import org.drools.Person;
 global java.util.List list;
-#From row number: 17
+//From row number: 17
 rule "Cheese fans_17"
  
  salience 65519
@@ -14,7 +14,7 @@ rule "Cheese fans_17"
   list.add("Old man stilton");
 end
 
-#From row number: 18
+//From row number: 18
 rule "Cheese fans_18"
  
  salience 65518

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#
-# created on: 5.6.2008
-#
-# Rules in this package look for patterns and rules that can never be satisfied.
-#
-#
+//
+// created on: 5.6.2008
+//
+// Rules in this package look for patterns and rules that can never be satisfied.
+//
+//
 package org.drools.verifier.alwaysFalse
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.SubRule;
 
@@ -40,17 +40,17 @@ import java.util.HashMap;
 
 global VerifierReport result;
 
-#
-# Finds rules that are always false.
-#
-# Dependencies:
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.incompatibility;
-#            rule "Incompatible Patterns"
-#
-# Example:
-#        Pattern( a == b && a != b )
-#
+//
+// Finds rules that are always false.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.incompatibility;
+//            rule "Incompatible Patterns"
+//
+// Example:
+//        Pattern( a == b && a != b )
+//
 rule "Rule that is always false"
     when
         $r :VerifierRule()

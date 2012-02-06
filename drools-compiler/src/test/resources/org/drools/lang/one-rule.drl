@@ -1,17 +1,17 @@
-# Example DRL with only a package decl
-#
+// Example DRL with only a package decl
+//
 
 // yes, you can use silly java comments
 
 package org.drools.lang; 
 
-# semi colons are optional, we're line-centric
+// semi colons are optional, we're line-centric
 
 import java.util.List
 import java.util.ArrayList;
 
-# use expanders for domain specific and pseudo natural language extensions
-# use expander foo;
+// use expanders for domain specific and pseudo natural language extensions
+// use expander foo;
 
 
 rule find seating

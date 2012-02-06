@@ -1,4 +1,4 @@
-#this is for showing off all the new multi restriction stuff
+//this is for showing off all the new multi restriction stuff
 
 rule simple_rule 
   when

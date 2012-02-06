@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 24.9.2007
+//created on: 24.9.2007
 package org.drools.verifier.rangeChecks.cleanUp
 
 import org.drools.base.evaluators.Operator;
@@ -25,36 +25,36 @@ import org.drools.verifier.report.components.MissingNumberPattern;
 
 import org.drools.verifier.data.VerifierReport;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# Merges existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#         package org.drools.verifier.rangeChecks.patterns;
-#            rule "Range check for number patterns"
-#            rule "Range check for number patterns, !="
-#        package org.drools.verifier.rangeChecks.integers
-#            rule "Range check for integers, if smaller than or equal is missing"
-#            rule "Range check for integers, if greater than or equal is missing"
-#            rule "Range check for integers, equal and greater than"
-#            rule "Range check for integers, equal and smaller than"
-#        package org.drools.verifier.rangeChecks.doubles
-#            rule "Range check for doubles, if smaller than or equal is missing"
-#            rule "Range check for doubles, if greater than or equal is missing"
-#            rule "Range check for doubles, equal and greater than"
-#            rule "Range check for doubles, equal and smaller than"
-#        package org.drools.verifier.rangeChecks.dates
-#            rule "Range check for dates, if smaller than or equal is missing"
-#            rule "Range check for dates, if greater than or equal is missing"
-#            rule "Range check for dates, equal and greater than"
-#            rule "Range check for dates, equal and smaller than"
-#
-# Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
-#
+//
+// Merges existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//         package org.drools.verifier.rangeChecks.patterns;
+//            rule "Range check for number patterns"
+//            rule "Range check for number patterns, !="
+//        package org.drools.verifier.rangeChecks.integers
+//            rule "Range check for integers, if smaller than or equal is missing"
+//            rule "Range check for integers, if greater than or equal is missing"
+//            rule "Range check for integers, equal and greater than"
+//            rule "Range check for integers, equal and smaller than"
+//        package org.drools.verifier.rangeChecks.doubles
+//            rule "Range check for doubles, if smaller than or equal is missing"
+//            rule "Range check for doubles, if greater than or equal is missing"
+//            rule "Range check for doubles, equal and greater than"
+//            rule "Range check for doubles, equal and smaller than"
+//        package org.drools.verifier.rangeChecks.dates
+//            rule "Range check for dates, if smaller than or equal is missing"
+//            rule "Range check for dates, if greater than or equal is missing"
+//            rule "Range check for dates, equal and greater than"
+//            rule "Range check for dates, equal and smaller than"
+//
+// Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
+//
 rule "Merge gaps"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -83,21 +83,21 @@ rule "Merge gaps"
 end
 
 /*
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.integers
-#            rule "Range check for integers, if smaller than or equal is missing"
-#            rule "Range check for integers, if greater than or equal is missing"
-#            rule "Range check for integers, equal and greater than"
-#            rule "Range check for integers, equal and smaller than"
-#
-# Example: covered ( x > 10 ), ( x > 70 ) ( x < 100 )and ( x == 50 )
-#             reports that ( x < 50 ), ( x > 50 ) and ( x <= 70 ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.integers
+//            rule "Range check for integers, if smaller than or equal is missing"
+//            rule "Range check for integers, if greater than or equal is missing"
+//            rule "Range check for integers, equal and greater than"
+//            rule "Range check for integers, equal and smaller than"
+//
+// Example: covered ( x > 10 ), ( x > 70 ) ( x < 100 )and ( x == 50 )
+//             reports that ( x < 50 ), ( x > 50 ) and ( x <= 70 ) is missing.
+//
 rule "Remove useless integer gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -126,32 +126,32 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 
         # gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
         $gap :Gap(
-#            restriction.fieldPath == $lower.fieldPath,
-#            restriction.patternIsNot == $lower.patternIsNot,
-#            restriction.value > $lower.value,
+//            restriction.fieldPath == $lower.fieldPath,
+//            restriction.patternIsNot == $lower.patternIsNot,
+//            restriction.value > $lower.value,
             restriction.value < $higher.value
         )
     then
-#        retract( $gap );
-#        result.remove( $gap );
+//        retract( $gap );
+//        result.remove( $gap );
 end
 
 
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.integers
-#            rule "Range check for integers, if smaller than or equal is missing"
-#            rule "Range check for integers, if greater than or equal is missing"
-#            rule "Range check for integers, equal and greater than"
-#            rule "Range check for integers, equal and smaller than"
-#
-# Example: covered ( x > 10 ), ( x < 70 ) ( x < 100 )and ( x == 50 )
-#            reports that ( x < 50 ), ( x > 50 ) and ( x >= 70 ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.integers
+//            rule "Range check for integers, if smaller than or equal is missing"
+//            rule "Range check for integers, if greater than or equal is missing"
+//            rule "Range check for integers, equal and greater than"
+//            rule "Range check for integers, equal and smaller than"
+//
+// Example: covered ( x > 10 ), ( x < 70 ) ( x < 100 )and ( x == 50 )
+//            reports that ( x < 50 ), ( x > 50 ) and ( x >= 70 ) is missing.
+//
 rule "Remove useless integer gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -190,21 +190,21 @@ rule "Remove useless integer gaps greater or greater and equal"
         result.remove( $gap );
 end
 
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.doubles
-#            rule "Range check for doubles, if smaller than or equal is missing"
-#            rule "Range check for doubles, if greater than or equal is missing"
-#            rule "Range check for doubles, equal and greater than"
-#            rule "Range check for doubles, equal and smaller than"
-#
-# Example: covered ( x > 10.0 ), ( x > 70.0 ) ( x < 100.0 )and ( x == 50.0 )
-#             reports that ( x < 50.0 ), ( x > 50.0 ) and ( x <= 70.0 ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.doubles
+//            rule "Range check for doubles, if smaller than or equal is missing"
+//            rule "Range check for doubles, if greater than or equal is missing"
+//            rule "Range check for doubles, equal and greater than"
+//            rule "Range check for doubles, equal and smaller than"
+//
+// Example: covered ( x > 10.0 ), ( x > 70.0 ) ( x < 100.0 )and ( x == 50.0 )
+//             reports that ( x < 50.0 ), ( x > 50.0 ) and ( x <= 70.0 ) is missing.
+//
 rule "Remove useless double gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -243,21 +243,21 @@ rule "Remove useless double gaps lesser or lesser and equal"
         result.remove( $gap );
 end
 
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.doubles
-#            rule "Range check for doubles, if smaller than or equal is missing"
-#            rule "Range check for doubles, if greater than or equal is missing"
-#            rule "Range check for doubles, equal and greater than"
-#            rule "Range check for doubles, equal and smaller than"
-#
-# Example: covered ( x > 10.0 ), ( x < 70.0 ) ( x < 100.0 )and ( x == 50.0 )
-# reports that ( x < 50.0 ), ( x > 50.0 ) and ( x >= 70.0 ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.doubles
+//            rule "Range check for doubles, if smaller than or equal is missing"
+//            rule "Range check for doubles, if greater than or equal is missing"
+//            rule "Range check for doubles, equal and greater than"
+//            rule "Range check for doubles, equal and smaller than"
+//
+// Example: covered ( x > 10.0 ), ( x < 70.0 ) ( x < 100.0 )and ( x == 50.0 )
+// reports that ( x < 50.0 ), ( x > 50.0 ) and ( x >= 70.0 ) is missing.
+//
 rule "Remove useless double gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -296,21 +296,21 @@ rule "Remove useless double gaps greater or greater and equal"
         result.remove( $gap );
 end
 
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.dates
-#            rule "Range check for dates, if smaller than or equal is missing"
-#            rule "Range check for dates, if greater than or equal is missing"
-#            rule "Range check for dates, equal and greater than"
-#            rule "Range check for dates, equal and smaller than"
-#
-# Example: covered ( x > "01-Oct-2007" ), ( x > "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
-# reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x <= "15-Oct-2007" ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.dates
+//            rule "Range check for dates, if smaller than or equal is missing"
+//            rule "Range check for dates, if greater than or equal is missing"
+//            rule "Range check for dates, equal and greater than"
+//            rule "Range check for dates, equal and smaller than"
+//
+// Example: covered ( x > "01-Oct-2007" ), ( x > "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
+// reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x <= "15-Oct-2007" ) is missing.
+//
 rule "Remove useless date gaps lesser or lesser and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -350,21 +350,21 @@ rule "Remove useless date gaps lesser or lesser and equal"
 end
 
 
-#
-# Removes existing gaps from working memory. Cleans out the data for actual reporting.
-#
-# Type: None
-# Dependencies: Needs at least one of the following packages or rules to fire.
-#
-#        package org.drools.verifier.rangeChecks.dates
-#            rule "Range check for dates, if smaller than or equal is missing"
-#            rule "Range check for dates, if greater than or equal is missing"
-#            rule "Range check for dates, equal and greater than"
-#            rule "Range check for dates, equal and smaller than"
-#
-# Example: covered ( x > "01-Oct-2007" ), ( x < "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
-# reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x >= "15-Oct-2007" ) is missing.
-#
+//
+// Removes existing gaps from working memory. Cleans out the data for actual reporting.
+//
+// Type: None
+// Dependencies: Needs at least one of the following packages or rules to fire.
+//
+//        package org.drools.verifier.rangeChecks.dates
+//            rule "Range check for dates, if smaller than or equal is missing"
+//            rule "Range check for dates, if greater than or equal is missing"
+//            rule "Range check for dates, equal and greater than"
+//            rule "Range check for dates, equal and smaller than"
+//
+// Example: covered ( x > "01-Oct-2007" ), ( x < "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
+// reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x >= "15-Oct-2007" ) is missing.
+//
 rule "Remove useless date gaps greater or greater and equal"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when

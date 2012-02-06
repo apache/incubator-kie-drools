@@ -1,11 +1,11 @@
 package org.drools.integrationtests
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.SecondClass;
 import org.drools.SecondClass.AlternativeKey;
 
 
-#declare any global variables here
+//declare any global variables here
 
 rule "Second Class"
 

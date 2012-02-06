@@ -1,9 +1,9 @@
-# Example DRL with expansion 
-# (ie "domain specific language")
+// Example DRL with expansion
+// (ie "domain specific language")
 
-# declare expanders for domain specific and natural language extensions
+// declare expanders for domain specific and natural language extensions
 use expander cheese.dsl.properties
-#this one is just a simple properties file
+//this one is just a simple properties file
 
 
 rule cheese_rules

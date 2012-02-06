@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 7.6.2007
+//created on: 7.6.2007
 package org.drools.verifier.rangeChecks.patterns;
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.base.evaluators.Operator;
 
 import org.drools.verifier.components.*;
@@ -30,16 +30,16 @@ import org.drools.verifier.data.VerifierReport;
 import java.util.ArrayList;
 import java.util.List;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# If all pattern ranges are not checked for a field.
-# 
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
-#                     then Foo( bar == 30 ) is missing.
+//
+// If all pattern ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
+//                     then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -75,13 +75,13 @@ rule "Range check for number patterns"
         }
 end
 
-#
-# If all pattern ranges are not checked for a field.
-# 
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
-#                     then Foo( bar == 30 ) is missing.
+//
+// If all pattern ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
+//                     then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns, !="
     @verifying_scopes(["knowledge-package", "decision-table"])
     when

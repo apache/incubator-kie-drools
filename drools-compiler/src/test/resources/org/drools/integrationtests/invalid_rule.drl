@@ -2,7 +2,7 @@ package org.drools.test;
 
 import org.drools.Cheese;
 
-#error 1) missing a person import
+//error 1) missing a person import
 
 
 global java.util.List list;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 8.1.2008
+//created on: 8.1.2008
 package org.drools.verifier.subsumption.patterns
 
 import org.drools.verifier.components.Restriction;
@@ -30,21 +30,21 @@ import org.drools.verifier.data.VerifierReport;
 
 import java.util.ArrayList;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result
 
-#
-# Fires when two pattern possibilities are subsumptant.
-# Creates a Subsumption object.
-#
-# Dependencies: Needs at least one rule.
-#
-#        package org.drools.verifier.redundancy.patterns
-#            rule "Find redundant Patterns with restrictions"
-#            rule "Find redundant Patterns without restrictions"
-#
-# Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
-#
+//
+// Fires when two pattern possibilities are subsumptant.
+// Creates a Subsumption object.
+//
+// Dependencies: Needs at least one rule.
+//
+//        package org.drools.verifier.redundancy.patterns
+//            rule "Find redundant Patterns with restrictions"
+//            rule "Find redundant Patterns without restrictions"
+//
+// Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
+//
 rule "Find subsumptant sub patterns, subsumptant source"
     when
 
@@ -98,18 +98,18 @@ rule "Find subsumptant sub patterns, subsumptant source"
         );
 end
 
-#
-# Fires when two pattern possibilities are subsumptant.
-# Creates a Subsumption object.
-#
-# Dependencies: Needs at least one rule.
-#
-#        package org.drools.verifier.redundancy.patterns
-#            rule "Find redundant Patterns with restrictions"
-#            rule "Find redundant Patterns without restrictions"
-#
-# Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
-#
+//
+// Fires when two pattern possibilities are subsumptant.
+// Creates a Subsumption object.
+//
+// Dependencies: Needs at least one rule.
+//
+//        package org.drools.verifier.redundancy.patterns
+//            rule "Find redundant Patterns with restrictions"
+//            rule "Find redundant Patterns without restrictions"
+//
+// Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
+//
 rule "Find subsumptant sub patterns, same source"
     when
 

@@ -1,7 +1,7 @@
-#created on: 27-Jun-2007
+//created on: 27-Jun-2007
 package org.drools.test
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.Cheesery;
@@ -3408,4 +3408,3 @@ rule "Person and cheese_200"
         list.add($p.getName());
     
 end
-        

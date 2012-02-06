@@ -131,9 +131,9 @@ rule "Double gap rule 9b"
 end
 
 /*
-#
-# These rules have gaps
-#
+//
+// These rules have gaps
+//
 rule "Double range 1a, has gap"
     when
             Foo1( value > 42.0 )
@@ -260,9 +260,9 @@ rule "Double range 11b, has gap"
         System.out.println( "Test" );
 end
 
-#
-# Not rules that have gaps.
-#
+//
+// Not rules that have gaps.
+//
 
 rule "Double range 12a, has gap"
     when
@@ -390,9 +390,9 @@ rule "Double range 22b, has gap"
         System.out.println( "Test" );
 end
 
-#
-# No gaps
-#
+//
+// No gaps
+//
 
 rule "Double range 23a, no gap"
     when

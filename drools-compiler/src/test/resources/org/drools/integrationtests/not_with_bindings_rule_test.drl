@@ -2,7 +2,7 @@ package org.drools.test;
 
 import org.drools.Cheese;
 
-#this was missing Person
+//this was missing Person
 import org.drools.Person;
 
 global java.util.List list;

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#created on: 12.10.2007
+//created on: 12.10.2007
 package org.drools.verifier.redundancy
 
-#list any import classes here.
+//list any import classes here.
 global VerifierReport result;
 
 
 
-#declare any global variables here
+//declare any global variables here
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -39,14 +39,14 @@ import java.util.Map;
 import java.util.HashMap;
 
 
-#
-# Dependencies:
-#
-#    Needs at least one rule from following rules:
-#        package org.drools.verifier.redundancy.restrictions
-#            rule "Find redundant VariableRestriction"
-#            rule "Find redundant LiteralRestriction"
-#
+//
+// Dependencies:
+//
+//    Needs at least one rule from following rules:
+//        package org.drools.verifier.redundancy.restrictions
+//            rule "Find redundant VariableRestriction"
+//            rule "Find redundant LiteralRestriction"
+//
 rule "Find redundant restrictions from pattern possibilities"
     salience -100
     when
@@ -72,12 +72,12 @@ rule "Find redundant restrictions from pattern possibilities"
                         causes ) );
 end
 
-#
-# Dependencies:
-#
-#        package org.drools.verifier.redundancy.possibilities
-#            rule "Find pattern possibility redundancy"
-#
+//
+// Dependencies:
+//
+//        package org.drools.verifier.redundancy.possibilities
+//            rule "Find pattern possibility redundancy"
+//
 rule "Find redundant pattern possibilities from rule possibilities"
     salience -100
     when

@@ -1,5 +1,5 @@
 
-# fire once, for a String, create an Integer, halt!
+// fire once, for a String, create an Integer, halt!
 rule x
 timer(int:0 1000)
 when

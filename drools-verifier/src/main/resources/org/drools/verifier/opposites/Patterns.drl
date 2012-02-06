@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 2.6.2008
+//created on: 2.6.2008
 package org.drools.verifier.opposites
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.SubPattern;
 
@@ -25,27 +25,27 @@ import org.drools.verifier.report.components.Opposites;
 
 import org.drools.verifier.data.VerifierReport;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
 
-#
-# Pattern possibilities are opposites if all of the restrictions are opposites.
-#
-# Dependencies:
-#
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.opposites;
-#            rule "Opposite LiteralRestrictions"
-#            rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
-#            rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
-#            rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
-#            rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
-#
-# Example: 
-#            Pattern( a < b)
-#            Pattern( a >= b )
-#
+//
+// Pattern possibilities are opposites if all of the restrictions are opposites.
+//
+// Dependencies:
+//
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.opposites;
+//            rule "Opposite LiteralRestrictions"
+//            rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
+//            rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
+//            rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
+//            rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
+//
+// Example:
+//            Pattern( a < b)
+//            Pattern( a >= b )
+//
 rule "Opposite Patterns"
     when
         $opposites :Opposites()

@@ -1,16 +1,16 @@
 package org.drools;
 
-# default dialect
+// default dialect
 dialect "mvel"
 
-# flag as event
+// flag as event
 declare StockTick
     @role( event )
 end
 
 global java.util.List results
 
-# simple rule
+// simple rule
 rule "stream input test"
 when
    $st: StockTick() from entry-point "in-channel"

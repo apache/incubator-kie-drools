@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 18.10.2007
+//created on: 18.10.2007
 package org.drools.verifier.consequence
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.TextConsequence;
 import org.drools.verifier.report.components.VerifierMessage;
@@ -28,7 +28,7 @@ import org.drools.verifier.report.components.MessageType;
 import java.util.Map;
 import java.util.HashMap;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
 

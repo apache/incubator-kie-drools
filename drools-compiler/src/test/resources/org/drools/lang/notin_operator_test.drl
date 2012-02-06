@@ -1,4 +1,4 @@
-#testing not 'in' operator
+//testing not 'in' operator
 
 rule simple_rule 
   when

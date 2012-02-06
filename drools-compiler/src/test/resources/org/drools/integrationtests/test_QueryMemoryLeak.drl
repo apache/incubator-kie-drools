@@ -1,4 +1,4 @@
-#created on: May 11, 2009
+//created on: May 11, 2009
 package org.drools
 
 query getWorker(String _id)

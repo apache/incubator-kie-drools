@@ -1,6 +1,6 @@
 package org.acme.insurance;
-#generated from Decision Table
-#From row number: 10
+//generated from Decision Table
+//From row number: 10
 /*rule "Pricing bracket_10"
 
     when
@@ -10,7 +10,7 @@ package org.acme.insurance;
         policy.setBasePrice(450);
 end
 
-#From row number: 11
+//From row number: 11
 rule "Pricing bracket_11"
 
     when
@@ -21,7 +21,7 @@ rule "Pricing bracket_11"
         // System.out.println("Priors not relevant");
 end
 
-#From row number: 12
+//From row number: 12
 rule "Pricing bracket_12"
 
     when
@@ -31,7 +31,7 @@ rule "Pricing bracket_12"
         policy.setBasePrice(300);
 end
 
-#From row number: 13
+//From row number: 13
 rule "Pricing bracket_13"
 
     when
@@ -41,7 +41,7 @@ rule "Pricing bracket_13"
         policy.setBasePrice(150);
 end
 
-#From row number: 14
+//From row number: 14
 rule "Pricing bracket_14"
 
     when
@@ -52,7 +52,7 @@ rule "Pricing bracket_14"
         // System.out.println("Safe driver discount");
 end
 
-#From row number: 15
+//From row number: 15
 rule "Pricing bracket_15"
 
     when
@@ -62,7 +62,7 @@ rule "Pricing bracket_15"
         policy.setBasePrice(700);
 end
 
-#From row number: 16
+//From row number: 16
 rule "Pricing bracket_16"
 
     when
@@ -73,7 +73,7 @@ rule "Pricing bracket_16"
         // System.out.println("Location risk");
 end
 
-#From row number: 17
+//From row number: 17
 rule "Pricing bracket_17"
 
     when
@@ -84,7 +84,7 @@ rule "Pricing bracket_17"
         // System.out.println("Location risk");
 end
 */
-#From row number: 18
+//From row number: 18
 rule "Pricing bracket_18"
 
     when
@@ -95,7 +95,7 @@ rule "Pricing bracket_18"
         // System.out.println("Cheapest possible");
 end
 /*
-#From row number: 19
+//From row number: 19
 rule "Pricing bracket_19"
 
     when
@@ -105,7 +105,7 @@ rule "Pricing bracket_19"
         policy.setBasePrice(300);
 end
 
-#From row number: 20
+//From row number: 20
 rule "Pricing bracket_20"
 
     when
@@ -115,7 +115,7 @@ rule "Pricing bracket_20"
         policy.setBasePrice(590);
 end
 
-#From row number: 21
+//From row number: 21
 rule "Pricing bracket_21"
 
     when
@@ -126,7 +126,7 @@ rule "Pricing bracket_21"
         // System.out.println("High risk");
 end
 
-#From row number: 30
+//From row number: 30
 rule "Discounts_30"
 
     when
@@ -136,7 +136,7 @@ rule "Discounts_30"
         policy.applyDiscount(1);
 end
 
-#From row number: 31
+//From row number: 31
 rule "Discounts_31"
 
     when
@@ -146,7 +146,7 @@ rule "Discounts_31"
         policy.applyDiscount(2);
 end
 */
-#From row number: 32
+//From row number: 32
 rule "Discounts_32"
 
     when
@@ -156,7 +156,7 @@ rule "Discounts_32"
         policy.applyDiscount(5);
 end
 
-#From row number: 33
+//From row number: 33
 rule "Discounts_33"
 
     when
@@ -166,7 +166,7 @@ rule "Discounts_33"
         policy.applyDiscount(1);
 end
 
-#From row number: 34
+//From row number: 34
 rule "Discounts_34"
 
     when

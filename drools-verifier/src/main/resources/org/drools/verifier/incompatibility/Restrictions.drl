@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 23.02.2008
+//created on: 23.02.2008
 package org.drools.verifier.incompatibility
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.VariableRestriction;
@@ -27,12 +27,12 @@ import org.drools.verifier.report.components.Incompatibility;
 import org.drools.base.evaluators.Operator;
 
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: IncorencePattern( a < 1 && a == 10 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: IncorencePattern( a < 1 && a == 10 )
+//
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
     when
         $r1 :NumberRestriction(
@@ -52,12 +52,12 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
         insert( new Incompatibility( $r1, $r2 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: IncorencePattern( a > 10 && a == 1 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: IncorencePattern( a > 10 && a == 1 )
+//
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
     when
         $r1 :NumberRestriction(
@@ -77,12 +77,12 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
         insert( new Incompatibility( $r1, $r2 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
+//
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
     when
         $r1 :LiteralRestriction(
@@ -102,12 +102,12 @@ rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impos
         insert( new Incompatibility( $r1, $r2 ) );
 end
 
-#
-# If two VariableRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a > $var, a < $var )
-#
+//
+// If two VariableRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a > $var, a < $var )
+//
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
     when
         $r1 :VariableRestriction(

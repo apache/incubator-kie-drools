@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 7.6.2007
+//created on: 7.6.2007
 package org.drools.verifier.rangeChecks.dates;
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.base.evaluators.Operator;
 
 import org.drools.verifier.components.*;
@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
 function boolean checkDates(Date d1, Date d2, boolean up) {
@@ -43,13 +43,13 @@ function boolean checkDates(Date d1, Date d2, boolean up) {
         return ( 0 == c1.compareTo( c2 ) );
 }
 
-# If all ranges are not checked for a field.
-# 
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar > "27-Oct-2007" ) 
-#                        and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
-#
+// If all ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar > "27-Oct-2007" )
+//                        and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
+//
 rule "Range check for dates, if smaller than or equal is missing"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -77,13 +77,13 @@ rule "Range check for dates, if smaller than or equal is missing"
         insert( gap );
 end
 
-# If all ranges are not checked for a field.
-# 
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar < "27-Oct-2007" ) 
-#                        and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
-#
+// If all ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar < "27-Oct-2007" )
+//                        and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
+//
 rule "Range check for dates, if greater than or equal is missing"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -109,14 +109,14 @@ rule "Range check for dates, if greater than or equal is missing"
         insert( gap );
 end
 
-# If all ranges are not checked for a field.
-#
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar <= "27-Oct-2007" ) 
-#                     and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" )
-#                        then Foo( bar > "27-Oct-2007" ) is missing.
-#
+// If all ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar <= "27-Oct-2007" )
+//                     and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" )
+//                        then Foo( bar > "27-Oct-2007" ) is missing.
+//
 rule "Range check for dates, equal and greater than"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when
@@ -150,14 +150,14 @@ rule "Range check for dates, equal and greater than"
         insert( gap );
 end
 
-# If all ranges are not checked for a field.
-#
-# Type: Warning
-# Dependencies: None
-# Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar >= "27-Oct-2007" ) 
-#                     and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" )
-#                        then Foo( bar < "27-Oct-2007" ) is missing.
-#
+// If all ranges are not checked for a field.
+//
+// Type: Warning
+// Dependencies: None
+// Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar >= "27-Oct-2007" )
+//                     and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" )
+//                        then Foo( bar < "27-Oct-2007" ) is missing.
+//
 rule "Range check for dates, equal and smaller than"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when

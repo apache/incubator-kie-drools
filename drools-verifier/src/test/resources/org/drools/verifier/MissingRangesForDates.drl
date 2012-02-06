@@ -138,9 +138,9 @@ rule "Date gap rule 9c"
 end
 
 /*
-#
-# These rules have gaps
-#
+//
+// These rules have gaps
+//
 rule "Date range 1a, has gap"
     when
             Foo1( value > "27-Oct-2007" )
@@ -267,9 +267,9 @@ rule "Date range 11b, has gap"
         System.out.println( "Test" );
 end
 
-#
-# Not rules that have gaps.
-#
+//
+// Not rules that have gaps.
+//
 
 rule "Date range 12a, has gap"
     when
@@ -397,9 +397,9 @@ rule "Date range 22b, has gap"
         System.out.println( "Test" );
 end
 
-#
-# No gaps
-#
+//
+// No gaps
+//
 
 rule "Date range 23a, no gap"
     when
