@@ -409,7 +409,7 @@ then
     ... // actions (executed once)
 end
 
-# The above rule is internally rewritten as:
+// The above rule is internally rewritten as:
 
 rule "eval(true)"
 when
@@ -436,7 +436,7 @@ then
     ... // actions
 end
 
-# The above rule is internally rewritten as:
+// The above rule is internally rewritten as:
 
 rule "2 and connected patterns"
 when
@@ -1620,7 +1620,7 @@ when
     forall( $bus : Bus( type == 'english') 
                    Bus( this == $bus, color = 'red' ) )
 then
-    # all english buses are red
+    // all English buses are red
 end</programlisting>
 
         <para>In the above rule, we "select" all Bus objects whose type is
@@ -1639,7 +1639,7 @@ end</programlisting>
 when
     forall( Bus( color == 'red' ) )
 then
-    # all asserted Bus facts are red
+    // all Bus facts are red
 end</programlisting>
         </example>
 
@@ -1656,7 +1656,7 @@ when
             DentalCare( employee == $emp )
           )
 then
-    # all employees have health and dental care
+    // all employees have health and dental care
 end</programlisting>
         </example>
 
@@ -1676,7 +1676,7 @@ when
                   DentalCare( employee == $emp ) ) 
         )
 then
-    # not all employees have health and dental care
+    // not all employees have health and dental care
 end</programlisting>
         </example>
 
@@ -1728,7 +1728,7 @@ when
     Person( $personAddress : address ) 
     Address( zipcode == "23920W") from $personAddress 
 then
-    # zip code is ok
+    // zip code is ok
 end</programlisting>
 
         <para>With all the flexibility from the new expressiveness in the
@@ -1741,7 +1741,7 @@ when
     $p : Person( ) 
     $a : Address( zipcode == "23920W") from $p.address 
 then
-    # zip code is ok
+    // zip code is ok
 end</programlisting>
 
         <para>Previous examples were evaluations using a single pattern. The
@@ -1756,7 +1756,7 @@ when
     $order : Order()
     $item  : OrderItem( value &gt; 100 ) from $order.items
 then
-    # apply discount to $item
+    // apply discount to $item
 end</programlisting>
 
         <para>The above example will cause the rule to fire once for each item
@@ -1775,7 +1775,7 @@ when
     $p : Person( ) 
     $a : Address( state == "NC") from $p.address 
 then
-    modify ($p) {} #Assign person to sales region 1 in a modify block
+    modify ($p) {} // Assign person to sales region 1 in a modify block
 end
 
 rule "Apply a discount to people in the city of Raleigh"
@@ -1785,7 +1785,7 @@ when
     $p : Person( ) 
     $a : Address( city == "Raleigh") from $p.address 
 then
-    modify ($p) {} #Apply discount to person in a modify block
+    modify ($p) {} // Apply discount to person in a modify block
 end</programlisting>
 
         <para>In the above example, persons in Raleigh, NC should be assigned
@@ -1846,7 +1846,7 @@ lock-on-active true
 when
     $p : Person(address.state == "NC" )  
 then
-    modify ($p) {} #Assign person to sales region 1 in a modify block
+    modify ($p) {} // Assign person to sales region 1 in a modify block
 end
 
 rule "Apply a discount to people in the city of Raleigh"
@@ -1855,7 +1855,7 @@ lock-on-active true
 when
     $p : Person(address.city == "Raleigh" )  
 then
-    modify ($p) {} #Apply discount to person in a modify block
+    modify ($p) {} //Apply discount to person in a modify block
 end</programlisting>
 
         <para>Now, you will find that both rules fire as expected. However, it
@@ -1878,7 +1878,7 @@ when
     $p : Person($addresses : addresses)
     exists (Address(state == "NC") from $addresses)  
 then
-    modify ($p) {} #Assign person to sales region 1 in a modify block
+    modify ($p) {} // Assign person to sales region 1 in a modify block
 end
 
 rule "Apply a discount to people in the city of Raleigh"
@@ -1888,7 +1888,7 @@ when
     $p : Person($addresses : addresses)
     exists (Address(city == "Raleigh") from $addresses)  
 then
-    modify ($p) {} #Apply discount to person in a modify block
+    modify ($p) {} // Apply discount to person in a modify block
 end</programlisting>
 
         <para>However, the following slightly different approach does exhibit
@@ -1903,7 +1903,7 @@ when
     $addresses : List() from $p.addresses
     exists (Address( state == "NC") from $addresses) 
 then
-    modify ($assessment) {} #Modify assessment in a modify block
+    modify ($assessment) {} // Modify assessment in a modify block
 end
 
 rule "Apply a discount to people in the city of Raleigh"
@@ -1915,7 +1915,7 @@ when
     $addresses : List() from $p.addresses 
     exists (Address( city == "Raleigh") from $addresses)
 then
-    modify ($assessment) {} #Modify assessment in a modify block
+    modify ($assessment) {} // Modify assessment in a modify block
 end</programlisting>
 
         <para>In the above example, the $addresses variable is returned from
@@ -1978,9 +1978,9 @@ when
     $alarms : ArrayList( size &gt;= 3 )
               from collect( Alarm( system == $system, status == 'pending' ) )
 then
-    # Raise priority, because system $system has
-    # 3 or more alarms pending. The pending alarms
-    # are $alarms.
+    // Raise priority, because system $system has
+    // 3 or more alarms pending. The pending alarms
+    // are $alarms.
 end</programlisting>
 
         <para>In the above example, the rule will look for all pending alarms
@@ -2019,7 +2019,7 @@ when
                              from $town.getPeople() 
                            )
 then
-    # send a message to all mothers
+    // send a message to all mothers
 end</programlisting>
       </section>
 
@@ -2081,7 +2081,7 @@ when
                 $avg : average( $temp );
                 $min &lt; 20, $avg &gt; 70 )
 then
-    # raise the alarm
+    // raise the alarm
 end</programlisting>
 
           <para>In the above example, min, max and average are Accumulate
@@ -2132,7 +2132,7 @@ when
     accumulate( OrderItem( order == $order, $cost : cost, $price : price );
                 $avgProfit : average( 1 - $cost / $price ) )
 then
-    # average profit for $order is $avgProfit
+    // average profit for $order is $avgProfit
 end</programlisting>
 
           <para>Accumulate Functions are all pluggable. That means that if
