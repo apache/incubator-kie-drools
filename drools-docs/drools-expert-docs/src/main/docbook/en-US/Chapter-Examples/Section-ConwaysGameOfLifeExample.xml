@@ -210,7 +210,7 @@ end</programlisting>
     ruleflow-group "evaluate"
     no-loop
 when
-#   A live cell has fewer than 2 live neighbors
+//  A live cell has fewer than 2 live neighbors
     theCell: Cell( liveNeighbors &lt; 2, cellState == CellState.LIVE,
                    phase == Phase.EVALUATE )
 then
@@ -223,7 +223,7 @@ rule "Kill The Overcrowded"
     ruleflow-group "evaluate"
     no-loop
 when
-#   A live cell has more than 3 live neighbors
+//  A live cell has more than 3 live neighbors
     theCell: Cell( liveNeighbors &gt; 3, cellState == CellState.LIVE,
                    phase == Phase.EVALUATE )
 then
@@ -236,7 +236,7 @@ rule "Give Birth"
     ruleflow-group "evaluate"
     no-loop
 when
-#   A dead cell has 3 live neighbors
+//  A dead cell has 3 live neighbors
     theCell: Cell( liveNeighbors == 3, cellState == CellState.DEAD,
                    phase == Phase.EVALUATE )
 then
