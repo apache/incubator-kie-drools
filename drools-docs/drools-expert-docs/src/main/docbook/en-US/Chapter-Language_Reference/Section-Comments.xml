@@ -16,18 +16,6 @@
   <section>
     <title>Single line comment</title>
 
-    <figure>
-      <title>Single line comment</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Chapter-Rule_Language/single_line_comment.png"
-                     format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
     <para>To create single line comments, you can use '//'. The parser will
     ignore anything in the line after the comment symbol. Example:</para>
 
@@ -41,7 +29,7 @@ end
 </programlisting>
 
     <warning>
-      <para>Drools also suppors for backward compatibility the use of '#' for
+      <para>Drools also supports for backward compatibility the use of '#' for
       single line comments, but this is deprecated and will be removed in
       future releases.</para>
     </warning>
