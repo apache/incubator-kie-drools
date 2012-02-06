@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 7.6.2007
+//created on: 7.6.2007
 package org.drools.verifier.rangeChecks.reports;
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.Field;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.drools.verifier.data.VerifierReport;
@@ -27,44 +27,44 @@ import org.drools.verifier.report.components.MessageType;
 
 import java.util.ArrayList;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result
 
 
-#
-# Dependencies:
-#
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.rangeChecks.patterns;
-#            rule "Range check for number patterns"
-#            rule "Range check for number patterns, !="
-#        package org.drools.verifier.rangeChecks.integers
-#            rule "Range check for integers, if smaller than or equal is missing"
-#            rule "Range check for integers, if greater than or equal is missing"
-#            rule "Range check for integers, equal and greater than"
-#            rule "Range check for integers, equal and smaller than"
-#        package org.drools.verifier.rangeChecks.doubles
-#            rule "Range check for doubles, if smaller than or equal is missing"
-#            rule "Range check for doubles, if greater than or equal is missing"
-#            rule "Range check for doubles, equal and greater than"
-#            rule "Range check for doubles, equal and smaller than"
-#        package org.drools.verifier.rangeChecks.dates
-#            rule "Range check for dates, if smaller than or equal is missing"
-#            rule "Range check for dates, if greater than or equal is missing"
-#            rule "Range check for dates, equal and greater than"
-#            rule "Range check for dates, equal and smaller than"
-#
-#    The following rules are used to clean up the data that this rule uses,
-#    but they are not always necessary:
-#        package org.drools.verifier.rangeChecks.cleanUp
-#            rule "Merge gaps"
-#            rule "Remove useless integer gaps lesser or lesser and equal"
-#            rule "Remove useless integer gaps greater or greater and equal"
-#            rule "Remove useless double gaps lesser or lesser and equal"
-#            rule "Remove useless double gaps greater or greater and equal"
-#            rule "Remove useless date gaps lesser or lesser and equal"
-#            rule "Remove useless date gaps greater or greater and equal"
-#
+//
+// Dependencies:
+//
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.rangeChecks.patterns;
+//            rule "Range check for number patterns"
+//            rule "Range check for number patterns, !="
+//        package org.drools.verifier.rangeChecks.integers
+//            rule "Range check for integers, if smaller than or equal is missing"
+//            rule "Range check for integers, if greater than or equal is missing"
+//            rule "Range check for integers, equal and greater than"
+//            rule "Range check for integers, equal and smaller than"
+//        package org.drools.verifier.rangeChecks.doubles
+//            rule "Range check for doubles, if smaller than or equal is missing"
+//            rule "Range check for doubles, if greater than or equal is missing"
+//            rule "Range check for doubles, equal and greater than"
+//            rule "Range check for doubles, equal and smaller than"
+//        package org.drools.verifier.rangeChecks.dates
+//            rule "Range check for dates, if smaller than or equal is missing"
+//            rule "Range check for dates, if greater than or equal is missing"
+//            rule "Range check for dates, equal and greater than"
+//            rule "Range check for dates, equal and smaller than"
+//
+//    The following rules are used to clean up the data that this rule uses,
+//    but they are not always necessary:
+//        package org.drools.verifier.rangeChecks.cleanUp
+//            rule "Merge gaps"
+//            rule "Remove useless integer gaps lesser or lesser and equal"
+//            rule "Remove useless integer gaps greater or greater and equal"
+//            rule "Remove useless double gaps lesser or lesser and equal"
+//            rule "Remove useless double gaps greater or greater and equal"
+//            rule "Remove useless date gaps lesser or lesser and equal"
+//            rule "Remove useless date gaps greater or greater and equal"
+//
 rule "Collect gaps"
     @verifying_scopes(["knowledge-package", "decision-table"])
     salience -100

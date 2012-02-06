@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 31.10.2007
+//created on: 31.10.2007
 package org.drools.verifier.missingEquality
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
@@ -36,16 +36,16 @@ import java.util.HashMap;
 
 
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# Informs that there are inequalities, but not equality being catered for.
-#
-# Type: Warning
-# Dependencies: None
-# Example: val != 10 when val == 10 is missing.
-#
+//
+// Informs that there are inequalities, but not equality being catered for.
+//
+// Type: Warning
+// Dependencies: None
+// Example: val != 10 when val == 10 is missing.
+//
 rule "Missing restriction in LiteralRestrictions"
     @verifying_scopes(["knowledge-package", "decision-table"])
     when

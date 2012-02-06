@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 02/11/2006
+//created on: 02/11/2006
 package org.drools.benchmark.waltzdb
 
 import org.drools.benchmark.waltzdb.Stage;
@@ -25,14 +25,14 @@ import org.drools.benchmark.waltzdb.Junction;
 import org.drools.benchmark.waltzdb.Label;
 import org.drools.benchmark.waltzdb.Illegal;
 /*
-# Reverse the edges
-#(p reverse_edges
-#    (stage ^value duplicate)
-#    (line ^p1 <p1> ^p2 <p2>)
-#    -->
-#    (make edge ^p1 <p1> ^p2 <p2> ^joined false)
-#   (make edge ^p1 <p2> ^p2 <p1> ^joined false)
-#    (remove 2))
+// Reverse the edges
+//(p reverse_edges
+//    (stage ^value duplicate)
+//    (line ^p1 <p1> ^p2 <p2>)
+//    -->
+//    (make edge ^p1 <p1> ^p2 <p2> ^joined false)
+//   (make edge ^p1 <p2> ^p2 <p1> ^joined false)
+//    (remove 2))
 */
 rule "reverse_edges"
     when
@@ -45,12 +45,12 @@ rule "reverse_edges"
         insert( new Edge( $p2, $p1, false ) );
         retract( $line );
 end
-# Reversing is done
-#(p done_reversing
-#    (stage ^value duplicate)
-#    - (line)
-#    -->
-#    (modify 1 ^value detect_junctions))
+// Reversing is done
+//(p done_reversing
+//    (stage ^value duplicate)
+//    - (line)
+//    -->
+//    (modify 1 ^value detect_junctions))
 rule "done_reversing"
     when
         $stage : Stage( value == Stage.DUPLICATE )

@@ -16,7 +16,7 @@
 
 package org.drools.verifier.rangeChecks.variables;
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Gap;
@@ -26,16 +26,16 @@ import java.util.TreeSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-#declare any global variables here
-#global VerifierReport result;
+//declare any global variables here
+//global VerifierReport result;
 
 /*
-# If all ranges are not checked for a field.
-# 
-# Type: Warning
-# Example: in "Rule 1" Something( $value :value ) and Foo( bar > $value ) 
-#            and in "Rule 2" Something( $value :value ) and Foo( bar < $value )
-#                     then Foo( bar == Something.value ) is missing.
+// If all ranges are not checked for a field.
+//
+// Type: Warning
+// Example: in "Rule 1" Something( $value :value ) and Foo( bar > $value )
+//            and in "Rule 2" Something( $value :value ) and Foo( bar < $value )
+//                     then Foo( bar == Something.value ) is missing.
 rule "Range check for variables when restriction is VariableRestriction"
     when
         # Find a field that is of type variable.

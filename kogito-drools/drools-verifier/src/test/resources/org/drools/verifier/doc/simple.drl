@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#created on: 12-Sep-2009
+//created on: 12-Sep-2009
 package org.drools.doc
 
-#list any import classes here.
+//list any import classes here.
 
 
 
-#declare any global variables here
+//declare any global variables here
 
 
 

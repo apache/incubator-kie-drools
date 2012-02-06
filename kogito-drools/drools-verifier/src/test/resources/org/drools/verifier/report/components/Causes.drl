@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#created on: 25-Feb-2010
+//created on: 25-Feb-2010
 package org.drools.verifier.report.components
 
-#list any import classes here.
+//list any import classes here.
 
 
 
-#declare any global variables here
+//declare any global variables here
 
 
 

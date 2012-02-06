@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 25.10.2007
+//created on: 25.10.2007
 package org.drools.verifier.optimisation.drl
 
-#list any import classes here.
+//list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -41,17 +41,17 @@ import org.drools.verifier.data.VerifierReport;
 import java.util.Map;
 import java.util.HashMap;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
 
-# Informs that rule would be more effective if the less expensive
-# component was on the left side.
-#
-# Type: Note
-# Dependencies: None
-# Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
-#
+// Informs that rule would be more effective if the less expensive
+// component was on the left side.
+//
+// Type: Note
+// Dependencies: None
+// Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
+//
 rule "Optimise restrictions inside operator"
     when
 
@@ -116,13 +116,13 @@ rule "Optimise restrictions inside operator"
 end
 
 
-# Informs that rule would be more effective if the less expensive
-# component was on the left side.
-#
-# Type: Note
-# Dependencies: None
-# Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
-#
+// Informs that rule would be more effective if the less expensive
+// component was on the left side.
+//
+// Type: Note
+// Dependencies: None
+// Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
+//
 rule "Optimise restrictions inside constraint"
     when
         (
@@ -193,12 +193,12 @@ rule "Optimise restrictions inside constraint"
                                 list ) );
 end
 
-# Eval should be last.
-#
-# Type: Note
-# Dependencies: None
-# Example: Foo( eval( bar == 1), bar == 1 )
-#
+// Eval should be last.
+//
+// Type: Note
+// Dependencies: None
+// Example: Foo( eval( bar == 1), bar == 1 )
+//
 rule "Optimise predicates inside operator"
     when
 

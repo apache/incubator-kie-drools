@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#
-# created on: 27.6.2008
-#
-# Rules in this package look for patterns and rules that are always satisfied.
-#
-#
+//
+// created on: 27.6.2008
+//
+// Rules in this package look for patterns and rules that are always satisfied.
+//
+//
 package org.drools.verifier.alwaysTrue
 
 
@@ -58,14 +58,14 @@ rule "Pattern possibility that is always true"
         insert( new AlwaysTrue( $pp , a, b ));
 end
 /*
-#
-# Finds pattern possibilities that are always true.
-#
-# Dependencies: None
-#
-# Example:
-#        Pattern( a > 10 && a <= 10 )
-#
+//
+// Finds pattern possibilities that are always true.
+//
+// Dependencies: None
+//
+// Example:
+//        Pattern( a > 10 && a <= 10 )
+//
 rule "Pattern possibility that is always true"
     when
         $p :Pattern()
@@ -99,17 +99,17 @@ end
 */
 
 
-#
-# Finds patterns that are always true.
-#
-# Dependencies:
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.alwaysTrue;
-#            rule "Pattern possibility that is always true"
-#
-# Example:
-#        Pattern( a > 10 && a <= 10 )
-#
+//
+// Finds patterns that are always true.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.alwaysTrue;
+//            rule "Pattern possibility that is always true"
+//
+// Example:
+//        Pattern( a > 10 && a <= 10 )
+//
 rule "Pattern that is always true"
     when
         $p :Pattern()

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 28.1.2008
+//created on: 28.1.2008
 package org.drools.verifier.subsumption.patterns
 
 import org.drools.base.evaluators.Operator;
@@ -28,14 +28,14 @@ import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
-#
-# Fires when two restrictions are subsumptant.
-# Creates a Subsumption object.
-#
-# Dependencies: None
-#
-# Example 1: P( x > 10 ) and P( x > 100 )
-#
+//
+// Fires when two restrictions are subsumptant.
+// Creates a Subsumption object.
+//
+// Dependencies: None
+//
+// Example 1: P( x > 10 ) and P( x > 100 )
+//
 rule "Find subsumptant restrictions, greater than"
     when
         # Covered x > 10
@@ -70,14 +70,14 @@ rule "Find subsumptant restrictions, equal"
         insert( new Subsumption( $left, $right ) );
 end
 
-#
-# Fires when two restrictions are subsumptant.
-# Creates a Subsumption object.
-#
-# Dependencies: None
-#
-# Example 1: P( x < 10 ) and P( x < 100 )
-#
+//
+// Fires when two restrictions are subsumptant.
+// Creates a Subsumption object.
+//
+// Dependencies: None
+//
+// Example 1: P( x < 10 ) and P( x < 100 )
+//
 rule "Find subsumptant restrictions, less than"
     when
         # Covered x < 10

@@ -13,7 +13,7 @@ AMOUNT
 
 
 package org.drools.decisiontable;
-#generated from Decision Table
+//generated from Decision Table
 
 global FeeResult result;
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 14.11.2007
+//created on: 14.11.2007
 package org.drools.verifier.incoherence
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.NumberRestriction;
@@ -40,18 +40,18 @@ import java.util.HashMap;
 
 import org.drools.base.evaluators.Operator;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncorencePattern( a == 1 )
-#        not IncorencePattern( a == 1 )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncorencePattern( a == 1 )
+//        not IncorencePattern( a == 1 )
+//
 rule "Incoherent Patterns in rule possibility"
     when
         $r1 :LiteralRestriction(
@@ -112,16 +112,16 @@ rule "Incoherent Patterns in rule possibility"
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        $var :Object()
-#        IncorencePattern( a == $var )
-#        not IncorencePattern( a == $var )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        $var :Object()
+//        IncorencePattern( a == $var )
+//        not IncorencePattern( a == $var )
+//
 rule "Incoherent Patterns in rule possibility, variables"
     when
         $r1 :VariableRestriction(
@@ -182,15 +182,15 @@ rule "Incoherent Patterns in rule possibility, variables"
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncorencePattern8( a > 11 )
-#        not IncorencePattern8( a > 1 )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncorencePattern8( a > 11 )
+//        not IncorencePattern8( a > 1 )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"
     when
         $r1 :NumberRestriction(
@@ -250,15 +250,15 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncorencePattern( a < 1 )
-#        not IncorencePattern( a < 11 )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncorencePattern( a < 1 )
+//        not IncorencePattern( a < 11 )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"
     when
         $r1 :NumberRestriction(
@@ -318,15 +318,15 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncoherencePattern( a >= 1 )
-#        not IncoherencePattern( a != 1 )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncoherencePattern( a >= 1 )
+//        not IncoherencePattern( a != 1 )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal value"
     when
         $r1 :LiteralRestriction(
@@ -387,15 +387,15 @@ then
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncoherencePattern15( a >= $var )
-#        not IncoherencePattern15( a != $var )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncoherencePattern15( a >= $var )
+//        not IncoherencePattern15( a != $var )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal variables"
     when
         $r1 :VariableRestriction(
@@ -457,15 +457,15 @@ then
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncoherencePattern13( a == $var )
-#        not IncoherencePattern13( a >= $var )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncoherencePattern13( a == $var )
+//        not IncoherencePattern13( a >= $var )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with equal value"
     when
         $r1 :LiteralRestriction(
@@ -525,15 +525,15 @@ then
                                 ) );
 end
 
-#
-# If two Patterns are in conflict.
-#
-# Type: Warning
-# Dependencies: None
-# Example:
-#        IncoherencePattern13( a == $var )
-#        not IncoherencePattern13( a >= $var )
-#
+//
+// If two Patterns are in conflict.
+//
+// Type: Warning
+// Dependencies: None
+// Example:
+//        IncoherencePattern13( a == $var )
+//        not IncoherencePattern13( a >= $var )
+//
 rule "Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"
     when
         $r1 :VariableRestriction(

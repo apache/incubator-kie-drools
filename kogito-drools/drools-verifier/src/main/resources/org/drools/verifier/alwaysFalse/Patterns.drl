@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#
-# created on: 5.6.2008
-#
-# Rules in this package look for patterns and rules that can never be satisfied.
-#
-#
+//
+// created on: 5.6.2008
+//
+// Rules in this package look for patterns and rules that can never be satisfied.
+//
+//
 package org.drools.verifier.alwaysFalse
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierRule;
@@ -38,20 +38,20 @@ import java.util.HashMap;
 
 global VerifierReport result;
 
-#
-# Finds patterns that are always false.
-#
-# Dependencies: 
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.incompatibility;
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
-#            rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
-#
-# Example:
-#        Pattern( a == b && a != b )
-#
+//
+// Finds patterns that are always false.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.incompatibility;
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
+//            rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
+//
+// Example:
+//        Pattern( a == b && a != b )
+//
 rule "Pattern that is always false"
     when
         $p :Pattern()

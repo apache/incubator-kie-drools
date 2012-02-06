@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 27.10.2007
+//created on: 27.10.2007
 package org.drools.verifier.optimisation
 
-#list any import classes here.
+//list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -38,21 +38,21 @@ import org.drools.verifier.data.VerifierReport;
 import java.util.Map;
 import java.util.HashMap;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
 
 
 
-# Informs that rule would be more effective if eval
-# was after fact patterns.
-#
-# Type: Note
-# Dependencies: None
-# Example: 
-#        eval(function( $something ))
-#        Pattern()
-#
+// Informs that rule would be more effective if eval
+// was after fact patterns.
+//
+// Type: Note
+// Dependencies: None
+// Example:
+//        eval(function( $something ))
+//        Pattern()
+//
 rule "Optimise evals inside pattern"
     when
         $subRule : SubRule()

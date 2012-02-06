@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 13.11.2007
+//created on: 13.11.2007
 package org.drools.verifier.incoherence
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.SubPattern;
@@ -37,16 +37,16 @@ import java.util.HashMap;
 
 import org.drools.base.evaluators.Operator;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern1( a == "b", a != "b" )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern1( a == "b", a != "b" )
+//
 rule "Incoherent LiteralRestrictions in pattern possibility"
     when
         $r1 :LiteralRestriction(
@@ -92,13 +92,13 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
                                 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a > 10 && a < -10 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a > 10 && a < -10 )
+//
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"
     when
         $r1 :NumberRestriction(
@@ -141,13 +141,13 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
                                 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a < 1 && a == 10 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a < 1 && a == 10 )
+//
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
     when
         $r1 :NumberRestriction(
@@ -190,13 +190,13 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
                                 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a > 10 && a == 1 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a > 10 && a == 1 )
+//
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
     when
         $r1 :NumberRestriction(
@@ -239,13 +239,13 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
                                 ) );
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
+//
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"
     when
         $r1 :LiteralRestriction(
@@ -288,13 +288,13 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
                                 ) );
 end
 
-#
-# If two VariableRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a contains $o, a not contains $o )
-#
+//
+// If two VariableRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a contains $o, a not contains $o )
+//
 rule "Incoherent VariableRestrictions in pattern possibility"
     when
         $r1 :VariableRestriction(
@@ -340,13 +340,13 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 end
 
 
-#
-# If two VariableRestrictions are in conflict.
-#
-# Type: Error
-# Dependencies: None
-# Example: IncorencePattern( a > $var, a < $var )
-#
+//
+// If two VariableRestrictions are in conflict.
+//
+// Type: Error
+// Dependencies: None
+// Example: IncorencePattern( a > $var, a < $var )
+//
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
     when
         $r1 :VariableRestriction(

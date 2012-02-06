@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-#created on: 16.11.2009
+//created on: 16.11.2009
 package org.drools.verifier.redundancy
 
-#list any import classes here.
-#global VerifierReport result;
+//list any import classes here.
+//global VerifierReport result;
 
 
 
-#declare any global variables here
-#import org.drools.verifier.data.VerifierReport;
+//declare any global variables here
+//import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
-#
-# If two objects are subsumptant to each others that makes them redundant.
-#
-# Dependencies:
-#
-#    Needs at least the following package:
-#        package org.drools.verifier.sumbumption
-#
+//
+// If two objects are subsumptant to each others that makes them redundant.
+//
+// Dependencies:
+//
+//    Needs at least the following package:
+//        package org.drools.verifier.sumbumption
+//
 rule "Find redundancy"
     when
         $sub :Subsumption( )

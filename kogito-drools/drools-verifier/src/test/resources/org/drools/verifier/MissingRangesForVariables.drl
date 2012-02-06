@@ -18,9 +18,9 @@ package com.sample
 
 import com.sample.DroolsTest.Message;
 /*
-#
-# These rules have gaps
-#
+//
+// These rules have gaps
+//
 rule "Missing variable range 1a, warning"
     when
             $s :Something( )
@@ -101,9 +101,9 @@ rule "Missing variable range 5b, warning"
         System.out.println( "Test" );
 end
 */
-#
-# These rules have no gaps
-#
+//
+// These rules have no gaps
+//
 rule "Missing variable range 1a, covers all"
     when
             $s :Something( )

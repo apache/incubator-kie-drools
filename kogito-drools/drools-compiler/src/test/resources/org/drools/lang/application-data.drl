@@ -1,13 +1,13 @@
-# showing application data
+// showing application data
 
 import java.lang.String
 import java.util.Random
 
-#setup application data here (optional semi colons, as always).
+//setup application data here (optional semi colons, as always).
 application-data MyObject me;
 application-data YourObject you
 
-#app data should come after imports, before functions
+//app data should come after imports, before functions
 
 
 

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 2.2.2008
+//created on: 2.2.2008
 package org.drools.verifier.overlaps
 
-#list any import classes here.
+//list any import classes here.
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -31,21 +31,21 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Overlap;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# Fires when two restrictions are overlapping.
-# Reports these restrictions as overlapping.
-#
-# Dependencies: Needs at least one rule.
-#
-#        package org.drools.verifier.subsumption.patterns
-#            rule "Find subsumptant restrictions, greater than"
-#            rule "Find subsumptant restrictions, less than"
-#
-# Example 1: Pattern1( a > 10 ) and Pattern1( a > 100 )
-#
+//
+// Fires when two restrictions are overlapping.
+// Reports these restrictions as overlapping.
+//
+// Dependencies: Needs at least one rule.
+//
+//        package org.drools.verifier.subsumption.patterns
+//            rule "Find subsumptant restrictions, greater than"
+//            rule "Find subsumptant restrictions, less than"
+//
+// Example 1: Pattern1( a > 10 ) and Pattern1( a > 100 )
+//
 rule "Find overlapping number restrictions"
     when
         # There is subsumption between two restrictions

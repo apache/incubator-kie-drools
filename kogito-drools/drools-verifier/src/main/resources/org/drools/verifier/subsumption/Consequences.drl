@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 1.12.2009
+//created on: 1.12.2009
 package org.drools.verifier.subsumption.patterns
 
 
@@ -24,8 +24,8 @@ import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
-#
-#
+//
+//
 rule "Subsumptant consequences"
     when
         $left :TextConsequence()

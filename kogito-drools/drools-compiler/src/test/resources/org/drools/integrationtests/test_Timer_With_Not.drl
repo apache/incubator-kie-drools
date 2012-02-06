@@ -8,7 +8,7 @@ declare B
     a: A
 end
 
-# insert one A
+// insert one A
 rule "insert A"
 timer(int: 1)
 when
@@ -18,7 +18,7 @@ then
     insert( a );
 end
 
-# wrap the single A into a B => 2 facts
+// wrap the single A into a B => 2 facts
 rule "wrap A"
 timer(int: 100 100)
 when

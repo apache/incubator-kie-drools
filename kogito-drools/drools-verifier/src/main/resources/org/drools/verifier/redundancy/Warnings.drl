@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#created on: 9.12.2007
+//created on: 9.12.2007
 package org.drools.verifier.redundancy
 
-#list any import classes here.
+//list any import classes here.
 global VerifierReport result;
 
 
 
-#declare any global variables here
+//declare any global variables here
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -140,19 +140,19 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
                         equivalence ) );
 end
 
-#
-# Dependencies:
-#
-#    Needs at least one rule from these packages:
-#        package org.drools.verifier.equivalency.rules
-#            rule "Find equivalent Rules"
-#        package org.drools.verifier.redundancy.rules
-#            rule "Find redundant Rules, strong redundancy"
-#
-#    And this rule:
-#        package org.drools.verifier.redundancy.possibilities
-#            rule "Find rule possibility redundancy"
-#
+//
+// Dependencies:
+//
+//    Needs at least one rule from these packages:
+//        package org.drools.verifier.equivalency.rules
+//            rule "Find equivalent Rules"
+//        package org.drools.verifier.redundancy.rules
+//            rule "Find redundant Rules, strong redundancy"
+//
+//    And this rule:
+//        package org.drools.verifier.redundancy.possibilities
+//            rule "Find rule possibility redundancy"
+//
 rule "Find redundant rules" extends "Find redundant LHS"
     when
 
@@ -175,52 +175,52 @@ rule "Find redundant rules" extends "Find redundant LHS"
             items contains $rightConsequence
         )
 
-#        $causes : ArrayList()
-#            from collect(
-#                  Subsumption(
-#                      (
-#                          left memberOf $rightSubRules
-#                          &&
-#                          right memberOf $leftSubRules
-#                      ) || (
-#                          right memberOf $rightSubRules
-#                          &&
-#                          left memberOf $leftSubRules
-#                      )
-#                  )
-#            )
+//        $causes : ArrayList()
+//            from collect(
+//                  Subsumption(
+//                      (
+//                          left memberOf $rightSubRules
+//                          &&
+//                          right memberOf $leftSubRules
+//                      ) || (
+//                          right memberOf $rightSubRules
+//                          &&
+//                          left memberOf $leftSubRules
+//                      )
+//                  )
+//            )
     then
-#        Map impactedRules = new HashMap();
-#        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
-#        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
+//        Map impactedRules = new HashMap();
+//        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+//        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
-#        Redundancy redundancy = new Redundancy( $left, $right, $causes );
-#        insert( redundancy );
+//        Redundancy redundancy = new Redundancy( $left, $right, $causes );
+//        insert( redundancy );
 
-#        result.add(new VerifierMessage(
-#                        impactedRules,
-#                        Severity.WARNING,
-#                        MessageType.REDUNDANCY,
-#                        null,
-#                        "Rules " + $right.getName() + " and " + $left.getName() + " are redundant.",
-#                        redundancy ) );
+//        result.add(new VerifierMessage(
+//                        impactedRules,
+//                        Severity.WARNING,
+//                        MessageType.REDUNDANCY,
+//                        null,
+//                        "Rules " + $right.getName() + " and " + $left.getName() + " are redundant.",
+//                        redundancy ) );
 end
 
 /*
 
-#
-# Dependencies:
-#
-#    Needs at least one rule from these packages:
-#        package org.drools.verifier.equivalency.rules
-#            rule "Find equivalent Rules"
-#        package org.drools.verifier.redundancy.rules
-#            rule "Find redundant Rules, strong redundancy"
-#
-#    And this rule:
-#        package org.drools.verifier.redundancy.possibilities
-#            rule "Find rule possibility redundancy"
-#
+//
+// Dependencies:
+//
+//    Needs at least one rule from these packages:
+//        package org.drools.verifier.equivalency.rules
+//            rule "Find equivalent Rules"
+//        package org.drools.verifier.redundancy.rules
+//            rule "Find redundant Rules, strong redundancy"
+//
+//    And this rule:
+//        package org.drools.verifier.redundancy.possibilities
+//            rule "Find rule possibility redundancy"
+//
 rule "Find subsumptant rule possibilities from different rules"
     @verifying_scopes(["knowledge-package", "decision-table"])
     salience -100

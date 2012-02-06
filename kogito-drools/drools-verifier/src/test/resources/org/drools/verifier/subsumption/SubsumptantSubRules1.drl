@@ -19,9 +19,9 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 
-#
-# Something
-#
+//
+// Something
+//
 rule "Test 1"
     when
             Foo(

@@ -6,7 +6,7 @@ valid
 
 
 package rulesetName;
-#generated from Decision Table
+//generated from Decision Table
 import blah.class1
 import blah.class2
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 1.12.2009
+//created on: 1.12.2009
 package org.drools.verifier.subsumption.patterns
 
 import org.drools.verifier.components.Restriction;
@@ -32,8 +32,8 @@ import java.util.ArrayList
 
 global VerifierReport result;
 
-#
-#
+//
+//
 rule "Find subsumptant sub rules"
     when
 

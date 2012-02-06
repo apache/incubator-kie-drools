@@ -18,8 +18,8 @@ then
     drools.halt();
 end
 
-# A Setting object is inserted to define the value of a Cell.
-# Rule "set a value" updates the cell and all cell groups containing it.
+// A Setting object is inserted to define the value of a Cell.
+// Rule "set a value" updates the cell and all cell groups containing it.
 rule "set a value"
 when
     # a Setting with row and column number, and a value
@@ -41,8 +41,8 @@ then
     modify( $ctr ){ setCount( $count - 1 ) }
 end
 
-# Rule for removing a value from all cells that are siblings
-# in one of the three cell groups.
+// Rule for removing a value from all cells that are siblings
+// in one of the three cell groups.
 rule "eliminate a value from Cell"
 when
     # a Setting with row and column number, and a value
@@ -59,7 +59,7 @@ then
     modify( $c ){ blockValue( $v ) }
 end
 
-# Rule for elimination the Setting fact.
+// Rule for elimination the Setting fact.
 rule "retract setting"
 when
     # a Setting with row and column number, and a value
@@ -77,11 +77,11 @@ then
 //  System.out.println( "done setting cell " + $c.toString() ); 
     # Discard the Setter fact.
     retract( $s );
-###    Sudoku.sudoku.consistencyCheck();
+//##    Sudoku.sudoku.consistencyCheck();
 end
 
-# Detect a set of candidate values with cardinality 1 for some Cell.
-# This is the value to be set.
+// Detect a set of candidate values with cardinality 1 for some Cell.
+// This is the value to be set.
 rule "single"
 when
     # There is currently no setting under way.
@@ -96,8 +96,8 @@ then
     insert( new Setting( $rn, $cn, i ) );
 end
 
-# Detect a set of candidate values with a value that is the only one
-# in one of its groups. This is the value to be set.
+// Detect a set of candidate values with a value that is the only one
+// in one of its groups. This is the value to be set.
 rule "hidden single"
 when
     # There is currently no setting under way.
@@ -121,9 +121,9 @@ then
 end
 
 
-# A "naked pair" is two cells in some cell group with their sets of
-# permissible values being equal with cardinality 2. These two values
-# can be removed from all other candidate lists in the group.
+// A "naked pair" is two cells in some cell group with their sets of
+// permissible values being equal with cardinality 2. These two values
+// can be removed from all other candidate lists in the group.
 rule "naked pair"
 when
     # There is currently no setting under way.
@@ -150,11 +150,11 @@ then
     modify( $c3 ){ blockValue( $v ) }
 end
 
-# If two cells within the same cell group contain candidate sets with more than
-# two values, with two values being in both of them but in none of the other
-# cells, then we have a "hidden pair". We can remove all other candidates from
-# these two cells.
-#
+// If two cells within the same cell group contain candidate sets with more than
+// two values, with two values being in both of them but in none of the other
+// cells, then we have a "hidden pair". We can remove all other candidates from
+// these two cells.
+//
 rule "hidden pair in row"
 when
     # There is currently no setting under way.
@@ -317,14 +317,14 @@ then
     modify( $cx ){ blockValue( $i ) }
 end
 
-# Y-wing
-# $c1: Cell( freeCount == 2 ) contains a, b
-# $c2: Cell( freeCount == 2 ) contains a, c
-# $c3: Cell( freeCount == 2 ) contains b, c
-# #g12: CellGroup() contains $c1, $c2
-# #g1e: CellGroup() contains $c1, $c3
+// Y-wing
+// $c1: Cell( freeCount == 2 ) contains a, b
+// $c2: Cell( freeCount == 2 ) contains a, c
+// $c3: Cell( freeCount == 2 ) contains b, c
+// #g12: CellGroup() contains $c1, $c2
+// #g1e: CellGroup() contains $c1, $c3
 
-# $cx: Cell( freeCount > 1 ) contains c
-#  # #g12: CellGroup() contains $c1, $c2
+// $cx: Cell( freeCount > 1 ) contains c
+//  # #g12: CellGroup() contains $c1, $c2
 
 

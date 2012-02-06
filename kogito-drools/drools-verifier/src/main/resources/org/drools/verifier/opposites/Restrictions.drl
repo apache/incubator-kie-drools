@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 23.02.2008
+//created on: 23.02.2008
 package org.drools.verifier.opposites
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.NumberRestriction;
 import org.drools.verifier.components.VariableRestriction;
@@ -34,15 +34,15 @@ import org.drools.verifier.data.VerifierReport;
 
 import org.drools.base.evaluators.Operator;
 
-#declare any global variables here
+//declare any global variables here
 global VerifierReport result;
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a == "b", a != "b" )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a == "b", a != "b" )
+//
 rule "Opposite LiteralRestrictions"
     when
         $left :LiteralRestriction(
@@ -74,12 +74,12 @@ rule "Opposite LiteralRestrictions"
         insert( new Opposites( $left, $right ));
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a >= 10 && a < 10 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a >= 10 && a < 10 )
+//
 rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
     when
         $left :LiteralRestriction(
@@ -108,12 +108,12 @@ rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
         insert( new Opposites( $left, $right ));
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a > 10 && a <= 10 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a > 10 && a <= 10 )
+//
 rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
     when
         $left :LiteralRestriction(
@@ -143,12 +143,12 @@ rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
 end
 
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a < 10 && a > 9 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a < 10 && a > 9 )
+//
 rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
     when
         $left :NumberRestriction(
@@ -178,12 +178,12 @@ rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
         insert( new Opposites( $left, $right ));
 end
 
-#
-# If two LiteralRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a >= 10 && a <= 9 )
-#
+//
+// If two LiteralRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a >= 10 && a <= 9 )
+//
 rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
     when
         $left :NumberRestriction(
@@ -213,12 +213,12 @@ rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal
         insert( new Opposites( $left, $right ));
 end
 
-#
-# If two VariableRestrictions are in conflict.
-#
-# Dependencies: None
-# Example: Pattern( a contains $o, a not contains $o )
-#
+//
+// If two VariableRestrictions are in conflict.
+//
+// Dependencies: None
+// Example: Pattern( a contains $o, a not contains $o )
+//
 rule "Opposite VariableRestrictions"
     when
         $r1 :VariableRestriction()

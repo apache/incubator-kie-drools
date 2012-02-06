@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#created on: 2.6.2008
+//created on: 2.6.2008
 package org.drools.verifier.incompatibility
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.SubPattern;
 
@@ -27,21 +27,21 @@ import org.drools.verifier.data.VerifierReport;
 
 global VerifierReport result;
 
-#
-# Pattern possibilities are incompatible if any of the restrictions are incompatible.
-#
-# Dependencies:
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.incompatibility;
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
-#            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
-#            rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
-#
-# Example: 
-#        Pattern( a < b )
-#        Pattern( a > b )
-#
+//
+// Pattern possibilities are incompatible if any of the restrictions are incompatible.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.incompatibility;
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
+//            rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
+//            rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
+//
+// Example:
+//        Pattern( a < b )
+//        Pattern( a > b )
+//
 rule "Incompatible Patterns"
     when
         $incompatibility :Incompatibility()

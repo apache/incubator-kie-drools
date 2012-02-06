@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#
-# created on: 27.6.2008
-#
-# Rules in this package look for patterns and rules that are always satisfied.
-#
-#
+//
+// created on: 27.6.2008
+//
+// Rules in this package look for patterns and rules that are always satisfied.
+//
+//
 package org.drools.verifier.alwaysTrue
 
 
@@ -41,15 +41,15 @@ import java.util.HashMap;
 
 global VerifierReport result;
 
-#
-# Finds rule possibilities that are always true.
-#
-# Dependencies:
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.alwaysTrue;
-#            rule "Pattern possibility that is always true"
-#
-#
+//
+// Finds rule possibilities that are always true.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.alwaysTrue;
+//            rule "Pattern possibility that is always true"
+//
+//
 rule "Rule possibility that is always true"
     when
         $r :VerifierRule()
@@ -72,15 +72,15 @@ rule "Rule possibility that is always true"
         insert( new AlwaysTrue( $rp ));
 end
 
-#
-# Finds rules that are always true.
-#
-# Dependencies:
-#    Needs at least one of the following packages or rules to fire:
-#         package org.drools.verifier.alwaysTrue;
-#            rule "Rule possibility that is always true"
-#
-#
+//
+// Finds rules that are always true.
+//
+// Dependencies:
+//    Needs at least one of the following packages or rules to fire:
+//         package org.drools.verifier.alwaysTrue;
+//            rule "Rule possibility that is always true"
+//
+//
 rule "Rule that is always true"
     when
         $r :VerifierRule()

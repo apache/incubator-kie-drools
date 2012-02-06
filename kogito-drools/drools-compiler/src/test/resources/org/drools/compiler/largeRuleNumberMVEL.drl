@@ -1,9 +1,9 @@
-#created on: 27-Jun-2007
+//created on: 27-Jun-2007
 package org.drools.test
 
 dialect "mvel"
 
-#list any import classes here.
+//list any import classes here.
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.Cheesery;

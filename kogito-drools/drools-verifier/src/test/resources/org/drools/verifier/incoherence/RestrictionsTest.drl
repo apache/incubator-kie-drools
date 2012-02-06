@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#created on: 18.10.2007
+//created on: 18.10.2007
 package org.drools.verifier.consequence
 
-#list any import classes here.
+//list any import classes here.
 
-#declare any global variables here
+//declare any global variables here
 
 
 rule "Incoherent restrictions 1"
@@ -84,7 +84,7 @@ rule "Incoherent restrictions 8"
         # Test
 end
 
-#TODO:
+//TODO:
 rule "Incoherent restrictions 9"
     when
         IncoherencePattern9( a == 1, a == 2 )
@@ -106,7 +106,7 @@ rule "Incoherent restrictions 11"
         # Test
 end
 
-# no problems in this one
+// no problems in this one
 rule "Gold Discount High Priority"
    dialect "mvel"
    when

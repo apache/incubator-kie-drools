@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 25/03/2006
+//created on: 25/03/2006
 package benchmarks.waltz
 
 import org.drools.benchmark.waltz.Stage
@@ -25,9 +25,9 @@ import org.drools.benchmark.waltz.WaltzUtil
 
 global Long time
 
-#If the duplicate flag is set, and there is still a line in WM, delete the line
-#and add two edges. One edge runs from p1 to p2 and the other runs from p2 to
-#p1.  We then plot the edge.
+//If the duplicate flag is set, and there is still a line in WM, delete the line
+//and add two edges. One edge runs from p1 to p2 and the other runs from p2 to
+//p1.  We then plot the edge.
 rule "reverse edges"
     when
         Stage(value == Stage.DUPLICATE)
@@ -39,8 +39,8 @@ rule "reverse edges"
         retract( $line );
 end
 
-#If the duplicating flag is set, and there are no more lines, then remove the
-#duplicating flag and set the make junctions flag.
+//If the duplicating flag is set, and there are no more lines, then remove the
+//duplicating flag and set the make junctions flag.
 rule "reversing done" salience -10
     when
         $stage: Stage ( value == Stage.DUPLICATE )
@@ -52,11 +52,11 @@ rule "reversing done" salience -10
         drools.getWorkingMemory().setGlobal( "time", current);
 end
 
-#If three edges meet at a point and none of them have already been joined in
-#a junction, then make the corresponding type of junction and label the
-#edges joined.  This production calls make-3_junction to determine
-#what type of junction it is based on the angles inscribed by the
-#intersecting edges
+//If three edges meet at a point and none of them have already been joined in
+//a junction, then make the corresponding type of junction and label the
+//edges joined.  This production calls make-3_junction to determine
+//what type of junction it is based on the angles inscribed by the
+//intersecting edges
 rule "make 3 junction" salience 10
     when
         Stage ( value == Stage.DETECT_JUNCTIONS )
@@ -72,8 +72,8 @@ rule "make 3 junction" salience 10
         modify( $edge3 ) {setJoined(true)}
 end
 
-#If two, and only two, edges meet that have not already been joined, then
-#the junction is an "L"
+//If two, and only two, edges meet that have not already been joined, then
+//the junction is an "L"
 rule "make L"
     when
         Stage ( value == Stage.DETECT_JUNCTIONS )
@@ -87,8 +87,8 @@ rule "make L"
         System.out.println("make L");
 end
 
-#If the detect junctions flag is set, and there are no more un_joined edges,
-#set the find_initial_boundary flag
+//If the detect junctions flag is set, and there are no more un_joined edges,
+//set the find_initial_boundary flag
 rule "detecting done" salience -10
     when
         $stage : Stage ( value == Stage.DETECT_JUNCTIONS )
@@ -97,7 +97,7 @@ rule "detecting done" salience -10
         System.out.println("detecting done");
 end
 
-#If the initial boundary junction is an L, then we know it's labelling
+//If the initial boundary junction is an L, then we know it's labelling
 rule "initial boundary junction L"
     when
         $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
@@ -112,7 +112,7 @@ rule "initial boundary junction L"
         System.out.println("initial boundary junction L");
 end
 
-# Ditto for an arrow
+// Ditto for an arrow
 rule "initial boundary junction arrow"
     when
         $stage : Stage ( value == Stage.FIND_INITIAL_BOUNDARY )
@@ -129,8 +129,8 @@ rule "initial boundary junction arrow"
         System.out.println("initial boundary junction arrow");
 end
 
-# If we have already found the first boundary point, then find the second
-# boundary point, and label it.
+// If we have already found the first boundary point, then find the second
+// boundary point, and label it.
 rule "second boundary junction L"
     when
         $stage : Stage ( value == Stage.FIND_SECOND_BOUNDARY )
@@ -145,7 +145,7 @@ rule "second boundary junction L"
         System.out.println("second boundary junction L");
 end
 
-# Ditto for arrow
+// Ditto for arrow
 rule "second boundary junction arrow"
     when
         $stage : Stage ( value == Stage.FIND_SECOND_BOUNDARY )
@@ -162,8 +162,8 @@ rule "second boundary junction arrow"
         System.out.println("second boundary junction arrow");
 end
  
-# If we have an edge whose label we already know definitely, then
-# label the corresponding edge in the other direction
+// If we have an edge whose label we already know definitely, then
+// label the corresponding edge in the other direction
 rule "match edge"
     when
         Stage( value == Stage.LABELING )
@@ -175,13 +175,13 @@ rule "match edge"
         System.out.println("match edge - Plot "+$label+" "+$p1+" "+$p2);
 end
 
-# The following productions propogate the possible labellings of the edges
-# based on the labellings of edges incident on adjacent junctions.  Since
-# from the initial boundary productions, we have determined the labellings of
-# of atleast two junctions, this propogation will label all of the junctions
-# with the possible labellings.  The search space is pruned due to filtering,
-# i.e.(not only label a junction in the ways physically possible based on the
-# labellings of adjacent junctions.
+// The following productions propogate the possible labellings of the edges
+// based on the labellings of edges incident on adjacent junctions.  Since
+// from the initial boundary productions, we have determined the labellings of
+// of atleast two junctions, this propogation will label all of the junctions
+// with the possible labellings.  The search space is pruned due to filtering,
+// i.e.(not only label a junction in the ways physically possible based on the
+// labellings of adjacent junctions.
 rule "label L"
     when
         Stage( value == Stage.LABELING )
@@ -397,10 +397,10 @@ rule "label arrow 5B"
           System.out.println("label arrow 5B");
 end
  
-# The conflict resolution mechanism will only execute a production if no
-# productions that are more complicated are satisfied.  This production is
-# simple, so all of the above dictionary productions will fire before this
-# change of state production
+// The conflict resolution mechanism will only execute a production if no
+// productions that are more complicated are satisfied.  This production is
+// simple, so all of the above dictionary productions will fire before this
+// change of state production
 rule "done labeling" salience -10
     when
         $stage: Stage( value == Stage.LABELING )
@@ -409,7 +409,7 @@ rule "done labeling" salience -10
         System.out.println("done labeling");
 end
 
-# At this point, some labellings may have not been plotted, so plot them
+// At this point, some labellings may have not been plotted, so plot them
 rule "plot remaining"
     when
         Stage( value == Stage.PLOT_REMAINING_EDGES )
@@ -419,9 +419,9 @@ rule "plot remaining"
         modify( $edge ) {setPlotted( true )}
 end
 
-# If we have been un able to label an edge, assume that it is a boundary.
-# This is a total Kludge, but what the hell. (if we assume only valid drawings
-# will be given for labeling, this assumption generally is true!)
+// If we have been un able to label an edge, assume that it is a boundary.
+// This is a total Kludge, but what the hell. (if we assume only valid drawings
+// will be given for labeling, this assumption generally is true!)
 rule "plot boundaries"
     when
         Stage( value == Stage.PLOT_REMAINING_EDGES )
@@ -431,7 +431,7 @@ rule "plot boundaries"
         modify( $edge ) {setPlotted( true )}
 end
 
-# If there is no more work to do, then we are done and flag it.
+// If there is no more work to do, then we are done and flag it.
 rule "done plotting" salience -10
     when
         $stage: Stage( value == Stage.PLOT_REMAINING_EDGES )

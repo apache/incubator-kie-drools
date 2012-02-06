@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#created on: 18.12.2009
+//created on: 18.12.2009
 package org.drools.verifier
 
 import java.util.ArrayList;

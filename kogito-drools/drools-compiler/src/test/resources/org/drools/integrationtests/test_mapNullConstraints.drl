@@ -1,4 +1,4 @@
-#created on: Jun 2, 2011
+//created on: Jun 2, 2011
 package org.drools
 
 rule "1. home != null"

@@ -1,4 +1,4 @@
-#created on: 12 juin 2006
+//created on: 12 juin 2006
 package Number
 
 import org.drools.IndexedNumber;

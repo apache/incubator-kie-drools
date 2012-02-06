@@ -2,7 +2,7 @@ package org.drools;
 
 global java.util.List list;
 
-#this is to test eval condition node sharing working properly
+//this is to test eval condition node sharing working properly
 rule rule1
     when
         TestParam(val: value1)
