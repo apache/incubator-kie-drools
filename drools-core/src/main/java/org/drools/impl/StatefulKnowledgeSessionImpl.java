@@ -198,16 +198,22 @@ public class StatefulKnowledgeSessionImpl
         this.session.removeEventListener( wrapper );
     }
 
+    private InternalProcessRuntime getInternalProcessRuntime() {
+        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) this.session.getProcessRuntime());
+        if (processRuntime == null) throw new RuntimeException("There is no ProcessRuntime available: are jBPM libraries missing on classpath?");
+        return processRuntime;
+    }
+
     public void addEventListener(ProcessEventListener listener) {
-        ((InternalProcessRuntime) this.session.getProcessRuntime()).addEventListener( listener );
+        getInternalProcessRuntime().addEventListener( listener );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return ((InternalProcessRuntime) this.session.getProcessRuntime()).getProcessEventListeners();
+        return getInternalProcessRuntime().getProcessEventListeners();
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        ((InternalProcessRuntime) this.session.getProcessRuntime()).removeEventListener( listener );
+        getInternalProcessRuntime().removeEventListener( listener );
     }
 
     public KnowledgeBase getKnowledgeBase() {
