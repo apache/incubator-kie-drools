@@ -68,8 +68,8 @@
 <emphasis role="bold"><emphasis>parameter-name-1</emphasis></emphasis>
 ...
 <emphasis>parameter-name-n</emphasis>
-<emphasis role="bold">package ...</emphasis>     # optional
-<emphasis>header text</emphasis>    # optional
+<emphasis role="bold">package ...</emphasis>     // optional
+<emphasis>header text</emphasis>    // optional
 <emphasis role="bold">template</emphasis> <emphasis>template-name</emphasis>
 ...
 // template text
