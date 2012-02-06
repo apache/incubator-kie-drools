@@ -22,7 +22,7 @@ public class DataProviderCompilerIntegrationTest {
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
 
     static {
-        String head = "package org.drools.decisiontable;\n#generated from Decision Table\nglobal FeeResult result;\n\n";
+        String head = "package org.drools.decisiontable;\n//generated from Decision Table\nglobal FeeResult result;\n\n";
         String rule3_a = "rule \"Fee Schedule_3\"\n\tagenda-group \"STANDARD\"\n\twhen\n\t\tFeeEvent(productType == \"SBLC\",\n";
         String rule3_b = "\t\t\tactivityType == \"ISS\",\n\t\t\tfeeType == \"Telex\",\n\n\n\t\t\tamount < 30000,\n\t\t\tccy == \"YEN\"\n\t\t)\n";
         String rule3_then = "\tthen\n\t\tresult.setSchedule(new FeeSchedule(\"62\", \"STANDARD\", 45));\nend\n\n";
