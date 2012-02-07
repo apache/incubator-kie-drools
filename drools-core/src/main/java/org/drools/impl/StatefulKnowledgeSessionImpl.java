@@ -68,6 +68,8 @@ import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
+import org.drools.event.rule.impl.RuleFlowGroupActivatedEventImpl;
+import org.drools.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
 import org.drools.reteoo.DisposedReteooWorkingMemory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -100,13 +102,13 @@ import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 
 public class StatefulKnowledgeSessionImpl
-    implements
-    StatefulKnowledgeSession,
-    InternalWorkingMemoryEntryPoint,
-    InternalKnowledgeRuntime {
+        implements
+        StatefulKnowledgeSession,
+        InternalWorkingMemoryEntryPoint,
+        InternalKnowledgeRuntime {
 
     public ReteooWorkingMemoryInterface session;
-    public KnowledgeBase   kbase;
+    public KnowledgeBase                kbase;
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
@@ -119,11 +121,11 @@ public class StatefulKnowledgeSessionImpl
         this.kbase = kbase;
         this.session.setKnowledgeRuntime( this );
     }
-    
+
     public void reset() {
-        throw new UnsupportedOperationException("This should not be called");
+        throw new UnsupportedOperationException( "This should not be called" );
     }
-    
+
     public ObjectStore getObjectStore() {
         return this.session.getObjectStore();
     }
@@ -161,11 +163,11 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
-        for ( Object  listener : this.session.getWorkingMemoryEventListeners() ) {
+        for ( Object listener : this.session.getWorkingMemoryEventListeners() ) {
             if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
                 listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
             } else {
-                listeners.add( ( WorkingMemoryEventListener ) listener );
+                listeners.add( (WorkingMemoryEventListener) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
@@ -178,7 +180,7 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-        for ( Object listener :  this.session.getAgendaEventListeners() ) {
+        for ( Object listener : this.session.getAgendaEventListeners() ) {
             if ( listener instanceof AgendaEventListenerWrapper ) {
                 listeners.add( ((AgendaEventListenerWrapper) listener).unWrap() );
             } else {
@@ -200,7 +202,7 @@ public class StatefulKnowledgeSessionImpl
 
     private InternalProcessRuntime getInternalProcessRuntime() {
         InternalProcessRuntime processRuntime = ((InternalProcessRuntime) this.session.getProcessRuntime());
-        if (processRuntime == null) throw new RuntimeException("There is no ProcessRuntime available: are jBPM libraries missing on classpath?");
+        if ( processRuntime == null ) throw new RuntimeException( "There is no ProcessRuntime available: are jBPM libraries missing on classpath?" );
         return processRuntime;
     }
 
@@ -235,7 +237,8 @@ public class StatefulKnowledgeSessionImpl
         return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ) );
     }
 
-    public int fireAllRules(AgendaFilter agendaFilter, int max) {
+    public int fireAllRules(AgendaFilter agendaFilter,
+                            int max) {
         return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ), max );
     }
 
@@ -294,7 +297,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void abortProcessInstance(long id) {
-        this.session.getProcessRuntime().abortProcessInstance(id);
+        this.session.getProcessRuntime().abortProcessInstance( id );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -317,14 +320,14 @@ public class StatefulKnowledgeSessionImpl
                                           parameters );
     }
 
-	public ProcessInstance createProcessInstance(String processId,
-			                                     Map<String, Object> parameters) {
-		return this.session.createProcessInstance(processId, parameters);
-	}
+    public ProcessInstance createProcessInstance(String processId,
+                                                 Map<String, Object> parameters) {
+        return this.session.createProcessInstance( processId, parameters );
+    }
 
-	public ProcessInstance startProcessInstance(long processInstanceId) {
-		return this.session.startProcessInstance(processInstanceId);
-	}
+    public ProcessInstance startProcessInstance(long processInstanceId) {
+        return this.session.startProcessInstance( processInstanceId );
+    }
 
     public void signalEvent(String type,
                             Object event) {
@@ -334,7 +337,7 @@ public class StatefulKnowledgeSessionImpl
     public void signalEvent(String type,
                             Object event,
                             long processInstanceId) {
-        this.session.getProcessRuntime().signalEvent(type, event, processInstanceId);
+        this.session.getProcessRuntime().signalEvent( type, event, processInstanceId );
     }
 
     public void setGlobal(String identifier,
@@ -434,8 +437,8 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public static abstract class AbstractImmutableCollection
-        implements
-        Collection {
+            implements
+            Collection {
 
         public boolean add(Object o) {
             throw new UnsupportedOperationException( "This is an immmutable Collection" );
@@ -539,8 +542,8 @@ public class StatefulKnowledgeSessionImpl
                 return toArray( new InternalFactHandle[size()] );
             } else {
                 return toArray( new Object[size()] );
-            }            
-            
+            }
+
         }
 
         public Object[] toArray(Object[] array) {
@@ -562,8 +565,8 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public static class WorkingMemoryEventListenerWrapper
-        implements
-        org.drools.event.WorkingMemoryEventListener {
+            implements
+            org.drools.event.WorkingMemoryEventListener {
         private final WorkingMemoryEventListener listener;
 
         public WorkingMemoryEventListenerWrapper(WorkingMemoryEventListener listener) {
@@ -618,8 +621,8 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public static class AgendaEventListenerWrapper
-        implements
-        org.drools.event.AgendaEventListener {
+            implements
+            org.drools.event.AgendaEventListener {
         private final AgendaEventListener listener;
 
         public AgendaEventListenerWrapper(AgendaEventListener listener) {
@@ -665,6 +668,30 @@ public class StatefulKnowledgeSessionImpl
                                                                         ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime() ) );
         }
 
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                                WorkingMemory workingMemory) {
+            listener.afterRuleFlowGroupActivated( new RuleFlowGroupActivatedEventImpl( event.getRuleFlowGroup(),  
+                                                                                       ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );
+        }
+
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                                  WorkingMemory workingMemory) {
+            listener.afterRuleFlowGroupDeactivated( new RuleFlowGroupDeactivatedEventImpl( event.getRuleFlowGroup(),  
+                                                                                         ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );            
+        }
+
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                                 WorkingMemory workingMemory) {
+            listener.afterRuleFlowGroupActivated( new RuleFlowGroupActivatedEventImpl( event.getRuleFlowGroup(),  
+                                                                                       ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );            
+        }
+
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                                   WorkingMemory workingMemory) {
+            listener.afterRuleFlowGroupDeactivated( new RuleFlowGroupDeactivatedEventImpl( event.getRuleFlowGroup(),  
+                                                                                           ((InternalWorkingMemory) workingMemory).getKnowledgeRuntime()  ) );            
+        }
+
         public AgendaEventListener unWrap() {
             return listener;
         }
@@ -698,27 +725,11 @@ public class StatefulKnowledgeSessionImpl
             }
             return this.listener.equals( obj );
         }
-
-        public void afterRuleFlowGroupActivated(
-                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-        }
-
-        public void afterRuleFlowGroupDeactivated(
-                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        }
-
-        public void beforeRuleFlowGroupActivated(
-                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-        }
-
-        public void beforeRuleFlowGroupDeactivated(
-                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-        }
     }
 
     public static class AgendaFilterWrapper
-        implements
-        org.drools.spi.AgendaFilter {
+            implements
+            org.drools.spi.AgendaFilter {
         private AgendaFilter filter;
 
         public AgendaFilterWrapper(AgendaFilter filter) {
@@ -781,11 +792,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     private KnowledgeCommandContext commandContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                                                   null ),
-                                                                                  null,
-                                                                                  this.kbase,
-                                                                                  this,
-                                                                                  null );
+                                                                                                        null ),
+                                                                                       null,
+                                                                                       this.kbase,
+                                                                                       this,
+                                                                                       null );
 
     public <T> T execute(Command<T> command) {
         return execute( null,
@@ -806,21 +817,19 @@ public class StatefulKnowledgeSessionImpl
 
         if ( !(command instanceof BatchExecutionCommandImpl) ) {
             return (T) ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                                        null,
-                                                                                        this.kbase,
-                                                                                        this,
-                                                                                        results ) );
+                                                                                             null,
+                                                                                             this.kbase,
+                                                                                             this,
+                                                                                             results ) );
         }
-
-        
 
         try {
             session.startBatchExecution( results );
             ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                             null,
-                                                                             this.kbase,
-                                                                             this,
-                                                                             results ) );
+                                                                                  null,
+                                                                                  this.kbase,
+                                                                                  this,
+                                                                                  results ) );
             ExecutionResults result = session.getExecutionResult();
             return (T) result;
         } finally {
@@ -843,7 +852,7 @@ public class StatefulKnowledgeSessionImpl
                                            arguments,
                                            listener );
     }
-    
+
     public KnowledgeSessionConfiguration getSessionConfiguration() {
         return this.session.getSessionConfiguration();
     }
@@ -873,20 +882,19 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-        this.session.queueWorkingMemoryAction(action);
+        this.session.queueWorkingMemoryAction( action );
     }
 
     public void setId(int id) {
-        this.session.setId(id);
+        this.session.setId( id );
     }
 
     public void setEndOperationListener(EndOperationListener listener) {
-        this.session.setEndOperationListener(listener);
+        this.session.setEndOperationListener( listener );
     }
 
     public long getLastIdleTimestamp() {
         return this.session.getLastIdleTimestamp();
     }
-
 
 }

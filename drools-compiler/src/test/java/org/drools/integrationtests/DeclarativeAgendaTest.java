@@ -18,6 +18,8 @@ import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.AgendaGroupPoppedEvent;
 import org.drools.event.rule.AgendaGroupPushedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
@@ -679,9 +681,21 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
             public void activationCreated(ActivationCreatedEvent event) {
             }
 
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            }
+
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+            }
+
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            }
+
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+            }
+            
             public void activationCancelled(ActivationCancelledEvent event) {
                 cancelled.add( event );
-            }
+            }            
         } );
 
         List list = new ArrayList();
