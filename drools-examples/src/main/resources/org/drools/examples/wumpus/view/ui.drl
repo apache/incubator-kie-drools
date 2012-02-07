@@ -17,63 +17,33 @@ import org.drools.examples.wumpus.PitDeath
 import org.drools.examples.wumpus.GoldWin
 import org.drools.examples.wumpus.Reset
 import org.drools.examples.wumpus.view.GameView
-import org.drools.examples.wumpus.view.SensorsView
 
 import org.drools.runtime.StatefulKnowledgeSession
 import org.drools.logger.KnowledgeRuntimeLogger
 import org.drools.logger.KnowledgeRuntimeLoggerFactory
 
+import javax.swing.JOptionPane
+
 import java.util.ArrayList
 
 dialect "mvel"
+  
 
-/*
-rule "Create Sensors View" when
-    not SensorsView()
-then
-    insert( new SensorsView() );
-end
-*/
+declare Cell
+	@propertySpecific
+end	
 
-rule "Reset View" when
-    Reset()
-    $gv : GameView()
-    $sv : SensorsView();
-then
-    retract( $sv );
-    retract( $gv );
-end
+declare Hero
+	@propertySpecific
+end	
 
-rule "Init Game View" salience -200 when
-    not Reset()
-    not GameView()
-    accumulate( not Reset() and
-                $p : Pit(),
-                $pits : collectList( $p ) )
-    $w : Wumpus()
-    $g : Gold()
-    $h : Hero()    
-then
-    SensorsView $sv = new SensorsView();
-    insert( $sv );
-    
-    GameView $gv = new GameView();
-    $gv.init( new Cell[5][5], $sv, new ArrayList( $pits ), $w, $g, $h, 50, 50, 3, 20, 5, 5);
-    $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
-    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
-    
-    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
-    $gv.setKlogger( klogger );    
-    insert( $gv );
+declare Gold
+	@propertySpecific
+end	
+
+declare Wumpus
+    @propertySpecific
 end    
-
-rule "init Cells" when
-    $gv : GameView()
-    $c :  Cell()
-then
-    Cell[] row = $gv.cells[$c.row];
-    row[$c.col] = $c;
-end  
 
 rule "Create GUI" salience -100 when
     $gv : GameView()
@@ -83,93 +53,61 @@ then
     
 end   
 
-rule "Set GUI Game View" salience -100 when
+rule "Set GUI Game View" no-loop salience -100 when
     $gv : GameView()
     $ui : GameUI()
 then
-    $ui.setGameView( $gv );
+    modify( $ui ) { gameView = $gv };
 end         
 
-rule "Smell Stench View"  when 
-    $s  : SensorsView()
-          SmellStench()
+
+rule "Reset View" when
+    Reset()
+    $gv : GameView()
 then
-    $s.smellStench = true;
+    retract( $gv );
 end
 
-rule "Stench Gone View" when
-    $s  : SensorsView()
-          not SmellStench()
-then
-    $s.smellStench = false;
+rule "Init Game View" salience -200 when
+    not Reset()
+    not GameView()
+    $w : Wumpus()
+    $g : Gold()
+    $h : Hero()    
+then    
+    GameView $gv = new GameView();
+    $gv.init($w, $g, $h, 50, 50, 3, 20, 5, 5);
+    $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
+    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
+    
+    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
+    $gv.setKlogger( klogger );    
+    insert( $gv );
 end    
 
-rule "Feel Breeze View"  when 
-    $s  : SensorsView()
-          FeelBreeze()
-then   
-    $s.feelBreeze = true; 
-end
-
-rule "Breeze Gone View" when
-    $s  : SensorsView()
-          not FeelBreeze()
-then
-    $s.feelBreeze = false;
-end 
-
-rule "Feel Bump View"  when 
-    $s  : SensorsView()
-          FeelBump()
-then   
-    $s.feelBump = true; 
-end
-
-rule "Bump Gone View" when
-    $s  : SensorsView()
-          not FeelBump()
-then
-    $s.feelBump = false;
-end 
-
-rule "See Glitter View"  when 
-    $s  : SensorsView()
-          SeeGlitter()
-then
-    $s.seeGlitter = true; 
-end
-
-rule "Glitter Gone View" when
-    $s  : SensorsView()
-          not SeeGlitter()
-then
-    $s.seeGlitter = false;
-end 
-
-rule "Hear Scream"  when 
-    $s  : SensorsView()
-          HearScream()
-then
-    $s.hearScream = true; 
-end
-
-rule "Wumpus Death View"   when
-    $g  : GameView()
+rule "Wumpus Death View" dialect "java"   when
           WumpusDeath() 
+    $g  : GameView()          
 then
-	$g.wumpusDeath = true; 
+	JOptionPane.showMessageDialog( null,
+                                   "Oh No! You where killed by the Wumpus" );
+    insert( new Reset() );   
 end
 
-rule "Pitt Game View" when
-    $g : GameView()
+rule "Pit Game View" dialect "java" when
          PitDeath()
+    $g : GameView()
 then    
-	$g.pitDeath = true; 
+	JOptionPane.showMessageDialog( null,
+                                   "Oh No! You where killed by a Pit" );
+    insert( new Reset() );  
 end
 
-rule "Gold Win View"  when
-    $g : GameView()
+rule "Gold Win View" dialect "java"  when
 		 GoldWin()
+    $g : GameView()
 then
-	$g.goldWin = true;
+	JOptionPane.showMessageDialog( null,
+                                   "Congratulations! You retreived the gold from the cave" );
+    insert( new Reset() );  
 end

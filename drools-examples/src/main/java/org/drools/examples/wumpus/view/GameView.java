@@ -14,18 +14,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class GameView {
     private WumpusWorldServer        wumpusWorld;
-    private Cell[][]                 cells;
-    private List<Pit>               pits;
+    
     private Wumpus                   wumpus;
     private Gold                     gold;
     private Hero                     hero;
-    private SensorsView              sensors;
-
-    private boolean                  pitDeath;
-    private boolean                  wumpusDeath;
-    private boolean                  goldWin;
     
-    private int                      cellheight;
+    private int                      cellHeight;
     private int                      cellWidth;
     private int                      cellPadding;
 
@@ -56,29 +50,20 @@ public class GameView {
         
     }
     
-    public void init(Cell[][] cells,
-                     SensorsView sensors,
-                     List<Pit> pits,
-                     Wumpus wumpus,
+    public void init(Wumpus wumpus,
                      Gold gold,
                      Hero hero,
-                     int cellheight,
+                     int cellHeight,
                      int cellWidth,
                      int cellPadding,
                      int pittPercentage,
                      int rows,
                      int cols) {
         this.showAllCells = false;
-        this.pitDeath = false;
-        this.goldWin = false;
-        this.wumpusDeath = false;
-        this.cells = cells;
-        this.sensors = sensors;
-        this.pits = pits;
         this.wumpus = wumpus;
         this.gold = gold;
         this.hero = hero;
-        this.cellheight = cellheight;
+        this.cellHeight = cellHeight;
         this.cellWidth = cellWidth;
         this.cellPadding = cellPadding;
         this.pittPercentage = pittPercentage;
@@ -100,22 +85,6 @@ public class GameView {
 
     public void setKsession(StatefulKnowledgeSession ksession) {
         this.ksession = ksession;
-    }
-
-    public Cell[][] getCells() {
-        return cells;
-    }
-
-    public void setCells(Cell[][] cells) {
-        this.cells = cells;
-    }
-
-    public List<Pit> getPits() {
-        return pits;
-    }
-
-    public void setPits(List<Pit> pits) {
-        this.pits = pits;
     }
 
     public Wumpus getWumpus() {
@@ -142,44 +111,12 @@ public class GameView {
         this.hero = hero;
     }
 
-    public SensorsView getSensorsview() {
-        return sensors;
-    }
-
-    public void setSensorsView(SensorsView sensors) {
-        this.sensors = sensors;
-    }
-
     public boolean isShowAllCells() {
         return showAllCells;
     }
 
     public void setShowAllCells(boolean showAllCells) {
         this.showAllCells = showAllCells;
-    }
-
-    public boolean isPitDeath() {
-        return pitDeath;
-    }
-
-    public void setPitDeath(boolean pitDeath) {
-        this.pitDeath = pitDeath;
-    }
-
-    public boolean isWumpusDeath() {
-        return wumpusDeath;
-    }
-
-    public void setWumpusDeath(boolean wumpusDeath) {
-        this.wumpusDeath = wumpusDeath;
-    }
-
-    public boolean isGoldWin() {
-        return goldWin;
-    }
-
-    public void setGoldWin(boolean goldWin) {
-        this.goldWin = goldWin;
     }
 
     public KnowledgeRuntimeLogger getKlogger() {
@@ -190,20 +127,12 @@ public class GameView {
         this.klogger = klogger;
     }
 
-    public SensorsView getSensors() {
-        return sensors;
+    public int getCellHeight() {
+        return cellHeight;
     }
 
-    public void setSensors(SensorsView sensors) {
-        this.sensors = sensors;
-    }
-
-    public int getCellheight() {
-        return cellheight;
-    }
-
-    public void setCellheight(int cellheight) {
-        this.cellheight = cellheight;
+    public void setCellHeight(int cellHeight) {
+        this.cellHeight = cellHeight;
     }
 
     public int getCellWidth() {

@@ -9,11 +9,28 @@ import org.drools.examples.wumpus.Cell
 
 dialect "mvel"
 
-/*
+declare Cell
+	@propertySpecific
+end		
+
 declare Hero
-	@propSpecific
+	@propertySpecific
 end	
-*/
+
+declare Gold
+	@propertySpecific
+end	
+
+declare Wumpus
+    @propertySpecific
+end 
+
+rule "Reset Pits" when
+    Reset()
+    $p : Pit()
+then
+    retract( $p );
+end 
 
 rule "Direction.UP, Move.TURN_LEFT"  when
     $h  : Hero( direction == Direction.UP)
@@ -89,7 +106,7 @@ rule "Move Up"  when
 then
 	retract ( $mc );  
     modify( $h ) { row = $h.row + 1 };
-    $c.setHidden( false ); 
+    modify( $c ) { hidden = false }; 
 end
 
 rule "Move Down"  when
@@ -101,7 +118,7 @@ rule "Move Down"  when
 then
 	retract ( $mc );  
     modify( $h ) { row = $h.row - 1 };
-    $c.setHidden( false ); 	
+    modify( $c ) { hidden = false };
 end
 
 rule "Move Left"  when
@@ -114,7 +131,7 @@ rule "Move Left"  when
 then
 	retract ( $mc );  
     modify( $h ) { col = $h.col - 1 };
-    $c.setHidden( false ); 
+    modify( $c ) { hidden = false };
 end
 
 rule "Move Right"  when
@@ -126,7 +143,36 @@ rule "Move Right"  when
 then
 	retract ( $mc );  
     modify( $h ) { col = $h.col + 1 };
-    $c.setHidden( false ); 
+    modify( $c ) { hidden = false };
+end
+
+rule "Move Gold" no-loop when
+    $h : Hero( gold == true ) @watch( col, row )
+    $g : Gold()
+then
+   modify( $g ) { col = $h.col, row = $h.row };
+end    
+
+rule "Climb With Win" when
+    $cc : ClimbCommand()
+    Hero( gold == true, row == 0, col == 0 )
+then
+    retract( $cc );
+    insert( new GoldWin() );
+end
+
+rule "Climb" when
+    $cc : ClimbCommand()
+    Hero( gold == false,  row == 0, col == 0 )
+then
+    retract( $cc );
+    insert( new Reset() );
+end
+
+rule "Climb retraction" salience -100 when
+    $cc : ClimbCommand()
+then
+    retract( $cc );
 end
 
 rule "Invalid Move, Feel Bump" salience -100 when
@@ -143,6 +189,20 @@ then
     retract( $fp )
 end
 
+rule "Grab Gold" when
+    $gc : GrabCommand()
+    $h  : Hero()
+    $g  : Gold(row == $h.row, col == $h.col )
+then
+    retract ( $gc );   
+    modify ( $h ) { gold = true };
+end
+
+rule "Remove GrabCommand" salience -100 when
+    $gc : GrabCommand()
+then
+    retract ( $gc );
+end
 
 rule "Shoot Arrow"  when
     $sc : ShootCommand();

@@ -1,34 +1,17 @@
 package org.drools.examples.wumpus;
 
-public class Hero {
-    private int row;
-    private int col;
+public class Hero extends Thing {
+
     private Direction direction;
-    private int arrows;
-    private int score;
+    private boolean   gold;
+    private int       arrows;
+    private int       score;
 
     public Hero(int row,
                 int col) {
-        this.row = row;
-        this.col = col;
+        super( row, col );
         this.arrows = 1;
         this.direction = Direction.RIGHT;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getCol() {
-        return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 
     public int getArrows() {
@@ -55,9 +38,17 @@ public class Hero {
         this.direction = direction;
     }
 
+    public boolean isGold() {
+        return gold;
+    }
+
+    public void setGold(boolean gold) {
+        this.gold = gold;
+    }
+
     @Override
     public String toString() {
-        return "Hero [row=" + row + ", col=" + col + ", direction=" + direction + ", arrows=" + arrows + ", score=" + score + "]";
+        return "Hero [direction=" + direction + ", gold=" + gold + ", arrows=" + arrows + ", score=" + score + "]";
     }
 
 }
