@@ -704,7 +704,7 @@ end
         values not explicitly defined in the column. This feature gives rise
         to DRL fragments such as the following:-</para>
 
-        <programlisting>#from row number: 1
+        <programlisting>// from row number: 1
 rule "Row 1 dtable"
   salience 1
   dialect "mvel"
@@ -714,7 +714,7 @@ then
   $p.setAge( 12345 );
 end
 
-#from row number: 2
+// from row number: 2
 rule "Row 2 dtable"
   salience 2
   dialect "mvel"
@@ -724,7 +724,7 @@ then
   $p.setAge( 12345 );
 end
 
-#from row number: 3
+// from row number: 3
 rule "Row 3 dtable"
   salience 3
   dialect "mvel"
@@ -734,7 +734,7 @@ then
   $p.setAge( 12345 );
 end
 
-#from row number: 4
+// from row number: 4
 rule "Row 4 dtable"
   salience 4
   dialect "mvel"
