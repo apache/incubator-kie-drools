@@ -162,6 +162,26 @@ public class AgendaEventSupportTest {
                 assertNotNull( event.getKnowledgeRuntime() );
                 agendaList.add( event );
             }
+
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                agendaList.add( event );
+            }
+
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                agendaList.add( event );
+            }
+
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                agendaList.add( event );
+            }
+
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                agendaList.add( event ); 
+            }
         };
         ksession.addEventListener( agendaEventListener );
         

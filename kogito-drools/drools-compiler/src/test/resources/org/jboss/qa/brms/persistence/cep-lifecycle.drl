@@ -1,0 +1,75 @@
+package org.jboss.qa.brms.persistence
+
+declare TestEvent
+	@role( event )
+	@expires( 10s )
+end
+
+declare MessageEvent
+	@role( event )
+	@expires( 10s )
+end
+
+declare DRLTestEvent
+	@role( event )
+	id : int
+	name : String
+	value : Object
+end
+
+rule "TestEventReceived"
+	no-loop
+	when
+		$event : TestEvent ( value != null ) over window:time( 10s ) from entry-point EventStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+rule "TestEventReceived2"
+	no-loop
+	when
+		$event : TestEvent ( value != null ) over window:time( 10s ) from entry-point SecondStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+rule "DRLTestEventReceived"
+	no-loop
+	when
+		$event : DRLTestEvent ( value != null ) over window:time( 10s ) from entry-point EventStream
+	then
+		insert( new Message( $event.getValue().toString() ) );
+end
+
+query "TestEventCount"
+	Number( $eventCount : longValue ) from
+		accumulate (
+			$event : TestEvent ( id != null ) from entry-point EventStream,
+			count($event)
+		)
+end
+
+rule "InsertCloned"
+	when
+		$event : MessageEvent ( msg != null ) from entry-point EventStream
+	then
+		TestEvent e = new TestEvent(99, $event.getMsg().getMessage(), $event);
+		drools.getEntryPoint("ClonedStream").insert(e);
+end
+
+rule "UpdateCloned"
+	no-loop
+	when
+		$event : TestEvent ( name == "update" ) from entry-point ClonedStream
+	then
+		modify ( $event ) {
+			setValue("xxx");
+		}
+end
+
+rule "RetractCloned"
+	when
+		$event : TestEvent ( name == "retract" ) from entry-point ClonedStream
+	then
+		retract( $event );
+end
