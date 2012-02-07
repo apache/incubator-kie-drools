@@ -33,4 +33,12 @@ public interface AgendaEventListener
     void agendaGroupPopped(AgendaGroupPoppedEvent event);
 
     void agendaGroupPushed(AgendaGroupPushedEvent event);
+    
+    void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event);
+
+    void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event);
+
+    void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event);
+
+    void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event);    
 }

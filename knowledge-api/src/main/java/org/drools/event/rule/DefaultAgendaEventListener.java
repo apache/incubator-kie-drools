@@ -44,4 +44,20 @@ public class DefaultAgendaEventListener
         // intentionally left blank
     }
 
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+        // intentionally left blank 
+    }
+
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+        // intentionally left blank 
+    }
+
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+        // intentionally left blank  
+    }
+
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+        // intentionally left blank
+    }
+
 }
