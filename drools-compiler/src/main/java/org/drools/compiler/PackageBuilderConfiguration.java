@@ -131,7 +131,7 @@ public class PackageBuilderConfiguration
 
     /**
      * Constructor that sets the parent class loader for the package being built/compiled
-     * @param classLoader
+     * @param classLoaders
      */
     public PackageBuilderConfiguration(ClassLoader... classLoaders) {
         init( null,
@@ -149,7 +149,7 @@ public class PackageBuilderConfiguration
 
     /**
      * Programmatic properties file, added with lease precedence
-     * @param classLoader
+     * @param classLoaders
      * @param properties
      */
     public PackageBuilderConfiguration(Properties properties,

@@ -1,9 +1,24 @@
 package org.drools;
 
-import junit.framework.Assert;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.integrationtests.SerializationHelper;
+import org.drools.io.ResourceFactory;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.rule.Package;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Assert;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. 

@@ -7,31 +7,28 @@ global java.util.List list;
 
 
  
-declare Parent
-    @format( trait )
+declare trait Parent
     child   : Student
 end
  
  
-declare Person
-    @format(trait)
+declare trait Person
     name    : String 
     age     : int   @position(0) 
 end
   
-declare Role
-    @format(trait) 
+declare trait Role
+
 end
  
 
-declare Student extends Person, Role
-    @format(trait)
+declare trait Student extends Person, Role
     school  : String
 end 
  
  
 declare Imp
-    @Traitable 
+    @Traitable
     name    : String    @key
     school  : String
 end

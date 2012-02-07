@@ -27,6 +27,7 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.StringUtils;
+import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
@@ -39,6 +40,8 @@ import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
+import org.drools.lang.api.EnumDeclarationDescrBuilder;
+import org.drools.lang.api.EnumLiteralDescrBuilder;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.ForallDescrBuilder;
@@ -57,6 +60,7 @@ import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -67,6 +71,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.rule.TypeDeclaration;
 
 public class DRLParser {
 
@@ -415,7 +420,9 @@ public class DRLParser {
     /**
      * declare := DECLARE 
      *               | (ENTRY-POINT) => entryPointDeclaration
-     *               | typeDeclaration
+     *               | (TRAIT) => typeDeclaration (trait)
+     *               | (ENUM) => enumDeclaration
+     *               | typeDeclaration (class)
      *            END
      * 
      * @return
@@ -436,12 +443,32 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             
-            if( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
                 // entry point declaration
                 declaration = entryPointDeclaration( declare );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TRAIT ) ) {
+                // trait type declaration
+                // 'trait'
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.TRAIT,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                declaration = typeDeclaration( declare, true );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENUM ) ) {
+                match( input,
+                        DRLLexer.ID,
+                        DroolsSoftKeywords.ENUM,
+                        null,
+                        DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                declaration = enumDeclaration( declare );
             } else {
-                // type declaration
-                declaration = typeDeclaration( declare );
+                // class type declaration
+                declaration = typeDeclaration( declare, false );
             }
 
         } catch ( RecognitionException re ) {
@@ -518,6 +545,82 @@ public class DRLParser {
     }
 
     /**
+     * typeDeclaration := [ENUM] qualifiedIdentifier
+     *                         annotation*
+     *                         enumerative+
+     *                         field*
+     *                     END
+     *
+     * @return
+     * @throws RecognitionException
+     */
+    public EnumDeclarationDescr enumDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+        EnumDeclarationDescrBuilder declare = null;
+        try {
+            declare = helper.start( ddb,
+                    EnumDeclarationDescrBuilder.class,
+                    null );
+
+            // type may be qualified when adding metadata
+            String type = qualifiedIdentifier();
+            if ( state.failed ) return null;
+            if ( state.backtracking == 0 ) declare.name( type );
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( declare );
+                if ( state.failed ) return null;
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.ID ) {
+                int next = input.LA( 2 );
+                if ( next == DRLLexer.LEFT_PAREN || next == DRLLexer.COMMA || next == DRLLexer.SEMICOLON ) {
+                    enumerative( declare );
+                    if ( state.failed ) return null;
+                }
+                
+                if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                            DRLLexer.COMMA,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                } else {
+                    match( input,
+                            DRLLexer.SEMICOLON,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                    break;
+                }
+            }
+
+            //boolean qualified = type.indexOf( '.' ) >= 0;
+            while ( //! qualified &&
+                    input.LA( 1 ) == DRLLexer.ID && ! helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+                // field*
+                field( declare );
+                if ( state.failed ) return null;
+            }
+
+            match( input,
+                    DRLLexer.ID,
+                    DroolsSoftKeywords.END,
+                    null,
+                    DroolsEditorType.KEYWORD );
+
+            if ( state.failed ) return null;
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( TypeDeclarationDescrBuilder.class,
+                    declare );
+        }
+        return (declare != null) ? declare.getDescr() : null;
+    }
+
+    /**
      * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
      *                         annotation* 
      *                         field*
@@ -526,13 +629,17 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public TypeDeclarationDescr typeDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+    public TypeDeclarationDescr typeDeclaration( DeclareDescrBuilder ddb, boolean isTrait ) throws RecognitionException {
         TypeDeclarationDescrBuilder declare = null;
         try {
             declare = helper.start( ddb,
                                     TypeDeclarationDescrBuilder.class,
                                     null );
 
+            if ( isTrait ) {
+                declare.newAnnotation( TypeDeclaration.Kind.ID ).value( TypeDeclaration.Kind.TRAIT.name() );
+            }
+            
             if( helper.validateIdentifierKey( DroolsSoftKeywords.TYPE ) ) {
                 // 'type'
                 match( input,
@@ -604,9 +711,85 @@ public class DRLParser {
     }
 
     /**
+     * enumerative := ID ( LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
+     */
+    private void enumerative( EnumDeclarationDescrBuilder declare ) {
+        EnumLiteralDescrBuilder literal = null;
+        String lit = null;
+        try {
+            Token enumLit = match( input,
+                    DRLLexer.ID,
+                    null,
+                    null,
+                    DroolsEditorType.IDENTIFIER );
+            lit = enumLit.getText();
+            if ( state.failed ) return;
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+
+        try {
+            literal = helper.start( declare,
+                    EnumLiteralDescrBuilder.class,
+                    lit );
+
+            if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+
+                match( input,
+                        DRLLexer.LEFT_PAREN,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+
+                boolean more;
+                
+                do {
+                    int first = input.index();
+                    exprParser.conditionalExpression();
+                    if ( state.failed ) return;
+                    if ( state.backtracking == 0 && input.index() > first ) {
+                        // expression consumed something
+                        String arg = input.toString( first,
+                                input.LT( -1 ).getTokenIndex() );
+                        literal.constructorArg( arg );
+                    }
+                    more = input.LA( 1 ) == DRLLexer.COMMA;
+                    if ( more ) {
+                        match( input,
+                                DRLLexer.COMMA,
+                                null,
+                                null,
+                                DroolsEditorType.SYMBOL );
+
+                    }
+                    
+                } while ( more );
+
+                match( input,
+                        DRLLexer.RIGHT_PAREN,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+
+
+            }
+
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( FieldDescrBuilder.class,
+                    literal );
+        }
+    }
+    
+    
+    /**
      * field := label qualifiedIdentifier (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
      */
-    private void field( TypeDeclarationDescrBuilder declare ) {
+    private void field( AbstractClassTypeDeclarationBuilder declare ) {
         FieldDescrBuilder field = null;
         String fname = null;
         try {

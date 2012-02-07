@@ -1273,6 +1273,42 @@ public class MiscTest {
     }
 
     @Test
+    public void testTypeDeclarationOnSeparateResource() throws Exception {
+        System.setProperty( "drools.dump.dir", "target" );
+        String file1 = "package a.b.c\n" +
+        		"declare SomePerson\n" + 
+        		"    weight : double\n" + 
+        		"    height : double\n" + 
+        		"end\n";
+        String file2 = "package a.b.c\n" + 
+                "import org.drools.*\n" +
+        		"declare Holder\n" + 
+        		"    person : Person\n" + 
+        		"end\n" + 
+        		"rule \"create holder\"\n" + 
+        		"    when\n" + 
+        		"        person : Person( )\n" + 
+        		"        not (\n" + 
+        		"            Holder( person; )\n" + 
+        		"        )\n" + 
+        		"    then\n" + 
+        		"        insert(new Holder(person));\n" + 
+        		"end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( file1 , file2 );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals( 0, 
+                      ksession.fireAllRules() );
+        ksession.insert( new org.drools.Person("Bob") );
+        assertEquals( 1, 
+                      ksession.fireAllRules() );
+        assertEquals( 0, 
+                      ksession.fireAllRules() );
+
+    }
+    
+    @Test
     public void testUppercaseField() throws Exception {
         String rule = "package org.drools;\n";
         rule += "global java.util.List list\n";

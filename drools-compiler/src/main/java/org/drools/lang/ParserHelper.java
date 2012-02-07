@@ -30,6 +30,7 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
@@ -40,6 +41,8 @@ import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
+import org.drools.lang.api.EnumDeclarationDescrBuilder;
+import org.drools.lang.api.EnumLiteralDescrBuilder;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.ForallDescrBuilder;
@@ -653,18 +656,30 @@ public class ParserHelper {
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
                 setStart( declare );
                 return (T) declare;
-            } else if ( EntryPointDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
+            } else if ( EnumDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                EnumDeclarationDescrBuilder declare = ctxBuilder == null ?
+                        DescrFactory.newPackage().newDeclare().enumeration() :
+                        ((DeclareDescrBuilder) ctxBuilder).enumeration();
+                pushParaphrases( DroolsParaphraseTypes.ENUM_DECLARE );
+                beginSentence( DroolsSentenceType.ENUM_DECLARATION );
+                setStart( declare );
+                return (T) declare;
+            }else if ( EntryPointDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 EntryPointDeclarationDescrBuilder declare = ctxBuilder == null ?
-                                                            DescrFactory.newPackage().newDeclare().entryPoint() :
-                                                            ((DeclareDescrBuilder) ctxBuilder).entryPoint();
+                        DescrFactory.newPackage().newDeclare().entryPoint() :
+                        ((DeclareDescrBuilder) ctxBuilder).entryPoint();
                 pushParaphrases( DroolsParaphraseTypes.ENTRYPOINT_DECLARE );
                 beginSentence( DroolsSentenceType.ENTRYPOINT_DECLARATION );
                 setStart( declare );
                 return (T) declare;
             } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                FieldDescrBuilder field = ((TypeDeclarationDescrBuilder) ctxBuilder).newField( param );
+                FieldDescrBuilder field = ((AbstractClassTypeDeclarationBuilder) ctxBuilder).newField( param );
                 setStart( field );
                 return (T) field;
+            } else if ( EnumLiteralDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                EnumLiteralDescrBuilder literal = ((EnumDeclarationDescrBuilder) ctxBuilder).newEnumLiteral( param );
+                setStart( literal );
+                return (T) literal;
             } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 FunctionDescrBuilder function = null;
                 if ( ctxBuilder == null ) {
@@ -698,7 +713,7 @@ public class ParserHelper {
                 setStart( query );
                 return (T) query;
             } else if ( AttributeDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                AttributeDescrBuilder< ? > attribute = ((AttributeSupportBuilder< ? >) ctxBuilder).attribute( param );
+                AttributeDescrBuilder< ? > attribute = ((AttributeSupportBuilder< ? >) ctxBuilder).attribute(param);
                 setStart( attribute );
                 return (T) attribute;
             } else if ( EvalDescrBuilder.class.isAssignableFrom( clazz ) ) {
