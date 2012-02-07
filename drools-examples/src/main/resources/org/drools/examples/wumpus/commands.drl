@@ -207,10 +207,16 @@ end
 
 rule "Shoot Arrow"  when
     $sc : ShootCommand();
-    $h  : Hero()
+    $h  : Hero( arrows == 1 )
+then
+    modify( $h ) { arrows = 0 };
+    insert( new Arrow($h.row, $h.col, $h.direction) );
+end 
+
+rule "Retract Shoot Arrow"  salience -100 when
+    $sc : ShootCommand()
 then
     retract ( $sc );
-    insert( new Arrow($h.row, $h.col, $h.direction) );
 end 
 
 rule "Move Arrow Up"  when
