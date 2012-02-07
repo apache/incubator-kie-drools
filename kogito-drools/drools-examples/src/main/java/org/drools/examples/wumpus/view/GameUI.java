@@ -356,8 +356,11 @@ public class GameUI {
                 sensorG = bi.createGraphics();
                 sensorG.setColor( Color.WHITE ); // background
                 sensorG.fillRect( 0, 0, getWidth(), getHeight() );
-                gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
-                gameUI.getGameView().getKsession().fireAllRules();                
+                if ( gameUI != null ) {
+                    // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready                    
+                    gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
+                    gameUI.getGameView().getKsession().fireAllRules();
+                }
             }
 
             g.drawImage( bi, 0, 0, null );
@@ -387,9 +390,11 @@ public class GameUI {
                 caveG = bi.createGraphics();
                 caveG.setColor( Color.WHITE ); // background
                 caveG.fillRect( 0, 0, getWidth(), getHeight() );
-                gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
-                gameUI.getGameView().getKsession().fireAllRules();
-                // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready
+                if ( gameUI != null ) {                
+                    // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready                    
+                    gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
+                    gameUI.getGameView().getKsession().fireAllRules();
+                }
             }
             
             g.drawImage( bi, 0, 0, null );
