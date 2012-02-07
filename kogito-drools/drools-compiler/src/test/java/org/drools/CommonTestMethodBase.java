@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
@@ -53,7 +54,11 @@ public class CommonTestMethodBase extends Assert {
     }
 
     protected KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        return loadKnowledgeBaseFromString( null, drlContentStrings );
+    }
+
+    protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, String... drlContentStrings ) {
+        KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         for ( String drlContentString : drlContentStrings ) {
             kbuilder.add( ResourceFactory.newByteArrayResource(drlContentString.getBytes()),
                     ResourceType.DRL );

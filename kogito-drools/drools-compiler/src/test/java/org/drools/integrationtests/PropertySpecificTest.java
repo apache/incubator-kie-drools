@@ -2,9 +2,12 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.definition.type.FactType;
 import org.drools.definition.type.Modifies;
 import org.drools.definition.type.PropertySpecific;
@@ -575,5 +578,33 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         int rules = ksession.fireAllRules();
         assertEquals(3, rules);
+    }
+
+    @Test(timeout = 5000)
+    public void testConfig() throws Exception {
+        String rule = "package org.drools\n" +
+                "declare A\n" +
+                "    i : int\n" +
+                "    j : int\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $a : A(i == 1)\n" +
+                "then\n" +
+                "    modify($a) { setJ(2) };\n" +
+                "end\n";
+
+        KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        config.setOption(PropertySpecificOption.ALWAYS);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType typeA = kbase.getFactType( "org.drools", "A" );
+        Object a = typeA.newInstance();
+        typeA.set( a, "i", 1 );
+        ksession.insert( a );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
     }
 }
