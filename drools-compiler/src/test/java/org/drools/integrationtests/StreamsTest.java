@@ -629,4 +629,49 @@ public class StreamsTest extends CommonTestMethodBase {
                           is(3));
 
     }
+    
+    @Test
+    public void testLengthWindow() {
+        String drl = "package org.drools\n" +
+                     "declare StockTick\n" +
+                     "    @role(event)\n" +
+                     "end\n" +
+                     "rule notAnything\n" +
+                     "    when\n" +
+                     "        not StockTick( company == 'RHT' ) over window:length(3) from entry-point ticks\n" +
+                     "    then\n" +
+                     "        //consequences\n" +
+                     "end\n";
+        KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption(EventProcessingOption.STREAM);
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        // the rule should fire now as there are no events whatsoever
+        Assert.assertEquals(1, ksession.fireAllRules());
+        
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("ticks");
+        ep.insert(new StockTick(1, "RHT", 50, 1000));
+        ep.insert(new StockTick(2, "ACME", 50, 1000));
+        ep.insert(new StockTick(3, "ACME", 50, 1000));
+        
+        // now there are 3 events in window one of which is RHT nothing should be fired
+        Assert.assertEquals(0, ksession.fireAllRules());
+        Assert.assertEquals(3, ep.getFactCount());
+        
+        ep.insert(new StockTick(4, "ACME", 50, 1000));
+        
+        // now there are 3 events in window none of which is RHT the rule should be fired
+        Assert.assertEquals(1, ksession.fireAllRules());
+        Assert.assertEquals(3, ep.getFactCount());
+        
+        ep.insert(new StockTick(5, "ACME", 50, 1000));
+        ep.insert(new StockTick(6, "ACME", 50, 1000));
+        ep.insert(new StockTick(7, "ACME", 50, 1000));
+        
+        // three more event, three more fired rules
+        Assert.assertEquals(3, ksession.fireAllRules());
+        Assert.assertEquals(3, ep.getFactCount());
+    }
 }
