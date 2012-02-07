@@ -528,11 +528,11 @@ config.setOption( AlphaThresholdOption.get(5) );</programlisting>
           <title>New accumulate functions</title>
 
           <programlisting>
-# collect the set of unique names in the working memory
+// collect the set of unique names in the working memory
 $names : Set() from accumulate( Person( $n : name, $s : surname ),
                         collectSet( $n + " " + $s ) )
 
-# collect the list of alarm codes from the alarms in the working memory
+// collect the list of alarm codes from the alarms in the working memory
 $codes : List() from accumulate( Alarm( $c : code, $s : severity ),
                          collectList( $c + $s ) )</programlisting>
         </example>
@@ -560,10 +560,9 @@ end</programlisting>
     <section>
       <title>Batch Executor</title>
 
-      <para>Batch Executor allows for the scripting of of a Knowledge session
-      using Commands, which can also re, both the
-      <code>StatelessKnowledgeSession</code> and
-      <code>StatefulKnowledgeSession</code> implement this interface Commands
+      <para>Batch Executor allows for the scripting of a Knowledge session
+      using Commands. Both the <code>StatelessKnowledgeSession</code> and
+      <code>StatefulKnowledgeSession</code> implement this interface. Commands
       are created using the <code>CommandFactory</code> and executed using the
       "execute" method, such as the following insert Command:</para>
       <example>
@@ -1183,13 +1182,13 @@ ut.commit();</programlisting>
           semantics:</title>
 
           <programlisting>
-# existing bean assuming an event role
+// existing bean assuming an event role
 import org.drools.test.StockTick
 declare StockTick
   @role( event )
 end
 
-# generated bean assuming an event role
+// generated bean assuming an event role
 declare Alarm
   @role( event )
   type : String
