@@ -1,0 +1,38 @@
+package org.jboss.qa.brms.persistence
+
+
+rule "TestInserted"
+	no-loop
+	when
+		$person : Person ( )
+	then
+		#consequences
+end
+
+rule "TestInsert"
+	no-loop
+	when
+		Person( name == "insert", $val : id )
+	then
+		insert( new Message( Integer.toString($val) ) );
+end
+
+rule "TestUpdate"
+	no-loop
+	when
+		Person( name == "update", $val : id )
+		$msg : Message ( message == "toBeUpdated" )
+
+	then
+		$msg.setMessage( Integer.toString($val) );
+		update( $msg );
+end
+
+rule "TestRetract"
+	when
+		Person( name == "retract" )
+		$msg : Message ( message == "toBeRetracted" )
+
+	then
+		retract( $msg );
+end

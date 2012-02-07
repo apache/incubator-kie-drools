@@ -41,6 +41,8 @@ import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.ObjectUpdatedEvent;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.integrationtests.DynamicRulesTest;
 import org.drools.integrationtests.SerializationHelper;
@@ -213,6 +215,26 @@ public class SequentialTest {
             }
 
             public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event );
+            }
+
+            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event );    
+            }
+
+            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event );  
+            }
+
+            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+                assertNotNull( event.getKnowledgeRuntime() );
+                list.add( event ); 
+            }
+
+            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
                 list.add( event );
             }
