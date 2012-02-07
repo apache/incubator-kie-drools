@@ -5,6 +5,7 @@ public class SensorArray {
     private boolean    seeGlitter;    
     private boolean    feelBreeze;
     private boolean    feelBump;
+    private boolean    hearScream;
     
     public boolean isSmellStench() {
         return smellStench;
@@ -37,12 +38,21 @@ public class SensorArray {
     public void setFeelBump(boolean feelBump) {
         this.feelBump = feelBump;
     }
-    
+
+    public boolean isHearScream() {
+        return hearScream;
+    }
+
+    public void setHearScream(boolean hearScream) {
+        this.hearScream = hearScream;
+    }
+
     @Override
     public String toString() {
-        return "SensorArray [smellStench=" + smellStench + ", seeGlitter=" + seeGlitter + ", feelBreeze=" + feelBreeze + ", feelBump=" + feelBump + "]";
+        return "SensorArray [smellStench=" + smellStench + ", seeGlitter=" + seeGlitter + ", feelBreeze=" + feelBreeze + ", feelBump=" + feelBump + ", hearScream=" + hearScream + "]";
     }
     
+
 
     
 }

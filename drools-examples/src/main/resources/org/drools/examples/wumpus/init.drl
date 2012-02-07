@@ -26,6 +26,7 @@ declare Wumpus
 end  
 
 rule "Insert Score" when
+    not Reset()
     not Score()
 then
     insert( new Score() );
@@ -63,7 +64,7 @@ then
     insert( wumpus );
 end
 
-rule InvalidWumpus when
+rule InvalidWumpus salience 500 when
     $w : Wumpus( row == 0, col == 0 )    
 then
     retract( $w ); // retraction triggers the "not" CE
@@ -78,7 +79,7 @@ then
     insert( gold );
 end
 
-rule InvalidGold when
+rule InvalidGold salience 500 when
     $g : Gold( row == 0, col == 0 )  
     not Hero( gold == true ) // gold can be in row first square, if hero is carrying it
 then
@@ -127,6 +128,13 @@ then
     retract( $c );
 end 
 
+rule "Reset Score" when
+    $r : Reset(resetScore == true)
+    $s : Score()
+then
+    retract( $s );
+end  
+
 rule "Reset Done" salience -100 when
     $r : Reset()
     not Pit()
@@ -140,3 +148,5 @@ then
     retract( $h );
     retract( $r );    
 end 
+
+  
