@@ -52,8 +52,20 @@ declare Gold
 	@propertySpecific
 end	
 
+declare SensorDirty
+	@propertySpecific
+    dirty : boolean
+end  
+
+rule "Init SensorDirty" when
+    not SensorDirty()
+then
+    insert( new SensorDirty() );
+end
+
 rule "Base Sensor" when
     $gui : GameUI( sensorPanel != null && sensorPanel.sensorG != null )
+    $sd : SensorDirty() @watch(!*)    
 then
 end    
 
@@ -61,48 +73,56 @@ rule "Feel Breeze" extends "Base Sensor" when
     FeelBreeze()
 then
     paintSensorCell("breeze.png", 0, 0, $gui, $gui.sensorPanel.sensorG );    
+   modify( $sd ) { dirty = true };    
 end
 
 rule "Breeze Gone" extends "Base Sensor" when
     not FeelBreeze()
 then
-    clearSensorCell( 0, 0, $gui.sensorPanel.sensorG );    
+    clearSensorCell( 0, 0, $gui.sensorPanel.sensorG );  
+    modify( $sd ) { dirty = true };  
 end
 
 rule "Smell Stench" extends "Base Sensor" when
     SmellStench()
 then
-    paintSensorCell("stench.png", 103, 0, $gui, $gui.sensorPanel.sensorG );    
+    paintSensorCell("stench.png", 103, 0, $gui, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
 end
 
 rule "Stench Gone" extends "Base Sensor" when
     not SmellStench()
 then
-    clearSensorCell( 103, 0, $gui.sensorPanel.sensorG );    
+    clearSensorCell( 103, 0, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
 end
 
 rule "See Glitter" extends "Base Sensor" when
     SeeGlitter()
 then
-    paintSensorCell("glitter.png", 206, 0, $gui, $gui.sensorPanel.sensorG );    
+    paintSensorCell("glitter.png", 206, 0, $gui, $gui.sensorPanel.sensorG );   
+    modify( $sd ) { dirty = true }; 
 end
 
 rule "Glitter Gone" extends "Base Sensor" when
     not SeeGlitter()
 then
     clearSensorCell( 206, 0, $gui.sensorPanel.sensorG );    
+    modify( $sd ) { dirty = true };
 end
 
 rule "Feel Bump" extends "Base Sensor" when
     FeelBump()
 then
-    paintSensorCell("bump.png", 309, 0, $gui, $gui.sensorPanel.sensorG );    
+    paintSensorCell("bump.png", 309, 0, $gui, $gui.sensorPanel.sensorG );   
+    modify( $sd ) { dirty = true }; 
 end
 
 rule "Bump Gone"  extends "Base Sensor"when
     not FeelBump()
 then
-    clearSensorCell( 309, 0, $gui.sensorPanel.sensorG );    
+    clearSensorCell( 309, 0, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
 end
 
 
@@ -110,10 +130,20 @@ rule "Hear Scream"  extends "Base Sensor"when
     HearScream()
 then
     paintSensorCell("scream.png", 412, 0, $gui, $gui.sensorPanel.sensorG );    
+    modify( $sd ) { dirty = true };
 end
 
 rule "Scream Gone"  extends "Base Sensor" when
     not HearScream()
 then
-    clearSensorCell( 412, 0, $gui.sensorPanel.sensorG );    
+    clearSensorCell( 412, 0, $gui.sensorPanel.sensorG );  
+    modify( $sd ) { dirty = true };  
+end
+
+rule "Redraw Sensors" no-loop salience -500 when
+   $gui : GameUI() 
+   $sd : SensorDirty( dirty == true )
+then
+   $gui.updateSensors();
+   modify( $sd ) { dirty = false };
 end

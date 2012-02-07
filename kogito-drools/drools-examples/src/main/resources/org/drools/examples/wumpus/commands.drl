@@ -32,6 +32,7 @@ then
     retract( $p );
 end 
 
+
 rule "Direction.UP, Move.TURN_LEFT"  when
     $h  : Hero( direction == Direction.UP)
     $mc : MoveCommand( move == Move.TURN_LEFT )   

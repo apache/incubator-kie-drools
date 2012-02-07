@@ -16,6 +16,7 @@ import org.drools.examples.wumpus.WumpusDeath
 import org.drools.examples.wumpus.PitDeath
 import org.drools.examples.wumpus.GoldWin
 import org.drools.examples.wumpus.Reset
+import org.drools.examples.wumpus.Score
 import org.drools.examples.wumpus.view.GameView
 
 import org.drools.runtime.StatefulKnowledgeSession
@@ -45,21 +46,11 @@ declare Wumpus
     @propertySpecific
 end    
 
-rule "Create GUI" salience -100 when
-    $gv : GameView()
+rule "Create GUI" when
     not GameUI()
 then
-    insert( new GameUI( ) ); 
-    
-end   
-
-rule "Set GUI Game View" no-loop salience -100 when
-    $gv : GameView()
-    $ui : GameUI()
-then
-    modify( $ui ) { gameView = $gv };
-end         
-
+    insert( new GameUI( ) );     
+end          
 
 rule "Reset View" when
     Reset()
@@ -69,6 +60,7 @@ then
 end
 
 rule "Init Game View" salience -200 when
+    $ui : GameUI()
     not Reset()
     not GameView()
     $w : Wumpus()
@@ -80,10 +72,19 @@ then
     $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
     $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
     
+    new java.io.File("log").mkdir();
     KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
-    $gv.setKlogger( klogger );    
+    $gv.setKlogger( klogger );   
+     $ui.gameView = $gv; 
     insert( $gv );
 end    
+
+rule "Score Updated" when
+    $gv : GameView()
+    $s : Score()
+then
+    channels["score"].send( $s );
+end
 
 rule "Wumpus Death View" dialect "java"   when
           WumpusDeath() 

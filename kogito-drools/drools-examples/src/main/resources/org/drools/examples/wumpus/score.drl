@@ -14,7 +14,6 @@ rule "Gold Win +100" salience 200 when
     $s : Score() @watch(!*)
 then
     modify( $s ) { value = $s.value  + 100 };
-    channels["score"].send( $s );
 end    
     
     
@@ -22,8 +21,7 @@ rule "Move -1" salience 200 when
          MoveCommand()
     $s : Score() @watch(!*)
 then
-    modify( $s) { value = $s.value  - 1 };
-    channels["score"].send( $s );  
+    modify( $s) { value = $s.value  - 1 };  
 end  
 
 rule "Shoot Arrow -10" salience 200 when
@@ -31,7 +29,6 @@ rule "Shoot Arrow -10" salience 200 when
     $s : Score() @watch(!*)
 then
     modify( $s) { value = $s.value  - 10 };
-    channels["score"].send( $s );  
 end   
         
 rule "Pit Death -1000" salience 200 when
@@ -39,13 +36,12 @@ rule "Pit Death -1000" salience 200 when
     $s : Score() @watch(!*)
 then
     modify( $s) { value = $s.value  - 1000 };
-    channels["score"].send( $s );  
 end 
 
 rule "Wumpus Death -1000" salience 200 when
          WumpusDeath()
     $s : Score() @watch(!*)
 then
-     modify( $s) { value = $s.value - 1000 };
-    channels["score"].send( $s );  
+     modify( $s) { value = $s.value - 1000 };  
 end          
+

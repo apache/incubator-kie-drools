@@ -139,6 +139,9 @@ public class GameUI {
         blank.setBackground(Color.WHITE);
         frame.getContentPane().add(blank, "cell 0 3,grow");
         frame.setVisible( true );
+        
+        updateCave();
+        updateSensors();
     }
 
     public synchronized void updateCave() {
@@ -177,10 +180,10 @@ public class GameUI {
         restartButton.setBackground( Color.LIGHT_GRAY );
         restartButton.addMouseListener( new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                gameView.getKsession().insert( new Reset() );
+                Reset reset = new Reset();
+                reset.setResetScore( true );
+                gameView.getKsession().insert( reset );
                 gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
             }
         } );
         actionPanel.add( restartButton );
@@ -192,8 +195,6 @@ public class GameUI {
             public void mousePressed(MouseEvent e) {
                 gameView.getKsession().insert( new ShootCommand() );
                 gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
             }
         } );
         actionPanel.add( shootButton );        
@@ -205,8 +206,6 @@ public class GameUI {
             public void mousePressed(MouseEvent e) {
                 gameView.getKsession().insert( new GrabCommand() );
                 gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
             }
         } );        
         actionPanel.add( grabButton );
@@ -218,8 +217,6 @@ public class GameUI {
             public void mousePressed(MouseEvent e) {
                 gameView.getKsession().insert( new ClimbCommand() );
                 gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
             }
         } );        
         actionPanel.add( climbButton );        
@@ -254,7 +251,6 @@ public class GameUI {
                 }
                 gameView.getKsession().update( fh, gameView );
                 gameView.getKsession().fireAllRules(); 
-                updateCave();
             }
         } );
         actionPanel.add( cheatButton );
@@ -334,8 +330,6 @@ public class GameUI {
             gameView.getKsession().insert( new MoveCommand( move ) );
 
             gameView.getKsession().fireAllRules();
-            updateCave();
-            updateSensors();
         }
     }
 
@@ -362,6 +356,8 @@ public class GameUI {
                 sensorG = bi.createGraphics();
                 sensorG.setColor( Color.WHITE ); // background
                 sensorG.fillRect( 0, 0, getWidth(), getHeight() );
+                gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
+                gameUI.getGameView().getKsession().fireAllRules();                
             }
 
             g.drawImage( bi, 0, 0, null );
@@ -391,6 +387,9 @@ public class GameUI {
                 caveG = bi.createGraphics();
                 caveG.setColor( Color.WHITE ); // background
                 caveG.fillRect( 0, 0, getWidth(), getHeight() );
+                gameUI.getGameView().getKsession().update( gameUI.getGameView().getKsession().getFactHandle( gameUI ), gameUI );
+                gameUI.getGameView().getKsession().fireAllRules();
+                // we need this to trigger the ksession drawing, otherwise the engine doesn't know it's ready
             }
             
             g.drawImage( bi, 0, 0, null );
