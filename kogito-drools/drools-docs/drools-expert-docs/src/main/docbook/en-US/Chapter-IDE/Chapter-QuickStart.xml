@@ -566,17 +566,16 @@
       when executing the rules engine. To create an audit log, use the
       following code:</para>
 
-      <programlisting language="java">StatefulSession session = ruleBase.newStatefulSession();
-// Create a new Working Memory Logger, that logs to file.
-WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
+      <programlisting language="java">StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+// Create a new Knowledge Runtime Logger, that logs to file.
 // An event.log file is created in the subdirectory log dir (which must exist) of the working directory
-logger.setFileName("log/event");
+KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "log/event");
 
-        session.insert(...);
-        session.fireAllRules();
+ksession.insert(...);
+ksession.fireAllRules();
 
 // stop logging
-logger.writeToDisk();</programlisting>
+logger.close();</programlisting>
 
       <para>Open the log by clicking the Open Log action, the first icon in
       the Audit View, and select the file. The Audit View now shows all events
