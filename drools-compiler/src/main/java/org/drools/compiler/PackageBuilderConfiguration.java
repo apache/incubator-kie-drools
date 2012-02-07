@@ -41,6 +41,7 @@ import org.drools.builder.conf.KnowledgeBuilderOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
+import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.drools.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
@@ -112,6 +113,8 @@ public class PackageBuilderConfiguration
     private boolean                           processStringEscapes    = true;
 
     private boolean                           classLoaderCache        = true;
+
+    private PropertySpecificOption            propertySpecificOption  = PropertySpecificOption.ALLOWED;
 
     private String                            defaultPackageName;
     
@@ -638,6 +641,8 @@ public class PackageBuilderConfiguration
             return (T) DefaultPackageNameOption.get( this.defaultPackageName );
         } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
             return (T) (this.classLoaderCache ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
+        } else if ( PropertySpecificOption.class.equals( option ) ) {
+            return (T)propertySpecificOption;
         }
         return null;
     }
@@ -689,6 +694,8 @@ public class PackageBuilderConfiguration
             setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
         } else if ( option instanceof KBuilderSeverityOption ) {
             this.severityMap.put(((KBuilderSeverityOption) option).getName(), ((KBuilderSeverityOption) option).getSeverity());
+        } else if ( option instanceof PropertySpecificOption ) {
+            propertySpecificOption = (PropertySpecificOption)option;
         }
     }
 

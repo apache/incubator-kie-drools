@@ -60,6 +60,7 @@ import org.drools.builder.KnowledgeBuilderResults;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResultSeverity;
+import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
@@ -72,6 +73,7 @@ import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Modifies;
+import org.drools.definition.type.NotPropertySpecific;
 import org.drools.definition.type.Position;
 import org.drools.definition.type.PropertySpecific;
 import org.drools.factmodel.AnnotationDefinition;
@@ -1350,7 +1352,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         TypeDeclaration typeDeclaration = new TypeDeclaration( typeName );
         typeDeclaration.setTypeClass( cls );
 
-        typeDeclaration.setPropertySpecific( cls.isAnnotationPresent( PropertySpecific.class ) );
+        PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
+        boolean propertySpecific = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertySpecific.class),
+                                                                         cls.isAnnotationPresent(NotPropertySpecific.class));
+        typeDeclaration.setPropertySpecific( propertySpecific );
 
         ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
         if (clsDef == null) {
@@ -2098,15 +2103,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
         type.setDynamic( dynamic );
 
-        boolean propertySpecific = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_SPECIFIC );
+        PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
+        boolean propertySpecific = propertySpecificOption.isPropSpecific(typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_SPECIFIC),
+                typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
         type.setPropertySpecific( propertySpecific );
 
         pkgRegistry.getPackage().addTypeDeclaration( type );
         return true;
     }
 
-    private void updateTraitDefinition( TypeDeclaration type,
-            Class concrete ) {
+    private void updateTraitDefinition( TypeDeclaration type, Class concrete ) {
         try {
 
             ClassFieldInspector inspector = new ClassFieldInspector( concrete );
