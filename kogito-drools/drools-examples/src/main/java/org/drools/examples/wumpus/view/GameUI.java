@@ -19,14 +19,22 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 import org.drools.examples.wumpus.Cell;
+import org.drools.examples.wumpus.ClimbCommand;
 import org.drools.examples.wumpus.Gold;
+import org.drools.examples.wumpus.GrabCommand;
 import org.drools.examples.wumpus.Hero;
 import org.drools.examples.wumpus.Move;
 import org.drools.examples.wumpus.MoveCommand;
 import org.drools.examples.wumpus.Pit;
 import org.drools.examples.wumpus.Reset;
+import org.drools.examples.wumpus.Score;
 import org.drools.examples.wumpus.ShootCommand;
 import org.drools.examples.wumpus.Wumpus;
+import org.drools.runtime.Channel;
+import org.drools.runtime.rule.FactHandle;
+import javax.swing.JScrollPane;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 public class GameUI {
 
@@ -38,38 +46,21 @@ public class GameUI {
 
     private SensorPanel sensorPanel;
 
-//    public static final void main(String[] args) {
-//        EventQueue.invokeLater( new Runnable() {
-//            public void run() {
-//                try {
-//                    GameUI window = new GameUI();
-//                    window.initialize();
-//                } catch ( Exception e ) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        } );
-//    }
-//
-//    public GameUI() {
-//        this.gameView = new GameView();
-//        this.gameView.init( new Cell[5][5], new SensorsView(), new ArrayList<Pit>(), new Wumpus( 2, 1 ), new Gold( 3, 1 ), new Hero( 0, 0 ), 50, 50, 3, 20, 5, 5 );
-//    }
-//
-//    public static final void run(final GameView gameView) {
-//        GameUI window = new GameUI( gameView );
-//        window.initialize();
-//    }
-
     public GameUI() {
     }
-    
-    
+
+    /**
+     * @wbp.parser.entryPoint
+     */
     public GameUI(GameView gameView) {
         this.gameView = gameView;
+        if (this.gameView == null ) {
+                this.gameView = new GameView();
+                this.gameView.init( new Wumpus( 2, 1 ), new Gold( 3, 1 ), new Hero( 0, 0 ), 50, 50, 3, 20, 5, 5 );
+        }
         initialize();
     }
-    
+
     public void setGameView(GameView gameView) {
         this.gameView = gameView;
         if ( frame == null ) {
@@ -79,26 +70,54 @@ public class GameUI {
 
     public GameView getGameView() {
         return gameView;
-    } 
-    
+    }
+
+    public CavePanel getCavePanel() {
+        return cavePanel;
+    }
+
+    public SensorPanel getSensorPanel() {
+        return sensorPanel;
+    }
+
     /**
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JFrame( "Display image" );
+        frame = new JFrame( "Wumpus World" );
         frame.getContentPane().setBackground( Color.WHITE );
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
-        //drawCave();
-        //drawActionPanel();
+        frame.setSize( 926, 603 );
+        frame.getContentPane().setLayout( new MigLayout("", "[520px][grow,fill]", "[30px,top][300px,top][100px,top][grow]") );
+        
+        JPanel scorePanel = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) scorePanel.getLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        scorePanel.setBackground(Color.WHITE);
+        frame.getContentPane().add(scorePanel, "cell 0 0,grow");
+        
+        JLabel lblScore = new JLabel("Score");
+        scorePanel.add(lblScore);
+        
+        final JTextField txtScore = new JTextField();
+        gameView.getKsession().getChannels().put( "score", new Channel() {            
+            public void send(Object object) {
+                txtScore.setText( "" + ((Score ) object).getValue() );
+            }
+        } );
+        
+        txtScore.setEditable(false);
+        scorePanel.add(txtScore);
+        txtScore.setColumns(10);
+        
+        JScrollPane scrollPane = new JScrollPane();
+        frame.getContentPane().add(scrollPane, "cell 1 0 1 4,grow");
 
-        frame.setSize( 840, 602 );
-        frame.getContentPane().setLayout( new MigLayout( "", "[grow]", "[300px:n,grow][100px:n,grow]" ) );
-
-        JPanel panel = new JPanel();
-        panel.setBackground( Color.WHITE );
-        frame.getContentPane().add( panel, "cell 0 0,grow" );
-        panel.setLayout( new MigLayout( "", "[200px:200px:200px,left][grow]", "[grow]" ) );
+        JPanel actionPanel = new JPanel();
+        actionPanel.setBackground( Color.WHITE );
+        frame.getContentPane().add( actionPanel, "cell 0 1,grow" );
+        actionPanel.setLayout( new MigLayout("", "[200px,left][300px]", "[grow]") );
 
         JPanel controls = new JPanel();
         controls.setBackground( Color.WHITE );
@@ -107,23 +126,19 @@ public class GameUI {
 
         controls.add( drawMovePanel(), "cell 0 1,alignx left,growy" );
 
-        //        sensorPanel = drawSensorPanel();
-        //        panel_2.add( sensorPanel, "cell 0 1,grow" );
-
-        panel.add( controls, "cell 0 0,grow" );
+        actionPanel.add( controls, "cell 0 0,grow" );
 
         cavePanel = drawCave();
-        panel.add( cavePanel, "cell 1 0,grow" );
+        actionPanel.add( cavePanel, "cell 1 0,grow" );
 
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground( Color.WHITE );
-        panel_1.setLayout( new MigLayout( "", "[grow]", "[150px:n,grow]" ) );
         sensorPanel = drawSensorPanel();
-        panel_1.add( sensorPanel, "cell 0 0,grow" );
-
-        frame.getContentPane().add( panel_1, "cell 0 1,grow" );
+        
+        frame.getContentPane().add( sensorPanel, "cell 0 2,grow" );
+        
+        JPanel blank = new JPanel();
+        blank.setBackground(Color.WHITE);
+        frame.getContentPane().add(blank, "cell 0 3,grow");
         frame.setVisible( true );
-        //frame.pack();
     }
 
     public synchronized void updateCave() {
@@ -137,11 +152,11 @@ public class GameUI {
     }
 
     public SensorPanel drawSensorPanel() {
-        SensorPanel sensorPanel_1 = new SensorPanel( this );
-        FlowLayout fl_sensorPanel_1 = (FlowLayout) sensorPanel_1.getLayout();
-        fl_sensorPanel_1.setVgap( 10 );
-        sensorPanel_1.setBackground( Color.WHITE );
-        return sensorPanel_1;
+        SensorPanel sensorPanel = new SensorPanel( this );
+        FlowLayout flowLayout = (FlowLayout) sensorPanel.getLayout();
+        flowLayout.setVgap( 10 );
+        sensorPanel.setBackground( Color.WHITE );
+        return sensorPanel;
     }
 
     public CavePanel drawCave() {
@@ -150,16 +165,17 @@ public class GameUI {
         flowLayout.setVgap( 10 );
         cavelPanel.setBackground( Color.WHITE );
         return cavelPanel;
-    }      
+    }
 
     public JPanel drawActionPanel() {
         JPanel actionPanel = new JPanel();
         actionPanel.setBackground( Color.WHITE );
         actionPanel.setLayout( new GridLayout( 0, 2, 0, 0 ) );
 
-        JButton btnNewButton_4 = new JButton( "START" );
-        btnNewButton_4.setBackground( Color.LIGHT_GRAY );
-        btnNewButton_4.addMouseListener( new MouseAdapter() {
+        JButton restartButton = new JButton( "RESTART" );
+        restartButton.setToolTipText( "Restart game" );
+        restartButton.setBackground( Color.LIGHT_GRAY );
+        restartButton.addMouseListener( new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 gameView.getKsession().insert( new Reset() );
                 gameView.getKsession().fireAllRules();
@@ -167,11 +183,12 @@ public class GameUI {
                 updateSensors();
             }
         } );
-        actionPanel.add( btnNewButton_4 );
+        actionPanel.add( restartButton );
 
-        JButton btnNewButton_5 = new JButton( "SHOOT" );
-        btnNewButton_5.setBackground( Color.LIGHT_GRAY );
-        btnNewButton_5.addMouseListener( new MouseAdapter() {
+        JButton shootButton = new JButton( "SHOOT" );
+        shootButton.setToolTipText( "Shoot Arrow" );
+        shootButton.setBackground( Color.LIGHT_GRAY );
+        shootButton.addMouseListener( new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 gameView.getKsession().insert( new ShootCommand() );
                 gameView.getKsession().fireAllRules();
@@ -179,33 +196,68 @@ public class GameUI {
                 updateSensors();
             }
         } );
-        actionPanel.add( btnNewButton_5 );
-
-        //        JButton btnNewButton_6 = new JButton( "GRAB" );
-        //        btnNewButton_6.setBackground( Color.LIGHT_GRAY );
-        //        actionPanel.add( btnNewButton_6 );
-
-        //        JButton btnNewButton_7 = new JButton( "CLIMB" );
-        //        btnNewButton_7.setBackground( Color.LIGHT_GRAY );
-        //        actionPanel.add( btnNewButton_7 );
-
-        JButton btnNewButton_8 = new JButton( "CAVE?" );
-        btnNewButton_8.setBackground( Color.LIGHT_GRAY );
-        btnNewButton_8.addMouseListener( new MouseAdapter() {
+        actionPanel.add( shootButton );        
+        
+        JButton grabButton = new JButton( "GRAB" );
+        grabButton.setToolTipText( "Grab gold" );
+        grabButton.setBackground( Color.LIGHT_GRAY );
+        grabButton.addMouseListener( new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
+                gameView.getKsession().insert( new GrabCommand() );
+                gameView.getKsession().fireAllRules();
+                updateCave();
+                updateSensors();
+            }
+        } );        
+        actionPanel.add( grabButton );
+        
+        JButton climbButton = new JButton( "CLIMB" );
+        climbButton.setToolTipText( "Climb out of the cave" );
+        climbButton.setBackground( Color.LIGHT_GRAY );
+        climbButton.addMouseListener( new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                gameView.getKsession().insert( new ClimbCommand() );
+                gameView.getKsession().fireAllRules();
+                updateCave();
+                updateSensors();
+            }
+        } );        
+        actionPanel.add( climbButton );        
+
+        final JButton showCaveButton = new JButton( "HIDE" );
+        showCaveButton.setToolTipText( "Hide/Show the cave" );
+        showCaveButton.setBackground( Color.LIGHT_GRAY );
+        showCaveButton.addMouseListener( new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if( cavePanel.isVisible() ) {
+                    cavePanel.setVisible( false );
+                    showCaveButton.setText( "SHOW" );
+                } else {
+                    cavePanel.setVisible( true );
+                    showCaveButton.setText( "HIDE" );
+                }                
+            }
+        } );
+        actionPanel.add( showCaveButton );
+        
+        JButton cheatButton = new JButton( "CHEAT" );
+        cheatButton.setToolTipText( "Reveal all squares" );
+        cheatButton.setBackground( Color.LIGHT_GRAY );
+        cheatButton.addMouseListener( new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                FactHandle fh = gameView.getKsession().getFactHandle( gameView );
+
                 if ( gameView.isShowAllCells() ) {
                     gameView.setShowAllCells( false );
                 } else {
                     gameView.setShowAllCells( true );
                 }
+                gameView.getKsession().update( fh, gameView );
+                gameView.getKsession().fireAllRules(); 
                 updateCave();
             }
         } );
-        actionPanel.add( btnNewButton_8 );
-
-        //        JButton btnNewButton_9 = new JButton( "WUMPUS?" );
-        //        btnNewButton_9.setBackground( Color.LIGHT_GRAY );
-        //        actionPanel.add( btnNewButton_9 );
+        actionPanel.add( cheatButton );
 
         return actionPanel;
     }
@@ -282,171 +334,67 @@ public class GameUI {
             gameView.getKsession().insert( new MoveCommand( move ) );
 
             gameView.getKsession().fireAllRules();
-            if ( gameView.isPitDeath() || gameView.isWumpusDeath() ) {
-                gameView.getKlogger().close();
-                gameView.setShowAllCells( true );
-                updateCave();
-                updateSensors();
-                int answre = JOptionPane.showConfirmDialog( null,
-                                                            "Play Again1?", "DEAD", JOptionPane.OK_OPTION );
-                gameView.getKsession().insert( new Reset() );
-                gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
-            } else if ( gameView.isGoldWin() ) {
-                gameView.getKlogger().close();
-                gameView.setShowAllCells( true );
-                updateCave();
-                updateSensors();
-                int answre = JOptionPane.showConfirmDialog( null,
-                                                            "Play Again1?", "WIN", JOptionPane.OK_OPTION );
-                gameView.getKsession().insert( new Reset() );
-                gameView.getKsession().fireAllRules();
-                updateCave();
-                updateSensors();
-            }
-            else {
-                updateCave();
-                updateSensors();
-            }
+            updateCave();
+            updateSensors();
         }
     }
 
     public static class SensorPanel extends JPanel {
-        private GameUI gameUI;
+        private GameUI        gameUI;
+
+        private BufferedImage bi;
+        private Graphics      sensorG;
 
         public SensorPanel(GameUI gameUI) {
+            setOpaque( true );
             this.gameUI = gameUI;
         }
+        
+        public Graphics getSensorG() {
+            return sensorG;
+        }
 
-        public void paint(Graphics g) {
-            super.paintComponent( g );
-            GameView gameView = gameUI.getGameView();
-            try {
-                SensorsView sensor = gameView.getSensorsview();
-                if ( sensor.isFeelBreeze() ) {
-                    BufferedImage image = javax.imageio.ImageIO.read( getClass().getResource( "breeze.png" ) );
-                    g.drawImage( image, 0, 0, 150, 150, this );
-                }
-
-                if ( sensor.isSmellStench() ) {
-                    BufferedImage image = javax.imageio.ImageIO.read( getClass().getResource( "stench.png" ) );
-                    g.drawImage( image, 153, 0, 150, 150, this );
-                }
-
-                if ( sensor.isSeeGlitter() ) {
-                    BufferedImage image = javax.imageio.ImageIO.read( getClass().getResource( "glitter.png" ) );
-                    g.drawImage( image, 306, 0, 150, 150, this );
-                }
-
-                if ( sensor.isFeelBump() ) {
-                    BufferedImage image = javax.imageio.ImageIO.read( getClass().getResource( "bump.png" ) );
-                    g.drawImage( image, 459, 0, 150, 150, this );
-                }
-
-                if ( sensor.isHearScream() ) {
-                    BufferedImage image = javax.imageio.ImageIO.read( getClass().getResource( "scream.png" ) );
-                    g.drawImage( image, 612, 0, 150, 150, this );
-                }
-            } catch ( Exception e ) {
-                e.printStackTrace();
-                throw new RuntimeException( e );
+        @Override
+        protected void paintComponent(Graphics g) {
+            if ( bi == null ) { // prepare BufferdImage
+                bi = new BufferedImage( getWidth(), getHeight(),
+                                        BufferedImage.TYPE_INT_RGB );
+                sensorG = bi.createGraphics();
+                sensorG.setColor( Color.WHITE ); // background
+                sensorG.fillRect( 0, 0, getWidth(), getHeight() );
             }
+
+            g.drawImage( bi, 0, 0, null );
         }
     }
 
     public static class CavePanel extends JPanel {
-        private GameUI gameUI;
+        private GameUI        gameUI;
+
+        private BufferedImage bi;
+        private Graphics      caveG;
 
         public CavePanel(GameUI gameUI) {
+            setOpaque( true );
             this.gameUI = gameUI;
         }
+        
+        public Graphics getCaveG() {
+            return caveG;
+        }
 
-        public void paint(Graphics g) {
-            GameView gameView = gameUI.getGameView();
-            super.paintComponent( g );
-            try {
-                int rowIndent = 20;
-                int colIndent = 5;
-                int rowPad = 0;
-                for ( int row = 0; row < 5; row++ ) {
-                    int colPad = 0;
-                    for ( int col = 0; col < 5; col++ ) {
-                        int x = (4 - row) * 50 - rowPad + rowIndent;
-                        int y = col * 50 + colPad + colIndent;
-
-                        BufferedImage image;
-                        if ( !gameView.isShowAllCells() && (gameView.getCells() != null && gameView.getCells()[row][col].isHidden()) ) {
-                            image = javax.imageio.ImageIO.read( getClass().getResource( "hidden_room.png" ) );
-                        } else {
-                            if ( row == gameView.getHero().getRow() && col == gameView.getHero().getCol() ) {
-                                Hero hero = gameView.getHero();
-                                switch ( hero.getDirection() ) {
-                                    case UP :
-                                        image = javax.imageio.ImageIO.read( getClass().getResource( "hero_up.png" ) );
-                                        break;
-                                    case DOWN :
-                                        image = javax.imageio.ImageIO.read( getClass().getResource( "hero_down.png" ) );
-                                        break;
-                                    case LEFT :
-                                        image = javax.imageio.ImageIO.read( getClass().getResource( "hero_left.png" ) );
-                                        break;
-                                    case RIGHT :
-                                        image = javax.imageio.ImageIO.read( getClass().getResource( "hero_right.png" ) );
-                                        break;
-                                    default:
-                                        throw new IllegalStateException( "invalid direction: " + hero.getDirection() );
-                                }
-                            } else {
-                                boolean containsPit = gameView.getPits().contains( new Pit( row, col ) );
-                                boolean containsAliveWumpus = false;
-                                boolean containsDeadWumpus = false;
-                                if ( row == gameView.getWumpus().getRow() && col == gameView.getWumpus().getCol() ) {
-                                    if ( gameView.getWumpus().isAlive() ) {
-                                        containsAliveWumpus = true;
-                                    } else {
-                                        containsDeadWumpus = true;
-                                    }
-                                }
-                                boolean containsGold = (row == gameView.getGold().getRow() && col == gameView.getGold().getCol());
-
-                                if ( !containsPit && !containsAliveWumpus && !containsDeadWumpus && !containsGold ) {
-                                    image = javax.imageio.ImageIO.read( getClass().getResource( "empty_room.png" ) );
-                                } else {
-
-                                    String pit = "";
-                                    String wumpus = "";
-                                    String gold = "";
-
-                                    if ( containsPit ) {
-                                        pit = "pit";
-                                    }
-
-                                    if ( containsAliveWumpus ) {
-                                        wumpus = "alive_wumpus";
-                                    } else if ( containsDeadWumpus ) {
-                                        wumpus = "dead_wumpus";
-                                    }
-
-                                    if ( containsGold ) {
-                                        gold = "gold";
-                                    }
-
-                                    image = javax.imageio.ImageIO.read( getClass().getResource( pit + wumpus + gold + ".png" ) );
-                                }
-                            }
-                        }
-                        g.drawImage( image, y, x, 50, 50, this );
-                        colPad = colPad + 3;
-                    }
-                    rowPad = rowPad + 3;
-                }
-            } catch ( Exception e ) {
-                e.printStackTrace();
-                throw new RuntimeException( e );
+        @Override
+        protected void paintComponent(Graphics g) {
+            if ( bi == null ) { // prepare BufferdImage
+                bi = new BufferedImage( getWidth(), getHeight(),
+                                        BufferedImage.TYPE_INT_RGB );
+                caveG = bi.createGraphics();
+                caveG.setColor( Color.WHITE ); // background
+                caveG.fillRect( 0, 0, getWidth(), getHeight() );
             }
+            
+            g.drawImage( bi, 0, 0, null );
         }
     }
-
 
 }

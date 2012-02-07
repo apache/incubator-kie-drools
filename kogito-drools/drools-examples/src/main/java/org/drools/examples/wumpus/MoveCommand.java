@@ -1,6 +1,6 @@
 package org.drools.examples.wumpus;
 
-public class MoveCommand {
+public class MoveCommand extends Command {
     private Move move;
 
     public MoveCommand(Move move) {

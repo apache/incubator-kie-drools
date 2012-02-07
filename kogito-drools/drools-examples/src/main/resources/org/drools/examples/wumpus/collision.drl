@@ -9,11 +9,73 @@ import org.drools.examples.wumpus.Gold
 import org.drools.examples.wumpus.SeeGlitter
 import org.drools.examples.wumpus.SmellStench
 import org.drools.examples.wumpus.WumpusDeath
+import org.drools.examples.wumpus.HearScream
 import org.drools.examples.wumpus.PitDeath
 import org.drools.examples.wumpus.GoldWin
 
 dialect "mvel"
 
+declare Cell
+	@propertySpecific
+end		
+
+declare Hero
+	@propertySpecific
+end	
+
+declare Gold
+	@propertySpecific
+end	
+
+declare Wumpus
+    @propertySpecific
+end 
+
+rule "Smell Stench"  when 
+    $h  : Hero()
+          Wumpus(row == $h.row, col == $h.col ) or    
+          Wumpus(row == $h.row + 1, col == $h.col ) or
+          Wumpus(row == $h.row - 1, col == $h.col ) or          
+          Wumpus(row == $h.row, col == $h.col + 1 ) or
+          Wumpus(row == $h.row, col == $h.col - 1 )
+then
+    insertLogical( new SmellStench() );
+end 
+
+rule "Feel Breeze"  when 
+    $h  : Hero()
+          Pit(row == $h.row + 1, col == $h.col ) or
+          Pit(row == $h.row - 1, col == $h.col ) or          
+          Pit(row == $h.row, col == $h.col + 1 ) or
+          Pit(row == $h.row, col == $h.col - 1 )
+then
+    insertLogical( new FeelBreeze() );
+end
+
+rule "See Glitter"  when 
+    $h  : Hero( )
+          Gold(row == $h.row, col == $h.col )
+then
+    insertLogical( new SeeGlitter() );
+end
+
+
+rule "Wumpus Killed" when
+    $a  : Arrow()
+    $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
+    $c  : Cell(row == $a.row, col == $a.col )        
+then    
+    retract( $a );
+    insertLogical( new HearScream() );
+    modify( $w ) { alive = false };
+end
+
+rule "Remove Scream on new move" when
+    Command()
+    $hs : HearScream() 
+then
+    retract( $hs );
+end     
 
 rule "Wumpus Death" when
     $h  : Hero()
@@ -22,26 +84,9 @@ then
     insert( new WumpusDeath() );
 end
 
-rule "Wumpus Killed" when
-    $a  : Arrow()
-    $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
-    $c  : Cell(row == $a.row, col == $a.col )        
-then
-    $c.setHidden( false );     
-    retract( $a );
-    modify( $w ) { alive = false };
-end
-
 rule "Pit Death" when
     $h  : Hero()
           Pit(row == $h.row, col == $h.col )
 then
     insert( new PitDeath() ); 
-end
-
-rule "Gold Win" when
-    $h  : Hero()
-          Gold(row == $h.row, col == $h.col )
-then
-    insert( new GoldWin() );
 end

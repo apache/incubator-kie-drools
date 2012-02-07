@@ -4,59 +4,32 @@ global java.util.Random randomInteger;
 
 dialect "mvel"
 
+declare Score
+	@propertySpecific
+end	
+
+
 declare Cell
 	@propertySpecific
 end		
 
-rule "Reset Pits" when
-    Reset()
-    $p : Pit()
-then
-    retract( $p );
+declare Hero
+	@propertySpecific
+end	
+
+declare Gold
+	@propertySpecific
+end	
+
+declare Wumpus
+    @propertySpecific
 end  
 
-rule "Reset Cells" when
-    Reset()
-    $c : Cell()
+rule "Insert Score" when
+    not Score()
 then
-    retract( $c );
-end   
-
-rule "Reset Wumpus Death" when
-    Reset()
-    $wd : WumpusDeath()
-then
-    retract( $wd );
-end 
-
-rule "Reset Pit Death" when
-    Reset()
-    $pd : PitDeath()
-then
-    retract( $pd );
-end   
-
-
-rule "Gold Win" when
-    Reset()
-    $gw : GoldWin()
-then
-    retract( $gw );
-end  
-
-rule "Reset Done" salience -100 when
-    $r : Reset()
-    not Pit()
-    not Cell()
-    $w : Wumpus()
-    $g : Gold()
-    $h : Hero()
-then
-    retract( $w );
-    retract( $g );
-    retract( $r );
-    retract( $h );
-end     
+    insert( new Score() );
+end        
 	
 rule CreateCells when
     not Reset()
@@ -106,7 +79,8 @@ then
 end
 
 rule InvalidGold when
-    $g : Gold( row == 0, col == 0 )    
+    $g : Gold( row == 0, col == 0 )  
+    not Hero( gold == true ) // gold can be in row first square, if hero is carrying it
 then
     retract( $g ); // retraction triggers the "not" CE
 end 
@@ -116,3 +90,53 @@ rule CreateHero when
 then
     insert( new Hero( 0, 0 ) );
 end    
+
+rule "Reset Wumpus Death" when
+    Reset()
+    $wd : WumpusDeath()
+then
+    retract( $wd );
+end 
+
+rule "Reset Pit Death" when
+    Reset()
+    $pd : PitDeath()
+then
+    retract( $pd );
+end   
+
+rule "Reset Gold Win" when
+    Reset()
+    $gw : GoldWin()
+then
+    retract( $gw );
+end
+
+rule "Reset Pits" when
+    Reset()
+    $p : Pit()
+then
+    retract( $p );
+end 
+
+
+rule "Reset Cells" when
+    Reset()
+    $c : Cell()
+then
+    retract( $c );
+end 
+
+rule "Reset Done" salience -100 when
+    $r : Reset()
+    not Pit()
+    not Cell()
+    $w : Wumpus()
+    $g : Gold()
+    $h : Hero()
+then
+    retract( $w );
+    retract( $g );    
+    retract( $h );
+    retract( $r );    
+end 
