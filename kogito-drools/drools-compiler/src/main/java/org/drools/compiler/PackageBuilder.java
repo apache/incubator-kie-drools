@@ -1505,7 +1505,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         //look among local declarations
         if (pkgRegistry != null) {
             for (String declaredName : pkgRegistry.getPackage().getTypeDeclarations().keySet()) {
-                if (declaredName.endsWith( sup ))
+                if (declaredName.equals( sup ))
                     sup = pkgRegistry.getPackage().getTypeDeclaration( declaredName ).getTypeClass().getName();
             }
         }
