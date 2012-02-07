@@ -1274,15 +1274,14 @@ public class MiscTest {
 
     @Test
     public void testTypeDeclarationOnSeparateResource() throws Exception {
-        String file1 = "package org.jboss.qa.brms.importreplace\n" +
-        		"import org.drools.Person\n" + 
+        System.setProperty( "drools.dump.dir", "target" );
+        String file1 = "package a.b.c\n" +
         		"declare SomePerson\n" + 
-        		"    person : Person\n" + 
         		"    weight : double\n" + 
         		"    height : double\n" + 
-        		"end";
-        String file2 = "package org.jboss.qa.brms.importreplace\n" + 
-                "import org.drools.Person\n" + 
+        		"end\n";
+        String file2 = "package a.b.c\n" + 
+                "import org.drools.*\n" +
         		"declare Holder\n" + 
         		"    person : Person\n" + 
         		"end\n" + 
@@ -1296,12 +1295,12 @@ public class MiscTest {
         		"        insert(new Holder(person));\n" + 
         		"end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( file1, file2 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( file1 , file2 );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         assertEquals( 0, 
                       ksession.fireAllRules() );
-        ksession.insert( new Person("Bob") );
+        ksession.insert( new org.drools.Person("Bob") );
         assertEquals( 1, 
                       ksession.fireAllRules() );
         assertEquals( 0, 
