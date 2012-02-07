@@ -16,32 +16,60 @@
 
 package org.drools.event.rule;
 
+import java.io.PrintStream;
+
 public class DebugAgendaEventListener
     implements
     AgendaEventListener {
+    
+    private PrintStream stream;
+    
+    public DebugAgendaEventListener() {
+        this.stream =  System.err;
+    }
+    
+    public DebugAgendaEventListener(PrintStream stream) {
+        this.stream = stream;
+    }
 
     public void activationCancelled(ActivationCancelledEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void activationCreated(ActivationCreatedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void afterActivationFired(AfterActivationFiredEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void agendaGroupPushed(AgendaGroupPushedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void beforeActivationFired(BeforeActivationFiredEvent event) {
-        System.err.println( event );
+        stream.println( event );
+    }
+
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+        stream.println( event );  
+    }
+
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+        stream.println( event );
+    }
+
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+        stream.println( event );
+    }
+
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+        stream.println( event );
     }
 
 }

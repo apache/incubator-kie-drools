@@ -16,6 +16,8 @@
 
 package org.drools.event.rule;
 
+import java.io.PrintStream;
+
 import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
 import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
@@ -29,37 +31,47 @@ import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
 public class DebugKnowledgeAgentEventListener
     implements
     KnowledgeAgentEventListener {
-
+    
+    private PrintStream stream;
+    
+    public DebugKnowledgeAgentEventListener() {
+        this.stream =  System.err;
+    }
+    
+    public DebugKnowledgeAgentEventListener(PrintStream stream) {
+        this.stream = stream;
+    }    
+    
     public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void afterChangeSetProcessed(AfterChangeSetProcessedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void afterResourceProcessed(AfterResourceProcessedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
     public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
-        System.err.print(event);
+        stream.println( event );
     }
 
 }

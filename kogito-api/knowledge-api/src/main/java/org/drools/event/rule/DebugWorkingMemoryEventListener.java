@@ -16,20 +16,32 @@
 
 package org.drools.event.rule;
 
+import java.io.PrintStream;
+
 public class DebugWorkingMemoryEventListener
     implements
     WorkingMemoryEventListener {
+    
+    private PrintStream stream;
+    
+    public DebugWorkingMemoryEventListener() {
+        this.stream =  System.err;
+    }
+    
+    public DebugWorkingMemoryEventListener(PrintStream stream) {
+        this.stream = stream;
+    }       
 
     public void objectInserted(ObjectInsertedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void objectRetracted(ObjectRetractedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
     public void objectUpdated(ObjectUpdatedEvent event) {
-        System.err.println( event );
+        stream.println( event );
     }
 
 }
