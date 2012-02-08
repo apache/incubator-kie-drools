@@ -16,6 +16,8 @@
 
 package org.jbpm.process;
 
+import junit.framework.Assert;
+
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.AbstractRuleBase;
@@ -24,21 +26,26 @@ import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.DefaultExecutorService;
 import org.drools.concurrent.ExecutorService;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.jbpm.JbpmTestCase;
+import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class TimerTest extends JbpmTestCase {
+public class TimerTest extends Assert {
 
 	private int counter = 0;
-	
-	public void testEmpty() {
-		
-	}
-
-	public void FIXMEtestTimer() {
+	   
+    static {
+        ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+    }
+    
+    @Test
+    @Ignore
+	public void testTimer() {
         AbstractRuleBase ruleBase = (AbstractRuleBase) RuleBaseFactory.newRuleBase();
         ExecutorService executorService = new DefaultExecutorService();
         final StatefulSession workingMemory = new ReteooStatefulSession(1, ruleBase, executorService);
@@ -56,8 +63,8 @@ public class TimerTest extends JbpmTestCase {
         };
         processInstance.setKnowledgeRuntime(((InternalWorkingMemory) workingMemory).getKnowledgeRuntime());
         processInstance.setId(1234);
-        ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime()).getProcessInstanceManager()
-        	.internalAddProcessInstance(processInstance);
+        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) ((InternalWorkingMemory) workingMemory).getProcessRuntime());
+        processRuntime.getProcessInstanceManager().internalAddProcessInstance(processInstance);
 
         new Thread(new Runnable() {
 			public void run() {

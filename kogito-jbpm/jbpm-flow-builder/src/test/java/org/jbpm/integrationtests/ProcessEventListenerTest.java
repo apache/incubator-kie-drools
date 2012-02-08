@@ -35,15 +35,88 @@ import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.rule.Package;
 import org.drools.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
+import org.jbpm.JbpmBaseTest;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.junit.Test;
 
-public class ProcessEventListenerTest extends JbpmTestCase{
+public class ProcessEventListenerTest extends JbpmBaseTest {
 
+    @Test
 	public void testInternalNodeSignalEvent() {
         PackageBuilder builder = new PackageBuilder();
-        Reader source = new StringReader(
+        Reader source = new StringReader(process);
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
+
+        final ProcessEventListener listener = createProcessEventListener(processEventList);
+
+        ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);
+        ProcessInstance processInstance =
+        	((InternalWorkingMemory)session).getProcessRuntime().startProcess("org.drools.event");
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals("MyValue", ((VariableScopeInstance)
+                                    ((org.jbpm.process.instance.ProcessInstance) processInstance)
+                                        .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
+        assertEquals( 28, processEventList.size() );
+        for (ProcessEvent e: processEventList) {
+        	System.out.println(e);
+        }
+        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
+
+    }
+    
+    private ProcessEventListener createProcessEventListener(final List<ProcessEvent> processEventList) {  
+        return new ProcessEventListener() {
+
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                processEventList.add(event);
+            }
+
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                processEventList.add(event);
+            }
+
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                processEventList.add(event);
+            }
+
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                processEventList.add(event);
+            }
+
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                processEventList.add(event);
+            }
+
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                processEventList.add(event);
+            }
+
+            public void beforeProcessCompleted(ProcessCompletedEvent event) {
+                processEventList.add(event);
+            }
+
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                processEventList.add(event);
+            }
+
+            public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+                processEventList.add(event);
+            }
+
+            public void afterVariableChanged(ProcessVariableChangedEvent event) {
+                processEventList.add(event);
+            }
+        };
+    }
+    
+    private static final String process = 
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
@@ -51,12 +124,12 @@ public class ProcessEventListenerTest extends JbpmTestCase{
             "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.event\" package-name=\"org.drools\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
-    		"    <variables>\n" +
-    		"      <variable name=\"MyVar\" >\n" +
-    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
-    		"        <value>SomeText</value>\n" +
-    		"      </variable>\n" +
-    		"    </variables>\n" +
+            "    <variables>\n" +
+            "      <variable name=\"MyVar\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <value>SomeText</value>\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
             "  </header>\n" +
             "\n" +
             "  <nodes>\n" +
@@ -80,71 +153,6 @@ public class ProcessEventListenerTest extends JbpmTestCase{
             "    <connection from=\"4\" to=\"5\" />\n" +
             "  </connections>\n" +
             "\n" +
-            "</process>");
-        builder.addRuleFlow(source);
-        Package pkg = builder.getPackage();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
-
-        final ProcessEventListener listener = new ProcessEventListener() {
-
-			public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                processEventList.add(event);
-			}
-
-			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                processEventList.add(event);
-			}
-
-			public void afterProcessCompleted(ProcessCompletedEvent event) {
-                processEventList.add(event);
-			}
-
-			public void afterProcessStarted(ProcessStartedEvent event) {
-                processEventList.add(event);
-			}
-
-			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                processEventList.add(event);
-			}
-
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                processEventList.add(event);
-			}
-
-			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-                processEventList.add(event);
-			}
-
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-                processEventList.add(event);
-			}
-
-			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-                processEventList.add(event);
-			}
-
-			public void afterVariableChanged(ProcessVariableChangedEvent event) {
-                processEventList.add(event);
-			}
-
-        };
-
-        ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);
-        ProcessInstance processInstance =
-        	((InternalWorkingMemory)session).getProcessRuntime().startProcess("org.drools.event");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        assertEquals("MyValue", ((VariableScopeInstance)
-                                    ((org.jbpm.process.instance.ProcessInstance) processInstance)
-                                        .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals( 28, processEventList.size() );
-        for (ProcessEvent e: processEventList) {
-        	System.out.println(e);
-        }
-        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
-
-    }
+            "</process>";
+            
 }

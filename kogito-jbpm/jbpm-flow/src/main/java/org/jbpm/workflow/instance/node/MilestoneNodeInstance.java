@@ -21,8 +21,6 @@ import java.util.Map;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
@@ -30,6 +28,8 @@ import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.AgendaGroupPoppedEvent;
 import org.drools.event.rule.AgendaGroupPushedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
