@@ -778,4 +778,113 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+    
+	@Test
+	public void testDeclarativeAgendaCancellingInMultipleIterations() {
+		String str = "";
+		str += "package org.domain.test\n";
+		str += "import org.drools.runtime.rule.Activation\n";
+        str += "global java.util.List list \n";
+		str += "rule sales1 @department('sales') @cathegory('special')\n";
+		str += "salience 10\n";
+		str += "when\n";
+		str += "    String( this == 'fireRules' )\n";
+		str += "then\n";
+		str += "    list.add(\"sales1\");\n";
+		str += "end\n";
+		str += "rule sales2 @department('sales')\n";
+		str += "when\n";
+		str += "    String( this == 'fireRules' )\n";
+		str += "then\n";
+		str += "    list.add(\"sales2\");\n";
+		str += "end\n";
+		str += "rule salesCancel @activationListener('direct')\n";
+		str += "when\n";
+		str += "    String(this == 'fireCancelRule')\n";
+		str += "    $i : Activation( department == 'sales', cathegory == 'special' )\n";
+		str += "then\n";
+		str += "    kcontext.cancelActivation($i);\n";
+		str += "end\n";
+
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder();
+		kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()),
+				ResourceType.DRL);
+
+		if (kbuilder.hasErrors()) {
+			fail(kbuilder.getErrors().toString());
+		}
+
+		KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory
+				.newKnowledgeBaseConfiguration();
+		kconf.setOption(DeclarativeAgendaOption.ENABLED);
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		final List cancelled = new ArrayList();
+		ksession.addEventListener(new AgendaEventListener() {
+			public void beforeActivationFired(BeforeActivationFiredEvent event) {
+			}
+
+			public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+			}
+
+			public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+			}
+
+			public void afterActivationFired(AfterActivationFiredEvent event) {
+			}
+
+			public void activationCreated(ActivationCreatedEvent event) {
+			}
+
+			public void beforeRuleFlowGroupActivated(
+					RuleFlowGroupActivatedEvent event) {
+			}
+
+			public void afterRuleFlowGroupActivated(
+					RuleFlowGroupActivatedEvent event) {
+			}
+
+			public void beforeRuleFlowGroupDeactivated(
+					RuleFlowGroupDeactivatedEvent event) {
+			}
+
+			public void afterRuleFlowGroupDeactivated(
+					RuleFlowGroupDeactivatedEvent event) {
+			}
+
+			public void activationCancelled(ActivationCancelledEvent event) {
+				cancelled.add(event);
+			}
+		});
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+		// first run
+		// sales1 should be cancelled
+		FactHandle fireRules = ksession.insert("fireRules");
+		FactHandle fireCancelRule = ksession.insert("fireCancelRule");
+		ksession.fireAllRules();
+		assertEquals(1, cancelled.size());
+		assertFalse(list.contains("sales1"));
+		assertTrue(list.contains("sales2"));
+
+		// second run
+		// sales1 should be cancelled again, but it isn't
+		// expected behaviour should be the same as in the first run
+		cancelled.clear();
+		list.clear();
+		ksession.update(fireCancelRule, "fireCancelRule");
+		ksession.update(fireRules, "fireRules");
+		ksession.fireAllRules();
+		assertEquals(1, cancelled.size());
+		assertFalse(list.contains("sales1"));
+		assertTrue(list.contains("sales2"));
+
+		ksession.dispose();
+	}
+	
 }
