@@ -17,6 +17,7 @@
 package org.drools.factmodel;
 
 
+import org.drools.base.ClassFieldAccessor;
 import org.drools.base.TypeResolver;
 
 import java.io.Externalizable;
