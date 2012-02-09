@@ -25,10 +25,6 @@ public class JpaPersistenceContext implements PersistenceContext {
         return this.em.isOpen();
     }
 
-    public void joinTransaction() {
-        this.em.joinTransaction();
-    }
-
     public void close() {
         this.em.close();
     }
@@ -49,7 +45,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         return em.merge( workItemInfo );
     }
     
-    protected EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
         return this.em;
     }
 }

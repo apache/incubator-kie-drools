@@ -15,8 +15,8 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -35,18 +35,24 @@ import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.VariablePersistenceUnitTest;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.RerunWithLocalTransactions;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class ReloadSessionTest {
+public class ReloadSessionTest extends VariablePersistenceUnitTest { 
 
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTx = new RerunWithLocalTransactions();
+    
     // Datasource (setup & clean up)
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
@@ -63,13 +69,13 @@ public class ReloadSessionTest {
 
     @Before
     public void setup() {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(getPersistenceUnitName());
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
     @After
-    public void cleanUp() {
-        PersistenceUtil.tearDown(context);
+    public void tearDown() {
+        cleanUp(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 

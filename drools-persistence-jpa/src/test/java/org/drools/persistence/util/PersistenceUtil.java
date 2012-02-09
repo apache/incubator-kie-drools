@@ -60,7 +60,9 @@ public class PersistenceUtil {
     
     // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
+    public static final String DROOLS_LOCAL_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa.local";
     public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
+    public static final String JBPM_LOCAL_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa.local";
         
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     private static TestH2Server h2Server = new TestH2Server();

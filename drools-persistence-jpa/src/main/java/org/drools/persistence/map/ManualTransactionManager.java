@@ -78,4 +78,9 @@ public class ManualTransactionManager
     public void registerTransactionSynchronization(TransactionSynchronization ts) {
         this.transactionSynchronization = ts;
     }
+
+    public void attachPersistenceContext(Object persistenceContextObject) {
+        
+    }
+    
 }

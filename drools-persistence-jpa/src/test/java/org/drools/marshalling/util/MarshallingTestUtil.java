@@ -104,6 +104,11 @@ public class MarshallingTestUtil {
      * @param persistenceUnitName The name of the persistence unit being used. 
      */
     public static void compareMarshallingDataFromTest(Class<?> testClass, String persistenceUnitName) { 
+        Object testMarshallingProperty = getDatasourceProperties().getProperty("testMarshalling"); 
+        if( "false".equals(testMarshallingProperty) ) { 
+            return;
+        } 
+        
         Object makeBaseDb = getDatasourceProperties().getProperty("makeBaseDb"); 
 
         boolean baseDBCreationOngoing = false;
@@ -125,7 +130,7 @@ public class MarshallingTestUtil {
             testDataList  = retrieveMarshallingData(testEMF);
         }
         finally { 
-           tearDown(testContext); 
+           cleanUp(testContext); 
         }
         assertNotNull("Not marshalled data found for " + testClass.getSimpleName(), 
                 testDataList != null && ! testDataList.isEmpty() );
@@ -142,7 +147,7 @@ public class MarshallingTestUtil {
                 baseDataList = retrieveMarshallingData(baseEMF);
             }
             finally {
-                tearDown(baseContext);
+                cleanUp(baseContext);
             }
             assertTrue("No base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
     

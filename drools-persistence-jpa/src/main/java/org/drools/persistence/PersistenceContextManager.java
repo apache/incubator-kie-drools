@@ -10,4 +10,6 @@ public interface PersistenceContextManager {
     void endCommandScopedEntityManager();
 
     void dispose();
+    
+    void setTransactionManager(TransactionManager txm);
 }

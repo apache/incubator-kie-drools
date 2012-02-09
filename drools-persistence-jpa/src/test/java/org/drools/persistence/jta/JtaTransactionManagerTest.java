@@ -17,7 +17,7 @@ package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.runtime.EnvironmentName.*;
+import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -38,23 +38,32 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.VariablePersistenceUnitTest;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.RerunWithLocalTransactions;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.internal.BitronixRollbackException;
 
-public class JtaTransactionManagerTest {
+public class JtaTransactionManagerTest extends VariablePersistenceUnitTest {
 
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTxs = new RerunWithLocalTransactions();
+    
+    @Rule
+    public TestName testMethodName = new TestName();
+    
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // Datasource (setup & clean up)
@@ -77,13 +86,13 @@ public class JtaTransactionManagerTest {
         // any interersting (wrt marshalling) SessionInfo objects
         boolean testMarshalling = false;
 
-        context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, testMarshalling);
+        context = setupWithPoolingDataSource(getPersistenceUnitName(), testMarshalling);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
     @After
     public void tearDown() {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
@@ -115,15 +124,14 @@ public class JtaTransactionManagerTest {
         }
     }
 
-    private String getTestName() { 
-        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-        String methodName =  ste[2].getMethodName();
-        return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
-    }
     @Test
     public void showingTransactionTestObjectsNeedTransactions()  throws Exception {
-        String testName = getTestName();
+        if( usingLocalTransactions() ) { 
+            return;
+        }
         
+        String testName = testMethodName.getMethodName();
+                
         // Create linked transactionTestObjects but only persist the main one.
         TransactionTestObject badMainObject = new TransactionTestObject();
         badMainObject.setName("bad" + testName);
@@ -177,7 +185,7 @@ public class JtaTransactionManagerTest {
 
     @Test
     public void basicTransactionManagerTest() {
-        String testName = getTestName();
+        String testName = testMethodName.getMethodName();
         
         // Setup the JtaTransactionmanager
         Environment env = createEnvironment(context);
