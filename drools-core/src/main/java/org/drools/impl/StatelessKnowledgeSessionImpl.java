@@ -285,6 +285,8 @@ public class StatelessKnowledgeSessionImpl
             }
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
+            //endBatchExecution is not exclusive of the StatelessSession, so the dispose should be used outside it, like below
+            ksession.dispose();            
         }
     }
 
