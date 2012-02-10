@@ -10,8 +10,8 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ObjectMarshallingStrategyStore;
 import org.drools.process.instance.WorkItem;
 
 public class OldOutputMarshallerMethods {

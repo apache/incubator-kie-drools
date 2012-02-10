@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProtobufMessages;
 
 public interface WorkingMemoryAction
     extends
@@ -37,5 +38,7 @@ public interface WorkingMemoryAction
 
     public void execute(InternalKnowledgeRuntime kruntime);
 
-    public void write(MarshallerWriteContext context) throws IOException;
+    public void write(MarshallerWriteContext context) throws IOException;    
+    
+    public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException;
 }

@@ -24,16 +24,20 @@ import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.ActivationTimer;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
 import org.drools.runtime.Calendars;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.Trigger;
-import org.drools.time.impl.PointInTimeTrigger;
 
 /**
  * Scheduler for rules requiring truth duration.
@@ -149,6 +153,21 @@ public final class Scheduler {
             
             OutputMarshaller.writeTrigger(ajobCtx.getTrigger(), outputCtx);
         }
+
+        public Timer serialize(JobContext jobCtx,
+                               MarshallerWriteContext outputCtx) {
+            ActivationTimerJobContext ajobCtx = ( ActivationTimerJobContext ) jobCtx;
+            return ProtobufMessages.Timers.Timer.newBuilder()
+                    .setType( ProtobufMessages.Timers.TimerType.ACTIVATION )
+                    .setActivation( ProtobufMessages.Timers.ActivationTimer.newBuilder()
+                                .setActivation( PersisterHelper.createActivation( ajobCtx.getScheduledAgendaItem().getRule().getPackageName(),
+                                                                                  ajobCtx.getScheduledAgendaItem().getRule().getName(),
+                                                                                  ajobCtx.getScheduledAgendaItem().getTuple() ) )
+                                .setTrigger( ProtobufOutputMarshaller.writeTrigger(ajobCtx.getTrigger(), 
+                                                                                   outputCtx) )
+                                .build() )
+                    .build();
+        }
     }
     
     public static class ActivationTimerInputMarshaller implements TimersInputMarshaller  {
@@ -158,6 +177,26 @@ public final class Scheduler {
             ScheduledAgendaItem item = ( ScheduledAgendaItem ) leftTuple.getObject();
             
             Trigger trigger = InputMarshaller.readTrigger( inCtx ); 
+            
+            DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
+            ActivationTimerJob job = new ActivationTimerJob();
+            ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
+                    
+            JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
+            item.setJobHandle( jobHandle );            
+        }
+
+        public void deserialize(MarshallerReaderContext inCtx,
+                                Timer _timer) throws ClassNotFoundException {
+            ActivationTimer _activation = _timer.getActivation();
+
+            LeftTuple leftTuple = inCtx.filter.getTuplesCache().get( PersisterHelper.createActivationKey( _activation.getActivation().getPackageName(), 
+                                                                                                          _activation.getActivation().getRuleName(), 
+                                                                                                          _activation.getActivation().getTuple() ) );
+            ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getObject();
+            
+            Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
+                                                                   _activation.getTrigger() ); 
             
             DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
             ActivationTimerJob job = new ActivationTimerJob();

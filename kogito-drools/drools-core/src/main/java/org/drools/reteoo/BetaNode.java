@@ -16,6 +16,11 @@
 
 package org.drools.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -25,7 +30,24 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.builder.conf.LRUnlinkingOption;
-import org.drools.common.*;
+import org.drools.common.BaseNode;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.DoubleBetaConstraints;
+import org.drools.common.DoubleNonIndexSkipBetaConstraints;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.NodeMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.common.QuadroupleBetaConstraints;
+import org.drools.common.QuadroupleNonIndexSkipBetaConstraints;
+import org.drools.common.RuleBasePartitionId;
+import org.drools.common.SingleBetaConstraints;
+import org.drools.common.SingleNonIndexSkipBetaConstraints;
+import org.drools.common.TripleBetaConstraints;
+import org.drools.common.TripleNonIndexSkipBetaConstraints;
+import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
@@ -37,11 +59,6 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -604,8 +621,10 @@ public abstract class BetaNode extends LeftTupleSource
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return constraints.createBetaMemory( config );
+    protected Memory createMemory(final RuleBaseConfiguration config,
+                                  final short nodeType ) {
+        return constraints.createBetaMemory( config,
+                                             nodeType );
     }
 
     /**

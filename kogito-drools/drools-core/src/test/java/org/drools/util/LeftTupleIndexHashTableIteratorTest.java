@@ -56,6 +56,7 @@ import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTupleImpl;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
@@ -89,7 +90,7 @@ public class LeftTupleIndexHashTableIteratorTest {
         betaConstraints = new SingleBetaConstraints( constraints,
                                                      config );
 
-        BetaMemory betaMemory = betaConstraints.createBetaMemory( config );
+        BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
         StatefulSession ss = rb.newStatefulSession();

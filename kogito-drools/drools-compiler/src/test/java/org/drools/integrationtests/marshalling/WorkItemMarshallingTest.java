@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.drools.integrationtests.marshalling.util.OldOutputMarshallerMethods;
 import org.drools.marshalling.MarshallerFactory;
@@ -14,7 +15,7 @@ import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.WorkItemImpl;
@@ -72,14 +73,14 @@ public class WorkItemMarshallingTest {
         // marshall/serialize workItem
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                new ObjectMarshallingStrategyStore(strats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
         OutputMarshaller.writeWorkItem(outContext, workItem);
         
         // unmarshall/deserialize workItem
         byte [] byteArray = baos.toByteArray();
         ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
         MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(strats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(strats), Collections.EMPTY_MAP, true, true, null);
         workItem = InputMarshaller.readWorkItem(inContext);
        
         // Check
@@ -100,7 +101,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                    new ObjectMarshallingStrategyStore(strats), true, true, null);
+                    new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
             OutputMarshaller.writeWorkItem(outContext, workItem);
             byteArray = baos.toByteArray();
         }
@@ -115,7 +116,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
             MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(newStrats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(newStrats), Collections.EMPTY_MAP, true, true, null);
             workItem = InputMarshaller.readWorkItem(inContext);
         }
         
@@ -137,7 +138,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                    new ObjectMarshallingStrategyStore(strats), true, true, null);
+                    new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
             OutputMarshaller.writeWorkItem(outContext, workItem);
             byteArray = baos.toByteArray();
         }
@@ -151,7 +152,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
             MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(newStrats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(newStrats), Collections.EMPTY_MAP, true, true, null);
             workItem = InputMarshaller.readWorkItem(inContext);
         }
         
@@ -173,7 +174,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                    new ObjectMarshallingStrategyStore(strats), true, true, null);
+                    new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
             OutputMarshaller.writeWorkItem(outContext, workItem);
             byteArray = baos.toByteArray();
         }
@@ -186,7 +187,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
             MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(newStrats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(newStrats), Collections.EMPTY_MAP, true, true, null);
            
             try { 
                 workItem = InputMarshaller.readWorkItem(inContext);
@@ -212,7 +213,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                    new ObjectMarshallingStrategyStore(strats), true, true, null);
+                    new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
             OldOutputMarshallerMethods.writeWorkItem_v1(outContext, workItem);
             byteArray = baos.toByteArray();
         }
@@ -226,7 +227,7 @@ public class WorkItemMarshallingTest {
     
             ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
             MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(newStrats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(newStrats), Collections.EMPTY_MAP, true, true, null);
             workItem = InputMarshaller.readWorkItem(inContext);
         }
         

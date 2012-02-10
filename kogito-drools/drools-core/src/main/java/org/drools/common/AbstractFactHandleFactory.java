@@ -27,10 +27,6 @@ public abstract class AbstractFactHandleFactory
     implements
     FactHandleFactory  {
 
-    private static final long          serialVersionUID = 510l;
-
-//    protected final PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
-
     /** The fact id. */
     private AtomicInteger              id;
 
@@ -54,14 +50,6 @@ public abstract class AbstractFactHandleFactory
                                                   final ObjectTypeConf conf,
                                                   final InternalWorkingMemory workingMemory,
                                                   final WorkingMemoryEntryPoint wmEntryPoint) {
-// @FIXME make id re-cycling thread safe        
-//        if ( !this.factHandlePool.isEmpty() ) {
-//            return newFactHandle( this.factHandlePool.pop(),
-//                                  object,
-//                                  isEvent,
-//                                  0,
-//                                  workingMemory );
-//        }
         return newFactHandle( this.id.incrementAndGet(),
                               object,
                               conf,
@@ -72,11 +60,11 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected final InternalFactHandle newFactHandle(final int id,
-                                                     final Object object,
-                                                     final ObjectTypeConf conf,
-                                                     final InternalWorkingMemory workingMemory,
-                                                     final WorkingMemoryEntryPoint wmEntryPoint) {
+    public final InternalFactHandle newFactHandle(final int id,
+                                                  final Object object,
+                                                  final ObjectTypeConf conf,
+                                                  final InternalWorkingMemory workingMemory,
+                                                  final WorkingMemoryEntryPoint wmEntryPoint) {
         return newFactHandle( id,
                               object,
                               this.counter.incrementAndGet(),
@@ -88,12 +76,12 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected abstract InternalFactHandle newFactHandle(final int id,
-                                                        final Object object,
-                                                        final long recency,
-                                                        final ObjectTypeConf conf,
-                                                        final InternalWorkingMemory workingMemory,
-                                                        final WorkingMemoryEntryPoint wmEntryPoint);
+    public abstract InternalFactHandle newFactHandle(final int id,
+                                                     final Object object,
+                                                     final long recency,
+                                                     final ObjectTypeConf conf,
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final WorkingMemoryEntryPoint wmEntryPoint);
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
@@ -103,8 +91,6 @@ public abstract class AbstractFactHandleFactory
     }
 
     public void destroyFactHandle(final InternalFactHandle factHandle) {
-// @FIXME make id re-cycling thread safe                
-//        this.factHandlePool.push( factHandle.getId() );
         factHandle.invalidate();
     }
 

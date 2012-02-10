@@ -21,6 +21,7 @@ import java.util.Stack;
 import org.drools.common.NetworkNode;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 
 public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -38,7 +39,7 @@ public class ObjectTypeNodeVisitor extends AbstractNetworkNodeVisitor {
         ni.setMemoryEnabled( otn.isObjectMemoryEnabled() );
         
         if( otn.isObjectMemoryEnabled() ) {
-            final ObjectHashSet memory = (ObjectHashSet) info.getSession().getNodeMemory( otn );
+            final ObjectHashSet memory = ((ObjectTypeNodeMemory) info.getSession().getNodeMemory( otn )).memory;
             ni.setFactMemorySize( memory.size() );
         }
 

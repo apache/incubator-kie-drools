@@ -33,6 +33,8 @@ import org.drools.common.EndOperationListener;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.NodeMemories;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
@@ -108,11 +110,15 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Object getNodeMemory( NodeMemory node ) {
+    public Memory getNodeMemory( NodeMemory node ) {
         throw new IllegalStateException( ERRORMSG );
     }
 
     public void clearNodeMemory( NodeMemory node ) {
+        throw new IllegalStateException( ERRORMSG );
+    }
+
+    public NodeMemories getNodeMemories() {
         throw new IllegalStateException( ERRORMSG );
     }
 

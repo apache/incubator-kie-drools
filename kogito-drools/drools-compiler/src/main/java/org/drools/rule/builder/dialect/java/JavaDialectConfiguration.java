@@ -34,6 +34,9 @@ import org.drools.rule.Package;
 public class JavaDialectConfiguration
     implements
     DialectConfiguration {
+    
+    public static final String          JAVA_COMPILER_PROPERTY = "drools.dialect.java.compiler";
+    
     public static final int             ECLIPSE         = 0;
     public static final int             JANINO          = 1;
 
@@ -123,7 +126,7 @@ public class JavaDialectConfiguration
      */
     private int getDefaultCompiler() {
         try {
-            final String prop = this.conf.getChainedProperties().getProperty( "drools.dialect.java.compiler",
+            final String prop = this.conf.getChainedProperties().getProperty( JAVA_COMPILER_PROPERTY,
                                                                               "ECLIPSE" );
             if ( prop.equals( "ECLIPSE".intern() ) ) {
                 return JavaDialectConfiguration.ECLIPSE;

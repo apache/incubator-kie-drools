@@ -16,12 +16,11 @@
 
 package org.drools.spi;
 
-import java.io.Externalizable;
 import java.util.Iterator;
 
 import org.drools.common.ActivationNode;
 
-public interface RuleFlowGroup extends org.drools.runtime.rule.RuleFlowGroup {
+public interface RuleFlowGroup extends org.drools.runtime.rule.RuleFlowGroup, Iterable<ActivationNode> {
 
     String getName();
 

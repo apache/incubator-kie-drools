@@ -29,7 +29,6 @@ import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.Context;
 import org.drools.command.Interceptor;
-import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
@@ -38,7 +37,6 @@ import org.drools.command.runtime.DisposeCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.marshalling.impl.DefaultMarshaller;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
@@ -46,10 +44,8 @@ import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
@@ -134,8 +130,7 @@ public class SingleSessionCommandService
 
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
                                                                conf );
-        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl)
-                ((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
+        MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
         config.setMarshallProcessInstances( false );
         config.setMarshallWorkItems( false );
 
@@ -240,7 +235,7 @@ public class SingleSessionCommandService
                                                                    conf,
                                                                    env );
             MarshallingConfigurationImpl config = (MarshallingConfigurationImpl)
-                    ((DefaultMarshaller) this.marshallingHelper.getMarshaller()).getMarshallingConfiguration();
+                    this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
             config.setMarshallProcessInstances( false );
             config.setMarshallWorkItems( false );
         }

@@ -16,7 +16,9 @@
 
 package org.drools.marshalling.impl;
 
+import org.drools.marshalling.MarshallingConfiguration;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 
 public class MarshallingConfigurationImpl
     implements
@@ -35,7 +37,7 @@ public class MarshallingConfigurationImpl
                                         boolean marshallProcessInstances,
                                         boolean marshallWorkItems) {
         if ( strategies != null ) {
-            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore( strategies );
+            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStoreImpl( strategies );
         }
         this.marshallProcessInstances = marshallProcessInstances;
         this.marshallWorkItems = marshallWorkItems;

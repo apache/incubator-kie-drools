@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Date;
 
 import org.drools.KnowledgeBase;
@@ -32,7 +33,7 @@ import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.Rete;
@@ -93,7 +94,7 @@ public class FactHandleMarshallingTest {
     
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             MarshallerWriteContext outContext = new MarshallerWriteContext( baos, null, null, null, 
-                    new ObjectMarshallingStrategyStore(strats), true, true, null);
+                    new ObjectMarshallingStrategyStoreImpl(strats), true, true, null);
             OldOutputMarshallerMethods.writeFactHandle_v1(outContext, (ObjectOutputStream) outContext, 
                     outContext.objectMarshallingStrategyStore, 2, factHandle);
             outContext.close();
@@ -110,7 +111,8 @@ public class FactHandleMarshallingTest {
     
             ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
             MarshallerReaderContext inContext = new MarshallerReaderContext( bais, null, null,
-                new ObjectMarshallingStrategyStore(newStrats), true, true, null);
+                new ObjectMarshallingStrategyStoreImpl(newStrats), Collections.EMPTY_MAP,
+                true, true, null);
             inContext.wm = wm;
             newFactHandle = InputMarshaller.readFactHandle(inContext);
             inContext.close();

@@ -6,32 +6,12 @@ import java.util.List;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
-import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
 public class FunctionsTest extends CommonTestMethodBase {
-
-    private KnowledgeBase loadKnowledgeBase( KnowledgeBuilderConfiguration kbconf, String... classPathResources ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbconf );
-        for ( String classPathResource : classPathResources ) {
-            kbuilder.add( ResourceFactory.newClassPathResource( classPathResource,
-                                                                getClass() ),
-                          ResourceType.DRL );
-        }
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
 
     @SuppressWarnings("unchecked")
     @Test

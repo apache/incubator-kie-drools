@@ -16,10 +16,12 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
@@ -490,4 +492,9 @@ public class ElseNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }      
+    
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return super.createMemory( config, 
+                                   NodeTypeEnums.ElseNode );
+    }
 }

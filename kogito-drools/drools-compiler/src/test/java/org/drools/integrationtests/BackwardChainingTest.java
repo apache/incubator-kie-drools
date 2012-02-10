@@ -728,7 +728,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         ksession.insert( "darth" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -737,10 +738,12 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         list.clear();
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.insert( "yoda" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -799,11 +802,13 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         ksession.insert( "darth" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.fireAllRules();
         ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -1493,7 +1498,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
         ksession.insert( "go2" );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+                                                          true,
+                                                          false );
         ksession.fireAllRules();
 
         map = (Map) list.get( 1 );
@@ -2377,7 +2383,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             ksession.fireAllRules();
 
             ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                              true );
+                                                              true,
+                                                              false );
 
             assertEquals( 2,
                           list.size() );
@@ -2398,7 +2405,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 //                }              
 
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true,
+                                                                  false );
 
                 handles[j] = getFactHandle( handles[j],
                                             ksession );
@@ -2407,11 +2415,13 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 // first retract + assert                
                 ksession.retract( handles[j] );
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true,
+                                                                  false );
 
                 handles[j] = (InternalFactHandle) ksession.insert( o );
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true,
+                                                                  false );
 
                 ksession.fireAllRules();
                 assertEquals( 2,
@@ -2429,7 +2439,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 ksession.update( handles[j],
                                  handles[j].getObject() );
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true,
+                                                                  false );
 
                 ksession.fireAllRules();
                 assertEquals( 2,
@@ -2469,7 +2480,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             list.clear();
 
             ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                              true );
+                                                              true, 
+                                                              false );
 
             InternalFactHandle[] handles = ksession.getFactHandles().toArray( new InternalFactHandle[0] );
             for ( int j = 0; j < handles.length; j++ ) {
@@ -2482,7 +2494,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 //                }     
 
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true, 
+                                                                  false );
 
                 handles[j] = getFactHandle( handles[j],
                                             ksession );
@@ -2491,12 +2504,14 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 // first retract + assert
                 ksession.retract( handles[j] );
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true, 
+                                                                  false );
 
                 handles[j] = (InternalFactHandle) ksession.insert( o );
 
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true, 
+                                                                  false );
 
                 ksession.fireAllRules();
                 assertEquals( 2,
@@ -2508,7 +2523,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 list.clear();
 
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true, 
+                                                                  false );
 
                 // now try update
                 handles[j] = getFactHandle( handles[j],
@@ -2517,7 +2533,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                                  handles[j].getObject() );
 
                 ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                                  true );
+                                                                  true, 
+                                                                  false );
 
                 ksession.fireAllRules();
                 assertEquals( 2,
@@ -2529,7 +2546,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 list.clear();
             }
             ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                              true );
+                                                              true, 
+                                                              false );
 
             fh = getFactHandle( fh,
                                 ksession );
