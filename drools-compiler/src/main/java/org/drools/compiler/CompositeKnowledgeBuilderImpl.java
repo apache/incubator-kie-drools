@@ -1,12 +1,12 @@
 package org.drools.compiler;
 
+import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.util.Memento;
 import org.drools.io.Resource;
 import org.drools.io.impl.BaseResource;
-import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.lang.descr.CompositePackageDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CompositeKnowledgeBuilder {
+public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
     private Memento<PackageBuilder> pkgBuilder;
 
@@ -26,7 +26,7 @@ public class CompositeKnowledgeBuilder {
 
     public ResourceType currentType = null;
 
-    public CompositeKnowledgeBuilder(Memento<PackageBuilder> pkgBuilder) {
+    public CompositeKnowledgeBuilderImpl(Memento<PackageBuilder> pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
     }
 
