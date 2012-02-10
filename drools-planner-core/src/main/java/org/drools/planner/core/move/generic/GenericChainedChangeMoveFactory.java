@@ -55,25 +55,26 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
                 List<Object> entityList =  entityDescriptor.extractEntities(workingSolution);
                 for (Object entity : entityList) {
                     FactHandle entityFactHandle = workingMemory.getFactHandle(entity);
-                    if (!variableDescriptor.isTriggerChainCorrection()) {
+                    if (!variableDescriptor.isChained()) {
                         for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                                 workingSolution, entity)) {
                             moveList.add(new GenericChangeMove(entity, entityFactHandle,
                                     variableDescriptor, toPlanningValue));
                         }
                     } else {
-                        Object oldChainedEntity = findChainedEntity(variableToEntitiesMap, entity);
-                        FactHandle oldChainedEntityFactHandle = oldChainedEntity == null
-                                ? null : workingMemory.getFactHandle(oldChainedEntity);
+                        Object oldTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor, entity);
+                        FactHandle oldTrailingEntityFactHandle = oldTrailingEntity == null
+                                ? null : workingMemory.getFactHandle(oldTrailingEntity);
                         for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                                 workingSolution, entity)) {
-                            Object newChainedEntity = findChainedEntity(variableToEntitiesMap, toPlanningValue);
-                            FactHandle newChainedEntityFactHandle = newChainedEntity == null
-                                    ? null : workingMemory.getFactHandle(newChainedEntity);
+                            Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor,
+                                    toPlanningValue);
+                            FactHandle newTrailingEntityFactHandle = newTrailingEntity == null
+                                    ? null : workingMemory.getFactHandle(newTrailingEntity);
                             moveList.add(new GenericChainedChangeMove(entity, entityFactHandle,
                                     variableDescriptor, toPlanningValue,
-                                    oldChainedEntity, oldChainedEntityFactHandle,
-                                    newChainedEntity, newChainedEntityFactHandle));
+                                    oldTrailingEntity, oldTrailingEntityFactHandle,
+                                    newTrailingEntity, newTrailingEntityFactHandle));
                         }
                     }
                 }
@@ -82,16 +83,19 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
         return moveList;
     }
 
-    private Object findChainedEntity(Map<Object,List<Object>> variableToEntitiesMap, Object planningValue) {
-        List<Object> chainedEntities = variableToEntitiesMap.get(planningValue);
-        if (chainedEntities == null) {
+    private Object findTrailingEntity(Map<Object, List<Object>> variableToEntitiesMap,
+            PlanningVariableDescriptor variableDescriptor, Object planningValue) {
+        List<Object> trailingEntities = variableToEntitiesMap.get(planningValue);
+        if (trailingEntities == null) {
             return null;
         }
-        if (chainedEntities.size() > 1) {
+        if (trailingEntities.size() > 1) {
             throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple chained entities (" + chainedEntities + ") pointing to it.");
+                    + ") has multiple trailing entities (" + trailingEntities
+                    + ") pointing to it for chained planningVariable ("
+                    + variableDescriptor.getVariablePropertyName() + ").");
         }
-        return chainedEntities.get(0);
+        return trailingEntities.get(0);
     }
 
     @Override

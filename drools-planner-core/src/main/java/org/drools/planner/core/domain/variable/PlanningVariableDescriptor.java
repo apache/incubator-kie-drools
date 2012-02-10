@@ -38,7 +38,7 @@ public class PlanningVariableDescriptor {
     private final PlanningEntityDescriptor planningEntityDescriptor;
 
     private final PropertyDescriptor variablePropertyDescriptor;
-    private boolean triggerChainCorrection;
+    private boolean chained;
 
     private PlanningValueRangeDescriptor valueRangeDescriptor;
     private PlanningValueSorter valueSorter;
@@ -60,7 +60,7 @@ public class PlanningVariableDescriptor {
                 .getAnnotation(PlanningVariable.class);
         valueSorter = new PlanningValueSorter();
         processStrength(planningVariableAnnotation);
-        processTriggerChainCorrection(planningVariableAnnotation);
+        processChained(planningVariableAnnotation);
         processValueRangeAnnotation();
     }
 
@@ -114,14 +114,14 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processTriggerChainCorrection(PlanningVariable planningVariableAnnotation) {
-        triggerChainCorrection = planningVariableAnnotation.triggerChainCorrection();
-        if (triggerChainCorrection && !variablePropertyDescriptor.getPropertyType().isAssignableFrom(
+    private void processChained(PlanningVariable planningVariableAnnotation) {
+        chained = planningVariableAnnotation.chained();
+        if (chained && !variablePropertyDescriptor.getPropertyType().isAssignableFrom(
                 planningEntityDescriptor.getPlanningEntityClass())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") with triggerChainCorrection and propertyType (" + variablePropertyDescriptor.getPropertyType()
+                    + ") with chained and propertyType (" + variablePropertyDescriptor.getPropertyType()
                     + ") which is not a superclass/interface of or the same as the planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass() + ").");
         }
@@ -192,8 +192,8 @@ public class PlanningVariableDescriptor {
         return variablePropertyDescriptor.getPropertyType();
     }
 
-    public boolean isTriggerChainCorrection() {
-        return triggerChainCorrection;
+    public boolean isChained() {
+        return chained;
     }
 
     public Collection<DependentPlanningVariableDescriptor> getDependentPlanningVariableDescriptors() {

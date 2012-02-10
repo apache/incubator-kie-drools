@@ -36,22 +36,22 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
     private final Object lastEntity;
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final Object toPlanningValue;
-    private final Object oldChainedEntity;
-    private final FactHandle oldChainedEntityFactHandle;
-    private final Object newChainedEntity;
-    private final FactHandle newChainedEntityFactHandle;
+    private final Object oldTrailingEntity;
+    private final FactHandle oldTrailingEntityFactHandle;
+    private final Object newTrailingEntity;
+    private final FactHandle newTrailingEntityFactHandle;
 
     public GenericReverseChainedChangePartMove(List<Object> entitiesSubChain,
             PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue,
-            Object oldChainedEntity, FactHandle oldChainedEntityFactHandle,
-            Object newChainedEntity, FactHandle newChainedEntityFactHandle) {
+            Object oldTrailingEntity, FactHandle oldTrailingEntityFactHandle,
+            Object newTrailingEntity, FactHandle newTrailingEntityFactHandle) {
         this.entitiesSubChain = entitiesSubChain;
         this.planningVariableDescriptor = planningVariableDescriptor;
         this.toPlanningValue = toPlanningValue;
-        this.oldChainedEntity = oldChainedEntity;
-        this.oldChainedEntityFactHandle = oldChainedEntityFactHandle;
-        this.newChainedEntity = newChainedEntity;
-        this.newChainedEntityFactHandle = newChainedEntityFactHandle;
+        this.oldTrailingEntity = oldTrailingEntity;
+        this.oldTrailingEntityFactHandle = oldTrailingEntityFactHandle;
+        this.newTrailingEntity = newTrailingEntity;
+        this.newTrailingEntityFactHandle = newTrailingEntityFactHandle;
         firstEntity = this.entitiesSubChain.get(0);
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
@@ -66,7 +66,7 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
         Collections.reverse(reversedEntitiesSubChain);
         return new GenericReverseChainedChangePartMove(reversedEntitiesSubChain,
                 planningVariableDescriptor, oldFirstPlanningValue,
-                newChainedEntity, newChainedEntityFactHandle, oldChainedEntity, oldChainedEntityFactHandle);
+                newTrailingEntity, newTrailingEntityFactHandle, oldTrailingEntity, oldTrailingEntityFactHandle);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -80,23 +80,23 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
             workingMemory.update(workingMemory.getFactHandle(previousEntity), previousEntity);
             previousEntity = entity;
         }
-        if (firstEntity.equals(newChainedEntity)) {
+        if (firstEntity.equals(newTrailingEntity)) {
             // Unmoved reverse
             // Reroute the old chain
-            if (oldChainedEntity != null) {
-                planningVariableDescriptor.setValue(oldChainedEntity, firstEntity);
-                workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
+            if (oldTrailingEntity != null) {
+                planningVariableDescriptor.setValue(oldTrailingEntity, firstEntity);
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
             }
         } else {
             // Close the old chain
-            if (oldChainedEntity != null) {
-                planningVariableDescriptor.setValue(oldChainedEntity, oldFirstPlanningValue);
-                workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
+            if (oldTrailingEntity != null) {
+                planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
             }
             // Reroute the new chain
-            if (newChainedEntity != null) {
-                planningVariableDescriptor.setValue(newChainedEntity, firstEntity);
-                workingMemory.update(newChainedEntityFactHandle, newChainedEntity);
+            if (newTrailingEntity != null) {
+                planningVariableDescriptor.setValue(newTrailingEntity, firstEntity);
+                workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
             }
         }
     }

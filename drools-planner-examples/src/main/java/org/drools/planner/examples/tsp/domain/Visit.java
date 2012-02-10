@@ -43,7 +43,7 @@ public class Visit extends AbstractPersistable implements Appearance {
         this.city = city;
     }
 
-    @PlanningVariable(triggerChainCorrection = true)
+    @PlanningVariable(chained = true)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",

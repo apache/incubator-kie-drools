@@ -19,7 +19,6 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.drools.FactHandle;
@@ -51,59 +50,61 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
         for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getPlanningEntityDescriptors()) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
-                if (variableDescriptor.isTriggerChainCorrection()) {
+                if (variableDescriptor.isChained()) {
                     Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
                             variableDescriptor);
                     Collection<?> values = variableDescriptor.extractAllPlanningValues(workingSolution);
                     for (Object value : values) {
-                        // value can never be null because nullable isn't allowed with triggerChainCorrection
+                        // value can never be null because nullable isn't allowed with chained
                         if (!entityDescriptor.getPlanningEntityClass().isAssignableFrom(value.getClass())) {
                             List<Object> valueWithEntitiesChain = new ArrayList<Object>(values.size());
                             valueWithEntitiesChain.add(value);
-                            List<Object> chainedEntities = variableToEntitiesMap.get(value);
-                            while (chainedEntities != null) {
-                                if (chainedEntities.size() > 1) {
+                            List<Object> trailingEntities = variableToEntitiesMap.get(value);
+                            while (trailingEntities != null) {
+                                if (trailingEntities.size() > 1) {
                                     throw new IllegalStateException("The planningValue (" + value
-                                            + ") has multiple chained entities (" + chainedEntities
-                                            + ") pointing to it.");
+                                            + ") has multiple trailing entities (" + trailingEntities
+                                            + ") pointing to it for chained planningVariable ("
+                                            + variableDescriptor.getVariablePropertyName() + ").");
                                 }
-                                Object chainedEntity = chainedEntities.get(0);
-                                valueWithEntitiesChain.add(chainedEntity);
-                                chainedEntities = variableToEntitiesMap.get(chainedEntity);
+                                Object trailingEntity = trailingEntities.get(0);
+                                valueWithEntitiesChain.add(trailingEntity);
+                                trailingEntities = variableToEntitiesMap.get(trailingEntity);
                             }
 
                             for (int fromIndex = 1; fromIndex < valueWithEntitiesChain.size(); fromIndex++) {
                                 Object oldToValue = valueWithEntitiesChain.get(fromIndex - 1);
                                 for (int toIndex = fromIndex + 2; toIndex <= valueWithEntitiesChain.size(); toIndex++) {
                                     List<Object> entitiesSubChain = valueWithEntitiesChain.subList(fromIndex, toIndex);
-                                    Object oldChainedEntity;
-                                    FactHandle oldChainedEntityFactHandle;
+                                    Object oldTrailingEntity;
+                                    FactHandle oldTrailingEntityFactHandle;
                                     if (toIndex < valueWithEntitiesChain.size()) {
-                                        oldChainedEntity = valueWithEntitiesChain.get(toIndex);
-                                        oldChainedEntityFactHandle = workingMemory.getFactHandle(oldChainedEntity);
+                                        oldTrailingEntity = valueWithEntitiesChain.get(toIndex);
+                                        oldTrailingEntityFactHandle = workingMemory.getFactHandle(oldTrailingEntity);
                                     } else {
-                                        oldChainedEntity = null;
-                                        oldChainedEntityFactHandle = null;
+                                        oldTrailingEntity = null;
+                                        oldTrailingEntityFactHandle = null;
                                     }
                                     for (Object toValue : values) {
                                         // Subchains can only be moved into other (sub)chains
                                         if (!entitiesSubChain.contains(toValue)) {
-                                            Object newChainedEntity = findChainedEntity(variableToEntitiesMap, toValue);
-                                            FactHandle newChainedEntityFactHandle = newChainedEntity == null
-                                                    ? null : workingMemory.getFactHandle(newChainedEntity);
+                                            Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap,
+                                                    variableDescriptor, toValue);
+                                            FactHandle newTrailingEntityFactHandle = newTrailingEntity == null
+                                                    ? null : workingMemory.getFactHandle(newTrailingEntity);
                                             // Moving to the same oldToValue has no effect
                                             // TODO also filter out moves done by GenericChainedChangeMoveFactory
                                             // where the entire subchain is only moved 1 position back or forth
                                             if (!oldToValue.equals((toValue))) {
                                                 moveList.add(new GenericChainedChangePartMove(entitiesSubChain,
                                                         variableDescriptor, toValue,
-                                                        oldChainedEntity, oldChainedEntityFactHandle,
-                                                        newChainedEntity, newChainedEntityFactHandle));
+                                                        oldTrailingEntity, oldTrailingEntityFactHandle,
+                                                        newTrailingEntity, newTrailingEntityFactHandle));
                                             }
                                             moveList.add(new GenericReverseChainedChangePartMove(entitiesSubChain,
                                                     variableDescriptor, toValue,
-                                                    oldChainedEntity, oldChainedEntityFactHandle,
-                                                    newChainedEntity, newChainedEntityFactHandle));
+                                                    oldTrailingEntity, oldTrailingEntityFactHandle,
+                                                    newTrailingEntity, newTrailingEntityFactHandle));
                                         }
                                     }
                                 }
@@ -116,16 +117,19 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
         return moveList;
     }
 
-    private Object findChainedEntity(Map<Object,List<Object>> variableToEntitiesMap, Object planningValue) {
-        List<Object> chainedEntities = variableToEntitiesMap.get(planningValue);
-        if (chainedEntities == null) {
+    private Object findTrailingEntity(Map<Object, List<Object>> variableToEntitiesMap,
+            PlanningVariableDescriptor variableDescriptor, Object planningValue) {
+        List<Object> trailingEntities = variableToEntitiesMap.get(planningValue);
+        if (trailingEntities == null) {
             return null;
         }
-        if (chainedEntities.size() > 1) {
+        if (trailingEntities.size() > 1) {
             throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple chained entities (" + chainedEntities + ") pointing to it.");
+                    + ") has multiple trailing entities (" + trailingEntities
+                    + ") pointing to it for chained planningVariable ("
+                    + variableDescriptor.getVariablePropertyName() + ").");
         }
-        return chainedEntities.get(0);
+        return trailingEntities.get(0);
     }
 
     @Override

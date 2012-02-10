@@ -34,22 +34,22 @@ public class GenericChainedChangePartMove implements Move, TabuPropertyEnabled {
     private final Object lastEntity;
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final Object toPlanningValue;
-    private final Object oldChainedEntity;
-    private final FactHandle oldChainedEntityFactHandle;
-    private final Object newChainedEntity;
-    private final FactHandle newChainedEntityFactHandle;
+    private final Object oldTrailingEntity;
+    private final FactHandle oldTrailingEntityFactHandle;
+    private final Object newTrailingEntity;
+    private final FactHandle newTrailingEntityFactHandle;
 
     public GenericChainedChangePartMove(List<Object> entitiesSubChain,
             PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue,
-            Object oldChainedEntity, FactHandle oldChainedEntityFactHandle,
-            Object newChainedEntity, FactHandle newChainedEntityFactHandle) {
+            Object oldTrailingEntity, FactHandle oldTrailingEntityFactHandle,
+            Object newTrailingEntity, FactHandle newTrailingEntityFactHandle) {
         this.entitiesSubChain = entitiesSubChain;
         this.planningVariableDescriptor = planningVariableDescriptor;
         this.toPlanningValue = toPlanningValue;
-        this.oldChainedEntity = oldChainedEntity;
-        this.oldChainedEntityFactHandle = oldChainedEntityFactHandle;
-        this.newChainedEntity = newChainedEntity;
-        this.newChainedEntityFactHandle = newChainedEntityFactHandle;
+        this.oldTrailingEntity = oldTrailingEntity;
+        this.oldTrailingEntityFactHandle = oldTrailingEntityFactHandle;
+        this.newTrailingEntity = newTrailingEntity;
+        this.newTrailingEntityFactHandle = newTrailingEntityFactHandle;
         firstEntity = this.entitiesSubChain.get(0);
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
@@ -62,7 +62,7 @@ public class GenericChainedChangePartMove implements Move, TabuPropertyEnabled {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         return new GenericChainedChangePartMove(entitiesSubChain,
                 planningVariableDescriptor, oldFirstPlanningValue,
-                newChainedEntity, newChainedEntityFactHandle, oldChainedEntity, oldChainedEntityFactHandle);
+                newTrailingEntity, newTrailingEntityFactHandle, oldTrailingEntity, oldTrailingEntityFactHandle);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -73,14 +73,14 @@ public class GenericChainedChangePartMove implements Move, TabuPropertyEnabled {
             workingMemory.update(workingMemory.getFactHandle(entity), entity);
         }
         // Close the old chain
-        if (oldChainedEntity != null) {
-            planningVariableDescriptor.setValue(oldChainedEntity, oldFirstPlanningValue);
-            workingMemory.update(oldChainedEntityFactHandle, oldChainedEntity);
+        if (oldTrailingEntity != null) {
+            planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+            workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
         }
         // Reroute the new chain
-        if (newChainedEntity != null) {
-            planningVariableDescriptor.setValue(newChainedEntity, lastEntity);
-            workingMemory.update(newChainedEntityFactHandle, newChainedEntity);
+        if (newTrailingEntity != null) {
+            planningVariableDescriptor.setValue(newTrailingEntity, lastEntity);
+            workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
         }
     }
 

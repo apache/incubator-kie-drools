@@ -37,7 +37,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningVariable {
 
     // TODO Add nullable
-    // TODO nullable=true is NOT compatible with triggerChainCorrection=true
+    // TODO nullable=true is NOT compatible with chained=true
     // boolean nullable() default false;
 
     /**
@@ -65,18 +65,24 @@ public @interface PlanningVariable {
 
     /**
      * In some use cases, such as Vehicle Routing, planning entities are chained.
-     * When one such planning entity changes position, then chain correction should happen:
+     * A chained variable recursively points to a planning fact, which is called the anchor.
+     * So either it points directly to the anchor (that planning fact)
+     * or it points to another planning entity with the same planning variable (which recursively points to the anchor).
+     * Chains always have exactly 1 anchor, thus they never loop and the tail is always open.
+     * Chains never split into a tree: a anchor or planning entity has at most 1 trailing planning entity.
+     * <p/>
+     * When a chained planning entity changes position, then chain correction must happen:
      * <ul>
      *     <li>divert the chain link at the new position to go through the modified planning entity</li>
      *     <li>close the missing chain link at the old position</li>
      * </ul>
      * For example: Given A <- B <- C <- D <- X <- Y, when B moves between X and Y, pointing to X,
-     * then Y is changed to point to B
-     * and C is changed to point to A,
+     * then Y is also changed to point to B
+     * and C is also changed to point to A,
      * giving the result A <- C <- D <- X <- B <- Y.
      * @return true if changes to this variable need to trigger chain correction
      */
-    boolean triggerChainCorrection() default false;
+    boolean chained() default false;
 
     @Deprecated // TODO This is probably a failed experiment
     Class<? extends PlanningVariableListener>[] listenerClasses() default {};

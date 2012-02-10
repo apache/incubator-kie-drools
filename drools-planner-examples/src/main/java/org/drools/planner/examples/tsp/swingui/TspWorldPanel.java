@@ -121,8 +121,8 @@ public class TspWorldPanel extends JPanel {
                 g.drawLine(previousX, previousY, x, y);
                 // Back to domicile line
                 boolean needsBackToDomicileLineDraw = true;
-                for (Visit chainedVisit : travelingSalesmanTour.getVisitList()) {
-                    if (chainedVisit.getPreviousAppearance() == visit) {
+                for (Visit trailingVisit : travelingSalesmanTour.getVisitList()) {
+                    if (trailingVisit.getPreviousAppearance() == visit) {
                         needsBackToDomicileLineDraw = false;
                         break;
                     }
