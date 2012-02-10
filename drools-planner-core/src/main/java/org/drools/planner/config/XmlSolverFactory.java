@@ -35,8 +35,9 @@ import org.drools.planner.core.Solver;
 
 /**
  * XML based configuration that builds a {@link Solver}.
+ * @see SolverFactory
  */
-public class XmlSolverFactory {
+public class XmlSolverFactory implements SolverFactory {
 
     public static XStream buildXstream() {
         XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
