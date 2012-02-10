@@ -1,5 +1,6 @@
 package org.drools.rule.constraint;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.AbstractRuleBase;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +54,24 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(String packageName, String expression) {
-        this(packageName, expression, false, null, null, null, false);
+    public MvelConstraint(String packageName, String expression, boolean isIndexable) {
+        this.packageName = packageName;
+        this.expression = expression;
+        this.isIndexable = isIndexable;
+        this.declarations = new Declaration[0];
+    }
+
+    public MvelConstraint(String packageName, String expression, Declaration[] declarations) {
+        this.packageName = packageName;
+        this.expression = expression;
+        this.declarations = declarations;
     }
 
     public MvelConstraint(String packageName, String expression, boolean isIndexable, Declaration[] declarations,
                           Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
         this.packageName = packageName;
         this.expression = expression;
-        this.isIndexable = isIndexable;
+        this.isIndexable = isIndexable && indexingDeclaration != null;
         this.declarations = declarations == null ? new Declaration[0] : declarations;
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
@@ -84,7 +95,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public boolean isIndexable() {
-        return isIndexable && indexingDeclaration != null;
+        return isIndexable;
     }
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
@@ -210,7 +221,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     // Slot specific
 
     public long getListenedPropertyMask(List<String> settableProperties) {
-        if (conditionEvaluator == null) return calculateMaskFromExpression(settableProperties);
+        if (conditionEvaluator == null) {
+            return calculateMaskFromExpression(settableProperties);
+        }
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition();
         }
@@ -233,7 +246,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         int pos = settableProperties.indexOf(propertyName);
-        if (pos < 0) throw new RuntimeException("Unknown property: " + propertyName);
+        if (pos < 0) {
+            throw new RuntimeException("Unknown property: " + propertyName);
+        }
         return 1L << pos;
     }
 
@@ -250,11 +265,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private long calculateMask(SingleCondition condition, List<String> settableProperties) {
         Method method = getFirstInvokedMethod(condition.getLeft());
-        if (method == null) return Long.MAX_VALUE;
+        if (method == null) {
+            return Long.MAX_VALUE;
+        }
         String propertyName = getter2property(method.getName());
         if (propertyName != null) {
             int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0) throw new RuntimeException("Unknown property: " + propertyName);
+            if (pos < 0) {
+                throw new RuntimeException("Unknown property: " + propertyName);
+            }
             return 1L << pos;
         }
 
@@ -263,14 +282,20 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private Method getFirstInvokedMethod(Expression expression) {
-        if (!(expression instanceof EvaluatedExpression)) return null;
+        if (!(expression instanceof EvaluatedExpression)) {
+            return null;
+        }
         List<Invocation> invocations = ((EvaluatedExpression)expression).invocations;
         Invocation invocation = invocations.get(0);
-        if (!(invocation instanceof MethodInvocation)) return null;
+        if (!(invocation instanceof MethodInvocation)) {
+            return null;
+        }
         Method method = ((MethodInvocation)invocation).getMethod();
         if (method == null && invocations.size() > 1) {
             invocation = invocations.get(1);
-            if (invocation instanceof MethodInvocation) method = ((MethodInvocation)invocation).getMethod();
+            if (invocation instanceof MethodInvocation) {
+                method = ((MethodInvocation)invocation).getMethod();
+            }
         }
         return method;
     }
@@ -304,7 +329,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public Object clone() {
-        return new MvelConstraint(packageName, expression, isIndexable, declarations, indexingDeclaration, extractor, isUnification);
+        MvelConstraint clone = new MvelConstraint(packageName, expression, isIndexable, declarations, indexingDeclaration, extractor, isUnification);
+        clone.setType(getType());
+        return clone;
     }
 
     public int hashCode() {
@@ -312,9 +339,25 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public boolean equals(final Object object) {
-        if ( this == object ) return true;
-        if ( object == null || object.getClass() != MvelConstraint.class ) return false;
-        return expression.equals(((MvelConstraint) object).expression);
+        if ( this == object ) {
+            return true;
+        }
+        if ( object == null || object.getClass() != MvelConstraint.class ) {
+            return false;
+        }
+        MvelConstraint other = (MvelConstraint) object;
+        if (!expression.equals(other.expression)) {
+            return false;
+        }
+        if (declarations.length != other.declarations.length) {
+            return false;
+        }
+        for (int i = 0; i < declarations.length; i++) {
+            if ( !declarations[i].getExtractor().equals( other.declarations[i].getExtractor() ) ) {
+                return false;
+            }
+        }
+        return true;
     }
     
     @Override
@@ -337,7 +380,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         private transient Map<String, Object> vars;
         private transient InternalWorkingMemory workingMemory;
-        private transient Declaration unresolvedDeclaration;
+        private transient List<Declaration> localDeclarations;
 
         public MvelContextEntry() { }
 
@@ -379,8 +422,16 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 try {
                     vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, tuple.get(declaration).getObject()));
                 } catch (NullPointerException npe) {
-                    vars.put(declaration.getBindingName(), declarations[0].getExtractor().getValue(workingMemory, tuple.get(declarations[0]).getObject()));
-                    unresolvedDeclaration = declaration;
+                    if (right != null) {
+                        evaluateInternalDeclaration(declaration, right);
+                    } else if (left != null && declaration.getValueType().getClassType().isInstance(left)) {
+                        vars.put(declaration.getBindingName(), left);
+                    } else {
+                        if (localDeclarations == null) {
+                            localDeclarations = new ArrayList<Declaration>();
+                        }
+                        localDeclarations.add(declaration);
+                    }
                 }
             }
             return vars;
@@ -395,23 +446,37 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         Map<String, Object> getVars(Object object) {
-            if (unresolvedDeclaration != null && unresolvedDeclaration.getValueType().getClassType().isInstance(object)) {
-                vars.put(unresolvedDeclaration.getBindingName(), object);
+            if (localDeclarations != null) {
+                for (Declaration localDeclaration : localDeclarations) {
+                    evaluateInternalDeclaration(localDeclaration, object);
+                }
             }
             return vars;
+        }
+
+        private void evaluateInternalDeclaration(Declaration declaration, Object object) {
+            if (declaration.getValueType().getClassType().isInstance(object)) {
+                vars.put(declaration.getBindingName(), object);
+            } else if (((ClassObjectType)declaration.getPattern().getObjectType()).getClassType().isInstance(object)) {
+                vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, object));
+            }
         }
 
         public void resetTuple() {
             left = null;
             if (vars != null) vars.clear();
-            unresolvedDeclaration = null;
+            if (localDeclarations != null) {
+                localDeclarations.clear();
+            }
         }
 
         public void resetFactHandle() {
             workingMemory = null;
             right = null;
             if (vars != null) vars.clear();
-            unresolvedDeclaration = null;
+            if (localDeclarations != null) {
+                localDeclarations.clear();
+            }
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

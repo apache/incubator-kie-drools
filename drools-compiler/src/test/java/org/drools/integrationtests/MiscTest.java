@@ -29,6 +29,7 @@ import java.io.ObjectOutput;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -2930,7 +2931,11 @@ public class MiscTest extends CommonTestMethodBase {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().contains( "this should throw an exception" ) );
+            Throwable cause = e.getCause();
+            if (cause instanceof InvocationTargetException) {
+                cause = ((InvocationTargetException)cause).getTargetException();
+            }
+            assertTrue( cause.getMessage().contains( "this should throw an exception" ) );
         }
     }
 
@@ -3002,7 +3007,7 @@ public class MiscTest extends CommonTestMethodBase {
         chili2.setAge( 38 );
         chili2.setHair( "indigigo" );
 
-        final Person oldChili1 = new Person( "old chili2" );
+        final Person oldChili1 = new Person( "old chili1" );
         oldChili1.setAge( 45 );
         oldChili1.setHair( "green" );
 
@@ -9167,7 +9172,6 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBuilderError error = errors.iterator().next();
         assertEquals( 5,
                       error.getLines()[0] );
-
     }
 
     @Test
@@ -9456,7 +9460,7 @@ public class MiscTest extends CommonTestMethodBase {
 
 		rule.append("rule \"Sub optimal foo parallelism - this rule is causing NPE upon reverse\"\n");
 		rule.append("when\n");
-		rule.append("$foo : Foo($leftId : id, $leftBar : Bar != null)\n");
+		rule.append("$foo : Foo($leftId : id, $leftBar : bar != null)\n");
 		rule.append("$fooSet : Set()\n");
 		rule.append("from accumulate ( Foo(id > $leftId, bar != null && != $leftBar, $bar : bar),\n");
         rule.append("collectSet( $bar ) )\n");

@@ -177,7 +177,7 @@ rule "Paint Empty Room" when
     $cd : CaveDirty() @watch(!*)   
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )      
-   CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" ) @watch(*)
+   CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" )
 then
    paintCaveCell( "empty_room.png", $c, $gv, $gui );
    modify( $cd ) { dirty = true };
@@ -190,7 +190,7 @@ rule "Paint Non Empty Room" when
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )    
    $cin : CompositeImageName( cell == $c, ( !(hero != "" && pit != "")  &&  // don't draw a hero on the same square as a pit or an alive wumpus, as the game is over
                                             !(hero != "" && wumpus == "wumpus_alive") && 
-                                            !(pit == "" && wumpus == "" && gold == "" && hero == "") ) ) @watch(*)
+                                            !(pit == "" && wumpus == "" && gold == "" && hero == "") ) )
 then
     paintCaveCell( $cin.pit + $cin.wumpus + $cin.gold +  $cin.hero + ".png", $cin.cell, $gv, $gui );
     modify( $cd ) { dirty = true };

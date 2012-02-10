@@ -29,7 +29,7 @@ import java.util.Set;
 
 public class ConstraintBuilder {
 
-    private static final boolean USE_MVEL_EXPRESSION = true;
+    public static final boolean USE_MVEL_EXPRESSION = true;
     private static Set<String> mvelOperators;
 
     static {
@@ -53,7 +53,7 @@ public class ConstraintBuilder {
         }
     }
 
-    private static boolean isMvelOperator(String operator) {
+    public static boolean isMvelOperator(String operator) {
         return mvelOperators.contains(operator);
     }
 
@@ -97,7 +97,8 @@ public class ConstraintBuilder {
             }
 
             String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
-            return new MvelConstraint(context.getPkg().getName(), mvelExpr);
+            boolean isIndexable = operator.equals("==");
+            return new MvelConstraint(context.getPkg().getName(), mvelExpr, isIndexable);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
             return restriction != null ? new LiteralConstraint(extractor, restriction) : null;

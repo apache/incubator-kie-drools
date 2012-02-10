@@ -349,14 +349,20 @@ public class AlphaNode extends ObjectSource
     }
 
     long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
-        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        if (listenedPropertyMask >= 0) {
+            return listenedPropertyMask;
+        }
         List<String> settableProperties = BetaNode.getSettableProperties(workingMemory, getObjectTypeNode());
         return getListenedPropertyMask(settableProperties);
     }
 
     long getListenedPropertyMask(List<String> settableProperties) {
-        if (!(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
-        if (listenedPropertyMask >= 0) return listenedPropertyMask;
+        if (!(constraint instanceof MvelConstraint)) {
+            listenedPropertyMask = Long.MAX_VALUE;
+        }
+        if (listenedPropertyMask >= 0) {
+            return listenedPropertyMask;
+        }
 
         long mask = calculateMask(settableProperties);
         listenedPropertyMask = mask;
@@ -378,16 +384,24 @@ public class AlphaNode extends ObjectSource
     }
 
     private long inferListenedMask(List<String> settableProperties) {
-        if (inferredMask >= 0L) return inferredMask;
-        if (settableProperties == null || !(constraint instanceof MvelConstraint)) return Long.MAX_VALUE;
+        if (inferredMask >= 0L) {
+            return inferredMask;
+        }
+        if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
+            return Long.MAX_VALUE;
+        }
         inferredMask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
         for (ObjectSink objectSink : sink.getSinks()) {
             if (objectSink instanceof AlphaNode) {
                 inferredMask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
-                if (inferredMask == Long.MAX_VALUE) break;
+                if (inferredMask == Long.MAX_VALUE) {
+                    break;
+                }
             } else if (objectSink instanceof BetaNode) {
                 inferredMask |= ((BetaNode)objectSink).inferListenedMask(settableProperties);
-                if (inferredMask == Long.MAX_VALUE) break;
+                if (inferredMask == Long.MAX_VALUE) {
+                    break;
+                }
             }
         }
         return inferredMask;
@@ -396,7 +410,9 @@ public class AlphaNode extends ObjectSource
     private ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this;
         while (source != null) {
-            if (source instanceof ObjectTypeNode) return (ObjectTypeNode)source;
+            if (source instanceof ObjectTypeNode) {
+                return (ObjectTypeNode)source;
+            }
             source = source.source;
         }
         return null;

@@ -27,6 +27,7 @@ import org.mvel2.optimizers.impl.refl.nodes.FieldAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.GetterAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ListAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ListAccessorNest;
+import org.mvel2.optimizers.impl.refl.nodes.MapAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.MapAccessorNest;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.StaticReferenceAccessor;
@@ -38,16 +39,18 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
-import java.util.regex.Pattern;
 
 public class ConditionAnalyzer {
 
     private ASTNode node;
+    private ExecutableLiteral executableLiteral;
     private ParserContext parserContext;
     private Map<String, Object> vars;
 
     public ConditionAnalyzer(ExecutableStatement stmt) {
-        if (stmt instanceof CompiledExpression) {
+        if (stmt instanceof ExecutableLiteral) {
+            executableLiteral = (ExecutableLiteral)stmt;
+        } else if (stmt instanceof CompiledExpression) {
             parserContext = ((CompiledExpression)stmt).getParserContext();
             node = ((CompiledExpression)stmt).getFirstNode();
         } else {
@@ -61,6 +64,9 @@ public class ConditionAnalyzer {
     }
 
     public Condition analyzeCondition() {
+        if (executableLiteral != null) {
+            return new FixedValueCondition((Boolean)executableLiteral.getLiteral());
+        }
         while (node.nextASTNode != null) node = node.nextASTNode;
         return analyzeCondition(node);
     }
@@ -73,8 +79,18 @@ public class ConditionAnalyzer {
         }
         node = analyzeSubstatement(node);
 
+        if (node instanceof LiteralNode && node.getEgressType() == Boolean.class) {
+            boolean literalValue = (Boolean)((LiteralNode)node).getLiteralValue();
+            return new FixedValueCondition(isNegated ? !literalValue : literalValue);
+        }
+
         if (node instanceof And || node instanceof Or) {
             return analyzeCombinedCondition((BooleanNode)node, isNegated);
+        }
+        if (node instanceof Negation) {
+            isNegated = !isNegated;
+            node = ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
+            node = analyzeSubstatement(node);
         }
 
         return analyzeSingleCondition(node, isNegated);
@@ -96,6 +112,10 @@ public class ConditionAnalyzer {
             condition.left = analyzeNode(((Contains)node).getFirstStatement());
             condition.operation = BooleanOperator.CONTAINS;
             condition.right = analyzeNode(((Contains)node).getSecondStatement());
+        } else if (node instanceof Soundslike) {
+            condition.left = analyzeNode((ASTNode)getFieldValue(Soundslike.class, "stmt", (Soundslike)node));
+            condition.operation = BooleanOperator.SOUNDSLIKE;
+            condition.right = analyzeNode((ASTNode)getFieldValue(Soundslike.class, "soundslike", (Soundslike)node));
         } else {
             condition.left = analyzeNode(node);
         }
@@ -138,6 +158,23 @@ public class ConditionAnalyzer {
             } else {
                 return new FixedExpression(op.getEgressType(), op.getReducedValue(parserContext, null, new ImmutableDefaultFactory()));
             }
+        }
+
+        if (node instanceof Union) {
+            ASTNode main = getFieldValue(Union.class, "main", (Union)node);
+            Accessor accessor = getFieldValue(Union.class, "accessor", (Union)node);
+
+            EvaluatedExpression expression = new EvaluatedExpression();
+            expression.firstExpression = analyzeNode(main);
+            if (accessor instanceof DynamicGetAccessor) {
+                AccessorNode accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
+                expression.addInvocation(analyzeAccessor(accessorNode, null));
+            } else if (accessor instanceof AccessorNode) {
+                expression.addInvocation(analyzeAccessor((AccessorNode)accessor, null));
+            } else {
+                throw new RuntimeException("Unexpected accessor: " + accessor);
+            }
+            return expression;
         }
 
         Accessor accessor = node.getAccessor();
@@ -185,7 +222,9 @@ public class ConditionAnalyzer {
             StaticReferenceAccessor staticReferenceAccessor = ((StaticReferenceAccessor)accessorNode);
             Object literal = staticReferenceAccessor.getLiteral();
             accessorNode = accessorNode.getNextNode();
-            if (accessorNode == null) return new FixedExpression(literal.getClass(), literal);
+            if (accessorNode == null) {
+                return new FixedExpression(literal.getClass(), literal);
+            }
         }
 
         return analyzeExpressionNode(accessorNode);
@@ -211,7 +250,9 @@ public class ConditionAnalyzer {
         Invocation invocation = null;
         while (accessorNode != null) {
             invocation = analyzeAccessor(accessorNode, invocation);
-            if (invocation != null) expression.addInvocation(invocation);
+            if (invocation != null) {
+                expression.addInvocation(invocation);
+            }
             accessorNode = accessorNode.getNextNode();
         }
         return expression;
@@ -265,6 +306,11 @@ public class ConditionAnalyzer {
             return new ListAccessInvocation(listType, analyzeNode(index.getNode()));
         }
 
+        if (accessorNode instanceof MapAccessor) {
+            MapAccessor mapAccessor = (MapAccessor)accessorNode;
+            return new MapAccessInvocation(Object.class, Object.class, new FixedExpression(Object.class, mapAccessor.getProperty()));
+        }
+
         if (accessorNode instanceof MapAccessorNest) {
             Class<?> keyType = Object.class;
             Class<?> valueType = Object.class;
@@ -308,7 +354,7 @@ public class ConditionAnalyzer {
     }
 
     private Type[] getGenerics(Invocation invocation) {
-        if (invocation != null && invocation instanceof MethodInvocation) {
+        if (invocation != null && invocation instanceof MethodInvocation && ((MethodInvocation) invocation).getMethod() != null) {
             Type returnType = ((MethodInvocation) invocation).getMethod().getGenericReturnType();
             if (returnType instanceof ParameterizedType) {
                 return ((ParameterizedType)returnType).getActualTypeArguments();
@@ -336,6 +382,18 @@ public class ConditionAnalyzer {
         return value == null ? Object.class : value.getClass();
     }
 
+    private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {
+        try {
+            Field f = clazz.getDeclaredField(fieldName);
+            f.setAccessible(true);
+            return (V)f.get(object);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static abstract class Condition {
         private boolean negated;
 
@@ -349,6 +407,24 @@ public class ConditionAnalyzer {
 
         public void toggleNegation() {
             negated = !negated;
+        }
+    }
+
+    public static class FixedValueCondition extends Condition {
+
+        private final boolean fixedValue;
+
+        protected FixedValueCondition(boolean fixedValue) {
+            super(false);
+            this.fixedValue = fixedValue;
+        }
+
+        public boolean getFixedValue() {
+            return fixedValue;
+        }
+
+        public void toggleNegation() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -418,7 +494,9 @@ public class ConditionAnalyzer {
             Iterator<Condition> i = conditions.iterator();
             while (i.hasNext()) {
                 sb.append(i.next());
-                if (i.hasNext()) sb.append(isAnd ? " and " : " or ");
+                if (i.hasNext()) {
+                    sb.append(isAnd ? " and " : " or ");
+                }
             }
             return sb.append(")").toString();
         }
@@ -491,6 +569,7 @@ public class ConditionAnalyzer {
     }
 
     public static class EvaluatedExpression implements Expression {
+        Expression firstExpression;
         final List<Invocation> invocations = new ArrayList<Invocation>();
 
         void addInvocation(Invocation invocation) {
@@ -498,7 +577,7 @@ public class ConditionAnalyzer {
         }
 
         public String toString() {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(firstExpression != null ? firstExpression.toString() : "");
             Iterator<Invocation> i = invocations.iterator();
             while (i.hasNext()) {
                 sb.append(i.next());
@@ -593,7 +672,9 @@ public class ConditionAnalyzer {
         }
 
         private Method getMethodFromSuperclass(Method method) {
-            if (method == null) return method;
+            if (method == null) {
+                return method;
+            }
             Class<?> declaringClass = method.getDeclaringClass();
             Class<?> declaringSuperclass = declaringClass.getSuperclass();
             if (declaringSuperclass != null) {
@@ -754,7 +835,7 @@ public class ConditionAnalyzer {
     }
 
     public enum BooleanOperator {
-        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~="), CONTAINS("in");
+        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~="), CONTAINS("in"), SOUNDSLIKE("like");
 
         private String symbol;
 
