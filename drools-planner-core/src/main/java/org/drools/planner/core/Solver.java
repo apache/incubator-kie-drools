@@ -87,15 +87,24 @@ public interface Solver {
     /**
      * Schedules a {@link ProblemFactChange} to be processed.
      * <p/>
-     * As a side-effect this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
      * but not {@link #terminateEarly()}.
      * <p/>
+     * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
      * @param problemFactChange never null
-     * @return <tt>true</tt> (as specified by {@link Collection#add})
+     * @return true (as specified by {@link Collection#add})
      */
     boolean addProblemFactChange(ProblemFactChange problemFactChange);
+
+    /**
+     * Checks if all scheduled {@link ProblemFactChange}s have been processed.
+     * <p/>
+     * This method is thread-safe.
+     * @return true if there are no {@link ProblemFactChange}s left to do
+     */
+    boolean isEveryProblemFactChangeProcessed();
 
     /**
      * @param eventListener never null

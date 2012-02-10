@@ -31,6 +31,8 @@ public class BestSolutionChangedEvent extends EventObject {
 
     /**
      * Internal API.
+     * @param source never null
+     * @param timeMillisSpend >= 0L
      * @param newBestSolution never null
      */
     public BestSolutionChangedEvent(Solver source, long timeMillisSpend, Solution newBestSolution) {
@@ -40,7 +42,7 @@ public class BestSolutionChangedEvent extends EventObject {
     }
 
     /**
-     * @return the amount of millis spend since the solver started untill that best solution was found
+     * @return the amount of millis spend since the solver started until that best solution was found
      */
     public long getTimeMillisSpend() {
         return timeMillisSpend;

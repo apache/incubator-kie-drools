@@ -133,6 +133,13 @@ public class DefaultSolver implements Solver {
         return basicPlumbingTermination.addProblemFactChange(problemFactChange);
     }
 
+    public boolean isEveryProblemFactChangeProcessed() {
+        BlockingQueue<ProblemFactChange> problemFactChangeQueue
+                = basicPlumbingTermination.getProblemFactChangeQueue();
+        // TODO bug: the last ProblemFactChange might already been polled, but not processed yet
+        return problemFactChangeQueue.isEmpty();
+    }
+
     public final void solve() {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
