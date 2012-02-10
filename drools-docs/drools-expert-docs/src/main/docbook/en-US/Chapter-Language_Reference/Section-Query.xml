@@ -72,6 +72,7 @@ for ( QueryResultsRow row : results ) {
     Person person = ( Person ) row.get( "person" );
     System.out.println( person.getName() + "\n" );
 }</programlisting>
+  </example>
 
     <para>Support for positional syntax has been added for more compact code.
     By default the the declared type order in the type declaration matches the
@@ -164,5 +165,4 @@ for ( QueryResultsRow r : results ) {
         <para>Expression unification - pred( X, X + 1, X * Y / 7 )</para>
       </listitem>
     </itemizedlist>
-  </example>
 </section>
