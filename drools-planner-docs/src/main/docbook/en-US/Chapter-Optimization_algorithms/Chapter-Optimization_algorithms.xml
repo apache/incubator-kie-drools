@@ -572,6 +572,9 @@
       <para>If it hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort
       to continue. We have observed that once a new best solution is found (even after a long time of no improvement on
       the best solution), the next few step tend to improve the best solution too.</para>
+
+      <para>This <literal>Termination</literal> can only be used for a <literal>SolverPhase</literal>, not for the
+      <literal>Solver</literal> itself.</para>
     </section>
 
     <section>
