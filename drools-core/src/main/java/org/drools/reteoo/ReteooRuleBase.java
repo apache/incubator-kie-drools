@@ -60,6 +60,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
@@ -342,9 +343,11 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 // now unmarshall that byte[]
                 ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
                 Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ),  new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
+                
+                Environment environment = EnvironmentFactory.newEnvironment();
                 StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
                                                                            conf,
-                                                                           EnvironmentFactory.newEnvironment() );
+                                                                           environment );
                 session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
     
                 if ( keepReference ) {

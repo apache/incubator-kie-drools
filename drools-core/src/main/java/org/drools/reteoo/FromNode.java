@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
@@ -32,12 +33,18 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.From;
@@ -60,7 +67,7 @@ public class FromNode extends LeftTupleSource
     private LeftTupleSinkNode          nextTupleSinkNode;
     
     private From                       from;
-    private Class                      resultClass;
+    private Class<?>                   resultClass;
 
     protected boolean                  tupleMemoryEnabled;
 
@@ -129,7 +136,7 @@ public class FromNode extends LeftTupleSource
 
         if ( useLeftMemory ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            matches = new HashMap<Object, RightTuple>();
+            matches = new LinkedHashMap<Object, RightTuple>();
             leftTuple.setObject( matches );
         }         
 
@@ -146,13 +153,10 @@ public class FromNode extends LeftTupleSource
                 continue; // skip anything if it not assignable
             }
 
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                                                  null, // set this to null, otherwise it uses the driver fact's entrypoint
-                                                                                                  workingMemory,
-                                                                                                  null );
-
-            RightTuple rightTuple = new RightTuple( handle,
-                                                    null );
+            RightTuple rightTuple = createRightTuple( leftTuple,
+                                                      context,
+                                                      workingMemory,
+                                                      object );
 
             checkConstraintsAndPropagate( leftTuple,
                                           rightTuple,
@@ -167,6 +171,46 @@ public class FromNode extends LeftTupleSource
         }
 
         this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
+    }
+
+    @SuppressWarnings("unchecked")
+    private RightTuple createRightTuple( final LeftTuple leftTuple,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory,
+                                         final Object object ) {
+        InternalFactHandle handle = null;
+        ProtobufMessages.FactHandle _handle = null;
+        if( context.getReaderContext() != null ) {
+            Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
+            if( map != null ) {
+                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
+                List<FactHandle> list = map.get( key );
+                if( list.isEmpty() ) {
+                    map.remove( key );
+                } else {
+                    // it is a linked list, so the operation is fairly efficient
+                    _handle = ((java.util.LinkedList<ProtobufMessages.FactHandle>)list).removeFirst();
+                }
+            }
+        }
+        if( _handle != null ) {
+            // create a handle with the given id
+            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                         object,
+                                                                         _handle.getRecency(),
+                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         workingMemory,
+                                                                         null ); 
+        } else {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( object,
+                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         workingMemory,
+                                                                         null ); 
+        }
+
+        RightTuple rightTuple = new RightTuple( handle,
+                                                null );
+        return rightTuple;
     }
 
     private void addToCreatedHandlesMap(final Map<Object, RightTuple> matches,
@@ -238,12 +282,10 @@ public class FromNode extends LeftTupleSource
 
             if ( rightTuple == null ) {
                 // new match, propagate assert
-                final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                                                      null, // set this to null, otherwise it uses the driver fact's entrypoint
-                                                                                                      workingMemory,
-                                                                                                      null );
-                rightTuple = new RightTuple( handle,
-                                             null );
+                rightTuple = createRightTuple( leftTuple,
+                                               context,
+                                               workingMemory, 
+                                               object );
             } else {
                 // previous match, so reevaluate and propagate modify
                 if ( rightIt.next( rightTuple ) != null ) {
@@ -268,10 +310,10 @@ public class FromNode extends LeftTupleSource
 
         for ( RightTuple rightTuple : previousMatches.values() ) {
             for ( RightTuple current = rightTuple; current != null; current = (RightTuple) rightIt.next( current ) ) {
-                retractMatchAndDestroyHandle( leftTuple,
-                                              current,
-                                              context,
-                                              workingMemory );
+                retractMatch( leftTuple,
+                              current,
+                              context,
+                              workingMemory );
             }
         }
     }
@@ -317,17 +359,17 @@ public class FromNode extends LeftTupleSource
                                                          useLeftMemory );
             }
         } else {
-            retractMatchAndDestroyHandle( leftTuple,
-                                          rightTuple,
-                                          context,
-                                          workingMemory );
+            retractMatch( leftTuple,
+                          rightTuple,
+                          context,
+                          workingMemory );
         }
     }
 
-    private void retractMatchAndDestroyHandle(final LeftTuple leftTuple,
-                                              final RightTuple rightTuple,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
+    private void retractMatch(final LeftTuple leftTuple,
+                              final RightTuple rightTuple,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory) {
         if ( rightTuple.firstChild != null ) {
             // there was a previous match, so need to retract
             this.sink.propagateRetractChildLeftTuple( rightTuple.firstChild,
@@ -336,7 +378,6 @@ public class FromNode extends LeftTupleSource
                                                       workingMemory );
 
         }
-        //workingMemory.getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
@@ -348,21 +389,20 @@ public class FromNode extends LeftTupleSource
         this.sink.propagateRetractLeftTuple( leftTuple,
                                              context,
                                              workingMemory );
-        destroyCreatedHandles( workingMemory,
-                               memory,
-                               leftTuple );
+        unlinkCreatedHandles( workingMemory,
+                              memory,
+                              leftTuple );
     }
 
     @SuppressWarnings("unchecked")
-    private void destroyCreatedHandles(final InternalWorkingMemory workingMemory,
-                                       final FromMemory memory,
-                                       final LeftTuple leftTuple) {
+    private void unlinkCreatedHandles(final InternalWorkingMemory workingMemory,
+                                      final FromMemory memory,
+                                      final LeftTuple leftTuple) {
         Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
         FastIterator rightIt = LinkedList.fastIterator;
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
                 RightTuple next = (RightTuple) rightIt.next( current );
-                //workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
                 current.unlinkFromRightParent();
                 current = next;
             }
@@ -407,9 +447,9 @@ public class FromNode extends LeftTupleSource
                 FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
                 Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                    destroyCreatedHandles( workingMemory,
-                                           memory,
-                                           leftTuple );
+                    unlinkCreatedHandles( workingMemory,
+                                          memory,
+                                          leftTuple );
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
                 }
@@ -466,10 +506,11 @@ public class FromNode extends LeftTupleSource
         }
     }
 
-    public Object createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config) {
         BetaMemory beta = new BetaMemory( new LeftTupleList(),
                                           null,
-                                          this.betaConstraints.createContext() );
+                                          this.betaConstraints.createContext(),
+                                          NodeTypeEnums.FromNode );
         return new FromMemory( beta,
                                this.dataProvider.createContext(),
                                this.alphaConstraints );
@@ -525,7 +566,8 @@ public class FromNode extends LeftTupleSource
 
     public static class FromMemory
         implements
-        Serializable {
+        Serializable,
+        Memory {
         private static final long serialVersionUID = 510l;
 
         public BetaMemory         betaMemory;
@@ -541,6 +583,10 @@ public class FromNode extends LeftTupleSource
             for ( int i = 0; i < constraints.length; i++ ) {
                 this.alphaContexts[i] = constraints[i].createContextEntry();
             }
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.FromNode;
         }
     }
     

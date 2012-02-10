@@ -33,8 +33,8 @@ import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
@@ -418,7 +418,7 @@ public class EntryPointNode extends ObjectSource
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                Iterator it = ((ObjectHashSet) workingMemory.getNodeMemory( sourceNode )).iterator();
+                Iterator it = ((ObjectTypeNodeMemory) workingMemory.getNodeMemory( sourceNode )).memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     sink.assertObject( (InternalFactHandle) entry.getValue(),
                                        context,

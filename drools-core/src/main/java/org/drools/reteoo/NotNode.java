@@ -16,10 +16,12 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.RightTupleList;
@@ -520,4 +522,8 @@ public class NotNode extends BetaNode {
         return "[NotNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
     }
 
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return super.createMemory( config, 
+                                   NodeTypeEnums.NotNode );
+    }
 }

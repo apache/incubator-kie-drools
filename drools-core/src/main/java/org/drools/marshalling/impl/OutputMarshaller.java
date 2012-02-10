@@ -51,6 +51,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
@@ -1169,14 +1170,6 @@ public class OutputMarshaller {
             
             outCtx.writeLong( pinTrigger.hasNextFireTime().getTime() );
         }
-        
-//        else if ( trigger instanceof DelayedTrigger ) {
-//            
-//        } else if ( trigger instanceof PointInTimeTrigger ) {
-//            
-//        } else if ( trigger instanceof CompositeMaxDurationTimer ) {
-//            
-//        }        
     }
 
 }

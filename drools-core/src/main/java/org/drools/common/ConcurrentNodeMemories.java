@@ -25,16 +25,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ConcurrentNodeMemories implements NodeMemories {
 
-    private static final long            serialVersionUID = 510l;
-
-    private AtomicReferenceArray<Object> memories;
+    private AtomicReferenceArray<Memory> memories;
 
     private Lock                         lock;
     private InternalRuleBase             rulebase;
 
     public ConcurrentNodeMemories( InternalRuleBase rulebase ) {
         this.rulebase = rulebase;
-        this.memories = new AtomicReferenceArray<Object>( this.rulebase.getNodeCount() );
+        this.memories = new AtomicReferenceArray<Memory>( this.rulebase.getNodeCount() );
         this.lock = new ReentrantLock();
     }
 
@@ -48,7 +46,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     }
     
     public void clear() {
-        this.memories = new AtomicReferenceArray<Object>( this.rulebase.getNodeCount() );
+        this.memories = new AtomicReferenceArray<Memory>( this.rulebase.getNodeCount() );
     }
 
     /**
@@ -61,11 +59,11 @@ public class ConcurrentNodeMemories implements NodeMemories {
      *
      * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.NodeMemory)
      */
-    public Object getNodeMemory( NodeMemory node ) {
+    public Memory getNodeMemory( NodeMemory node ) {
         if( node.getId() >= this.memories.length() ) {
             resize( node );
         }
-        Object memory = this.memories.get( node.getId() );
+        Memory memory = this.memories.get( node.getId() );
 
         if( memory == null ) {
             memory = createNodeMemory( node );
@@ -82,12 +80,12 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * @param node
      * @return
      */
-    private Object createNodeMemory( NodeMemory node ) {
+    private Memory createNodeMemory( NodeMemory node ) {
         try {
             this.lock.lock();
             // need to try again in a synchronized code block to make sure
             // it was not created yet
-            Object memory = this.memories.get( node.getId() );
+            Memory memory = this.memories.get( node.getId() );
             if( memory == null ) {
                 memory = node.createMemory( this.rulebase.getConfiguration() );
 
@@ -112,7 +110,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             if( node.getId() >= this.memories.length() ) {
                 // adding some buffer for new nodes, so that we reduce array copies
                 int size = Math.max( this.rulebase.getNodeCount(), node.getId() + 32 );
-                AtomicReferenceArray<Object> newMem = new AtomicReferenceArray<Object>( size );
+                AtomicReferenceArray<Memory> newMem = new AtomicReferenceArray<Memory>( size );
                 for ( int i = 0; i < this.memories.length(); i++ ) {
                     newMem.set( i,
                                 this.memories.get( i ) );
@@ -126,6 +124,14 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     public void setRuleBaseReference( InternalRuleBase ruleBase ) {
         this.rulebase = ruleBase;
+    }
+
+    public Memory peekNodeMemory(int nodeId) {
+        return this.memories.get( nodeId );
+    }
+
+    public int length() {
+        return this.memories.length();
     }
 
 }

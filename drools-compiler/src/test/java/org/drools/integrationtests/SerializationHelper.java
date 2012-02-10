@@ -13,7 +13,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.DefaultMarshaller;
+import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -29,6 +29,7 @@ public class SerializationHelper {
                                 null );
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T serializeObject(T obj,
                                         ClassLoader classLoader) throws IOException,
                                                                 ClassNotFoundException {
@@ -36,11 +37,21 @@ public class SerializationHelper {
                                                classLoader );
     }
 
+    /**
+     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
+     *             Please use getSerialisedStatefulKnowledgeSession() instead.
+     */
+    @Deprecated
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session) throws Exception {
         return getSerialisedStatefulSession( session,
                                              true );
     }
 
+    /**
+     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
+     *             Please use getSerialisedStatefulKnowledgeSession() instead.
+     */
+    @Deprecated
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                RuleBase ruleBase) throws Exception {
         return getSerialisedStatefulSession( session,
@@ -48,6 +59,11 @@ public class SerializationHelper {
                                              true );
     }
 
+    /**
+     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
+     *             Please use getSerialisedStatefulKnowledgeSession() instead.
+     */
+    @Deprecated
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                boolean dispose) throws Exception {
         return getSerialisedStatefulSession( session,
@@ -55,6 +71,11 @@ public class SerializationHelper {
                                              dispose );
     }
 
+    /**
+     * @deprecated This method can't handle serialization of globals to a deficiency of the API. 
+     *             Please use getSerialisedStatefulKnowledgeSession() instead.
+     */
+    @Deprecated
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                RuleBase ruleBase,
                                                                boolean dispose) throws Exception {
@@ -100,14 +121,24 @@ public class SerializationHelper {
         return session2;
     }
 
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+                                                                                 boolean dispose) throws Exception {
+        return getSerialisedStatefulKnowledgeSession( ksession, 
+                                                      dispose, 
+                                                      true );
+        
+    }
    
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 boolean dispose) throws Exception {
+                                                                                 boolean dispose,
+                                                                                 boolean testRoundTrip ) throws Exception {
 
-        DefaultMarshaller marshaller = ( DefaultMarshaller ) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
-                (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
+        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
+                                                                 (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.<SessionClock>getSessionClock().getCurrentTime();
+        // make sure globas are in the environment of the session
+        ksession.getEnvironment().set( EnvironmentName.GLOBALS, ksession.getGlobals() );
 
         // Serialize object
         final byte [] b1;
@@ -130,24 +161,35 @@ public class SerializationHelper {
             bais.close();
         }
         
-        // Reserialize and check that byte arrays are the same
-        final byte[] b2;
-        {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            marshaller.marshall( bos,
-                                 ksession2,
-                                 time );
-            b2 = bos.toByteArray();
-            bos.close();
-        }
+        if( testRoundTrip ) {
+            // for now, we can ensure the IDs will match because queries are creating untraceable fact handles at the moment 
+//            int previous_id = ((StatefulKnowledgeSessionImpl)ksession).session.getFactHandleFactory().getId();
+//            long previous_recency = ((StatefulKnowledgeSessionImpl)ksession).session.getFactHandleFactory().getRecency();
+//            int current_id = ((StatefulKnowledgeSessionImpl)ksession2).session.getFactHandleFactory().getId();
+//            long current_recency = ((StatefulKnowledgeSessionImpl)ksession2).session.getFactHandleFactory().getRecency();
+//            ((StatefulKnowledgeSessionImpl)ksession2).session.getFactHandleFactory().clear( previous_id, previous_recency );
+            
+            // Reserialize and check that byte arrays are the same
+            final byte[] b2;
+            {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                marshaller.marshall( bos,
+                                     ksession2,
+                                     time );
+                b2 = bos.toByteArray();
+                bos.close();
+            }
 
-        // bytes should be the same.
-        if ( !areByteArraysEqual( b1,
-                                  b2 ) ) {
-            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
-        }
+            // bytes should be the same.
+            if ( !areByteArraysEqual( b1,
+                                      b2 ) ) {
+                throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
+            }
 
-        ((StatefulKnowledgeSessionImpl) ksession2).session.setGlobalResolver( ((StatefulKnowledgeSessionImpl) ksession).session.getGlobalResolver() );
+//            ((StatefulKnowledgeSessionImpl) ksession2).session.getFactHandleFactory().clear( current_id, current_recency );
+//            ((StatefulKnowledgeSessionImpl) ksession2).session.setGlobalResolver( ((StatefulKnowledgeSessionImpl) ksession).session.getGlobalResolver() );
+            
+        }
 
         if ( dispose ) {
             ksession.dispose();

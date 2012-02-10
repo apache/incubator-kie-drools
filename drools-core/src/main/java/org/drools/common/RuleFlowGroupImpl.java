@@ -29,6 +29,7 @@ import org.drools.core.util.LinkedList;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.spi.Activation;
 
 /**
@@ -291,9 +292,23 @@ public class RuleFlowGroupImpl
             this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( context.readUTF() );
         }
 
+        public DeactivateCallback(MarshallerReaderContext context,
+                                  ProtobufMessages.ActionQueue.Action _action) {
+            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( _action.getDeactivateCallback().getRuleflowGroup() );
+        }
+
         public void write(MarshallerWriteContext context) throws IOException {
             context.writeShort( WorkingMemoryAction.DeactivateCallback );
             context.writeUTF( ruleFlowGroup.getName() );
+        }
+        
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.DEACTIVATE_CALLBACK )
+                    .setDeactivateCallback( ProtobufMessages.ActionQueue.DeactivateCallback.newBuilder()
+                                                .setRuleflowGroup( ruleFlowGroup.getName() )
+                                                .build() )
+                    .build();
         }
 
         public void readExternal(ObjectInput in) throws IOException,

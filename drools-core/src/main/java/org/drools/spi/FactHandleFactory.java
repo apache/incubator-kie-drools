@@ -36,7 +36,17 @@ public interface FactHandleFactory {
      * 
      * @return The handle.
      */
-    public InternalFactHandle newFactHandle(Object object, ObjectTypeConf conf, InternalWorkingMemory workingMemory, WorkingMemoryEntryPoint wmEntryPoint );
+    public InternalFactHandle newFactHandle(Object object, 
+                                            ObjectTypeConf conf, 
+                                            InternalWorkingMemory workingMemory, 
+                                            WorkingMemoryEntryPoint wmEntryPoint );
+    
+    public InternalFactHandle newFactHandle(final int id,
+                                            final Object object,
+                                            final long recency,
+                                            final ObjectTypeConf conf,
+                                            final InternalWorkingMemory workingMemory,
+                                            final WorkingMemoryEntryPoint wmEntryPoint);
     
     /**
      * Increases the recency of the FactHandle

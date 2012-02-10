@@ -67,13 +67,13 @@ import org.drools.Cheesery;
 import org.drools.Cheesery.Maturity;
 import org.drools.Child;
 import org.drools.ClassObjectFilter;
+import org.drools.CommonTestMethodBase;
 import org.drools.DomainObjectHolder;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
 import org.drools.FactHandle;
 import org.drools.FirstClass;
-import org.drools.Foo;
 import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
@@ -191,7 +191,7 @@ import org.mvel2.MVEL;
 /**
  * Run all the tests with the ReteOO engine implementation
  */
-public class MiscTest {
+public class MiscTest extends CommonTestMethodBase {
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -2302,63 +2302,52 @@ public class MiscTest {
 
     @Test
     public void testEval() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase( "eval_rule_test.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session.setGlobal( "five",
+        ksession.setGlobal( "five",
                            new Integer( 5 ) );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        session.insert( stilton );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksession.insert( stilton );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                              true );
+        ksession.fireAllRules();
 
         assertEquals( stilton,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
     }
 
     @Test
     public void testJaninoEval() throws Exception {
-        final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) config.getDialectConfiguration( "java" );
-        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
+        KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbconf.setProperty( JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, "JANINO" );
+        KnowledgeBase kbase = loadKnowledgeBase( kbconf, "eval_rule_test.drl" );
 
-        final PackageBuilder builder = new PackageBuilder( config );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        kbase = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session.setGlobal( "five",
+        ksession.setGlobal( "five",
                            new Integer( 5 ) );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
-        session.insert( stilton );
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksession.insert( stilton );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                              true );
+        ksession.fireAllRules();
 
         assertEquals( stilton,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
     }
 
     @Test
@@ -2388,82 +2377,66 @@ public class MiscTest {
 
     @Test
     public void testReturnValue() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase( "returnvalue_rule_test.drl" );
+        kbase = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session.setGlobal( "two",
+        ksession.setGlobal( "two",
                            new Integer( 2 ) );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final PersonInterface peter = new Person( "peter",
                                                   null,
                                                   12 );
-        session.insert( peter );
+        ksession.insert( peter );
         final PersonInterface jane = new Person( "jane",
                                                  null,
                                                  10 );
-        session.insert( jane );
+        ksession.insert( jane );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
 
         assertEquals( jane,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
         assertEquals( peter,
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
     }
 
     @Test
     public void testPredicate() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase( "predicate_rule_test.drl" );
+        
+        kbase = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        session.setGlobal( "two",
+        ksession.setGlobal( "two",
                            new Integer( 2 ) );
 
         final List list = new ArrayList();
-        session.setGlobal( "list",
+        ksession.setGlobal( "list",
                            list );
 
         final PersonInterface peter = new Person( "peter",
                                                   null,
                                                   12 );
-        session.insert( peter );
+        ksession.insert( peter );
         final PersonInterface jane = new Person( "jane",
                                                  null,
                                                  10 );
-        session.insert( jane );
+        ksession.insert( jane );
 
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                              true );
+        ksession.fireAllRules();
 
         assertEquals( jane,
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
         assertEquals( peter,
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 1 ) );
     }
 
     @Test
@@ -9546,37 +9519,6 @@ public class MiscTest {
 		ksession.dispose();
     }
 
-    private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for ( String drlContentString : drlContentStrings ) {
-            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
-                          ResourceType.DRL );
-        }
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
-    private KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for ( String classPathResource : classPathResources ) {
-            kbuilder.add( ResourceFactory.newClassPathResource( classPathResource,
-                                                                getClass() ),
-                          ResourceType.DRL );
-        }
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
     @Test 
     public void testDispose() throws Exception {
         StringBuilder rule = new StringBuilder();
@@ -9604,47 +9546,6 @@ public class MiscTest {
         } catch (IllegalStateException ise ) {
             // success
         }
-    }
-
-    private Package loadPackage( final String classPathResource ) throws DroolsParserException,
-                                                                 IOException {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( classPathResource ) ) );
-
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-
-        final Package pkg = builder.getPackage();
-        return pkg;
-    }
-
-    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages):\n"
-                    + parser.getErrors() );
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
-
-        Package pkg = builder.getPackage();
-        pkg = SerializationHelper.serializeObject( pkg );
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        // load up the rulebase
-        return ruleBase;
     }
 
     public static class A {

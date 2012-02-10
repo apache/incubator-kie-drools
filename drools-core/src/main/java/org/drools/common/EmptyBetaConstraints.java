@@ -99,10 +99,12 @@ public class EmptyBetaConstraints
         return true;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+                                       final short nodeType) {
         final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                                   new RightTupleList(),
-                                                  this.createContext() );
+                                                  this.createContext(),
+                                                  nodeType );
 
         return memory;
     }

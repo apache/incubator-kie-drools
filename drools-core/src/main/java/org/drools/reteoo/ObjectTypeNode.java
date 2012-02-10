@@ -32,6 +32,7 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
@@ -40,6 +41,9 @@ import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.ExpireTimer;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
@@ -194,11 +198,10 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        
         if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery)factHandle.getObject()).isOpen() ) ) {
-            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-            memory.add( factHandle,
-                        false );            
+            final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
+            memory.memory.add( factHandle,
+                               false );            
         }
         
         if ( compiledNetwork != null ) {
@@ -213,7 +216,7 @@ public class ObjectTypeNode extends ObjectSource
                                              workingMemory );
         }
 
-        if ( this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
+        if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
             // schedule expiration
             WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle,
                                                                                       this );
@@ -245,8 +248,8 @@ public class ObjectTypeNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery)factHandle.getObject()).isOpen() ) ) {
-            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-            memory.remove( factHandle );            
+            final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
+            memory.memory.remove( factHandle );            
         }
 
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
@@ -297,8 +300,8 @@ public class ObjectTypeNode extends ObjectSource
             
         } else {
             // Regular updateSink
-            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-            Iterator it = memory.iterator();
+            final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
+            Iterator it = memory.memory.iterator();
     
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 sink.assertObject( (InternalFactHandle) entry.getValue(),
@@ -314,19 +317,18 @@ public class ObjectTypeNode extends ObjectSource
      *  a node's memory, but it has to take into account if it's propagating.
      */
     private void updateLRUnlinking(final ObjectSink sink,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
+                                   final PropagationContext context,
+                                   final InternalWorkingMemory workingMemory) {
+
+        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
         
-        final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-        
-         Iterator it = memory.iterator();
-            
-        
-        InternalFactHandle ctxHandle = (InternalFactHandle)context.getFactHandle(); 
-        
-        if (!context.isPropagating( this ) || 
-                (context.isPropagating( this ) && context.shouldPropagateAll())){
-            
+        Iterator it = memory.memory.iterator();
+
+        InternalFactHandle ctxHandle = (InternalFactHandle) context.getFactHandle();
+
+        if ( !context.isPropagating( this ) ||
+             (context.isPropagating( this ) && context.shouldPropagateAll()) ) {
+
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 // Assert everything
                 sink.assertObject( (InternalFactHandle) entry.getValue(),
@@ -409,8 +411,8 @@ public class ObjectTypeNode extends ObjectSource
         if ( context.getCleanupAdapter() != null ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
-                final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-                Iterator it = memory.iterator();
+                final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
+                Iterator it = memory.memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     InternalFactHandle handle = (InternalFactHandle) entry.getValue();
                     for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
@@ -431,8 +433,8 @@ public class ObjectTypeNode extends ObjectSource
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
      * to switch back to a standard HashMap.
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new ObjectHashSet();
+    public Memory createMemory(final RuleBaseConfiguration config) {
+        return new ObjectTypeNodeMemory();
     }
 
     public boolean isObjectMemoryEnabled() {
@@ -634,19 +636,40 @@ public class ObjectTypeNode extends ObjectSource
             WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
             outputCtx.writeInt( expireAction.getFactHandle().getId() );
             outputCtx.writeUTF( expireAction.getNode().getEntryPoint().getEntryPointId() );
-            
-            outputCtx.writeUTF( ((ClassObjectType)expireAction.getNode().getObjectType()).getClassType().getName() );
-            
+            outputCtx.writeUTF( ((ClassObjectType) expireAction.getNode().getObjectType()).getClassType().getName() );
+
+            DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
+            PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();
+            outputCtx.writeLong( trigger.hasNextFireTime().getTime() );
+
+        }
+
+        public ProtobufMessages.Timers.Timer serialize(JobContext jobCtx,
+                                                       MarshallerWriteContext outputCtx) {
+            // ExpireJob, no state            
+            ExpireJobContext ejobCtx = ( ExpireJobContext ) jobCtx;
+            WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
             DefaultJobHandle jobHandle = ( DefaultJobHandle ) ejobCtx.getJobHandle();
             PointInTimeTrigger trigger = ( PointInTimeTrigger ) jobHandle.getTimerJobInstance().getTrigger();
-            outputCtx.writeLong( trigger.hasNextFireTime().getTime() );           
             
+            return ProtobufMessages.Timers.Timer.newBuilder()
+                    .setType( ProtobufMessages.Timers.TimerType.EXPIRE )
+                    .setExpire( ProtobufMessages.Timers.ExpireTimer.newBuilder()
+                                .setHandleId( expireAction.getFactHandle().getId() )
+                                .setEntryPointId( expireAction.getNode().getEntryPoint().getEntryPointId() )
+                                .setClassName( ((ClassObjectType)expireAction.getNode().getObjectType()).getClassType().getName() )
+                                .setNextFireTimestamp( trigger.hasNextFireTime().getTime() )
+                                .build() )
+                    .build();
         }
     }
-    
-    public static class ExpireJobContextTimerInputMarshaller implements TimersInputMarshaller {
-        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
-            
+
+    public static class ExpireJobContextTimerInputMarshaller
+            implements
+            TimersInputMarshaller {
+        public void read(MarshallerReaderContext inCtx) throws IOException,
+                                                       ClassNotFoundException {
+
             InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
             
             String entryPointId = inCtx.readUTF();            
@@ -670,5 +693,50 @@ public class ObjectTypeNode extends ObjectSource
             jobctx.setJobHandle( handle );
             
         }
-    }        
+        
+        public void deserialize(MarshallerReaderContext inCtx,
+                                Timer _timer) throws ClassNotFoundException {
+            ExpireTimer _expire = _timer.getExpire();
+            InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
+            EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPoint( _expire.getEntryPointId() ) );
+            Class<?> cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( _expire.getClassName() );
+            ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
+            
+            TimerService clock = inCtx.wm.getTimerService();
+            
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction(factHandle, otn),
+                                                      inCtx.wm );
+            JobHandle handle = clock.scheduleJob( job,
+                                                  jobctx,
+                                                  new PointInTimeTrigger( _expire.getNextFireTimestamp(),
+                                                                          null,
+                                                                          null ) );
+            jobctx.setJobHandle( handle );
+        }
+    }
+
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "This should never get called, as the PropertyReactive first happens at the AlphaNode" );
+    }
+
+    
+    public static class ObjectTypeNodeMemory implements Memory, Externalizable {
+        public ObjectHashSet memory = new ObjectHashSet();
+
+        public short getNodeType() {
+            return NodeTypeEnums.ObjectTypeNode;
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( memory );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            memory = (ObjectHashSet) in.readObject();
+        }
+    }
 }

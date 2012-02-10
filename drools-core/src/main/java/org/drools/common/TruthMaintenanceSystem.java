@@ -19,9 +19,6 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.core.util.LinkedList;
@@ -30,6 +27,10 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.LogicalRetract;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
@@ -42,8 +43,6 @@ import org.drools.spi.PropagationContext;
  * the  justificiations for logically asserted facts.
  */
 public class TruthMaintenanceSystem {
-
-    private static final long     serialVersionUID = 510l;
 
     private AbstractWorkingMemory workingMemory;
 
@@ -243,12 +242,48 @@ public class TruthMaintenanceSystem {
             }
         }
 
+        public LogicalRetractCallback(MarshallerReaderContext context,
+                                      Action _action) {
+            LogicalRetract _retract = _action.getLogicalRetract();
+            this.tms = context.wm.getTruthMaintenanceSystem();
+            
+            this.handle = context.handles.get( _retract.getHandleId() );
+            this.activation = (Activation) context.filter.getTuplesCache().get( 
+                                           PersisterHelper.createActivationKey( _retract.getActivation().getPackageName(), 
+                                                                                _retract.getActivation().getRuleName(), 
+                                                                                _retract.getActivation().getTuple() ) ).getObject();
+            this.context = this.activation.getPropagationContext();
+            
+            this.list = ( LinkedList ) this.tms.getJustifiedMap().get( handle.getId() );
+            
+            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+                final LogicalDependency node = (LogicalDependency) entry.getObject();
+                if ( node.getJustifier() == this.activation ) {
+                   this.node = node;
+                   break;
+                }                
+            }
+        }
+
         public void write(MarshallerWriteContext context) throws IOException {
             context.writeShort( WorkingMemoryAction.LogicalRetractCallback );
-            
+
             context.writeInt( this.handle.getId() );
             context.writeLong( this.context.getPropagationNumber() );
             context.writeInt( context.terminalTupleMap.get( this.activation.getTuple() ) );
+        }
+        
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context)  {
+            LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
+                    .setHandleId( this.handle.getId() )
+                    .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
+                                                                      this.activation.getRule().getName(),
+                                                                      this.activation.getTuple() ) )
+                    .build();
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.LOGICAL_RETRACT )
+                    .setLogicalRetract( _retract )
+                    .build();
         }
 
         public void readExternal(ObjectInput in) throws IOException,

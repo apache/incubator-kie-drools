@@ -47,10 +47,13 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.GlobalResolver;
+
+import com.google.protobuf.Message;
 
 public class ReteooWorkingMemoryTest {
     /*
@@ -217,7 +220,8 @@ public class ReteooWorkingMemoryTest {
         public void writeExternal(ObjectOutput out) throws IOException {}
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {}
-        public void write(MarshallerWriteContext context) throws IOException {}
+        public void write(MarshallerWriteContext context) { throw new IllegalStateException("this method should never be called"); }
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) { throw new IllegalStateException("this method should never be called"); }
         public void execute(InternalWorkingMemory workingMemory) {
             // the reentrant action must be executed completely
             // before any of the final actions is executed

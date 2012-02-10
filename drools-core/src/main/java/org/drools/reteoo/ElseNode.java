@@ -16,22 +16,17 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.SingleBetaConstraints;
+import org.drools.common.Memory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.MutableTypeConstraint;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
 public class ElseNode extends BetaNode {
@@ -509,4 +504,9 @@ public class ElseNode extends BetaNode {
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }      
+    
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return super.createMemory( config, 
+                                   NodeTypeEnums.ElseNode );
+    }
 }

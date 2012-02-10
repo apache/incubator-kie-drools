@@ -49,6 +49,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -557,7 +558,7 @@ public class QueryTest {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = (ObjectHashSet) abstractWorkingMemory.getNodeMemory( droolsQueryNode );
+        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) abstractWorkingMemory.getNodeMemory( droolsQueryNode )).memory;
         assertEquals( 0,
                       droolsQueryMemory.size() );
 

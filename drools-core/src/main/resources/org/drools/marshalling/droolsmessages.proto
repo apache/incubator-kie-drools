@@ -1,0 +1,381 @@
+package org.drools.marshalling;
+
+option java_package = "org.drools.marshalling.impl";
+option java_outer_classname = "ProtobufMessages";
+
+// WARNING: Before changing this file, make sure you know what you
+// are doing by reading the protobuf documentation at
+//
+// http://code.google.com/apis/protocolbuffers/
+//
+// in special, please node that to keep backward compatibility
+// you need to comply to a set of practices that are listed on the
+// documentation and quoted here:
+//
+// * you must not change the tag numbers of any existing fields.
+// * you must not add or delete any required fields. At this moment,
+//   as a best practice we are not using required fields at all.
+// * you may delete optional or repeated fields. The best practice
+//   though is to rename the field by prepending it with the prefix
+//   OBSOLETE_
+// * you may add new optional or repeated fields but you must use
+//   fresh tag numbers (i.e. tag numbers that were never used in
+//   this protocol buffer, not even by deleted fields).
+
+message Header {
+    extensions 100 to 199;
+
+    // Drools version for which this message was created
+    optional Version version = 1;
+
+    // Signature to prevent security concerns
+    optional Signature signature = 4;
+
+    // The list of strategy classes used for this serialization
+    repeated StrategyIndex strategy = 9;
+
+    // byte blobs
+    optional bytes payload = 10;
+
+    message StrategyIndex {
+        optional int32 id = 1;
+        optional string name = 2;
+    }
+}
+
+message Version {
+    optional int32 version_major = 1;
+    optional int32 version_minor = 2;
+    optional int32 version_revision = 3;
+}
+
+message Signature {
+    optional string key_alias = 1;
+    optional bytes signature = 2;
+}
+
+message KnowledgeBase {
+    extensions 100 to 199;
+
+    optional bytes signature = 1;
+    optional string id = 2;
+    // we should probably add the list of packages/rules/resources on the knowledge base
+}
+
+message KnowledgeSession {
+    extensions 100 to 199;
+
+    optional bool multithread = 1;
+    optional int64 time = 2;
+
+    optional RuleData rule_data = 3;
+    optional ProcessData process_data = 4;
+
+    optional Timers timers = 5;
+}
+
+// the Rule Data serialization format
+message RuleData {
+    optional int32 last_id = 3;
+    optional int64 last_recency = 4;
+
+    optional FactHandle initial_fact = 6;
+
+    optional Agenda agenda = 8;
+    repeated NodeMemory node_memory = 9;
+    repeated EntryPoint entry_point = 10;
+
+    optional ActionQueue action_queue = 11;
+    optional TruthMaintenanceSystem tms = 12;
+}
+
+message ProcessData {
+    extensions 10 to 199;
+}
+
+// the agenda message
+message Agenda {
+    // these 2 fields are just for information
+    optional int32 dormant_activations = 1;
+    optional int32 active_activations = 2;
+
+    repeated AgendaGroup agenda_group = 3;
+    optional FocusStack focus_stack = 4;
+    repeated RuleFlowGroup rule_flow_group = 5;
+
+    repeated Activation activation = 6;
+
+    message AgendaGroup {
+        optional string name = 1;
+        optional bool is_active = 2;
+    }
+
+    message FocusStack {
+        repeated string group_name = 1;
+    }
+
+    message RuleFlowGroup {
+        optional string name = 1;
+        optional bool is_active = 2;
+        optional bool is_auto_deactivate = 3;
+        repeated Activation activation = 4;
+        repeated NodeInstance node_instance = 5;
+
+        message NodeInstance {
+            optional int64 process_instance_id = 1;
+            optional string node_instance_id = 2;
+        }
+    }
+}
+
+message NodeMemory {
+    optional int32 node_id = 1;
+    optional NodeType node_type = 2;
+
+    optional AccumulateNodeMemory accumulate = 3;
+    optional RIANodeMemory ria = 4;
+    optional FromNodeMemory from = 5;
+    optional QueryElementNodeMemory query_element = 6;
+
+    enum NodeType {
+        ACCUMULATE = 0;
+        RIA = 1;
+        FROM = 2;
+        QUERY_ELEMENT = 3;
+    }
+
+    message AccumulateNodeMemory {
+        repeated AccumulateContext context = 1;
+
+        message AccumulateContext {
+            optional Tuple tuple = 1;
+            optional FactHandle result_handle = 2;
+        }
+    }
+
+    message RIANodeMemory {
+        repeated RIAContext context = 1;
+
+        message RIAContext {
+            optional Tuple tuple = 1;
+            optional FactHandle result_handle = 2;
+        }
+    }
+
+    message FromNodeMemory {
+        repeated FromContext context = 1;
+
+        message FromContext {
+            optional Tuple tuple = 1;
+            repeated FactHandle handle = 2;
+        }
+    }
+
+    message QueryElementNodeMemory {
+        repeated QueryContext context = 1;
+
+        message QueryContext {
+            optional Tuple tuple = 1;
+            optional FactHandle handle = 2;
+            repeated FactHandle result = 3;
+        }
+    }
+}
+
+// Entry point and its facts
+message EntryPoint {
+    optional string entry_point_id = 1;
+    repeated FactHandle handle = 2;
+}
+
+// a fact handle
+message FactHandle {
+    enum HandleType {
+        INITIAL_FACT = 1;
+        FACT = 2;
+        QUERY = 3;
+        EVENT = 4;
+    }
+
+    optional HandleType type = 1;
+    optional int32 id = 2;
+    optional int64 recency = 3;
+
+    // event only attributes
+    optional int64 timestamp = 4;
+    optional int64 duration = 5;
+    optional bool is_expired = 6;
+    optional int64 activations_count = 7;
+
+    // the actual object reference
+    optional int32 strategy_index = 8;
+    optional bytes object = 9;
+
+    // the entry point
+    optional string entry_point = 10;
+}
+
+message Activation {
+    //optional int64 activation_number = 1;
+    optional Tuple tuple = 2;
+    optional int32 salience = 3;
+    optional string package_name = 4;
+    optional string rule_name = 5;
+    //optional int64 propagation_number = 6;
+    optional string activation_group = 7;
+    optional bool is_activated = 8;
+    optional int32 handle_id = 9;
+    repeated int32 logical_dependency = 10;
+}
+
+message Tuple {
+    repeated int32 handle_id = 1;
+}
+
+message TruthMaintenanceSystem {
+    repeated EqualityKey key = 1;
+    repeated Justification justification = 2;
+}
+
+message EqualityKey {
+    optional int32 status = 1;
+    optional int32 handle_id = 2;
+    repeated int32 other_handle = 3;
+}
+
+message Justification {
+    optional int32 handle_id = 1;
+    repeated Activation activation = 2;
+}
+
+message ActionQueue {
+    repeated Action action = 1;
+
+    message Action {
+        // must always have a type to switch
+        optional ActionType type = 1;
+
+        // should only contain one of the following messages
+        optional BehaviorExpire behavior_expire = 2;
+        optional DeactivateCallback deactivate_callback = 3;
+        optional LogicalRetract logical_retract = 4;
+        optional Propagate propagate = 5;
+        optional Assert assert = 6;
+        optional Expire expire = 7;
+        optional Signal signal = 8;
+        optional SignalProcessInstance signal_process_instance = 9;
+    }
+
+    enum ActionType {
+        BEHAVIOR_EXPIRE         = 1;
+        DEACTIVATE_CALLBACK     = 2;
+        LOGICAL_RETRACT         = 3;
+        PROPAGATE               = 4;
+        ASSERT                  = 5;
+        EXPIRE                  = 6;
+        SIGNAL                  = 7;
+        SIGNAL_PROCESS_INSTANCE = 8;
+    }
+
+    message BehaviorExpire { optional int32 node_id = 1; }
+    message DeactivateCallback { optional string ruleflow_group = 1; }
+    message LogicalRetract {
+        optional int32 handle_id = 1;
+        optional Activation activation = 2;
+    }
+    message Propagate { optional int32 node_id = 1; }
+    message Assert {
+        optional int32 handle_id = 1;
+        optional bool remove_logical = 2;
+        optional bool update_equals_map = 3;
+        optional string origin_pkg_name = 4;
+        optional string origin_rule_name = 5;
+        optional Tuple tuple = 6;
+    }
+    message Expire {
+        optional int32 handle_id = 1;
+        optional int32 node_id = 2;
+    }
+    message Signal {
+        optional string type = 1;
+        optional bytes event = 2;
+    }
+    message SignalProcessInstance {
+        optional string type = 1;
+        optional bytes event = 2;
+        optional int64 process_instance_id = 3;
+    }
+}
+
+message Timers {
+    repeated Timer timer = 1;
+
+    message Timer {
+        extensions 100 to 199;
+
+        optional TimerType type = 1;
+
+        optional ExpireTimer expire = 2;
+        optional ActivationTimer activation = 3;
+        optional BehaviorTimer behavior = 4;
+    }
+
+    enum TimerType {
+        EXPIRE = 1;
+        ACTIVATION = 2;
+        BEHAVIOR = 3;
+        PROCESS = 4;
+    }
+
+    message ExpireTimer {
+        optional int32 handle_id = 1;
+        optional string entry_point_id = 2;
+        optional string class_name = 3;
+        optional int64 next_fire_timestamp = 4;
+    }
+    message ActivationTimer {
+        optional Activation activation = 1;
+        optional Trigger trigger = 2;
+    }
+    message BehaviorTimer {
+        optional int32 node_id = 1;
+        optional int32 behavior_index = 2;
+    }
+}
+
+message Trigger {
+    optional TriggerType type = 1;
+
+    optional CronTrigger cron = 2;
+    optional IntervalTrigger interval = 3;
+    optional PointInTimeTrigger pit = 4;
+
+    enum TriggerType {
+        CRON = 0;
+        INTERVAL = 1;
+        POINT_IN_TIME = 2;
+    }
+
+    message CronTrigger {
+        optional int64 start_time = 1;
+        optional int64 end_time = 2;
+        optional int32 repeat_limit = 3;
+        optional int32 repeat_count = 4;
+        optional string cron_expression = 5;
+        optional int64 next_fire_time = 6;
+        repeated string calendar_name = 7;
+    }
+    message IntervalTrigger {
+        optional int64 start_time = 1;
+        optional int64 end_time = 2;
+        optional int32 repeat_limit = 3;
+        optional int32 repeat_count = 4;
+        optional int64 next_fire_time = 6;
+        optional int64 period = 7;
+        repeated string calendar_name = 8;
+    }
+    message PointInTimeTrigger {
+        optional int64 next_fire_time = 1;
+    }
+}
+

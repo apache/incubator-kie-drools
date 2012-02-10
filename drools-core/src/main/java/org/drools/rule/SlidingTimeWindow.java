@@ -27,23 +27,22 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterEnums;
-import org.drools.marshalling.impl.RightTupleKey;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.RightTupleSink;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.spi.PropagationContext;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -253,6 +252,7 @@ public class SlidingTimeWindow
                                                         new SlidingTimeWindowComparator() );
         }
 
+        @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             this.queue = (PriorityQueue<RightTuple>) in.readObject();
@@ -307,6 +307,32 @@ public class SlidingTimeWindow
             }
             outputCtx.writeInt( i );           
         }
+
+        public Timer serialize(JobContext jobCtx,
+                               MarshallerWriteContext outputCtx) {
+            // BehaviorJob, no state            
+            BehaviorJobContext bjobCtx = ( BehaviorJobContext ) jobCtx;
+            // write out SlidingTimeWindowContext
+            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
+  
+            RightTuple rightTuple = slCtx.getQueue().peek();
+            BetaNode node = (BetaNode) rightTuple.getRightTupleSink();
+            
+            Behavior[] behaviors = node.getBehaviors();
+            int i = 0;
+            for ( ; i < behaviors.length; i++ ) {     
+                if ( behaviors[i] == bjobCtx.behavior ) {
+                    break;
+                }
+            }
+            return ProtobufMessages.Timers.Timer.newBuilder()
+                    .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
+                    .setBehavior( ProtobufMessages.Timers.BehaviorTimer.newBuilder()
+                                  .setNodeId( node.getId() )
+                                  .setBehaviorIndex( i )
+                                  .build() )
+                    .build();
+        }
     }
     
     public static class BehaviorJobContextTimerInputMarshaller implements TimersInputMarshaller {
@@ -330,41 +356,29 @@ public class SlidingTimeWindow
                                   inCtx.wm,
                                   (SlidingTimeWindow) betaNode.getBehaviors()[i],
                                   stwCtx );
+        }
+
+        public void deserialize(MarshallerReaderContext inCtx,
+                                Timer _timer) throws ClassNotFoundException {
+            int sinkId = _timer.getBehavior().getNodeId();
+            BetaNode betaNode = (BetaNode) inCtx.sinks.get( sinkId );
             
+            BetaMemory betaMemory = null;       
+            if ( betaNode instanceof AccumulateNode ) {
+                betaMemory = (( AccumulateMemory ) inCtx.wm.getNodeMemory( betaNode )).betaMemory;
+            } else {
+                betaMemory = ( BetaMemory ) inCtx.wm.getNodeMemory( betaNode );
+            }
             
-            //((ReteooRuleBase) inCtx.wm.getRuleBase()).getReteooBuilder().g
-//            SlidingTimeWindow beh = ( SlidingTimeWindow) inCtx.readObject();
-//            
-//            SlidingTimeWindowContext slCtx = new SlidingTimeWindowContext();
-//            if ( inCtx.readBoolean() ) {
-//                int sinkId = inCtx.readInt();
-//                int factHandleId = inCtx.readInt();
-//                
-//                RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
-//                RightTupleKey key = new RightTupleKey( factHandleId,
-//                                                       sink );  
-//                slCtx.expiringTuple = inCtx.rightTuples.get( key );                             
-//            }
-//            
-//            if ( inCtx.readBoolean() ) {
-//                int size = inCtx.readInt();
-//                for ( int i = 0; i < size; i++ ) {
-//                    int sinkId = inCtx.readInt();
-//                    int factHandleId = inCtx.readInt();
-//                    
-//                    RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
-//                    RightTupleKey key = new RightTupleKey( factHandleId,
-//                                                           sink ); 
-//                    slCtx.queue.add( inCtx.rightTuples.get( key ) );
-//                }
-//            }
-//            
-//            if ( slCtx.queue.peek() != null ) {
-//                updateNextExpiration( ( RightTuple) slCtx.queue.peek(),
-//                                      inCtx.wm,
-//                                      beh,
-//                                      slCtx );
-//            }             
+            Object[] behaviorContext = ( Object[]  ) betaMemory.getBehaviorContext();
+            
+            int i = _timer.getBehavior().getBehaviorIndex();
+            SlidingTimeWindowContext stwCtx = ( SlidingTimeWindowContext ) behaviorContext[i];
+                       
+            updateNextExpiration( ( RightTuple) stwCtx.queue.peek(),
+                                  inCtx.wm,
+                                  (SlidingTimeWindow) betaNode.getBehaviors()[i],
+                                  stwCtx );
         }
     }    
     
@@ -460,6 +474,26 @@ public class SlidingTimeWindow
             this.context =  ( SlidingTimeWindowContext ) behaviorContext[i];           
         }
         
+        public BehaviorExpireWMAction(MarshallerReaderContext context,
+                                      Action _action) {
+            int sinkId =_action.getBehaviorExpire().getNodeId();
+            BetaNode betaNode = (BetaNode) context.sinks.get( sinkId );
+            
+            BetaMemory betaMemory = null;       
+            if ( betaNode instanceof AccumulateNode ) {
+                betaMemory = (( AccumulateMemory ) context.wm.getNodeMemory( betaNode )).betaMemory;
+            } else {
+                betaMemory = ( BetaMemory ) context.wm.getNodeMemory( betaNode );
+            }
+            
+            Object[] behaviorContext = ( Object[]  ) betaMemory.getBehaviorContext();
+            
+            int i = 0; //  <==== this needs fixing
+            
+            this.behavior = (SlidingTimeWindow) betaNode.getBehaviors()[i];
+            this.context =  ( SlidingTimeWindowContext ) behaviorContext[i];           
+        }
+
         public void execute(InternalWorkingMemory workingMemory) {
             this.behavior.expireTuples( context,
                                         workingMemory );
@@ -471,7 +505,7 @@ public class SlidingTimeWindow
         
         public void write(MarshallerWriteContext outputCtx) throws IOException {
             outputCtx.writeShort( WorkingMemoryAction.WorkingMemoryBehahviourRetract );
-            
+
             // write out SlidingTimeWindowContext
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
   
@@ -489,6 +523,20 @@ public class SlidingTimeWindow
                 }
             }
             outputCtx.writeInt( i );   
+        }
+            
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext outputCtx) {
+            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
+            
+            ProtobufMessages.ActionQueue.BehaviorExpire _be = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
+                    .setNodeId( slCtx.getQueue().peek().getRightTupleSink().getId() )
+                    .build();
+            
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.BEHAVIOR_EXPIRE )
+                    .setBehaviorExpire( _be )
+                    .build();
+                    
         }
 
         public void readExternal(ObjectInput in) throws IOException,

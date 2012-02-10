@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.extractors.ArrayElementReader;
+import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
@@ -31,6 +31,7 @@ import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QuadroupleBetaConstraints;
@@ -41,7 +42,6 @@ import org.drools.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -51,8 +51,6 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-
-import com.thoughtworks.xstream.core.util.FastField;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -524,8 +522,10 @@ public abstract class BetaNode extends LeftTupleSource
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
-        BetaMemory memory = this.constraints.createBetaMemory( config );
+    protected Memory createMemory(final RuleBaseConfiguration config,
+                                  final short nodeType ) {
+        BetaMemory memory = this.constraints.createBetaMemory( config,
+                                                               nodeType );
         memory.setBehaviorContext( this.behavior.createBehaviorContext() );
         return memory;
     }

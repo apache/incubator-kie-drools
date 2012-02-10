@@ -199,7 +199,8 @@ public class DoubleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+                                       final short nodeType) {
         BetaMemory memory;
 
         final List list = new ArrayList( 2 );
@@ -238,11 +239,13 @@ public class DoubleBetaConstraints
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                      new RightTupleList(),
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         }
 
         return memory;

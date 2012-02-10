@@ -68,6 +68,7 @@ import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.Sink;
+import org.drools.reteoo.RightInputAdapterNode.RIAMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.AccumulateNodeStep;
 import org.drools.reteoo.test.dsl.BetaNodeStep;
@@ -577,7 +578,7 @@ public class ReteDslTestEngine {
             List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
 
-            final ObjectHashMap memory = (ObjectHashMap) wm.getNodeMemory( node );
+            final ObjectHashMap memory = ((RIAMemory) wm.getNodeMemory( node )).memory;
             for ( String[] cmd : cmds ) {
                 if ( cmd[0].equals( "leftMemory" ) ) {
                     String args = cmd[1];

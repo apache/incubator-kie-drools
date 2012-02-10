@@ -54,7 +54,8 @@ public interface BetaConstraints
 
     public boolean isEmpty();
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config);
+    BetaMemory createBetaMemory(final RuleBaseConfiguration config,
+                                final short nodeType );
 
     public void resetTuple(final ContextEntry[] context);
 

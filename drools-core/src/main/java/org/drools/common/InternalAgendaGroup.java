@@ -16,7 +16,6 @@
 
 package org.drools.common;
 
-import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 

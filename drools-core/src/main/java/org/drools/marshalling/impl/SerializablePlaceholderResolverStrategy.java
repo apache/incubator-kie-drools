@@ -16,10 +16,13 @@
 
 package org.drools.marshalling.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
 
@@ -55,6 +58,21 @@ public class SerializablePlaceholderResolverStrategy
 
     public boolean accept(Object object) {
         return acceptor.accept( object );
+    }
+
+    public byte[] marshal(ObjectOutputStream os,
+                          Object object) throws IOException {
+        ByteArrayOutputStream buff = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream( buff );
+        oos.writeObject( object );
+        oos.close();
+        return buff.toByteArray();
+    }
+
+    public Object unmarshal(ObjectInputStream is,
+                            byte[] object, 
+                            ClassLoader classloader) throws IOException, ClassNotFoundException {
+        return new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader ).readObject();
     }
 
 }

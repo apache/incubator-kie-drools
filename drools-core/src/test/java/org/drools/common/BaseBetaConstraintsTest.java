@@ -44,6 +44,7 @@ import org.drools.core.util.RightTupleList;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
@@ -121,7 +122,7 @@ public abstract class BaseBetaConstraintsTest {
                       betaConstraints.isIndexed() );
         assertEquals( indexedPositions.length,
                       betaConstraints.getIndexCount() );
-        BetaMemory betaMemory = betaConstraints.createBetaMemory( config );
+        BetaMemory betaMemory = betaConstraints.createBetaMemory( config, NodeTypeEnums.JoinNode );
 
         if ( indexedPositions.length > 0 ) {
             LeftTupleIndexHashTable tupleHashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();

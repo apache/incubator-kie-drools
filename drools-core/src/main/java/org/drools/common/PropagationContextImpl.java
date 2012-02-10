@@ -23,12 +23,12 @@ import java.util.LinkedList;
 
 import org.drools.FactHandle;
 import org.drools.core.util.ObjectHashSet;
+import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
-import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 public class PropagationContextImpl
@@ -65,6 +65,11 @@ public class PropagationContextImpl
     
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
+    private ObjectType objectType;
+    
+    // this field is only set for propagations happening during 
+    // the deserialization of a session
+    private MarshallerReaderContext readerContext;
 
     public PropagationContextImpl() {
 
@@ -75,14 +80,15 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle) {
-        this.type = type;
-        this.rule = rule;
-        this.leftTuple = leftTuple;
-        this.factHandle = factHandle;
-        this.propagationNumber = number;
-        this.activeActivations = 0;
-        this.dormantActivations = 0;
-        this.entryPoint = EntryPoint.DEFAULT;
+        this(number, 
+             type, 
+             rule, 
+             leftTuple, 
+             factHandle, 
+             0, 
+             0, 
+             EntryPoint.DEFAULT,
+             null );
         this.originOffset = -1;
         this.shouldPropagateAll = true;
     }
@@ -95,6 +101,26 @@ public class PropagationContextImpl
                                   final int activeActivations,
                                   final int dormantActivations,
                                   final EntryPoint entryPoint) {
+        this(number, 
+             type, 
+             rule, 
+             leftTuple, 
+             factHandle, 
+             activeActivations, 
+             dormantActivations, 
+             entryPoint,
+             null );
+    }
+
+    public PropagationContextImpl(final long number,
+                                  final int type,
+                                  final Rule rule,
+                                  final LeftTuple leftTuple,
+                                  final InternalFactHandle factHandle,
+                                  final int activeActivations,
+                                  final int dormantActivations,
+                                  final EntryPoint entryPoint,
+                                  final MarshallerReaderContext readerContext ) {
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;
@@ -104,6 +130,7 @@ public class PropagationContextImpl
         this.dormantActivations = dormantActivations;
         this.entryPoint = entryPoint;
         this.originOffset = -1;
+        this.readerContext = readerContext;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -283,6 +310,17 @@ public class PropagationContextImpl
         }
     }
 
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
+    }
+    
+    public MarshallerReaderContext getReaderContext() {
+        return this.readerContext;
+    }
 
     @Override
     public String toString() {

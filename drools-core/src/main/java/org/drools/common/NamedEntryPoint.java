@@ -41,6 +41,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.Rete;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -769,7 +770,7 @@ public class NamedEntryPoint
         final ClassObjectType cot = new ClassObjectType( object.getClass() );
         final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
         final ObjectTypeNode node = map.get( cot );
-        final ObjectHashSet memory = (ObjectHashSet) this.wm.getNodeMemory( node );
+        final ObjectHashSet memory = ((ObjectTypeNodeMemory) this.wm.getNodeMemory( node )).memory;
       
         // All objects of this type that are already there were certainly stated,
         // since this method call happens at the first logical insert, for any given type.
@@ -826,7 +827,7 @@ public class NamedEntryPoint
                 // only, as the facts will always be in their concrete object type nodes
                 // even if they were also asserted into higher level OTNs as well
                 ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
-                final ObjectHashSet memory = (ObjectHashSet) this.getInternalWorkingMemory().getNodeMemory( otn );
+                final ObjectHashSet memory = ((ObjectTypeNodeMemory) this.getInternalWorkingMemory().getNodeMemory( otn )).memory;
                 Iterator it = memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     InternalFactHandle handle = (InternalFactHandle) entry.getValue();

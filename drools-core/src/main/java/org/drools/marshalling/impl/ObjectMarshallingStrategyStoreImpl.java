@@ -18,19 +18,26 @@ package org.drools.marshalling.impl;
 
 import org.drools.core.util.StringUtils;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 
-public class ObjectMarshallingStrategyStore {
+public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
     private ObjectMarshallingStrategy[] strategiesList;
     
-    public ObjectMarshallingStrategyStore(ObjectMarshallingStrategy[] strategiesList) {
+    public ObjectMarshallingStrategyStoreImpl(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
     }
    
     // Old marshalling algorithm methods
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(int)
+     */
     public ObjectMarshallingStrategy getStrategy(int index) {
         return this.strategiesList[ index ];
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategy(java.lang.Object)
+     */
     public int getStrategy(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
             if ( strategiesList[i].accept( object ) ) {
@@ -41,6 +48,9 @@ public class ObjectMarshallingStrategyStore {
     }
     
     // New marshalling algorithm methods
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.String)
+     */
     public ObjectMarshallingStrategy getStrategyObject(String strategyClassName) {
         if( StringUtils.isEmpty(strategyClassName) ) { 
             return null;
@@ -54,6 +64,9 @@ public class ObjectMarshallingStrategyStore {
         return objectMarshallingStrategy;
     }
     
+    /* (non-Javadoc)
+     * @see org.drools.marshalling.impl.ObjectMarshallingStrategyStore#getStrategyObject(java.lang.Object)
+     */
     public ObjectMarshallingStrategy getStrategyObject(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
             if ( strategiesList[i].accept( object ) ) {

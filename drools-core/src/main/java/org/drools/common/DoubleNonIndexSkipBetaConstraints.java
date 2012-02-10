@@ -21,21 +21,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
-import org.drools.core.util.LeftTupleIndexHashTable;
-import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.RightTupleIndexHashTable;
-import org.drools.core.util.RightTupleList;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTupleMemory;
-import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
 public class DoubleNonIndexSkipBetaConstraints 
@@ -103,8 +93,10 @@ public class DoubleNonIndexSkipBetaConstraints
         return constraints.isEmpty();
     }
 
-    public BetaMemory createBetaMemory(RuleBaseConfiguration config) {
-        return constraints.createBetaMemory( config );
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+                                       final short nodeType) {
+        return constraints.createBetaMemory( config,
+                                             nodeType );
     }
 
     public int hashCode() {

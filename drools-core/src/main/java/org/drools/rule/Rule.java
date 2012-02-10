@@ -399,7 +399,6 @@ public class Rule
             } else {
                 return (now.before( this.dateExpires ));
             }
-
         }
     }
 

@@ -149,7 +149,8 @@ public class SingleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+                                       final short nodeType) {
         BetaMemory memory;
         if ( this.indexed ) {
             final VariableConstraint variableConstraint = (VariableConstraint) this.constraint;
@@ -171,11 +172,13 @@ public class SingleBetaConstraints
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                      new RightTupleList(),
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         }
 
         return memory;

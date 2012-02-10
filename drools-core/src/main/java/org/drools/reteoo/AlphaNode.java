@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
@@ -170,7 +171,7 @@ public class AlphaNode extends ObjectSource
     /**
      * Creates a HashSet for the AlphaNode's memory.
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config) {
         AlphaMemory memory = new AlphaMemory();
         memory.context = this.constraint.createContextEntry();
         return memory;
@@ -241,7 +242,8 @@ public class AlphaNode extends ObjectSource
 
     public static class AlphaMemory
         implements
-        Externalizable {
+        Externalizable,
+        Memory {
         private static final long serialVersionUID = 510l;
 
         public ContextEntry       context;
@@ -253,6 +255,10 @@ public class AlphaNode extends ObjectSource
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( context );
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.AlphaNode;
         }
     }
 

@@ -1,5 +1,12 @@
 package org.drools.integrationtests;
 
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,15 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.ClassObjectFilter;
+import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -38,20 +40,15 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.mockito.Mockito.*;
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-public class TruthMaintenanceTest {
+public class TruthMaintenanceTest extends CommonTestMethodBase {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -860,57 +857,51 @@ public class TruthMaintenanceTest {
     @Test
     public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsAccumulatorPattern.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBase kbase = loadKnowledgeBase( "test_LogicalInsertionsAccumulatorPattern.drl" );
+        kbase = SerializationHelper.serializeObject( kbase );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession workingMemory = ruleBase.newStatefulSession();
+        ksession.setGlobal( "ga",
+                            "a" );
+        ksession.setGlobal( "gb",
+                            "b" );
+        ksession.setGlobal( "gs",
+                            new Short( (short) 3 ) );
 
-        workingMemory.setGlobal( "ga",
-                                 "a" );
-        workingMemory.setGlobal( "gb",
-                                 "b" );
-        workingMemory.setGlobal( "gs",
-                                 new Short( (short) 3 ) );
-
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
         
-        workingMemory = getSerialisedStatefulSession( workingMemory );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                              true );
 
-        List l;
-        FactHandle h = workingMemory.insert( new Integer( 6 ) );
+        FactHandle h = ksession.insert( new Integer( 6 ) );
         assertEquals( 1,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      ksession.getObjects().size() );
 
-        workingMemory.fireAllRules();
-        workingMemory = getSerialisedStatefulSession( workingMemory );
-        l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class ) ) );
+        ksession.fireAllRules();
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                                   true );
         assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated",
                       2,
-                      l.size() );
+                      ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
         assertEquals( 6,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      ksession.getObjects().size() );
 
-        h = getFactHandle( h, workingMemory );
-        workingMemory.retract( h );
-        workingMemory = getSerialisedStatefulSession( workingMemory );
-        l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class ) ) );
+        h = getFactHandle( h, ksession );
+        ksession.retract( h );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, 
+                                                                              true );
         assertEquals( "There should be only 1 CheeseEqual in Working Memory, 1 stated (the justified should have been retracted). Check TruthMaintenanceSystem justifiedMap",
                       1,
-                      l.size() );
-        l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Short.class ) ) );
+                      ksession.getObjects( new ClassObjectFilter( CheeseEqual.class ) ).size() );
         assertEquals( 1,
-                      l.size() );
+                      ksession.getObjects( new ClassObjectFilter( Short.class ) ).size() );
         assertEquals( 2,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      ksession.getObjects().size() );
 
         //clean-up
-        workingMemory.fireAllRules();
+        ksession.fireAllRules();
         assertEquals( 0,
-                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+                      ksession.getObjects().size() );
     }
 
     @Test

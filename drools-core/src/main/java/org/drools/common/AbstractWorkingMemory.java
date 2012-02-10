@@ -58,7 +58,8 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessEventManager;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
@@ -267,6 +268,8 @@ public abstract class AbstractWorkingMemory
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
         this.environment = environment;
+        
+        this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
         Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
         if ( globals != null ) {
@@ -1011,13 +1014,16 @@ public abstract class AbstractWorkingMemory
      * 
      * @return The node's memory.
      */
-    public Object getNodeMemory(final NodeMemory node) {
-        if (nodeMemories == null) nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
+    public Memory getNodeMemory(final NodeMemory node) {
         return nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final NodeMemory node) {
         if (nodeMemories != null) nodeMemories.clearNodeMemory( node );
+    }
+    
+    public NodeMemories getNodeMemories() {
+        return nodeMemories;
     }
 
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
@@ -1386,7 +1392,7 @@ public abstract class AbstractWorkingMemory
 
     public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {
         if ( this.marshallingStore == null ) {
-            this.marshallingStore = new ObjectMarshallingStrategyStore( (ObjectMarshallingStrategy[]) this.environment.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES ) );
+            this.marshallingStore = new ObjectMarshallingStrategyStoreImpl( (ObjectMarshallingStrategy[]) this.environment.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES ) );
         }
         return this.marshallingStore;
     }

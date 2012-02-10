@@ -27,6 +27,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
@@ -280,7 +281,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
     }
 
-    public Object createMemory(final RuleBaseConfiguration config) {
+    public Memory createMemory(final RuleBaseConfiguration config) {
         return new EvalMemory( this.condition.createContext() );
     }
 
@@ -407,7 +408,8 @@ public class EvalConditionNode extends LeftTupleSource
 
     public static class EvalMemory
         implements
-        Externalizable {
+        Externalizable,
+        Memory {
 
         private static final long serialVersionUID = 510l;
 
@@ -428,6 +430,10 @@ public class EvalConditionNode extends LeftTupleSource
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( context );
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.EvalConditionNode;
         }
     }
 

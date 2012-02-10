@@ -80,7 +80,7 @@ public class CommonTestMethodBase extends Assert {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }
-
+    
     protected KnowledgeBase loadKnowledgeBase( KnowledgeBuilderConfiguration kbuilderConf,
                                                KnowledgeBaseConfiguration kbaseConf,
                                                String... classPathResources ) {

@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.ObjectHashMap;
+import org.drools.common.Memory;
 import org.drools.rule.ContextEntry;
 
 public class BetaMemory
     implements
-    Externalizable, Unlinkable {
+    Externalizable, Unlinkable, Memory {
 
     private static final long serialVersionUID = 510l;
 
@@ -38,16 +38,21 @@ public class BetaMemory
     /* Let's start with only right unlinked. */
     private boolean           isLeftUnlinked = false;
     private boolean           isRightUnlinked = true;
+    
+    // the node type this memory belongs to
+    private short             nodeType;
 
     public BetaMemory() {
     }
 
     public BetaMemory(final LeftTupleMemory tupleMemory,
                       final RightTupleMemory objectMemory,
-                      final ContextEntry[] context) {
+                      final ContextEntry[] context,
+                      final short nodeType ) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
         this.context = context;
+        this.nodeType = nodeType;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -58,6 +63,7 @@ public class BetaMemory
         behaviorContext = (Object) in.readObject();
         isLeftUnlinked = in.readBoolean();
         isRightUnlinked = in.readBoolean();
+        nodeType = in.readShort();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -67,6 +73,7 @@ public class BetaMemory
         out.writeObject( behaviorContext );
         out.writeBoolean( isLeftUnlinked );
         out.writeBoolean( isRightUnlinked );
+        out.writeShort( nodeType );
     }
 
     public RightTupleMemory getRightTupleMemory() {
@@ -114,5 +121,9 @@ public class BetaMemory
 
     public void unlinkRight() {
         this.isRightUnlinked = true;
-    }    
+    }
+    
+    public short getNodeType() {
+        return this.nodeType;
+    }
 }
