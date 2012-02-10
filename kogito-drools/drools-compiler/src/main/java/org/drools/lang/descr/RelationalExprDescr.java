@@ -119,7 +119,6 @@ public class RelationalExprDescr extends BaseDescr {
 
     @Override
     public String toString() {
-        return this.left + (isNegated() ? " not " : " ") + this.operator + (getParameters() != null ? getParameters().toString() + " " : " ") + this.right;
+        return this.left + (isNegated() ? " not " : " ") + getOperator() + (getParameters() != null ? getParameters().toString() + " " : " ") + this.right;
     }
-
 }

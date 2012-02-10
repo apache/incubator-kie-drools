@@ -1,10 +1,43 @@
 package org.drools.rule.constraint;
 
+import org.mvel2.util.Soundex;
+
 import java.util.Collection;
 
 public class EvaluatorHelper {
 
     private EvaluatorHelper() { }
+
+    public static int arrayLenght(Object array) {
+        if (array instanceof Object[]) {
+            return ((Object[])array).length;
+        } else if (array instanceof int[]) {
+            return ((int[])array).length;
+        } else if (array instanceof long[]) {
+            return ((long[])array).length;
+        } else if (array instanceof double[]) {
+            return ((double[])array).length;
+        } else if (array instanceof float[]) {
+            return ((float[])array).length;
+        } else if (array instanceof boolean[]) {
+            return ((boolean[])array).length;
+        } else if (array instanceof byte[]) {
+            return ((byte[])array).length;
+        } else if (array instanceof char[]) {
+            return ((char[])array).length;
+        } else if (array instanceof short[]) {
+            return ((short[])array).length;
+        }
+        return 0;
+    }
+
+    public static boolean soundslike(String value1, String value2) {
+        if (value1 == null || value2 == null) {
+            return false;
+        }
+        String soundex1 = Soundex.soundex(value1);
+        return soundex1 != null && soundex1.equals(Soundex.soundex(value2));
+    }
 
     public static boolean contains(Object list, Object item) {
         if (list == null) return false;
@@ -42,7 +75,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(boolean[] list, boolean primitiveItem) {
-        for (boolean i : (boolean[])list) {
+        for (boolean i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -56,7 +89,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(int[] list, int primitiveItem) {
-        for (int i : (int[])list) {
+        for (int i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -70,7 +103,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(long[] list, long primitiveItem) {
-        for (long i : (long[])list) {
+        for (long i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -84,7 +117,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(double[] list, double primitiveItem) {
-        for (double i : (double[])list) {
+        for (double i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -98,7 +131,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(float[] list, float primitiveItem) {
-        for (float i : (float[])list) {
+        for (float i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -112,7 +145,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(byte[] list, byte primitiveItem) {
-        for (byte i : (byte[])list) {
+        for (byte i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -126,7 +159,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(char[] list, char primitiveItem) {
-        for (char i : (char[])list) {
+        for (char i : list) {
             if (i == primitiveItem) return true;
         }
         return false;
@@ -140,7 +173,7 @@ public class EvaluatorHelper {
     }
 
     private static boolean contains(short[] list, short primitiveItem) {
-        for (short i : (short[])list) {
+        for (short i : list) {
             if (i == primitiveItem) return true;
         }
         return false;

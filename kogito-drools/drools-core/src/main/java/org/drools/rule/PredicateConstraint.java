@@ -172,6 +172,14 @@ public class PredicateConstraint extends MutableTypeConstraint
         return this.localDeclarations;
     }
 
+    public String[] getGlobals() {
+        return requiredGlobals;
+    }
+
+    public String[] getOperators() {
+        return requiredOperators;
+    }
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {

@@ -185,7 +185,7 @@ public class Pattern
                 }
             }
 
-            clone.addConstraint( constraint );
+            clone.addConstraint(constraint);
         }
         
         if ( behaviors != null ) {
@@ -217,6 +217,10 @@ public class Pattern
     }
 
     public void addConstraint(final Constraint constraint) {
+        addConstraint(constraint, false);
+    }
+
+    public void addConstraint(final Constraint constraint, boolean isComposite) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
@@ -232,7 +236,7 @@ public class Pattern
             if (constraint instanceof MvelConstraint &&
                     !((MvelConstraint)constraint).isUnification() &&
                     !((MvelConstraint)constraint).isIndexable() &&
-                    ((MvelConstraint)constraint).getType() == ConstraintType.BETA) {
+                    ((MvelConstraint)constraint).getType() == ConstraintType.BETA) { // don't combine alpha nodes to allow nodes sharing
                 combinableConstraints.add((MvelConstraint)constraint);
             }
         }
@@ -244,21 +248,26 @@ public class Pattern
         List<Declaration> declarations = new ArrayList<Declaration>();
         Set<String> declarationNames = new HashSet<String>();
 
-        Iterator<MvelConstraint> constraintIterator = combinableConstraints.iterator();
-        MvelConstraint firstConstraint = constraintIterator.next();
-        constraints.remove(firstConstraint);
-        String packageName = firstConstraint.getPackageName();
-        String expression = firstConstraint.getExpression();
-        for (Declaration declaration : firstConstraint.getRequiredDeclarations()) {
-            if (declarationNames.add(declaration.getBindingName())) {
-                declarations.add(declaration);
-            }
-        }
-
-        while (constraintIterator.hasNext()) {
-            MvelConstraint constraint = constraintIterator.next();
+        boolean isFirst = true;
+        String packageName = null;
+        StringBuilder expression = new StringBuilder(combinableConstraints.size() * 25);
+        for (MvelConstraint constraint : combinableConstraints) {
             constraints.remove(constraint);
-            expression += " && " + constraint.getExpression();
+            if (isFirst) {
+                packageName = constraint.getPackageName();
+                isFirst = false;
+            } else {
+                expression.append(" && ");
+            }
+            String constraintExpression = constraint.getExpression();
+            boolean isComplex = constraintExpression.contains("&&") || constraintExpression.contains("||");
+            if (isComplex) {
+                expression.append("( ");
+            }
+            expression.append(constraintExpression);
+            if (isComplex) {
+                expression.append(" )");
+            }
             for (Declaration declaration : constraint.getRequiredDeclarations()) {
                 if (declarationNames.add(declaration.getBindingName())) {
                     declarations.add(declaration);
@@ -266,10 +275,16 @@ public class Pattern
             }
         }
 
-        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression, false,
+        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression.toString(), false,
                                                                declarations.toArray(new Declaration[declarations.size()]),
                                                                null, null, false);
         addConstraint(combinedConstraint);
+    }
+
+    private boolean isCombinable(Constraint constraint, boolean isComposite) {
+        return constraint instanceof MvelConstraint &&
+                !((MvelConstraint)constraint).isUnification() &&
+                (isComposite || !((MvelConstraint)constraint).isIndexable());
     }
 
     public Declaration addDeclaration(final String identifier) {

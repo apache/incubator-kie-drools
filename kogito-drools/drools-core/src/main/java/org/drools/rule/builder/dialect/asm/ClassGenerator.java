@@ -92,7 +92,7 @@ public class ClassGenerator {
 
     public byte[] generateBytecode() {
         if (bytecode == null) {
-            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
+            ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
             cw.visit(version, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
             for (ClassPartDescr part : classParts) part.write(this, cw);
             cw.visitEnd();
@@ -724,7 +724,7 @@ public class ClassGenerator {
 
             try {
                 body.body(mv);
-                mv.visitMaxs(1, 1);
+                mv.visitMaxs(0, 0);
             } catch (Exception e) {
                 throw new RuntimeException("Error writing method " + name, e);
             }
@@ -766,5 +766,40 @@ public class ClassGenerator {
         public String getFullTypeName(String shortName) throws ClassNotFoundException {
             throw new RuntimeException("Not Implemented");
         }
+    }
+
+    private static class InternalClassWriter extends ClassWriter {
+
+        private ClassLoader classLoader;
+
+        public InternalClassWriter(ClassLoader classLoader, int flags) {
+            super(flags);
+            this.classLoader = classLoader;
+        }
+
+        protected String getCommonSuperClass(final String type1, final String type2) {
+            Class c, d;
+            try {
+                c = Class.forName(type1.replace('/', '.'), false, classLoader);
+                d = Class.forName(type2.replace('/', '.'), false, classLoader);
+            } catch (Exception e) {
+                throw new RuntimeException(e.toString());
+            }
+            if (c.isAssignableFrom(d)) {
+                return type1;
+            }
+            if (d.isAssignableFrom(c)) {
+                return type2;
+            }
+            if (c.isInterface() || d.isInterface()) {
+                return "java/lang/Object";
+            } else {
+                do {
+                    c = c.getSuperclass();
+                } while (!c.isAssignableFrom(d));
+                return c.getName().replace('.', '/');
+            }
+        }
+
     }
 }

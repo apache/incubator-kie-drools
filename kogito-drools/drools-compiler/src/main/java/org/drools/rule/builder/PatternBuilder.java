@@ -60,12 +60,10 @@ import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.*;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.From;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.PredicateConstraint;
@@ -78,10 +76,11 @@ import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableRestriction;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
-import org.drools.spi.Constraint.ConstraintType;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -547,57 +546,47 @@ public class PatternBuilder
             d.copyLocation( descr );
 
             if ( d instanceof BindingDescr ) {
-                buildRuleBindings( context,
-                                   patternDescr,
-                                   pattern,
-                                   (BindingDescr) d );
+                buildRuleBindings( context, patternDescr, pattern, (BindingDescr) d );
                 continue;
             }
 
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String expr = new MVELDumper().dump( d,
-                                                 mvelCtx );
+            String expr = new MVELDumper().dump( d, mvelCtx );
             Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
 
             // create bindings
             for ( BindingDescr bind : mvelCtx.getBindings() ) {
-                buildRuleBindings( context,
-                                   patternDescr,
-                                   pattern,
-                                   bind );
+                buildRuleBindings( context, patternDescr, pattern, bind );
             }
 
             // check if it is an atomic expression
-            if ( processAtomicExpression( context,
-                                          pattern,
-                                          d,
-                                          expr,
-                                          aliases ) ) {
+            if ( processAtomicExpression( context, pattern, d, expr, aliases ) ) {
                 // it is an atomic expression
                 continue;
             }
 
             // check if it is a simple expression or not
-            RelationalExprDescr relDescr = d instanceof RelationalExprDescr ? (RelationalExprDescr) d : null;
-            boolean simple = isSimpleExpr( relDescr );
+            buildExpression(context, pattern, d, expr, aliases );
+        }
+    }
 
-            if ( simple && // simple means also relDescr is != null
-                 !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&
-                    !ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
-                buildRelationalExpression( context,
-                                           pattern,
-                                           relDescr,
-                                           expr,
-                                           aliases );
-            } else {
-                // Either it's a complex expression, so do as predicate
-                // Or it's a Map and we have to treat it as a special case
-                createAndBuildPredicate( context,
-                                         pattern,
-                                         d,
-                                         expr,
-                                         aliases );
-            }
+    private void buildExpression( final RuleBuildContext context,
+                                  final Pattern pattern,
+                                  final BaseDescr d,
+                                  final String expr,
+                                  final Map<String, OperatorDescr> aliases ) {
+
+        RelationalExprDescr relDescr = d instanceof RelationalExprDescr ? (RelationalExprDescr) d : null;
+        boolean simple = isSimpleExpr( relDescr );
+
+        if ( simple && // simple means also relDescr is != null
+                !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&
+                !ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            buildRelationalExpression( context, pattern, relDescr, expr, aliases );
+        } else {
+            // Either it's a complex expression, so do as predicate
+            // Or it's a Map and we have to treat it as a special case
+            createAndBuildPredicate( context, pattern, d, expr, aliases );
         }
     }
 
@@ -653,7 +642,7 @@ public class PatternBuilder
                                             String expr,
                                             String value1,
                                             String value2,
-                                            boolean isConstant ) {
+                                            boolean isConstant) {
         int dotPos = value1.indexOf('.');
         if (dotPos > 0) {
             String part0 = value1.substring(0, dotPos).trim();
@@ -875,11 +864,7 @@ public class PatternBuilder
                 // this will build the eval using the specified dialect
                 PredicateDescr pdescr = new PredicateDescr( expr );
                 pdescr.copyLocation( d );
-                buildEval( context,
-                           pattern,
-                           pdescr,
-                           null,
-                           aliases );
+                buildEval( context, pattern, pdescr, aliases, expr, true );
                 return true;
             }
         }
@@ -908,11 +893,7 @@ public class PatternBuilder
 
         PredicateDescr pdescr = new PredicateDescr( expr );
         pdescr.copyLocation( base );
-        buildEval( context,
-                   pattern,
-                   pdescr,
-                   null,
-                   aliases );
+        buildEval( context, pattern, pdescr, aliases, expr, false );
 
         // fall back to original dialect
         context.setDialect( dialect );
@@ -988,25 +969,6 @@ public class PatternBuilder
         }
     }
 
-    /**
-     * @param container
-     * @param constraint
-     */
-    private void setConstraintType( final Pattern container,
-                                    final MutableTypeConstraint constraint ) {
-        final Declaration[] declarations = constraint.getRequiredDeclarations();
-
-        boolean isAlphaConstraint = true;
-        for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-            if ( !declarations[i].isGlobal() && declarations[i].getPattern() != container ) {
-                isAlphaConstraint = false;
-            }
-        }
-
-        ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA;
-        constraint.setType( type );
-    }
-
     private void buildRuleBindings( final RuleBuildContext context,
                                     final PatternDescr patternDescr,
                                     final Pattern pattern,
@@ -1047,8 +1009,9 @@ public class PatternBuilder
     private void buildEval( final RuleBuildContext context,
                             final Pattern pattern,
                             final PredicateDescr predicateDescr,
-                            final AbstractCompositeConstraint container,
-                            final Map<String, OperatorDescr> aliases ) {
+                            final Map<String, OperatorDescr> aliases,
+                            final String expr,
+                            final boolean isEvalExpression) {
 
         Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr,
                                                                    context,
@@ -1152,25 +1115,45 @@ public class PatternBuilder
                                                                                  requiredGlobals,
                                                                                  requiredOperators );
 
-        if ( container == null ) {
-            pattern.addConstraint( predicateConstraint );
-        } else {
-            if ( predicateConstraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                this.setConstraintType( pattern, predicateConstraint );
-            }
-            container.addConstraint( predicateConstraint );
-        }
-
         final PredicateBuilder builder = context.getDialect().getPredicateBuilder();
 
         builder.build( context,
-                       usedIdentifiers,
-                       previousDeclarations,
-                       localDeclarations,
-                       predicateConstraint,
-                       predicateDescr,
-                       analysis );
+                usedIdentifiers,
+                previousDeclarations,
+                localDeclarations,
+                predicateConstraint,
+                predicateDescr,
+                analysis );
 
+        if (ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            pattern.addConstraint( predicateConstraint );
+        } else {
+            pattern.addConstraint( convertPredicateConstraint( context, predicateConstraint, expr, isEvalExpression ) );
+        }
+    }
+
+    private Constraint convertPredicateConstraint(RuleBuildContext context, PredicateConstraint predicateConstraint, String expression, boolean isEvalExpression) {
+        boolean isJavaEval = isEvalExpression && context.getDialect() instanceof JavaDialect;
+        if (!USE_MVEL_EXPRESSION || isJavaEval || predicateConstraint.getOperators().length > 0) {
+            return predicateConstraint;
+        }
+
+        Declaration[] requiredDeclarations = predicateConstraint.getRequiredDeclarations();
+        Set<String> reqDecNames = new HashSet<String>();
+        for (Declaration d : requiredDeclarations) {
+            reqDecNames.add(d.getIdentifier());
+        }
+
+        String[] globals = predicateConstraint.getGlobals();
+        Declaration[] declarations = new Declaration[requiredDeclarations.length + globals.length];
+        int i = 0;
+        for (Declaration d : requiredDeclarations) {
+            declarations[i++] = d;
+        }
+        for (String global : globals) {
+            declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
+        }
+        return new MvelConstraint(context.getPkg().getName(), expression, declarations);
     }
 
     private static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
@@ -1395,9 +1378,7 @@ public class PatternBuilder
                                              final String fieldName,
                                              final AcceptsReadAccessor target ) {
         if ( !ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
-            InternalReadAccessor reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
-                                                                                                   fieldName,
-                                                                                                   target );
+            context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(), fieldName, target );
         }
     }
 

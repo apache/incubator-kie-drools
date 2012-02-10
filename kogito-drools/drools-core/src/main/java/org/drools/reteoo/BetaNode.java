@@ -471,16 +471,22 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     static long calculateListenedMaskFromPattern(List<String> listenedProperties, long mask, List<String> settableProperties) {
-        if (listenedProperties == null) return mask;
+        if (listenedProperties == null) {
+            return mask;
+        }
         for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*") || propertyName.equals("!*")) continue;
+            if (propertyName.equals("*") || propertyName.equals("!*")) {
+                continue;
+            }
             boolean isNegative = propertyName.startsWith("!");
             if (isNegative) {
                 propertyName = propertyName.substring(1).trim();
             }
 
             int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0) throw new RuntimeException("Unknown property: " + propertyName);
+            if (pos < 0) {
+                throw new RuntimeException("Unknown property: " + propertyName);
+            }
             mask = isNegative ? BitMaskUtil.reset(mask, pos) : BitMaskUtil.set(mask, pos);
         }
         return mask;
@@ -488,7 +494,9 @@ public abstract class BetaNode extends LeftTupleSource
 
     static List<String> getSettableProperties(InternalWorkingMemory workingMemory, ObjectTypeNode objectTypeNode) {
         Class<?> nodeClass = getNodeClass(objectTypeNode);
-        if (nodeClass == null) return null;
+        if (nodeClass == null) {
+            return null;
+        }
         InternalRuleBase ruleBase = (InternalRuleBase)workingMemory.getRuleBase();
         TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
         typeDeclaration.setTypeClass(nodeClass);
@@ -496,7 +504,9 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     static Class<?> getNodeClass(ObjectTypeNode objectTypeNode) {
-        if (objectTypeNode == null) return null;
+        if (objectTypeNode == null) {
+            return null;
+        }
         ObjectType objectType = objectTypeNode.getObjectType();
         return objectType != null && objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : null;
     }
