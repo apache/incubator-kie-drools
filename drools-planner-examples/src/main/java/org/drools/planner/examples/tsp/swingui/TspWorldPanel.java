@@ -72,8 +72,7 @@ public class TspWorldPanel extends JPanel {
                 "/org/drools/planner/examples/tsp/swingui/europaBackground.png"));
     }
 
-    public void resetPanel(Solution solution) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
+    public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
         translator = new LatitudeLongitudeTranslator();
         for (City city : travelingSalesmanTour.getCityList()) {
             translator.addCoordinates(city.getLatitude(), city.getLongitude());
@@ -147,6 +146,10 @@ public class TspWorldPanel extends JPanel {
         g.fillRect(5, (int) height - 10, 5, 5);
         g.drawString("Domicile", 15, (int) height - 5);
         repaint();
+    }
+
+    public void updatePanel(TravelingSalesmanTour travelingSalesmanTour) {
+        resetPanel(travelingSalesmanTour);
     }
 
     private Graphics createCanvas(double width, double height) {

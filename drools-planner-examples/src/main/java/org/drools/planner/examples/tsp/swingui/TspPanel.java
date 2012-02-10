@@ -40,6 +40,8 @@ public class TspPanel extends SolutionPanel {
     private TspWorldPanel tspWorldPanel;
     private TspListPanel tspListPanel;
 
+    private Long nextCityId = null;
+
     public TspPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -67,8 +69,27 @@ public class TspPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        tspWorldPanel.resetPanel(solution);
-        tspListPanel.resetPanel(solution);
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
+        tspWorldPanel.resetPanel(travelingSalesmanTour);
+        tspListPanel.resetPanel(travelingSalesmanTour);
+        resetNextCityId();
+    }
+
+    private void resetNextCityId() {
+        long highestCityId = 0L;
+        for (City city : getTravelingSalesmanTour().getCityList()) {
+            if (highestCityId < city.getId().longValue()) {
+                highestCityId = city.getId();
+            }
+        }
+        nextCityId = highestCityId + 1L;
+    }
+
+    @Override
+    public void updatePanel(Solution solution) {
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
+        tspWorldPanel.updatePanel(travelingSalesmanTour);
+        tspListPanel.updatePanel(travelingSalesmanTour);
     }
 
     public void doMove(Move move) {
@@ -81,13 +102,8 @@ public class TspPanel extends SolutionPanel {
 
     public void insertCityAndVisit(double longitude, double latitude) {
         final City newCity = new City();
-        Long cityId = 0L;
-        for (City city : getTravelingSalesmanTour().getCityList()) {
-            if (cityId <= city.getId()) {
-                cityId = city.getId() + 1L;
-            }
-        }
-        newCity.setId(cityId);
+        newCity.setId(nextCityId);
+        nextCityId++;
         newCity.setLongitude(longitude);
         newCity.setLatitude(latitude);
         logger.info("Scheduling insertion of newCity ({}).", newCity);

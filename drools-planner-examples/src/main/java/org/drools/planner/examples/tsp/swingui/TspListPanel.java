@@ -47,9 +47,8 @@ public class TspListPanel extends JPanel {
         setLayout(new GridLayout(0, 1));
     }
 
-    public void resetPanel(Solution solution) {
+    public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
         removeAll();
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
         headerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
@@ -75,6 +74,10 @@ public class TspListPanel extends JPanel {
             visitPanel.add(new JLabel(distanceLabelString));
             add(visitPanel);
         }
+    }
+
+    public void updatePanel(TravelingSalesmanTour travelingSalesmanTour) {
+        resetPanel(travelingSalesmanTour);
     }
 
     private class VisitAction extends AbstractAction {
