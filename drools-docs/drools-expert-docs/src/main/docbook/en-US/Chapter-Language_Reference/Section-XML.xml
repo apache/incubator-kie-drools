@@ -16,6 +16,11 @@
   DRL.</para>
 
   <section>
+    <title>Legacy Drools 2.x XML rule format</title>
+    <para>The Drools 2.x legacy XML format is no longer supported by Drools XML parser</para>
+  </section>
+
+  <section>
     <title>When to use XML</title>
 
     <para>There are several scenarios that XML is desirable. However, we
@@ -57,9 +62,9 @@
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 
 &lt;package name="com.sample"
-         xmlns="http://drools.org/drools-4.0"
+         xmlns="http://drools.org/drools-5.0"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-4.0 drools-4.0.xsd"&gt;
+         xs:schemaLocation="http://drools.org/drools-5.0 drools-5.0.xsd"&gt;
 
 &lt;import name="java.util.HashMap" /&gt;
 &lt;import name="org.drools.*" /&gt;
