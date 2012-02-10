@@ -27,6 +27,56 @@ import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
+    
+    @Test
+    public void testSimpleBlockingUsingForall() {
+        String str = "";
+        str += "package org.domain.test \n";
+        str += "import " + Activation.class.getName() + "\n";
+        str += "global java.util.List list \n";
+        str += "dialect 'mvel' \n";
+        str += "rule rule1 @department(sales) salience -100 \n";
+        str += "when \n";
+        str += "     $s : String( this == 'go1' ) \n";
+        str += "then \n";
+        str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
+        str += "end \n";
+        str += "rule rule2 salience 200\n";
+        str += "when \n";        
+        str += "     $s : String( this == 'go1' ) \n";
+        str += "     exists  Activation( department == 'sales' ) \n";  
+        str += "     forall ( $a : Activation( department == 'sales' ) Activation( this == $a, active == false ) ) \n";
+        str += "then \n";
+        str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
+        str += "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+        
+        assertEquals( 2,
+                      list.size() );
+        assertEquals( "rule1:go1", list.get(0) );
+        assertEquals( "rule2:go1", list.get(1) );
+
+        ksession.dispose();
+    }
 
     @Test
     public void testBasicBlockOnAnnotation() {
