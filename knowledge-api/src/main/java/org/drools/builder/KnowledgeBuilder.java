@@ -193,6 +193,20 @@ public interface KnowledgeBuilder
      * @param severities
      * @return
      */
-    boolean hasResults(ResultSeverity...severities ); 
+    boolean hasResults(ResultSeverity...severities );
 
+    /**
+     * Remove the last added Resource.
+     * Can be useful in case this last addition generated some compilation problem.
+     * If multiple Resources have been added in batch using a CompositeKnowledgeBuilder,
+     * it removes all of them.
+     */
+    void undo();
+
+    /**
+     * Return a CompositeKnowledgeBuilder allowing to add multiple Resources
+     * at the same time, without worrying about cross dependencies among them.
+     * @return
+     */
+    CompositeKnowledgeBuilder batch();
 }
