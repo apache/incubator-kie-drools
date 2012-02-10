@@ -24,8 +24,8 @@ public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/app/benchmark/generalDroolsPlannerBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        String solverConfig = DEFAULT_BENCHMARK_CONFIG;
-        new GeneralDroolsPlannerBenchmarkApp(solverConfig).process();
+        String benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
+        new GeneralDroolsPlannerBenchmarkApp(benchmarkConfig).process();
     }
 
     public GeneralDroolsPlannerBenchmarkApp(String benchmarkConfig) {

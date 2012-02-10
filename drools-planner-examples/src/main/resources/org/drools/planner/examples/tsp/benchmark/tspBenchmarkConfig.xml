@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/tsp</benchmarkDirectory>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</xstreamAnnotatedClass>
+      <inputSolutionFile>data/tsp/unsolved/dj38.xml</inputSolutionFile>
+      <inputSolutionFile>data/tsp/unsolved/europe40.xml</inputSolutionFile>
+      <inputSolutionFile>data/tsp/unsolved/lu980.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.tsp.domain.Visit</planningEntityClass>
+
+      <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+      </scoreDefinition>
+
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>tabuSearch</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>7</propertyTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>10000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

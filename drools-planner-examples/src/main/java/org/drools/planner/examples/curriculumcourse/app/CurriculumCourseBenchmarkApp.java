@@ -26,19 +26,19 @@ public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/curriculumcourse/benchmark/curriculumCourseStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        String solverConfig;
+        String benchmarkConfig;
         if (args.length > 0) {
             if (args[0].equals("default")) {
-                solverConfig = DEFAULT_BENCHMARK_CONFIG;
+                benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
-                solverConfig = STEP_LIMIT_BENCHMARK_CONFIG;
+                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
         } else {
-            solverConfig = DEFAULT_BENCHMARK_CONFIG;
+            benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new CurriculumCourseBenchmarkApp(solverConfig).process();
+        new CurriculumCourseBenchmarkApp(benchmarkConfig).process();
     }
 
     public CurriculumCourseBenchmarkApp(String benchmarkConfig) {

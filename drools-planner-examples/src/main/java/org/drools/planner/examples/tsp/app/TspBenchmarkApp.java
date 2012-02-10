@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.app;
+package org.drools.planner.examples.tsp.app;
 
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 
-public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
+public class TspBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_BENCHMARK_CONFIG
-            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml";
+            = "/org/drools/planner/examples/tsp/benchmark/tspBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -34,10 +34,10 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
         } else {
             benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
         }
-        new CloudBalancingBenchmarkApp(benchmarkConfig).process();
+        new TspBenchmarkApp(benchmarkConfig).process();
     }
 
-    public CloudBalancingBenchmarkApp(String benchmarkConfig) {
+    public TspBenchmarkApp(String benchmarkConfig) {
         super(benchmarkConfig);
     }
 
