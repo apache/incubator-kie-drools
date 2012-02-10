@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -13,7 +14,7 @@ import org.drools.builder.KnowledgeBuilderResults;
 import org.drools.builder.ResultSeverity;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.CompositeKnowledgeBuilder;
+import org.drools.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.core.util.Memento;
 import org.drools.definition.KnowledgePackage;
@@ -35,7 +36,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public CompositeKnowledgeBuilder batch() {
-        return new CompositeKnowledgeBuilder(pkgBuilder);
+        return new CompositeKnowledgeBuilderImpl(pkgBuilder);
     }
 
     public void add(Resource resource,

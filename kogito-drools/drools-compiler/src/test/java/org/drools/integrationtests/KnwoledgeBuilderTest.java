@@ -54,7 +54,7 @@ public class KnwoledgeBuilderTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
         assertTrue(kbuilder.hasErrors());
 
-        KnowledgeBuilderImpl kbuilder2 = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder2.batch()
                 .add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL)
                 .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()), ResourceType.DRL)
@@ -109,7 +109,7 @@ public class KnwoledgeBuilderTest {
                 "    fieldA: FactA\n" +
                 "end\n";
 
-        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.batch()
                 .type(ResourceType.DRL)
                 .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
