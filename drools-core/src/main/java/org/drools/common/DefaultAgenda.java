@@ -82,7 +82,7 @@ public class DefaultAgenda
     /** Working memory of this Agenda. */
     private InternalWorkingMemory                               workingMemory;
 
-    private org.drools.core.util.LinkedList                          scheduledActivations;
+    private org.drools.core.util.LinkedList                     scheduledActivations;
 
     /** Items time-delayed. */
 
@@ -116,7 +116,9 @@ public class DefaultAgenda
     
     private boolean                                             declarativeAgenda;
     
-    private ObjectTypeConf activationObjectTypeConf;
+    private ObjectTypeConf                                      activationObjectTypeConf;
+    
+    private ActivationsFilter                                   activationsFilter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -206,57 +208,6 @@ public class DefaultAgenda
             this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
         }
     }
-
-    //    public void write(WMSerialisationOutContext context) throws IOException {
-    //        BinaryHeapQueueAgendaGroup[] agendaGroups = (BinaryHeapQueueAgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
-    //        Arrays.sort( agendaGroups,
-    //                     AgendaGroupSorter.instance );
-    //
-    //        for ( BinaryHeapQueueAgendaGroup group : agendaGroups ) {
-    //            context.writeInt( PersisterEnums.AGENDA_GROUP );
-    //            group.write( context );
-    //        }
-    //        context.writeInt( PersisterEnums.END );
-    //
-    //        for ( ListIterator it = this.focusStack.listIterator( this.focusStack.size() - 1 ); it.hasPrevious(); ) {
-    //            AgendaGroup group = (AgendaGroup) it.previous();
-    //            context.writeInt( PersisterEnums.AGENDA_GROUP );
-    //            context.writeUTF( group.getName() );
-    //        }
-    //        context.writeInt( PersisterEnums.END );
-    //
-    //        RuleFlowGroupImpl[] ruleFlowGroups = (RuleFlowGroupImpl[]) this.ruleFlowGroups.values().toArray( new RuleFlowGroupImpl[this.ruleFlowGroups.size()] );
-    //        Arrays.sort( agendaGroups,
-    //                     AgendaGroupSorter.instance );
-    //
-    //        for ( BinaryHeapQueueAgendaGroup group : agendaGroups ) {
-    //            context.writeInt( PersisterEnums.RULE_FLOW_GROUP );
-    //            group.write( context );
-    //        }
-    //        context.writeInt( PersisterEnums.END );
-    //    }
-
-    //    public static class AgendaGroupSorter
-    //        implements
-    //        Comparator<AgendaGroup> {
-    //        public static final AgendaGroupSorter instance = new AgendaGroupSorter();
-    //
-    //        public int compare(AgendaGroup group1,
-    //                           AgendaGroup group2) {
-    //            return group1.getName().compareTo( group2.getName() );
-    //        }
-    //    }
-    //
-    //    public static class RuleFlowGroupSorter
-    //        implements
-    //        Comparator<AgendaGroup> {
-    //        public static final AgendaGroupSorter instance = new AgendaGroupSorter();
-    //
-    //        public int compare(AgendaGroup group1,
-    //                           AgendaGroup group2) {
-    //            return group1.getName().compareTo( group2.getName() );
-    //        }
-    //    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -487,49 +438,6 @@ public class DefaultAgenda
         }
     }
     
-//    /**
-//     * @inheritDoc
-//     */
-//    public boolean addActivationx(final AgendaItem activation) {
-//        // set the focus if rule autoFocus is true
-//        if ( activation.getRule().getAutoFocus() ) {
-//            this.setFocus( activation.getRule().getAgendaGroup() );
-//        }
-//
-//        // adds item to activation group if appropriate
-//        addItemToActivationGroup( activation );
-//
-//        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( activation.getRule().getAgendaGroup() );
-//        activation.setAgendaGroup( agendaGroup );
-//
-//        if ( activation.getRule().getRuleFlowGroup() == null ) {
-//            // No RuleFlowNode so add it directly to the Agenda
-//
-//            // do not add the activation if the rule is "lock-on-active" and the
-//            // AgendaGroup is active
-//            if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
-//                return false;
-//            }
-//
-//            agendaGroup.add( activation );
-//        } else {
-//            // There is a RuleFlowNode so add it there, instead of the Agenda
-//            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( activation.getRule().getRuleFlowGroup() );
-//
-//            // do not add the activation if the rule is "lock-on-active" and the
-//            // RuleFlowGroup is active
-//            if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
-//                return false;
-//            }
-//
-//            rfg.addActivation( activation );
-//        }
-//
-//        // making sure we re-evaluate agenda in case we are waiting for activations
-//        notifyHalt();
-//        return true;
-//    }
-
     public void removeScheduleItem(final ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
         Scheduler.removeAgendaItem( item,
@@ -539,6 +447,169 @@ public class DefaultAgenda
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                (InternalAgendaGroup) agendaGroup );
+    }
+
+    public boolean createActivation(final LeftTuple tuple,
+                                    final PropagationContext context,
+                                    final InternalWorkingMemory workingMemory,
+                                    final RuleTerminalNode rtn,
+                                    final boolean reuseActivation ) {
+        // First process control rules
+        // Control rules do increase ActivationCountForEvent and agenda ActivateActivations, they do not currently fire events
+        // ControlRules for now re-use the same PropagationContext
+        if ( rtn.isFireDirect() ) {    
+            // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
+            AgendaItem item = null;
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();
+                item.setPropagationContext( context );
+            } else {
+                item = createAgendaItem( tuple,
+                                         0,
+                                         context,
+                                         rtn);
+            }
+            tuple.setObject( item );            
+            if( activationsFilter != null && !activationsFilter.accept( item, 
+                                                                        context, 
+                                                                        workingMemory,
+                                                                        rtn ) ) {
+                return false;
+            }
+            
+            item.setActivated( true );
+            tuple.increaseActivationCountForEvents();  
+            increaseActiveActivations();
+            fireActivation( item );  // Control rules fire straight away.       
+            return true;
+        }
+
+        final Rule rule = rtn.getRule();
+        AgendaItem item = null;
+        final Timer timer = rule.getTimer();
+        if ( timer != null ) {
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();   
+                item.setPropagationContext( context );
+            } else {
+                item = createScheduledAgendaItem( tuple,
+                                                  context,
+                                                  rtn );                
+            }            
+        } else {
+            if ( rule.getCalendars() != null ) {
+                // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
+                long timestamp = workingMemory.getSessionClock().getCurrentTime();
+                for ( String cal : rule.getCalendars() ) {
+                    if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                        return false;
+                    }
+                }
+            }                                
+            
+            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );            
+            if ( rule.getRuleFlowGroup() == null ) {
+                // No RuleFlowNode so add it directly to the Agenda
+                // do not add the activation if the rule is "lock-on-active" and the
+                // AgendaGroup is active
+                if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                    return false;
+                }
+            } else {
+                // There is a RuleFlowNode so add it there, instead of the Agenda
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
+
+                // do not add the activation if the rule is "lock-on-active" and the
+                // RuleFlowGroup is active
+                if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                    return false;
+                }
+            }            
+            
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();
+                item.setSalience( rule.getSalience().getValue( tuple,
+                                                               rule,
+                                                               workingMemory ) );
+                item.setPropagationContext( context );                                
+            } else {
+                item = createAgendaItem( tuple,
+                                         rule.getSalience().getValue( tuple,
+                                                                      rule,
+                                                                      workingMemory ),
+                                         context,
+                                         rtn);
+            }              
+            
+            item.setAgendaGroup( agendaGroup );   
+        }
+        
+
+        tuple.setObject( item );
+        
+        if( activationsFilter != null && !activationsFilter.accept( item, 
+                                                                    context, 
+                                                                    workingMemory,
+                                                                    rtn ) ) {
+            increaseDormantActivations();
+            return false;
+        }
+        item.setActivated( true );
+        tuple.increaseActivationCountForEvents();  
+        increaseActiveActivations();        
+        item.setSequenence( rtn.getSequence() );                
+        
+        ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                      workingMemory ); 
+        return true;
+    }
+
+
+    public void cancelActivation(final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory,
+                                 final Activation activation,
+                                 final RuleTerminalNode rtn ) {
+        AgendaItem item = (AgendaItem) activation;
+        item.removeAllBlockersAndBlocked( this );
+
+        if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
+            // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
+            decreaseDormantActivations(); // because we know ControlRules fire straight away and then become dormant
+            return;
+        } else {
+            // we are retracting an actual Activation, so also remove it and it's handle from the WM. 
+            removeActivation( (AgendaItem) activation );
+        }
+
+        if ( activation.isActivated() ) {
+            // on fact expiration, we don't remove the activation, but let it fire
+            if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
+            } else {
+                activation.remove();
+
+                if ( activation.getActivationGroupNode() != null ) {
+                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+                }
+
+                if ( activation.getActivationNode() != null ) {
+                    final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
+                    ruleFlowGroup.removeActivation( activation );
+                }
+                leftTuple.decreaseActivationCountForEvents();
+
+                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                                                workingMemory,
+                                                                                                ActivationCancelledCause.WME_MODIFY );
+                decreaseActiveActivations();
+            }
+        } else {
+            decreaseDormantActivations();
+        }
+
+        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
+                                                                             context,
+                                                                             rtn.getRule() );
     }
 
     /*
@@ -1063,6 +1134,7 @@ public class DefaultAgenda
         this.workingMemory.startOperation();
         try {
             increaseDormantActivations();
+            decreaseActiveActivations();
 
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
@@ -1138,7 +1210,6 @@ public class DefaultAgenda
     }
 
     public void increaseDormantActivations() {
-        this.activeActivations--;
         this.dormantActivations++;
     }
 
@@ -1270,5 +1341,13 @@ public class DefaultAgenda
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
         return this.legacyConsequenceExceptionHandler;
+    }
+
+    public void setActivationsFilter(ActivationsFilter filter) {
+        this.activationsFilter = filter;
+    }
+
+    public ActivationsFilter getActivationsFilter() {
+        return this.activationsFilter;
     }
 }

@@ -22,16 +22,21 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
@@ -624,16 +629,14 @@ public class AccumulateNode extends BetaNode {
                                                                 accctx.context,
                                                                 leftTuple,
                                                                 workingMemory );
-        // this is a quick hack for the 5.2 release
         Object result = this.accumulate.isMultiFunction() ? resultArray : resultArray[0];
         if (result == null) return;
 
         if ( accctx.result == null ) {
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                                                  workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                        result ),
-                                                                                                  workingMemory,
-                                                                                                  null ); // so far, result is not an event
+            final InternalFactHandle handle = createResultFactHandle( context, 
+                                                                      workingMemory, 
+                                                                      leftTuple,
+                                                                      result );
 
             accctx.result = createRightTuple( handle,
                                               this,
@@ -713,6 +716,38 @@ public class AccumulateNode extends BetaNode {
 
     }
 
+    @SuppressWarnings("unchecked")
+    private InternalFactHandle createResultFactHandle(final PropagationContext context,
+                                                      final InternalWorkingMemory workingMemory,
+                                                      final LeftTuple leftTuple,
+                                                      final Object result) {
+        InternalFactHandle handle = null;
+        ProtobufMessages.FactHandle _handle = null;
+        if( context.getReaderContext() != null ) {
+            Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
+            if( map != null ) {
+                _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) );
+            }
+        }
+        if( _handle != null ) {
+            // create a handle with the given id
+            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                         result,
+                                                                         _handle.getRecency(),
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               result ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        } else {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( result,
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               result ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        }
+        return handle;
+    }
+
     public void updateSink( final LeftTupleSink sink,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory ) {
@@ -782,9 +817,10 @@ public class AccumulateNode extends BetaNode {
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory( final RuleBaseConfiguration config ) {
+    public Memory createMemory( final RuleBaseConfiguration config ) {
         AccumulateMemory memory = new AccumulateMemory();
-        memory.betaMemory = this.constraints.createBetaMemory( config );
+        memory.betaMemory = this.constraints.createBetaMemory( config,
+                                                               NodeTypeEnums.AccumulateNode );
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
         memory.resultsContext = this.resultBinder.createContext();
         memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
@@ -1024,7 +1060,8 @@ public class AccumulateNode extends BetaNode {
 
     public static class AccumulateMemory
         implements
-        Externalizable {
+        Externalizable, 
+        Memory {
         private static final long serialVersionUID = 510l;
 
         public Object[]           workingMemoryContext;
@@ -1045,6 +1082,10 @@ public class AccumulateNode extends BetaNode {
             out.writeObject( betaMemory );
             out.writeObject( resultsContext );
             out.writeObject( alphaContexts );
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.AccumulateNode;
         }
 
     }

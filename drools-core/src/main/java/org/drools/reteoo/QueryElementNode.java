@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
 import org.drools.base.extractors.ArrayElementReader;
@@ -28,11 +30,16 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
+import org.drools.common.Memory;
+import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.RightTupleList;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
+import org.drools.marshalling.impl.ProtobufInputMarshaller.TupleKey;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultRetractAction;
@@ -48,7 +55,8 @@ import org.drools.spi.PropagationContext;
 
 public class QueryElementNode extends LeftTupleSource
     implements
-    LeftTupleSinkNode {
+    LeftTupleSinkNode,
+    NodeMemory {
 
     private LeftTupleSource   tupleSource;
 
@@ -176,11 +184,12 @@ public class QueryElementNode extends LeftTupleSource
     public void assertLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-
-        InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( null,
-                                                                                        null,
-                                                                                        workingMemory,
-                                                                                        workingMemory );
+        // the next call makes sure this node's memory is initialised
+        workingMemory.getNodeMemory( this );
+        
+        InternalFactHandle handle = createFactHandle( context, 
+                                                      workingMemory, 
+                                                      leftTuple ); 
 
         DroolsQuery queryObject = createDroolsQuery( leftTuple,
                                                      handle,
@@ -197,6 +206,35 @@ public class QueryElementNode extends LeftTupleSource
 
     }
 
+    @SuppressWarnings("unchecked")
+    private InternalFactHandle createFactHandle(final PropagationContext context,
+                                                final InternalWorkingMemory workingMemory,
+                                                final LeftTuple leftTuple ) {
+        InternalFactHandle handle = null;
+        ProtobufMessages.FactHandle _handle = null;
+        if( context.getReaderContext() != null ) {
+            Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( getId() );
+            if( map != null ) {
+                _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) ).handle;
+            }
+        }
+        if( _handle != null ) {
+            // create a handle with the given id
+            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                         null,
+                                                                         _handle.getRecency(),
+                                                                         null,
+                                                                         workingMemory,
+                                                                         workingMemory ); 
+        } else {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( null,
+                                                                         null,
+                                                                         workingMemory,
+                                                                         workingMemory ); 
+        }
+        return handle;
+    }
+    
     public DroolsQuery createDroolsQuery(LeftTuple leftTuple,
                                          InternalFactHandle handle,
                                          InternalWorkingMemory workingMemory) {
@@ -465,9 +503,10 @@ public class QueryElementNode extends LeftTupleSource
                                                             resultLeftTuple.get( decl ).getObject() );
             }
 
-            QueryElementFactHandle resultHandle = new QueryElementFactHandle( objects,
-                                                                              workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(),
-                                                                              workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet() );
+            QueryElementFactHandle resultHandle = createQueryResultHandle( context,
+                                                                           workingMemory, 
+                                                                           objects );
+            
             RightTuple rightTuple = new RightTuple( resultHandle );
             if ( query.isOpen() ) {
                 rightTuple.setLeftTuple( resultLeftTuple );
@@ -493,6 +532,34 @@ public class QueryElementNode extends LeftTupleSource
             }
 
             rightTuples.add( rightTuple );
+        }
+
+        @SuppressWarnings("unchecked")
+        private QueryElementFactHandle createQueryResultHandle(PropagationContext context,
+                                                               InternalWorkingMemory workingMemory,
+                                                               Object[] objects) {
+            QueryElementFactHandle handle = null;
+            ProtobufMessages.FactHandle _handle = null;
+            if( context.getReaderContext() != null ) {
+                Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( node.getId() );
+                if( map != null ) {
+                    QueryElementContext _context = map.get( PersisterHelper.createTupleKey( leftTuple ) );
+                    if( _context != null ) {
+                        _handle = _context.results.removeFirst();
+                    }
+                }
+            }
+            if( _handle != null ) {
+                // create a handle with the given id
+                handle = new QueryElementFactHandle( objects,
+                                                     _handle.getId(),
+                                                     _handle.getRecency() );
+            } else {
+                handle = new QueryElementFactHandle( objects,
+                                                     workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(),
+                                                     workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet() );
+            }
+            return handle;
         }
 
         public void rowRemoved(final Rule rule,
@@ -646,6 +713,20 @@ public class QueryElementNode extends LeftTupleSource
             if ( other.tupleSource != null ) return false;
         } else if ( !tupleSource.equals( other.tupleSource ) ) return false;
         return true;
+    }
+
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return new QueryElementNodeMemory(this);
+    }
+    
+    public static class QueryElementNodeMemory implements Memory {
+        public final QueryElementNode node;
+        public QueryElementNodeMemory(QueryElementNode node) {
+            this.node = node;
+        }
+        public short getNodeType() {
+            return NodeTypeEnums.QueryElementNode;
+        }
     }
 
 }

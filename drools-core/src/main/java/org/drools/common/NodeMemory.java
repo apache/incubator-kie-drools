@@ -21,6 +21,6 @@ import org.drools.RuleBaseConfiguration;
 public interface NodeMemory {
     public int getId();
 
-    public Object createMemory(RuleBaseConfiguration config);
+    public Memory createMemory(RuleBaseConfiguration config);
 
 }

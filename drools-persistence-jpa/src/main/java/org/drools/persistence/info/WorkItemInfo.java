@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,17 +18,22 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.drools.common.InternalRuleBase;
+import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.process.instance.WorkItem;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
+import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.runtime.Environment;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
 public class WorkItemInfo  {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="workItemInfoIdSeq")
     private Long   workItemId;
@@ -94,6 +100,7 @@ public class WorkItemInfo  {
                 ByteArrayInputStream bais = new ByteArrayInputStream( workItemByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
                                                                                ruleBase,
+                                                                               null,
                                                                                null,
                                                                                null,
                                                                                env);

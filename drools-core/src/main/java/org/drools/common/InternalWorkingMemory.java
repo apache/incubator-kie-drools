@@ -23,7 +23,6 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
-import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
@@ -35,13 +34,11 @@ import org.drools.rule.Rule;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.PropagationContext;
 import org.drools.time.TimerService;
 import org.drools.type.DateFormats;
 
@@ -58,9 +55,11 @@ public interface InternalWorkingMemory
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    public Object getNodeMemory(NodeMemory node);
+    public Memory getNodeMemory(NodeMemory node);
 
     public void clearNodeMemory(NodeMemory node);
+    
+    public NodeMemories getNodeMemories();
 
     public long getNextPropagationIdCounter();
 

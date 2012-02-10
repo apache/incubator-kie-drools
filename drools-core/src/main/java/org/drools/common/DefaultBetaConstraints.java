@@ -23,20 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.RightTupleIndexHashTable;
 import org.drools.core.util.RightTupleList;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.IndexableConstraint;
-import org.drools.rule.UnificationRestriction;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -254,7 +253,8 @@ public class DefaultBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(RuleBaseConfiguration config) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config, 
+                                       final short nodeType ) {
         BetaMemory memory;
         if ( this.indexed >= 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
@@ -284,11 +284,13 @@ public class DefaultBetaConstraints
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
                                      new RightTupleList(),
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         }
 
         return memory;

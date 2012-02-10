@@ -16,6 +16,8 @@
  */
 package org.drools.persistence.jpa.marshaller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +28,8 @@ import java.lang.reflect.Method;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Id;
+
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -45,11 +49,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public void write(ObjectOutputStream os, Object object) throws IOException {
-        
-        
             os.writeUTF(object.getClass().getCanonicalName());
             os.writeObject(getClassIdValue(object));
-       
     }
 
     public Object read(ObjectInputStream is) throws IOException, ClassNotFoundException {
@@ -60,6 +61,26 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return em.find(Class.forName(canonicalName), id);
     }
 
+    public byte[] marshal(Object object) throws IOException {
+        ByteArrayOutputStream buff = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream( buff );
+        oos.writeUTF(object.getClass().getCanonicalName());
+        oos.writeObject(getClassIdValue(object));
+        oos.close();
+        return buff.toByteArray();
+    }
+
+    public Object unmarshal(byte[] object,
+                            ClassLoader classloader) throws IOException,
+                                                    ClassNotFoundException {
+        DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader );
+        String canonicalName = is.readUTF();
+        Object id = is.readObject();
+        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+        EntityManager em = emf.createEntityManager();
+        return em.find(Class.forName(canonicalName), id);
+    }
+    
     public static Serializable getClassIdValue(Object o)  {
         Class<? extends Object> varClass = o.getClass();
         Serializable idValue = null;
@@ -131,4 +152,5 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         
         return false;
     }
+
 }

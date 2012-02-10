@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.drools.Cheese;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
@@ -42,6 +43,7 @@ import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.LiteralConstraint;
@@ -785,6 +787,10 @@ public class CompositeObjectSinkAdapterTest {
                                          LeftTupleSink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        }
+
+        public Memory createMemory(RuleBaseConfiguration config) {
+            return super.createMemory( config, NodeTypeEnums.JoinNode );
         }                
     }
 }

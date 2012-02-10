@@ -34,6 +34,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.IndexableConstraint;
@@ -281,7 +282,8 @@ public class QuadroupleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(RuleBaseConfiguration conf) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration conf, 
+                                       final short nodeType) {
 
         BetaMemory memory;
 
@@ -328,11 +330,13 @@ public class QuadroupleBetaConstraints
             }
             memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         } else {
             memory = new BetaMemory( conf.isSequential() ? null : new LeftTupleList(),
                                      new RightTupleList(),
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         }
 
         return memory;

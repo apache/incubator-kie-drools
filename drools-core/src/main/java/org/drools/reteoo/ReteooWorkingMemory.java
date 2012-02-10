@@ -54,6 +54,10 @@ import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.AccumulateNode.ActivitySource;
@@ -342,6 +346,22 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             }
         }
 
+        public WorkingMemoryReteAssertAction(MarshallerReaderContext context,
+                                             Action _action) {
+            Assert _assert = _action.getAssert();
+            this.factHandle = context.handles.get( _assert.getHandleId() );
+            this.removeLogical = _assert.getRemoveLogical();
+            this.updateEqualsMap = _assert.getUpdateEqualsMap();
+
+            if ( _assert.hasTuple() ) {
+                String pkgName = _assert.getOriginPkgName();
+                String ruleName = _assert.getOriginRuleName();
+                Package pkg = context.ruleBase.getPackage( pkgName );
+                this.ruleOrigin = pkg.getRule( ruleName );
+                this.leftTuple = context.filter.getTuplesCache().get( PersisterHelper.createActivationKey( pkgName, ruleName, _assert.getTuple() ) );
+            }
+        }
+
         public void write(MarshallerWriteContext context) throws IOException {
             context.writeShort( WorkingMemoryAction.WorkingMemoryReteAssertAction );
 
@@ -364,6 +384,27 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                 context.writeBoolean( false );
             }
 
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            ProtobufMessages.ActionQueue.Assert.Builder _assert = ProtobufMessages.ActionQueue.Assert.newBuilder();
+            _assert.setHandleId( this.factHandle.getId() )
+                   .setRemoveLogical( this.removeLogical )
+                   .setUpdateEqualsMap( this.updateEqualsMap );
+
+            if ( this.leftTuple != null ) {
+                ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
+                for( LeftTuple entry = this.leftTuple; entry != null; entry = entry.getParent() ) {
+                    _tuple.addHandleId( entry.getLastHandle().getId() );
+                }
+                _assert.setOriginPkgName( ruleOrigin.getPackageName() )
+                       .setOriginRuleName( ruleOrigin.getName() )
+                       .setTuple( _tuple.build() );
+            }
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.ASSERT )
+                    .setAssert( _assert.build() )
+                    .build();
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -439,23 +480,27 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
             this.node = (ObjectTypeNode) context.sinks.get( Integer.valueOf( nodeId ) );
         }
 
+        public WorkingMemoryReteExpireAction(MarshallerReaderContext context,
+                                             Action _action) {
+            this.factHandle = context.handles.get( _action.getExpire().getHandleId() );
+            this.node = (ObjectTypeNode) context.sinks.get( Integer.valueOf( _action.getExpire().getNodeId() ) );
+        }
+
         public void write(MarshallerWriteContext context) throws IOException {
             context.writeShort( WorkingMemoryAction.WorkingMemoryReteExpireAction );
             context.writeInt( this.factHandle.getId() );
             context.writeInt( this.node.getId() );
         }
 
-        //
-        //        public void readExternal(ObjectInput in) throws IOException,
-        //                                                ClassNotFoundException {
-        //            factHandle = (InternalFactHandle) in.readObject();
-        //            node = (ObjectTypeNode) in.readObject();
-        //        }
-        //
-        //        public void writeExternal(ObjectOutput out) throws IOException {
-        //            out.writeObject( factHandle );
-        //            out.writeObject( node );
-        //        }
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.EXPIRE )
+                    .setExpire( ProtobufMessages.ActionQueue.Expire.newBuilder()
+                                .setHandleId( this.factHandle.getId() )
+                                .setNodeId( this.node.getId() )
+                                .build() )
+                    .build();
+        }
 
         public void execute(InternalWorkingMemory workingMemory) {
             if ( this.factHandle.isValid() ) {
@@ -486,14 +531,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -534,38 +575,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public EvaluateResultConstraints(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.factHandle = context.handles.get( context.readInt() );
-            //
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            varIndexes = new int[context.readInt()];
-            //            for ( int i = 0; i < varIndexes.length; i++ ) {
-            //                varIndexes[i] = context.readInt();
-            //            }
-            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
-            //            try {
-            //                srcVarIndexes = (List<Integer>) context.readObject();
-            //            } catch ( ClassNotFoundException e ) {
-            //                throw new RuntimeException( "Unable to Marshal",
-            //                                            e );
-            //            }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //            context.writeInt( this.factHandle.getId() );
-            //
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //            context.writeInt( varIndexes.length );
-            //            for ( int i : varIndexes ) {
-            //                context.writeInt( varIndexes[i] );
-            //            }
-            //
-            //            context.writeObject( node.getId() );
-            //
-            //            context.writeObject( srcVarIndexes );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -597,14 +614,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -634,38 +647,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryInsertAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.factHandle = context.handles.get( context.readInt() );
-            //
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            varIndexes = new int[context.readInt()];
-            //            for ( int i = 0; i < varIndexes.length; i++ ) {
-            //                varIndexes[i] = context.readInt();
-            //            }
-            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
-            //            try {
-            //                srcVarIndexes = (List<Integer>) context.readObject();
-            //            } catch ( ClassNotFoundException e ) {
-            //                throw new RuntimeException( "Unable to Marshal",
-            //                                            e );
-            //            }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //            context.writeInt( this.factHandle.getId() );
-            //
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //            context.writeInt( varIndexes.length );
-            //            for ( int i : varIndexes ) {
-            //                context.writeInt( varIndexes[i] );
-            //            }
-            //
-            //            context.writeObject( node.getId() );
-            //
-            //            context.writeObject( srcVarIndexes );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -685,14 +674,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -722,38 +707,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryUpdateAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //        this.factHandle = context.handles.get( context.readInt() );
-            //
-            //        this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //        varIndexes = new int[context.readInt()];
-            //        for ( int i = 0; i < varIndexes.length; i++ ) {
-            //            varIndexes[i] = context.readInt();
-            //        }
-            //        node = (QueryElementNode) context.sinks.get( context.readInt() );
-            //        try {
-            //            srcVarIndexes = (List<Integer>) context.readObject();
-            //        } catch ( ClassNotFoundException e ) {
-            //            throw new RuntimeException( "Unable to Marshal",
-            //                                        e );
-            //        }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //        context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //        context.writeInt( this.factHandle.getId() );
-            //
-            //        context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //        context.writeInt( varIndexes.length );
-            //        for ( int i : varIndexes ) {
-            //            context.writeInt( varIndexes[i] );
-            //        }
-            //
-            //        context.writeObject( node.getId() );
-            //
-            //        context.writeObject( srcVarIndexes );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -771,14 +732,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -803,14 +760,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryRetractAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //            context.writeObject( node.getId() );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -842,14 +799,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -881,15 +834,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryResultInsertAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //            context.writeObject( node.getId() );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -929,14 +881,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -960,38 +908,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryResultRetractAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.factHandle = context.handles.get( context.readInt() );
-            //
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            varIndexes = new int[context.readInt()];
-            //            for ( int i = 0; i < varIndexes.length; i++ ) {
-            //                varIndexes[i] = context.readInt();
-            //            }
-            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
-            //            try {
-            //                srcVarIndexes = (List<Integer>) context.readObject();
-            //            } catch ( ClassNotFoundException e ) {
-            //                throw new RuntimeException( "Unable to Marshal",
-            //                                            e );
-            //            }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //            context.writeInt( this.factHandle.getId() );
-            //
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //            context.writeInt( varIndexes.length );
-            //            for ( int i : varIndexes ) {
-            //                context.writeInt( varIndexes[i] );
-            //            }
-            //
-            //            context.writeObject( node.getId() );
-            //
-            //            context.writeObject( srcVarIndexes );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -1022,14 +946,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -1053,38 +973,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryResultUpdateAction(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //        this.factHandle = context.handles.get( context.readInt() );
-            //
-            //        this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //        varIndexes = new int[context.readInt()];
-            //        for ( int i = 0; i < varIndexes.length; i++ ) {
-            //            varIndexes[i] = context.readInt();
-            //        }
-            //        node = (QueryElementNode) context.sinks.get( context.readInt() );
-            //        try {
-            //            srcVarIndexes = (List<Integer>) context.readObject();
-            //        } catch ( ClassNotFoundException e ) {
-            //            throw new RuntimeException( "Unable to Marshal",
-            //                                        e );
-            //        }
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //        context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //        context.writeInt( this.factHandle.getId() );
-            //
-            //        context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //        context.writeInt( varIndexes.length );
-            //        for ( int i : varIndexes ) {
-            //            context.writeInt( varIndexes[i] );
-            //        }
-            //
-            //        context.writeObject( node.getId() );
-            //
-            //        context.writeObject( srcVarIndexes );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -1117,14 +1013,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
 
     }
@@ -1154,18 +1046,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public QueryRiaFixerNodeFixer(MarshallerReaderContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-            //            this.node = (BetaNode) context.sinks.get( context.readInt() );
-
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
             throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-            //
-            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-            //
-            //            context.writeObject( node.getId() );
+        }
+
+        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -1227,14 +1115,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            // TODO Auto-generated method stub
-
         }
     }
 

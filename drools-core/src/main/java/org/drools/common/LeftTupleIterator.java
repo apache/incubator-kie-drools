@@ -23,6 +23,7 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
@@ -123,7 +124,7 @@ public class LeftTupleIterator
             }
             otn = (ObjectTypeNode) os;
 
-            ObjectHashSet memory = (ObjectHashSet) wm.getNodeMemory( otn );
+            ObjectHashSet memory = ((ObjectTypeNodeMemory) wm.getNodeMemory( otn )).memory;
             otnIterator = memory.iterator();
 
             for ( factHandleEntry = (ObjectEntry) otnIterator.next(); factHandleEntry != null; factHandleEntry = (ObjectEntry) otnIterator.next() ) {

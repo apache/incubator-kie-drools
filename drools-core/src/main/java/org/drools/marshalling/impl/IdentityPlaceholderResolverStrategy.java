@@ -61,4 +61,33 @@ public class IdentityPlaceholderResolverStrategy
     public boolean accept(Object object) {
         return this.acceptor.accept( object );
     }
+
+    public byte[] marshal(Object object) {
+        Integer id = ( Integer ) objects.get( object );
+        if ( id == null ) {
+            id = ids.size();
+            ids.put( id, object );
+            objects.put(  object, id );
+        }
+        return intToByteArray( id.intValue() );
+    }
+
+    public Object unmarshal(byte[] object, ClassLoader classloader ) {
+        return ids.get( byteArrayToInt( object ) );
+    }
+    
+    private final byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte) ((value >>> 24) & 0xFF),
+                (byte) ((value >>> 16) & 0xFF),
+                (byte) ((value >>> 8) & 0xFF),
+                (byte) (value  & 0xFF) };
+    }    
+    
+    private final int byteArrayToInt(byte [] b) {
+        return (b[0] << 24)
+                + ((b[1] & 0xFF) << 16)
+                + ((b[2] & 0xFF) << 8)
+                + (b[3] & 0xFF);
+    }    
 }

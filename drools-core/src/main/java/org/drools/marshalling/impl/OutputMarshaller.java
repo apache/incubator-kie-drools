@@ -51,6 +51,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;

@@ -31,7 +31,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 510l;
 
-    protected final InternalFactHandle newFactHandle(final int id,
+    public final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final long recency,
                                                      final ObjectTypeConf conf,

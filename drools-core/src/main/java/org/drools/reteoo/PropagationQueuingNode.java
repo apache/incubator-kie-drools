@@ -33,11 +33,13 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
 import org.drools.rule.TypeDeclaration;
@@ -302,7 +304,7 @@ public class PropagationQueuingNode extends ObjectSource
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
     }
 
-    public Object createMemory( RuleBaseConfiguration config ) {
+    public Memory createMemory( RuleBaseConfiguration config ) {
         return new PropagationQueueingNodeMemory();
     }
 
@@ -311,7 +313,8 @@ public class PropagationQueuingNode extends ObjectSource
      */
     public static class PropagationQueueingNodeMemory
         implements
-        Externalizable {
+        Externalizable,
+        Memory {
 
         private static final long             serialVersionUID = 7372028632974484023L;
 
@@ -360,6 +363,10 @@ public class PropagationQueuingNode extends ObjectSource
 
         public long getSize() {
             return this.queue.size();
+        }
+ 
+        public short getNodeType() {
+            return NodeTypeEnums.PropagationQueueingNode;
         }
     }
 
@@ -536,9 +543,23 @@ public class PropagationQueuingNode extends ObjectSource
             this.node = (PropagationQueuingNode) context.sinks.get( context.readInt() );
         }
 
+        public PropagateAction(MarshallerReaderContext context,
+                               ProtobufMessages.ActionQueue.Action _action) {
+            this.node = (PropagationQueuingNode) context.sinks.get( _action.getPropagate().getNodeId() );
+        }
+
         public void write( MarshallerWriteContext context ) throws IOException {
             context.writeShort( WorkingMemoryAction.PropagateAction );
             context.write( node.getId() );
+        }
+        
+        public ProtobufMessages.ActionQueue.Action serialize( MarshallerWriteContext context ) {
+            return ProtobufMessages.ActionQueue.Action.newBuilder()
+                    .setType( ProtobufMessages.ActionQueue.ActionType.PROPAGATE )
+                    .setPropagate( ProtobufMessages.ActionQueue.Propagate.newBuilder()
+                                   .setNodeId( node.getId() )
+                                   .build() )
+                    .build();
         }
 
         public void readExternal( ObjectInput in ) throws IOException,

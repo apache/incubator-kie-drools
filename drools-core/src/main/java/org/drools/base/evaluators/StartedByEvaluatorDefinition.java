@@ -58,7 +58,7 @@ import org.drools.time.Interval;
  * <p>The <b><code>startedby</code></b> evaluator accepts one optional parameter. If it is defined, it determines
  * the maximum distance between the start timestamp of both events in order for the operator to match. Example:</p>
  * 
- * <pre>$eventA : EventA( this starts[ 5s ] $eventB )</pre>
+ * <pre>$eventA : EventA( this startedby[ 5s ] $eventB )</pre>
  * 
  * Will match if and only if:
  * 

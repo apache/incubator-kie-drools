@@ -235,7 +235,8 @@ public class TripleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration conf) {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration conf, 
+                                       final short nodeType ) {
 
         BetaMemory memory;
 
@@ -276,11 +277,13 @@ public class TripleBetaConstraints
             }
             memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         } else {
             memory = new BetaMemory( conf.isSequential() ? null : new LeftTupleList(),
                                      new RightTupleList(),
-                                     this.createContext() );
+                                     this.createContext(),
+                                     nodeType );
         }
 
         return memory;

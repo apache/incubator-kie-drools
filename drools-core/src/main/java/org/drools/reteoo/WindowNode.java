@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
@@ -273,7 +274,7 @@ public class WindowNode extends ObjectSource
     /**
      * Creates the WindowNode's memory.
      */
-    public Object createMemory( final RuleBaseConfiguration config ) {
+    public Memory createMemory( final RuleBaseConfiguration config ) {
         WindowMemory memory = new WindowMemory();
         memory.context = new ContextEntry[this.constraints.size()];
         int index = 0;
@@ -351,7 +352,7 @@ public class WindowNode extends ObjectSource
         return entryPoint;
     }
 
-    public static class WindowMemory implements Externalizable {
+    public static class WindowMemory implements Externalizable, Memory {
 
         private static final long serialVersionUID = 540l;
 
@@ -369,6 +370,10 @@ public class WindowNode extends ObjectSource
             out.writeObject( context );
             out.writeObject( behaviorContext );
             out.writeObject( events );
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.WindowNode;
         }
     }
     

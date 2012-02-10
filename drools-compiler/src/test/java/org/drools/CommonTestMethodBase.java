@@ -73,8 +73,13 @@ public class CommonTestMethodBase extends Assert {
         return kbase;
     }
 
-    protected KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    protected KnowledgeBase loadKnowledgeBase( KnowledgeBuilderConfiguration kbuilderConf, 
+                                               KnowledgeBaseConfiguration kbaseConf, 
+                                               String... classPathResources ) {
+        if( kbuilderConf == null ) {
+            kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        }
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
         for ( String classPathResource : classPathResources ) {
             kbuilder.add( ResourceFactory.newClassPathResource( classPathResource,
                     getClass() ),
@@ -84,9 +89,24 @@ public class CommonTestMethodBase extends Assert {
             fail( kbuilder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        if( kbaseConf == null ) {
+            kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
+    }
+    
+    protected KnowledgeBase loadKnowledgeBase( KnowledgeBuilderConfiguration kbuilderConf, String... classPathResources ) {
+        return loadKnowledgeBase( kbuilderConf,  null, classPathResources );
+    }
+
+    protected KnowledgeBase loadKnowledgeBase( KnowledgeBaseConfiguration kbaseConf, String... classPathResources ) {
+        return loadKnowledgeBase( null,  kbaseConf, classPathResources );
+    }
+
+    protected KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
+        return loadKnowledgeBase( null,  null, classPathResources );
     }
 
     protected org.drools.rule.Package loadPackage( final String classPathResource ) throws DroolsParserException,

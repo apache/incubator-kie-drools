@@ -16,22 +16,27 @@
 
 package org.drools.reteoo;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
-
+import java.util.Map;
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
@@ -97,8 +102,8 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new ObjectHashMap();
+    public Memory createMemory(final RuleBaseConfiguration config) {
+        return new RIAMemory();
     }
 
     /**
@@ -116,11 +121,7 @@ public class RightInputAdapterNode extends ObjectSource
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         // creating a dummy fact handle to wrap the tuple
-        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( leftTuple,
-                                                                                              workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                    leftTuple ),
-                                                                                              workingMemory,
-                                                                                              null );
+        final InternalFactHandle handle = createFactHandle( leftTuple, context, workingMemory );
         boolean useLeftMemory = true;   
         if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
@@ -131,16 +132,47 @@ public class RightInputAdapterNode extends ObjectSource
         }         
         
         if ( useLeftMemory) {
-            final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
             // add it to a memory mapping
-            memory.put( leftTuple,
-                        handle );
+            memory.memory.put( leftTuple,
+                               handle );
         }
 
         // propagate it
         this.sink.propagateAssertObject( handle,
                                          context,
                                          workingMemory );
+    }
+
+    @SuppressWarnings("unchecked")
+    private InternalFactHandle createFactHandle(final LeftTuple leftTuple,
+                                                final PropagationContext context,
+                                                final InternalWorkingMemory workingMemory) {
+        InternalFactHandle handle = null;
+        ProtobufMessages.FactHandle _handle = null;
+        if( context.getReaderContext() != null ) {
+            Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
+            if( map != null ) {
+                _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) );
+            }
+        }
+        if( _handle != null ) {
+            // create a handle with the given id
+            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                         leftTuple,
+                                                                         _handle.getRecency(),
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               leftTuple ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        } else {
+            handle = workingMemory.getFactHandleFactory().newFactHandle( leftTuple,
+                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
+                                                                                                                                               leftTuple ),
+                                                                         workingMemory,
+                                                                         null ); // so far, result is not an event
+        }
+        return handle;
     }
 
     /**
@@ -150,9 +182,9 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
         // retrieve handle from memory
-        final InternalFactHandle factHandle = (InternalFactHandle) memory.remove( tuple );
+        final InternalFactHandle factHandle = (InternalFactHandle) memory.memory.remove( tuple );
         
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -179,9 +211,9 @@ public class RightInputAdapterNode extends ObjectSource
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
         // add it to a memory mapping
-        InternalFactHandle handle = (InternalFactHandle) memory.get( leftTuple );
+        InternalFactHandle handle = (InternalFactHandle) memory.memory.get( leftTuple );
 
         // propagate it
         for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
@@ -219,9 +251,9 @@ public class RightInputAdapterNode extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
-        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator it = memory.iterator();
+        final Iterator it = memory.memory.iterator();
 
         // iterates over all propagated handles and assert them to the new sink
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
@@ -241,9 +273,9 @@ public class RightInputAdapterNode extends ObjectSource
 
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+                final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
 
-                Iterator it = memory.iterator();
+                Iterator it = memory.memory.iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     LeftTuple leftTuple = (LeftTuple) entry.getKey();
                     leftTuple.unlinkFromLeftParent();
@@ -377,6 +409,23 @@ public class RightInputAdapterNode extends ObjectSource
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
+    }           
+    
+    public static class RIAMemory implements Memory, Externalizable {
+        public ObjectHashMap memory = new ObjectHashMap();
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( memory );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            memory = (ObjectHashMap) in.readObject();
+        }
+
+        public short getNodeType() {
+            return NodeTypeEnums.RightInputAdaterNode;
+        }
     }
 
 }

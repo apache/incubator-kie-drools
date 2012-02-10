@@ -22,6 +22,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.NodeMemories;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
@@ -145,7 +147,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return 0;
     }
 
-    public Object getNodeMemory(NodeMemory node) {
+    public Memory getNodeMemory(NodeMemory node) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -613,6 +615,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void dispose() {
         // TODO Auto-generated method stub
+    }
+
+    public NodeMemories getNodeMemories() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

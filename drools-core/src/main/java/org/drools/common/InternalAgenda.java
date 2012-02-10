@@ -19,8 +19,6 @@ package org.drools.common;
 import org.drools.Agenda;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.rule.GroupElement;
-import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -28,7 +26,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConsequenceException;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.spi.Tuple;
 
 public interface InternalAgenda
     extends
@@ -53,6 +50,18 @@ public interface InternalAgenda
                                                          final PropagationContext context,
                                                          final RuleTerminalNode rtn);
     
+    public boolean createActivation(final LeftTuple tuple,
+                                    final PropagationContext context,
+                                    final InternalWorkingMemory workingMemory,
+                                    final RuleTerminalNode rtn,
+                                    final boolean reuseActivation );        
+
+    public void cancelActivation(final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory,
+                                 final Activation activation,
+                                 final RuleTerminalNode rtn );
+
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,
      * the activation may be added to the agenda priority queue (synchronously or 
@@ -161,6 +170,21 @@ public interface InternalAgenda
     public ActivationGroup getActivationGroup(String name);
 
     public RuleFlowGroup getRuleFlowGroup(String name);
+    
+    /**
+     * Sets a filter that prevents activations from being added to 
+     * the agenda.
+     * 
+     * @param filter
+     */
+    public void setActivationsFilter( ActivationsFilter filter );
+    
+    /**
+     * Returns the current activations filter or null if none is set
+     * 
+     * @return
+     */
+    public ActivationsFilter getActivationsFilter();
     
     
 }

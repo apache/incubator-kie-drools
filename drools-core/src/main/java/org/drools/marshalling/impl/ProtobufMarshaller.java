@@ -48,27 +48,34 @@ import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.time.SessionClock;
 
-public class DefaultMarshaller
+/**
+ * A Marshaller implementation that uses ProtoBuf as the marshalling
+ * framework in order to support backward compatibility with
+ * marshalled sessions
+ * 
+ * @author etirelli
+ */
+public class ProtobufMarshaller
         implements
         Marshaller {
-    KnowledgeBase                     kbase;
-    GlobalResolver                    globalResolver;
-    RuleBaseConfiguration             ruleBaseConfig;
-    MarshallingConfiguration          marshallingConfig;
-    ObjectMarshallingStrategyStore    strategyStore;
+    KnowledgeBase                       kbase;
+    GlobalResolver                      globalResolver;
+    RuleBaseConfiguration               ruleBaseConfig;
+    MarshallingConfiguration            marshallingConfig;
+    ObjectMarshallingStrategyStore      strategyStore;
     Map<Integer, TimersInputMarshaller> timerReaders;
 
-    public DefaultMarshaller(KnowledgeBase kbase,
-                             MarshallingConfiguration marshallingConfig) {
+    public ProtobufMarshaller(KnowledgeBase kbase,
+                              MarshallingConfiguration marshallingConfig) {
         this.kbase = kbase;
         this.ruleBaseConfig = (ruleBaseConfig != null) ? ruleBaseConfig : RuleBaseConfiguration.getDefaultInstance();
         this.marshallingConfig = marshallingConfig;
         this.strategyStore = this.marshallingConfig.getObjectMarshallingStrategyStore();
 
         this.timerReaders = new HashMap<Integer, TimersInputMarshaller>();
-        this.timerReaders.put( (int) PersisterEnums.BEHAVIOR_TIMER, new BehaviorJobContextTimerInputMarshaller() );
-        this.timerReaders.put( (int) PersisterEnums.ACTIVATION_TIMER, new ActivationTimerInputMarshaller() );
-        this.timerReaders.put( (int) PersisterEnums.EXPIRE_TIMER, new ExpireJobContextTimerInputMarshaller() );
+        this.timerReaders.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
+        this.timerReaders.put( ProtobufMessages.Timers.TimerType.ACTIVATION_VALUE, new ActivationTimerInputMarshaller() );
+        this.timerReaders.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
     }
 
     public StatefulKnowledgeSession unmarshall(final InputStream stream) throws IOException,
@@ -104,11 +111,11 @@ public class DefaultMarshaller
         RuleBaseConfiguration conf = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration();
         ExecutorService executor = ExecutorServiceFactory.createExecutorService( conf.getExecutorService() );
 
-        ReteooStatefulSession session = InputMarshaller.readSession( context,
-                                                                     id,
-                                                                     executor,
-                                                                     environment,
-                                                                     (SessionConfiguration) config );
+        ReteooStatefulSession session = ProtobufInputMarshaller.readSession( context,
+                                                                             id,
+                                                                             executor,
+                                                                             environment,
+                                                                             (SessionConfiguration) config );
         executor.setCommandExecutor( new CommandExecutor( session ) );
         context.close();
         if ( ((SessionConfiguration) config).isKeepReference() ) {
@@ -130,8 +137,8 @@ public class DefaultMarshaller
                                                                        marshallingConfig.isMarshallWorkItems(),
                                                                        ksession.getEnvironment() );
 
-        InputMarshaller.readSession( (ReteooStatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session,
-                                     context );
+        ProtobufInputMarshaller.readSession( (ReteooStatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session,
+                                             context );
         context.close();
 
     }
@@ -156,7 +163,7 @@ public class DefaultMarshaller
                                                                      this.marshallingConfig.isMarshallWorkItems(),
                                                                      ksession.getEnvironment() );
         context.clockTime = clockTime;
-        OutputMarshaller.writeSession( context );
+        ProtobufOutputMarshaller.writeSession( context );
         context.close();
     }
 

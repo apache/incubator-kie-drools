@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
@@ -80,8 +81,8 @@ public class MockLeftTupleSink extends LeftTupleSource
         return this.id;
     }
 
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new HashMap();
+    public Memory createMemory(final RuleBaseConfiguration config) {
+        return null;
     }
 
     public void attach() {

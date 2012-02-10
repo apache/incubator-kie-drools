@@ -16,6 +16,11 @@
 
 package org.drools.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,12 +33,9 @@ import java.util.Map;
 import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
-import org.drools.common.DefaultAgenda;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
-import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
@@ -49,12 +51,6 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Activation;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.time.impl.Timer;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -63,32 +59,32 @@ import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
  * @see org.drools.rule.Rule
  */
 public class RuleTerminalNode extends BaseNode
-    implements
-    TerminalNode,
-    Externalizable {
+        implements
+        TerminalNode,
+        Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
-    private int               sequence         = -1;  // -1 means not set
+    private int                           sequence         = -1;  // -1 means not set
 
-    private static final long serialVersionUID = 510l;
+    private static final long             serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */
-    private Rule              rule;
+    private Rule                          rule;
     /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
-    private GroupElement      subrule;
-    private int               subruleIndex;
-    private LeftTupleSource   tupleSource;
-    private Declaration[]     declarations;
+    private GroupElement                  subrule;
+    private int                           subruleIndex;
+    private LeftTupleSource               tupleSource;
+    private Declaration[]                 declarations;
 
-    private LeftTupleSinkNode previousTupleSinkNode;
-    private LeftTupleSinkNode nextTupleSinkNode;
-    
-    private boolean           fireDirect;
+    private LeftTupleSinkNode             previousTupleSinkNode;
+    private LeftTupleSinkNode             nextTupleSinkNode;
+
+    private boolean                       fireDirect;
 
     private long             declaredMask;
     private long             inferredMask;
@@ -116,7 +112,7 @@ public class RuleTerminalNode extends BaseNode
                             final LeftTupleSource source,
                             final Rule rule,
                             final GroupElement subrule,
-                            final int subruleIndex, 
+                            final int subruleIndex,
                             final BuildContext context) {
         super(id,
                 context.getPartitionId(),
@@ -125,15 +121,15 @@ public class RuleTerminalNode extends BaseNode
         this.tupleSource = source;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
-        
+
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
-        this.declarations = new Declaration[ rule.getRequiredDeclarations().length ];
+        this.declarations = new Declaration[rule.getRequiredDeclarations().length];
         int i = 0;
-        for (String str : rule.getRequiredDeclarations() ) {
+        for ( String str : rule.getRequiredDeclarations() ) {
             this.declarations[i++] = decls.get( str );
         }
-        Arrays.sort( this.declarations, SortDeclarations.instance  );
-        fireDirect = rule.getActivationListener().equals( "direct" );
+        Arrays.sort( this.declarations, SortDeclarations.instance );
+        setFireDirect( rule.getActivationListener().equals( "direct" ) );
 
         initDeclaredMask(context);        
         initInferredMask();
@@ -194,6 +190,7 @@ public class RuleTerminalNode extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -215,11 +212,11 @@ public class RuleTerminalNode extends BaseNode
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeInt(sequence);
-        out.writeObject(rule);
+        out.writeInt( sequence );
+        out.writeObject( rule );
         out.writeObject( subrule );
-        out.writeInt(subruleIndex);
-        out.writeObject(tupleSource);
+        out.writeInt( subruleIndex );
+        out.writeObject( tupleSource );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
@@ -249,7 +246,7 @@ public class RuleTerminalNode extends BaseNode
     public int getSequence() {
         return this.sequence;
     }
-    
+
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
     }
@@ -281,155 +278,55 @@ public class RuleTerminalNode extends BaseNode
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        boolean fire = createActivations(leftTuple, context, workingMemory, false);
-        // Can be null if no Activation was created, only add it to the agenda if it's not a control rule.
-        if ( fire && !fireDirect) {
-            final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-            agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
-        }
-    }
-    
-    public boolean createActivations(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory,
-                                     final boolean reuseActivation) {        
-        //check if the rule is effective
-        if ( !this.rule.isEffective( tuple,
-                                     workingMemory ) ) {
-            return false;
+        //check if the rule is not effective or
+        // if the current Rule is no-loop and the origin rule is the same then return
+        if ( (!this.rule.isEffective( leftTuple,
+                                      workingMemory )) ||
+             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+            return;
         }
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-        // if the current Rule is no-loop and the origin rule is the same then return
-        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
-            return false;
+
+        boolean fire = agenda.createActivation( leftTuple, 
+                                                context, 
+                                                workingMemory, 
+                                                this, 
+                                                false );
+        if( fire && !fireDirect ) {
+            agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
         }
-        
-        
-        // First process control rules
-        // Control rules do increase ActivationCountForEvent and agenda ActivateActivations, they do not currently fire events
-        // ControlRules for now re-use the same PropagationContext
-        if ( fireDirect ) {    
-            // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item;
-            if ( reuseActivation ) {
-                item = ( AgendaItem ) tuple.getObject();
-            } else {
-                item = agenda.createAgendaItem( tuple,
-                                                0,
-                                                context,
-                                                this);
-            }
-            tuple.setObject( item );            
-            item.setActivated( true );
-            tuple.increaseActivationCountForEvents();  
-            agenda.increaseActiveActivations();
-            agenda.fireActivation( item );  // Control rules fire straight away.       
-            return true;
-        }
-
-
-        AgendaItem item;
-        final Timer timer = this.rule.getTimer();
-        if ( timer != null ) {
-            if ( reuseActivation ) {
-                item = ( AgendaItem ) tuple.getObject();                
-            } else {
-                item = agenda.createScheduledAgendaItem( tuple,
-                                                         context,
-                                                         this );                
-            }            
-        } else {
-            if ( rule.getCalendars() != null ) {
-                // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
-                long timestamp = workingMemory.getSessionClock().getCurrentTime();
-                for ( String cal : rule.getCalendars() ) {
-                    if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
-                        return false;
-                    }
-                }
-            }                                
-            
-            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( rule.getAgendaGroup() );            
-            if ( rule.getRuleFlowGroup() == null ) {
-                // No RuleFlowNode so add it directly to the Agenda
-                // do not add the activation if the rule is "lock-on-active" and the
-                // AgendaGroup is active
-                if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
-                    return false;
-                }
-            } else {
-                // There is a RuleFlowNode so add it there, instead of the Agenda
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
-
-                // do not add the activation if the rule is "lock-on-active" and the
-                // RuleFlowGroup is active
-                if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
-                    return false;
-                }
-            }            
-            
-            if ( reuseActivation && tuple.getObject() != null ) {
-                item = ( AgendaItem ) tuple.getObject();
-                item.setSalience( rule.getSalience().getValue( tuple,
-                                                               this.rule,
-                                                               workingMemory ) );
-                item.setPropagationContext( context );                                
-            } else {
-                item = agenda.createAgendaItem( tuple,
-                                                rule.getSalience().getValue( tuple,
-                                                                             this.rule,
-                                                                             workingMemory ),
-                                                context,
-                                                this);
-            }              
-            
-            item.setAgendaGroup( agendaGroup );   
-        }
-        
-
-        tuple.setObject( item );            
-        item.setActivated( true );
-        tuple.increaseActivationCountForEvents();  
-        agenda.increaseActiveActivations();        
-        item.setSequenence( this.sequence );                
-        
-        ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
-                                                                                      workingMemory ); 
-        return true;
     }
-
-
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
-                                InternalWorkingMemory workingMemory) {        
+                                InternalWorkingMemory workingMemory) {
         // we need the inserted facthandle so we can update the network with new Activation
-        Activation match  = ( Activation ) leftTuple.getObject();
+        AgendaItem match = (AgendaItem) leftTuple.getObject();
 
-        InternalAgenda agenda = ( InternalAgenda ) workingMemory.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
         if ( match != null && match.isActivated() ) {
             // already activated, do nothing
             // although we need to notify the inserted Activation, as it's declarations may have changed.
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), true );            
+            agenda.modifyActivation( match, true );
             return;
-        }   
-        
+        }
+
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             agenda.increaseDormantActivations();
             return;
-        }        
-        
-        boolean fire = createActivations(leftTuple, context, workingMemory, true);
-        if ( fire && !fireDirect ) {                        
+        }
+
+        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, true );
+        if ( fire && !isFireDirect() ) {
             // This activation is currently dormant and about to reactivated, so decrease the dormant count.
             agenda.decreaseDormantActivations();
-            
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );            
-        }        
+
+            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );
+        }
     }
-    
+
     public void modifyLeftTuple(InternalFactHandle factHandle,
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
@@ -457,7 +354,6 @@ public class RuleTerminalNode extends BaseNode
 //        }
     }    
     
-
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
@@ -467,51 +363,16 @@ public class RuleTerminalNode extends BaseNode
         if ( activation == null ) {
             return;
         }
-        
-        final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
-        
-        AgendaItem item = ( AgendaItem ) activation;
-        item.removeAllBlockersAndBlocked(agenda);
-        
-        if ( agenda.isDeclarativeAgenda() && activation.getFactHandle() == null ) {
-            // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
-            agenda.decreaseDormantActivations(); // because we know ControlRules fire straight away and then become dormant
-            return; 
-        } else {
-            // we are retracting an actual Activation, so also remove it and it's handle from the WM. 
-            agenda.removeActivation( (AgendaItem) activation ); 
-        }
 
-        if (  activation.isActivated() ) {
-            // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
-            } else {
-                activation.remove();
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
-                if ( activation.getActivationGroupNode() != null ) {
-                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
-                }
-
-                if ( activation.getActivationNode() != null ) {
-                    final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
-                    ruleFlowGroup.removeActivation( activation );
-                }
-                leftTuple.decreaseActivationCountForEvents();
-
-                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                workingMemory,
-                                                                                                ActivationCancelledCause.WME_MODIFY );
-                agenda.decreaseActiveActivations();
-            }
-        } else {
-            agenda.decreaseDormantActivations();
-        }
-        
-        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
-                                                                             context,
-                                                                             this.rule );        
+        agenda.cancelActivation( leftTuple, 
+                                 context, 
+                                 workingMemory, 
+                                 activation, 
+                                 this );
     }
-    
+
 
     public String toString() {
         return "[RuleTerminalNode(" + this.getId() + "): rule=" + this.rule.getName() + "]";
@@ -538,7 +399,7 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        this.tupleSource.networkUpdated( updateContext );
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -566,18 +427,21 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        
+
     }
-    
+
     public Declaration[] getDeclarations() {
         return this.declarations;
     }
-    
-    public static class SortDeclarations implements Comparator<Declaration> {
+
+    public static class SortDeclarations
+            implements
+            Comparator<Declaration> {
         public final static SortDeclarations instance = new SortDeclarations();
+
         public int compare(Declaration d1,
                            Declaration d2) {
-            return ( d1.getIdentifier().compareTo( d2.getIdentifier() ) );
+            return (d1.getIdentifier().compareTo( d2.getIdentifier() ));
         }
     }
 
@@ -639,8 +503,8 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public static class RTNCleanupAdapter
-        implements
-        CleanupAdapter {
+            implements
+            CleanupAdapter {
         private RuleTerminalNode node;
 
         public RTNCleanupAdapter(RuleTerminalNode node) {
@@ -654,14 +518,14 @@ public class RuleTerminalNode extends BaseNode
             }
 
             final Activation activation = (Activation) leftTuple.getObject();
-            
+
             // this is to catch a race condition as activations are activated and unactivated on timers
-            if ( activation instanceof ScheduledAgendaItem ) {                
-                ScheduledAgendaItem scheduled = ( ScheduledAgendaItem ) activation;
+            if ( activation instanceof ScheduledAgendaItem ) {
+                ScheduledAgendaItem scheduled = (ScheduledAgendaItem) activation;
                 workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
                 scheduled.getJobHandle().setCancel( true );
             }
-            
+
             if ( activation.isActivated() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
@@ -681,25 +545,25 @@ public class RuleTerminalNode extends BaseNode
             leftTuple.unlinkFromRightParent();
         }
     }
-    
+
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
-    }    
-    
+        return new RuleTerminalNodeLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new RuleTerminalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new RuleTerminalNodeLeftTuple( leftTuple, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      LeftTupleSink sink) {
-        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
-    }   
-    
+        return new RuleTerminalNodeLeftTuple( leftTuple, rightTuple, sink );
+    }
+
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
@@ -716,4 +580,12 @@ public class RuleTerminalNode extends BaseNode
     public void setLeftInputOtnId(int leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }  
+
+    public boolean isFireDirect() {
+        return fireDirect;
+    }
+
+    public void setFireDirect(boolean fireDirect) {
+        this.fireDirect = fireDirect;
+    }
 }

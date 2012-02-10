@@ -76,6 +76,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-embedded</artifactId>
       <scope>test</scope>

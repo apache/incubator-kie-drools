@@ -27,50 +27,59 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.ProtobufInputMarshaller.PBActivationsFilter;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
 
 public class MarshallerReaderContext extends ObjectInputStream {
-    public final MarshallerReaderContext            stream;
-    public final InternalRuleBase                   ruleBase;
-    public InternalWorkingMemory                    wm;
-    public KnowledgeRuntime                         kruntime;
-    public final Map<Integer, BaseNode>             sinks;
+    public final MarshallerReaderContext                 stream;
+    public final InternalRuleBase                        ruleBase;
+    public InternalWorkingMemory                         wm;
+    public KnowledgeRuntime                              kruntime;
+    public final Map<Integer, BaseNode>                  sinks;
 
-    public Map<Integer, InternalFactHandle>         handles;
+    public Map<Integer, InternalFactHandle>              handles;
 
-    public final Map<RightTupleKey, RightTuple>     rightTuples;
-    public final Map<Integer, LeftTuple>            terminalTupleMap;
-
-    public final ObjectMarshallingStrategyStore     resolverStrategyFactory;
-    public final Map<String, EntryPoint>            entryPoints;
+    public final Map<RightTupleKey, RightTuple>          rightTuples;
+    public final Map<Integer, LeftTuple>                 terminalTupleMap;
+    public final PBActivationsFilter                     filter;
     
-    public final Map<Short, TimersInputMarshaller>  readersByInt;
 
-    public final Map<Long, PropagationContext>      propagationContexts;
+    public final ObjectMarshallingStrategyStore          resolverStrategyFactory;
+    public final Map<Integer, ObjectMarshallingStrategy> usedStrategies;
 
-    public final boolean                            marshalProcessInstances;
-    public final boolean                            marshalWorkItems;
-    public final Environment                        env;
+    public final Map<String, EntryPoint>                 entryPoints;
+
+    public final Map<Integer, TimersInputMarshaller>     readersByInt;
+
+    public final Map<Long, PropagationContext>           propagationContexts;
+
+    public final boolean                                 marshalProcessInstances;
+    public final boolean                                 marshalWorkItems;
+    public final Environment                             env;
+    
+    // this is a map to store node memory data indexed by node ID
+    public final Map<Integer, Object>                    nodeMemories;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,
-                                   ObjectMarshallingStrategyStore resolverStrategyFactory, Environment env) throws IOException {
+                                   ObjectMarshallingStrategyStore resolverStrategyFactory,
+                                   Map<Integer, TimersInputMarshaller> timerReaders,
+                                   Environment env) throws IOException {
         this( stream,
               ruleBase,
               sinks,
               resolverStrategyFactory,
+              timerReaders,
               true,
               true, 
               env    );
@@ -80,24 +89,21 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,
                                    ObjectMarshallingStrategyStore resolverStrategyFactory,
+                                   Map<Integer, TimersInputMarshaller> timerReaders,
                                    boolean marshalProcessInstances,
-                                   boolean marshalWorkItems, Environment env) throws IOException {
+                                   boolean marshalWorkItems, 
+                                   Environment env) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
         this.sinks = sinks;
         
-        this.readersByInt = new HashMap<Short, TimersInputMarshaller>();        
-        
-        this.readersByInt.put( PersisterEnums.BEHAVIOR_TIMER, new BehaviorJobContextTimerInputMarshaller() );
-        
-        this.readersByInt.put( PersisterEnums.ACTIVATION_TIMER,  new ActivationTimerInputMarshaller() );        
-
-        this.readersByInt.put( PersisterEnums.EXPIRE_TIMER,  new ExpireJobContextTimerInputMarshaller() );
+        this.readersByInt = timerReaders;
         
         this.handles = new HashMap<Integer, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
+        this.filter = new PBActivationsFilter();
         this.entryPoints = new HashMap<String, EntryPoint>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
         if(resolverStrategyFactory == null){
@@ -105,14 +111,18 @@ public class MarshallerReaderContext extends ObjectInputStream {
             if ( strats == null ) {
                 strats = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() } ;
             }
-            this.resolverStrategyFactory = new ObjectMarshallingStrategyStore(strats);
+            this.resolverStrategyFactory = new ObjectMarshallingStrategyStoreImpl(strats);
         }
         else{
             this.resolverStrategyFactory = resolverStrategyFactory;
         }
+        this.usedStrategies = new HashMap<Integer, ObjectMarshallingStrategy>();
+        
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
+        
+        this.nodeMemories = new HashMap<Integer, Object>();
     }
     
     @Override

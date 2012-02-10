@@ -29,6 +29,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
@@ -54,6 +55,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     public final PrintStream                         out = System.out;
 
     public final ObjectMarshallingStrategyStore      objectMarshallingStrategyStore;
+    public final Map<String, Integer>                usedStrategies;
 
     public final Map<LeftTuple, Integer>             terminalTupleMap;
 
@@ -103,11 +105,12 @@ public class MarshallerWriteContext extends ObjectOutputStream {
             if ( strats == null ) {
                 strats = new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
             }
-            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore( strats );
+            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStoreImpl( strats );
         }
         else {
             this.objectMarshallingStrategyStore = resolverStrategyFactory;
         }
+        this.usedStrategies = new HashMap<String, Integer>();
 
         this.terminalTupleMap = new IdentityHashMap<LeftTuple, Integer>();
 

@@ -22,12 +22,30 @@ package org.drools.common;
  */
 public interface NodeMemories {
 
-    public Object getNodeMemory( NodeMemory node );
+    public Memory getNodeMemory( NodeMemory node );
 
     public void clearNodeMemory( NodeMemory node );
 
     public void setRuleBaseReference(InternalRuleBase ruleBase);
     
     public void clear();
+    
+    /**
+     * Peeks at the content of the node memory for the given
+     * node ID. This method has no side effects, so if the
+     * given memory slot for the given node ID is null, it 
+     * will return null.
+     * 
+     * @param nodeId
+     * @return
+     */
+    public Memory peekNodeMemory( int nodeId );
+    
+    /**
+     * Returns the number of positions in this memory
+     * 
+     * @return
+     */
+    public int length();
 
 }

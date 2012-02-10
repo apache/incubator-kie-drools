@@ -453,7 +453,7 @@ public class MarshallingTestUtil {
         // Setup env/context/stream
         Environment env = EnvironmentFactory.newEnvironment();
         ByteArrayInputStream bais = new ByteArrayInputStream(marshalledSessionByteArray);
-        MarshallerReaderContext context = new MarshallerReaderContext(bais, null, null, null, env);
+        MarshallerReaderContext context = new MarshallerReaderContext(bais, null, null, null, null, env);
        
         // Unmarshall
         WorkItem unmarshalledWorkItem =  InputMarshaller.readWorkItem(context);
