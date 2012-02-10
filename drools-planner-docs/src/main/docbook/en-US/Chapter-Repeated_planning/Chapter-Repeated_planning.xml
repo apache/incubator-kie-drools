@@ -92,23 +92,23 @@
     <title>Real-time planning (event based planning)</title>
 
     <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to
-    lower the burden of real-time planning. Don't configure any <literal>Termination</literal>, just terminate early
-    when you need the results or subscribe to the <literal>BestSolutionChangedEvent</literal> (the latter doesn't
-    guarantee yet that every <literal>ProblemFactChange</literal> has been processed already).</para>
+    lower the burden of real-time planning.</para>
 
     <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the problem
     facts, for example an airplane is delayed and needs the runway at a later time. Do not change the problem fact
     instances used by the <literal>Solver</literal> while it is solving, as that will corrupt it. Instead, add a
-    <literal>ProblemFactChange</literal> to the <literal>Solver</literal> which it will execute as soon as the timing is
-    right.</para>
+    <literal>ProblemFactChange</literal> to the <literal>Solver</literal> which it will execute in the solver thread as
+    soon as possible.</para>
 
     <programlisting>public interface Solver {
 
-   ...
+    ...
 
-   boolean addProblemFactChange(ProblemFactChange problemFactChange);
+    boolean addProblemFactChange(ProblemFactChange problemFactChange);
 
-   ...
+    boolean isEveryProblemFactChangeProcessed();
+
+    ...
 
 }</programlisting>
 
@@ -165,7 +165,14 @@
     </note>
 
     <para>In essence, the <literal>Solver</literal> will stop, run the <literal>ProblemFactChange</literal> and restart.
-    Each <literal>SolverPhase</literal> will be run again. Each configured <literal>Termination</literal> (except
+    Each <literal>SolverPhase</literal> will run again. Each configured <literal>Termination</literal> (except
     <literal>terminateEarly</literal>) will reset.</para>
+
+    <para>Normally, you won't configure any <literal>Termination</literal>, just call
+    <literal>Solver.terminateEarly()</literal> when the results are needed. Alternatively, you can subscribe to the
+    <literal>BestSolutionChangedEvent</literal>. A <literal>BestSolutionChangedEvent</literal> doesn't guarantee that
+    every <literal>ProblemFactChange</literal> has been processed already, so check
+    <literal>Solver.isEveryProblemFactChangeProcessed()</literal> and ignore any
+    <literal>BestSolutionChangedEvent</literal> fired while that method returns <literal>false</literal>.</para>
   </section>
 </chapter>
