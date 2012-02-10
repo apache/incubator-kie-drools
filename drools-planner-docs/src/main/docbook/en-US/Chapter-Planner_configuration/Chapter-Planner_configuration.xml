@@ -920,13 +920,12 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
   </section>
 
   <section>
-    <title>Solver</title>
+    <title>Use the <literal>Solver</literal></title>
 
     <section>
       <title>The Solver interface</title>
 
-      <para>The <literal>Solver</literal> implementation will solve your planning problem. It's build based from a
-      solver configuration, do not implement it yourself:</para>
+      <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
       <programlisting language="java">public interface Solver {
 
@@ -940,8 +939,10 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
 }</programlisting>
 
-      <para>A Solver can only solve 1 problem instance at a time. A <literal>Solver</literal> should only be accessed
-      from a single thread, except for the methods that are specifically javadocced as being thread-safe.</para>
+      <para>A <literal>Solver</literal> can only solve 1 planning problem instance at a time. A
+      <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
+      specifically javadocced as being thread-safe. It's build with a <literal>SolverFactory</literal>, do not implement
+      or build it yourself.</para>
     </section>
 
     <section>
