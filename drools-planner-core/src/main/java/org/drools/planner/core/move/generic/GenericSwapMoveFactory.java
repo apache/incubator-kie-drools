@@ -53,26 +53,33 @@ public class GenericSwapMoveFactory extends CachedMoveFactory {
     @Override
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
-        List<Object> planningEntityList = solutionDescriptor.getPlanningEntityList(solution);
-        for (ListIterator<Object> leftIt = planningEntityList.listIterator(); leftIt.hasNext();) {
-            Object leftPlanningEntity = leftIt.next();
-            FactHandle leftPlanningEntityFactHandle = solutionDirector.getWorkingMemory()
-                    .getFactHandle(leftPlanningEntity);
-            PlanningEntityDescriptor leftPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                    leftPlanningEntity.getClass());
-            Collection<PlanningVariableDescriptor> planningVariableDescriptors
-                    = leftPlanningEntityDescriptor.getPlanningVariableDescriptors();
-            for (ListIterator<Object> rightIt = planningEntityList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                Object rightPlanningEntity = rightIt.next();
-                PlanningEntityDescriptor rightPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                        leftPlanningEntity.getClass());
-                if (leftPlanningEntityDescriptor.getPlanningEntityClass().equals(
-                        rightPlanningEntityDescriptor.getPlanningEntityClass())) {
-                    FactHandle rightPlanningEntityFactHandle = solutionDirector.getWorkingMemory()
-                            .getFactHandle(rightPlanningEntity);
-                    moveList.add(new GenericSwapMove(planningVariableDescriptors,
-                            leftPlanningEntity, leftPlanningEntityFactHandle,
-                            rightPlanningEntity, rightPlanningEntityFactHandle));
+        List<Object> entityList = solutionDescriptor.getPlanningEntityList(solution);
+        for (ListIterator<Object> leftIt = entityList.listIterator(); leftIt.hasNext();) {
+            Object leftEntity = leftIt.next();
+            FactHandle leftEntityFactHandle = solutionDirector.getWorkingMemory()
+                    .getFactHandle(leftEntity);
+            PlanningEntityDescriptor leftEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+                    leftEntity.getClass());
+            Collection<PlanningVariableDescriptor> variableDescriptors
+                    = leftEntityDescriptor.getPlanningVariableDescriptors();
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.isChained()) {
+                    throw new IllegalStateException("The planningEntityClass ("
+                            + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                            + ")'s planningVariableDescriptor (" + variableDescriptor.getVariablePropertyName()
+                            + ") is chained and can therefor not use the moveFactory (" + this.getClass() + ").");
+                }
+            }
+            for (ListIterator<Object> rightIt = entityList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                Object rightEntity = rightIt.next();
+                PlanningEntityDescriptor rightEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+                        leftEntity.getClass());
+                if (leftEntityDescriptor.getPlanningEntityClass().equals(
+                        rightEntityDescriptor.getPlanningEntityClass())) {
+                    FactHandle rightEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(rightEntity);
+                    moveList.add(new GenericSwapMove(variableDescriptors,
+                            leftEntity, leftEntityFactHandle,
+                            rightEntity, rightEntityFactHandle));
                 }
             }
         }

@@ -51,16 +51,21 @@ public class GenericChangeMoveFactory extends CachedMoveFactory {
     @Override
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
-        for (Object planningEntity : solutionDescriptor.getPlanningEntityList(solution)) {
-            FactHandle planningEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(planningEntity);
-            PlanningEntityDescriptor planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                    planningEntity.getClass());
-            for (PlanningVariableDescriptor planningVariableDescriptor
-                    : planningEntityDescriptor.getPlanningVariableDescriptors()) {
-                for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
-                        solutionDirector.getWorkingSolution(), planningEntity)) {
-                    moveList.add(new GenericChangeMove(planningEntity, planningEntityFactHandle,
-                            planningVariableDescriptor, toPlanningValue));
+        for (Object entity : solutionDescriptor.getPlanningEntityList(solution)) {
+            FactHandle planningEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(entity);
+            PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
+                    entity.getClass());
+            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
+                if (variableDescriptor.isChained()) {
+                    throw new IllegalStateException("The planningEntityClass ("
+                            + entityDescriptor.getPlanningEntityClass()
+                            + ")'s planningVariableDescriptor (" + variableDescriptor.getVariablePropertyName()
+                            + ") is chained and can therefor not use the moveFactory (" + this.getClass() + ").");
+                }
+                for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
+                        solutionDirector.getWorkingSolution(), entity)) {
+                    moveList.add(new GenericChangeMove(entity, planningEntityFactHandle,
+                            variableDescriptor, toPlanningValue));
                 }
             }
         }

@@ -62,16 +62,23 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
         for (Class<?> entityClass : solutionDescriptor.getPlanningEntityImplementationClassSet()) {
             PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(entityClass);
             Collection<PlanningVariableDescriptor> variableDescriptors = entityDescriptor.getPlanningVariableDescriptors();
-
+            for (PlanningVariableDescriptor variableDescriptor : variableDescriptors) {
+                if (variableDescriptor.isChained()) {
+                    throw new IllegalStateException("The planningEntityClass ("
+                            + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
+                            + ")'s planningVariableDescriptor (" + variableDescriptor.getVariablePropertyName()
+                            + ") is chained and can therefor not use the moveFactory (" + this.getClass() + ").");
+                }
+            }
             List<List<Object>> swapEntityListList = buildSwapEntityListList(entityClass, variableDescriptors, globalEntityList);
 
             for (ListIterator<List<Object>> leftIt = swapEntityListList.listIterator(); leftIt.hasNext();) {
-                List<Object> leftPlanningEntityList = leftIt.next();
+                List<Object> leftEntityList = leftIt.next();
                 for (ListIterator<List<Object>> rightIt = swapEntityListList.listIterator(leftIt.nextIndex());
                         rightIt.hasNext();) {
-                    List<Object> rightPlanningEntityList = rightIt.next();
+                    List<Object> rightEntityList = rightIt.next();
                     moveList.add(new GenericSwapPillarMove(variableDescriptors,
-                            leftPlanningEntityList, rightPlanningEntityList));
+                            leftEntityList, rightEntityList));
                 }
             }
         }
