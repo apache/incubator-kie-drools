@@ -57,4 +57,8 @@ public class MrProcess extends AbstractPersistable {
         return processRequirementMap.get(resource);
     }
 
+    public int getUsage(MrResource resource) {
+        return processRequirementMap.get(resource).getUsage();
+    }
+
 }

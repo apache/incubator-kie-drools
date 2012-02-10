@@ -46,9 +46,8 @@ rule "machineUsage"
     when
         $machineCapacity : MrMachineCapacity($machine : machine, $resource : resource)
         accumulate(
-                MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
-                and MrProcessAssignment(machine == $machine, process == $process),
-            $usageTotal : sum($usage)
+                $processAssignment : MrProcessAssignment(machine == $machine),
+            $usageTotal : sum($processAssignment.getUsage($resource))
         )
     then
         insertLogical(new MrMachineUsage($machineCapacity, $usageTotal.intValue()));
@@ -58,9 +57,8 @@ rule "machineTransientUsage"
     when
         $machineCapacity : MrMachineCapacity(transientlyConsumed == true, $machine : machine, $resource : resource)
         accumulate(
-                MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
-                and MrProcessAssignment(originalMachine == $machine, process == $process, moved == true),
-            $usageTotal : sum($usage)
+                $processAssignment : MrProcessAssignment(originalMachine == $machine, moved == true),
+            $usageTotal : sum($processAssignment.getUsage($resource))
         )
     then
         insertLogical(new MrMachineTransientUsage($machineCapacity, $usageTotal.intValue()));
