@@ -40,13 +40,13 @@ public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 180000)
+    @Test(timeout = 300000)
     public void solveMedium_late01_initialized() {
         File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "-45hard/-3335soft");
     }
 
-    @Test(timeout = 180000)
+    @Test(timeout = 300000)
     public void solveMedium_late01_initializedDebug() {
         File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
         runSpeedTest(unsolvedDataFile, "-57hard/-3387soft", EnvironmentMode.DEBUG);
