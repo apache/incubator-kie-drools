@@ -465,63 +465,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             boolean hasObjects = false;
             for (FieldDefinition field : classDef.getFieldsDefinitions()) {
 
-                // get simple init expression value
-                Object val = BuildUtils.getDefaultValue(field);
-
-                if (val != null) {
-                    // there's a simple init expression
-                    mv.visitVarInsn(Opcodes.ALOAD, 0);
-                    if ( BuildUtils.isPrimitive( field.getTypeName() )
-                            || BuildUtils.isBoxed( field.getTypeName() )
-                            || String.class.getName().equals( field.getTypeName() ) ) {
-                        mv.visitLdcInsn(val);
-                        if ( BuildUtils.isBoxed(field.getTypeName()) ) {
-                            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                                    BuildUtils.getInternalType(field.getTypeName()),
-                                    "valueOf",
-                                    "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
-                        }
-                    } else {
-                        hasObjects = true;
-                        String type = BuildUtils.getInternalType( val.getClass().getName() );
-                        mv.visitTypeInsn( NEW, type );
-                        mv.visitInsn(DUP);
-                        mv.visitMethodInsn( INVOKESPECIAL,
-                                type,
-                                "<init>",
-                                "()V");
-                    }
-                } else {
-                    // there's a complex init expression
-                    if ( field.getInitExpr() != null ) {
-                        mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitLdcInsn( field.getInitExpr() );
-                        mv.visitMethodInsn( INVOKESTATIC, 
-                                "org/mvel2/MVEL", 
-                                "eval", 
-                                "(Ljava/lang/String;)Ljava/lang/Object;");
-                        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
-                        val = field.getInitExpr();
-                    }
-                }
-
-
-                if ( val != null ) {
-                    if (! field.isInherited()) {
-                        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                BuildUtils.getInternalType( classDef.getClassName() ),
-                                field.getName(),
-                                BuildUtils.getTypeDescriptor( field.getTypeName() ) );
-                    } else {
-                        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                                BuildUtils.getInternalType(classDef.getClassName()),
-                                field.getWriteMethod(),
-                                Type.getMethodDescriptor(Type.VOID_TYPE,
-                                        new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
-                                ));
-                    }
-
-                }
+                hasObjects = hasObjects || initFieldWithDefaultValue( mv, classDef, field );
             }
 
 
@@ -529,6 +473,70 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                 initializeDynamicTypeStructures( mv, classDef );
             }
 
+        return hasObjects;
+    }
+
+
+    protected boolean initFieldWithDefaultValue( MethodVisitor mv, ClassDefinition classDef, FieldDefinition field ) {
+        // get simple init expression value
+        Object val = BuildUtils.getDefaultValue(field);
+        boolean hasObjects = false;
+        
+        if (val != null) {
+            // there's a simple init expression
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            if ( BuildUtils.isPrimitive( field.getTypeName() )
+                    || BuildUtils.isBoxed( field.getTypeName() )
+                    || String.class.getName().equals( field.getTypeName() ) ) {
+                mv.visitLdcInsn(val);
+                if ( BuildUtils.isBoxed(field.getTypeName()) ) {
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                            BuildUtils.getInternalType(field.getTypeName()),
+                            "valueOf",
+                            "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
+                }
+            } else {
+                hasObjects = true;
+                String type = BuildUtils.getInternalType( val.getClass().getName() );
+                mv.visitTypeInsn( NEW, type );
+                mv.visitInsn(DUP);
+                mv.visitMethodInsn( INVOKESPECIAL,
+                        type,
+                        "<init>",
+                        "()V");
+            }
+        } else {
+            // there's a complex init expression
+            if ( field.getInitExpr() != null ) {
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitLdcInsn( field.getInitExpr() );
+                mv.visitMethodInsn( INVOKESTATIC,
+                        "org/mvel2/MVEL",
+                        "eval",
+                        "(Ljava/lang/String;)Ljava/lang/Object;");
+                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
+                val = field.getInitExpr();
+            }
+        }
+
+
+        if ( val != null ) {
+            if (! field.isInherited()) {
+                mv.visitFieldInsn( Opcodes.PUTFIELD,
+                        BuildUtils.getInternalType( classDef.getClassName() ),
+                        field.getName(),
+                        BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+            } else {
+                mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                        BuildUtils.getInternalType( classDef.getClassName() ),
+                        field.getWriteMethod(),
+                        Type.getMethodDescriptor(Type.VOID_TYPE,
+                                new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
+                        ));
+            }
+
+        }
+        
         return hasObjects;
     }
 
@@ -659,6 +667,16 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                         ));
             }
 
+        }
+
+
+
+        for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
+            if ( ! fieldDefs.contains( field ) && field.getInitExpr() != null && ! "".equals( field.getInitExpr().trim() ) ) {
+
+                initFieldWithDefaultValue( mv, classDef, field );
+
+            }
         }
 
         if ( classDef.isTraitable() ) {
@@ -1225,9 +1243,9 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                 } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
 
 
-                    mv.visitMethodInsn( INVOKESTATIC, 
-                            "java/util/Arrays", 
-                            "toString", 
+                    mv.visitMethodInsn( INVOKESTATIC,
+                            "java/util/Arrays",
+                            "toString",
                             "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
 
                     mv.visitMethodInsn( INVOKEVIRTUAL,
