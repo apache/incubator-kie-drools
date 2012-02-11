@@ -17,22 +17,21 @@
 package org.drools.planner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("PeriodHardConstraint")
-public class PeriodHardConstraint extends AbstractPersistable {
+@XStreamAlias("PeriodPenalty")
+public class PeriodPenalty extends AbstractPersistable {
 
-    private PeriodHardConstraintType periodHardConstraintType;
+    private PeriodPenaltyType periodPenaltyType;
     private Topic leftSideTopic;
     private Topic rightSideTopic;
 
-    public PeriodHardConstraintType getPeriodHardConstraintType() {
-        return periodHardConstraintType;
+    public PeriodPenaltyType getPeriodPenaltyType() {
+        return periodPenaltyType;
     }
 
-    public void setPeriodHardConstraintType(PeriodHardConstraintType periodHardConstraintType) {
-        this.periodHardConstraintType = periodHardConstraintType;
+    public void setPeriodPenaltyType(PeriodPenaltyType periodPenaltyType) {
+        this.periodPenaltyType = periodPenaltyType;
     }
 
     public Topic getLeftSideTopic() {
@@ -53,7 +52,7 @@ public class PeriodHardConstraint extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return periodHardConstraintType + "@" + leftSideTopic.getId() + "&" + rightSideTopic.getId();
+        return periodPenaltyType + "@" + leftSideTopic.getId() + "&" + rightSideTopic.getId();
     }
 
 }

@@ -25,11 +25,11 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.examination.domain.Period;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraint;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraintType;
+import org.drools.planner.examples.examination.domain.PeriodPenalty;
+import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
 import org.drools.planner.examples.examination.domain.Room;
-import org.drools.planner.examples.examination.domain.RoomHardConstraint;
-import org.drools.planner.examples.examination.domain.RoomHardConstraintType;
+import org.drools.planner.examples.examination.domain.RoomPenalty;
+import org.drools.planner.examples.examination.domain.RoomPenaltyType;
 import org.drools.planner.examples.examination.domain.Student;
 import org.drools.planner.examples.examination.domain.Topic;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
@@ -78,10 +78,10 @@ rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the 
 end
 
 // Period hard constraints
-rule "periodHardConstraintExamCoincidence"
+rule "periodPenaltyExamCoincidence"
     when
-        $periodHardConstraint : PeriodHardConstraint(
-            periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE,
+        $periodPenalty : PeriodPenalty(
+            periodPenaltyType == PeriodPenaltyType.EXAM_COINCIDENCE,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
@@ -89,28 +89,28 @@ rule "periodHardConstraintExamCoincidence"
         $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod)
         // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
     then
-        insertLogical(new IntConstraintOccurrence("periodHardConstraintExamCoincidence", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("periodPenaltyExamCoincidence", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
                 $leftExam, $rightExam));
 end
-rule "periodHardConstraintExclusion"
+rule "periodPenaltyExclusion"
     when
-        $periodHardConstraint : PeriodHardConstraint(
-            periodHardConstraintType == PeriodHardConstraintType.EXCLUSION,
+        $periodPenalty : PeriodPenalty(
+            periodPenaltyType == PeriodPenaltyType.EXCLUSION,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
         $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period)
         $rightExam : Exam(topic == $rightSideTopic, period == $leftSidePeriod)
     then
-        insertLogical(new IntConstraintOccurrence("periodHardConstraintExclusion", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("periodPenaltyExclusion", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
                 $leftExam, $rightExam));
 end
-rule "periodHardConstraintAfter"
+rule "periodPenaltyAfter"
     when
-        $periodHardConstraint : PeriodHardConstraint(
-            periodHardConstraintType == PeriodHardConstraintType.AFTER,
+        $periodPenalty : PeriodPenalty(
+            periodPenaltyType == PeriodPenaltyType.AFTER,
             $leftSideTopic : leftSideTopic,
             $rightSideTopic : rightSideTopic
         )
@@ -119,22 +119,22 @@ rule "periodHardConstraintAfter"
             $beforeSidePeriod : period
         )
     then
-        insertLogical(new IntConstraintOccurrence("periodHardConstraintAfter", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("periodPenaltyAfter", ConstraintType.NEGATIVE_HARD,
                 ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()),
                 $leftExam, $rightExam));
 end
 
 // Room hard constraints
-rule "roomHardConstraintExclusive"
+rule "roomPenaltyExclusive"
     when
-        $roomHardConstraint : RoomHardConstraint(
-            roomHardConstraintType == RoomHardConstraintType.ROOM_EXCLUSIVE,
+        $roomPenalty : RoomPenalty(
+            roomPenaltyType == RoomPenaltyType.ROOM_EXCLUSIVE,
             $topic : topic
         )
         $leftExam : Exam(topic == $topic, $room : room)
         $rightExam : Exam(room == $room, topic != $topic, $otherTopic : topic)
     then
-        insertLogical(new IntConstraintOccurrence("roomHardConstraintExclusive", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("roomPenaltyExclusive", ConstraintType.NEGATIVE_HARD,
                 ($topic.getStudentSize() + $otherTopic.getStudentSize()),
                 $leftExam, $rightExam));
 end

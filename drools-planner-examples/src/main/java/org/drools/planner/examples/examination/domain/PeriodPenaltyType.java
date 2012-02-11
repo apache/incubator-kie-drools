@@ -16,7 +16,7 @@
 
 package org.drools.planner.examples.examination.domain;
 
-public enum PeriodHardConstraintType {
+public enum PeriodPenaltyType {
     EXAM_COINCIDENCE, // TODO rename to coincidence?
     EXCLUSION,
     AFTER

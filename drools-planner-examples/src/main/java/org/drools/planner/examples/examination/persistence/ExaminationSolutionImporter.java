@@ -39,11 +39,11 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.examination.domain.Period;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraint;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraintType;
+import org.drools.planner.examples.examination.domain.PeriodPenalty;
+import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
 import org.drools.planner.examples.examination.domain.Room;
-import org.drools.planner.examples.examination.domain.RoomHardConstraint;
-import org.drools.planner.examples.examination.domain.RoomHardConstraintType;
+import org.drools.planner.examples.examination.domain.RoomPenalty;
+import org.drools.planner.examples.examination.domain.RoomPenaltyType;
 import org.drools.planner.examples.examination.domain.Student;
 import org.drools.planner.examples.examination.domain.Topic;
 import org.drools.planner.examples.examination.domain.solver.ExamBefore;
@@ -86,8 +86,8 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                 throw new IllegalStateException("Read line (" + line
                         + " is not the expected header ([PeriodHardConstraints])");
             }
-            readPeriodHardConstraintList(examination);
-            readRoomHardConstraintList(examination);
+            readPeriodPenaltyList(examination);
+            readRoomPenaltyList(examination);
             readInstitutionalWeighting(examination);
             tagFrontLoadLargeTopics(examination);
             tagFrontLoadLastPeriods(examination);
@@ -98,8 +98,8 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                     " and {} room constraints.",
                     new Object[]{examination.getStudentList().size(), examination.getTopicList().size(),
                             examination.getPeriodList().size(), examination.getRoomList().size(),
-                            examination.getPeriodHardConstraintList().size(),
-                            examination.getRoomHardConstraintList().size()});
+                            examination.getPeriodPenaltyList().size(),
+                            examination.getRoomPenaltyList().size()});
             int possibleForOneExamSize = examination.getPeriodList().size() * examination.getRoomList().size();
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneExamSize).pow(
                     examination.getTopicList().size());
@@ -209,64 +209,64 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             examination.setRoomList(roomList);
         }
 
-        private void readPeriodHardConstraintList(Examination examination)
+        private void readPeriodPenaltyList(Examination examination)
                 throws IOException {
             List<Topic> topicList = examination.getTopicList();
-            List<PeriodHardConstraint> periodHardConstraintList = new ArrayList<PeriodHardConstraint>();
+            List<PeriodPenalty> periodPenaltyList = new ArrayList<PeriodPenalty>();
             String line = bufferedReader.readLine();
             int id = 0;
             while (!line.equals("[RoomHardConstraints]")) {
                 String[] lineTokens = line.split(SPLIT_REGEX);
-                PeriodHardConstraint periodHardConstraint = new PeriodHardConstraint();
-                periodHardConstraint.setId((long) id);
+                PeriodPenalty periodPenalty = new PeriodPenalty();
+                periodPenalty.setId((long) id);
                 if (lineTokens.length != 3) {
                     throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
                 }
                 Topic leftTopic = topicList.get(Integer.parseInt(lineTokens[0]));
-                periodHardConstraint.setLeftSideTopic(leftTopic);
-                PeriodHardConstraintType periodHardConstraintType = PeriodHardConstraintType.valueOf(lineTokens[1]);
-                periodHardConstraint.setPeriodHardConstraintType(periodHardConstraintType);
+                periodPenalty.setLeftSideTopic(leftTopic);
+                PeriodPenaltyType periodPenaltyType = PeriodPenaltyType.valueOf(lineTokens[1]);
+                periodPenalty.setPeriodPenaltyType(periodPenaltyType);
                 Topic rightTopic = topicList.get(Integer.parseInt(lineTokens[2]));
-                periodHardConstraint.setRightSideTopic(rightTopic);
-                if (periodHardConstraintType == PeriodHardConstraintType.EXAM_COINCIDENCE) {
+                periodPenalty.setRightSideTopic(rightTopic);
+                if (periodPenaltyType == PeriodPenaltyType.EXAM_COINCIDENCE) {
                     // It's not specified what happens
                     // when A coincidences with B and B coincidences with C
                     // and when A and C share students (but don't directly coincidence)
                     if (!Collections.disjoint(leftTopic.getStudentList(), rightTopic.getStudentList())) {
-                        logger.warn("Filtering out periodHardConstraint (" + periodHardConstraint
+                        logger.warn("Filtering out periodPenalty (" + periodPenalty
                                 + ") because the left and right topic share students.");
                     } else {
-                        periodHardConstraintList.add(periodHardConstraint);
+                        periodPenaltyList.add(periodPenalty);
                     }
                 } else {
-                    periodHardConstraintList.add(periodHardConstraint);
+                    periodPenaltyList.add(periodPenalty);
                 }
                 line = bufferedReader.readLine();
                 id++;
             }
-            examination.setPeriodHardConstraintList(periodHardConstraintList);
+            examination.setPeriodPenaltyList(periodPenaltyList);
         }
 
-        private void readRoomHardConstraintList(Examination examination)
+        private void readRoomPenaltyList(Examination examination)
                 throws IOException {
             List<Topic> topicList = examination.getTopicList();
-            List<RoomHardConstraint> roomHardConstraintList = new ArrayList<RoomHardConstraint>();
+            List<RoomPenalty> roomPenaltyList = new ArrayList<RoomPenalty>();
             String line = bufferedReader.readLine();
             int id = 0;
             while (!line.equals("[InstitutionalWeightings]")) {
                 String[] lineTokens = line.split(SPLIT_REGEX);
-                RoomHardConstraint roomHardConstraint = new RoomHardConstraint();
-                roomHardConstraint.setId((long) id);
+                RoomPenalty roomPenalty = new RoomPenalty();
+                roomPenalty.setId((long) id);
                 if (lineTokens.length != 2) {
                     throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
                 }
-                roomHardConstraint.setTopic(topicList.get(Integer.parseInt(lineTokens[0])));
-                roomHardConstraint.setRoomHardConstraintType(RoomHardConstraintType.valueOf(lineTokens[1]));
-                roomHardConstraintList.add(roomHardConstraint);
+                roomPenalty.setTopic(topicList.get(Integer.parseInt(lineTokens[0])));
+                roomPenalty.setRoomPenaltyType(RoomPenaltyType.valueOf(lineTokens[1]));
+                roomPenaltyList.add(roomPenalty);
                 line = bufferedReader.readLine();
                 id++;
             }
-            examination.setRoomHardConstraintList(roomHardConstraintList);
+            examination.setRoomPenaltyList(roomPenaltyList);
         }
 
         private int readHeaderWithNumber(String header) throws IOException {
@@ -363,10 +363,10 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                 examList.add(exam);
                 topicToExamMap.put(topic, exam);
             }
-            for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
-                if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE) {
-                    Exam leftExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
-                    Exam rightExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+            for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {
+                if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXAM_COINCIDENCE) {
+                    Exam leftExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
+                    Exam rightExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
 
                     Set<Exam> newCoincidenceExamSet = new LinkedHashSet<Exam>(4);
                     ExamCoincidence leftExamCoincidence = leftExam.getExamCoincidence();
@@ -385,9 +385,9 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                     for (Exam exam : newCoincidenceExamSet) {
                         exam.setExamCoincidence(newExamCoincidence);
                     }
-                } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
-                    Exam afterExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
-                    Exam beforeExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+                } else if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.AFTER) {
+                    Exam afterExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
+                    Exam beforeExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
                     ExamBefore examBefore = beforeExam.getExamBefore();
                     if (examBefore == null) {
                         examBefore = new ExamBefore(new LinkedHashSet<Exam>(2));

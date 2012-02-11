@@ -17,21 +17,20 @@
 package org.drools.planner.examples.examination.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("RoomHardConstraint")
-public class RoomHardConstraint extends AbstractPersistable {
+@XStreamAlias("RoomPenalty")
+public class RoomPenalty extends AbstractPersistable {
 
-    private RoomHardConstraintType roomHardConstraintType;
+    private RoomPenaltyType roomPenaltyType;
     private Topic topic;
 
-    public RoomHardConstraintType getRoomHardConstraintType() {
-        return roomHardConstraintType;
+    public RoomPenaltyType getRoomPenaltyType() {
+        return roomPenaltyType;
     }
 
-    public void setRoomHardConstraintType(RoomHardConstraintType roomHardConstraintType) {
-        this.roomHardConstraintType = roomHardConstraintType;
+    public void setRoomPenaltyType(RoomPenaltyType roomPenaltyType) {
+        this.roomPenaltyType = roomPenaltyType;
     }
 
     public Topic getTopic() {
@@ -44,7 +43,7 @@ public class RoomHardConstraint extends AbstractPersistable {
 
     @Override
     public String toString() {
-        return roomHardConstraintType + "@" + topic.getId();
+        return roomPenaltyType + "@" + topic.getId();
     }
 
 }

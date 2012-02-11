@@ -59482,135 +59482,135 @@
       <penalty>20</penalty>
     </Room>
   </roomList>
-  <periodHardConstraintList id="9009">
-    <PeriodHardConstraint id="9010">
+  <periodPenaltyList id="9009">
+    <PeriodPenalty id="9010">
       <id>0</id>
-      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
       <leftSideTopic reference="7725"/>
       <rightSideTopic reference="7739"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9011">
+    </PeriodPenalty>
+    <PeriodPenalty id="9011">
       <id>1</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7729"/>
       <rightSideTopic reference="7753"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9012">
+    </PeriodPenalty>
+    <PeriodPenalty id="9012">
       <id>2</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7915"/>
       <rightSideTopic reference="7913"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9013">
+    </PeriodPenalty>
+    <PeriodPenalty id="9013">
       <id>3</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7969"/>
       <rightSideTopic reference="7967"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9014">
+    </PeriodPenalty>
+    <PeriodPenalty id="9014">
       <id>4</id>
-      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
       <leftSideTopic reference="7973"/>
       <rightSideTopic reference="7977"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9015">
+    </PeriodPenalty>
+    <PeriodPenalty id="9015">
       <id>5</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7979"/>
       <rightSideTopic reference="7971"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9016">
+    </PeriodPenalty>
+    <PeriodPenalty id="9016">
       <id>6</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7979"/>
       <rightSideTopic reference="7973"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9017">
+    </PeriodPenalty>
+    <PeriodPenalty id="9017">
       <id>7</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7979"/>
       <rightSideTopic reference="7975"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9018">
+    </PeriodPenalty>
+    <PeriodPenalty id="9018">
       <id>8</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="7979"/>
       <rightSideTopic reference="7977"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9019">
+    </PeriodPenalty>
+    <PeriodPenalty id="9019">
       <id>9</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8035"/>
       <rightSideTopic reference="8033"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9020">
+    </PeriodPenalty>
+    <PeriodPenalty id="9020">
       <id>10</id>
-      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
       <leftSideTopic reference="8203"/>
       <rightSideTopic reference="8209"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9021">
+    </PeriodPenalty>
+    <PeriodPenalty id="9021">
       <id>11</id>
-      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
       <leftSideTopic reference="8421"/>
       <rightSideTopic reference="8423"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9022">
+    </PeriodPenalty>
+    <PeriodPenalty id="9022">
       <id>12</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8493"/>
       <rightSideTopic reference="8491"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9023">
+    </PeriodPenalty>
+    <PeriodPenalty id="9023">
       <id>13</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8527"/>
       <rightSideTopic reference="8525"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9024">
+    </PeriodPenalty>
+    <PeriodPenalty id="9024">
       <id>14</id>
-      <periodHardConstraintType>EXAM_COINCIDENCE</periodHardConstraintType>
+      <periodPenaltyType>EXAM_COINCIDENCE</periodPenaltyType>
       <leftSideTopic reference="8639"/>
       <rightSideTopic reference="8643"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9025">
+    </PeriodPenalty>
+    <PeriodPenalty id="9025">
       <id>15</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8677"/>
       <rightSideTopic reference="8711"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9026">
+    </PeriodPenalty>
+    <PeriodPenalty id="9026">
       <id>16</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8699"/>
       <rightSideTopic reference="8697"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9027">
+    </PeriodPenalty>
+    <PeriodPenalty id="9027">
       <id>17</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8713"/>
       <rightSideTopic reference="8677"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9028">
+    </PeriodPenalty>
+    <PeriodPenalty id="9028">
       <id>18</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8769"/>
       <rightSideTopic reference="8767"/>
-    </PeriodHardConstraint>
-    <PeriodHardConstraint id="9029">
+    </PeriodPenalty>
+    <PeriodPenalty id="9029">
       <id>19</id>
-      <periodHardConstraintType>AFTER</periodHardConstraintType>
+      <periodPenaltyType>AFTER</periodPenaltyType>
       <leftSideTopic reference="8817"/>
       <rightSideTopic reference="8815"/>
-    </PeriodHardConstraint>
-  </periodHardConstraintList>
-  <roomHardConstraintList id="9030">
-    <RoomHardConstraint id="9031">
+    </PeriodPenalty>
+  </periodPenaltyList>
+  <roomPenaltyList id="9030">
+    <RoomPenalty id="9031">
       <id>0</id>
-      <roomHardConstraintType>ROOM_EXCLUSIVE</roomHardConstraintType>
+      <roomPenaltyType>ROOM_EXCLUSIVE</roomPenaltyType>
       <topic reference="8551"/>
-    </RoomHardConstraint>
-  </roomHardConstraintList>
+    </RoomPenalty>
+  </roomPenaltyList>
   <examList id="9032">
     <Exam id="9033">
       <id>0</id>

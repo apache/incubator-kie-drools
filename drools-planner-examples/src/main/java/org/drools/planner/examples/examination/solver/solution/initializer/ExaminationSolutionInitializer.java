@@ -35,8 +35,8 @@ import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Period;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraint;
-import org.drools.planner.examples.examination.domain.PeriodHardConstraintType;
+import org.drools.planner.examples.examination.domain.PeriodPenalty;
+import org.drools.planner.examples.examination.domain.PeriodPenaltyType;
 import org.drools.planner.examples.examination.domain.Room;
 import org.drools.planner.examples.examination.domain.Topic;
 import org.drools.planner.examples.examination.domain.solver.ExamBefore;
@@ -253,10 +253,10 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
             examList.add(exam);
             topicToExamMap.put(topic, exam);
         }
-        for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
-            if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE) {
-                Exam leftExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
-                Exam rightExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+        for (PeriodPenalty periodPenalty : examination.getPeriodPenaltyList()) {
+            if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.EXAM_COINCIDENCE) {
+                Exam leftExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
+                Exam rightExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
 
                 Set<Exam> newCoincidenceExamSet = new LinkedHashSet<Exam>(4);
                 ExamCoincidence leftExamCoincidence = leftExam.getExamCoincidence();
@@ -275,9 +275,9 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 for (Exam exam : newCoincidenceExamSet) {
                     exam.setExamCoincidence(newExamCoincidence);
                 }
-            } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
-                Exam afterExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
-                Exam beforeExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+            } else if (periodPenalty.getPeriodPenaltyType() == PeriodPenaltyType.AFTER) {
+                Exam afterExam = topicToExamMap.get(periodPenalty.getLeftSideTopic());
+                Exam beforeExam = topicToExamMap.get(periodPenalty.getRightSideTopic());
                 ExamBefore examBefore = beforeExam.getExamBefore();
                 if (examBefore == null) {
                     examBefore = new ExamBefore(new LinkedHashSet<Exam>(2));

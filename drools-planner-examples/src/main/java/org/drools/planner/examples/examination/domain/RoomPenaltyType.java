@@ -16,6 +16,6 @@
 
 package org.drools.planner.examples.examination.domain;
 
-public enum RoomHardConstraintType {
+public enum RoomPenaltyType {
     ROOM_EXCLUSIVE,
 }

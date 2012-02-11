@@ -39,8 +39,8 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
     private List<Period> periodList;
     private List<Room> roomList;
 
-    private List<PeriodHardConstraint> periodHardConstraintList;
-    private List<RoomHardConstraint> roomHardConstraintList;
+    private List<PeriodPenalty> periodPenaltyList;
+    private List<RoomPenalty> roomPenaltyList;
 
     private List<Exam> examList;
 
@@ -86,20 +86,20 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.roomList = roomList;
     }
 
-    public List<PeriodHardConstraint> getPeriodHardConstraintList() {
-        return periodHardConstraintList;
+    public List<PeriodPenalty> getPeriodPenaltyList() {
+        return periodPenaltyList;
     }
 
-    public void setPeriodHardConstraintList(List<PeriodHardConstraint> periodHardConstraintList) {
-        this.periodHardConstraintList = periodHardConstraintList;
+    public void setPeriodPenaltyList(List<PeriodPenalty> periodPenaltyList) {
+        this.periodPenaltyList = periodPenaltyList;
     }
 
-    public List<RoomHardConstraint> getRoomHardConstraintList() {
-        return roomHardConstraintList;
+    public List<RoomPenalty> getRoomPenaltyList() {
+        return roomPenaltyList;
     }
 
-    public void setRoomHardConstraintList(List<RoomHardConstraint> roomHardConstraintList) {
-        this.roomHardConstraintList = roomHardConstraintList;
+    public void setRoomPenaltyList(List<RoomPenalty> roomPenaltyList) {
+        this.roomPenaltyList = roomPenaltyList;
     }
 
     @PlanningEntityCollectionProperty
@@ -128,8 +128,8 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(topicList);
         facts.addAll(periodList);
         facts.addAll(roomList);
-        facts.addAll(periodHardConstraintList);
-        facts.addAll(roomHardConstraintList);
+        facts.addAll(periodPenaltyList);
+        facts.addAll(roomPenaltyList);
         // A faster alternative to a insertLogicalTopicConflicts rule.
         facts.addAll(calculateTopicConflictList());
         // Do not add the planning entity's (examList) because that will be done automatically
@@ -168,8 +168,8 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         clone.topicList = topicList;
         clone.periodList = periodList;
         clone.roomList = roomList;
-        clone.periodHardConstraintList = periodHardConstraintList;
-        clone.roomHardConstraintList = roomHardConstraintList;
+        clone.periodPenaltyList = periodPenaltyList;
+        clone.roomPenaltyList = roomPenaltyList;
         List<Exam> clonedExamList = new ArrayList<Exam>(examList.size());
         for (Exam exam : examList) {
             Exam clonedExam = exam.clone();
