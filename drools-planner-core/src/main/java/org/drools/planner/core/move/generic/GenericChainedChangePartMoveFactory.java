@@ -32,11 +32,13 @@ import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
-// TODO Unify me into the normal GenericChangeMoveFactory
 public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
     private SolutionDirector solutionDirector;
+
+    // TODO implement me + make this configurable
+    private Integer maximumSubChainSize = null;
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
@@ -72,13 +74,14 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                                 trailingEntities = variableToEntitiesMap.get(trailingEntity);
                             }
 
-                            for (int fromIndex = 1; fromIndex < valueWithEntitiesChain.size(); fromIndex++) {
+                            int chainSize = valueWithEntitiesChain.size();
+                            for (int fromIndex = 1; fromIndex < chainSize; fromIndex++) {
                                 Object oldToValue = valueWithEntitiesChain.get(fromIndex - 1);
-                                for (int toIndex = fromIndex + 2; toIndex <= valueWithEntitiesChain.size(); toIndex++) {
+                                for (int toIndex = fromIndex + 2; toIndex <= chainSize; toIndex++) {
                                     List<Object> entitiesSubChain = valueWithEntitiesChain.subList(fromIndex, toIndex);
                                     Object oldTrailingEntity;
                                     FactHandle oldTrailingEntityFactHandle;
-                                    if (toIndex < valueWithEntitiesChain.size()) {
+                                    if (toIndex < chainSize) {
                                         oldTrailingEntity = valueWithEntitiesChain.get(toIndex);
                                         oldTrailingEntityFactHandle = workingMemory.getFactHandle(oldTrailingEntity);
                                     } else {
