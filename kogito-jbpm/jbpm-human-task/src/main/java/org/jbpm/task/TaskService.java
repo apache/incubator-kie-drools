@@ -16,7 +16,8 @@
 package org.jbpm.task;
 
 import java.util.List;
-import org.drools.runtime.process.WorkItemManager;
+import java.util.Map;
+
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.task.query.TaskSummary;
@@ -43,6 +44,8 @@ public interface TaskService {
 
     void complete(long taskId, String userId, ContentData outputData);
 
+    void completeWithResults(long taskId, String userId, Object results);
+    
     boolean connect();
 
     boolean connect(String address, int port);

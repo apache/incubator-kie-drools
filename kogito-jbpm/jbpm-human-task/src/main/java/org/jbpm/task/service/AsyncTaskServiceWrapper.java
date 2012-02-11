@@ -15,11 +15,15 @@
  */
 package org.jbpm.task.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.process.workitem.wsht.BlockingAddTaskResponseHandler;
+import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
@@ -161,6 +165,26 @@ public class AsyncTaskServiceWrapper implements TaskService {
         }
     }
 
+
+	public void completeWithResults(long taskId, String userId, Object results) {
+		ContentData contentData = null;
+		if (results != null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out;
+			try {
+				out = new ObjectOutputStream(bos);
+				out.writeObject(results);
+				out.close();
+				contentData = new ContentData();
+				contentData.setContent(bos.toByteArray());
+				contentData.setAccessType(AccessType.Inline);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		complete(taskId, userId, contentData);
+	}
+	
     public boolean connect() {
         return taskService.connect();
     }

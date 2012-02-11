@@ -15,12 +15,16 @@
  */
 package org.jbpm.task.service.local;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.EventTriggerTransport;
 import org.jbpm.eventmessaging.Payload;
+import org.jbpm.task.AccessType;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -73,6 +77,26 @@ public class LocalTaskService implements TaskService {
         taskServiceSession.taskOperation(Operation.Complete, taskId, userId, null, outputData, null);
     }
 
+
+	public void completeWithResults(long taskId, String userId, Object results) {
+		ContentData contentData = null;
+		if (results != null) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out;
+			try {
+				out = new ObjectOutputStream(bos);
+				out.writeObject(results);
+				out.close();
+				contentData = new ContentData();
+				contentData.setContent(bos.toByteArray());
+				contentData.setAccessType(AccessType.Inline);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		complete(taskId, userId, contentData);
+	}
+	
     public boolean connect() {
         //do nothing
         return true;
