@@ -55,7 +55,7 @@ public class NQueensGenerator extends LoggingMain {
         solutionDao.writeSolution(nQueens, outputFile);
     }
 
-    private NQueens createNQueens(int n) {
+    public NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         nQueens.setN(n);
