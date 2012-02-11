@@ -20,8 +20,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("UnavailablePeriodConstraint")
-public class UnavailablePeriodConstraint extends AbstractPersistable {
+@XStreamAlias("UnavailablePeriodPenalty")
+public class UnavailablePeriodPenalty extends AbstractPersistable {
 
     private Course course;
     private Period period;

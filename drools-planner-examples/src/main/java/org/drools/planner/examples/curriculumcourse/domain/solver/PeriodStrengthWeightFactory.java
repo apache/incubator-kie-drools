@@ -21,36 +21,36 @@ import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
-import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 public class PeriodStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
 
     public Comparable createStrengthWeight(Solution solution, Object planningValue) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         Period period = (Period) planningValue;
-        int unavailablePeriodConstraintCount = 0;
-        for (UnavailablePeriodConstraint constraint : schedule.getUnavailablePeriodConstraintList()) {
-            if (constraint.getPeriod().equals(period)) {
-                unavailablePeriodConstraintCount++;
+        int unavailablePeriodPenaltyCount = 0;
+        for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {
+            if (penalty.getPeriod().equals(period)) {
+                unavailablePeriodPenaltyCount++;
             }
         }
-        return new PeriodStrengthWeight(period, unavailablePeriodConstraintCount);
+        return new PeriodStrengthWeight(period, unavailablePeriodPenaltyCount);
     }
 
     public static class PeriodStrengthWeight implements Comparable<PeriodStrengthWeight> {
 
         private final Period period;
-        private final int unavailablePeriodConstraintCount;
+        private final int unavailablePeriodPenaltyCount;
 
-        public PeriodStrengthWeight(Period period, int unavailablePeriodConstraintCount) {
+        public PeriodStrengthWeight(Period period, int unavailablePeriodPenaltyCount) {
             this.period = period;
-            this.unavailablePeriodConstraintCount = unavailablePeriodConstraintCount;
+            this.unavailablePeriodPenaltyCount = unavailablePeriodPenaltyCount;
         }
 
         public int compareTo(PeriodStrengthWeight other) {
             return new CompareToBuilder()
-                    // The higher unavailablePeriodConstraintCount, the weaker
-                    .append(other.unavailablePeriodConstraintCount, unavailablePeriodConstraintCount) // Descending
+                    // The higher unavailablePeriodPenaltyCount, the weaker
+                    .append(other.unavailablePeriodPenaltyCount, unavailablePeriodPenaltyCount) // Descending
                     .append(period.getDay().getDayIndex(), other.period.getDay().getDayIndex())
                     .append(period.getTimeslot().getTimeslotIndex(), other.period.getTimeslot().getTimeslotIndex())
                     .append(period.getId(), other.period.getId())

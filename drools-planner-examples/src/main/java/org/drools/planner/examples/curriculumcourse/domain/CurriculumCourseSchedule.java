@@ -41,7 +41,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
     private List<Period> periodList;
     private List<Room> roomList;
 
-    private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
+    private List<UnavailablePeriodPenalty> unavailablePeriodPenaltyList;
 
     private List<Lecture> lectureList;
 
@@ -111,12 +111,12 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.roomList = roomList;
     }
 
-    public List<UnavailablePeriodConstraint> getUnavailablePeriodConstraintList() {
-        return unavailablePeriodConstraintList;
+    public List<UnavailablePeriodPenalty> getUnavailablePeriodPenaltyList() {
+        return unavailablePeriodPenaltyList;
     }
 
-    public void setUnavailablePeriodConstraintList(List<UnavailablePeriodConstraint> unavailablePeriodConstraintList) {
-        this.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
+    public void setUnavailablePeriodPenaltyList(List<UnavailablePeriodPenalty> unavailablePeriodPenaltyList) {
+        this.unavailablePeriodPenaltyList = unavailablePeriodPenaltyList;
     }
 
     @PlanningEntityCollectionProperty
@@ -145,7 +145,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         facts.addAll(timeslotList);
         facts.addAll(periodList);
         facts.addAll(roomList);
-        facts.addAll(unavailablePeriodConstraintList);
+        facts.addAll(unavailablePeriodPenaltyList);
         // Do not add the planning entity's (lectureList) because that will be done automatically
         return facts;
     }
@@ -164,7 +164,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         clone.timeslotList = timeslotList;
         clone.periodList = periodList;
         clone.roomList = roomList;
-        clone.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
+        clone.unavailablePeriodPenaltyList = unavailablePeriodPenaltyList;
         List<Lecture> clonedLectureList = new ArrayList<Lecture>(lectureList.size());
         for (Lecture lecture : lectureList) {
             Lecture clonedLecture = lecture.clone();

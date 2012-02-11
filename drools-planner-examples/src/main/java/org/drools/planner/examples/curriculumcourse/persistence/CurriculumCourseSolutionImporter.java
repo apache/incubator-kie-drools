@@ -34,7 +34,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
-import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 import org.drools.planner.core.solution.Solution;
 
 public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporter {
@@ -77,7 +77,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             // Curricula: 2
             int curriculumListSize = readIntegerValue("Curricula:");
             // Constraints: 8
-            int unavailablePeriodConstraintListSize = readIntegerValue("Constraints:");
+            int unavailablePeriodPenaltyListSize = readIntegerValue("Constraints:");
 
             Map<String, Course> courseMap = readCourseListAndTeacherList(
                     schedule, courseListSize);
@@ -87,8 +87,8 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                     schedule, dayListSize, timeslotListSize);
             readCurriculumList(
                     schedule, courseMap, curriculumListSize);
-            readUnavailablePeriodConstraintList(
-                    schedule, courseMap, periodMap, unavailablePeriodConstraintListSize);
+            readUnavailablePeriodPenaltyList(
+                    schedule, courseMap, periodMap, unavailablePeriodPenaltyListSize);
             readEmptyLine();
             readConstantLine("END.");
             createLectureList(schedule);
@@ -100,7 +100,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                             schedule.getCourseList().size(),
                             schedule.getPeriodList().size(),
                             schedule.getRoomList().size(),
-                            schedule.getUnavailablePeriodConstraintList().size()});
+                            schedule.getUnavailablePeriodPenaltyList().size()});
             int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();
             BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
                     schedule.getLectureList().size());
@@ -237,20 +237,20 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             schedule.setCurriculumList(curriculumList);
         }
 
-        private void readUnavailablePeriodConstraintList(CurriculumCourseSchedule schedule,
-                Map<String, Course> courseMap, Map<List<Integer>, Period> periodMap, int unavailablePeriodConstraintListSize)
+        private void readUnavailablePeriodPenaltyList(CurriculumCourseSchedule schedule, Map<String, Course> courseMap,
+                Map<List<Integer>, Period> periodMap, int unavailablePeriodPenaltyListSize)
                 throws IOException {
             readEmptyLine();
             readConstantLine("UNAVAILABILITY_CONSTRAINTS:");
-            List<UnavailablePeriodConstraint> constraintList = new ArrayList<UnavailablePeriodConstraint>(
-                    unavailablePeriodConstraintListSize);
-            for (int i = 0; i < unavailablePeriodConstraintListSize; i++) {
-                UnavailablePeriodConstraint constraint = new UnavailablePeriodConstraint();
-                constraint.setId((long) i);
+            List<UnavailablePeriodPenalty> penaltyList = new ArrayList<UnavailablePeriodPenalty>(
+                    unavailablePeriodPenaltyListSize);
+            for (int i = 0; i < unavailablePeriodPenaltyListSize; i++) {
+                UnavailablePeriodPenalty penalty = new UnavailablePeriodPenalty();
+                penalty.setId((long) i);
                 // Unavailability_Constraints: <CourseID> <Day> <Day_Period>
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line, 3);
-                constraint.setCourse(courseMap.get(lineTokens[0]));
+                penalty.setCourse(courseMap.get(lineTokens[0]));
                 int dayIndex = Integer.parseInt(lineTokens[1]);
                 int timeslotIndex = Integer.parseInt(lineTokens[2]);
                 Period period = periodMap.get(Arrays.asList(dayIndex, timeslotIndex));
@@ -258,10 +258,10 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                     throw new IllegalArgumentException("Read line (" + line + ") uses an unexisting period("
                             + dayIndex + " " + timeslotIndex + ").");
                 }
-                constraint.setPeriod(period);
-                constraintList.add(constraint);
+                penalty.setPeriod(period);
+                penaltyList.add(penalty);
             }
-            schedule.setUnavailablePeriodConstraintList(constraintList);
+            schedule.setUnavailablePeriodPenaltyList(penaltyList);
         }
 
         private void createLectureList(CurriculumCourseSchedule schedule) {

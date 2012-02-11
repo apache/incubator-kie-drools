@@ -30,7 +30,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
-import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 global HardAndSoftScoreCalculator scoreCalculator;
 
@@ -75,12 +75,12 @@ rule "roomOccupancy"
 end
 
 // Availabilities: Each lecture in a period unavailable for that course.
-rule "unavailablePeriodConstraint"
+rule "unavailablePeriodPenalty"
     when
-        $unavailablePeriodConstraint : UnavailablePeriodConstraint($course : course, $period : period)
+        $unavailablePeriodPenalty : UnavailablePeriodPenalty($course : course, $period : period)
         $lecture : Lecture(course == $course, period == $period)
     then
-        insertLogical(new IntConstraintOccurrence("unavailablePeriodConstraint", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("unavailablePeriodPenalty", ConstraintType.NEGATIVE_HARD,
                 1,
                 $lecture));
 end

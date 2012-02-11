@@ -1732,1918 +1732,1918 @@
       <capacity>90</capacity>
     </Room>
   </roomList>
-  <unavailablePeriodConstraintList id="333">
-    <UnavailablePeriodConstraint id="334">
+  <unavailablePeriodPenaltyList id="333">
+    <UnavailablePeriodPenalty id="334">
       <id>0</id>
       <course reference="134"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="335">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="335">
       <id>1</id>
       <course reference="134"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="336">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="336">
       <id>2</id>
       <course reference="134"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="337">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="337">
       <id>3</id>
       <course reference="138"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="338">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="338">
       <id>4</id>
       <course reference="138"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="339">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="339">
       <id>5</id>
       <course reference="138"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="340">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="340">
       <id>6</id>
       <course reference="138"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="341">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="341">
       <id>7</id>
       <course reference="138"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="342">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="342">
       <id>8</id>
       <course reference="138"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="343">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="343">
       <id>9</id>
       <course reference="138"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="344">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="344">
       <id>10</id>
       <course reference="138"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="345">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="345">
       <id>11</id>
       <course reference="140"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="346">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="346">
       <id>12</id>
       <course reference="140"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="347">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="347">
       <id>13</id>
       <course reference="140"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="348">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="348">
       <id>14</id>
       <course reference="140"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="349">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="349">
       <id>15</id>
       <course reference="144"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="350">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="350">
       <id>16</id>
       <course reference="144"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="351">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="351">
       <id>17</id>
       <course reference="144"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="352">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="352">
       <id>18</id>
       <course reference="144"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="353">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="353">
       <id>19</id>
       <course reference="144"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="354">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="354">
       <id>20</id>
       <course reference="146"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="355">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="355">
       <id>21</id>
       <course reference="146"/>
       <period reference="297"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="356">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="356">
       <id>22</id>
       <course reference="146"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="357">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="357">
       <id>23</id>
       <course reference="146"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="358">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="358">
       <id>24</id>
       <course reference="146"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="359">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="359">
       <id>25</id>
       <course reference="146"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="360">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="360">
       <id>26</id>
       <course reference="146"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="361">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="361">
       <id>27</id>
       <course reference="146"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="362">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="362">
       <id>28</id>
       <course reference="148"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="363">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="363">
       <id>29</id>
       <course reference="148"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="364">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="364">
       <id>30</id>
       <course reference="148"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="365">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="365">
       <id>31</id>
       <course reference="148"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="366">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="366">
       <id>32</id>
       <course reference="148"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="367">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="367">
       <id>33</id>
       <course reference="148"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="368">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="368">
       <id>34</id>
       <course reference="148"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="369">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="369">
       <id>35</id>
       <course reference="148"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="370">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="370">
       <id>36</id>
       <course reference="148"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="371">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="371">
       <id>37</id>
       <course reference="148"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="372">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="372">
       <id>38</id>
       <course reference="148"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="373">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="373">
       <id>39</id>
       <course reference="148"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="374">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="374">
       <id>40</id>
       <course reference="148"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="375">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="375">
       <id>41</id>
       <course reference="148"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="376">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="376">
       <id>42</id>
       <course reference="148"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="377">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="377">
       <id>43</id>
       <course reference="150"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="378">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="378">
       <id>44</id>
       <course reference="150"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="379">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="379">
       <id>45</id>
       <course reference="150"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="380">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="380">
       <id>46</id>
       <course reference="150"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="381">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="381">
       <id>47</id>
       <course reference="150"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="382">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="382">
       <id>48</id>
       <course reference="154"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="383">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="383">
       <id>49</id>
       <course reference="154"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="384">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="384">
       <id>50</id>
       <course reference="154"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="385">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="385">
       <id>51</id>
       <course reference="154"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="386">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="386">
       <id>52</id>
       <course reference="154"/>
       <period reference="301"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="387">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="387">
       <id>53</id>
       <course reference="154"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="388">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="388">
       <id>54</id>
       <course reference="154"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="389">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="389">
       <id>55</id>
       <course reference="154"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="390">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="390">
       <id>56</id>
       <course reference="156"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="391">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="391">
       <id>57</id>
       <course reference="156"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="392">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="392">
       <id>58</id>
       <course reference="156"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="393">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="393">
       <id>59</id>
       <course reference="156"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="394">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="394">
       <id>60</id>
       <course reference="156"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="395">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="395">
       <id>61</id>
       <course reference="156"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="396">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="396">
       <id>62</id>
       <course reference="156"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="397">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="397">
       <id>63</id>
       <course reference="156"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="398">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="398">
       <id>64</id>
       <course reference="160"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="399">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="399">
       <id>65</id>
       <course reference="160"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="400">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="400">
       <id>66</id>
       <course reference="160"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="401">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="401">
       <id>67</id>
       <course reference="160"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="402">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="402">
       <id>68</id>
       <course reference="160"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="403">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="403">
       <id>69</id>
       <course reference="162"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="404">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="404">
       <id>70</id>
       <course reference="162"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="405">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="405">
       <id>71</id>
       <course reference="162"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="406">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="406">
       <id>72</id>
       <course reference="162"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="407">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="407">
       <id>73</id>
       <course reference="162"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="408">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="408">
       <id>74</id>
       <course reference="162"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="409">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="409">
       <id>75</id>
       <course reference="162"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="410">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="410">
       <id>76</id>
       <course reference="162"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="411">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="411">
       <id>77</id>
       <course reference="162"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="412">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="412">
       <id>78</id>
       <course reference="162"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="413">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="413">
       <id>79</id>
       <course reference="162"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="414">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="414">
       <id>80</id>
       <course reference="162"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="415">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="415">
       <id>81</id>
       <course reference="162"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="416">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="416">
       <id>82</id>
       <course reference="162"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="417">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="417">
       <id>83</id>
       <course reference="162"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="418">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="418">
       <id>84</id>
       <course reference="168"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="419">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="419">
       <id>85</id>
       <course reference="168"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="420">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="420">
       <id>86</id>
       <course reference="168"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="421">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="421">
       <id>87</id>
       <course reference="168"/>
       <period reference="301"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="422">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="422">
       <id>88</id>
       <course reference="168"/>
       <period reference="302"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="423">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="423">
       <id>89</id>
       <course reference="168"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="424">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="424">
       <id>90</id>
       <course reference="168"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="425">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="425">
       <id>91</id>
       <course reference="168"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="426">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="426">
       <id>92</id>
       <course reference="168"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="427">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="427">
       <id>93</id>
       <course reference="168"/>
       <period reference="307"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="428">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="428">
       <id>94</id>
       <course reference="168"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="429">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="429">
       <id>95</id>
       <course reference="168"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="430">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="430">
       <id>96</id>
       <course reference="168"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="431">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="431">
       <id>97</id>
       <course reference="168"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="432">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="432">
       <id>98</id>
       <course reference="168"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="433">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="433">
       <id>99</id>
       <course reference="168"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="434">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="434">
       <id>100</id>
       <course reference="168"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="435">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="435">
       <id>101</id>
       <course reference="168"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="436">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="436">
       <id>102</id>
       <course reference="172"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="437">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="437">
       <id>103</id>
       <course reference="172"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="438">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="438">
       <id>104</id>
       <course reference="172"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="439">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="439">
       <id>105</id>
       <course reference="172"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="440">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="440">
       <id>106</id>
       <course reference="172"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="441">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="441">
       <id>107</id>
       <course reference="172"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="442">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="442">
       <id>108</id>
       <course reference="172"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="443">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="443">
       <id>109</id>
       <course reference="172"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="444">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="444">
       <id>110</id>
       <course reference="174"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="445">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="445">
       <id>111</id>
       <course reference="174"/>
       <period reference="297"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="446">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="446">
       <id>112</id>
       <course reference="174"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="447">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="447">
       <id>113</id>
       <course reference="174"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="448">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="448">
       <id>114</id>
       <course reference="174"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="449">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="449">
       <id>115</id>
       <course reference="174"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="450">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="450">
       <id>116</id>
       <course reference="174"/>
       <period reference="307"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="451">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="451">
       <id>117</id>
       <course reference="174"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="452">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="452">
       <id>118</id>
       <course reference="176"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="453">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="453">
       <id>119</id>
       <course reference="176"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="454">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="454">
       <id>120</id>
       <course reference="176"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="455">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="455">
       <id>121</id>
       <course reference="176"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="456">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="456">
       <id>122</id>
       <course reference="176"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="457">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="457">
       <id>123</id>
       <course reference="178"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="458">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="458">
       <id>124</id>
       <course reference="178"/>
       <period reference="307"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="459">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="459">
       <id>125</id>
       <course reference="178"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="460">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="460">
       <id>126</id>
       <course reference="178"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="461">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="461">
       <id>127</id>
       <course reference="178"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="462">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="462">
       <id>128</id>
       <course reference="178"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="463">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="463">
       <id>129</id>
       <course reference="178"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="464">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="464">
       <id>130</id>
       <course reference="178"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="465">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="465">
       <id>131</id>
       <course reference="180"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="466">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="466">
       <id>132</id>
       <course reference="180"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="467">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="467">
       <id>133</id>
       <course reference="180"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="468">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="468">
       <id>134</id>
       <course reference="180"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="469">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="469">
       <id>135</id>
       <course reference="180"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="470">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="470">
       <id>136</id>
       <course reference="180"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="471">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="471">
       <id>137</id>
       <course reference="180"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="472">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="472">
       <id>138</id>
       <course reference="180"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="473">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="473">
       <id>139</id>
       <course reference="180"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="474">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="474">
       <id>140</id>
       <course reference="180"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="475">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="475">
       <id>141</id>
       <course reference="180"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="476">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="476">
       <id>142</id>
       <course reference="180"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="477">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="477">
       <id>143</id>
       <course reference="180"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="478">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="478">
       <id>144</id>
       <course reference="180"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="479">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="479">
       <id>145</id>
       <course reference="180"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="480">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="480">
       <id>146</id>
       <course reference="182"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="481">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="481">
       <id>147</id>
       <course reference="182"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="482">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="482">
       <id>148</id>
       <course reference="182"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="483">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="483">
       <id>149</id>
       <course reference="188"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="484">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="484">
       <id>150</id>
       <course reference="188"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="485">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="485">
       <id>151</id>
       <course reference="188"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="486">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="486">
       <id>152</id>
       <course reference="188"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="487">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="487">
       <id>153</id>
       <course reference="188"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="488">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="488">
       <id>154</id>
       <course reference="188"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="489">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="489">
       <id>155</id>
       <course reference="188"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="490">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="490">
       <id>156</id>
       <course reference="188"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="491">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="491">
       <id>157</id>
       <course reference="190"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="492">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="492">
       <id>158</id>
       <course reference="190"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="493">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="493">
       <id>159</id>
       <course reference="190"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="494">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="494">
       <id>160</id>
       <course reference="190"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="495">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="495">
       <id>161</id>
       <course reference="190"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="496">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="496">
       <id>162</id>
       <course reference="190"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="497">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="497">
       <id>163</id>
       <course reference="190"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="498">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="498">
       <id>164</id>
       <course reference="190"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="499">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="499">
       <id>165</id>
       <course reference="190"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="500">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="500">
       <id>166</id>
       <course reference="192"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="501">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="501">
       <id>167</id>
       <course reference="192"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="502">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="502">
       <id>168</id>
       <course reference="192"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="503">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="503">
       <id>169</id>
       <course reference="192"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="504">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="504">
       <id>170</id>
       <course reference="192"/>
       <period reference="299"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="505">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="505">
       <id>171</id>
       <course reference="192"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="506">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="506">
       <id>172</id>
       <course reference="192"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="507">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="507">
       <id>173</id>
       <course reference="192"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="508">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="508">
       <id>174</id>
       <course reference="192"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="509">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="509">
       <id>175</id>
       <course reference="192"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="510">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="510">
       <id>176</id>
       <course reference="192"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="511">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="511">
       <id>177</id>
       <course reference="192"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="512">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="512">
       <id>178</id>
       <course reference="192"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="513">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="513">
       <id>179</id>
       <course reference="192"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="514">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="514">
       <id>180</id>
       <course reference="192"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="515">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="515">
       <id>181</id>
       <course reference="194"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="516">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="516">
       <id>182</id>
       <course reference="194"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="517">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="517">
       <id>183</id>
       <course reference="194"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="518">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="518">
       <id>184</id>
       <course reference="194"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="519">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="519">
       <id>185</id>
       <course reference="194"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="520">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="520">
       <id>186</id>
       <course reference="194"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="521">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="521">
       <id>187</id>
       <course reference="194"/>
       <period reference="297"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="522">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="522">
       <id>188</id>
       <course reference="194"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="523">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="523">
       <id>189</id>
       <course reference="194"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="524">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="524">
       <id>190</id>
       <course reference="200"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="525">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="525">
       <id>191</id>
       <course reference="200"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="526">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="526">
       <id>192</id>
       <course reference="200"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="527">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="527">
       <id>193</id>
       <course reference="200"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="528">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="528">
       <id>194</id>
       <course reference="200"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="529">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="529">
       <id>195</id>
       <course reference="200"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="530">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="530">
       <id>196</id>
       <course reference="200"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="531">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="531">
       <id>197</id>
       <course reference="200"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="532">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="532">
       <id>198</id>
       <course reference="202"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="533">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="533">
       <id>199</id>
       <course reference="202"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="534">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="534">
       <id>200</id>
       <course reference="202"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="535">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="535">
       <id>201</id>
       <course reference="202"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="536">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="536">
       <id>202</id>
       <course reference="202"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="537">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="537">
       <id>203</id>
       <course reference="202"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="538">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="538">
       <id>204</id>
       <course reference="202"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="539">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="539">
       <id>205</id>
       <course reference="202"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="540">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="540">
       <id>206</id>
       <course reference="204"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="541">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="541">
       <id>207</id>
       <course reference="204"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="542">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="542">
       <id>208</id>
       <course reference="204"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="543">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="543">
       <id>209</id>
       <course reference="204"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="544">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="544">
       <id>210</id>
       <course reference="204"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="545">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="545">
       <id>211</id>
       <course reference="204"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="546">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="546">
       <id>212</id>
       <course reference="204"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="547">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="547">
       <id>213</id>
       <course reference="204"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="548">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="548">
       <id>214</id>
       <course reference="218"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="549">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="549">
       <id>215</id>
       <course reference="218"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="550">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="550">
       <id>216</id>
       <course reference="218"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="551">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="551">
       <id>217</id>
       <course reference="218"/>
       <period reference="307"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="552">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="552">
       <id>218</id>
       <course reference="218"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="553">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="553">
       <id>219</id>
       <course reference="218"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="554">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="554">
       <id>220</id>
       <course reference="218"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="555">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="555">
       <id>221</id>
       <course reference="218"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="556">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="556">
       <id>222</id>
       <course reference="222"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="557">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="557">
       <id>223</id>
       <course reference="222"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="558">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="558">
       <id>224</id>
       <course reference="222"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="559">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="559">
       <id>225</id>
       <course reference="222"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="560">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="560">
       <id>226</id>
       <course reference="222"/>
       <period reference="301"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="561">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="561">
       <id>227</id>
       <course reference="222"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="562">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="562">
       <id>228</id>
       <course reference="222"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="563">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="563">
       <id>229</id>
       <course reference="226"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="564">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="564">
       <id>230</id>
       <course reference="226"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="565">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="565">
       <id>231</id>
       <course reference="226"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="566">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="566">
       <id>232</id>
       <course reference="226"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="567">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="567">
       <id>233</id>
       <course reference="226"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="568">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="568">
       <id>234</id>
       <course reference="226"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="569">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="569">
       <id>235</id>
       <course reference="226"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="570">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="570">
       <id>236</id>
       <course reference="226"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="571">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="571">
       <id>237</id>
       <course reference="226"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="572">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="572">
       <id>238</id>
       <course reference="228"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="573">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="573">
       <id>239</id>
       <course reference="228"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="574">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="574">
       <id>240</id>
       <course reference="228"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="575">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="575">
       <id>241</id>
       <course reference="228"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="576">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="576">
       <id>242</id>
       <course reference="228"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="577">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="577">
       <id>243</id>
       <course reference="228"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="578">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="578">
       <id>244</id>
       <course reference="228"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="579">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="579">
       <id>245</id>
       <course reference="228"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="580">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="580">
       <id>246</id>
       <course reference="230"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="581">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="581">
       <id>247</id>
       <course reference="230"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="582">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="582">
       <id>248</id>
       <course reference="230"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="583">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="583">
       <id>249</id>
       <course reference="230"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="584">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="584">
       <id>250</id>
       <course reference="230"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="585">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="585">
       <id>251</id>
       <course reference="230"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="586">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="586">
       <id>252</id>
       <course reference="230"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="587">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="587">
       <id>253</id>
       <course reference="230"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="588">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="588">
       <id>254</id>
       <course reference="234"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="589">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="589">
       <id>255</id>
       <course reference="234"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="590">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="590">
       <id>256</id>
       <course reference="234"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="591">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="591">
       <id>257</id>
       <course reference="234"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="592">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="592">
       <id>258</id>
       <course reference="234"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="593">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="593">
       <id>259</id>
       <course reference="234"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="594">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="594">
       <id>260</id>
       <course reference="234"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="595">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="595">
       <id>261</id>
       <course reference="234"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="596">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="596">
       <id>262</id>
       <course reference="234"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="597">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="597">
       <id>263</id>
       <course reference="234"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="598">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="598">
       <id>264</id>
       <course reference="234"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="599">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="599">
       <id>265</id>
       <course reference="234"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="600">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="600">
       <id>266</id>
       <course reference="234"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="601">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="601">
       <id>267</id>
       <course reference="234"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="602">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="602">
       <id>268</id>
       <course reference="234"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="603">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="603">
       <id>269</id>
       <course reference="234"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="604">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="604">
       <id>270</id>
       <course reference="234"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="605">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="605">
       <id>271</id>
       <course reference="236"/>
       <period reference="306"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="606">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="606">
       <id>272</id>
       <course reference="236"/>
       <period reference="307"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="607">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="607">
       <id>273</id>
       <course reference="236"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="608">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="608">
       <id>274</id>
       <course reference="236"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="609">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="609">
       <id>275</id>
       <course reference="236"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="610">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="610">
       <id>276</id>
       <course reference="236"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="611">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="611">
       <id>277</id>
       <course reference="236"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="612">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="612">
       <id>278</id>
       <course reference="236"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="613">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="613">
       <id>279</id>
       <course reference="238"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="614">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="614">
       <id>280</id>
       <course reference="238"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="615">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="615">
       <id>281</id>
       <course reference="238"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="616">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="616">
       <id>282</id>
       <course reference="238"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="617">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="617">
       <id>283</id>
       <course reference="238"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="618">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="618">
       <id>284</id>
       <course reference="240"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="619">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="619">
       <id>285</id>
       <course reference="240"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="620">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="620">
       <id>286</id>
       <course reference="240"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="621">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="621">
       <id>287</id>
       <course reference="240"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="622">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="622">
       <id>288</id>
       <course reference="240"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="623">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="623">
       <id>289</id>
       <course reference="242"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="624">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="624">
       <id>290</id>
       <course reference="242"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="625">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="625">
       <id>291</id>
       <course reference="242"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="626">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="626">
       <id>292</id>
       <course reference="242"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="627">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="627">
       <id>293</id>
       <course reference="242"/>
       <period reference="297"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="628">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="628">
       <id>294</id>
       <course reference="242"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="629">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="629">
       <id>295</id>
       <course reference="242"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="630">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="630">
       <id>296</id>
       <course reference="242"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="631">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="631">
       <id>297</id>
       <course reference="246"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="632">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="632">
       <id>298</id>
       <course reference="246"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="633">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="633">
       <id>299</id>
       <course reference="246"/>
       <period reference="302"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="634">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="634">
       <id>300</id>
       <course reference="246"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="635">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="635">
       <id>301</id>
       <course reference="246"/>
       <period reference="304"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="636">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="636">
       <id>302</id>
       <course reference="246"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="637">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="637">
       <id>303</id>
       <course reference="248"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="638">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="638">
       <id>304</id>
       <course reference="248"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="639">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="639">
       <id>305</id>
       <course reference="248"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="640">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="640">
       <id>306</id>
       <course reference="248"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="641">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="641">
       <id>307</id>
       <course reference="248"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="642">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="642">
       <id>308</id>
       <course reference="248"/>
       <period reference="296"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="643">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="643">
       <id>309</id>
       <course reference="248"/>
       <period reference="297"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="644">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="644">
       <id>310</id>
       <course reference="248"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="645">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="645">
       <id>311</id>
       <course reference="250"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="646">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="646">
       <id>312</id>
       <course reference="250"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="647">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="647">
       <id>313</id>
       <course reference="250"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="648">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="648">
       <id>314</id>
       <course reference="250"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="649">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="649">
       <id>315</id>
       <course reference="250"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="650">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="650">
       <id>316</id>
       <course reference="250"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="651">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="651">
       <id>317</id>
       <course reference="252"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="652">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="652">
       <id>318</id>
       <course reference="254"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="653">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="653">
       <id>319</id>
       <course reference="254"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="654">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="654">
       <id>320</id>
       <course reference="254"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="655">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="655">
       <id>321</id>
       <course reference="254"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="656">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="656">
       <id>322</id>
       <course reference="254"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="657">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="657">
       <id>323</id>
       <course reference="258"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="658">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="658">
       <id>324</id>
       <course reference="258"/>
       <period reference="300"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="659">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="659">
       <id>325</id>
       <course reference="258"/>
       <period reference="305"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="660">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="660">
       <id>326</id>
       <course reference="258"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="661">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="661">
       <id>327</id>
       <course reference="258"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="662">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="662">
       <id>328</id>
       <course reference="260"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="663">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="663">
       <id>329</id>
       <course reference="260"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="664">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="664">
       <id>330</id>
       <course reference="260"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="665">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="665">
       <id>331</id>
       <course reference="260"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="666">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="666">
       <id>332</id>
       <course reference="260"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="667">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="667">
       <id>333</id>
       <course reference="260"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="668">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="668">
       <id>334</id>
       <course reference="260"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="669">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="669">
       <id>335</id>
       <course reference="260"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="670">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="670">
       <id>336</id>
       <course reference="262"/>
       <period reference="309"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="671">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="671">
       <id>337</id>
       <course reference="262"/>
       <period reference="310"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="672">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="672">
       <id>338</id>
       <course reference="262"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="673">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="673">
       <id>339</id>
       <course reference="262"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="674">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="674">
       <id>340</id>
       <course reference="262"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="675">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="675">
       <id>341</id>
       <course reference="262"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="676">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="676">
       <id>342</id>
       <course reference="262"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="677">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="677">
       <id>343</id>
       <course reference="264"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="678">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="678">
       <id>344</id>
       <course reference="264"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="679">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="679">
       <id>345</id>
       <course reference="264"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="680">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="680">
       <id>346</id>
       <course reference="264"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="681">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="681">
       <id>347</id>
       <course reference="264"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="682">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="682">
       <id>348</id>
       <course reference="266"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="683">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="683">
       <id>349</id>
       <course reference="266"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="684">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="684">
       <id>350</id>
       <course reference="266"/>
       <period reference="311"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="685">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="685">
       <id>351</id>
       <course reference="266"/>
       <period reference="312"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="686">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="686">
       <id>352</id>
       <course reference="266"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="687">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="687">
       <id>353</id>
       <course reference="266"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="688">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="688">
       <id>354</id>
       <course reference="266"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="689">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="689">
       <id>355</id>
       <course reference="268"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="690">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="690">
       <id>356</id>
       <course reference="268"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="691">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="691">
       <id>357</id>
       <course reference="268"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="692">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="692">
       <id>358</id>
       <course reference="268"/>
       <period reference="294"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="693">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="693">
       <id>359</id>
       <course reference="268"/>
       <period reference="295"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="694">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="694">
       <id>360</id>
       <course reference="268"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="695">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="695">
       <id>361</id>
       <course reference="268"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="696">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="696">
       <id>362</id>
       <course reference="268"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="697">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="697">
       <id>363</id>
       <course reference="270"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="698">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="698">
       <id>364</id>
       <course reference="270"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="699">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="699">
       <id>365</id>
       <course reference="270"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="700">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="700">
       <id>366</id>
       <course reference="270"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="701">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="701">
       <id>367</id>
       <course reference="270"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="702">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="702">
       <id>368</id>
       <course reference="272"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="703">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="703">
       <id>369</id>
       <course reference="272"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="704">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="704">
       <id>370</id>
       <course reference="272"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="705">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="705">
       <id>371</id>
       <course reference="272"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="706">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="706">
       <id>372</id>
       <course reference="274"/>
       <period reference="291"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="707">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="707">
       <id>373</id>
       <course reference="274"/>
       <period reference="292"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="708">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="708">
       <id>374</id>
       <course reference="274"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="709">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="709">
       <id>375</id>
       <course reference="274"/>
       <period reference="314"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="710">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="710">
       <id>376</id>
       <course reference="274"/>
       <period reference="315"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="711">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="711">
       <id>377</id>
       <course reference="276"/>
       <period reference="293"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="712">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="712">
       <id>378</id>
       <course reference="276"/>
       <period reference="298"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="713">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="713">
       <id>379</id>
       <course reference="276"/>
       <period reference="303"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="714">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="714">
       <id>380</id>
       <course reference="276"/>
       <period reference="308"/>
-    </UnavailablePeriodConstraint>
-    <UnavailablePeriodConstraint id="715">
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="715">
       <id>381</id>
       <course reference="276"/>
       <period reference="313"/>
-    </UnavailablePeriodConstraint>
-  </unavailablePeriodConstraintList>
+    </UnavailablePeriodPenalty>
+  </unavailablePeriodPenaltyList>
   <lectureList id="716">
     <Lecture id="717">
       <id>0</id>

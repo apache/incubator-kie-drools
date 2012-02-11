@@ -22,7 +22,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
-import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
+import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
 
@@ -30,23 +30,23 @@ public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyW
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         Lecture lecture = (Lecture) planningEntity;
         Course course = lecture.getCourse();
-        int unavailablePeriodConstraintCount = 0;
-        for (UnavailablePeriodConstraint constraint : schedule.getUnavailablePeriodConstraintList()) {
-            if (constraint.getCourse().equals(course)) {
-                unavailablePeriodConstraintCount++;
+        int unavailablePeriodPenaltyCount = 0;
+        for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {
+            if (penalty.getCourse().equals(course)) {
+                unavailablePeriodPenaltyCount++;
             }
         }
-        return new LectureDifficultyWeight(lecture, unavailablePeriodConstraintCount);
+        return new LectureDifficultyWeight(lecture, unavailablePeriodPenaltyCount);
     }
 
     public static class LectureDifficultyWeight implements Comparable<LectureDifficultyWeight> {
 
         private final Lecture lecture;
-        private final int unavailablePeriodConstraintCount;
+        private final int unavailablePeriodPenaltyCount;
 
-        public LectureDifficultyWeight(Lecture lecture, int unavailablePeriodConstraintCount) {
+        public LectureDifficultyWeight(Lecture lecture, int unavailablePeriodPenaltyCount) {
             this.lecture = lecture;
-            this.unavailablePeriodConstraintCount = unavailablePeriodConstraintCount;
+            this.unavailablePeriodPenaltyCount = unavailablePeriodPenaltyCount;
         }
 
         public int compareTo(LectureDifficultyWeight other) {
@@ -54,7 +54,7 @@ public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyW
             Course otherCourse = other.lecture.getCourse();
             return new CompareToBuilder()
                     .append(course.getCurriculumList().size(), otherCourse.getCurriculumList().size())
-                    .append(unavailablePeriodConstraintCount, other.unavailablePeriodConstraintCount)
+                    .append(unavailablePeriodPenaltyCount, other.unavailablePeriodPenaltyCount)
                     .append(course.getLectureSize(), otherCourse.getLectureSize())
                     .append(course.getStudentSize(), otherCourse.getStudentSize())
                     .append(course.getMinWorkingDaySize(), otherCourse.getMinWorkingDaySize())
