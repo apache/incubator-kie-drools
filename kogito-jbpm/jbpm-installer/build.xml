@@ -59,8 +59,8 @@
   </target>
 
   <!-- db driver module in jBoss AS 7 installation -->
-  <property name="db.driver.module.prefix">com/mysql</property> 
-  <property name="db.driver.module.dir">${jboss.home}/modules/${db.driver.module.prefix}/main/</property> 
+  <property name="db.driver.module.prefix" value="com/mysql"/> 
+  <property name="db.driver.module.dir" value="${jboss.home}/modules/${db.driver.module.prefix}/main/"/> 
 
   <target name="install.db.files" depends="check.jboss.version,download.mysql.driver" if="jboss.version.is.7">
     <mkdir dir="${db.driver.module.dir}" />
