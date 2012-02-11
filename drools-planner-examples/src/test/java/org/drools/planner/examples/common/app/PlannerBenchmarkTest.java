@@ -48,7 +48,7 @@ import static org.junit.Assert.*;
  */
 public abstract class PlannerBenchmarkTest extends LoggingTest {
 
-    private static final int MAXIMUM_SOLVER_BENCHMARK_SIZE = 4;
+    private static final int MAXIMUM_SOLVER_BENCHMARK_SIZE = 6;
     private static final long WARM_UP_SECONDS_SPEND = 5L;
     private static final long MAXIMUM_SECONDS_SPEND = 30L;
 

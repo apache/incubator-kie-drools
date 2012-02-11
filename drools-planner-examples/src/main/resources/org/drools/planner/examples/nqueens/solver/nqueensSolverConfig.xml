@@ -18,7 +18,9 @@
   </constructionHeuristic>
   <localSearch>
     <selector>
-      <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
+      <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
+      <!-- GenericChangeMoveFactory is the generic form of RowChangeMoveFactory: -->
+      <!--<moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>-->
     </selector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
