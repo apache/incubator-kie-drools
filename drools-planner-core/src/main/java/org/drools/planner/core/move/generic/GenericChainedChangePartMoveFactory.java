@@ -57,33 +57,33 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                     Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
                             variableDescriptor);
                     Collection<?> values = variableDescriptor.extractAllPlanningValues(workingSolution);
-                    for (Object value : values) {
+                    for (Object anchor : values) {
                         // value can never be null because nullable isn't allowed with chained
-                        if (!entityDescriptor.getPlanningEntityClass().isAssignableFrom(value.getClass())) {
-                            List<Object> valueWithEntitiesChain = new ArrayList<Object>(values.size());
-                            valueWithEntitiesChain.add(value);
-                            List<Object> trailingEntities = variableToEntitiesMap.get(value);
+                        if (!entityDescriptor.getPlanningEntityClass().isAssignableFrom(anchor.getClass())) {
+                            List<Object> anchorWithChain = new ArrayList<Object>(values.size());
+                            anchorWithChain.add(anchor);
+                            List<Object> trailingEntities = variableToEntitiesMap.get(anchor);
                             while (trailingEntities != null) {
                                 if (trailingEntities.size() > 1) {
-                                    throw new IllegalStateException("The planningValue (" + value
+                                    throw new IllegalStateException("The planningValue (" + anchor
                                             + ") has multiple trailing entities (" + trailingEntities
                                             + ") pointing to it for chained planningVariable ("
                                             + variableDescriptor.getVariablePropertyName() + ").");
                                 }
                                 Object trailingEntity = trailingEntities.get(0);
-                                valueWithEntitiesChain.add(trailingEntity);
+                                anchorWithChain.add(trailingEntity);
                                 trailingEntities = variableToEntitiesMap.get(trailingEntity);
                             }
 
-                            int chainSize = valueWithEntitiesChain.size();
+                            int chainSize = anchorWithChain.size();
                             for (int fromIndex = 1; fromIndex < chainSize; fromIndex++) {
-                                Object oldToValue = valueWithEntitiesChain.get(fromIndex - 1);
+                                Object oldToValue = anchorWithChain.get(fromIndex - 1);
                                 for (int toIndex = fromIndex + 2; toIndex <= chainSize; toIndex++) {
-                                    List<Object> entitiesSubChain = valueWithEntitiesChain.subList(fromIndex, toIndex);
+                                    List<Object> entitiesSubChain = anchorWithChain.subList(fromIndex, toIndex);
                                     Object oldTrailingEntity;
                                     FactHandle oldTrailingEntityFactHandle;
                                     if (toIndex < chainSize) {
-                                        oldTrailingEntity = valueWithEntitiesChain.get(toIndex);
+                                        oldTrailingEntity = anchorWithChain.get(toIndex);
                                         oldTrailingEntityFactHandle = workingMemory.getFactHandle(oldTrailingEntity);
                                     } else {
                                         oldTrailingEntity = null;
