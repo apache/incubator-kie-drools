@@ -32,6 +32,7 @@ import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
+// TODO this is a dirty prototype
 public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
