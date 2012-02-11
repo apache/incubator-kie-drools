@@ -10011,4 +10011,44 @@ public class MiscTest {
         kbuilder2.add( ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL );
         assertFalse(kbuilder2.hasErrors());
     }
+
+    @Test
+    public void testConstructorWithOtherDefaults() {
+        String str = "" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "   kField : String     @key\n" +
+                "   sField : String     = \"a\"\n" +
+                "   iField : int        = 10\n" +
+                "   dField : double     = 4.32\n" +
+                "end" +
+                "\n" +
+                "rule \"Trig\"\n" +
+                "when\n" +
+                "    Bean( kField == \"key\", sField == \"a\", iField == 10, dField == 4.32 ) \n" +
+                "then\n" +
+                "    list.add( \"OK\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Exec\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Bean( \"key\") ); \n" +
+                "end";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertTrue( list.contains( "OK" ) );
+
+        ksession.dispose();
+    }
 }
