@@ -39,6 +39,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.ActivationPropertyHandler;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.AgendaItem;
@@ -91,6 +92,8 @@ import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
@@ -1109,51 +1112,54 @@ public class PatternBuilder
         Arrays.sort( localDeclarations,
                      SortDeclarations.instance );
 
-        final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
-                                                                                 previousDeclarations,
-                                                                                 localDeclarations,
-                                                                                 requiredGlobals,
-                                                                                 requiredOperators );
+        boolean isJavaEval = isEvalExpression && context.getDialect() instanceof JavaDialect;
+        boolean usePredicateConstraint = !USE_MVEL_EXPRESSION || isJavaEval || requiredOperators.length > 0;
 
-        final PredicateBuilder builder = context.getDialect().getPredicateBuilder();
+        if (usePredicateConstraint) {
+            final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
+                    previousDeclarations,
+                    localDeclarations,
+                    requiredGlobals,
+                    requiredOperators );
 
-        builder.build( context,
-                usedIdentifiers,
-                previousDeclarations,
-                localDeclarations,
-                predicateConstraint,
-                predicateDescr,
-                analysis );
+            final PredicateBuilder builder = context.getDialect().getPredicateBuilder();
 
-        if (ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            builder.build(context,
+                    usedIdentifiers,
+                    previousDeclarations,
+                    localDeclarations,
+                    predicateConstraint,
+                    predicateDescr,
+                    analysis);
+
             pattern.addConstraint( predicateConstraint );
         } else {
-            pattern.addConstraint( convertPredicateConstraint( context, predicateConstraint, expr, isEvalExpression ) );
-        }
-    }
+            MVELCompilationUnit compilationUnit = ConstraintBuilder.buildCompilationUnit( context,
+                                                                                          usedIdentifiers,
+                                                                                          previousDeclarations,
+                                                                                          localDeclarations,
+                                                                                          predicateDescr,
+                                                                                          analysis );
 
-    private Constraint convertPredicateConstraint(RuleBuildContext context, PredicateConstraint predicateConstraint, String expression, boolean isEvalExpression) {
-        boolean isJavaEval = isEvalExpression && context.getDialect() instanceof JavaDialect;
-        if (!USE_MVEL_EXPRESSION || isJavaEval || predicateConstraint.getOperators().length > 0) {
-            return predicateConstraint;
-        }
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+            ParserConfiguration configuration = data.getParserConfiguration();
 
-        Declaration[] requiredDeclarations = predicateConstraint.getRequiredDeclarations();
-        Set<String> reqDecNames = new HashSet<String>();
-        for (Declaration d : requiredDeclarations) {
-            reqDecNames.add(d.getIdentifier());
-        }
+            Declaration[] mvelDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length + requiredGlobals.length];
+            int i = 0;
+            for (Declaration d : previousDeclarations) {
+                mvelDeclarations[i++] = d;
+            }
+            for (Declaration d : localDeclarations) {
+                mvelDeclarations[i++] = d;
+            }
+            for (String global : requiredGlobals) {
+                mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
+            }
 
-        String[] globals = predicateConstraint.getGlobals();
-        Declaration[] declarations = new Declaration[requiredDeclarations.length + globals.length];
-        int i = 0;
-        for (Declaration d : requiredDeclarations) {
-            declarations[i++] = d;
+            boolean isDynamic = ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType());
+            Constraint constraint = new MvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic);
+            pattern.addConstraint( constraint );
         }
-        for (String global : globals) {
-            declarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
-        }
-        return new MvelConstraint(context.getPkg().getName(), expression, declarations);
     }
 
     private static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,

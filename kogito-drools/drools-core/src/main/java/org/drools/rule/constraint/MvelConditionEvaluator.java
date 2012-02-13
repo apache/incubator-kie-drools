@@ -1,5 +1,9 @@
 package org.drools.rule.constraint;
 
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.rule.*;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -8,27 +12,31 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.util.ASTLinkedList;
-import org.mvel2.util.Soundex;
 
-import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 public class MvelConditionEvaluator implements ConditionEvaluator {
 
-    private ExecutableStatement stmt;
-    private String expression;
+    private ExecutableStatement executableStatement;
     private ParserContext parserContext;
+    private MVELCompilationUnit compilationUnit;
+
     private boolean evaluated = false;
 
     private Object lastEvaluatedObject;
     private Map<String, Object> lastEvaluatedVars;
 
-    MvelConditionEvaluator(ParserConfiguration conf, String expression) {
-        this.expression = expression;
-        this.parserContext = new ParserContext(conf);
-        stmt = (ExecutableStatement)MVEL.compileExpression(expression, parserContext);
+    MvelConditionEvaluator(ParserConfiguration configuration, String expression) {
+        this.parserContext = new ParserContext(configuration);
+        executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, parserContext);
+    }
+
+    MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement) {
+        this.compilationUnit = compilationUnit;
+        this.parserContext = parserContext;
+        this.executableStatement = executableStatement;
     }
 
     public boolean evaluate(Object object, Map<String, Object> vars) {
@@ -36,7 +44,23 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
             lastEvaluatedObject = object;
             lastEvaluatedVars = vars;
         }
-        return evaluate(stmt, object, vars);
+        return evaluate(executableStatement, object, vars);
+    }
+
+    boolean evaluateDynamic(Object object, InternalWorkingMemory workingMemory, LeftTuple tuple) {
+        VariableResolverFactory factory = compilationUnit.createFactory();
+        compilationUnit.updateFactory( null, null, object,
+                                       tuple, null, workingMemory,
+                                       workingMemory.getGlobalResolver(),
+                                       factory );
+
+        org.drools.rule.Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
+            factory.setNextFactory( data.getFunctionFactory() );
+        }
+
+        return (Boolean) MVEL.executeExpression( executableStatement, object, factory );
     }
 
     private boolean evaluate(ExecutableStatement statement, Object object, Map<String, Object> vars) {
@@ -49,7 +73,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
 
     ConditionAnalyzer.Condition getAnalyzedCondition(Object object, Map<String, Object> vars) {
         ensureCompleteEvaluation(object, vars);
-        return new ConditionAnalyzer(stmt, vars).analyzeCondition();
+        return new ConditionAnalyzer(executableStatement, vars).analyzeCondition();
     }
 
     private void ensureCompleteEvaluation(Object object, Map<String, Object> vars) {
@@ -105,9 +129,9 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
     }
 
     private ASTNode getRootNode() {
-        if (stmt instanceof ExecutableLiteral) {
+        if (executableStatement instanceof ExecutableLiteral) {
             return null;
         }
-        return stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
+        return executableStatement instanceof CompiledExpression ? ((CompiledExpression) executableStatement).getFirstNode() : ((ExecutableAccessor) executableStatement).getNode();
     }
 }
