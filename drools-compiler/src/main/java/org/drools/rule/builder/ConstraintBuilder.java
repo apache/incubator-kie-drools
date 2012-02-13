@@ -1,17 +1,27 @@
 package org.drools.rule.builder;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Pattern;
+import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.rule.constraint.EvaluatorConstraint;
 import org.drools.rule.constraint.MvelConstraint;
@@ -19,13 +29,19 @@ import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Restriction;
 import org.mvel2.DataConversion;
 import org.mvel2.ParserConfiguration;
+import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class ConstraintBuilder {
 
@@ -214,5 +230,53 @@ public class ConstraintBuilder {
         }
 
         return evaluator;
+    }
+
+    public static MVELCompilationUnit buildCompilationUnit( final RuleBuildContext context,
+                                                            final BoundIdentifiers usedIdentifiers,
+                                                            final Declaration[] previousDeclarations,
+                                                            final Declaration[] localDeclarations,
+                                                            final PredicateDescr predicateDescr,
+                                                            final AnalysisResult analysis ) {
+        if (context.isTypesafe() && analysis instanceof MVELAnalysisResult) {
+            Class<?> returnClass = ((MVELAnalysisResult)analysis).getReturnType();
+            if (returnClass != Boolean.class && returnClass != Boolean.TYPE) {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                        predicateDescr,
+                        null,
+                        "Predicate '" + predicateDescr.getContent() + "' must be a Boolean expression\n" + predicateDescr.positionAsString() ) );
+            }
+        }
+
+        MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
+
+        MVELCompilationUnit unit = null;
+
+        try {
+            Map<String, Class< ? >> declIds = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
+
+            Pattern p = (Pattern) context.getBuildStack().peek();
+            if ( p.getObjectType() instanceof ClassObjectType) {
+                declIds.put( "this",
+                        ((ClassObjectType) p.getObjectType()).getClassType() );
+            }
+
+            unit = dialect.getMVELCompilationUnit(  (String) predicateDescr.getContent(),
+                                                                        analysis,
+                                                                        previousDeclarations,
+                                                                        localDeclarations,
+                                                                        null,
+                                                                        context,
+                                                                        "drools",
+                                                                        KnowledgeHelper.class);
+        } catch ( final Exception e ) {
+            copyErrorLocation(e, predicateDescr);
+            context.addError( new DescrBuildError( context.getParentDescr(),
+                    predicateDescr,
+                    e,
+                    "Unable to build expression for 'inline-eval' : " + e.getMessage() + "'" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
+        }
+
+        return unit;
     }
 }

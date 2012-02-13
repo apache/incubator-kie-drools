@@ -1,5 +1,6 @@
 package org.drools.rule.constraint;
 
+import java.io.Serializable;
 import java.util.Map;
 
 public interface ConditionEvaluator {
