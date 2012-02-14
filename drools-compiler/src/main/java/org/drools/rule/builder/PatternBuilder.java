@@ -1113,7 +1113,7 @@ public class PatternBuilder
                      SortDeclarations.instance );
 
         boolean isJavaEval = isEvalExpression && context.getDialect() instanceof JavaDialect;
-        boolean usePredicateConstraint = !USE_MVEL_EXPRESSION || isJavaEval || requiredOperators.length > 0;
+        boolean usePredicateConstraint = !USE_MVEL_EXPRESSION || isJavaEval;
 
         if (usePredicateConstraint) {
             final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
@@ -1156,7 +1156,7 @@ public class PatternBuilder
                 mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
             }
 
-            boolean isDynamic = ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType());
+            boolean isDynamic = requiredOperators.length > 0 || ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType());
             Constraint constraint = new MvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic);
             pattern.addConstraint( constraint );
         }

@@ -1,6 +1,5 @@
 package org.drools.rule.constraint;
 
-import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -29,9 +28,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.core.util.ClassUtils.*;
@@ -279,7 +280,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private long calculateMask(Condition condition, List<String> settableProperties) {
         if (condition instanceof SingleCondition) {
-            return calculateMask((SingleCondition)condition, settableProperties);
+            return calculateMask((SingleCondition) condition, settableProperties);
         }
         long mask = 0L;
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
@@ -430,7 +431,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
         public MvelContextEntry(Declaration[] declarations) {
             this.declarations = declarations;
-            if (declarations.length > 0 ) {
+            if (declarations.length == 1) {
+                vars = new SingleValueMap<String, Object>(declarations[0].getBindingName());
+            } else if (declarations.length == 2) {
+                vars = new DoubleValueMap<String, Object>(declarations[0].getBindingName(), declarations[1].getBindingName());
+            } else {
                 vars = new HashMap<String, Object>();
             }
         }
@@ -462,15 +467,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         Map<String, Object> getRightVars(LeftTuple tuple) {
-            if (declarations.length == 0) return null;
             for (Declaration declaration : declarations) {
-                try {
-                    vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, tuple.get(declaration).getObject()));
-                } catch (NullPointerException npe) {
-                    if (right != null) {
-                        evaluateInternalDeclaration(declaration, right);
-                    } else if (left != null && declaration.getValueType().getClassType().isInstance(left)) {
-                        vars.put(declaration.getBindingName(), left);
+                if (localDeclarations == null || !localDeclarations.contains(declaration)) {
+                    InternalFactHandle fact = tuple.get(declaration);
+                    if (fact != null) {
+                        vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, fact.getObject()));
                     } else {
                         if (localDeclarations == null) {
                             localDeclarations = new ArrayList<Declaration>();
@@ -493,35 +494,25 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         Map<String, Object> getVars(Object object) {
             if (localDeclarations != null) {
                 for (Declaration localDeclaration : localDeclarations) {
-                    evaluateInternalDeclaration(localDeclaration, object);
+                    vars.put(localDeclaration.getBindingName(), localDeclaration.getExtractor().getValue(workingMemory, object));
                 }
             }
             return vars;
         }
 
-        private void evaluateInternalDeclaration(Declaration declaration, Object object) {
-            if (declaration.getValueType().getClassType().isInstance(object)) {
-                vars.put(declaration.getBindingName(), object);
-            } else if (((ClassObjectType)declaration.getPattern().getObjectType()).getClassType().isInstance(object)) {
-                vars.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, object));
-            }
-        }
-
         public void resetTuple() {
             leftTuple = null;
             left = null;
-            if (vars != null) vars.clear();
-            if (localDeclarations != null) {
-                localDeclarations.clear();
+            if (vars != null) {
+                vars.clear();
             }
         }
 
         public void resetFactHandle() {
             workingMemory = null;
             right = null;
-            if (vars != null) vars.clear();
-            if (localDeclarations != null) {
-                localDeclarations.clear();
+            if (vars != null) {
+                vars.clear();
             }
         }
 
@@ -531,9 +522,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             right = in.readObject();
             declarations = (Declaration[])in.readObject();
             next = (ContextEntry)in.readObject();
-            if (declarations.length > 0 ) {
-                vars = new HashMap<String, Object>();
-            }
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -635,6 +623,139 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 return value1.equals(value2.toString());
             }
             return value1.equals( value2 );
+        }
+    }
+
+    static class MapAdapter<K, V> implements Map<K, V> {
+        public int size() {
+            throw new UnsupportedOperationException();
+        }
+        public boolean isEmpty() {
+            throw new UnsupportedOperationException();
+        }
+        public boolean containsKey(Object key) {
+            throw new UnsupportedOperationException();
+        }
+        public boolean containsValue(Object value) {
+            throw new UnsupportedOperationException();
+        }
+        public V get(Object key) {
+            throw new UnsupportedOperationException();
+        }
+        public V put(K key, V value) {
+            throw new UnsupportedOperationException();
+        }
+        public V remove(Object key) {
+            throw new UnsupportedOperationException();
+        }
+        public void putAll(Map<? extends K, ? extends V> m) {
+            throw new UnsupportedOperationException();
+        }
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+        public Set<K> keySet() {
+            throw new UnsupportedOperationException();
+        }
+        public Collection<V> values() {
+            throw new UnsupportedOperationException();
+        }
+        public Set<Entry<K, V>> entrySet() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    static class SingleValueMap<K, V> extends MapAdapter<K, V> {
+        private final K key;
+        private V value;
+
+        SingleValueMap(K key) {
+            this.key = key;
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return this.key.equals(key);
+        }
+
+        @Override
+        public V get(Object key) {
+            return this.key.equals(key) ? value : null;
+        }
+
+        @Override
+        public V put(K key, V value) {
+            this.value = value;
+            return value;
+        }
+
+        @Override
+        public void clear() {
+            value = null;
+        }
+    }
+
+    static class DoubleValueMap<K, V> extends MapAdapter<K, V> {
+        private final K key1;
+        private final K key2;
+        private V value1;
+        private V value2;
+
+        DoubleValueMap(K key1, K key2) {
+            this.key1 = key1;
+            this.key2 = key2;
+        }
+
+        @Override
+        public int size() {
+            return 2;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return key1.equals(key) || key2.equals(key);
+        }
+
+        @Override
+        public V get(Object key) {
+            if (key1.equals(key)) {
+                return value1;
+            }
+            if (key2.equals(key)) {
+                return value2;
+            }
+            return null;
+        }
+
+        @Override
+        public V put(K key, V value) {
+            if (key1.equals(key)) {
+                value1 = value;
+            } else if (key2.equals(key)) {
+                value2 = value;
+            }
+            return value;
+        }
+
+        @Override
+        public void clear() {
+            value1 = null;
+            value2 = null;
         }
     }
 }
