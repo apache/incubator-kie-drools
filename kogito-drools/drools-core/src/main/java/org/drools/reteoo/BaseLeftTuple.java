@@ -447,10 +447,10 @@ public class BaseLeftTuple
      */
     public InternalFactHandle get(final int index) {
         LeftTuple entry = this;
-        while ( entry.getIndex() != index ) {
+        while ( entry != null && entry.getIndex() != index ) {
             entry = entry.getParent();
         }
-        return entry.getHandle();
+        return entry == null ? null : entry.getHandle();
     }
     
     public void setFactHandle(InternalFactHandle handle) {
