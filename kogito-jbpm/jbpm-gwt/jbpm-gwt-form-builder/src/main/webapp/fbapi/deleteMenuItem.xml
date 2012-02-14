@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<menuItem>
+  <groupName>My Group</groupName>
+  <name>Visual Component X</name>
+  <clone><![CDATA[{
+      "input": null,
+      "width": "100%",
+      "rows": 3,
+      "output": null,
+      "itemValidations": [],
+      "columns": 1,
+      "@className": "org.jbpm.formbuilder.shared.rep.items.TableRepresentation",
+      "typeId": "table",
+      "cellPadding": 0,
+      "height": "200px",
+      "effectClasses": [
+          "org.jbpm.formbuilder.client.effect.RemoveEffect",
+          "org.jbpm.formbuilder.client.effect.DoneEffect",
+          "org.jbpm.formbuilder.client.effect.ResizeEffect",
+          "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+      ],
+      "borderWidth": 1,
+      "cellSpacing": 0,
+      "elements": [
+          [
+              {
+                  "value": "Haikus are easy,",
+                  "typeId": "label",
+                  "input": null,
+                  "@className": "org.jbpm.formbuilder.shared.rep.items.LabelRepresentation",
+                  "width": null,
+                  "height": null,
+                  "output": null,
+                  "cssName": null,
+                  "effectClasses": [
+                      "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                      "org.jbpm.formbuilder.client.effect.DoneEffect",
+                      "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                      "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                  ],
+                  "itemValidations": [],
+                  "id": null
+              }
+          ],
+          [
+              {
+                  "value": "but sometimes they don\'t make sense.'",
+                  "typeId": "label",
+                  "input": null,
+                  "@className": "org.jbpm.formbuilder.shared.rep.items.LabelRepresentation",
+                  "width": null,
+                  "height": null,
+                  "output": null,
+                  "cssName": null,
+                  "effectClasses": [
+                      "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                      "org.jbpm.formbuilder.client.effect.DoneEffect",
+                      "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                      "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                  ],
+                  "itemValidations": [],
+                  "id": null
+              }
+          ],
+          [
+              {
+                  "value": "Refrigerator",
+                  "typeId": "label",
+                  "input": null,
+                  "@className": "org.jbpm.formbuilder.shared.rep.items.LabelRepresentation",
+                  "width": null,
+                  "height": null,
+                  "output": null,
+                  "cssName": null,
+                  "effectClasses": [
+                      "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                      "org.jbpm.formbuilder.client.effect.DoneEffect",
+                      "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                      "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                  ],
+                  "itemValidations": [],
+                  "id": null
+              }
+          ],
+      ]
+  }]]></clone>
+  <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+  <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+  <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+  <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+</menuItem>

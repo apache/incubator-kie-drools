@@ -1,0 +1,15 @@
+TO BE IMPLEMENTED IN XUL
+
+#set ($rowsParam = ${language.getParam("rows", $item.rows)})
+#set ($colsParam = ${language.getParam("cols", $item.cols)})
+#set ($nameParam = ${language.getParam("name", $item.name)})
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($valueParam = ${language.getParam("value", $item.value)})
+
+<xul:textbox #if($rowsParam)$rowsParam#end
+    #if($colsParam)$colsParam#end
+    #if($nameParam)$nameParam#end
+    #if($idParam)$idParam#end
+    #if($valueParam)$valueParam#end
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+/>

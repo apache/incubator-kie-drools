@@ -1,0 +1,7 @@
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($sytle = "$width$height")
+#set ($styleParam = ${language.getParam("style", $style)})
+<div #if($styleParam)$styleParam#end>
+    $item.content
+</div>

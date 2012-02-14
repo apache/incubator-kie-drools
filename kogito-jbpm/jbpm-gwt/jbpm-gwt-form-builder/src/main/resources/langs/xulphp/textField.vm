@@ -1,0 +1,17 @@
+#set ($input_maxlength = ${langauge.getParam("maxlength", $item.maxLength)})
+#set ($name = $item.name)
+#if (!($name and $name != "") and $item.output)
+    #set ($name = $item.output.name)
+#end
+#set ($input_name = ${language.getParam("id", $name)})
+#set ($value = $item.defaultValue)
+#if (!($value and $value != "") and $item.input and $item.input.name != "")
+    #set ($value = $item.input.value)
+#end
+#set ($input_value = ${language.getParam("value", $value)})
+## TODO textField.getItemValidations();
+<xul:textbox #if($input_maxlength)$input_maxlength#end
+    #if($input_name)$input_name#end
+    #if($input_value)$input_value#end 
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+/>

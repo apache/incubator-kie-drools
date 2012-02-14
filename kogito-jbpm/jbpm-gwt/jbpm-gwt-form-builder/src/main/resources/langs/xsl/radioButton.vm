@@ -1,0 +1,16 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($nameParam = ${language.getParam("ref", $item.name)})
+#set ($valueParam = ${language.getParam("value", $item.value)})
+#set ($selectedParam = "")
+#if ($item.selected)
+    #set ($selectedParam = ${language.getParam("selected", "true")})
+#end
+## TODO getInput();
+<input type="radio" #if($valueParam)$valueParam#end#if($selectedParam)$selectedParam#end />
+
+<xforms:select selectUI="radio" #if($idParam)$idParam#end#if($nameParam)$nameParam#end xmlns:xforms="http://www.w3.org/2002/01/xforms"> 
+  #if($valueParam)
+    <xforms:caption xmlns:xforms="http://www.w3.org/2002/01/xforms"/>$valueParam</xforms:caption>
+    <xforms:value xmlns:xforms="http://www.w3.org/2002/01/xforms">$valueParam</xforms:value>
+  #end
+</xforms:select>

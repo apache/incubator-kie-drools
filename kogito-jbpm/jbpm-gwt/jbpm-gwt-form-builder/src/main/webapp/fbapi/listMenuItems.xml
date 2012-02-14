@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<menuGroups>
+  <menuGroup name="Layout Components">
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.TableLayoutMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+  </menuGroup>
+  <menuGroup name="Control Components">
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.TextFieldMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.PasswordFieldMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.CompleteButtonMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+  </menuGroup>
+  <menuGroup name="Visual Components">
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.LabelMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.ImageMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>null</itemJson>
+    </menuItem>
+  </menuGroup>
+  <menuGroup name="My Components">
+    <menuItem className="org.jbpm.formbuilder.client.menu.items.CustomMenuItem">
+      <effect className="org.jbpm.formbuilder.client.effect.RemoveEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.DoneEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.ResizeEffect"/>
+      <effect className="org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"/>
+      <itemJson>{
+          "name": "myForm",
+          "action": "complete",
+          "taskId": "myTask",
+          "documentation": "This is documentation",
+          "enctype": "multipart/form-data",
+          "lastModified": "1309368553625",
+          "method": "POST",
+          "formItems": [
+              {
+                  "styleClass": null,
+                  "value": "Login Form Template",
+                  "typeId": "header",
+                  "input": null,
+                  "@className": "org.jbpm.formbuilder.shared.rep.items.HeaderRepresentation",
+                  "width": null,
+                  "height": null,
+                  "output": null,
+                  "cssId": null,
+                  "cssName": null,
+                  "effectClasses": [
+                      "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                      "org.jbpm.formbuilder.client.effect.DoneEffect",
+                      "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                      "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                  ],
+                  "itemValidations": []
+              },
+              {
+                  "input": null,
+                  "width": "100%",
+                  "rows": 3,
+                  "output": null,
+                  "itemValidations": [],
+                  "columns": 2,
+                  "@className": "org.jbpm.formbuilder.shared.rep.items.TableRepresentation",
+                  "typeId": "table",
+                  "cellPadding": 0,
+                  "height": "200px",
+                  "effectClasses": [
+                      "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                      "org.jbpm.formbuilder.client.effect.DoneEffect",
+                      "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                      "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                  ],
+                  "borderWidth": 1,
+                  "cellSpacing": 0,
+                  "elements": [
+                      [
+                          {
+                              "value": "Password",
+                              "typeId": "label",
+                              "input": null,
+                              "@className": "org.jbpm.formbuilder.shared.rep.items.LabelRepresentation",
+                              "width": null,
+                              "height": null,
+                              "output": null,
+                              "cssName": null,
+                              "effectClasses": [
+                                  "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                                  "org.jbpm.formbuilder.client.effect.DoneEffect",
+                                  "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                                  "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                              ],
+                              "itemValidations": [],
+                              "id": null
+                          },
+                          {
+                              "maxLength": null,
+                              "typeId": "textField",
+                              "input": null,
+                              "@className": "org.jbpm.formbuilder.shared.rep.items.TextFieldRepresentation",
+                              "width": "160px",
+                              "defaultValue": null,
+                              "height": "21px",
+                              "output": null,
+                              "effectClasses": [
+                                  "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                                  "org.jbpm.formbuilder.client.effect.DoneEffect",
+                                  "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                                  "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                              ],
+                              "itemValidations": [],
+                              "name": "usr",
+                              "id": null
+                          }
+                      ],
+                      [
+                          {
+                              "value": null,
+                              "typeId": "label",
+                              "input": null,
+                              "@className": "org.jbpm.formbuilder.shared.rep.items.LabelRepresentation",
+                              "width": null,
+                              "height": null,
+                              "output": null,
+                              "cssName": null,
+                              "effectClasses": [
+                                  "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                                  "org.jbpm.formbuilder.client.effect.DoneEffect",
+                                  "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                                  "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                              ],
+                              "itemValidations": [],
+                              "id": null
+                          },
+                          {
+                              "maxLength": null,
+                              "typeId": "textField",
+                              "input": null,
+                              "@className": "org.jbpm.formbuilder.shared.rep.items.TextFieldRepresentation",
+                              "width": "160px",
+                              "defaultValue": null,
+                              "height": "21px",
+                              "output": null,
+                              "effectClasses": [
+                                  "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                                  "org.jbpm.formbuilder.client.effect.DoneEffect",
+                                  "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                                  "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                              ],
+                              "itemValidations": [],
+                              "name": "pwd",
+                              "id": null
+                          }
+                      ],
+                      [
+                          null,
+                          {
+                              "onClickScript": {
+                                  "@className": "org.jbpm.formbuilder.shared.rep.FBScript",
+                                  "type": "text/javascript",
+                                  "documentation": null,
+                                  "content": "document.forms[0].submit();",
+                                  "src": null,
+                                  "invokeFunction": null,
+                                  "id": null
+                              },
+                              "typeId": "completeButton",
+                              "input": null,
+                              "@className": "org.jbpm.formbuilder.shared.rep.items.CompleteButtonRepresentation",
+                              "text": "Login",
+                              "width": "140px",
+                              "height": "25px",
+                              "output": null,
+                              "effectClasses": [
+                                  "org.jbpm.formbuilder.client.effect.RemoveEffect",
+                                  "org.jbpm.formbuilder.client.effect.DoneEffect",
+                                  "org.jbpm.formbuilder.client.effect.ResizeEffect",
+                                  "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"
+                              ],
+                              "itemValidations": [],
+                              "name": null,
+                              "id": null
+                          }
+                      ]
+                  ]
+              }
+          ],
+          "formValidations": [],
+          "inputs": {
+              "in2": {
+                  "@className": "org.jbpm.formbuilder.shared.rep.InputData",
+                  "mimeType": null,
+                  "value": "${process.dataY}",
+                  "name": "in2",
+                  "formatter": null
+              }, 
+              "in1": {
+                  "@className": "org.jbpm.formbuilder.shared.rep.InputData",
+                  "mimeType": null,
+                  "value": "${process.dataX}",
+                  "name": "in1",
+                  "formatter": null
+              }
+          },
+          "outputs": {
+              "process.dataZ": {
+                  "@className": "org.jbpm.formbuilder.shared.rep.OutputData",
+                  "mimeType": null,
+                  "value": "${pwd}",
+                  "name": "process.dataZ",
+                  "formatter": null
+              }
+          },
+          "onLoadScripts": [],
+          "onSubmitScripts": []
+      }
+      </itemJson>
+    </menuItem>
+  </menuGroup>
+</menuGroups>

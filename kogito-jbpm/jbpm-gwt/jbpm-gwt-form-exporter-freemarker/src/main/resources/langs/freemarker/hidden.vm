@@ -1,0 +1,12 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($nameParam = ${language.getParam("name", $item.name)})
+#set ($valueParam = ${language.getParam("value", $item.value)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($valueParam = ${language.getParam("value", $aux2)})
+  #end
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+<input type="hidden" #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($nameParam)$nameParam#end#if($valueParam)$valueParam#end />
+

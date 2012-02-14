@@ -1,0 +1,26 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($nameParam = ${language.getParam("name", $item.name)})
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($style = "$width$height")
+#set ($styleParam = ${language.getParam("style", $style)})
+#set ($checked = "")
+#if ($item.checked) 
+    #set ($checked = "true")
+#end
+#set ($checkedParam = ${language.getParam("checked", $checked)})
+#set ($valueParam = ${language.getParam("value", $item.formValue)})
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($valueParam = ${language.getParam("value", $aux2)})
+  #end
+#end
+#if($item.output)
+  #if($item.output.name)
+    #set($nameParam = ${language.getParam("name", $item.output.name)})
+  #end
+#end
+<input type="checkbox" #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($nameParam)$nameParam#end#if($styleParam)$styleParam#end#if($checkedParam)$checkedParam#end#if($valueParam)$valueParam#end/>

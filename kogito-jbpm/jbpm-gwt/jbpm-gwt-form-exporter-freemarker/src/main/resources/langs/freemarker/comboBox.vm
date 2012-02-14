@@ -1,0 +1,23 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($name = $item.name)
+#if (!($name and $name != "") and $item.input and $item.input.name)
+    #set ($name = ${language.asFtlVar($item.getInput().getName())})
+#end
+#set ($nameParam = ${language.getParam("name", $name)})
+## TODO $item.itemValidations
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+#if($item.output)
+  #if($item.output.name)
+    #set($nameParam = ${language.getParam("name", $item.output.name)})
+  #end
+#end
+
+<select #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($nameParam)$nameParam#end>
+#if ($item.elements) 
+  #foreach ($option in $item.elements)
+    ${language.translateItem($option)}
+  #end
+#elseif ($item.elementsPopulationScript)
+    ${language.toServerScript($item.elementsPopulationScript)}
+#end
+</select>

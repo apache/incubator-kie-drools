@@ -1,0 +1,29 @@
+#set ($widthParam = ${language.getParam("width", $item.width)})
+#set ($heightParam = ${language.getSParam("height", $item.height)})
+#set ($classParam = ${language.getParam("class", $item.cssClassName)})
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($dataType = $item.dataType)
+#if (!($dataType and $dataType == "")
+  #set ($dataType = "application/ogg")
+#end
+#set ($typeParam = ${language.getParam("type", $dataType)})
+
+#set ($audioUrl = $item.audioUrl)
+#if (!($audioUrl and $audioUrl != "") and $item.input and $item.input.name != "")
+    #set ($audioUrl = $item.input.value)
+#end
+#set ($dataParam = ${language.getParam("data", $audioUrl)})
+#set ($srcValueParam = ${language.getParam("value", $audioUrl)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($dataParam = ${language.getParam("data", $aux2)})
+    #set ($srcValueParam = ${language.getParam("value", $aux2)})
+  #end
+#end
+
+
+<object $typeParam #if($dataParam)$dataParam#end #if($widthParam)$widthParam#end#if($heightParam)$heightParam#end#if($classParam)$classParam#end#if($idParam)$idParam#end>
+  <param name="src" #if($srcValueParam)$srcValueParam#end></param>
+</object>

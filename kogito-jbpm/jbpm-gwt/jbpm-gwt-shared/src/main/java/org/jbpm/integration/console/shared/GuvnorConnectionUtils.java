@@ -23,8 +23,6 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -103,6 +101,10 @@ public class GuvnorConnectionUtils {
     }
     
     public String getFormTemplateURLFromGuvnor(String templateName) {
+    	return getFormTemplateURLFromGuvnor(templateName, "drl");
+    }
+    
+    public String getFormTemplateURLFromGuvnor(String templateName, String format) {
         List<String> allPackages = getPackageNames();
         try {
             for(String pkg : allPackages) {
@@ -135,7 +137,7 @@ public class GuvnorConnectionUtils {
                     + pkg
                     + "/LATEST/"
                     + URLEncoder.encode(templateName, "UTF-8")
-                    + ".drl";
+                    + "." + format;
                     
                     return toReturnURL;
                 }
@@ -323,6 +325,10 @@ public class GuvnorConnectionUtils {
     	return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_READTIMEOUT_KEY).trim();
     }
     
+    protected Properties getGuvnorProperties() {
+    	return properties;
+    }
+    
     private List<String> getPackageNamesFromGuvnor() {
         List<String> packages = new ArrayList<String>();
         String packagesURL = getGuvnorProtocol()
@@ -386,7 +392,7 @@ public class GuvnorConnectionUtils {
         return false;
     }
     
-    private void applyAuth(HttpURLConnection connection) {
+    protected void applyAuth(HttpURLConnection connection) {
 		String auth = getGuvnorUsr() + ":" + getGuvnorPwd();
 		connection.setRequestProperty("Authorization", "Basic "
                 + Base64.encodeBase64String(auth.getBytes()));
@@ -441,7 +447,7 @@ public class GuvnorConnectionUtils {
                 "UTF-8"));
     }
     
-    private boolean isEmpty(final CharSequence str) {
+    protected boolean isEmpty(final CharSequence str) {
         if ( str == null || str.length() == 0 ) {
             return true;
         }

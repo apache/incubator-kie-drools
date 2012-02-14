@@ -1,0 +1,23 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($name = $item.name)
+#if (!($name and $name != "") and $item.input and $item.input.name)
+    #set ($name = "${" + $item.input.name + "}")
+#end
+#set ($nameParam = ${language.getParam("name", $name)})
+## TODO $item.itemValidations
+## TODO $item.output
+
+<xul:menulist editable="true"
+    #if($idParam)$idParam#end
+    #if($nameParam)$nameParam#end
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <xul:menupopup xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    #if ($item.elements) 
+      #foreach ($option in $item.elements)
+        ${language.translateItem($option)}
+      #end
+    #elseif ($item.elementsPopulationScript)
+      ${language.toServerScript($item.elementsPopulationScript)}
+    #end
+  </xul:menupopup>
+</xul:menulist>

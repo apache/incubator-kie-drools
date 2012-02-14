@@ -1,0 +1,44 @@
+#set ($uuid = java.util.UUID.randomUUID().toString())
+#set ($width = $item.getOffsetWidth())
+#set ($height = $item.getOffsetHeight())
+#set ($title = $item.graphTitle)
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    #foreach ($entry in $item.dataStructure)
+      #set ($key = $entry.key)
+      #set ($value = $entry.value)
+      data.addColumn('$key', '$value');
+    #end
+    data.addRows([
+      #set ($dataLineIter = $item.dataTable.iterator())
+      #foreach ($dataLine in $item.dataTable)
+		#set ($indexLine = $item.dataTable.indexOf($dataLine))
+        #set ($lastindexLine = $item.dataTable.size() - 1)
+        [
+        #foreach ($d in $dataLine)
+          #set ($index = $dataLine.indexOf($d))
+          #set ($lastindex = $dataLine.size() - 1)
+          [
+          #if ($dataStructure[$index].key == 'STRING') '$d' #else $d #end
+          #if($index == $lastindex),#end
+          ]
+        #end
+        #if ($indexLine == $lastindexLine),#end
+        ]
+      #end
+    ]);
+	
+    var options = {
+      width: $width, height: $height,
+      title: $title
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('chart_div$uuid'));
+    chart.draw(data, options);
+  }
+</script>
+<div id="chart_div$uuid"></div>

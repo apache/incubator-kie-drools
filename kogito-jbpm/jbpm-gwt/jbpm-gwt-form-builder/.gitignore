@@ -1,0 +1,14 @@
+/.gwt
+/.classpath
+/.project
+/.settings
+/target
+/www-test
+/src/main/webapp/org.jbpm.formdisplay.FormDisplay
+/src/main/webapp/org.jbpm.formbuilder.FormBuilder
+/src/main/webapp/WEB-INF/classes
+/src/main/webapp/WEB-INF/deploy
+/src/main/webapp/velocity.log*
+/velocity.log*
+/src/main/webapp/formbuilder
+/tomcat

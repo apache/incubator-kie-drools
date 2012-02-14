@@ -1,0 +1,15 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($style = "$width$height")
+#set ($styleParam = ${language.getParam("style", $style)})
+#set ($entries = ${item.items.entrySet()})
+<div #if($idParam)$idParam#end#if($styleParam)$styleParam#end>
+  #foreach ($entry in $entries)
+    #set ($subItem = $entry.value)
+    #set ($positionX = "$entry.key.x")
+    #set ($positionY = "$entry.key.y")
+    #set ($positionParam = ${language.getStyleParam("left", $positionX)} + ${language.getStyleParam("top", $positionY)})
+    <div $positonParam>${language.translateItem($subItem)}</div>
+  #end
+</div>
