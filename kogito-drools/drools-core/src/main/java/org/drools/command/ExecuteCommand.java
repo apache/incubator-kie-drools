@@ -52,11 +52,16 @@ public class ExecuteCommand
         this.outIdentifier = identifier;
         this.disconnected = disconnected;
     }
+    
+    public ExecuteCommand(Command  command, boolean disconnected) {
+        this.command = command;
+        this.disconnected = disconnected;
+    }
 
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ExecutionResults kresults = ksession.execute( this.command );
+        ExecutionResults kresults = ((StatefulKnowledgeSessionImpl)ksession).execute(context, this.command );
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
         }
