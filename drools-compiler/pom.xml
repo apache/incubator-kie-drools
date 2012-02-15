@@ -244,7 +244,7 @@
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.compiler;singleton:=true</Bundle-SymbolicName>
             <Require-Bundle>org.drools.core;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.drools.*,
+            <Import-Package>org.antlr.*;version="3.4",!org.drools.*,
               <!-- java compilers are optional: only need one at most -->
               org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
               *</Import-Package>
