@@ -146,6 +146,6 @@ public class EmptyBetaConstraints
     }
 
     public long getListenedPropertyMask(List<String> settableProperties) {
-        return Long.MAX_VALUE;
+        return 0L;
     }
 }

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
 import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
@@ -37,7 +36,6 @@ import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.IndexableConstraint;
-import org.drools.rule.VariableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -204,12 +202,11 @@ public class DoubleBetaConstraints
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         BetaMemory memory;
 
-        final List list = new ArrayList( 2 );
+        final List<FieldIndex> list = new ArrayList<FieldIndex>( 2 );
         if ( this.indexed0 ) {
             final IndexableConstraint indexableConstraint = (IndexableConstraint) this.constraint0;
             final FieldIndex index = indexableConstraint.getFieldIndex();
             list.add( index );
-
         }
 
         if ( this.indexed1 ) {
@@ -219,7 +216,7 @@ public class DoubleBetaConstraints
         }
 
         if ( !list.isEmpty() ) {
-            final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
+            final FieldIndex[] indexes = list.toArray( new FieldIndex[list.size()] );
 
             LeftTupleMemory tupleMemory;
             if ( config.isIndexLeftBetaMemory() ) {
@@ -232,7 +229,7 @@ public class DoubleBetaConstraints
             if ( config.isIndexRightBetaMemory() ) {
                 factHandleMemory = new RightTupleIndexHashTable( indexes );
             } else {
-                factHandleMemory = (RightTupleMemory) new RightTupleList();
+                factHandleMemory = new RightTupleList();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory,
