@@ -2,22 +2,12 @@ package org.drools.lang.descr;
 
 import org.drools.io.Resource;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 public class CompositePackageDescr extends PackageDescr {
 
-    private List<ImportDescr>               imports                = Collections.emptyList();
-    private List<FunctionImportDescr>       functionImports        = Collections.emptyList();
-    private List<AttributeDescr>            attributes             = Collections.emptyList();
-    private List<GlobalDescr>               globals                = Collections.emptyList();
-    private List<FunctionDescr>             functions              = Collections.emptyList();
-    private List<RuleDescr>                 rules                  = Collections.emptyList();
-    private List<TypeDeclarationDescr>      typeDeclarations       = Collections.emptyList();
-    private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
-    private Set<WindowDeclarationDescr>     windowDeclarations     = Collections.emptySet();
+    public CompositePackageDescr() { }
 
     public CompositePackageDescr(Resource resource, PackageDescr packageDescr) {
         super(packageDescr.getNamespace(), packageDescr.getDocumentation());
