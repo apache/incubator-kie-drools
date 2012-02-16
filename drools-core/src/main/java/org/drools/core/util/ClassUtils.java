@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -293,7 +294,15 @@ public final class ClassUtils {
         for (Method m : clazz.getMethods()) {
             if (m.getParameterTypes().length == 1) {
                 String propName = setter2property(m.getName());
-                if (propName != null) settableProperties.add(propName);
+                if (propName != null) {
+                    settableProperties.add(propName);
+                }
+            }
+        }
+        for (Field f : clazz.getFields()) {
+            String fieldName = f.getName();
+            if (!settableProperties.contains(fieldName)) {
+                settableProperties.add(fieldName);
             }
         }
         Collections.sort(settableProperties);
@@ -311,7 +320,9 @@ public final class ClassUtils {
     }
 
     public static String setter2property(String methodName) {
-        if (!methodName.startsWith("set") || methodName.length() < 4) return null;
+        if (!methodName.startsWith("set") || methodName.length() < 4) {
+            return null;
+        }
         return Character.toLowerCase(methodName.charAt(3)) + methodName.substring(4);
     }
 

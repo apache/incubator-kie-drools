@@ -2,7 +2,6 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -492,51 +491,6 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(1, rules);
     }
 
-    @PropertySpecific
-    public static class Hero {
-        private boolean canMove;
-        private int position;
-
-        public boolean isCanMove() {
-            return canMove;
-        }
-
-        public void setCanMove(boolean canMove) {
-            this.canMove = canMove;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-
-        @Override
-        public String toString() {
-            return "Hero{" + "position=" + position + '}';
-        }
-    }
-
-    @PropertySpecific
-    public static class MoveCommand {
-        private int move;
-
-        public int getMove() {
-            return move;
-        }
-
-        public void setMove(int move) {
-            this.move = move;
-        }
-
-        @Override
-        public String toString() {
-            return "MoveCommand{" + "move=" + move + '}';
-        }
-    }
-
     @Test
     public void testPropSpecOnBetaNode() throws Exception {
         String rule = "package org.drools\n" +
@@ -606,5 +560,166 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         int rules = ksession.fireAllRules();
         assertEquals(1, rules);
+    }
+
+    @Test(timeout = 5000)
+    public void testNodeSharing() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Hero\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Init\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.CompositeImageName\n" +
+                "declare CompositeImageName\n" +
+                "   @propertySpecific\n" +
+                "end\n" +
+                "rule \"Show First Cell\" when\n" +
+                "   Init()\n" +
+                "   $c : Cell( row == 0, col == 0 )\n" +
+                "then\n" +
+                "   modify( $c ) { hidden = false };\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Paint Empty Hero\" when\n" +
+                "   $c : Cell()\n" +
+                "   $cin : CompositeImageName( cell == $c )\n" +
+                "   not Hero( row == $c.row, col == $c.col  )\n" +
+                "then\n" +
+                "   modify( $cin ) { hero = \"\" };\n" +
+                "   System.out.println( \"Empty Hero \" + $cin );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Init());
+
+        Cell cell = new Cell();
+        cell.setRow(0);
+        cell.setCol(0);
+        cell.hidden = true;
+        ksession.insert(cell);
+
+        Hero hero = new Hero();
+        hero.setRow(1);
+        hero.setCol(1);
+        ksession.insert(hero);
+
+        CompositeImageName cin = new CompositeImageName();
+        cin.setHero("hero");
+        cin.setCell(cell);
+        ksession.insert(cin);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(3, rules);
+    }
+
+    @PropertySpecific
+    public static class Init { }
+
+    @PropertySpecific
+    public static class Hero {
+        private boolean canMove;
+        private int position;
+        private int col;
+        private int row;
+
+        public boolean isCanMove() {
+            return canMove;
+        }
+
+        public void setCanMove(boolean canMove) {
+            this.canMove = canMove;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public void setCol(int col) {
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+
+        @Override
+        public String toString() {
+            return "Hero{" + "position=" + position + '}';
+        }
+    }
+
+    @PropertySpecific
+    public static class MoveCommand {
+        private int move;
+
+        public int getMove() {
+            return move;
+        }
+
+        public void setMove(int move) {
+            this.move = move;
+        }
+
+        @Override
+        public String toString() {
+            return "MoveCommand{" + "move=" + move + '}';
+        }
+    }
+
+    @PropertySpecific
+    public static class Cell {
+        private int col;
+        private int row;
+        public boolean hidden;
+
+        public int getCol() {
+            return col;
+        }
+
+        public void setCol(int col) {
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+    }
+
+    public static class CompositeImageName {
+        private Cell cell;
+        public String hero;
+
+        public Cell getCell() {
+            return cell;
+        }
+
+        public void setCell(Cell cell) {
+            this.cell = cell;
+        }
+
+        public String getHero() {
+            return hero;
+        }
+
+        public void setHero(String hero) {
+            this.hero = hero;
+        }
     }
 }

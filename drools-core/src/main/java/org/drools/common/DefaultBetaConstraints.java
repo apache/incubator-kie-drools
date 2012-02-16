@@ -20,12 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
 import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
@@ -40,8 +37,7 @@ import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.rule.VariableRestriction;
+import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 
@@ -177,9 +173,8 @@ public class DefaultBetaConstraints
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
                                 final LeftTuple tuple) {
-        for ( int i = 0; i < context.length; i++ ) {
-            context[i].updateFromTuple( workingMemory,
-                                        tuple );
+        for (ContextEntry aContext : context) {
+            aContext.updateFromTuple(workingMemory, tuple);
         }
     }
 
@@ -189,21 +184,20 @@ public class DefaultBetaConstraints
     public void updateFromFactHandle(final ContextEntry[] context,
                                      final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        for ( int i = 0; i < context.length; i++ ) {
-            context[i].updateFromFactHandle( workingMemory,
-                                             handle );
+        for (ContextEntry aContext : context) {
+            aContext.updateFromFactHandle(workingMemory, handle);
         }
     }
 
     public void resetTuple(final ContextEntry[] context) {
-        for ( int i = 0; i < context.length; i++ ) {
-            context[i].resetTuple();
+        for (ContextEntry aContext : context) {
+            aContext.resetTuple();
         }
     }
 
     public void resetFactHandle(final ContextEntry[] context) {
-        for ( int i = 0; i < context.length; i++ ) {
-            context[i].resetFactHandle();
+        for (ContextEntry aContext : context) {
+            aContext.resetFactHandle();
         }
     }
 
@@ -213,7 +207,7 @@ public class DefaultBetaConstraints
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
         // skip the indexed constraints
-        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed+1 );
+        LinkedListEntry entry = findNode( this.indexed+1 );
 
         int i = 1;
         while ( entry != null ) {
@@ -233,7 +227,7 @@ public class DefaultBetaConstraints
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final LeftTuple tuple) {
         // skip the indexed constraints
-        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed+1 );
+        LinkedListEntry entry = findNode( this.indexed+1 );
 
         int i = 1;
         while ( entry != null ) {
@@ -264,7 +258,7 @@ public class DefaultBetaConstraints
         BetaMemory memory;
         if ( this.indexed >= 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
-            final List list = new ArrayList();
+            final List<FieldIndex> list = new ArrayList<FieldIndex>();
 
             for ( int pos = 0; pos <= this.indexed; pos++ ) {
                 final Constraint constraint = (Constraint) entry.getObject();
@@ -274,7 +268,7 @@ public class DefaultBetaConstraints
                 entry = (LinkedListEntry) entry.getNext();
             }
 
-            final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
+            final FieldIndex[] indexes = list.toArray( new FieldIndex[list.size()] );
             LeftTupleMemory tupleMemory;
             if ( config.isIndexLeftBetaMemory() ) {
                 tupleMemory = new LeftTupleIndexHashTable( indexes );
@@ -346,6 +340,17 @@ public class DefaultBetaConstraints
     }
 
     public long getListenedPropertyMask(List<String> settableProperties) {
-        return Long.MAX_VALUE;
+        long mask = 0L;
+        LinkedListEntry entry = (LinkedListEntry) constraints.getFirst();
+        while ( entry != null ) {
+            final Constraint constraint = (Constraint) entry.getObject();
+            entry = (LinkedListEntry) entry.getNext();
+            if (constraint instanceof MvelConstraint) {
+                mask |= ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
+            } else {
+                return Long.MAX_VALUE;
+            }
+        }
+        return mask;
     }
 }
