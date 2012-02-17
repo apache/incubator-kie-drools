@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>What is New and Noteworthy in Drools 5.4.0.CR1</title>
+
+  <section>
+    <title>Drools Expert</title>
+
+    <section>
+      <title>Decision Tables support "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes. </para>
+
+      <table>
+        <title>New attributes</title>
+
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Initial</entry>
+
+              <entry>Value</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>TIMER</entry>
+
+              <entry>T</entry>
+
+              <entry>A timer definition. See "Timers and Calendars".</entry>
+            </row>
+
+            <row>
+              <entry>CALENDARS</entry>
+
+              <entry>E</entry>
+
+              <entry>A calendars definition. See "Timers and Calendars".</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+  </section>
+
+  <section>
+    <title>Guvnor</title>
+
+    <section>
+      <title>BRL editor supports "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
+
+      <figure>
+        <title>Timer and Calendar</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-brl.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Decision Tables support "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
+
+      <figure>
+        <title>Timer and Calendar</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png" format="PNG"
+                       scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+</section>
