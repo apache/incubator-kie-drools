@@ -111,7 +111,8 @@ public class PropertiesSheetListener implements DataListener {
                 keyValue[2] = RuleSheetParserUtil.rc2name(row, column);
             }
         } else {
-            final String[] keyValue = {value, PropertiesSheetListener.EMPTY_STRING, RuleSheetParserUtil.rc2name(row, column+1) };
+            final String trimmedValue = value.trim();
+            final String[] keyValue = {trimmedValue, PropertiesSheetListener.EMPTY_STRING, RuleSheetParserUtil.rc2name(row, column+1) };
             this._rowProperties.put( rowInt, keyValue );
         }
     }

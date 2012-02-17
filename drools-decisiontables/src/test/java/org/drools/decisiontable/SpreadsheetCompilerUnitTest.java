@@ -16,15 +16,24 @@
 
 package org.drools.decisiontable;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
+import org.drools.decisiontable.parser.RuleSheetParserUtil;
+import org.drools.decisiontable.parser.xls.ExcelParser;
+import org.drools.template.model.Global;
+import org.drools.template.model.Import;
+import org.drools.template.parser.DataListener;
 import org.junit.Test;
 
 /**
@@ -209,6 +218,142 @@ public class SpreadsheetCompilerUnitTest {
                                  rule2 ) > -1 );
         assertTrue( drl.indexOf( "calendars \"CAL2\"",
                                  rule2 ) > -1 );
+    }
+
+    @Test
+    public void testPropertiesXLS() {
+
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final DefaultRuleSheetListener listener = new DefaultRuleSheetListener();
+        listeners.add( listener );
+
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "Properties.xls" );
+
+        parser.parseFile( is );
+
+        listener.getProperties();
+
+        final String rulesetName = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.RULESET_TAG );
+        assertNotNull( rulesetName );
+        assertEquals( "Properties",
+                      rulesetName );
+
+        final List<Import> importList = RuleSheetParserUtil.getImportList( listener.getProperties().getProperty( DefaultRuleSheetListener.IMPORT_TAG ) );
+        assertNotNull( importList );
+        assertEquals( 1,
+                      importList.size() );
+        assertEquals( "java.util.List",
+                      importList.get( 0 ).getClassName() );
+
+        final List<Global> variableList = RuleSheetParserUtil.getVariableList( listener.getProperties().getProperty( DefaultRuleSheetListener.VARIABLES_TAG ) );
+        assertNotNull( variableList );
+        assertEquals( 1,
+                      variableList.size() );
+        assertEquals( "java.util.List",
+                      variableList.get( 0 ).getClassName() );
+        assertEquals( "list",
+                      variableList.get( 0 ).getIdentifier() );
+
+        final List<String> functions = listener.getProperties().getProperty( DefaultRuleSheetListener.FUNCTIONS_TAG );
+        assertNotNull( functions );
+        assertEquals( 1,
+                      functions.size() );
+        assertEquals( "A function",
+                      functions.get( 0 ) );
+
+        final List<String> queries = listener.getProperties().getProperty( DefaultRuleSheetListener.QUERIES_TAG );
+        assertNotNull( queries );
+        assertEquals( 1,
+                      queries.size() );
+        assertEquals( "A query",
+                      queries.get( 0 ) );
+
+        final List<String> declarations = listener.getProperties().getProperty( DefaultRuleSheetListener.DECLARES_TAG );
+        assertNotNull( declarations );
+        assertEquals( 1,
+                      declarations.size() );
+        assertEquals( "A declared type",
+                      declarations.get( 0 ) );
+
+        final String sequentialFlag = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.SEQUENTIAL_FLAG );
+        assertNotNull( sequentialFlag );
+        assertEquals( "false",
+                      sequentialFlag );
+
+        final String escapeQuotesFlag = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.ESCAPE_QUOTES_FLAG );
+        assertNotNull( escapeQuotesFlag );
+        assertEquals( "false",
+                      escapeQuotesFlag );
+
+    }
+
+    @Test
+    public void testPropertiesWithWhiteSpaceXLS() {
+
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final DefaultRuleSheetListener listener = new DefaultRuleSheetListener();
+        listeners.add( listener );
+
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "PropertiesWithWhiteSpace.xls" );
+
+        parser.parseFile( is );
+
+        listener.getProperties();
+
+        final String rulesetName = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.RULESET_TAG );
+        assertNotNull( rulesetName );
+        assertEquals( "Properties",
+                      rulesetName );
+
+        final List<Import> importList = RuleSheetParserUtil.getImportList( listener.getProperties().getProperty( DefaultRuleSheetListener.IMPORT_TAG ) );
+        assertNotNull( importList );
+        assertEquals( 1,
+                      importList.size() );
+        assertEquals( "java.util.List",
+                      importList.get( 0 ).getClassName() );
+
+        final List<Global> variableList = RuleSheetParserUtil.getVariableList( listener.getProperties().getProperty( DefaultRuleSheetListener.VARIABLES_TAG ) );
+        assertNotNull( variableList );
+        assertEquals( 1,
+                      variableList.size() );
+        assertEquals( "java.util.List",
+                      variableList.get( 0 ).getClassName() );
+        assertEquals( "list",
+                      variableList.get( 0 ).getIdentifier() );
+
+        final List<String> functions = listener.getProperties().getProperty( DefaultRuleSheetListener.FUNCTIONS_TAG );
+        assertNotNull( functions );
+        assertEquals( 1,
+                      functions.size() );
+        assertEquals( "A function",
+                      functions.get( 0 ) );
+
+        final List<String> queries = listener.getProperties().getProperty( DefaultRuleSheetListener.QUERIES_TAG );
+        assertNotNull( queries );
+        assertEquals( 1,
+                      queries.size() );
+        assertEquals( "A query",
+                      queries.get( 0 ) );
+
+        final List<String> declarations = listener.getProperties().getProperty( DefaultRuleSheetListener.DECLARES_TAG );
+        assertNotNull( declarations );
+        assertEquals( 1,
+                      declarations.size() );
+        assertEquals( "A declared type",
+                      declarations.get( 0 ) );
+
+        final String sequentialFlag = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.SEQUENTIAL_FLAG );
+        assertNotNull( sequentialFlag );
+        assertEquals( "false",
+                      sequentialFlag );
+
+        final String escapeQuotesFlag = listener.getProperties().getSingleProperty( DefaultRuleSheetListener.ESCAPE_QUOTES_FLAG );
+        assertNotNull( escapeQuotesFlag );
+        assertEquals( "false",
+                      escapeQuotesFlag );
+
     }
     
 }
