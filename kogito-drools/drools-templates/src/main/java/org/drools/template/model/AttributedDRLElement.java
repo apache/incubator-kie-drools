@@ -53,6 +53,14 @@ public abstract class AttributedDRLElement extends DRLElement {
         return '"' + value.replaceAll( "\"", Matcher.quoteReplacement( "\\\"" ) ) + '"';
     }
 
+    protected String asTimerLiteral( String value ){
+        // Keep the brackets if they come in the right places.
+        if( value.startsWith( "(" ) && value.endsWith( ")" ) && value.length() >= 2 ){
+            value = value.substring( 1, value.length() - 1 );
+        }
+        return "(" + value+ ")";
+    }
+    
     public void setSalience( final Integer value ){
         this._attr2value.put( "salience", Integer.toString( value ) );
     }
@@ -65,6 +73,14 @@ public abstract class AttributedDRLElement extends DRLElement {
         this._attr2value.put( "duration", Long.toString( value ) );
     }
 
+    public void setTimer(final String value) {
+        this._attr2value.put( "timer", asTimerLiteral( value ) );
+    }
+
+    public void setCalendars(final String value) {
+        this._attr2value.put( "calendars", asStringLiteral( value ) );
+    }
+    
     public void setActivationGroup(final String value) {
         this._attr2value.put( "activation-group", asStringLiteral( value ) );
     }
