@@ -16,16 +16,16 @@
 
 package org.drools.decisiontable;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
+import org.junit.Test;
 
 /**
  *
@@ -154,5 +154,61 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "declare Smurf name : String end" ) > -1 );
     }
 
+    @Test
+    public void testAttributesXLS() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "Attributes.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+
+        int rule1 = drl.indexOf( "rule \"N1\"" );
+        assertFalse( rule1 == -1 );
+
+        assertTrue( drl.indexOf( "no-loop true",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "duration 100",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "salience 1",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "ruleflow-group \"RFG1\"",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "agenda-group \"AG1\"",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "timer (T1)",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "lock-on-active true",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "activation-group \"g1\"",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "auto-focus true",
+                                 rule1 ) > -1 );
+        assertTrue( drl.indexOf( "calendars \"CAL1\"",
+                                 rule1 ) > -1 );
+
+        int rule2 = drl.indexOf( "rule \"N2\"" );
+        assertFalse( rule2 == -1 );
+
+        assertTrue( drl.indexOf( "no-loop false",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "duration 200",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "salience 2",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "ruleflow-group \"RFG2\"",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "agenda-group \"AG2\"",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "timer (T2)",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "lock-on-active false",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "activation-group \"g2\"",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "auto-focus false",
+                                 rule2 ) > -1 );
+        assertTrue( drl.indexOf( "calendars \"CAL2\"",
+                                 rule2 ) > -1 );
+    }
     
 }

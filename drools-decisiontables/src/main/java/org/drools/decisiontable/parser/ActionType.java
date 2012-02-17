@@ -38,6 +38,8 @@ public class ActionType {
         DESCRIPTION(     "DESCRIPTION",      "I" ),
         SALIENCE(        "PRIORITY",         "P", 1 ),
         DURATION(        "DURATION",         "D", 1 ),
+        TIMER(           "TIMER",            "T", 1 ),
+        CALENDARS(       "CALENDARS",        "E", 1 ),
         NOLOOP(          "NO-LOOP",          "U", 1 ),
         LOCKONACTIVE(    "LOCK-ON-ACTIVE",   "L", 1 ),
         AUTOFOCUS(       "AUTO-FOCUS",       "F", 1 ),
