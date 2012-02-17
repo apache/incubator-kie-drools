@@ -21,6 +21,7 @@ import javax.persistence.FlushModeType;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.TransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 
@@ -30,9 +31,10 @@ public class JpaPersistenceContextManager
     Environment                  env;
 
     private EntityManagerFactory emf;
+    private TransactionManager txm;
 
     private EntityManager        appScopedEntityManager;
-    protected EntityManager        cmdScopedEntityManager;
+    protected EntityManager      cmdScopedEntityManager;
 
     private boolean              internalAppScopedEntityManager;
     private boolean              internalCmdScopedEntityManager;
@@ -42,6 +44,10 @@ public class JpaPersistenceContextManager
         this.emf = ( EntityManagerFactory ) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
     }
     
+    public void setTransactionManager(TransactionManager txm) { 
+        this.txm = txm;
+    }
+
     public PersistenceContext getApplicationScopedPersistenceContext() {
         if ( this.appScopedEntityManager == null ) {
             // Use the App scoped EntityManager if the user has provided it, and it is open.
@@ -72,7 +78,8 @@ public class JpaPersistenceContextManager
         if ( cmdScopedEntityManager == null || 
            ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
             internalCmdScopedEntityManager = true;
-            this.cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            // no need to call joinTransaction as it will do so if one already exists
+            this.cmdScopedEntityManager = this.emf.createEntityManager(); 
             this.cmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
                           this.cmdScopedEntityManager );
@@ -80,8 +87,8 @@ public class JpaPersistenceContextManager
         } else {
             internalCmdScopedEntityManager = false;
         }
-        cmdScopedEntityManager.joinTransaction();
-        appScopedEntityManager.joinTransaction();
+        txm.attachPersistenceContext(cmdScopedEntityManager);
+        txm.attachPersistenceContext(appScopedEntityManager);
     }
 
     public void endCommandScopedEntityManager() {
@@ -110,5 +117,6 @@ public class JpaPersistenceContextManager
             this.cmdScopedEntityManager = null;
         }
     }
+
 
 }

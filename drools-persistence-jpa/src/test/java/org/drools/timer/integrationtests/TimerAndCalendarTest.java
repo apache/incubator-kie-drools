@@ -1,6 +1,7 @@
 package org.drools.timer.integrationtests;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,14 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -26,10 +23,9 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.persistence.VariablePersistenceUnitTest;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.drools.persistence.util.RerunWithLocalTransactions;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
@@ -38,14 +34,26 @@ import org.drools.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+public class TimerAndCalendarTest extends VariablePersistenceUnitTest {
 
-public class TimerAndCalendarTest {
-    private PoolingDataSource    ds1;
-    private EntityManagerFactory emf;
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTx = new RerunWithLocalTransactions();
+    
+    private HashMap<String, Object> context;
+    
+    @Before
+    public void before() throws Exception {
+        context = setupWithPoolingDataSource(getPersistenceUnitName());
+    }
 
+    @After
+    public void after() throws Exception {
+        cleanUp(context);
+    }
+    
     @Test
     public void testTimerRuleAfterIntReloadSession() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -246,18 +254,6 @@ public class TimerAndCalendarTest {
                                             kbase );
     }
 
-    private HashMap<String, Object> context;
-    
-    @Before
-    public void before() throws Exception {
-        context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
-        emf = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-    }
-
-    @After
-    public void after() throws Exception {
-        tearDown(context);
-    }
 
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

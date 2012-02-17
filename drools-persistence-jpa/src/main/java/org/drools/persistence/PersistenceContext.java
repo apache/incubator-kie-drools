@@ -11,8 +11,6 @@ public interface PersistenceContext {
 
     boolean isOpen();
 
-    void joinTransaction();
-
     void close();
 
     void persist(WorkItemInfo workItemInfo);

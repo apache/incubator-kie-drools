@@ -32,27 +32,33 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.persistence.VariablePersistenceUnitTest;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.RerunWithLocalTransactions;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-public class RuleFlowGroupRollbackTest {
+public class RuleFlowGroupRollbackTest extends VariablePersistenceUnitTest {
+    
+    @Rule
+    public RerunWithLocalTransactions rerunWithLocalTxs = new RerunWithLocalTransactions();
     
     private HashMap<String, Object> context;
 
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(getPersistenceUnitName());
     }
 	
 	@After
 	public void tearDown() {
-		PersistenceUtil.tearDown(context);
+		cleanUp(context);
 	}
 
     @Test	
@@ -117,7 +123,7 @@ public class RuleFlowGroupRollbackTest {
 	public class ExceptionCommand implements GenericCommand<Object> {
 
 	    public Void execute(Context context) {
-	    	throw new RuntimeException();
+	    	throw new RuntimeException("This runtime exception is part of the test");
 	    }
 
 	}

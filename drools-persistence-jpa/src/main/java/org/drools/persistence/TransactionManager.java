@@ -16,6 +16,7 @@
  package org.drools.persistence;
 
 
+
 public interface TransactionManager {
     /** Completion status in case of proper commit */
     int STATUS_COMMITTED      = 0;
@@ -42,4 +43,5 @@ public interface TransactionManager {
 
     void registerTransactionSynchronization(TransactionSynchronization ts);
 
+    void attachPersistenceContext(Object persistenceContextObject);
 }
