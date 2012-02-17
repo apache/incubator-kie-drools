@@ -211,6 +211,12 @@ implements RuleSheetListener {
                                 getProperties().getSinglePropertyCell( code.getColHeader() )  );
                     }
                     break;
+                case TIMER:
+                    ruleset.setTimer( value );
+                    break;
+                case CALENDARS:
+                    ruleset.setCalendars( value );
+                    break;
                 case NOLOOP:
                     ruleset.setNoLoop( RuleSheetParserUtil.isStringMeaningTrue( value ) );
                     break;
@@ -627,6 +633,12 @@ implements RuleSheetListener {
                 throw new DecisionTableParseException( "Duration is not an integer literal, in cell " +
                         RuleSheetParserUtil.rc2name( row, column ) );
             }
+            break;
+        case TIMER:
+            this._currentRule.setTimer( value );
+            break;
+        case CALENDARS:
+            this._currentRule.setCalendars( value );
             break;
         }
     }
