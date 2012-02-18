@@ -7,6 +7,7 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.BitMaskUtil;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
@@ -26,6 +27,7 @@ import org.mvel2.compiler.ExecutableStatement;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -257,25 +259,45 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private long calculateMaskFromExpression(List<String> settableProperties) {
+        long mask = 0;
+        String[] simpleExpressions = expression.split("\\Q&&\\E|\\Q||\\E");
+
+        for (String simpleExpression : simpleExpressions) {
+            String propertyName = getPropertyNameFromSimpleExpression(simpleExpression);
+            if (propertyName.length() == 0) {
+                continue;
+            }
+            if (propertyName.equals("this")) {
+                return Long.MAX_VALUE;
+            }
+            int pos = settableProperties.indexOf(propertyName);
+            if (pos < 0 && Character.isUpperCase(propertyName.charAt(0))) {
+                propertyName = propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1);
+                pos = settableProperties.indexOf(propertyName);
+            }
+            if (pos >= 0) { // Ignore not settable properties
+                mask = BitMaskUtil.set(mask, pos);
+            }
+        }
+
+        return mask;
+    }
+
+    private String getPropertyNameFromSimpleExpression(String simpleExpression) {
         StringBuilder propertyNameBuilder = new StringBuilder();
-        int cursor = extractFirstIdentifier(expression, propertyNameBuilder, 0);
+        int cursor = extractFirstIdentifier(simpleExpression, propertyNameBuilder, 0);
 
         String propertyName = propertyNameBuilder.toString();
         if (propertyName.equals("this")) {
-            cursor = skipBlanks(expression, cursor);
-            if (expression.charAt(cursor) != '.') {
-                return Long.MAX_VALUE;
+            cursor = skipBlanks(simpleExpression, cursor);
+            if (simpleExpression.charAt(cursor) != '.') {
+                return "this";
             }
             propertyNameBuilder = new StringBuilder();
-            extractFirstIdentifier(expression, propertyNameBuilder, cursor);
+            extractFirstIdentifier(simpleExpression, propertyNameBuilder, cursor);
             propertyName = propertyNameBuilder.toString();
         }
-
-        int pos = settableProperties.indexOf(propertyName);
-        if (pos < 0) {
-            throw new RuntimeException("Unknown property: " + propertyName);
-        }
-        return 1L << pos;
+        return propertyName;
     }
 
     private long calculateMask(Condition condition, List<String> settableProperties) {
@@ -290,11 +312,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private long calculateMask(SingleCondition condition, List<String> settableProperties) {
-        Method method = getFirstInvokedMethod(condition.getLeft());
-        if (method == null) {
+        String propertyName = getFirstInvokedPropertyName(condition.getLeft());
+        if (propertyName == null) {
             return Long.MAX_VALUE;
         }
-        String propertyName = getter2property(method.getName());
         if (propertyName != null) {
             int pos = settableProperties.indexOf(propertyName);
             if (pos < 0) {
@@ -307,23 +328,31 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return Long.MAX_VALUE;
     }
 
-    private Method getFirstInvokedMethod(Expression expression) {
+    private String getFirstInvokedPropertyName(Expression expression) {
         if (!(expression instanceof EvaluatedExpression)) {
             return null;
         }
         List<Invocation> invocations = ((EvaluatedExpression)expression).invocations;
         Invocation invocation = invocations.get(0);
-        if (!(invocation instanceof MethodInvocation)) {
-            return null;
-        }
-        Method method = ((MethodInvocation)invocation).getMethod();
-        if (method == null && invocations.size() > 1) {
-            invocation = invocations.get(1);
-            if (invocation instanceof MethodInvocation) {
-                method = ((MethodInvocation)invocation).getMethod();
+
+        if (invocation instanceof MethodInvocation) {
+            Method method = ((MethodInvocation)invocation).getMethod();
+            if (method == null && invocations.size() > 1) {
+                invocation = invocations.get(1);
+                if (invocation instanceof MethodInvocation) {
+                    method = ((MethodInvocation)invocation).getMethod();
+                } else if (invocation instanceof FieldAccessInvocation) {
+                    return ((FieldAccessInvocation)invocation).getField().getName();
+                }
             }
+            return getter2property(method.getName());
         }
-        return method;
+
+        if (invocation instanceof FieldAccessInvocation) {
+            return ((FieldAccessInvocation)invocation).getField().getName();
+        }
+
+        return null;
     }
 
     // Externalizable

@@ -44,7 +44,8 @@ public class ElseNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               binder );
+               binder,
+               context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
     }

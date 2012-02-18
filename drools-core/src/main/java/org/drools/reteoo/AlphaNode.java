@@ -27,6 +27,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.SharableNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.constraint.MvelConstraint;
@@ -34,6 +35,9 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.addListenedPropertiesToMask;
+import static org.drools.reteoo.PropertySpecificUtil.getNodeClass;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -45,7 +49,8 @@ import static org.drools.core.util.BitMaskUtil.intersect;
 public class AlphaNode extends ObjectSource
     implements
     ObjectSinkNode,
-    NodeMemory {
+    NodeMemory,
+    SharableNode<AlphaNode> {
 
     private static final long        serialVersionUID = 510l;
 
@@ -55,10 +60,8 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           previousRightTupleSinkNode;
     private ObjectSinkNode           nextRightTupleSinkNode;
 
-    private long listenedPropertyMask = -1L;
-    private long inferredMask = -1L;
-
-    private List<String> listenedProperties;
+    private long declaredMask;
+    private long networkMask;
 
     public AlphaNode() {
 
@@ -85,18 +88,37 @@ public class AlphaNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
-        this.listenedProperties = context.getListenedProperties();
+
+        initPropertySpecificMask(context);
+    }
+
+    private void initPropertySpecificMask(BuildContext context) {
+        Class<?> nodeClass = getNodeClass(getObjectTypeNode());
+        List<String> settableProperties = getSettableProperties(context.getRuleBase(), nodeClass);
+        if (settableProperties != null) {
+            declaredMask = calculateDeclaredMask(settableProperties);
+            networkMask = declaredMask;
+        }
+
+        List<String> listenedProperties = context.getListenedPropertiesFor(nodeClass);
+        if (listenedProperties != null) {
+            networkMask = addListenedPropertiesToMask(listenedProperties, networkMask, settableProperties);
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
+        declaredMask = in.readLong();
+        networkMask = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( constraint );
+        super.writeExternal(out);
+        out.writeObject(constraint);
+        out.writeLong(declaredMask);
+        out.writeLong(networkMask);
     }
 
     /**
@@ -154,11 +176,9 @@ public class AlphaNode extends ObjectSource
 
         long propagationMask = context.getPropagationMask();
         if ( context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), propagationMask | getListenedPropertyMask(workingMemory)) ) {
+                intersect(context.getModificationMask(), propagationMask | networkMask) ) {
 
-            if (listenedPropertyMask > 0) {
-                context.setPropagationMask(propagationMask | listenedPropertyMask);
-            }
+            context.setPropagationMask(propagationMask | declaredMask);
 
             final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
             if ( this.constraint.isAllowed( factHandle,
@@ -348,73 +368,36 @@ public class AlphaNode extends ObjectSource
 
     }
 
-    long getListenedPropertyMask(InternalWorkingMemory workingMemory) {
-        if (listenedPropertyMask >= 0) {
-            return listenedPropertyMask;
-        }
-        List<String> settableProperties = BetaNode.getSettableProperties(workingMemory, getObjectTypeNode());
-        return getListenedPropertyMask(settableProperties);
-    }
-
-    long getListenedPropertyMask(List<String> settableProperties) {
-        if (!(constraint instanceof MvelConstraint)) {
-            listenedPropertyMask = Long.MAX_VALUE;
-        }
-        if (listenedPropertyMask >= 0) {
-            return listenedPropertyMask;
-        }
-
-        long mask = calculateMask(settableProperties);
-        listenedPropertyMask = mask;
-        return mask >= 0 ? mask : Long.MAX_VALUE;
-    }
-
-    private long calculateMask(List<String> settableProperties) {
-        if (listenedProperties != null && listenedProperties.size() == 1 && listenedProperties.equals("*")) {
-            return Long.MAX_VALUE;
-        }
-
-        long mask = 0L;
-        if (listenedProperties != null && listenedProperties.contains("*")) {
-            mask = Long.MAX_VALUE;
-        } else if (listenedProperties == null || !listenedProperties.contains("!*")) {
-            mask = inferListenedMask(settableProperties);
-        }
-        return BetaNode.calculateListenedMaskFromPattern(listenedProperties, mask, settableProperties);
-    }
-
-    private long inferListenedMask(List<String> settableProperties) {
-        if (inferredMask >= 0L) {
-            return inferredMask;
-        }
+    private long calculateDeclaredMask(List<String> settableProperties) {
         if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
             return Long.MAX_VALUE;
         }
-        inferredMask = ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
-        for (ObjectSink objectSink : sink.getSinks()) {
-            if (objectSink instanceof AlphaNode) {
-                inferredMask |= ((AlphaNode)objectSink).inferListenedMask(settableProperties);
-                if (inferredMask == Long.MAX_VALUE) {
-                    break;
-                }
-            } else if (objectSink instanceof BetaNode) {
-                inferredMask |= ((BetaNode)objectSink).inferListenedMask(settableProperties);
-                if (inferredMask == Long.MAX_VALUE) {
-                    break;
-                }
-            }
-        }
-        return inferredMask;
+        return ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties);
     }
 
-    private ObjectTypeNode getObjectTypeNode() {
-        ObjectSource source = this;
-        while (source != null) {
-            if (source instanceof ObjectTypeNode) {
-                return (ObjectTypeNode)source;
-            }
-            source = source.source;
+    @Override
+    public long getDeclaredMask() {
+        return declaredMask;
+    }
+
+    @Override
+    public void addObjectSink(final ObjectSink objectSink) {
+        super.addObjectSink(objectSink);
+        addToNetworkMask(objectSink);
+    }
+
+    private void addToNetworkMask(ObjectSink objectSink) {
+        if (objectSink instanceof AlphaNode) {
+            networkMask |= ((AlphaNode)objectSink).networkMask;
+        } else if (objectSink instanceof BetaNode) {
+            networkMask |= ((BetaNode)objectSink).getDeclaredMask();
         }
-        return null;
+        if (source instanceof AlphaNode) {
+            ((AlphaNode)source).addToNetworkMask(this);
+        }
+    }
+
+    public void sharedWith(AlphaNode node) {
+        networkMask |= node.networkMask;
     }
 }

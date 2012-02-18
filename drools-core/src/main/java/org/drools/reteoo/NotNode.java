@@ -47,9 +47,9 @@ public class NotNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               joinNodeBinder );
+               joinNodeBinder,
+               context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
-        this.listenedProperties = context.getListenedProperties();
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,

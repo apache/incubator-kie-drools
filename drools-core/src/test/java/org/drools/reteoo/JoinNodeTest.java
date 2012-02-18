@@ -618,15 +618,15 @@ public class JoinNodeTest extends DroolsTestCase {
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPassNothing, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setListenedPropertyMask(0);
+        joinNode.setDeclaredMask(0);
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setListenedPropertyMask(9);
+        joinNode.setDeclaredMask(9);
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(0, sink1.getAsserted());
 
-        joinNode.setListenedPropertyMask(3);
+        joinNode.setDeclaredMask(3);
         joinNode.modifyObject(string1Handle, modifyPreviousTuples, contextPass2And3, workingMemory);
         assertLength(1, sink1.getAsserted());
 

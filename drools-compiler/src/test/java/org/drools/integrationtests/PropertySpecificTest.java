@@ -2,17 +2,25 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.base.ClassObjectType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.PropertySpecificOption;
+import org.drools.common.InternalRuleBase;
 import org.drools.definition.type.FactType;
 import org.drools.definition.type.Modifies;
 import org.drools.definition.type.PropertySpecific;
+import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.PropertySpecificUtil;
+import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -392,6 +400,57 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
+    @Test(timeout = 5000)
+    public void testSharedWatchAnnotation() throws Exception {
+        String rule = "package org.drools\n" +
+                "declare A\n" +
+                "    @propertySpecific\n" +
+                "    a : int\n" +
+                "    b : int\n" +
+                "    s : String\n" +
+                "    i : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "    @propertySpecific\n" +
+                "    s : String\n" +
+                "    i : int\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $a : A(a == 0) @watch( i )\n" +
+                "    $b : B(i == $a.i) @watch( s )\n" +
+                "then\n" +
+                "    modify($a) { setS(\"end\") }\n" +
+                "end\n" +
+                "rule R2\n" +
+                "when\n" +
+                "    $a : A(a == 0) @watch( b )\n" +
+                "then\n" +
+                "    modify($a) { setI(1) }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
+        Object factA = factTypeA.newInstance();
+        factTypeA.set( factA, "a", 0 );
+        factTypeA.set( factA, "b", 0 );
+        factTypeA.set( factA, "i", 0 );
+        factTypeA.set( factA, "s", "start" );
+        ksession.insert( factA );
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        factTypeB.set( factB, "i", 1 );
+        factTypeB.set( factB, "s", "start" );
+        ksession.insert( factB );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(2, rules);
+        assertEquals("end", factTypeA.get(factA, "s"));
+    }
+
     @PropertySpecific
     public static class C {
         private boolean on;
@@ -563,7 +622,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 5000)
-    public void testNodeSharing() throws Exception {
+    public void testEmptyBetaConstraint() throws Exception {
         String rule = "package org.drools\n" +
                 "import org.drools.integrationtests.PropertySpecificTest.Hero\n" +
                 "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
@@ -611,6 +670,62 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         int rules = ksession.fireAllRules();
         assertEquals(3, rules);
+    }
+
+    @Test(timeout = 5000)
+    public void testNoConstraint() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
+                "rule R1 when\n" +
+                "   $c : Cell()\n" +
+                "then\n" +
+                "   modify( $c ) { hidden = true };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Cell());
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test(timeout = 5000)
+    public void testNodeSharing() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Cell\n" +
+                "rule R1 when\n" +
+                "   $c : Cell()\n" +
+                "then\n" +
+                "   modify( $c ) { hidden = true };\n" +
+                "   System.out.println( \"R1\");\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   $c : Cell(hidden == true)\n" +
+                "then\n" +
+                "   System.out.println( \"R2\");\n" +
+                "end\n" +
+                "rule R3 when\n" +
+                "   $c : Cell(hidden == true, row == 0)\n" +
+                "then\n" +
+                "   modify( $c ) { setCol(1) };\n" +
+                "   System.out.println( \"R3\");\n" +
+                "end\n" +
+                "rule R4 when\n" +
+                "   $c : Cell(hidden == true, col == 1)\n" +
+                "then\n" +
+                "   modify( $c ) { setRow(1) };\n" +
+                "   System.out.println( \"R4\");\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Cell());
+
+        int rules = ksession.fireAllRules();
+        assertEquals(4, rules);
     }
 
     @PropertySpecific
@@ -721,5 +836,90 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         public void setHero(String hero) {
             this.hero = hero;
         }
+    }
+
+    private KnowledgeBase getKnowledgeBase(String... rules) {
+        String rule = "package org.drools\n" +
+                "global java.util.List list;\n" +
+                "declare A\n" +
+                "    @propertySpecific\n" +
+                "    a : int\n" +
+                "    b : int\n" +
+                "    s : String\n" +
+                "    i : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "    @propertySpecific\n" +
+                "    s : String\n" +
+                "    i : int\n" +
+                "end\n";
+        int i = 0;
+        for ( String str : rules ) {
+            rule += "rule r" + (i++) + "\n" +
+                    "when\n" +
+                    str +
+                    "then\n" +
+                    "end\n";
+        }
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        return kbase;
+    }
+
+    @Test
+    public void test1() {
+        String rule1 = "B() A()";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
+        BetaNode betaNode = ( BetaNode ) otn.getSinkPropagator().getSinks()[0];
+        assertEquals( 0, betaNode.getDeclaredMask() );
+    }
+
+    @Test
+    public void test2() {
+        String rule1 = "$b : B() A( i == 10 )";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
+        List<String> sp = PropertySpecificUtil.getSettableProperties(wm, otn);
+
+        AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
+        assertEquals( PropertySpecificUtil.calculateMaskFromPattern(list("i"), 0L, sp), alphaNode.getDeclaredMask( ) );
+
+        BetaNode betaNode = ( BetaNode ) alphaNode.getSinkPropagator().getSinks()[0];
+        assertEquals( 0L, betaNode.getDeclaredMask( ) );
+    }
+
+    @Test
+    public void test3() {
+        String rule1 = "$b : B() A( i == $b.i)";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
+        List<String> sp = PropertySpecificUtil.getSettableProperties(wm, otn);
+
+        BetaNode betaNode = ( BetaNode ) otn.getSinkPropagator().getSinks()[0];
+        assertEquals( PropertySpecificUtil.calculateMaskFromPattern(list("i"), 0, sp), betaNode.getDeclaredMask( ) );
+    }
+
+    List<String> list(String... items) {
+        List list = new ArrayList();
+        for ( String str : items ) {
+            list.add( str );
+        }
+        return list;
+    }
+
+    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, String nodeName) {
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType().getSimpleName().equals( nodeName ) ) {
+                return n;
+            }
+        }
+        return null;
     }
 }

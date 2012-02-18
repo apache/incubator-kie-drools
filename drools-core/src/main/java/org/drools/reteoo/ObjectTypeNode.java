@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
@@ -105,7 +106,7 @@ public class ObjectTypeNode extends ObjectSource
 
     /** @see LRUnlinkingOption */
     private boolean lrUnlinkingEnabled = false;
-    
+
     public ObjectTypeNode() {
 
     }
@@ -132,7 +133,7 @@ public class ObjectTypeNode extends ObjectSource
         
         if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( objectType )) {
             queryNode = true;
-        }        
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -249,14 +250,14 @@ public class ObjectTypeNode extends ObjectSource
             memory.remove( factHandle );            
         }
 
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
                                                               workingMemory );
         }
         factHandle.clearRightTuples();
 
-        for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+        for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                            context,
                                                            workingMemory );
@@ -273,6 +274,7 @@ public class ObjectTypeNode extends ObjectSource
             return;
         }
 
+        context.setObjectType(objectType);
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                                           modifyPreviousTuples,

@@ -16,11 +16,14 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Stack;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -36,6 +39,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 import org.drools.spi.RuleComponent;
 import org.drools.time.TemporalDependencyMatrix;
 
@@ -80,7 +84,7 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
 
-    private List<String>                     listenedProperties;
+    private Map<Class<?>, List<String>>      listenedPropertiesForClass;
 
     // the current entry point
     private EntryPoint                       currentEntryPoint;
@@ -339,12 +343,27 @@ public class BuildContext {
         this.alphaConstraints = alphaConstraints;
     }
 
-    public List<String> getListenedProperties() {
-        return listenedProperties;
+    public Map<Class<?>, List<String>> getListenedProperties() {
+        return listenedPropertiesForClass;
     }
 
-    public void setListenedProperties(List<String> listenedProperties) {
-        this.listenedProperties = listenedProperties;
+    public List<String> getListenedPropertiesFor(Class<?> clazz) {
+        return listenedPropertiesForClass == null ? null : listenedPropertiesForClass.get(clazz);
+    }
+
+    public void registerListenedProperties(Pattern pattern) {
+        List<String> listenedProperties = pattern.getListenedProperties();
+        if (listenedProperties == null) {
+            return;
+        }
+        ObjectType objectType = pattern.getObjectType();
+        if (!(objectType instanceof ClassObjectType)) {
+            return;
+        }
+        if (listenedPropertiesForClass == null) {
+            listenedPropertiesForClass = new HashMap<Class<?>, List<String>>();
+        }
+        listenedPropertiesForClass.put(((ClassObjectType)objectType).getClassType(), listenedProperties);
     }
 
     public boolean isTupleMemoryEnabled() {
