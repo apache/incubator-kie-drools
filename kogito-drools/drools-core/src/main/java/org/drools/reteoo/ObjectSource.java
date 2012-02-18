@@ -213,4 +213,19 @@ public abstract class ObjectSource extends BaseNode
                             this,
                             workingMemories );
     }
+
+    protected ObjectTypeNode getObjectTypeNode() {
+        ObjectSource source = this;
+        while (source != null) {
+            if (source instanceof ObjectTypeNode) {
+                return (ObjectTypeNode)source;
+            }
+            source = source.source;
+        }
+        return null;
+    }
+
+    public long getDeclaredMask() {
+        return 0L;
+    }
 }

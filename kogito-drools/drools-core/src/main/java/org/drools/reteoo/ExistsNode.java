@@ -75,7 +75,8 @@ public class ExistsNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               joinNodeBinder );
+               joinNodeBinder,
+               context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 

@@ -73,7 +73,8 @@ public class AccumulateNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               sourceBinder );
+               sourceBinder,
+               context );
         this.resultBinder = resultBinder;
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;

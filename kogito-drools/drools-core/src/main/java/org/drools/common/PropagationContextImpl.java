@@ -28,6 +28,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.WindowTupleList;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 public class PropagationContextImpl
@@ -69,6 +70,8 @@ public class PropagationContextImpl
     private transient long propagationMask = 0L;
 
     private WindowTupleList windowTupleList;
+
+    private ObjectType objectType;
 
     public PropagationContextImpl() {
 
@@ -322,11 +325,17 @@ public class PropagationContextImpl
         this.windowTupleList = list;
     }
 
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(ObjectType objectType) {
+        this.objectType = objectType;
+    }
 
     @Override
     public String toString() {
         return "PropagationContextImpl [activeActivations=" + activeActivations + ", dormantActivations=" + dormantActivations + ", entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
                + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
     }
-
 }

@@ -44,10 +44,10 @@ public class JoinNode extends BetaNode {
                context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
                leftInput,
                rightInput,
-               binder );
+               binder,
+               context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
-        this.listenedProperties = context.getListenedProperties();
     }
 
     public void assertLeftTuple( final LeftTuple leftTuple,

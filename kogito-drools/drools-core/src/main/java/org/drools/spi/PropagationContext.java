@@ -93,4 +93,7 @@ public interface PropagationContext
 
     long getPropagationMask();
     void setPropagationMask(long propagationMask);
+
+    ObjectType getObjectType();
+    void setObjectType(ObjectType objectType);
 }

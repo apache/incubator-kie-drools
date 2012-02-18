@@ -22,8 +22,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultAgenda;
@@ -31,6 +33,7 @@ import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -43,9 +46,13 @@ import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.time.SessionClock;
 import org.drools.time.impl.Timer;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -80,6 +87,8 @@ public class RuleTerminalNode extends BaseNode
     private LeftTupleSinkNode nextTupleSinkNode;
     
     private boolean           fireDirect;
+
+    private Map<Class<?>, List<String>> listenedProperties;
 
     // ------------------------------------------------------------
     // Constructors
@@ -119,6 +128,22 @@ public class RuleTerminalNode extends BaseNode
         }
         Arrays.sort( this.declarations, SortDeclarations.instance  );
         fireDirect = rule.getActivationListener().equals( "direct" );
+
+        initPropertySpecifcMask(source, context);
+    }
+
+    private void initPropertySpecifcMask(LeftTupleSource source, BuildContext context) {
+        listenedProperties = context.getListenedProperties();
+        // if the source is a BetaNode the listenedProperties are already managed there so it's possible to avoid to do it again here
+        if (listenedProperties != null && source instanceof BetaNode) {
+            ObjectType objectType = ((BetaNode)source).getObjectTypeNode().getObjectType();
+            if (objectType instanceof ClassObjectType) {
+                listenedProperties.remove(((ClassObjectType) objectType).getClassType());
+            }
+            if (listenedProperties.isEmpty()) {
+                listenedProperties = null;
+            }
+        }
     }
 
     // ------------------------------------------------------------
@@ -136,18 +161,20 @@ public class RuleTerminalNode extends BaseNode
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
         fireDirect = rule.getActivationListener().equals( "direct" );
+        listenedProperties = (Map<Class<?>, List<String>>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeInt( sequence );
-        out.writeObject( rule );
+        out.writeInt(sequence);
+        out.writeObject(rule);
         out.writeObject( subrule );
-        out.writeInt( subruleIndex );
-        out.writeObject( tupleSource );
+        out.writeInt(subruleIndex);
+        out.writeObject(tupleSource);
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
+        out.writeObject( listenedProperties );
     }
 
     /**
@@ -212,7 +239,7 @@ public class RuleTerminalNode extends BaseNode
         // ControlRules for now re-use the same PropagationContext
         if ( fireDirect ) {    
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item = null;
+            AgendaItem item;
             if ( reuseActivation ) {
                 item = ( AgendaItem ) tuple.getObject();
             } else {
@@ -230,7 +257,7 @@ public class RuleTerminalNode extends BaseNode
         }
 
 
-        AgendaItem item = null;
+        AgendaItem item;
         final Timer timer = this.rule.getTimer();
         if ( timer != null ) {
             if ( reuseActivation ) {
@@ -336,19 +363,38 @@ public class RuleTerminalNode extends BaseNode
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( createLeftTuple( factHandle,
-                                                this,
-                                                true ),
-                             context,
-                             workingMemory );
+
+        boolean mustPropagate = context.getModificationMask() == Long.MAX_VALUE;
+        if (!mustPropagate) {
+            ObjectType objectType = context.getObjectType();
+            Class<?> objectClass = objectType != null && objectType instanceof ClassObjectType ?
+                    ((ClassObjectType)objectType).getClassType() :
+                    factHandle.getObject().getClass();
+            List<String> listenedPropertiesForClass = listenedProperties == null ? null : listenedProperties.get(objectClass);
+            if (listenedPropertiesForClass == null) {
+                mustPropagate = intersect(context.getModificationMask(), context.getPropagationMask());
+            } else {
+                List<String> settableProperties = getSettableProperties((InternalRuleBase)workingMemory.getRuleBase(), objectClass);
+                long propagationMask = calculateMaskFromPattern(listenedPropertiesForClass, context.getPropagationMask(), settableProperties);
+                mustPropagate = intersect(context.getModificationMask(), propagationMask);
+            }
+        }
+
+        if (mustPropagate) {
+            if ( leftTuple != null ) {
+                leftTuple.reAdd(); //
+                // LeftTuple previously existed, so continue as modify
+                modifyLeftTuple( leftTuple,
+                                 context,
+                                 workingMemory );
+            } else {
+                // LeftTuple does not exist, so create and continue as assert
+                assertLeftTuple( createLeftTuple( factHandle,
+                                                    this,
+                                                    true ),
+                                 context,
+                                 workingMemory );
+            }
         }
     }    
     
@@ -410,9 +456,6 @@ public class RuleTerminalNode extends BaseNode
 
     public String toString() {
         return "[RuleTerminalNode(" + this.getId() + "): rule=" + this.rule.getName() + "]";
-    }
-
-    public void ruleAttached() {
     }
 
     public void attach() {

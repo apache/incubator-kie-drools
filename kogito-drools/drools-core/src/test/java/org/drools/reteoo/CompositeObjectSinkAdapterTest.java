@@ -697,7 +697,8 @@ public class CompositeObjectSinkAdapterTest {
                    false,
                    leftInput,
                    rightInput,
-                   EmptyBetaConstraints.getInstance() );
+                   EmptyBetaConstraints.getInstance(),
+                   null );
             //  Auto-generated constructor stub
         }
 
