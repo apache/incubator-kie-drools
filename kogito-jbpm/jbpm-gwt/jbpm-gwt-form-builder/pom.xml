@@ -69,53 +69,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.5.1</version>
-        <configuration>
-          <instrumentation>
-            <excludes>
-              <exclude>org/jbpm/formbuilder/client/**/*.class</exclude>
-              <exclude>org/jbpm/formbuilder/common/**/*.class</exclude>
-              <exclude>org/jbpm/formdisplay/client/**/*.class</exclude>
-            </excludes>
-          </instrumentation>
-          <formats>
-            <format>xml</format>
-            <format>html</format>
-          </formats>
-          <!-- check>
-            <branchRate>85</branchRate>
-            <lineRate>85</lineRate>
-            <haltOnFailure>true</haltOnFailure>
-            <totalBranchRate>85</totalBranchRate>
-            <totalLineRate>85</totalLineRate>
-            <packageLineRate>85</packageLineRate>
-            <packageBranchRate>85</packageBranchRate>
-            <regexes>
-              <regex>
-                <pattern>org.jbpm.formbuilder.*</pattern>
-                <branchRate>90</branchRate>
-                <lineRate>80</lineRate>
-              </regex>
-              <regex>
-                <pattern>org.jbpm.formdisplay.*</pattern>
-                <branchRate>20</branchRate>
-                <lineRate>10</lineRate>
-              </regex>
-            </regexes>
-          </check -->
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>cobertura</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
