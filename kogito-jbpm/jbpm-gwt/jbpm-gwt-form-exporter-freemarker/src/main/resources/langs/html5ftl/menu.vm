@@ -1,0 +1,15 @@
+#set ($typeParam = ${language.getParam("type", $item.type)})
+#set ($classParam = ${language.getParam("class", $item.cssClassName)})
+#set ($widthParam = ${language.getStyleParam("width", $item.width)})
+#set ($heightParam = ${language.getStyleParam("height", $item.height)})
+#set ($idParam = ${language.getStyleParam("id", $item.id)})
+#set ($dirParam = ${language.getParam("dir", $item.dir)})
+#set ($style = "$widthParam$heightParam")
+#set ($styleParam = ${language.getParam("style", $style)})
+
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+<menu #if($typeParam)$typeParam#end#if($oneventxParam)$oneventxParam#end#if($dirParam)$dirParam#end#if($idParam)$idParam#end#if($classParam)$classParam#end>
+  #foreach ($subItem in $item.items)
+    <li>${language.translateItem($subItem)}</li>
+  #end
+</menu>

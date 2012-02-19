@@ -1,0 +1,12 @@
+<xsl:choose xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:when test="${item.condition}" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    #if ($condition.ifBlock)
+      ${language.translateItem($condition.ifBlock)}
+    #end
+  </xsl:when>
+  #if ($condition.elseBlock)
+    <xsl:otherwise xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+      ${language.translateItem($condition.elseBlock)}
+    </xsl:otherwise>
+  #end
+</xsl:choose>

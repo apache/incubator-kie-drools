@@ -1,0 +1,12 @@
+#set ($nameParam = ${language.getParam("name", $item.name)})
+#set ($valueParam = ${language.getParam("id", $item.value)})
+#set ($selectedParam = "")
+#if ($item.selected)
+    #set ($selectedParam = ${language.getParam("selected", "true")})
+#end
+## TODO getInput();
+<xul:radio #if($nameParam)$nameParam#end
+    #if($valueParam)$valueParam#end
+    #if($selectedParam)$selectedParam#end 
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+/>

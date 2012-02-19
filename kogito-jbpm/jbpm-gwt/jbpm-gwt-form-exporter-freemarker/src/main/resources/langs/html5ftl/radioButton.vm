@@ -1,0 +1,10 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($nameParam = ${language.getParam("name", $item.name)})
+#set ($valueParam = ${language.getParam("value", $item.value)})
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+#set ($selectedParam = "")
+#if ($item.selected)
+    #set ($selectedParam = ${language.getParam("selected", "true")})
+#end
+## TODO getInput();
+<input type="radio" #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($nameParam)$nameParam#end#if($valueParam)$valueParam#end#if($selectedParam)$selectedParam#end />

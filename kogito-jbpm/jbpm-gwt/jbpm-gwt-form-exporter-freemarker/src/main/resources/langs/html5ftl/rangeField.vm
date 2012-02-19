@@ -1,0 +1,31 @@
+#set ($idParam = ${langauge.getParam("id", $item.id)})
+#set ($maxParam = ${langauge.getParam("max", $item.max)})
+#set ($minParam = ${langauge.getParam("min", $item.min)})
+#set ($stepParam = ${langauge.getParam("step", $item.step)})
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+
+#set ($name = $item.name)
+#if (!($name and $name != "") and $item.output)
+    #set ($name = $item.output.name)
+#end
+#set ($nameParam = ${language.getParam("name", $name)})
+#set ($value = $item.defaultValue)
+#if (!($value and $value != "") and $item.input and $item.input.name != "")
+    #set ($value = $item.input.value)
+#end
+#set ($valueParam = ${language.getParam("value", $value)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($valueParam = ${language.getParam("value", $aux2)})
+  #end
+#end
+#if($item.output)
+  #if($item.output.name)
+    #set($nameParam = ${language.getParam("name", $item.output.name)})
+  #end
+#end
+## TODO textField.getItemValidations();
+
+<input type="range" #if($minParam)$minParam)#end#if($maxParam)$maxParam)#end#if($stepParam)$stepParam)#end#if($valueParam)$valueParam)#end#if($nameParam)$nameParam)#end />

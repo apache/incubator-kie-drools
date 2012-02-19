@@ -1,0 +1,17 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($style = "$width$height")
+#set ($styleParam = ${language.getParam("style", $style)})
+#set ($entries = ${item.items.entrySet()})
+<xul:box #if($idParam)$idParam#end
+    #if($styleParam)$styleParam#end
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  #foreach ($entry in $entries)
+    #set ($positionX = "$entry.key.x")
+    #set ($positionY = "$entry.key.y")
+    <xul:stack top="$positionY" left="$positionX" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+        ${language.translateItem($entry.value)}
+    </xul:stack>
+  #end
+</xul:box>

@@ -1,0 +1,33 @@
+#set ($borderParam = ${language.getStyleParam("border", $item.borderWidth)})
+#set ($cellpaddingParam = ${language.getStyleParam("cellpadding", $item.cellPadding)})
+#set ($cellspacingParam = ${language.getStyleParam("cellspacing", $item.cellSpacing)})
+#set ($widthParam = ${language.getStyleParam("width", $item.width)})
+#set ($heightParam = ${language.getStyleParam("width", $item.height)})
+
+#set($style = "")
+#if($cellpaddingParam)#set($style = "$style$cellpaddingParam")#end
+#if($cellspacingParam)#set($style = "$style$cellspacingParam")#end
+#if($borderParam)#set($style = "$style$borderParam")#end
+#if($widthParam)#set($style = "$style$widthParam")#end
+#if($heightParam)#set($style = "$style$heightParam")#end
+
+#set($styleParam = ${language.getParam("style", $style)})
+
+## TODO table.getInput(); may be used to iterate contents, but not yet
+## TODO table.getItemValidations();
+<xul:listbox #if($styleParam)$styleParam#end xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <xul:listcols xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    #foreach($index in [0..${item.cols}])
+      <xul:listcol xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"></xul:listcol>
+    #end
+  </xul:listcols>
+  #foreach($row in $item.elements)
+    <xul:listitem xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+      #foreach($cell in $row)
+        <xul:listcell xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+          #if($cell)${language.translateItem($cell)}#end
+        </xul:listcell>
+      #end
+    </xul:listitem>
+  #end
+</xul:listbox>

@@ -269,9 +269,28 @@
                         <login-module code="Disabled" flag="required"/>
                     </authentication>
                 </security-domain>
+                <security-domain name="drools-guvnor" cache-type="default">
+                    <authentication>
+                        <login-module code="UsersRoles" flag="required">
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
                 <security-domain name="jbpm-console" cache-type="default">
                     <authentication>
-                        <login-module code="UsersRoles" flag="required"/>
+                        <login-module code="UsersRoles" flag="required">
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+                <security-domain name="jbpm-form-builder" cache-type="default">
+                    <authentication>
+                        <login-module code="UsersRoles" flag="required">
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
+                        </login-module>
                     </authentication>
                 </security-domain>
             </security-domains>

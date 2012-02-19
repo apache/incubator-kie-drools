@@ -1,0 +1,19 @@
+#set ($cellspacingParam = ${language.getParam("cellspacing", $item.spacing)})
+#set ($borderParam = ${language.getParam("border", $item.borderWidth)})
+#set ($alignParam = ${language.getParam("align", $item.horizontalAlignment)})
+#set ($valignParam = ${language.getParam("valign", $item.verticalAlignment)})
+#set ($widthParam = ${language.getParam("width", $item.width)})
+#set ($heightParam = ${language.getParam("height", $item.height)})
+#set ($classParam = ${language.getParam("class", $item.cssClassName)})
+#set ($idParam = ${language.getParam("id", $item.id)})
+## TODO table.getItemValidations();
+## TODO table.getInput(); may be used to iterate contents, but not yet
+<table cellpadding="0" #if($cellspacingParam)$cellspacingParam#end#if($borderParam)$borderParam#end#if($alignParam)$alignParam#end#if($valignParam)$valignParam#end#if($widthParam)$widthParam#end#if($heightParam)$heightParam#end#if($classParam)$classParam#end#if($idParam)$idParam#end>
+    <tr>
+      #foreach ($subItem in $item.items)
+        <td>
+            ${language.translateItem($subItem)}
+        </td>
+      #end
+    </tr>
+</table>

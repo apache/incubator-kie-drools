@@ -1,0 +1,49 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($style = "$width$height")
+#set ($styleParam = ${language.getParam("style", $style)})
+#set ($name = $item.name)
+#if (($name and $name != "") and $item.output and $item.output.name and $item.output.name != "")
+    #set ($name = $item.ouptput.name)
+#end
+<#assign value="">
+<\#if $locale??>
+  <#assign $localeData=[
+  #foreach ($entry in ${item.getI18n().entrySet()})
+    "${entry.getKey()}" => "${entry.getValue()}",
+  #end
+    "LAST_ELEMENT_KEY", "LAST_ELEMENT_VALUE"
+  ] >
+  #set($i18nval = '$localeData[$locale]')
+  <\#if ${i18nval}??>
+    <#assign $value = $i18nval >
+  </\#if>
+</\#if>
+## TODO completeButton.getOnClickScript(); should be loaded first
+#set ($nameParam = ${language.getParam("name", $name)})
+#set($condition = '$value?? && $value?length > 0')
+<\#macro printi18ncbutton text>
+#set ($valueFormatted = '${value}')
+<\#if $condition>#if ($item.format)
+#if ($item.format == "CURRENCY")#set($valueFormatted='${value?string.currency}')#end
+#if ($item.format == "NUMBER")#set($valueFormatted='${value?string.number}')#end
+#if ($item.format == "DATE")#set($valueFormatted='${value?string.short}')#end
+#if ($item.format == "DATETIME")#set($valueFormatted='${value?string.short_short}')#end
+#if ($item.format == "PERCENT")#set($valueFormatted='${value?string.percent}')#end
+#if ($item.format == "INTEGER")#set($valueFormatted='${value?string("0")}')#end
+#end
+$valueFormatted<\#else>
+#set ($valueFormatted = '${text}') 
+#if ($item.format)
+#if ($item.format == "CURRENCY")#set($valueFormatted='${text?string.currency}')#end
+#if ($item.format == "NUMBER")#set($valueFormatted='${text?string.number}')#end
+#if ($item.format == "DATE")#set($valueFormatted='${text?string.short}')#end
+#if ($item.format == "DATETIME")#set($valueFormatted='${text?string.short_short}')#end
+#if ($item.format == "PERCENT")#set($valueFormatted='${text?string.percent}')#end
+#if ($item.format == "INTEGER")#set($valueFormatted='${text?string("0")}')#end
+#end
+$valueFormatted</\#if></\#macro>
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+#set ($defaultButtonText = "Complete")
+<input type="submit" #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end#if($styleParam)$styleParam#end#if($nameParam)$nameParam#end value="<@printi18ncbutton text="#if(${item.text})${item.text}#else$defaultButtonText#end"/>" />

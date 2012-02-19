@@ -1,0 +1,27 @@
+#set ($widthParam = ${language.getStyleParam("width", $item.width)})
+#set ($heightParam = ${language.getStyleParam("height", $item.height)})
+#set ($style = "$widthParam$heightParam")
+#set ($styleParam = ${language.getParam("style", $style)})
+#set ($classParam = ${language.getParam("class", $item.cssClassName)})
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set ($dataType = $item.dataType)
+#if (!($dataType and $dataType == "")
+  #set ($dataType = "application/ogg")
+#end
+#set ($typeParam = ${language.getParam("type", $dataType)})
+
+#set ($audioUrl = $item.audioUrl)
+#if (!($audioUrl and $audioUrl != "") and $item.input and $item.input.name != "")
+    #set ($audioUrl = $item.input.value)
+#end
+#set ($dataParam = ${language.getParam("src", $audioUrl)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($dataParam = ${language.getParam("data", $aux2)})
+  #end
+#end
+
+<video controls $typeParam #if($dataParam)$dataParam#end #if($styleParam)$styleParam#end#if($classParam)$classParam#end#if($idParam)$idParam#end></video>
+    

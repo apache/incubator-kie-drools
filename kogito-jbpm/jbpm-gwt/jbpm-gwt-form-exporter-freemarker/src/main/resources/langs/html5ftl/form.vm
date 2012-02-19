@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <style type="text/css">
+        body {
+            color: #000000;
+            background-color: #FFFFFF;
+            position: static;
+        }
+    </style>
+  </head>
+  <body>
+    #set ($invokeOnLoad = "")
+    #foreach ($script in $item.onLoadScripts)
+      #if ($language.isClientScript($script))
+        #set ($typeParam = ${language.getParam("type", $script.type)})
+        #set ($srcParam = ${language.getParam("src", $script.src)})
+        <script $typeParam $srcParam>
+            $script.content
+        </script>
+        #set ($invokeOnLoad = "${invokeOnLoad} ${script.invokeFunction};")
+      #elseif ($language.isValidScript($script))
+        $language.asFtlScript($script)
+      #end
+    #end
+    #set ($invokeOnSubmit = "")
+    #foreach ($script in $item.onSubmitScripts)
+        #set ($typeParam = ${language.getParam("type", $script.type)})
+        #set ($srcParam = ${language.getParam("src", $script.src)})
+        <script $typeParam $srcParam>
+            $script.content
+        </script>
+        #set ($invokeOnLoad = "${invokeOnLoad} ${script.invokeFunction};")
+    #end
+    ## TODO List<FBValidation> validations = form.getFormValidations();
+    ## TODO Map<String, InputData> inputs = form.getInputs();
+    ## TODO Map<String, OutputData> outputs = form.getOutputs();
+    #set( $onSubmitParam = ${language.getParam("onsubmit", $invokeOnSubmit)})
+    #set($onLoadParam = ${language.getParam("onload", $invokeOnLoad)})
+    #set($nameParam = ${language.getParam("name", $item.name)})
+    #set($actionParam = ${language.getParam("action", $item.action)})
+    #set($methodParam = ${language.getParam("method", $item.method)})
+    #set($enctypeParam = ${language.getParam("enctype", $item.enctype)})
+    <form #if($onSubmitParam)$onSubmitParam#end#if($onLoadParam)$onLoadParam#end#if($nameParam)$nameParam#end#if($actionParam)$actionParam#end#if($methodParam)$methodParam#end#if($enctypeParam)$enctypeParam#end>
+        <#-- taskId: $item.taskId -->
+      #foreach ($subItem in $item.formItems)
+        #set ($subWidthParam = ${language.getStyleParam("width", $item.width)})
+        #set ($subHeightParam = ${language.getStyleParam("height", $item.height)})
+        #set ($subStyle = "$subWidthParam$subHeightParam")
+        #set ($styleParam = ${language.getParam("style", $subStyle)})
+        <div #if($styleParam)$styleParam#end>${language.translateItem($subItem)}</div>
+      #end
+    </form>
+  </body>
+</html>

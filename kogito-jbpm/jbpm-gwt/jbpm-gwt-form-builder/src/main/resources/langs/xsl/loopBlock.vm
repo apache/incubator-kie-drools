@@ -1,0 +1,3 @@
+<xsl:for-each select="${item.inputName}/${item.variableName}" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    ${language.translateItem(${item.loopBlock})}
+</xsl:for-each>

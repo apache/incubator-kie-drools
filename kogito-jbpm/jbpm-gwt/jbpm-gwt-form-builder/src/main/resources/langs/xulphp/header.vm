@@ -1,0 +1,13 @@
+#set ($width = ${language.getStyleParam("width", $item.width)})
+#set ($height = ${language.getStyleParam("height", $item.height)})
+#set ($sytle = "$width$height")
+#set ($classParam = ${language.getParam("class", $item.cssName)})
+#set ($styleParam = ${language.getParam("style", $style)})
+##TODO getItemValidations
+#set ($value = $item.value) 
+#if (!($value and $value != "") and $item.input)
+    #set ($value = $item.input.name)
+#end 
+<xul:box xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <html:h1 xmlns:html="http://www.w3.org/1999/xhtml" #if($classParam)$classParam#end#if($styleParam)$styleParam#end>$value</html:h1>
+</xul:box>

@@ -1,0 +1,93 @@
+#set ($idParam = ${language.getParam("id", $item.id)})
+#set($uuid = ${java.util.UUID.randomUUID().toString()})
+#set($lastElem = ${item.getTabTitles().size()} -1)
+<script type="text/javascript" language="JavaScript"><!--
+    function showTab(tabIndex) {
+        var idlist = new Array(
+            #set($index = 0)
+            #foreach($title in ${item.tabTitles})
+                '${uuid}tab${title.index}focus',
+                '${uuid}tab${title.index}ready',
+                '${uuid}content${title.index}'#if ($index < $lastElem),#end
+                #set( $index =$index + 1 )
+            #end
+        );
+
+        for(var i = 0; i < idlist.length; i++) {
+            if (i == tabIndex) {
+                document.getElementById('${uuid}tab' + i + 'focus').style.display = "block";
+                document.getElementById('${uuid}tab' + i + 'ready').style.display = "none";
+                document.getElementById('${uuid}content' + i ).style.display = "block";
+            } else {
+                document.getElementById('${uuid}tab' + i + 'focus').style.display = "none";
+                document.getElementById('${uuid}tab' + i + 'ready').style.display = "block";
+                document.getElementById('${uuid}content' + i ).style.display = "none";
+            }
+        }
+    }
+//--></script>
+
+<style type="text/css">
+.tab { 
+    width: ${item.tabWidth};
+    white-space: nowrap;
+    border-style: solid;
+    border-color: #333333;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+.tabhold { 
+    background-color: #999999;
+    color: black;
+}
+.tabfocus { 
+    background-color: #BBBBBB;
+    color: black;
+}
+.tabcontent { 
+    width: ${item.width};
+    height: ${item.height};
+    border-style: solid;
+    border-color: #333333;
+    border-width: 1px;
+    padding-top: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+</style>
+
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+
+<table #if($oneventxParam)$oneventxParam#end#if($idParam)$idParam#end border="0" cellpadding="0" cellspacing="0">
+    <tr>
+      #foreach($entry in ${item.getTabContents().entrySet()})
+        <td>
+            <div id="${uuid}tab${entry.key.index}focus" class="tab tabfocus" style="display:none;">${entry.key.string}</div>
+            <div id="${uuid}tab${entry.key.index}ready" class="tab tabhold" style="display:block;">
+                <span onclick="showTab(${entry.key.index})">${entry.key.string}</span>
+            </div>
+        </td>
+        <td width="20"> </td>
+      #end
+    </tr>
+    <tr>
+        #set ($colspan = $lastElem + 1)
+        #set ($colspan = $colspan * 2)
+        <td colspan="${colspan}">
+          #foreach($entry in ${item.getTabContents().entrySet()})
+            <div id="${uuid}content${entry.key.index}" class="tabcontent" style="display:none;">
+                #set ($subItem = $entry.value)
+                ${language.translateItem($subItem)}
+            </div>
+          #end
+        </td>
+    </tr>
+</table>
+<script>
+    showTab(0);
+</script>

@@ -1,0 +1,29 @@
+<!-- number input not supported for HTML4 -->
+
+#set ($input_id = ${langauge.getParam("id", $item.id)})
+#set ($input_maxlength = ${langauge.getParam("maxlength", $item.maxLength)})
+#set ($name = $item.name)
+#set ($oneventxParam = ${language.getOnEventParams($item)})
+#if (!($name and $name != "") and $item.output)
+    #set ($name = $item.output.name)
+#end
+#set ($input_name = ${language.getParam("name", $name)})
+#set ($value = $item.defaultValue)
+#if (!($value and $value != "") and $item.input and $item.input.name != "")
+    #set ($value = $item.input.value)
+#end
+#set ($input_value = ${language.getParam("value", $value)})
+#if($item.input)
+  #if($item.input.name)
+    #set($aux = $item.input.name)
+    #set($aux2 = ${language.asFtlVar($aux)})
+    #set($input_value = ${language.getParam("value", $aux2)})
+  #end
+#end
+#if($item.output)
+  #if($item.output.name)
+    #set($input_name = ${language.getParam("name", $item.output.name)})
+  #end
+#end
+## TODO textField.getItemValidations();
+<input type="number" #if($oneventxParam)$oneventxParam#end#if($input_maxlength)$input_maxlength#end#if($input_id)$input_id#end#if($input_name)$input_name#end#if($input_value)$input_value#end/>

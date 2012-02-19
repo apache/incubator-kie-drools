@@ -1,0 +1,6 @@
+#set ($valueParam = ${language.getParam("value", $item.value)})
+<xforms:item xmlns:xforms="http://www.w3.org/2002/01/xforms">
+    <xforms:caption xmlns:xforms="http://www.w3.org/2002/01/xforms">$item.label</xforms:caption>
+    <xforms:value xmlns:xforms="http://www.w3.org/2002/01/xforms">#if($valueParam)$valueParam#else $item.label#end</xforms:value>
+</xforms:item>
+

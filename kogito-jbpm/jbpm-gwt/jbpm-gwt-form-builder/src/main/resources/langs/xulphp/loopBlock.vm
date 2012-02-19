@@ -1,0 +1,3 @@
+<?php foreach(${item.inputName} as ${item.variableName}) {?>
+    ${language.translateItem(${item.loopBlock})}
+<? } ?>
