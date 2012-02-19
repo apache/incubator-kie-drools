@@ -12,7 +12,7 @@
     <section>
       <title>Decision Tables support "timer" and "calendar" attributes</title>
 
-      <para>Support has been added for the "timer" and "calendar" attributes. </para>
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
 
       <table>
         <title>New attributes</title>
@@ -86,6 +86,44 @@
           </imageobject>
         </mediaobject>
       </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Tables import from XLS</title>
+
+      <para>Uploading a XLS decision table results in the creation of numerous new assets, including (obviously)
+      web-guided Decision Tables, functions, declarative types and modifications to package globals and imports etc
+      (Queries are not converted, although supported in the XLS form, as Guvnor doesn't support them <link
+      xlink:href="https://issues.jboss.org/browse/GUVNOR-1532">yet</link>).</para>
+
+      <figure>
+        <title>XLS decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls.png" format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Guided decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-converted.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>This is the first stage of "round-tripping" decision tables. We still need to add the ability to export a
+      guided decision table back to XLS, plus we'd like to add tighter integration of updated XLS assets to their
+      original converted cousins - so if a new version of the XLS decision table is uploaded the related assets'
+      versions are updated (rather than creating new) upon conversion.</para>
+
+      <para>This is a powerful enhancement and as such your feedback is critical to ensure we implement the feature as
+      you'd like it to operate. Check it out, feedback your opinions and help guide the future work.</para>
     </section>
   </section>
 </section>
