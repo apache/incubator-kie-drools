@@ -16,10 +16,12 @@
 
 package org.drools.command;
 
+import java.util.HashMap;
 import org.drools.command.Command;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -34,7 +36,8 @@ public class ExecuteCommand
 
     private String   outIdentifier;
     private Command<ExecutionResults>  command;
-
+    private boolean disconnected = false;
+    
     public ExecuteCommand(Command  command) {
         this.command = command;
     }
@@ -43,13 +46,39 @@ public class ExecuteCommand
         this.command = command;
         this.outIdentifier = identifier;
     }
+    
+    public ExecuteCommand(String identifier, Command  command, boolean disconnected) {
+        this.command = command;
+        this.outIdentifier = identifier;
+        this.disconnected = disconnected;
+    }
+    
+    public ExecuteCommand(Command  command, boolean disconnected) {
+        this.command = command;
+        this.disconnected = disconnected;
+    }
 
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ExecutionResults kresults = ksession.execute( this.command );
+        ExecutionResults kresults = ksession.execute(this.command );
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
+        }
+        if (disconnected) {
+            ExecutionResultImpl disconnectedResults = new ExecutionResultImpl();
+            HashMap<String, Object> disconnectedHandles = new HashMap<String, Object>();
+            for (String key : kresults.getIdentifiers()) {
+                FactHandle handle = (FactHandle) kresults.getFactHandle(key);
+                if (handle != null) {
+                    DefaultFactHandle disconnectedHandle = ((DefaultFactHandle) handle).clone();
+                    disconnectedHandle.disconnect();
+                    disconnectedHandles.put(key, disconnectedHandle);
+                }
+            }
+            disconnectedResults.setFactHandles(disconnectedHandles);
+            disconnectedResults.setResults((HashMap)((ExecutionResultImpl)kresults).getResults());
+            return disconnectedResults;
         }
         
         return kresults;
