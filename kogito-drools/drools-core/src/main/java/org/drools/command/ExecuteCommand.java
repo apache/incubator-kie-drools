@@ -61,7 +61,7 @@ public class ExecuteCommand
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ExecutionResults kresults = ((StatefulKnowledgeSessionImpl)ksession).execute(context, this.command );
+        ExecutionResults kresults = ksession.execute(this.command );
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
         }
