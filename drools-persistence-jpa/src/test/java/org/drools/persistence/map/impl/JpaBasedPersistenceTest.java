@@ -101,29 +101,4 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
         return savedSessionsCount;
     }
 
-    @Test @Ignore // TODO fixme and backport to 5.3 - https://bugzilla.redhat.com/show_bug.cgi?id=745768
-    public void testSetGlobalWithJPAKnowledgeService() throws Exception {
-        String str = "";
-        str += "package org.drools.persistence \n";
-        str += "global String globalCheeseCountry\n";
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
-
-        List<Command<?>> commands = new ArrayList<Command<?>>();
-        commands.add(CommandFactory.newInsert(new Integer(5)));
-        commands.add(CommandFactory.newInsert(new Integer(7)));
-        commands.add(CommandFactory.newFireAllRules());
-        commands.add(CommandFactory.newSetGlobal( "globalCheeseCountry", "France", true ));
-
-        Command cmds = CommandFactory.newBatchExecution( commands );
-
-        ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
-    }
-
 }
