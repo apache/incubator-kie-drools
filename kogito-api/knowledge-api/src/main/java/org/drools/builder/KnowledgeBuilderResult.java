@@ -15,6 +15,8 @@
 */
 package org.drools.builder;
 
+import org.drools.io.Resource;
+
 /**
  * A super interface for Knowledge Building result messages.
  */
@@ -37,4 +39,9 @@ public interface KnowledgeBuilderResult {
      */
     int[] getLines();
 
+    /**
+     * Returns the Resource that caused this result
+     * @return
+     */
+    Resource getResource();
 }
