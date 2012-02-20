@@ -21,12 +21,9 @@ import org.junit.*;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.command.BatchExecutionCommand;
-import org.drools.command.CommandFactory;
-import org.drools.command.ExecuteCommand;
+import org.drools.command.*;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
-import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.runtime.rule.InsertObjectCommand;
 import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.ExecutionResults;
@@ -72,8 +69,10 @@ public class ExecuteCommandDisconnectedTest {
         ksession = kbase.newStatefulKnowledgeSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
         
-        FixedKnowledgeCommandContext kContext 
-            = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, this.ksession, localKresults );
+        ResolvingKnowledgeCommandContext kContext 
+            = new ResolvingKnowledgeCommandContext( new ContextImpl( "ksession", null ) );
+        kContext.set("localResults", localKresults);
+        kContext.set("ksession", ksession);
         
         commandService = new DefaultCommandService(kContext);
         
@@ -81,10 +80,12 @@ public class ExecuteCommandDisconnectedTest {
         
         List cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
+                                                                                                                 
         BatchExecutionCommand batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
         ExecuteCommand execCmd = new ExecuteCommand(batchCmd,true);
-        
-        ExecutionResults results = commandService.execute(execCmd);
+        KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,   
+                                                                                        null,null,"ksession","localResults");
+        ExecutionResults results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
         Assert.assertNotNull(results);
         
@@ -98,8 +99,9 @@ public class ExecuteCommandDisconnectedTest {
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
         batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
         execCmd = new ExecuteCommand(batchCmd);
-        
-        results = commandService.execute(execCmd);
+        resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,   
+                                                                                        null,null,"ksession","localResults");
+        results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
         Assert.assertNotNull(results);
         
