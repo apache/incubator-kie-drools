@@ -54,8 +54,6 @@ public class PersistenceUtil {
 
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
-    // There are still bugs with marshalling, so do not test it yet!
-    // Drools: JBRULES-3237, (same as JBPM-3383)
     private static boolean TEST_MARSHALLING = true;
     
     // Persistence and data source constants
@@ -96,10 +94,6 @@ public class PersistenceUtil {
         String jdbcUrl = dsProps.getProperty("url");
         String driverClass = dsProps.getProperty("driverClassName");
 
-        // only save marshalling data if the dialect is H2..
-        if( ! driverClass.startsWith("org.h2") ) { 
-           TEST_MARSHALLING = false; 
-        }
         Object testMarshallingProperty = dsProps.get("testMarshalling"); 
         if( "true".equals(testMarshallingProperty) ) { 
             TEST_MARSHALLING = true;
@@ -109,6 +103,10 @@ public class PersistenceUtil {
         } 
         else { 
             TEST_MARSHALLING = false;
+        }
+        // only save marshalling data if the dialect is H2..
+        if( ! driverClass.startsWith("org.h2") ) { 
+           TEST_MARSHALLING = false; 
         }
 
         if( TEST_MARSHALLING ) {
@@ -440,6 +438,10 @@ public class PersistenceUtil {
        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
        StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
        return knowledgeSession;
+   }
+   
+   public static boolean testMarshalling() { 
+       return TEST_MARSHALLING;
    }
    
 }

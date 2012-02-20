@@ -52,6 +52,7 @@ import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -104,6 +105,12 @@ public class MarshallingTestUtil {
      * @param persistenceUnitName The name of the persistence unit being used. 
      */
     public static void compareMarshallingDataFromTest(Class<?> testClass, String persistenceUnitName) { 
+        
+        // DO NOT RUN if we aren't testing marshalling!
+        if( ! testMarshalling() ) { 
+            return;
+        }
+        
         Object makeBaseDb = getDatasourceProperties().getProperty("makeBaseDb"); 
 
         boolean baseDBCreationOngoing = false;
