@@ -324,7 +324,7 @@ public class PackageBuilderConfiguration
     public DialectCompiletimeRegistry buildDialectRegistry(PackageBuilder packageBuilder,
                                                            PackageRegistry pkgRegistry,
                                                            Package pkg) {
-        DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry( pkg );
+        DialectCompiletimeRegistry registry = new DialectCompiletimeRegistry();
         for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
             DialectConfiguration conf = (DialectConfiguration) it.next();
             Dialect dialect = conf.newDialect( packageBuilder,

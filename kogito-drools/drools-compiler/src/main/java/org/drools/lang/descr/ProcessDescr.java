@@ -15,12 +15,9 @@ public class ProcessDescr extends BaseDescr
     private String className;
     private Resource resource;
 
-    public ProcessDescr() {
-
-    }
+    public ProcessDescr() { }
 
     public ProcessDescr(String name) {
-        super();
         this.name = name;
     }
     

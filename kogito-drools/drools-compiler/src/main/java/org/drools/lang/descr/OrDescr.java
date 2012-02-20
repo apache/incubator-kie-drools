@@ -25,8 +25,7 @@ public class OrDescr extends BaseDescr
     private static final long serialVersionUID = 510l;
     private List<BaseDescr>   descrs           = new ArrayList<BaseDescr>();
 
-    public OrDescr() {
-    }
+    public OrDescr() { }
 
     public void insertBeforeLast( final Class<?> clazz,
                                   final BaseDescr baseDescr ) {

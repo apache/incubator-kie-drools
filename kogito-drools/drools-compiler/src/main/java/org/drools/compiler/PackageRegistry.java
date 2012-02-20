@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
@@ -81,14 +82,15 @@ public class PackageRegistry {
         return dialectCompiletimeRegistry;
     }
 
-    public void addImport(String importEntry) {
+    public void addImport(ImportDescr importDescr) {
+        String importEntry = importDescr.getTarget();
         this.pkg.addImport( new ImportDeclaration( importEntry ) );
         this.typeResolver.addImport( importEntry );
-        this.dialectCompiletimeRegistry.addImport( importEntry );
+        this.dialectCompiletimeRegistry.addImport( importDescr );
     }
 
-    public void addStaticImport(String staticImport) {
-        this.dialectCompiletimeRegistry.addStaticImport( staticImport );
+    public void addStaticImport(ImportDescr importDescr) {
+        this.dialectCompiletimeRegistry.addStaticImport( importDescr );
     }
 
     public TypeResolver getTypeResolver() {

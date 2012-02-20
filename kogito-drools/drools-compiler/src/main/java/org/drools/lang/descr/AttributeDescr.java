@@ -27,7 +27,7 @@ public class AttributeDescr extends BaseDescr {
     private Type              type;
 
     public AttributeDescr(final String name) {
-        this(name, 
+        this(name,
              null, 
              Type.EXPRESSION );
     }

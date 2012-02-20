@@ -16,6 +16,8 @@
 
 package org.drools.compiler;
 
+import org.drools.io.Resource;
+
 public class ParserError extends DroolsError {
     private int    row;
     private int    col;
@@ -24,7 +26,14 @@ public class ParserError extends DroolsError {
     public ParserError(final String message,
                        final int row,
                        final int col) {
-        super();
+        this(null, message, row, col);
+    }
+
+    public ParserError(final Resource resource,
+                       final String message,
+                       final int row,
+                       final int col) {
+        super(resource);
         this.message = message;
         this.row = row;
         this.col = col;

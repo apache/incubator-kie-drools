@@ -29,8 +29,7 @@ public class ConstraintConnectiveDescr extends BaseDescr {
     private ConnectiveType     connective       = ConnectiveType.AND;
     private List<BaseDescr>    descrs           = new ArrayList<BaseDescr>();
 
-    public ConstraintConnectiveDescr() {
-    }
+    public ConstraintConnectiveDescr() { }
     
     public ConstraintConnectiveDescr( ConnectiveType connective ) {
         this.connective = connective;

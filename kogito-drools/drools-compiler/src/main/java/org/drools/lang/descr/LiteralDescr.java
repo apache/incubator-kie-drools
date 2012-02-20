@@ -31,8 +31,7 @@ public class LiteralDescr extends BaseDescr {
     
     private String            text;
 
-    public LiteralDescr(){
-    }
+    public LiteralDescr() { }
 
     public LiteralDescr(final String text,
                              final int type) {

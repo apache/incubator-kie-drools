@@ -5,12 +5,9 @@ import org.drools.lang.descr.BaseDescr;
 public class ReturnValueDescr extends BaseDescr {
     private String text;
     
-    public ReturnValueDescr() {
-        
-    }
+    public ReturnValueDescr() { }
     
     public ReturnValueDescr(String text) {
-        super();
         this.text = text;
     }
 

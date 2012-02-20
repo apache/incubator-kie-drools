@@ -29,7 +29,6 @@ public class FieldTemplateDescr extends BaseDescr {
 
     public FieldTemplateDescr(final String name,
                               final String type) {
-        super();
         this.name = name;
         this.classType = type;
     }

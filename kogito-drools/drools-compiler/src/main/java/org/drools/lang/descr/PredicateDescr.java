@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import org.drools.io.Resource;
+
 public class PredicateDescr extends RestrictionDescr {
     private static final long serialVersionUID = 510l;
     private Object            content;
@@ -24,11 +26,15 @@ public class PredicateDescr extends RestrictionDescr {
 
     private String            classMethodName;
 
+    public PredicateDescr() { }
+
     public PredicateDescr(final Object text) {
-        this.content = text;
+        this(null, text);
     }
 
-    public PredicateDescr() {
+    public PredicateDescr(final Resource resource, final Object text) {
+        this.content = text;
+        setResource(resource);
     }
 
     public String getClassMethodName() {

@@ -26,8 +26,7 @@ public class NotDescr extends BaseDescr
     private static final long serialVersionUID = 510l;
     private final List        descrs           = new ArrayList( 1 );
 
-    public NotDescr() {
-    }
+    public NotDescr() { }
 
     public NotDescr(final BaseDescr descr) {
         addDescr( descr );

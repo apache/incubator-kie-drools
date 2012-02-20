@@ -17,13 +17,24 @@ package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResultSeverity;
+import org.drools.io.Resource;
 
 /**
  * A base abstract class for all Knowledge Builder results
  *
  */
 public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderResult {
-    
+
+    private final Resource resource;
+
+    protected BaseKnowledgeBuilderResultImpl(Resource resource) {
+        this.resource = resource;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
     public abstract ResultSeverity getSeverity();
 
     public boolean isError() {

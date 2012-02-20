@@ -16,13 +16,16 @@
 
 package org.drools.compiler;
 
+import org.drools.lang.descr.GlobalDescr;
+
 public class GlobalError extends DroolsError {
     private String global;
     private int[]  line;
 
-    public GlobalError(final String global, final int line) {
-        this.global = global;
-        this.line = new int[] { line };
+    public GlobalError(final GlobalDescr globalDescr) {
+        super(globalDescr.getResource());
+        this.global = globalDescr.getIdentifier();
+        this.line = new int[] { globalDescr.getLine() };
     }
 
     public String getGlobal() {

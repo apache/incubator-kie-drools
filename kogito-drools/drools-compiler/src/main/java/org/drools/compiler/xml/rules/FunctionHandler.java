@@ -16,12 +16,8 @@
 
 package org.drools.compiler.xml.rules;
 
-import java.util.HashSet;
-
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -54,10 +50,7 @@ public class FunctionHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName, "name", name, parser );
         emptyAttributeCheck( localName, "return-type", returnType, parser );
 
-        final FunctionDescr functionDescr = new FunctionDescr( name,
-                                                               returnType );
-        
-        return functionDescr;
+        return new FunctionDescr( name, returnType );
     }
 
     public Object end(final String uri,

@@ -92,7 +92,6 @@ import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
@@ -865,7 +864,7 @@ public class PatternBuilder
             if ( m.find() ) {
                 // MVELDumper already stripped the eval
                 // this will build the eval using the specified dialect
-                PredicateDescr pdescr = new PredicateDescr( expr );
+                PredicateDescr pdescr = new PredicateDescr( context.getRuleDescr().getResource(), expr );
                 pdescr.copyLocation( d );
                 buildEval( context, pattern, pdescr, aliases, expr, true );
                 return true;
@@ -894,7 +893,7 @@ public class PatternBuilder
         MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
         context.setDialect( mvelDialect );
 
-        PredicateDescr pdescr = new PredicateDescr( expr );
+        PredicateDescr pdescr = new PredicateDescr( context.getRuleDescr().getResource(), expr );
         pdescr.copyLocation( base );
         buildEval( context, pattern, pdescr, aliases, expr, false );
 

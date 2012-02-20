@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.TypeResolver;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.FunctionError;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.FunctionDescr;
@@ -41,10 +43,10 @@ public class JavaFunctionBuilder
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
                         final TypeResolver typeResolver,
-                        final Map lineMappings,
-                        final List errors) {
+                        final Map<String, LineMappings> lineMappings,
+                        final List<KnowledgeBuilderResult> errors) {
 
-        final Map<String,Object> vars = new HashMap<String, Object>();
+        final Map<String, Object> vars = new HashMap<String, Object>();
 
         vars.put( "package",
                   pkg.getName() );
@@ -52,13 +54,13 @@ public class JavaFunctionBuilder
         vars.put( "imports",
                   pkg.getImports().keySet() );
 
-        final List staticImports = new LinkedList();
-        for( Iterator it = pkg.getStaticImports().iterator(); it.hasNext(); ) {
-            final String staticImport = (String) it.next();
-            if( ! staticImport.endsWith( functionDescr.getName() ) ) {
+        final List<String> staticImports = new LinkedList<String>();
+        for (String staticImport : pkg.getStaticImports()) {
+            if ( !staticImport.endsWith( functionDescr.getName() ) ) {
                 staticImports.add( staticImport );
             }
         }
+
         vars.put( "staticImports",
                   staticImports );
 
@@ -78,12 +80,12 @@ public class JavaFunctionBuilder
                   functionDescr.getParameterNames() );
         
         vars.put("hashCode",
-                new Integer(functionDescr.getText().hashCode() ) );
+                functionDescr.getText().hashCode() );
 
         // Check that all the parameters are resolvable
-        final Map params = new HashMap();
-        final List names = functionDescr.getParameterNames();
-        final List types = functionDescr.getParameterTypes();
+        final Map<String, Class<?>> params = new HashMap();
+        final List<String> names = functionDescr.getParameterNames();
+        final List<String> types = functionDescr.getParameterTypes();
         for ( int i = 0, size = names.size(); i < size; i++ ) {
             try {
                 params.put( names.get( i ),

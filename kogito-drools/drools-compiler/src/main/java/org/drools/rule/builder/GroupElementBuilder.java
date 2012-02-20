@@ -57,6 +57,7 @@ public class GroupElementBuilder
         for ( final Iterator it = cedescr.getDescrs().iterator(); it.hasNext(); ) {
             // gets child to build
             final BaseDescr child = (BaseDescr) it.next();
+            child.setResource(context.getRuleDescr().getResource());
 
             // gets corresponding builder
             final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( child.getClass() );

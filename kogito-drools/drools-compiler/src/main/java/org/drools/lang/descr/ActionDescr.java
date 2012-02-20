@@ -3,12 +3,9 @@ package org.drools.lang.descr;
 public class ActionDescr extends BaseDescr {
     private String text;
     
-    public ActionDescr() {
-        
-    }
-    
+    public ActionDescr() { }
+
     public ActionDescr(String text) {
-        super();
         this.text = text;
     }
 

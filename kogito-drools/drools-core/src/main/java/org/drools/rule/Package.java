@@ -69,11 +69,11 @@ public class Package
 
     private Map<String, Function>          functions;
 
-    private Set                            staticImports;
+    private Set<String>                    staticImports;
 
     private Map<String, String>            globals;
 
-    private Map                            factTemplates;
+    private Map<String, FactTemplate>      factTemplates;
 
     private Map<String, Process>           ruleFlows;
 
@@ -298,7 +298,7 @@ public class Package
         this.staticImports.remove( functionImport );
     }
 
-    public Set getStaticImports() {
+    public Set<String> getStaticImports() {
         return this.staticImports;
     }
 

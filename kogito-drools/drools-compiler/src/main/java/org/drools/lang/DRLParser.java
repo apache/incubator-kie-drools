@@ -27,6 +27,7 @@ import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.StringUtils;
+import org.drools.io.Resource;
 import org.drools.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
@@ -149,8 +150,14 @@ public class DRLParser {
      * @throws RecognitionException
      */
     public final PackageDescr compilationUnit() throws RecognitionException {
-        PackageDescrBuilder pkg = DescrFactory.newPackage();
+        return compilationUnit(DescrFactory.newPackage());
+    }
 
+    public final PackageDescr compilationUnit(Resource resource) throws RecognitionException {
+        return compilationUnit(DescrFactory.newPackage(resource));
+    }
+
+    private final PackageDescr compilationUnit(PackageDescrBuilder pkg) throws RecognitionException {
         try {
             // package declaration?
             if ( input.LA( 1 ) != DRLLexer.EOF && helper.validateIdentifierKey( DroolsSoftKeywords.PACKAGE ) ) {

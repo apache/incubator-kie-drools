@@ -10,11 +10,11 @@ public class RuleFlowErrorTest {
 
     @Test
     public void testError() {
-        ProcessLoadError err = new ProcessLoadError("XXX", null);
+        ProcessLoadError err = new ProcessLoadError(null, "XXX", null);
         assertEquals("XXX", err.getMessage());
         
         Exception e = new RuntimeException("Q");
-        err = new ProcessLoadError("X", e);
+        err = new ProcessLoadError(null, "X", e);
         
         assertNotNull(err.getMessage());
         

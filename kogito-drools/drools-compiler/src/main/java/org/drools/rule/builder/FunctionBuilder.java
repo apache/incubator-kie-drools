@@ -20,13 +20,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.compiler.DroolsError;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 
 public interface FunctionBuilder extends EngineElementBuilder {
     public String build(final Package pkg,
                         final FunctionDescr functionDescr,
                         final TypeResolver typeResolver,
-                        final Map lineMappings,
-                        final List errors);
+                        final Map<String, LineMappings> lineMappings,
+                        final List<KnowledgeBuilderResult> errors);
 }

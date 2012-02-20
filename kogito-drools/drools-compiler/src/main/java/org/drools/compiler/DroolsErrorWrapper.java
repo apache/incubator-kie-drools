@@ -26,6 +26,7 @@ public class DroolsErrorWrapper extends DroolsError {
     KnowledgeBuilderResult backingProblem;
     
     public DroolsErrorWrapper (KnowledgeBuilderResult problem) {
+        super(problem.getResource());
         this.backingProblem = problem;
     }
     

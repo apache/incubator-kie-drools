@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.base.TypeResolver;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResultSeverity;
 import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.io.Resource;
@@ -297,8 +298,7 @@ public class PackageBuilderConfigurationTest {
         private RuleDescr      ruleDescr;
         private Rule           rule;
 
-        private List           imports       = new ArrayList();
-        private List           staticImports = new ArrayList();
+        private List<String>   imports       = new ArrayList<String>();
 
         private boolean        compileAll    = false;
 
@@ -331,16 +331,16 @@ public class PackageBuilderConfigurationTest {
 
         }
 
-        public void addImport( String importEntry ) {
-            this.imports.add( importEntry );
+        public void addImport( ImportDescr importDescr ) {
+            this.imports.add( importDescr.getTarget() );
         }
 
         public List getImport() {
             return this.imports;
         }
 
-        public void addStaticImport( String importEntry ) {
-            this.imports.add( importEntry );
+        public void addStaticImport( ImportDescr importDescr ) {
+            this.imports.add( importDescr.getTarget() );
         }
 
         public List getStaticImport() {
@@ -410,7 +410,7 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public List getResults() {
+        public List<KnowledgeBuilderResult> getResults() {
             return null;
         }
 

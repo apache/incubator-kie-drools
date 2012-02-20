@@ -26,9 +26,7 @@ public class SerializableDroolsError extends DroolsError implements Externalizab
     private int[] errorLines;
     private String errorClassName;
     
-    public SerializableDroolsError() {
-        
-    }
+    public SerializableDroolsError() { }
     
     public SerializableDroolsError(String message, int[] errorLines, String errorClassName) {
         this.message = message;
