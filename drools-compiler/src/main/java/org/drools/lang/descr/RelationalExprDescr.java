@@ -28,8 +28,7 @@ public class RelationalExprDescr extends BaseDescr {
     private BaseDescr         right;
     private OperatorDescr     operator;
 
-    public RelationalExprDescr() {
-    }
+    public RelationalExprDescr() { }
 
     public RelationalExprDescr(String operator,
                                boolean negated,

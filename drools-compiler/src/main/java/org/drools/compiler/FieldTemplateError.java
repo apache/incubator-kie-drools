@@ -31,6 +31,7 @@ public class FieldTemplateError extends DroolsError {
                               final BaseDescr descr,
                               final Object object,
                               final String message) {
+        super(descr.getResource());
         this.pkg = pkg;
         this.descr = descr;
         this.object = object;

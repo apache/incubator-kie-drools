@@ -16,8 +16,6 @@
 
 package org.drools.compiler.xml.rules;
 
-import java.util.HashSet;
-
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.MVELExprDescr;

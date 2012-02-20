@@ -16,12 +16,15 @@
 
 package org.drools.compiler;
 
+import org.drools.lang.descr.ImportDescr;
+
 public class ImportError extends DroolsError {
     private String importName;
     private int[]  line;
 
-    public ImportError(final String importName, final int line) {
-        this.importName = importName;
+    public ImportError(final ImportDescr importDescr, final int line) {
+        super(importDescr.getResource());
+        this.importName = importDescr.getTarget();
         this.line = new int[] { line };
     }
 

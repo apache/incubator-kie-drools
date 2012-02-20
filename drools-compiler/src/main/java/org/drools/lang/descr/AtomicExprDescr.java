@@ -22,8 +22,7 @@ public class AtomicExprDescr extends BaseDescr {
     private String            expression;
     private boolean           literal;
 
-    public AtomicExprDescr() {
-    }
+    public AtomicExprDescr() { }
 
     public AtomicExprDescr(final String expression) {
         this( expression, false );

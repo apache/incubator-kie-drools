@@ -18,6 +18,7 @@ package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
 
 public class DuplicateRule extends ConfigurableSeverityResult {
     
@@ -27,9 +28,9 @@ public class DuplicateRule extends ConfigurableSeverityResult {
     
     private PackageDescr pkgDescr;
     
-    public DuplicateRule(String ruleName, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
-        super(config);
-        rule = ruleName;
+    public DuplicateRule(RuleDescr ruleDescr, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
+        super(ruleDescr.getResource(), config);
+        rule = ruleDescr.getName();
         pkgDescr = pkg;
     }
 

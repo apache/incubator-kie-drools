@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.drools.base.TypeResolver;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.compilers.CompilationResult;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompilerFactory;
@@ -17,6 +18,7 @@ import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
@@ -37,6 +39,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -135,7 +138,7 @@ public class JavaDialect
     private MemoryResourceReader                     src;
     private PackageStore                             packageStoreWrapper;
     private Map                                      errorHandlers;
-    private List                                     results;
+    private List<KnowledgeBuilderResult>             results;
     private PackageBuilder                           packageBuilder;
 
     private PackageRegistry                          packageRegistry;
@@ -150,7 +153,7 @@ public class JavaDialect
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
 
         this.errorHandlers = new HashMap();
-        this.results = new ArrayList();
+        this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.src = new MemoryResourceReader();
 
@@ -542,7 +545,9 @@ public class JavaDialect
     public void postCompileAddFunction(FunctionDescr functionDescr,
                                        TypeResolver typeResolver) {
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
-        this.packageRegistry.addStaticImport( functionClassName + "." + functionDescr.getName() );
+        ImportDescr importDescr = new ImportDescr(functionClassName + "." + functionDescr.getName());
+        importDescr.setResource(functionDescr.getResource());
+        this.packageRegistry.addStaticImport( importDescr );
     }
 
     public void addSrc(String resourceName,
@@ -612,15 +617,15 @@ public class JavaDialect
         }
     }
 
-    public void addImport(String importEntry) {
+    public void addImport(ImportDescr importDescr) {
         // we don't need to do anything here
     }
 
-    public void addStaticImport(String staticImportEntry) {
+    public void addStaticImport(ImportDescr importDescr) {
         // we don't need to do anything here
     }
 
-    public List getResults() {
+    public List<KnowledgeBuilderResult> getResults() {
         return this.results;
     }
 

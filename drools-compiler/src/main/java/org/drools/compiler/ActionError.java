@@ -28,7 +28,6 @@ public class ActionError extends DroolsError {
     public ActionError(final BaseDescr descr,
                      final Object object,
                      final String message) {
-        super();
         this.descr = descr;
         this.object = object;
         this.message = message;

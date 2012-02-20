@@ -30,8 +30,7 @@ public class EvalDescr extends BaseDescr
 
     private String            classMethodName;
 
-    public EvalDescr() {
-    }
+    public EvalDescr() { }
 
     public EvalDescr(final Object content) {
         this.content = content;

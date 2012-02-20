@@ -32,15 +32,12 @@ public class BehaviorDescr extends BaseDescr {
     /**
      * @param type
      */
-    public BehaviorDescr() {
-        super();
-    }
+    public BehaviorDescr() { }
     
     /**
      * @param type
      */
     public BehaviorDescr(String type) {
-        super();
         setText(type);
     }
 

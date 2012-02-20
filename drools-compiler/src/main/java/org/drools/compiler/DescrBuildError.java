@@ -30,7 +30,7 @@ public class DescrBuildError extends DroolsError {
                            final BaseDescr descr,
                            final Object object,
                            final String message) {
-        super();
+        super( descr.getResource() != null ? descr.getResource() : ( parentDescr != null ? parentDescr.getResource() : null ) );
         this.parentDescr = parentDescr;
         this.descr = descr;
         this.object = object;

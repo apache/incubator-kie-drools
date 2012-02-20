@@ -26,6 +26,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (ImportDescr descr : packageDescr.getImports()) {
             if (!currentImports.contains(descr)) {
                 addImport(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -33,6 +34,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (FunctionImportDescr descr : packageDescr.getFunctionImports()) {
             if (!currentFunctionImports.contains(descr)) {
                 addFunctionImport(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -40,6 +42,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (AttributeDescr descr : packageDescr.getAttributes()) {
             if (!currentAttributeDescrs.contains(descr)) {
                 addAttribute(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -47,6 +50,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (GlobalDescr descr : packageDescr.getGlobals()) {
             if (!currentGlobalDescrs.contains(descr)) {
                 addGlobal(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -54,6 +58,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (FunctionDescr descr : packageDescr.getFunctions()) {
             if (!currentFunctionDescrs.contains(descr)) {
                 addFunction(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -77,6 +82,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (EntryPointDeclarationDescr descr : packageDescr.getEntryPointDeclarations()) {
             if (!entryPointDeclarationDescrs.contains(descr)) {
                 addEntryPointDeclaration(descr);
+                descr.setResource(resource);
             }
         }
 
@@ -84,6 +90,7 @@ public class CompositePackageDescr extends PackageDescr {
         for (WindowDeclarationDescr descr : packageDescr.getWindowDeclarations()) {
             if (!windowDeclarationDescrs.contains(descr)) {
                 addWindowDeclaration(descr);
+                descr.setResource(resource);
             }
         }
     }

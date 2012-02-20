@@ -23,5 +23,4 @@ package org.drools.lang.descr;
 public class PatternSourceDescr extends BaseDescr {
 
     private static final long serialVersionUID = 510l;
-    
 }

@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import org.drools.io.Resource;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -36,6 +38,7 @@ public class BaseDescr
     private int               endLine          = -1;
     private int               endColumn        = -1;
     private String            text             = "";
+    private Resource          resource;
 
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
@@ -46,6 +49,7 @@ public class BaseDescr
         endLine = in.readInt();
         endColumn = in.readInt();
         text = (String) in.readObject();
+        resource = (Resource) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
@@ -55,7 +59,18 @@ public class BaseDescr
         out.writeInt( column );
         out.writeInt( endLine );
         out.writeInt( endColumn );
-        out.writeObject( text );
+        out.writeObject(text);
+        out.writeObject( resource );
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        if (resource != null) {
+            this.resource = resource;
+        }
     }
 
     public String getText() {

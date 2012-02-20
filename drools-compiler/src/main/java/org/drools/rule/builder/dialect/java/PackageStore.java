@@ -18,21 +18,22 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
 
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.rule.JavaDialectRuntimeData;
 
 public class PackageStore
     implements
     ResourceStore {
-    private JavaDialectRuntimeData javaDialectRuntimeData;
+    private JavaDialectRuntimeData       javaDialectRuntimeData;
 
-    private List                   errors;
+    private List<KnowledgeBuilderResult> errors;
 
     public PackageStore() {
     }
 
     public PackageStore(final JavaDialectRuntimeData javaDialectRuntimeData,
-                        final List errors) {
+                        final List<KnowledgeBuilderResult> errors) {
         this.javaDialectRuntimeData = javaDialectRuntimeData;
         this.errors = errors;
     }

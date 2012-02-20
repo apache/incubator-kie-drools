@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.rule.Package;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.lang.descr.ImportDescr;
 
 /**
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered
@@ -14,16 +15,9 @@ import org.drools.rule.Package;
  * This Class api is subject to change.
  */
 public class DialectCompiletimeRegistry {
-    private Package              pkg;
 
-    
-    private Map<String, Dialect> map;
+    private final Map<String, Dialect> map = new HashMap<String, Dialect>();
 
-    public DialectCompiletimeRegistry(Package pkg) {
-        this.pkg = pkg;
-        this.map = new HashMap<String, Dialect>();
-    }
-    
     /**
      * Add a DialectConfiguration to the registry
      * @param name
@@ -67,12 +61,12 @@ public class DialectCompiletimeRegistry {
      * @param list
      * @return
      */
-    public List addResults(List list) {
+    public List<KnowledgeBuilderResult> addResults(List<KnowledgeBuilderResult> list) {
         if ( list == null ) {
-            list = new ArrayList();
+            list = new ArrayList<KnowledgeBuilderResult>();
         }
         for (Dialect dialect : map.values()) {
-            List results = dialect.getResults();
+            List<KnowledgeBuilderResult> results = dialect.getResults();
             if ( results != null ) {
                 list.addAll( results );
             }
@@ -84,10 +78,9 @@ public class DialectCompiletimeRegistry {
      * Iterates all registered dialects, informing them of an import added to the PackageBuilder
      * @param importEntry
      */
-    public void addImport(String importEntry) {
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
-            dialect.addImport( importEntry );
+    public void addImport(ImportDescr importDescr) {
+        for (Dialect dialect : this.map.values()) {
+            dialect.addImport(importDescr);
         }
     }
 
@@ -95,10 +88,9 @@ public class DialectCompiletimeRegistry {
      * Iterates all registered dialects, informing them of a static imports added to the PackageBuilder
      * @param staticImportEntry
      */
-    public void addStaticImport(String staticImportEntry) {
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
-            dialect.addStaticImport( staticImportEntry );
+    public void addStaticImport(ImportDescr importDescr) {
+        for (Dialect dialect : this.map.values()) {
+            dialect.addStaticImport(importDescr);
         }
     }
     

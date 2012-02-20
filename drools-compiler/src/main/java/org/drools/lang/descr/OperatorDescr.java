@@ -38,8 +38,7 @@ public class OperatorDescr extends BaseDescr {
     private boolean           leftIsHandle;
     private boolean           rightIsHandle;
 
-    public OperatorDescr() {
-    }
+    public OperatorDescr() { }
 
     public OperatorDescr(String operator,
                          boolean negated,

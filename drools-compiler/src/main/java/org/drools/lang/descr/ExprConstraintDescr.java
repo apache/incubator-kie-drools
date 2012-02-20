@@ -30,12 +30,9 @@ public class ExprConstraintDescr extends BaseDescr {
     private Type type = Type.NAMED;
     private int position = -1;
 
-    public ExprConstraintDescr() {
-        super();
-    }
+    public ExprConstraintDescr() { }
     
     public ExprConstraintDescr(final String expr) {
-        super();
         setText( expr );
     }
     

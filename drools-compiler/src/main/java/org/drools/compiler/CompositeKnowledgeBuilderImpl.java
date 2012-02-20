@@ -176,8 +176,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
 
         for (PackageDescr packageDescr : packages) {
-            for (ImportDescr importEntry : packageDescr.getImports()) {
-                pkgBuilder.getPackageRegistry(packageDescr.getNamespace()).addImport( importEntry.getTarget() );
+            for (ImportDescr importDescr : packageDescr.getImports()) {
+                pkgBuilder.getPackageRegistry(packageDescr.getNamespace()).addImport( importDescr );
             }
         }
     }

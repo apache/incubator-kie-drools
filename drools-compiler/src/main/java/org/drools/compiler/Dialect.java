@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.io.Resource;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.AccumulateBuilder;
@@ -87,11 +89,11 @@ public interface Dialect {
                      TypeResolver typeResolver,
                      Resource resource);
 
-    public void addImport(String importEntry);
+    public void addImport(ImportDescr importDescr);
 
-    public void addStaticImport(String importEntry);
+    public void addStaticImport(ImportDescr importDescr);
 
-    List getResults();
+    List<KnowledgeBuilderResult> getResults();
 
     void init(RuleDescr ruleDescr);
 

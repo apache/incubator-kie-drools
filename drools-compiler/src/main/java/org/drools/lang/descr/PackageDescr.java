@@ -49,7 +49,7 @@ public class PackageDescr extends BaseDescr
     private List<EnumDeclarationDescr>      enumDeclarations       = Collections.emptyList();
 
     public PackageDescr() {
-        this( "", 
+        this( "",
               "");
     }
 
@@ -69,7 +69,7 @@ public class PackageDescr extends BaseDescr
                                               ClassNotFoundException {
         super.readExternal( in );
         namespace = (String) in.readUTF();
-        documentation = (String) in.readUTF();
+        documentation = in.readUTF();
         imports = (List<ImportDescr>) in.readObject();
         functionImports = (List<FunctionImportDescr>) in.readObject();
         attributes = (List<AttributeDescr>) in.readObject();

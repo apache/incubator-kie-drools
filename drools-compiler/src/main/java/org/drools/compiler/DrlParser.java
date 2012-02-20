@@ -27,6 +27,7 @@ import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
+import org.drools.io.Resource;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsSentence;
@@ -48,6 +49,7 @@ public class DrlParser {
     private List<DroolsSentence>    editorSentences       = null;
     private Location                location              = new Location( Location.LOCATION_UNKNOWN );
     private DRLLexer                lexer                 = null;
+    private Resource                resource              = null;
 
     public DrlParser() {
     }
@@ -130,16 +132,16 @@ public class DrlParser {
                            dsl );
     }
 
-    public PackageDescr parse(final boolean isEditor,
-                              final InputStream is) throws DroolsParserException {
-        final DRLParser parser = getParser( is );
-        return compile( isEditor,
-                        parser );
+    public PackageDescr parse(final Resource resource) throws DroolsParserException, IOException {
+        return parse( false, resource );
     }
 
-    public PackageDescr parse(final InputStream is) throws DroolsParserException {
-        return parse( false,
-                      is );
+    public PackageDescr parse(final boolean isEditor,
+                              final Resource resource) throws DroolsParserException, IOException {
+        this.resource = resource;
+        InputStream is = resource.getInputStream();
+        final DRLParser parser = getParser( is );
+        return compile( isEditor, parser );
     }
 
     /**
@@ -191,7 +193,7 @@ public class DrlParser {
         final StringBuilder text = new StringBuilder();
 
         final char[] buf = new char[1024];
-        int len = 0;
+        int len;
 
         while ( (len = reader.read( buf )) >= 0 ) {
             text.append( buf,
@@ -222,7 +224,7 @@ public class DrlParser {
             if ( isEditor ) {
                 parser.enableEditorInterface();
             }
-            pkgDescr = parser.compilationUnit();
+            pkgDescr = parser.compilationUnit(resource);
             editorSentences = parser.getEditorInterface();
             makeErrorList( parser );
             if ( isEditor || !this.hasErrors() ) {
@@ -232,7 +234,8 @@ public class DrlParser {
             }
         } catch ( Exception e ) {
             e.printStackTrace();
-            final ParserError err = new ParserError( GENERIC_ERROR_MESSAGE + e.toString()+"\n"+ Arrays.toString( e.getStackTrace() ),
+            final ParserError err = new ParserError( resource,
+                                                     GENERIC_ERROR_MESSAGE + e.toString()+"\n"+ Arrays.toString( e.getStackTrace() ),
                                                      -1,
                                                      0 );
             this.results.add( err );
@@ -248,13 +251,15 @@ public class DrlParser {
     /** Convert the antlr exceptions to drools parser exceptions */
     private void makeErrorList( final DRLParser parser ) {
         for ( final DroolsParserException recogErr : lexer.getErrors() ) {
-            final ParserError err = new ParserError( recogErr.getMessage(),
+            final ParserError err = new ParserError( resource,
+                                                     recogErr.getMessage(),
                                                      recogErr.getLineNumber(),
                                                      recogErr.getColumn() );
             this.results.add( err );
         }
         for ( final DroolsParserException recogErr : parser.getErrors() ) {
-            final ParserError err = new ParserError( recogErr.getMessage(),
+            final ParserError err = new ParserError( resource,
+                                                     recogErr.getMessage(),
                                                      recogErr.getLineNumber(),
                                                      recogErr.getColumn() );
             this.results.add( err );

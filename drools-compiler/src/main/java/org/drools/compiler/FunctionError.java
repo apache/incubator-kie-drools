@@ -28,7 +28,7 @@ public class FunctionError extends DroolsError {
     public FunctionError(final FunctionDescr functionDescr,
                          final Object object,
                          final String message) {
-        super();
+        super(functionDescr.getResource());
         this.functionDescr = functionDescr;
         this.object = object;
         this.message = createMessage( message );

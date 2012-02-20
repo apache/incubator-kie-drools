@@ -29,13 +29,13 @@ public class DuplicateFunction extends ConfigurableSeverityResult {
     private String functionNamespace;
     
     public DuplicateFunction(FunctionDescr func, KnowledgeBuilderConfiguration config) {
-        super(config);
+        super(func.getResource(), config);
         functionName = func.getName();
         functionNamespace = func.getNamespace();
     }
     
     public DuplicateFunction(Function func, KnowledgeBuilderConfiguration config) {
-        super(config);
+        super(func.getResource(), config);
         functionName = func.getName();
         functionName = func.getNamespace();
     }

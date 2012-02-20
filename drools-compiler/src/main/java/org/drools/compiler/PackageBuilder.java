@@ -34,7 +34,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -102,7 +101,6 @@ import org.drools.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.CompositePackageDescr;
 import org.drools.lang.descr.EnumDeclarationDescr;
 import org.drools.lang.descr.EnumLiteralDescr;
 import org.drools.lang.descr.EntryPointDeclarationDescr;
@@ -431,7 +429,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
-            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+            this.results.add( new ParserError( sourceResource, "Parser returned a null Package", 0, 0 ) );
         }
 
         if (!parser.hasErrors()) {
@@ -454,7 +452,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         PackageDescr pkg = parser.parse( new StringReader( string ) );
         this.results.addAll( parser.getErrors() );
         if (pkg == null) {
-            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+            this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
         }
         return parser.hasErrors() ? null : pkg;
     }
@@ -472,10 +470,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             pkg = (PackageDescr) ( (DescrResource) resource ).getDescr();
         } else {
             final DrlParser parser = new DrlParser();
-            pkg = parser.parse( resource.getInputStream() );
+            pkg = parser.parse( resource );
             this.results.addAll( parser.getErrors() );
             if (pkg == null) {
-                this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+                this.results.add( new ParserError( resource, "Parser returned a null Package", 0, 0 ) );
             }
             hasErrors = parser.hasErrors();
         }
@@ -553,7 +551,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException {
-        boolean hasErrors = false;
+        boolean hasErrors;
         PackageDescr pkg;
 
         DrlParser parser = new DrlParser();
@@ -647,8 +645,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
-            this.results.add( new ProcessLoadError( "Unable to load process.",
-                                                    e ) );
+            this.results.add( new ProcessLoadError( resource, "Unable to load process.", e ) );
         }
         this.results = getResults( this.results );
         this.resource = null;
@@ -728,7 +725,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     void addPackageFromXSD(Resource resource, JaxbConfigurationImpl configuration) throws IOException {
-        JaxbConfigurationImpl confImpl = (JaxbConfigurationImpl) configuration;
+        JaxbConfigurationImpl confImpl = configuration;
         String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
                 this,
                 confImpl.getXjcOpts(),
@@ -806,7 +803,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         try {
             reloadAll();
         } catch (Exception e) {
-            this.results.add( new DialectError( "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
+            this.results.add( new DialectError( null, "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
         }
         updateResults();
 
@@ -976,7 +973,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    private List getResults( List results ) {
+    private List<KnowledgeBuilderResult> getResults( List<KnowledgeBuilderResult> results ) {
         for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
             results = pkgRegistry.getDialectCompiletimeRegistry().addResults( results );
         }
@@ -1120,12 +1117,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         for (final RuleDescr rule : packageDescr.getRules()) {
             final String name = rule.getName();
             if (names.contains( name )) {
-                this.results.add( new ParserError( "Duplicate rule name: " + name,
+                this.results.add( new ParserError( rule.getResource(),
+                                                   "Duplicate rule name: " + name,
                                                    rule.getLine(),
                                                    rule.getColumn() ) );
             }
             if (pkg != null && pkg.getRule( name ) != null) {
-                this.results.add( new DuplicateRule( name,
+                this.results.add( new DuplicateRule( rule,
                                                      packageDescr,
                                                      this.configuration ) );
             }
@@ -1160,7 +1158,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                            pkg );
 
         // add default import for this namespace
-        pkgRegistry.addImport( packageDescr.getNamespace() + ".*" );
+        pkgRegistry.addImport( new ImportDescr( packageDescr.getNamespace() + ".*" ) );
 
         this.pkgRegistryMap.put( packageDescr.getName(),
                                  pkgRegistry );
@@ -1169,8 +1167,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private void mergePackage( PackageRegistry pkgRegistry, PackageDescr packageDescr ) {
-        for (final ImportDescr importEntry : packageDescr.getImports()) {
-            pkgRegistry.addImport( importEntry.getTarget() );
+        for (final ImportDescr importDescr : packageDescr.getImports()) {
+            pkgRegistry.addImport( importDescr );
         }
 
         processEntryPointDeclarations(pkgRegistry, packageDescr);
@@ -1210,8 +1208,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 this.globals.put( identifier,
                                   clazz );
             } catch (final ClassNotFoundException e) {
-                this.results.add( new GlobalError( identifier,
-                                                   global.getLine() ) );
+                this.results.add( new GlobalError( global ) );
                 e.printStackTrace();
             }
         }
@@ -1229,7 +1226,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         for (final FunctionImportDescr functionImport : packageDescr.getFunctionImports()) {
             String importEntry = functionImport.getTarget();
-            pkgRegistry.addStaticImport( importEntry );
+            pkgRegistry.addStaticImport( functionImport );
             pkgRegistry.getPackage().addStaticImport( importEntry );
         }
     }
@@ -1556,10 +1553,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     // sets supertype name and supertype package
                     separator = declaredSuperType.lastIndexOf( "." );
                     if (separator < 0) {
-                        this.results.add( new TypeDeclarationError(
-                                                                    "Cannot resolve supertype '" + declaredSuperType +
-                                                                            "'",
-                                                                    typeDescr.getLine() ) );
+                        this.results.add( new TypeDeclarationError( typeDescr,
+                                                                    "Cannot resolve supertype '" + declaredSuperType + "'") );
                         qname.setName( null );
                         qname.setNamespace( null );
                     } else {
@@ -1652,11 +1647,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         } else {
             // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
             // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
-            this.results.add( new TypeDeclarationError( "Cannot extend supertype '" + fullSuper +
-                                                        "' (not a declared type)",
-                                                        typeDescr.getLine() ) );
-            typeDescr.setType( null,
-                               null );
+            this.results.add( new TypeDeclarationError( typeDescr, "Cannot extend supertype '" + fullSuper + "' (not a declared type)" ) );
+            typeDescr.setType( null, null );
             return false;
         }
 
@@ -1735,12 +1727,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 }
 
                 if (!type1.equals( type2 )) {
-                    this.results.add( new TypeDeclarationError( "Cannot redeclare field '" + fieldName +
-                                                                " from " +
-                                                                type1 +
-                                                                " to " +
-                                                                type2,
-                                                                typeDescr.getLine() ) );
+                    this.results.add( new TypeDeclarationError( typeDescr,
+                                                                "Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2 ) );
                     typeDescr.setType( null,
                                        null );
                     return false;
@@ -1948,14 +1936,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     //descriptor needs fields inherited from superclass
                     if ( mergeInheritedFields( tDescr ) ) {
                         //descriptor also needs metadata from superclass
-                        Iterator<AbstractClassTypeDeclarationDescr> iter = sortedTypeDescriptors.iterator();
-                        while ( iter.hasNext() ) {
+                        for (AbstractClassTypeDeclarationDescr descr : sortedTypeDescriptors) {
                             // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
-                            AbstractClassTypeDeclarationDescr descr = iter.next();
-                            if ( qname.equals( descr.getType() ) ) {
-                                typeDescr.getAnnotations().putAll( descr.getAnnotations() );
+                            if (qname.equals(descr.getType())) {
+                                typeDescr.getAnnotations().putAll(descr.getAnnotations());
                                 break;
-                            } else if ( typeDescr.getType().equals( descr.getType() ) ) {
+                            } else if (typeDescr.getType().equals(descr.getType())) {
                                 break;
                             }
 
@@ -2025,11 +2011,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
 
             } catch (final ClassNotFoundException e) {
-                this.results.add( new TypeDeclarationError( "Class '" + className +
+                this.results.add( new TypeDeclarationError( typeDescr,
+                                                            "Class '" + className +
                                                             "' not found for type declaration of '" +
-                                                            type.getTypeName() +
-                                                            "'",
-                                                            typeDescr.getLine() ) );
+                                                            type.getTypeName() + "'" ) );
                 continue;
             }
 
@@ -2050,12 +2035,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 buildFieldAccessors( type, pkgRegistry );
             } catch (Throwable e) {
                 if (!firstAttempt) {
-                    this.results.add( new TypeDeclarationError(
+                    this.results.add( new TypeDeclarationError(typeDescr,
                             "Error creating field accessors for TypeDeclaration '" + type.getTypeName() +
                                     "' for type '" +
                                     type.getTypeName() +
-                                    "'",
-                            typeDescr.getLine() ) );
+                                    "'") );
                 }
                 return false;
             }
@@ -2164,11 +2148,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 String availableName = typeDescr.getType().getFullName();
                 Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
                 if (resolvedType != null && typeDescr.getFields().size() > 1) {
-                    this.results.add( new TypeDeclarationError(
+                    this.results.add( new TypeDeclarationError( typeDescr,
                                                                 "Duplicate type definition. A class with the name '" + resolvedType.getName() +
-                                                                        "' was found in the classpath while trying to " +
-                                                                        "redefine the fields in the declare statement. Fields can only be defined for non-existing classes.",
-                                                                typeDescr.getLine() ) );
+                                                                "' was found in the classpath while trying to " +
+                                                                "redefine the fields in the declare statement. Fields can only be defined for non-existing classes." ) );
                 }
                 return false;
             } else {
@@ -2258,8 +2241,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if ( type.getKind().equals( TypeDeclaration.Kind.CLASS ) ) {
             TypeDeclarationDescr tdescr = (TypeDeclarationDescr) typeDescr;
             if ( tdescr.getSuperTypes().size() > 1 ) {
-                this.results.add( new TypeDeclarationError( "Declared class " + fullName + "  - has more than one supertype;",
-                                                                typeDescr.getLine() ) );
+                this.results.add( new TypeDeclarationError( typeDescr, "Declared class " + fullName + "  - has more than one supertype;" ) );
                 return;
             } else if ( tdescr.getSuperTypes().size() == 0 ) {
                 tdescr.addSuperType( "java.lang.Object" );
@@ -2283,7 +2265,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         String[] interfaces = interfaceList.toArray( new String[interfaceList.size()] );
 
         // prepares a class definition
-        ClassDefinition def = null;
+        ClassDefinition def;
         switch ( type.getKind() ) {
             case TRAIT :
                 def = new ClassDefinition( fullName,
@@ -2308,19 +2290,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                   pkgRegistry.getTypeResolver() );
             if (annotation != null) {
                 try {
-                    AnnotationDefinition annotationDefinition = AnnotationDefinition.build(
-                                                                                            annotation,
+                    AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation,
                                                                                             typeDescr.getAnnotations().get( annotationName ).getValueMap(),
                                                                                             pkgRegistry.getTypeResolver() );
                     def.addAnnotation( annotationDefinition );
                 } catch (NoSuchMethodException nsme) {
-                    this.results.add( new TypeDeclarationError( "Annotated type " + fullName +
+                    this.results.add( new TypeDeclarationError( typeDescr,
+                                                                "Annotated type " + fullName +
                                                                 "  - undefined property in @annotation " +
-                                                                annotationName +
-                                                                ": " +
-                                                                nsme.getMessage() +
-                                                                ";",
-                                                                typeDescr.getLine() ) );
+                                                                annotationName + ": " +
+                                                                nsme.getMessage() + ";" ) );
                 }
             }
         }
@@ -2451,11 +2430,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                        d );
 
                     } catch (Exception e) {
-                        this.results.add( new TypeDeclarationError( "Unable to compile declared trait " + fullName +
-                                                                    ": " +
-                                                                    e.getMessage() +
-                                                                    ";",
-                                                                    typeDescr.getLine() ) );
+                        this.results.add( new TypeDeclarationError( typeDescr,
+                                                                    "Unable to compile declared trait " + fullName +
+                                                                    ": " + e.getMessage() + ";" ) );
                     }
                     break;
                 case ENUM :
@@ -2468,8 +2445,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
                     } catch ( Exception e ) {
                         e.printStackTrace();
-                        this.results.add( new TypeDeclarationError( "Unable to compile declared enum " + fullName + ": " + e.getMessage() + ";",
-                                typeDescr.getLine() ) );
+                        this.results.add( new TypeDeclarationError( typeDescr, "Unable to compile declared enum " + fullName + ": " + e.getMessage() + ";" ) );
                     }
                     break;
                 case CLASS :
@@ -2481,12 +2457,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                        d );
 
                     } catch (Exception e) {
-                        this.results.add( new TypeDeclarationError(
+                        this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
-                                                                            ": " +
-                                                                            e.getMessage() +
-                                                                            ";",
-                                                                    typeDescr.getLine() ) );
+                                                                            ": " + e.getMessage() + ";" ) );
                     }
 
                     break;
@@ -2546,21 +2519,17 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                                                     pkgRegistry.getTypeResolver() );
                             fieldDef.addAnnotation( annotationDefinition );
                         } catch (NoSuchMethodException nsme) {
-                            this.results.add( new TypeDeclarationError( "Annotated field " + field.getFieldName() +
+                            this.results.add( new TypeDeclarationError( field,
+                                                                        "Annotated field " + field.getFieldName() +
                                                                         "  - undefined property in @annotation " +
-                                                                        annotationName +
-                                                                        ": " +
-                                                                        nsme.getMessage() +
-                                                                        ";",
-                                                                        field.getLine() ) );
+                                                                        annotationName + ": " + nsme.getMessage() + ";" ) );
                         }
                     }
                 }
 
                 queue.add( fieldDef );
             } catch (ClassNotFoundException cnfe) {
-                this.results.add( new TypeDeclarationError( cnfe.getMessage(),
-                                                            field.getLine() ) );
+                this.results.add( new TypeDeclarationError( field, cnfe.getMessage() ) );
             }
 
         }
@@ -2592,27 +2561,23 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     private void addFactTemplate( final PackageDescr pkgDescr,
-            final FactTemplateDescr factTemplateDescr ) {
-        final List fields = new ArrayList();
+                                  final FactTemplateDescr factTemplateDescr ) {
+        List<FieldTemplate> fields = new ArrayList<FieldTemplate>();
         int index = 0;
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
-        for (final Iterator it = factTemplateDescr.getFields().iterator(); it.hasNext();) {
-            final FieldTemplateDescr fieldTemplateDescr = (FieldTemplateDescr) it.next();
+        for (FieldTemplateDescr fieldTemplateDescr : factTemplateDescr.getFields()) {
             FieldTemplate fieldTemplate = null;
             try {
-                fieldTemplate = new FieldTemplateImpl(
-                                                       fieldTemplateDescr.getName(),
+                fieldTemplate = new FieldTemplateImpl( fieldTemplateDescr.getName(),
                                                        index++,
-                                                       pkgRegistry.getTypeResolver().resolveType( fieldTemplateDescr.getClassType() ) );
+                                                       pkgRegistry.getTypeResolver().resolveType(fieldTemplateDescr.getClassType()) );
             } catch (final ClassNotFoundException e) {
-                this.results.add( new FieldTemplateError(
-                                                          pkgRegistry.getPackage(),
+                this.results.add( new FieldTemplateError( pkgRegistry.getPackage(),
                                                           fieldTemplateDescr,
                                                           null,
-                                                          "Unable to resolve Class '" + fieldTemplateDescr.getClassType() +
-                                                                  "'" ) );
+                                                          "Unable to resolve Class '" + fieldTemplateDescr.getClassType() + "'"));
             }
-            fields.add( fieldTemplate );
+            fields.add(fieldTemplate);
         }
 
         new FactTemplateImpl(pkgRegistry.getPackage(),
@@ -2719,6 +2684,14 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public DateFormats getDateFormats() {
         return this.dateFormats;
+    }
+
+    public Collection<String> getPackageNames() {
+        return pkgRegistryMap.keySet();
+    }
+
+    public List<PackageDescr> getPackageDescrs(String packageName) {
+        return packages.get(packageName);
     }
 
     /**
@@ -2989,8 +2962,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         private String message;
         private int[]  errorLines = new int[0];
 
-        public SrcError( Object object,
-                String message ) {
+        public SrcError( Object object, String message ) {
+            super(null);
             this.object = object;
             this.message = message;
         }
@@ -3140,10 +3113,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         public void accept( List<T> list ) {
-            accept( list, new Stack() );
+            accept( list, new Stack<T>() );
         }
 
-        private void accept( List<T> list, Stack stack ) {
+        private void accept( List<T> list, Stack<T> stack ) {
             if (this.data != null) {
                 list.remove( this.data );
                 list.add( this.data );

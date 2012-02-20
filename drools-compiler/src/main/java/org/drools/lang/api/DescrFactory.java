@@ -16,6 +16,7 @@
 
 package org.drools.lang.api;
 
+import org.drools.io.Resource;
 import org.drools.lang.api.impl.PackageDescrBuilderImpl;
 
 /**
@@ -27,4 +28,7 @@ public class DescrFactory {
         return PackageDescrBuilderImpl.newPackage();
     }
 
+    public static PackageDescrBuilder newPackage(Resource resource) {
+        return PackageDescrBuilderImpl.newPackage(resource);
+    }
 }

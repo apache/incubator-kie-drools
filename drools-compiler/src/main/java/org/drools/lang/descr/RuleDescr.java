@@ -46,8 +46,6 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     private String                      className;
 
-    private Resource                    resource;
-
     public RuleDescr() {
         this( null,
               "" );
@@ -84,7 +82,6 @@ public class RuleDescr extends AnnotatedBaseDescr
         offset = in.readInt();
         attributes = (Map<String, AttributeDescr>) in.readObject();
         className = (String) in.readObject();
-        resource = (Resource) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -101,7 +98,6 @@ public class RuleDescr extends AnnotatedBaseDescr
         out.writeInt( offset );
         out.writeObject( attributes );
         out.writeObject( className );
-        out.writeObject( resource );
     }
 
     public void setNamespace(String namespace) {
@@ -110,14 +106,6 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     public String getNamespace() {
         return this.namespace;
-    }
-
-    public Resource getResource() {
-        return resource;
-    }
-
-    public void setResource(Resource resource) {
-        this.resource = resource;
     }
 
     public String getName() {

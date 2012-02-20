@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
@@ -43,8 +42,6 @@ public class FunctionDescr extends BaseDescr
     // this seems to be used to map error line from the java generated file to the drl file
     private int               offset;
 
-    private Resource          resource;
-
     public FunctionDescr() {
         this( null, null );
     }
@@ -63,14 +60,6 @@ public class FunctionDescr extends BaseDescr
 
     public String getNamespace() {
         return this.namespace;
-    }
-
-    public Resource getResource() {
-        return resource;
-    }
-
-    public void setResource( Resource resource ) {
-        this.resource = resource;
     }
 
     public String getName() {

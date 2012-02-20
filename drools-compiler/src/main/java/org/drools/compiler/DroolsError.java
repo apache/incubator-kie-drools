@@ -18,9 +18,18 @@ package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResultSeverity;
+import org.drools.io.Resource;
 
 public abstract class DroolsError extends BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderError {
-   
+
+    public DroolsError() {
+        this(null);
+    }
+
+    public DroolsError(Resource resource) {
+        super(resource);
+    }
+
     public ResultSeverity getSeverity() {
         return ResultSeverity.ERROR;
     }

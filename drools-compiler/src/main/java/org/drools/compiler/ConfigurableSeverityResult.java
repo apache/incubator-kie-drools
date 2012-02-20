@@ -18,6 +18,7 @@ package org.drools.compiler;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.ResultSeverity;
 import org.drools.builder.conf.KBuilderSeverityOption;
+import org.drools.io.Resource;
 
 
 /**
@@ -25,7 +26,8 @@ import org.drools.builder.conf.KBuilderSeverityOption;
  */
 public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderResultImpl {
     
-    public ConfigurableSeverityResult(KnowledgeBuilderConfiguration config) {
+    public ConfigurableSeverityResult(Resource resource, KnowledgeBuilderConfiguration config) {
+        super(resource);
         severity = config.getOption(KBuilderSeverityOption.class, getOptionKey()).getSeverity();
     }
     

@@ -32,6 +32,8 @@ public class ForFunctionDescr extends BaseDescr {
     private String            label;
     private List<String>      arguments;
 
+    public ForFunctionDescr() { }
+
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

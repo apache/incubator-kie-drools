@@ -7,7 +7,6 @@ public class JavaDialectError extends DroolsError {
     private static final int[] line = new int[0];
 
     public JavaDialectError(final String message) {
-        super();
         this.message = message;
     }
 
