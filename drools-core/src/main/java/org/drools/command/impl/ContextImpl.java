@@ -61,6 +61,9 @@ public class ContextImpl
     }
 
     public Object get(String identifier) {
+        if(identifier == null || identifier.equals("")){
+            return null;
+        }
         Object object = context.get( identifier );
         if ( object == null && parent != null ) {
             object = this.parent.get( identifier );
