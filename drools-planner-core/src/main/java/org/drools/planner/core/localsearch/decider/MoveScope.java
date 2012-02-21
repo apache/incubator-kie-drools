@@ -29,8 +29,8 @@ public class MoveScope {
     private final LocalSearchStepScope localSearchStepScope;
     private Move move = null;
     private Move undoMove = null;
-    private Boolean accepted = null;
     private Score score = null;
+    private Boolean accepted = null;
 
     public MoveScope(LocalSearchStepScope localSearchStepScope) {
         this.localSearchStepScope = localSearchStepScope;
@@ -56,20 +56,20 @@ public class MoveScope {
         this.undoMove = undoMove;
     }
 
-    public Boolean getAccepted() {
-        return accepted;
-    }
-
-    public void setAccepted(Boolean accepted) {
-        this.accepted = accepted;
-    }
-
     public Score getScore() {
         return score;
     }
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public Boolean getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
     }
 
     // ************************************************************************
