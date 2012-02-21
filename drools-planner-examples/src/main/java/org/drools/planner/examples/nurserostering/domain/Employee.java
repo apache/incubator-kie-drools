@@ -52,13 +52,17 @@ public class Employee extends AbstractPersistable {
         this.contract = contract;
     }
 
+    public int getWeekendLength() {
+        return getContract().getWeekendLength();
+    }
+    
+    public String getLabel() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return code + "(" + name + ")";
-    }
-
-    public int getWeekendLength() {
-        return getContract().getWeekendLength();
     }
 
 }

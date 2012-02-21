@@ -16,143 +16,166 @@
 
 package org.drools.planner.examples.nurserostering.swingui;
 
-import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
-import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
+import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class NurseRosteringPanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = Color.YELLOW;
+    public static final Dimension SHIFT_DIMENSION = new Dimension(20, 20);
 
-    private GridLayout gridLayout;
+    private JPanel employeeListPanel;
+
+    private EmployeePanel unassignedPanel;
+    private Map<Employee, EmployeePanel> employeeToPanelMap;
+    private Map<ShiftAssignment, EmployeePanel> shiftAssignmentToPanelMap;
 
     public NurseRosteringPanel() {
-        gridLayout = new GridLayout(0, 1);
-        setLayout(gridLayout);
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        createEmployeeListPanel();
+        JPanel headerPanel = new JPanel();
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(headerPanel).addComponent(employeeListPanel));
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(employeeListPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE));
     }
 
-    private NurseRoster getNurseRoster() {
+    private void createEmployeeListPanel() {
+        employeeListPanel = new JPanel();
+        employeeListPanel.setLayout(new BoxLayout(employeeListPanel, BoxLayout.Y_AXIS));
+        unassignedPanel = new EmployeePanel(this, Collections.<ShiftDate>emptyList(), Collections.<Shift>emptyList(),
+                null);
+        employeeListPanel.add(unassignedPanel);
+        employeeToPanelMap = new LinkedHashMap<Employee, EmployeePanel>();
+        employeeToPanelMap.put(null, unassignedPanel);
+        shiftAssignmentToPanelMap = new LinkedHashMap<ShiftAssignment, EmployeePanel>();
+    }
+
+    public NurseRoster getNurseRoster() {
         return (NurseRoster) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution solution) {
-        removeAll();
+        for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
+            if (employeePanel.getEmployee() != null) {
+                employeeListPanel.remove(employeePanel);
+            }
+        }
+        employeeToPanelMap.clear();
+        employeeToPanelMap.put(null, unassignedPanel);
+        shiftAssignmentToPanelMap.clear();
+        unassignedPanel.clearShiftAssignments();
+        updatePanel(solution);
+    }
+
+    @Override
+    public void updatePanel(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
-        gridLayout.setColumns(nurseRoster.getShiftDateList().size() + 1);
-        JLabel headerCornerLabel = new JLabel("E \\ SD");
-        headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        headerCornerLabel.setBackground(HEADER_COLOR);
-        headerCornerLabel.setOpaque(true);
-        add(headerCornerLabel);
-        for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
-            JLabel shiftDateLabel = new JLabel(shiftDate.getLabel());
-            shiftDateLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            shiftDateLabel.setBackground(HEADER_COLOR);
-            shiftDateLabel.setOpaque(true);
-            add(shiftDateLabel);
-        }
-        Map<Employee, Map<ShiftDate, EmployeeShiftDatePanel>> employeeShiftDatePanelMap = new HashMap<Employee, Map<ShiftDate, EmployeeShiftDatePanel>>();
+        List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+        List<Shift> shiftList = nurseRoster.getShiftList();
+        unassignedPanel.setShiftDateListAndShiftList(shiftDateList, shiftList);
+        Set<Employee> deadEmployeeSet = new LinkedHashSet<Employee>(employeeToPanelMap.keySet());
+        deadEmployeeSet.remove(null);
         for (Employee employee : nurseRoster.getEmployeeList()) {
-            createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, employee);
+            deadEmployeeSet.remove(employee);
+            EmployeePanel employeePanel = employeeToPanelMap.get(employee);
+            if (employeePanel == null) {
+                employeePanel = new EmployeePanel(this, shiftDateList, shiftList, employee);
+                employeeListPanel.add(employeePanel);
+                employeeToPanelMap.put(employee, employeePanel);
+            }
         }
-        createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, null);
+        Set<ShiftAssignment> deadShiftAssignmentSet = new LinkedHashSet<ShiftAssignment>(
+                shiftAssignmentToPanelMap.keySet());
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+            deadShiftAssignmentSet.remove(shiftAssignment);
+            EmployeePanel employeePanel = shiftAssignmentToPanelMap.get(shiftAssignment);
             Employee employee = shiftAssignment.getEmployee();
-            EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(shiftAssignment.getShiftDate());
-            employeeShiftDatePanel.addShiftAssignment(shiftAssignment);
-        }
-    }
-
-    private void createEmployeeLine(NurseRoster nurseRoster, Map<Employee,
-            Map<ShiftDate, EmployeeShiftDatePanel>> employeeShiftDatePanelMap, Employee employee) {
-        JLabel employeeLabel = new JLabel(employee == null ? "Unassigned" : employee.toString());
-        employeeLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        employeeLabel.setBackground(HEADER_COLOR);
-        employeeLabel.setOpaque(true);
-        add(employeeLabel);
-        Map<ShiftDate, EmployeeShiftDatePanel> shiftDatePanelMap = new HashMap<ShiftDate, EmployeeShiftDatePanel>();
-        employeeShiftDatePanelMap.put(employee, shiftDatePanelMap);
-        for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
-            EmployeeShiftDatePanel employeeShiftDatePanel = new EmployeeShiftDatePanel();
-            WeekendDefinition weekendDefinition = (employee == null) ? WeekendDefinition.SATURDAY_SUNDAY
-                    : employee.getContract().getWeekendDefinition();
-            if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
-                employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
+            if (employeePanel != null
+                    && !ObjectUtils.equals(employeePanel.getEmployee(), employee)) {
+                shiftAssignmentToPanelMap.remove(shiftAssignment);
+                employeePanel.removeShiftAssignment(shiftAssignment);
+                employeePanel = null;
             }
-            employeeShiftDatePanel.setToolTipText((employee == null ? "Unassigned" : "employee " + employee.getCode())
-                    + " on dayIndex " + shiftDate.getDayIndex());
-            add(employeeShiftDatePanel);
-            shiftDatePanelMap.put(shiftDate, employeeShiftDatePanel);
-        }
-    }
-
-    private class EmployeeShiftDatePanel extends JPanel {
-
-        public EmployeeShiftDatePanel() {
-            super(new GridLayout(0, 1));
-            setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        }
-
-        public void addShiftAssignment(ShiftAssignment shiftAssignment) {
-            JButton button = new JButton(new ShiftAssignmentAction(shiftAssignment));
-            add(button);
-        }
-
-    }
-
-    private class ShiftAssignmentAction extends AbstractAction {
-
-        private ShiftAssignment shiftAssignment;
-
-        public ShiftAssignmentAction(ShiftAssignment shiftAssignment) {
-            super(shiftAssignment.getLabel());
-            this.shiftAssignment = shiftAssignment;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            List<Employee> employeeList = getNurseRoster().getEmployeeList();
-            JComboBox employeeListField = new JComboBox(employeeList.toArray());
-            employeeListField.setSelectedItem(shiftAssignment.getEmployee());
-            int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), employeeListField,
-                    "Select employee", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                Employee toEmployee = (Employee) employeeListField.getSelectedItem();
-                solutionBusiness.doMove(new EmployeeChangeMove(shiftAssignment, toEmployee));
-                solverAndPersistenceFrame.resetScreen();
+            if (employeePanel == null) {
+                employeePanel = employeeToPanelMap.get(employee);
+                employeePanel.addShiftAssignment(shiftAssignment);
+                shiftAssignmentToPanelMap.put(shiftAssignment, employeePanel);
             }
         }
+        for (ShiftAssignment deadShiftAssignment : deadShiftAssignmentSet) {
+            EmployeePanel deadEmployeePanel = shiftAssignmentToPanelMap.remove(deadShiftAssignment);
+            deadEmployeePanel.removeShiftAssignment(deadShiftAssignment);
+        }
+        for (Employee deadEmployee : deadEmployeeSet) {
+            EmployeePanel deadEmployeePanel = employeeToPanelMap.remove(deadEmployee);
+            employeeListPanel.remove(deadEmployeePanel);
+        }
+        for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
+            employeePanel.update();
+        }
+    }
 
+    public void deleteEmployee(final Employee employee) {
+        logger.info("Scheduling delete of employee ({}).", employee);
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(SolutionDirector solutionDirector) {
+                NurseRoster nurseRoster = (NurseRoster) solutionDirector.getWorkingSolution();
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                // First remove the planning fact from all planning entities that use it
+                for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+                    if (ObjectUtils.equals(shiftAssignment.getEmployee(), employee)) {
+                        FactHandle shiftAssignmentHandle = workingMemory.getFactHandle(shiftAssignment);
+                        shiftAssignment.setEmployee(null);
+                        workingMemory.retract(shiftAssignmentHandle);
+                    }
+                }
+                // Next remove it the planning fact itself
+                for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
+                    Employee workingEmployee = it.next();
+                    if (ObjectUtils.equals(workingEmployee, employee)) {
+                        FactHandle employeeHandle = workingMemory.getFactHandle(workingEmployee);
+                        workingMemory.retract(employeeHandle);
+                        it.remove(); // remove from list
+                        break;
+                    }
+                }
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
+    }
+
+    public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {
+        solutionBusiness.doMove(new EmployeeChangeMove(shiftAssignment, toEmployee));
+        solverAndPersistenceFrame.resetScreen();
     }
 
 }

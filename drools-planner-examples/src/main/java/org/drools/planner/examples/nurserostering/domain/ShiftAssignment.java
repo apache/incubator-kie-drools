@@ -95,10 +95,6 @@ public class ShiftAssignment extends AbstractPersistable {
         return shift.getShiftDate().getWeekendSundayIndex();
     }
 
-    public String getLabel() {
-        return shift.getShiftType().getCode();
-    }
-
     public ShiftAssignment clone() {
         ShiftAssignment clone = new ShiftAssignment();
         clone.id = id;

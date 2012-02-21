@@ -166,7 +166,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     public void deleteComputer(final CloudComputer cloudComputer) {
-        logger.info("Scheduling deleting of computer ({}).", cloudComputer.getLabel());
+        logger.info("Scheduling delete of computer ({}).", cloudComputer);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();

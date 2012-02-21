@@ -61,6 +61,10 @@ public class Shift extends AbstractPersistable {
         this.requiredEmployeeSize = requiredEmployeeSize;
     }
 
+    public String getLabel() {
+        return shiftDate.getLabel() + " - " + shiftType.getCode();
+    }
+
     @Override
     public String toString() {
         return shiftDate + "_" + shiftType;

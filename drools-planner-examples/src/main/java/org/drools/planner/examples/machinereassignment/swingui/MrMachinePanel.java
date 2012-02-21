@@ -22,7 +22,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class MrMachinePanel extends JPanel {
                         BorderFactory.createEmptyBorder(1, 2, 1, 2),
                         BorderFactory.createLineBorder(Color.BLACK)),
                 BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-        addTotals();
+        createUI();
     }
 
     public MrMachine getMachine() {
@@ -78,10 +77,15 @@ public class MrMachinePanel extends JPanel {
         return machine == null ? "Unassigned" : machine.getLabel();
     }
 
-    private void addTotals() {
+    public void setResourceList(List<MrResource> resourceList) {
+        this.resourceList = resourceList;
+        resetResourceListPanel();
+    }
+
+    private void createUI() {
         JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
+        labelAndDeletePanel.setPreferredSize(new Dimension(150, 20));
         machineLabel = new JLabel(getMachineLabel());
-        machineLabel.setPreferredSize(new Dimension(100, 20));
         machineLabel.setEnabled(false);
         labelAndDeletePanel.add(machineLabel, BorderLayout.CENTER);
         if (machine != null) {
@@ -93,11 +97,10 @@ public class MrMachinePanel extends JPanel {
             labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
         }
         add(labelAndDeletePanel, BorderLayout.WEST);
-        setResourceList(resourceList);
+        resetResourceListPanel();
         JPanel numberAndDetailsPanel = new JPanel(new BorderLayout());
-        numberOfProcessesLabel = new JLabel("0 processes ");
+        numberOfProcessesLabel = new JLabel("0 processes ", JLabel.RIGHT);
         numberOfProcessesLabel.setPreferredSize(new Dimension(100, 20));
-        numberOfProcessesLabel.setAlignmentX(RIGHT_ALIGNMENT);
         numberOfProcessesLabel.setEnabled(false);
         numberAndDetailsPanel.add(numberOfProcessesLabel, BorderLayout.WEST);
         detailsButton = new JButton(new AbstractAction("Details") {
@@ -112,8 +115,7 @@ public class MrMachinePanel extends JPanel {
         add(numberAndDetailsPanel, BorderLayout.EAST);
     }
 
-    public void setResourceList(List<MrResource> resourceList) {
-        this.resourceList = resourceList;
+    public void resetResourceListPanel() {
         if (resourceListPanel != null) {
             remove(resourceListPanel);
         }

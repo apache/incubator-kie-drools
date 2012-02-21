@@ -18,7 +18,6 @@ package org.drools.planner.examples.machinereassignment.swingui;
 
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -26,11 +25,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -45,9 +40,6 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class MachineReassignmentPanel extends SolutionPanel {
 
     public static final Color[] PROCESS_COLORS = {
@@ -148,7 +140,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
     }
 
     public void deleteMachine(final MrMachine machine) {
-        logger.info("Scheduling deleting of machine ({}).", machine.getLabel());
+        logger.info("Scheduling delete of machine ({}).", machine);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 MachineReassignment machineReassignment = (MachineReassignment) solutionDirector.getWorkingSolution();

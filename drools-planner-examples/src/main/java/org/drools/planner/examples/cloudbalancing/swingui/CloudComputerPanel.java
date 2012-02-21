@@ -65,8 +65,8 @@ public class CloudComputerPanel extends JPanel {
                     BorderFactory.createEmptyBorder(1, 2, 1, 2),
                     BorderFactory.createLineBorder(Color.BLACK)),
                 BorderFactory.createEmptyBorder(1, 1, 1, 1)));
-        addTotals();
-        addBars();
+        createTotalsUI();
+        createBarsUI();
     }
 
     public CloudComputer getCloudComputer() {
@@ -93,7 +93,7 @@ public class CloudComputerPanel extends JPanel {
         return cloudComputer == null ? 0 : cloudComputer.getCost();
     }
 
-    private void addTotals() {
+    private void createTotalsUI() {
         JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
         computerLabel = new JLabel(getComputerLabel());
         computerLabel.setEnabled(false);
@@ -125,7 +125,7 @@ public class CloudComputerPanel extends JPanel {
         add(costField);
     }
 
-    private void addBars() {
+    private void createBarsUI() {
         numberOfProcessesLabel = new JLabel("    0 processes");
         numberOfProcessesLabel.setEnabled(false);
         add(numberOfProcessesLabel);
