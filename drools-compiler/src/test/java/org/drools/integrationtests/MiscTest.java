@@ -78,6 +78,7 @@ import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.MockPersistentSet;
@@ -133,6 +134,7 @@ import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.xml.XmlDumper;
+import org.drools.conf.AssertBehaviorOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
@@ -10042,6 +10044,53 @@ public class MiscTest {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertTrue( list.contains( "OK" ) );
+
+        ksession.dispose();
+    }
+
+    @Test
+    // JBRULES-3396
+    public void testBindingToNullFieldWithEquality() {
+        String str = "package org.drools.test; \n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean\n" +
+                "  id    : String @key\n" +
+                "  field : String\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when  \n" +
+                "then\n" +
+                "  insert( new Bean( \"x\" ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( $fld : field )\n" +
+                "then\n" +
+                "  System.out.println( $fld );\n" +
+                "  list.add( \"OK\" ); \n" +
+                "end";
+
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+                kbConf.setOption(AssertBehaviorOption.EQUALITY);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
