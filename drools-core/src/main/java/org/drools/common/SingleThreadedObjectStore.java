@@ -116,7 +116,11 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      * @see org.drools.common.ObjectStore#getHandleForObject(java.lang.Object)
      */
     public InternalFactHandle getHandleForObject(Object object){
-        return (InternalFactHandle) this.assertMap.get( object );
+        if ( object == null ) {
+            return null;
+        } else {
+            return (InternalFactHandle) this.assertMap.get( object );
+        }
     }
     
     public InternalFactHandle reconnect(FactHandle factHandle) {
