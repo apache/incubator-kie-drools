@@ -16,17 +16,27 @@
 
 package org.drools.planner.examples.app;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.drools.planner.examples.nqueens.app.NQueensApp;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
@@ -44,6 +54,8 @@ public class DroolsPlannerExamplesApp extends JFrame {
         droolsPlannerExamplesApp.pack();
         droolsPlannerExamplesApp.setVisible(true);
     }
+    
+    private JTextArea descriptionTextArea;
 
     public DroolsPlannerExamplesApp() {
         super("Drools Planner examples");
@@ -52,65 +64,154 @@ public class DroolsPlannerExamplesApp extends JFrame {
     }
 
     private Container createContentPane() {
-        JPanel contentPane = new JPanel(new GridLayout(0, 1));
-        contentPane.add(new JLabel("Which example do you want to see?"));
-        contentPane.add(new JButton(new AbstractAction("N queens") {
-            public void actionPerformed(ActionEvent e) {
+        JPanel contentPane = new JPanel(new BorderLayout());
+        JLabel titleLabel = new JLabel("Which example do you want to see?", JLabel.CENTER);
+        titleLabel.setFont(titleLabel.getFont().deriveFont(20.0f));
+        contentPane.add(titleLabel, BorderLayout.NORTH);
+        JPanel examplesPanel = createExamplesPanel();
+        contentPane.add(examplesPanel, BorderLayout.CENTER);
+        contentPane.add(createDescriptionPanel(), BorderLayout.SOUTH);
+        return contentPane;
+    }
+
+    private JPanel createExamplesPanel() {
+        JPanel examplesPanel = new JPanel();
+        GroupLayout layout = new GroupLayout(examplesPanel);
+        examplesPanel.setLayout(layout);
+        JLabel toyExamplesLabel = new JLabel(" Toy examples");
+        toyExamplesLabel.setForeground(TangoColors.CHAMELEON_3);
+        JScrollPane toyExamplesScrollPane = new JScrollPane(createToyExamplesPanel());
+        JLabel realExamplesLabel = new JLabel(" Real examples");
+        realExamplesLabel.setForeground(TangoColors.BUTTER_3);
+        JScrollPane realExamplesScrollPane = new JScrollPane(createRealExamplesPanel());
+        JLabel difficultExamplesLabel = new JLabel(" Difficult examples");
+        difficultExamplesLabel.setForeground(TangoColors.SCARLET_3);
+        JScrollPane difficultExamplesScrollPane = new JScrollPane(createDifficultExamplesPanel());
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(toyExamplesLabel).addComponent(toyExamplesScrollPane)
+                .addComponent(realExamplesLabel).addComponent(realExamplesScrollPane)
+                .addComponent(difficultExamplesLabel).addComponent(difficultExamplesScrollPane));
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(toyExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(toyExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(realExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(realExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(difficultExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(difficultExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE));
+        return examplesPanel;
+    }
+
+    private JPanel createToyExamplesPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.setBackground(TangoColors.CHAMELEON_1);
+        panel.add(createExampleButton("N queens", "", new Runnable() {
+            public void run() {
                 new NQueensApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
-            public void actionPerformed(ActionEvent e) {
+        panel.add(createExampleButton("Cloud balancing", "", new Runnable() {
+            public void run() {
                 new CloudBalancingApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Machine reassignment (ROADEF 2012)") {
-            public void actionPerformed(ActionEvent e) {
-                new MachineReassignmentApp().init(false);
-            }
-        }));
-        contentPane.add(new JButton(new AbstractAction("Miss Manners 2009") {
-            public void actionPerformed(ActionEvent e) {
+        panel.add(createExampleButton("Miss Manners 2009", "", new Runnable() {
+            public void run() {
                 new Manners2009App().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
-            public void actionPerformed(ActionEvent e) {
+        panel.add(createExampleButton("Traveling salesman problem", "(TSP)", new Runnable() {
+            public void run() {
                 new TspApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)") {
-            public void actionPerformed(ActionEvent e) {
-                new SmartTravelingTournamentApp().init(false);
-            }
-        }));
-        // TODO TrainDesign is still in working progress
-//        contentPane.add(new JButton(new AbstractAction("Train design (RAS2011)") {
-//            public void actionPerformed(ActionEvent e) {
-//                new TrainDesignApp().init(false);
-//            }
-//        }));
-        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track3)") {
-            public void actionPerformed(ActionEvent e) {
+        return panel;
+    }
+
+    private JPanel createRealExamplesPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.setBackground(TangoColors.BUTTER_1);
+        panel.add(createExampleButton("Curriculum course timetabling", "(ITC2007 track3)", new Runnable() {
+            public void run() {
                 new CurriculumCourseApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track1)") {
-            public void actionPerformed(ActionEvent e) {
-                new ExaminationApp().init(false);
+        panel.add(createExampleButton("Machine reassignment", "(ROADEF 2012)", new Runnable() {
+            public void run() {
+                new MachineReassignmentApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Patient admission scheduling (hospital bed planning)") {
-            public void actionPerformed(ActionEvent e) {
+        panel.add(createExampleButton("Patient admission scheduling", "Hospital bed planning", new Runnable() {
+            public void run() {
                 new PatientAdmissionScheduleApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Nurse rostering (INRC2010)") {
-            public void actionPerformed(ActionEvent e) {
+        panel.add(createExampleButton("Nurse rostering", "(INRC2010)", new Runnable() {
+            public void run() {
                 new NurseRosteringApp().init(false);
             }
         }));
-        return contentPane;
+        return panel;
+    }
+
+    private JPanel createDifficultExamplesPanel() {
+        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
+        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.setBackground(TangoColors.SCARLET_1);
+        panel.add(createExampleButton("Traveling tournament problem", "(TTP)", new Runnable() {
+            public void run() {
+                new SmartTravelingTournamentApp().init(false);
+            }
+        }));
+        panel.add(createExampleButton("Examination timetabling", "(ITC2007 track1)", new Runnable() {
+            public void run() {
+                new ExaminationApp().init(false);
+            }
+        }));
+        // TODO TrainDesign is still in working progress
+//        contentPane.add(createExampleButton("Train design", "(RAS2011)", new Runnable() {
+//            public void run() {
+//                new TrainDesignApp().init(false);
+//            }
+//        }));
+        return panel;
+    }
+    
+    private JButton createExampleButton(final String title, final String description, final Runnable runnable) {
+        JButton button = new JButton(new AbstractAction(title) {
+            public void actionPerformed(ActionEvent e) {
+                runnable.run();
+            }
+        });
+        button.addMouseListener(new MouseAdapter() {
+            
+            public void mouseEntered(MouseEvent e) {
+                descriptionTextArea.setText(description);
+            }
+            
+            public void mouseExited(MouseEvent e) {
+                descriptionTextArea.setText("");
+            }
+            
+        });
+        return button;
+    }
+
+    private JPanel createDescriptionPanel() {
+        JPanel descriptionPanel = new JPanel(new BorderLayout());
+        descriptionPanel.add(new JLabel("Description"), BorderLayout.NORTH);
+        descriptionTextArea = new JTextArea(8, 80);
+        descriptionTextArea.setEditable(false);
+        descriptionPanel.add(new JScrollPane(descriptionTextArea,
+                JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+        return descriptionPanel;
     }
 
 }
