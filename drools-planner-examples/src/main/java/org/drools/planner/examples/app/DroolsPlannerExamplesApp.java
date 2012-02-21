@@ -64,6 +64,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
 
     private Container createContentPane() {
         JPanel contentPane = new JPanel(new BorderLayout());
+        contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         JLabel titleLabel = new JLabel("Which example do you want to see?", JLabel.CENTER);
         titleLabel.setFont(titleLabel.getFont().deriveFont(20.0f));
         contentPane.add(titleLabel, BorderLayout.NORTH);
@@ -113,25 +114,25 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createToyExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel.setBackground(TangoColors.CHAMELEON_1);
-        panel.add(createExampleButton("N queens", "",
+        panel.add(createExampleButton("N queens", "No 2 queens can attack each other.",
                 "/org/drools/planner/examples/nqueens/swingui/queenImage.png",
                 new Runnable() {
             public void run() {
                 new NQueensApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Cloud balancing", "", null, new Runnable() {
+        panel.add(createExampleButton("Cloud balancing", "Assign processes to servers.", null, new Runnable() {
             public void run() {
                 new CloudBalancingApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Miss Manners 2009", "", null, new Runnable() {
+        panel.add(createExampleButton("Miss Manners 2009", "Assign guests to tables.", null, new Runnable() {
             public void run() {
                 new Manners2009App().init(false);
             }
         }));
-        panel.add(createExampleButton("Traveling salesman problem", "(TSP)", null, new Runnable() {
+        panel.add(createExampleButton("Traveling salesman problem", "Find the shortest route to visit all cities.",
+                null, new Runnable() {
             public void run() {
                 new TspApp().init(false);
             }
@@ -142,7 +143,6 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createRealExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel.setBackground(TangoColors.BUTTER_1);
         panel.add(createExampleButton("Curriculum course timetabling", "(ITC2007 track3)", null, new Runnable() {
             public void run() {
                 new CurriculumCourseApp().init(false);
@@ -169,7 +169,6 @@ public class DroolsPlannerExamplesApp extends JFrame {
     private JPanel createDifficultExamplesPanel() {
         JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel.setBackground(TangoColors.SCARLET_1);
         panel.add(createExampleButton("Traveling tournament problem", "(TTP)", null, new Runnable() {
             public void run() {
                 new SmartTravelingTournamentApp().init(false);
