@@ -148,6 +148,7 @@ public class CloudComputerPanel extends JPanel {
         detailsButton.setEnabled(false);
         add(detailsButton);
     }
+
     public void addCloudProcess(CloudProcess cloudProcess) {
         cloudProcessList.add(cloudProcess);
     }
