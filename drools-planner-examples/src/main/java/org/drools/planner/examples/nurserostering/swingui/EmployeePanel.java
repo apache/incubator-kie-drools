@@ -120,8 +120,7 @@ public class EmployeePanel extends JPanel {
         shiftDateListPanel = new JPanel(new GridLayout(1, 0));
         shiftDatePanelMap = new LinkedHashMap<ShiftDate, JPanel>(shiftDateList.size());
         for (ShiftDate shiftDate : shiftDateList) {
-            JPanel shiftDatePanel = new JPanel();
-            shiftDatePanel.setLayout(new BoxLayout(shiftDatePanel, BoxLayout.X_AXIS));
+            JPanel shiftDatePanel = new JPanel(new GridLayout(1, 0));
             if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
                 shiftDatePanel.setBackground(TangoColors.ALUMINIUM_2);
             }
