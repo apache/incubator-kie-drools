@@ -46,6 +46,9 @@ import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 
 public class EmployeePanel extends JPanel {
 
+    public static final int WEST_HEADER_WIDTH = 150;
+    public static final int EAST_HEADER_WIDTH = 130;
+
     private final NurseRosteringPanel nurseRosteringPanel;
     private List<ShiftDate> shiftDateList;
     private List<Shift> shiftList;
@@ -91,7 +94,7 @@ public class EmployeePanel extends JPanel {
 
     private void createUI() {
         JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
-        labelAndDeletePanel.setPreferredSize(new Dimension(150, 20));
+        labelAndDeletePanel.setPreferredSize(new Dimension(WEST_HEADER_WIDTH, 20));
         employeeLabel = new JLabel(getEmployeeLabel());
         employeeLabel.setEnabled(false);
         labelAndDeletePanel.add(employeeLabel, BorderLayout.CENTER);
@@ -106,7 +109,7 @@ public class EmployeePanel extends JPanel {
         add(labelAndDeletePanel, BorderLayout.WEST);
         resetShiftListPanel();
         numberOfShiftAssignmentsLabel = new JLabel("0 assignments", JLabel.RIGHT);
-        numberOfShiftAssignmentsLabel.setPreferredSize(new Dimension(130, 20));
+        numberOfShiftAssignmentsLabel.setPreferredSize(new Dimension(EAST_HEADER_WIDTH, 20));
         numberOfShiftAssignmentsLabel.setEnabled(false);
         add(numberOfShiftAssignmentsLabel, BorderLayout.EAST);
     }
@@ -128,7 +131,16 @@ public class EmployeePanel extends JPanel {
                     BorderFactory.createLineBorder(TangoColors.ALUMINIUM_6),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
             shiftDatePanelMap.put(shiftDate, shiftDatePanel);
-            shiftDateListPanel.add(shiftDatePanel);
+            if (employee == null) {
+                // TODO HACK should be in NurseRosterPanel.createHeaderPanel
+                JPanel wrappingShiftDatePanel = new JPanel(new BorderLayout());
+                JLabel shiftDateLabel = new JLabel(shiftDate.getLabel(), JLabel.CENTER);
+                wrappingShiftDatePanel.add(shiftDateLabel, BorderLayout.NORTH);
+                wrappingShiftDatePanel.add(shiftDatePanel, BorderLayout.CENTER);
+                shiftDateListPanel.add(wrappingShiftDatePanel);
+            } else {
+                shiftDateListPanel.add(shiftDatePanel);
+            }
         }
         shiftPanelMap = new LinkedHashMap<Shift, JPanel>(shiftList.size());
         for (Shift shift : shiftList) {

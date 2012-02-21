@@ -46,8 +46,6 @@ import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove
 
 public class NurseRosteringPanel extends SolutionPanel {
 
-    public static final Dimension SHIFT_DIMENSION = new Dimension(20, 20);
-
     private JPanel employeeListPanel;
 
     private EmployeePanel unassignedPanel;
@@ -58,7 +56,7 @@ public class NurseRosteringPanel extends SolutionPanel {
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
         createEmployeeListPanel();
-        JPanel headerPanel = new JPanel();
+        JPanel headerPanel = createHeaderPanel();
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(headerPanel).addComponent(employeeListPanel));
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -66,6 +64,11 @@ public class NurseRosteringPanel extends SolutionPanel {
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(employeeListPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE));
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel();
+        return headerPanel;
     }
 
     private void createEmployeeListPanel() {
