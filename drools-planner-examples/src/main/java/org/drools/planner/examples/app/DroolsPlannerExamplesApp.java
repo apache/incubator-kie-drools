@@ -91,18 +91,22 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 .addComponent(realExamplesLabel).addComponent(realExamplesScrollPane)
                 .addComponent(difficultExamplesLabel).addComponent(difficultExamplesScrollPane));
         layout.setVerticalGroup(layout.createSequentialGroup()
+                .addGap(10)
                 .addComponent(toyExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(toyExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE)
+                .addGap(10)
                 .addComponent(realExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(realExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE)
+                .addGap(10)
                 .addComponent(difficultExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                         GroupLayout.PREFERRED_SIZE)
                 .addComponent(difficultExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE));
+                        GroupLayout.PREFERRED_SIZE)
+                .addGap(10));
         return examplesPanel;
     }
 
