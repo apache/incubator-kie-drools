@@ -22,8 +22,17 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("MrResource")
 public class MrResource extends AbstractPersistable {
 
+    private int index;
     private boolean transientlyConsumed;
     private int loadCostWeight;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
 
     public boolean isTransientlyConsumed() {
         return transientlyConsumed;

@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.machinereassignment.domain;
 
+import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -27,7 +28,8 @@ public class MrMachine extends AbstractPersistable {
     private MrNeighborhood neighborhood;
     private MrLocation location;
 
-    private Map<MrResource, MrMachineCapacity> machineCapacityMap;
+    // Order is equal to resourceList so resource.getIndex() can be used
+    private List<MrMachineCapacity> machineCapacityList;
     private Map<MrMachine, MrMachineMoveCost> machineMoveCostMap;
 
     public MrNeighborhood getNeighborhood() {
@@ -46,16 +48,16 @@ public class MrMachine extends AbstractPersistable {
         this.location = location;
     }
 
-    public Map<MrResource, MrMachineCapacity> getMachineCapacityMap() {
-        return machineCapacityMap;
+    public List<MrMachineCapacity> getMachineCapacityList() {
+        return machineCapacityList;
     }
 
-    public void setMachineCapacityMap(Map<MrResource, MrMachineCapacity> machineCapacityMap) {
-        this.machineCapacityMap = machineCapacityMap;
+    public void setMachineCapacityList(List<MrMachineCapacity> machineCapacityList) {
+        this.machineCapacityList = machineCapacityList;
     }
 
     public MrMachineCapacity getMachineCapacity(MrResource resource) {
-        return machineCapacityMap.get(resource);
+        return machineCapacityList.get(resource.getIndex());
     }
 
     public Map<MrMachine, MrMachineMoveCost> getMachineMoveCostMap() {

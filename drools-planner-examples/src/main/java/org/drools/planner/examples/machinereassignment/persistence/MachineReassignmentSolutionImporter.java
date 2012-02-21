@@ -111,6 +111,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 String[] lineTokens = splitBySpace(line, 2);
                 MrResource resource = new MrResource();
                 resource.setId(resourceId);
+                resource.setIndex(i);
                 resource.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
                 resource.setLoadCostWeight(Integer.parseInt(lineTokens[1]));
                 resourceList.add(resource);
@@ -161,8 +162,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     idToLocationMap.put(locationId, location);
                 }
                 machine.setLocation(location);
-                Map<MrResource, MrMachineCapacity> machineCapacityMap
-                        = new LinkedHashMap<MrResource, MrMachineCapacity>(resourceListSize);
+                List<MrMachineCapacity> machineCapacityListOfMachine
+                        = new ArrayList<MrMachineCapacity>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrMachineCapacity machineCapacity = new MrMachineCapacity();
                     machineCapacity.setId(machineCapacityId);
@@ -171,10 +172,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
                     machineCapacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
                     machineCapacityList.add(machineCapacity);
-                    machineCapacityMap.put(resourceList.get(j), machineCapacity);
+                    machineCapacityListOfMachine.add(machineCapacity);
                     machineCapacityId++;
                 }
-                machine.setMachineCapacityMap(machineCapacityMap);
+                machine.setMachineCapacityList(machineCapacityListOfMachine);
                 Map<MrMachine, MrMachineMoveCost> machineMoveCostMap
                         = new LinkedHashMap<MrMachine, MrMachineMoveCost>(machineListSize);
                 for (int j = 0; j < machineListSize; j++) {
@@ -244,7 +245,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             processListSize = readIntegerValue();
             processList = new ArrayList<MrProcess>(processListSize);
             long processId = 0L;
-            List<MrProcessRequirement> processRequirementList = new ArrayList<MrProcessRequirement>(processListSize * resourceListSize);
             long processRequirementId = 0L;
             for (int i = 0; i < processListSize; i++) {
                 String line = readStringValue();
@@ -258,8 +258,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 }
                 MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
-                Map<MrResource, MrProcessRequirement> processRequirementMap
-                        = new LinkedHashMap<MrResource, MrProcessRequirement>(resourceListSize);
+                List<MrProcessRequirement> processRequirementList
+                        = new ArrayList<MrProcessRequirement>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrProcessRequirement processRequirement = new MrProcessRequirement();
                     processRequirement.setId(processRequirementId);
@@ -267,16 +267,14 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     processRequirement.setResource(resourceList.get(j));
                     processRequirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
                     processRequirementList.add(processRequirement);
-                    processRequirementMap.put(resourceList.get(j), processRequirement);
                     processRequirementId++;
                 }
-                process.setProcessRequirementMap(processRequirementMap);
+                process.setProcessRequirementList(processRequirementList);
                 process.setMoveCost(Integer.parseInt(lineTokens[1 + resourceListSize]));
                 processList.add(process);
                 processId++;
             }
             machineReassignment.setProcessList(processList);
-            machineReassignment.setProcessRequirementList(processRequirementList);
         }
 
         private void readBalancePenaltyList() throws IOException {
