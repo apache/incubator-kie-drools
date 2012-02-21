@@ -35,6 +35,7 @@ import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
@@ -742,7 +743,17 @@ public class KnowledgeAgentImpl
             KnowledgePackageImp kpkg = null;
             try {
                 is = resource.getInputStream();
-                Object object = DroolsStreamUtils.streamIn( is );
+                
+                ClassLoader classLoader = null;
+                if ( this.isUseKBaseClassLoaderForCompiling() ) {
+                    classLoader = ((InternalRuleBase)((KnowledgeBaseImpl)this.kbase).ruleBase).getRootClassLoader();
+                }else if ( this.builderConfiguration != null ) {
+                    this.listener.warning("Even if a custom KnowledgeBuilderConfiguration was provided, "
+                            + " the Knowledge Agent will not use any specific classloader while deserializing packages."
+                            + " Expect ClassNotFoundExceptions.");
+                } 
+                
+                Object object = DroolsStreamUtils.streamIn( is, classLoader );
                 if ( object instanceof KnowledgePackageImp ) {
                     kpkg = ((KnowledgePackageImp) object);
                 } else {
