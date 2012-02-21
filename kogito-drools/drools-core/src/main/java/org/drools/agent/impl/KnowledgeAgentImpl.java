@@ -35,7 +35,6 @@ import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
 import org.drools.agent.KnowledgeAgent;
