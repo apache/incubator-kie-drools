@@ -63,4 +63,12 @@ public class MrProcess extends AbstractPersistable {
         return processRequirementList.get(resource.getIndex()).getUsage();
     }
 
+    public int getUsageMultiplicand() {
+        int multiplicand = 1;
+        for (MrProcessRequirement processRequirement : processRequirementList) {
+            multiplicand *= processRequirement.getUsage();
+        }
+        return multiplicand;
+    }
+
 }

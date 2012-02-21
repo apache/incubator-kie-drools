@@ -25,8 +25,9 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrProcessAssignmentDifficultyComparator;
 
-@PlanningEntity() // TODO difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
+@PlanningEntity(difficultyComparatorClass = MrProcessAssignmentDifficultyComparator.class)
 @XStreamAlias("MrProcessAssignment")
 public class MrProcessAssignment extends AbstractPersistable {
 
@@ -141,5 +142,5 @@ public class MrProcessAssignment extends AbstractPersistable {
     public String toString() {
         return process + " @ " + machine;
     }
-    
+
 }
