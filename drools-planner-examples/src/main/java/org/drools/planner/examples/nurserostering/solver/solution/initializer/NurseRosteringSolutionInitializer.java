@@ -101,6 +101,7 @@ public class NurseRosteringSolutionInitializer implements CustomSolverPhaseComma
                 ShiftAssignment shiftAssignment = new ShiftAssignment();
                 shiftAssignment.setId((long) assignmentId);
                 shiftAssignment.setShift(shift);
+                shiftAssignment.setIndexInShift(i);
                 shiftAssignmentList.add(shiftAssignment);
                 assignmentId++;
             }

@@ -1007,6 +1007,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                     shiftAssignment.setId(id);
                     id++;
                     shiftAssignment.setShift(shift);
+                    shiftAssignment.setIndexInShift(i);
                     // Notice that we leave the PlanningVariable properties on null
                     shiftAssignmentList.add(shiftAssignment);
                 }

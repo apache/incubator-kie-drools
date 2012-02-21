@@ -33,6 +33,7 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrength
 public class ShiftAssignment extends AbstractPersistable {
 
     private Shift shift;
+    private int indexInShift;
 
     // Planning variables: changes during planning, between score calculations.
     private Employee employee;
@@ -43,6 +44,14 @@ public class ShiftAssignment extends AbstractPersistable {
 
     public void setShift(Shift shift) {
         this.shift = shift;
+    }
+
+    public int getIndexInShift() {
+        return indexInShift;
+    }
+
+    public void setIndexInShift(int indexInShift) {
+        this.indexInShift = indexInShift;
     }
 
     @PlanningVariable(strengthComparatorClass = EmployeeStrengthComparator.class)
@@ -99,6 +108,7 @@ public class ShiftAssignment extends AbstractPersistable {
         ShiftAssignment clone = new ShiftAssignment();
         clone.id = id;
         clone.shift = shift;
+        clone.indexInShift = indexInShift;
         clone.employee = employee;
         return clone;
     }
