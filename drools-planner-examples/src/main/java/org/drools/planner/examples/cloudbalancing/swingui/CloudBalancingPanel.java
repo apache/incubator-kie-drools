@@ -48,11 +48,6 @@ import org.drools.planner.examples.common.swingui.TangoColors;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
-    public static final Color[] PROCESS_COLORS = {
-            TangoColors.CHAMELEON_1, TangoColors.BUTTER_1, TangoColors.SKY_BLUE_1, TangoColors.SCARLET_1,
-            TangoColors.CHOCOLATE_1, TangoColors.ORANGE_1, TangoColors.PLUM_1
-    };
-
     private JPanel computersPanel;
 
     private CloudComputerPanel unassignedPanel;

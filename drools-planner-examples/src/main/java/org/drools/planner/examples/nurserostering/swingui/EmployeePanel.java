@@ -145,11 +145,14 @@ public class EmployeePanel extends JPanel {
     }
 
     public void addShiftAssignment(ShiftAssignment shiftAssignment) {
-        JPanel shiftPanel = shiftPanelMap.get(shiftAssignment.getShift());
+        Shift shift = shiftAssignment.getShift();
+        JPanel shiftPanel = shiftPanelMap.get(shift);
         JButton shiftAssignmentButton = new JButton(new ShiftAssignmentAction(shiftAssignment));
         shiftAssignmentButton.setMargin(new Insets(0, 0, 0, 0));
+        int colorIndex = shift.getShiftType().getIndex() % TangoColors.SEQUENCE_1.length;
+        shiftAssignmentButton.setBackground(TangoColors.SEQUENCE_1[colorIndex]);
         shiftAssignmentButton.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
-                + " on " + shiftAssignment.getShift().getLabel());
+                + " on " + shift.getLabel());
         shiftPanel.add(shiftAssignmentButton);
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);
     }

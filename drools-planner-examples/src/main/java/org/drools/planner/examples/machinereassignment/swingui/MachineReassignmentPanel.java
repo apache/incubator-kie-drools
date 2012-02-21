@@ -42,10 +42,6 @@ import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
 public class MachineReassignmentPanel extends SolutionPanel {
 
-    public static final Color[] PROCESS_COLORS = {
-            Color.GREEN, Color.YELLOW, Color.BLUE, Color.RED, Color.CYAN, Color.ORANGE, Color.MAGENTA
-    };
-
     private JPanel machineListPanel;
 
     private MrMachinePanel unassignedPanel;
