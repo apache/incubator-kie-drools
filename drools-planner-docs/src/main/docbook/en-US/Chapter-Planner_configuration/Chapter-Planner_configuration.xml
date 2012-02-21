@@ -1108,7 +1108,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
       <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
-      <programlisting>INFO  Sovling started: time spend (0), score (null), new best score (null), random seed (0).
+      <programlisting>INFO  Solving started: time spend (0), score (null), new best score (null), random seed (0).
 DEBUG     Step index (0), time spend (1), score (0), initialized planning entity (col2@row0).
 DEBUG     Step index (1), time spend (3), score (0), initialized planning entity (col1@row2).
 DEBUG     Step index (2), time spend (4), score (0), initialized planning entity (col3@row3).
