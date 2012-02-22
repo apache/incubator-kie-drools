@@ -40,7 +40,7 @@ public class ConsequenceGenerator {
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
-        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations);
+        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
 
         final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory).setInterfaces(Consequence.class, CompiledInvoker.class);
 

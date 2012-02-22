@@ -1,5 +1,6 @@
 package org.drools.rule.constraint;
 
+import org.drools.rule.Declaration;
 import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.rule.constraint.ConditionAnalyzer.*;
 import org.mvel2.asm.Label;
@@ -20,21 +21,37 @@ import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConditionEvaluatorJitter {
 
-    public static ConditionEvaluator jit(Condition condition, ClassLoader classLoader) {
+    public static ArrayConditionEvaluator jitEvaluator(Condition condition, Declaration[] declarations, ClassLoader classLoader) {
         ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
-                .setInterfaces(ConditionEvaluator.class)
+                .setInterfaces(ArrayConditionEvaluator.class)
                 .addDefaultConstructor();
 
-        generator.addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(boolean.class, Object.class, Map.class), new EvaluateMethodGenerator(condition));
+        generator.addMethod(ACC_PUBLIC,
+                            "evaluate",
+                            generator.methodDescr(boolean.class, Object.class, Object[].class),
+                            new ArrayEvaluateMethodGenerator(condition, declarations));
+
+        return generator.newInstance();
+    }
+
+    public static MapConditionEvaluator jitMapEvaluator(Condition condition, ClassLoader classLoader) {
+        ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
+                .setInterfaces(MapConditionEvaluator.class)
+                .addDefaultConstructor();
+
+        generator.addMethod(ACC_PUBLIC,
+                            "evaluate",
+                            generator.methodDescr(boolean.class, Object.class, Map.class),
+                            new MapEvaluateMethodGenerator(condition));
 
         return generator.newInstance();
     }
 
     private static String getUniqueClassName() {
-        return "ConditionEvaluator" + generateUUID();
+        return "ArrayConditionEvaluator" + generateUUID();
     }
 
-    private static class EvaluateMethodGenerator extends ClassGenerator.MethodBody {
+    private static abstract class EvaluateMethodGenerator extends ClassGenerator.MethodBody {
         private static final int LEFT_OPERAND = 3;
         private static final int RIGHT_OPERAND = 5;
 
@@ -358,15 +375,15 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitVariableExpression(VariableExpression exp, Class<?> requiredClass) {
-            mv.visitVarInsn(ALOAD, 2);
-            push(exp.variableName, String.class);
-            invokeInterface(Map.class, "get", Object.class, Object.class);
+            jitReadVariable(exp.variableName);
             if (exp.subsequentInvocations != null) {
                 jitEvaluatedExpression(exp.subsequentInvocations, false);
             } else if (requiredClass.isPrimitive()) {
                 castToPrimitive(requiredClass);
             }
         }
+
+        protected abstract void jitReadVariable(String variableName);
 
         private void jitAritmeticExpression(AritmeticExpression aritmeticExpression) {
             if (aritmeticExpression.isStringConcat()) {
@@ -503,10 +520,12 @@ public class ASMConditionEvaluatorJitter {
                 cast(method.getDeclaringClass());
             }
 
+            int argumentCounter = 0;
             for (Expression argument : invocation.getArguments()) {
                 jitExpression(argument);
+                Class<?> argumentClass = method.getParameterTypes()[argumentCounter++];
                 if (argument instanceof VariableExpression) {
-                    cast(((VariableExpression)argument).getVariableType());
+                    cast(argumentClass);
                 }
             }
 
@@ -854,4 +873,41 @@ public class ASMConditionEvaluatorJitter {
             return null;
         }
     }
+
+    private static class ArrayEvaluateMethodGenerator extends EvaluateMethodGenerator {
+        private final Declaration[] declarations;
+
+        public ArrayEvaluateMethodGenerator(Condition condition, Declaration[] declarations) {
+            super(condition);
+            this.declarations = declarations;
+        }
+
+        protected void jitReadVariable(String variableName) {
+            mv.visitVarInsn(ALOAD, 2);
+            mv.visitLdcInsn(getVariableIndex(variableName));
+            mv.visitInsn(AALOAD);
+        }
+
+        private int getVariableIndex(String variableName) {
+            for (int i = 0; i < declarations.length; i++) {
+                if (declarations[i].getBindingName().equals(variableName)) {
+                    return i;
+                }
+            }
+            throw new RuntimeException("Unknown variable name");
+        }
+    }
+
+    private static class MapEvaluateMethodGenerator extends EvaluateMethodGenerator {
+        public MapEvaluateMethodGenerator(Condition condition) {
+            super(condition);
+        }
+
+        protected void jitReadVariable(String variableName) {
+            mv.visitVarInsn(ALOAD, 2);
+            push(variableName, String.class);
+            invokeInterface(Map.class, "get", Object.class, Object.class);
+        }
+    }
+
 }
