@@ -65,7 +65,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.h2.Driver</property>
-            <property name="odaURL">jdbc:h2:tcp://localhost/~/test</property>
+            <property name="odaURL">jdbc:h2:tcp://localhost/runtime/jbpm</property>
             <property name="odaUser">sa</property>
         </oda-data-source>
     </data-sources>
