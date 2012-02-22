@@ -32,10 +32,7 @@ import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.world.impl.WorldImpl;
 import static org.junit.Assert.*;
-/**
- *
- * @author salaboy
- */
+
 public class ExecuteCommandDisconnectedTest {
 
     private StatefulKnowledgeSession ksession;
