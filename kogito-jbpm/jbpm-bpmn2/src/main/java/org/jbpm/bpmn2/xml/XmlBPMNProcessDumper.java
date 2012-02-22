@@ -144,7 +144,7 @@ public class XmlBPMNProcessDumper {
 	    // the process itself
 		xmlDump.append("  <process processType=\"Private\" isExecutable=\"true\" ");
         if (process.getId() == null || process.getId().trim().length() == 0) {
-        	((ProcessImpl) process).setId("com.sample.bpmm2");
+        	((ProcessImpl) process).setId("com.sample.bpmn2");
         }
         xmlDump.append("id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getId()) + "\" ");
         if (process.getName() != null) {
