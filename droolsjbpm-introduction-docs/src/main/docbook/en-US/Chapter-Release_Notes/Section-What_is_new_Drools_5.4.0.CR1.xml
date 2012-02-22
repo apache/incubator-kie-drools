@@ -125,5 +125,24 @@
       <para>This is a powerful enhancement and as such your feedback is critical to ensure we implement the feature as
       you'd like it to operate. Check it out, feedback your opinions and help guide the future work.</para>
     </section>
+
+    <section>
+      <title>Improved value editors for numerical types</title>
+
+      <para>Numerical "value editors" (i.e. the text boxes for numerical values) in the BRL, Rule Template, Test
+      Scenarios and Decision Table editors now support the types Byte, Short, Integer, Long, Double, Float, BigDecimal
+      and BigInteger (and their primitive counterparts) correctly.</para>
+
+      <figure>
+        <title>Example of using a BigDecimal</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 </section>
