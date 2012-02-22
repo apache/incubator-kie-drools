@@ -17,14 +17,11 @@
 package org.drools.command;
 
 import java.util.HashMap;
-import org.drools.command.Command;
-import org.drools.command.Context;
+
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
@@ -61,7 +58,15 @@ public class ExecuteCommand
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ExecutionResults kresults = ((StatefulKnowledgeSessionImpl)ksession).execute(context, this.command );
+        ExecutionResults kresults = null;
+        if( ksession instanceof StatefulKnowledgeSessionImpl ) { 
+            kresults = ((StatefulKnowledgeSessionImpl)ksession).execute(context, this.command );
+        }
+        else { 
+            // Graceful failure
+            kresults = ksession.execute(this.command);
+        }
+        
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
         }
