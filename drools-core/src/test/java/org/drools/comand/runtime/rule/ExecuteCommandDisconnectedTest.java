@@ -25,10 +25,13 @@ import org.drools.command.*;
 import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.DefaultCommandService;
 import org.drools.command.runtime.rule.InsertObjectCommand;
+import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.impl.ExecutionResultImpl;
-
+import org.drools.runtime.rule.impl.NativeQueryResults;
+import org.drools.world.impl.WorldImpl;
+import static org.junit.Assert.*;
 /**
  *
  * @author salaboy
@@ -87,11 +90,11 @@ public class ExecuteCommandDisconnectedTest {
                                                                                         null,null,"ksession","localResults");
         ExecutionResults results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
-        Assert.assertNotNull(results);
+        assertNotNull(results);
         
-        Assert.assertNotNull(results.getFactHandle("handle"));
+        assertNotNull(results.getFactHandle("handle"));
         
-        Assert.assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
         
         
         
@@ -103,11 +106,54 @@ public class ExecuteCommandDisconnectedTest {
                                                                                         null,null,"ksession","localResults");
         results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
         
-        Assert.assertNotNull(results);
+        assertNotNull(results);
         
-        Assert.assertNotNull(results.getFactHandle("handle"));
+        assertNotNull(results.getFactHandle("handle"));
         
-        Assert.assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+        
+    }
+    
+    @Test
+    public void executeCmdContextPropagationCastTest() {
+         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        ExecutionResultImpl localKresults = new ExecutionResultImpl();
+        WorldImpl worldImpl = new WorldImpl();
+        worldImpl.createContext("__TEMP__");
+        worldImpl.getContext("__TEMP__").set("__TEMP__", new ContextImpl("__TEMP__", null));
+        ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl);
+        kContext.set("localResults", localKresults);
+        kContext.set("ksession", ksession);
+
+        commandService = new DefaultCommandService(kContext);
+        List cmds = new ArrayList();
+        
+        QueryCommand queryCommand = new QueryCommand("out", "myQuery", new Object[]{});
+        SetVariableCommandFromCommand setVariableCmd = new SetVariableCommandFromCommand("__TEMP__", "query123", queryCommand);
+        cmds.add(setVariableCmd);
+        
+        BatchExecutionCommand batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
+        ExecuteCommand execCmd = new ExecuteCommand(batchCmd,true);
+        
+        
+        KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,
+                null, null, "ksession", "localResults");
+        ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
+
+        // I'm not expecting any results here
+        assertNotNull(results);
+
+        GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
+        resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
+                null, null, "ksession", "localResults");
+        NativeQueryResults queryResults = (NativeQueryResults) commandService.execute(resolveFromContextCommand);
+
+        assertNotNull(queryResults);
+
+        assertEquals(0, queryResults.size());
+        
         
     }
 }
