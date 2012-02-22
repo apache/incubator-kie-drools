@@ -1,8 +1,8 @@
 package org.drools.rule.constraint;
 
-import java.io.Serializable;
-import java.util.Map;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 
 public interface ConditionEvaluator {
-    boolean evaluate(Object object, Map<String, Object> vars);
+    boolean evaluate(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple);
 }

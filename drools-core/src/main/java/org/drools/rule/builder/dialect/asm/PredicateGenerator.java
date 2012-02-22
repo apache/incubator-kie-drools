@@ -38,7 +38,7 @@ public class PredicateGenerator {
         final String[] globalTypes = stub.getGlobalTypes();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
-        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(previousDeclarationTypes, previousDeclarations);
+        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(previousDeclarations);
 
         final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory)
                 .setInterfaces(PredicateExpression.class, CompiledInvoker.class);

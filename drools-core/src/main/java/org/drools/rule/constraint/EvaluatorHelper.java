@@ -1,12 +1,50 @@
 package org.drools.rule.constraint;
 
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.rule.Declaration;
 import org.mvel2.util.Soundex;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EvaluatorHelper {
 
     private EvaluatorHelper() { }
+
+    public static Map<String, Object> valuesAsMap(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, Declaration[] declarations) {
+        if (declarations.length == 0) {
+            return null;
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        for (Declaration declaration : declarations) {
+            if (leftTuple == null) {
+                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, object));
+            } else {
+                InternalFactHandle fact = leftTuple.get(declaration);
+                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, fact != null ? fact.getObject() : object));
+            }
+        }
+        return map;
+    }
+
+    public static Object[] valuesAsArray(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, Declaration[] declarations) {
+        if (declarations.length == 0) {
+            return null;
+        }
+        Object[] array = new Object[declarations.length];
+        for (int i = 0; i < declarations.length; i++) {
+            if (leftTuple == null) {
+                array[i] = declarations[i].getExtractor().getValue(workingMemory, object);
+            } else {
+                InternalFactHandle fact = leftTuple.get(declarations[i]);
+                array[i] = declarations[i].getExtractor().getValue(workingMemory, fact != null ? fact.getObject() : object);
+            }
+        }
+        return array;
+    }
 
     public static int arrayLenght(Object array) {
         if (array instanceof Object[]) {

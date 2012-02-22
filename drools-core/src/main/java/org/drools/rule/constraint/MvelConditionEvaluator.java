@@ -17,42 +17,49 @@ import org.mvel2.util.ASTLinkedList;
 
 import java.util.Map;
 
-public class MvelConditionEvaluator implements ConditionEvaluator {
+import static org.drools.rule.constraint.EvaluatorHelper.valuesAsMap;
 
+public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
+
+    private final Declaration[] declarations;
     private ExecutableStatement executableStatement;
     private ParserContext parserContext;
     private MVELCompilationUnit compilationUnit;
 
     private boolean evaluated = false;
 
-    private Object lastEvaluatedObject;
-    private Map<String, Object> lastEvaluatedVars;
-
-    MvelConditionEvaluator(ParserConfiguration configuration, String expression) {
+    MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations) {
+        this.declarations = declarations;
         this.parserContext = new ParserContext(configuration);
         executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, parserContext);
     }
 
-    MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement) {
+    MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement, Declaration[] declarations) {
+        this.declarations = declarations;
         this.compilationUnit = compilationUnit;
         this.parserContext = parserContext;
         this.executableStatement = executableStatement;
     }
 
     public boolean evaluate(Object object, Map<String, Object> vars) {
-        if (!evaluated) {
-            lastEvaluatedObject = object;
-            lastEvaluatedVars = vars;
-        }
         return evaluate(executableStatement, object, vars);
     }
 
-    boolean evaluateDynamic(Object object, InternalWorkingMemory workingMemory, LeftTuple tuple) {
+    public boolean evaluate(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+        return evaluate(executableStatement, object, workingMemory, leftTuple);
+    }
+
+    public boolean evaluate(ExecutableStatement statement, Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+        if (compilationUnit == null) {
+            Map<String, Object> vars = valuesAsMap(object, workingMemory, leftTuple, declarations);
+            return evaluate(statement, object, vars);
+        }
+
         VariableResolverFactory factory = compilationUnit.createFactory();
         compilationUnit.updateFactory( null, null, object,
-                                       tuple, null, workingMemory,
-                                       workingMemory.getGlobalResolver(),
-                                       factory );
+                leftTuple, null, workingMemory,
+                workingMemory.getGlobalResolver(),
+                factory );
 
         org.drools.rule.Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -60,7 +67,7 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return (Boolean) MVEL.executeExpression( executableStatement, object, factory );
+        return (Boolean) MVEL.executeExpression( statement, object, factory );
     }
 
     private boolean evaluate(ExecutableStatement statement, Object object, Map<String, Object> vars) {
@@ -68,48 +75,53 @@ public class MvelConditionEvaluator implements ConditionEvaluator {
     }
 
     ConditionAnalyzer.Condition getAnalyzedCondition() {
-        return getAnalyzedCondition(lastEvaluatedObject, lastEvaluatedVars);
+        return new ConditionAnalyzer(executableStatement, declarations).analyzeCondition();
     }
 
-    ConditionAnalyzer.Condition getAnalyzedCondition(Object object, Map<String, Object> vars) {
-        ensureCompleteEvaluation(object, vars);
-        return new ConditionAnalyzer(executableStatement, vars).analyzeCondition();
+    ConditionAnalyzer.Condition getAnalyzedCondition(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+        ensureCompleteEvaluation(object, workingMemory, leftTuple);
+        return new ConditionAnalyzer(executableStatement, declarations).analyzeCondition();
     }
 
-    private void ensureCompleteEvaluation(Object object, Map<String, Object> vars) {
+    private void ensureCompleteEvaluation(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         if (!evaluated) {
             ASTNode rootNode = getRootNode();
             if (rootNode != null) {
-                ensureCompleteEvaluation(rootNode, object, vars);
+                ensureCompleteEvaluation(rootNode, object, workingMemory, leftTuple);
             }
             evaluated = true;
-            lastEvaluatedObject = null;
-            lastEvaluatedVars = null;
         }
     }
 
-    private void ensureCompleteEvaluation(ASTNode node, Object object, Map<String, Object> vars) {
+    private void ensureCompleteEvaluation(ASTNode node, Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         node = unwrapNegation(node);
+        if (node == null) {
+            return;
+        }
         node = unwrapSubstatement(node);
         if (!(node instanceof And || node instanceof Or)) {
             return;
         }
-        ensureBranchEvaluation(object, vars, ((BooleanNode)node).getLeft());
-        ensureBranchEvaluation(object, vars, ((BooleanNode)node).getRight());
+        ensureBranchEvaluation(object, workingMemory, leftTuple, ((BooleanNode)node).getLeft());
+        ensureBranchEvaluation(object, workingMemory, leftTuple, ((BooleanNode)node).getRight());
     }
 
-    private void ensureBranchEvaluation(Object object, Map<String, Object> vars, ASTNode node) {
+    private void ensureBranchEvaluation(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, ASTNode node) {
         if (!isEvaluated(node)) {
             ASTNode next = node.nextASTNode;
             node.nextASTNode = null;
-            evaluate(asCompiledExpression(node), object, vars);
+            evaluate(asCompiledExpression(node), object, workingMemory, leftTuple);
             node.nextASTNode = next;
         }
-        ensureCompleteEvaluation(node, object, vars);
+        ensureCompleteEvaluation(node, object, workingMemory, leftTuple);
     }
 
     private ASTNode unwrapNegation(ASTNode node) {
-        return node instanceof Negation ? ((ExecutableAccessor)((Negation)node).getStatement()).getNode() : node;
+        if (node instanceof Negation) {
+            ExecutableStatement statement = ((Negation)node).getStatement();
+            return statement instanceof ExecutableAccessor ? ((ExecutableAccessor)statement).getNode() : null;
+        }
+        return node;
     }
 
     private ASTNode unwrapSubstatement(ASTNode node) {

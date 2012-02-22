@@ -92,7 +92,6 @@ import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
@@ -669,7 +668,7 @@ public class PatternBuilder
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr);
             if (field != null) {
-                Constraint constraint = buildLiteralConstraint(context, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
+                Constraint constraint = buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
                 if (constraint != null) {
                     pattern.addConstraint(constraint);
                     return true;
@@ -822,7 +821,7 @@ public class PatternBuilder
             }
         }
 
-        pattern.addConstraint(buildVariableConstraint(context, expr, declarations, value1, operator, value2, extractor, restriction));
+        pattern.addConstraint(buildVariableConstraint(context, pattern, expr, declarations, value1, operator, value2, extractor, restriction));
         return true;
     }
 
@@ -1015,67 +1014,7 @@ public class PatternBuilder
                             final String expr,
                             final boolean isEvalExpression) {
 
-        Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr,
-                                                                   context,
-                                                                   true );
-        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
-        Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
-
-        for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
-            OperatorDescr op = entry.getValue();
-            String leftStr = op.getLeftString();
-            String rightStr = op.getRightString();
-
-            Declaration leftDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                    leftStr );
-            if ( leftDecl == null && "this".equals( leftStr ) ) {
-                leftDecl = this.createDeclarationObject( context,
-                                                         "this",
-                                                         pattern );
-
-            }
-            Declaration rightDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                           rightStr );
-            if ( rightDecl == null && "this".equals( rightStr ) ) {
-                rightDecl = this.createDeclarationObject( context,
-                                                          "this",
-                                                          pattern );
-
-            }
-
-            Target left = leftDecl != null && leftDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
-            Target right = rightDecl != null && rightDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
-
-            op.setLeftIsHandle( left == Target.HANDLE );
-            op.setRightIsHandle( right == Target.HANDLE );
-
-            Evaluator evaluator = getEvaluator( context,
-                                                predicateDescr,
-                                                ValueType.OBJECT_TYPE,
-                                                op.getOperator(),
-                                                false, // the rewrite takes care of negation
-                                                op.getParametersText(),
-                                                left,
-                                                right );
-            EvaluatorWrapper wrapper = new EvaluatorWrapper( evaluator,
-                                                             left == Target.HANDLE ? leftDecl : null,
-                                                             right == Target.HANDLE ? rightDecl : null );
-            operators.put( entry.getKey(),
-                           wrapper );
-        }
-
-        Class< ? > thisClass = null;
-        if ( pattern.getObjectType() instanceof ClassObjectType ) {
-            thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-        }
-
-        final AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                predicateDescr,
-                                                                                predicateDescr.getContent(),
-                                                                                new BoundIdentifiers( declarations,
-                                                                                                      globals,
-                                                                                                      operators,
-                                                                                                      thisClass ) );
+        AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, aliases);
 
         if ( analysis == null ) {
             // something bad happened
@@ -1084,8 +1023,8 @@ public class PatternBuilder
 
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
-        final List tupleDeclarations = new ArrayList();
-        final List factDeclarations = new ArrayList();
+        final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
+        final List<Declaration> factDeclarations = new ArrayList<Declaration>();
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                                       id );
@@ -1134,14 +1073,10 @@ public class PatternBuilder
             pattern.addConstraint( predicateConstraint );
         } else {
             MVELCompilationUnit compilationUnit = ConstraintBuilder.buildCompilationUnit( context,
-                                                                                          usedIdentifiers,
                                                                                           previousDeclarations,
                                                                                           localDeclarations,
                                                                                           predicateDescr,
                                                                                           analysis );
-
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            ParserConfiguration configuration = data.getParserConfiguration();
 
             Declaration[] mvelDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length + requiredGlobals.length];
             int i = 0;
@@ -1159,6 +1094,76 @@ public class PatternBuilder
             Constraint constraint = new MvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic);
             pattern.addConstraint( constraint );
         }
+    }
+
+
+    public static AnalysisResult buildAnalysis(RuleBuildContext context, Pattern pattern, PredicateDescr predicateDescr, Map<String, OperatorDescr> aliases) {
+        Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr, context, true );
+        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+        Map<String, EvaluatorWrapper> operators = aliases == null ? new HashMap<String, EvaluatorWrapper>() : buildOperators(context, pattern, predicateDescr, aliases);
+
+        Class< ? > thisClass = null;
+        if ( pattern.getObjectType() instanceof ClassObjectType) {
+            thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
+        }
+
+        return context.getDialect().analyzeExpression( context,
+                                                        predicateDescr,
+                                                        predicateDescr.getContent(),
+                                                        new BoundIdentifiers( declarations,
+                                                                              globals,
+                                                                              operators,
+                                                                              thisClass ) );
+    }
+
+    private static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
+                                                         Pattern pattern,
+                                                         PredicateDescr predicateDescr,
+                                                         Map<String, OperatorDescr> aliases) {
+        Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
+        for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
+            OperatorDescr op = entry.getValue();
+            String leftStr = op.getLeftString();
+            String rightStr = op.getRightString();
+
+            Declaration leftDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                    leftStr );
+            if ( leftDecl == null && "this".equals( leftStr ) ) {
+                leftDecl = createDeclarationObject( context,
+                                                         "this",
+                                                         pattern );
+
+            }
+            Declaration rightDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                           rightStr );
+            if ( rightDecl == null && "this".equals( rightStr ) ) {
+                rightDecl = createDeclarationObject( context,
+                                                          "this",
+                                                          pattern );
+
+            }
+
+            Target left = leftDecl != null && leftDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
+            Target right = rightDecl != null && rightDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
+
+            op.setLeftIsHandle( left == Target.HANDLE );
+            op.setRightIsHandle( right == Target.HANDLE );
+
+            Evaluator evaluator = getEvaluator( context,
+                                                predicateDescr,
+                                                ValueType.OBJECT_TYPE,
+                                                op.getOperator(),
+                                                false, // the rewrite takes care of negation
+                                                op.getParametersText(),
+                                                left,
+                                                right );
+            EvaluatorWrapper wrapper = new EvaluatorWrapper( evaluator,
+                                                             left == Target.HANDLE ? leftDecl : null,
+                                                             right == Target.HANDLE ? rightDecl : null );
+            operators.put( entry.getKey(),
+                           wrapper );
+        }
+        return operators;
     }
 
     private static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
@@ -1191,7 +1196,7 @@ public class PatternBuilder
                                          final Pattern pattern,
                                          final Set<String> unboundIdentifiers,
                                          final BoundIdentifiers boundIdentifiers,
-                                         final List factDeclarations ) {
+                                         final List<Declaration> factDeclarations ) {
         for ( Iterator<String> it = unboundIdentifiers.iterator(); it.hasNext(); ) {
             String identifier = it.next();
             Declaration declaration = createDeclarationObject( context,
@@ -1224,7 +1229,7 @@ public class PatternBuilder
      * @param pattern
      * @return
      */
-    private Declaration createDeclarationObject( final RuleBuildContext context,
+    private static Declaration createDeclarationObject( final RuleBuildContext context,
                                                  final String identifier,
                                                  final Pattern pattern ) {
         return createDeclarationObject( context,
@@ -1234,7 +1239,7 @@ public class PatternBuilder
 
     }
 
-    private Declaration createDeclarationObject( final RuleBuildContext context,
+    private static Declaration createDeclarationObject( final RuleBuildContext context,
                                                  final String identifier,
                                                  final String expr,
                                                  final Pattern pattern ) {
@@ -1442,28 +1447,6 @@ public class PatternBuilder
                     }
                     return null;
                 }
-
-                //                final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
-                //                final List<Declaration> factDeclarations = new ArrayList<Declaration>();
-                //                for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-                //                    final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                //                                                                                              id );
-                //                    if ( decl.getPattern() == pattern ) {
-                //                        factDeclarations.add( decl );
-                //                    } else {
-                //                        tupleDeclarations.add( decl );
-                //                    }
-                //                }
-                //
-                //                final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-                //                final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
-                //                final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
-                //                final String[] requiredOperators = usedIdentifiers.getOperators().keySet().toArray( new String[usedIdentifiers.getOperators().size()] );
-                //
-                //                Arrays.sort( previousDeclarations,
-                //                             SortDeclarations.instance );
-                //                Arrays.sort( localDeclarations,
-                //                             SortDeclarations.instance );
 
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),

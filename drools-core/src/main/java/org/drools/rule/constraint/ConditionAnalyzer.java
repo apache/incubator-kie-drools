@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.drools.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.*;
@@ -25,6 +26,7 @@ import org.mvel2.optimizers.impl.refl.nodes.ArrayLength;
 import org.mvel2.optimizers.impl.refl.nodes.ConstructorAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.FieldAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.GetterAccessor;
+import org.mvel2.optimizers.impl.refl.nodes.IndexedVariableAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ListAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ListAccessorNest;
 import org.mvel2.optimizers.impl.refl.nodes.MapAccessor;
@@ -45,9 +47,10 @@ public class ConditionAnalyzer {
     private ASTNode node;
     private ExecutableLiteral executableLiteral;
     private ParserContext parserContext;
-    private Map<String, Object> vars;
+    private final Declaration[] declarations;
 
-    public ConditionAnalyzer(ExecutableStatement stmt) {
+    public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations) {
+        this.declarations = declarations;
         if (stmt instanceof ExecutableLiteral) {
             executableLiteral = (ExecutableLiteral)stmt;
         } else if (stmt instanceof CompiledExpression) {
@@ -56,11 +59,6 @@ public class ConditionAnalyzer {
         } else {
             node = ((ExecutableAccessor)stmt).getNode();
         }
-    }
-
-    public ConditionAnalyzer(ExecutableStatement stmt, Map<String, Object> vars) {
-        this(stmt);
-        this.vars = vars;
     }
 
     public Condition analyzeCondition() {
@@ -75,12 +73,16 @@ public class ConditionAnalyzer {
         boolean isNegated = false;
         if (node instanceof Negation) {
             isNegated = true;
-            node = ((ExecutableAccessor)((Negation)node).getStatement()).getNode();
+            ExecutableStatement statement = ((Negation)node).getStatement();
+            if (statement instanceof ExecutableLiteral) {
+                return new FixedValueCondition(!(Boolean)((ExecutableLiteral)statement).getLiteral());
+            }
+            node = ((ExecutableAccessor)statement).getNode();
         }
         node = analyzeSubstatement(node);
 
         if (node instanceof LiteralNode && node.getEgressType() == Boolean.class) {
-            boolean literalValue = (Boolean)((LiteralNode)node).getLiteralValue();
+            boolean literalValue = (Boolean)node.getLiteralValue();
             return new FixedValueCondition(isNegated ? !literalValue : literalValue);
         }
 
@@ -178,6 +180,10 @@ public class ConditionAnalyzer {
         }
 
         Accessor accessor = node.getAccessor();
+
+        if (accessor instanceof IndexedVariableAccessor) {
+            return new VariableExpression(node.getName(), analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()), node.getEgressType());
+        }
 
         if (accessor == null && node instanceof NewObjectNode) {
             accessor = ((NewObjectNode)node).getNewObjectOptimizer();
@@ -377,9 +383,20 @@ public class ConditionAnalyzer {
     }
 
     private Class<?> getVariableType(String name) {
-        if (vars == null) return Object.class;
-        Object value = vars.get(name);
-        return value == null ? Object.class : value.getClass();
+        for (Declaration declaration : declarations) {
+            if (declaration.getBindingName().equals(name)) {
+                Class<?> clazz = declaration.getValueType().getClassType();
+                // FIXME: cast to boxed type sholdn't be necessary
+                if (clazz == int.class) {
+                    return Integer.class;
+                }
+                if (clazz == long.class) {
+                    return Long.class;
+                }
+                return clazz;
+            }
+        }
+        return Object.class;
     }
 
     private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {

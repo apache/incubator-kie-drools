@@ -241,7 +241,7 @@ public class Pattern
             }
         }
 
-        if (combinableConstraints.size() < 2) {
+        if (true || combinableConstraints.size() < 2) {
             return;
         }
 
@@ -275,9 +275,9 @@ public class Pattern
             }
         }
 
-        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression.toString(), false,
+        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression.toString(),
                                                                declarations.toArray(new Declaration[declarations.size()]),
-                                                               null, null, false);
+                                                               null, false, null, null, false);
         addConstraint(combinedConstraint);
     }
 

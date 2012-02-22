@@ -45,21 +45,24 @@ public final class GeneratorHelper {
 
     // DeclarationMatcher
 
-    static List<DeclarationMatcher> matchDeclarationsToTuple(String[] declarationTypes, Declaration[] declarations) {
+    public static List<DeclarationMatcher> matchDeclarationsToTuple(Declaration[] declarations) {
         List<DeclarationMatcher> matchers = new ArrayList<DeclarationMatcher>();
-        for (int i = 0; i < declarations.length; i++)
-            matchers.add(new DeclarationMatcher(i, declarations[i].getPattern().getOffset()));
+        for (int i = 0; i < declarations.length; i++) {
+            matchers.add(new DeclarationMatcher(i, declarations[i]));
+        }
         Collections.sort(matchers);
         return matchers;
     }
 
-    static class DeclarationMatcher implements Comparable {
+    public static class DeclarationMatcher implements Comparable {
+        private final Declaration declaration;
         private final int originalIndex;
         private final int rootDistance;
 
-        public DeclarationMatcher(int originalIndex, int rootDistance) {
+        public DeclarationMatcher(int originalIndex, Declaration declaration) {
+            this.declaration = declaration;
             this.originalIndex = originalIndex;
-            this.rootDistance = rootDistance;
+            this.rootDistance = declaration.getPattern().getOffset();
         }
 
         public int getOriginalIndex() {
@@ -70,6 +73,10 @@ public final class GeneratorHelper {
             return rootDistance;
         }
 
+        public Declaration getDeclaration() {
+            return declaration;
+        }
+
         public int compareTo(Object obj) {
             return ((DeclarationMatcher)obj).rootDistance - rootDistance;
         }
@@ -78,9 +85,13 @@ public final class GeneratorHelper {
     static CompositeClassLoader getCompositeClassLoader(Object obj) {
         ClassLoader classLoader = obj.getClass().getClassLoader();
         while (true) {
-            if (classLoader instanceof CompositeClassLoader) return (CompositeClassLoader)classLoader;
+            if (classLoader instanceof CompositeClassLoader) {
+                return (CompositeClassLoader)classLoader;
+            }
             ClassLoader parentLoader = classLoader.getParent();
-            if (parentLoader == null || parentLoader == classLoader) break;
+            if (parentLoader == null || parentLoader == classLoader) {
+                break;
+            }
             classLoader = parentLoader;
         }
         return null;
@@ -88,7 +99,9 @@ public final class GeneratorHelper {
 
     static CompositeClassLoader getCompositeClassLoader(final Object obj, final WorkingMemory workingMemory) {
         CompositeClassLoader classLoader = getCompositeClassLoader(obj); // Try to use the same ClassLoader used for the stub
-        if (classLoader == null) classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+        if (classLoader == null) {
+            classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+        }
         return classLoader;
     }
 
@@ -123,7 +136,9 @@ public final class GeneratorHelper {
         TypeResolver typeResolver = pkg == null ? null : pkg.getTypeResolver();
         if (typeResolver == null) {
             Set<String> imports = new HashSet<String>();
-            for (String imp : stub.getPackageImports()) imports.add(imp);
+            for (String imp : stub.getPackageImports()) {
+                imports.add(imp);
+            }
             typeResolver = new ClassTypeResolver(imports, classLoader, stub.getPackageName());
         }
         return typeResolver;
@@ -207,7 +222,9 @@ public final class GeneratorHelper {
                 boolean isObject = readMethod.equals("getValue");
                 String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
+                if (isObject) {
+                    mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
+                }
                 objAstorePos += store(objAstorePos, declarationTypes[i]); // obj[i]
             }
             return declarationsParamsPos;
@@ -273,7 +290,9 @@ public final class GeneratorHelper {
             boolean isObject = readMethod.equals("getValue");
             String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
             mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-            if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
+            if (isObject) {
+                mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
+            }
             objAstorePos += store(objAstorePos, declarationType); // obj[i]
         }
     }

@@ -11,11 +11,8 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import org.drools.base.EvaluatorWrapper;
-import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
-import org.drools.base.ValueType;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.AnalysisResult;
@@ -70,9 +67,7 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
-import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.DeclarationScopeResolver;
-import org.drools.spi.Evaluator;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
 

@@ -4,19 +4,16 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
-import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
-import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
@@ -32,15 +29,13 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Restriction;
 import org.mvel2.DataConversion;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.compiler.CompiledExpression;
-import org.mvel2.compiler.ExecutableStatement;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.rule.builder.PatternBuilder.buildAnalysis;
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class ConstraintBuilder {
@@ -74,6 +69,7 @@ public class ConstraintBuilder {
     }
 
     public static Constraint buildVariableConstraint(RuleBuildContext context,
+                                                     Pattern pattern,
                                                      String expression,
                                                      Declaration[] declarations,
                                                      String leftValue,
@@ -88,16 +84,19 @@ public class ConstraintBuilder {
 
             boolean isUnification = restriction instanceof UnificationRestriction;
             if (isUnification) {
-                expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue, restriction);
+                expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
             }
             boolean isIndexable = operator.equals("==");
-            return new MvelConstraint(context.getPkg().getName(), expression, isIndexable, declarations, getIndexingDeclaration(restriction), extractor, isUnification);
+            MVELCompilationUnit compilationUnit = null;
+            // MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, expression, declarations);
+            return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, getIndexingDeclaration(restriction), extractor, isUnification);
         } else {
             return new VariableConstraint(extractor, restriction);
         }
     }
 
     public static Constraint buildLiteralConstraint(RuleBuildContext context,
+                                                    Pattern pattern,
                                                     ValueType vtype,
                                                     FieldValue field,
                                                     String expression,
@@ -108,20 +107,22 @@ public class ConstraintBuilder {
                                                     LiteralRestrictionDescr restrictionDescr) {
         if (USE_MVEL_EXPRESSION) {
             if (!isMvelOperator(operator)) {
-                Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, field, vtype);
+                Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
                 return new EvaluatorConstraint(field, evaluator, extractor);
             }
 
             String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
             boolean isIndexable = operator.equals("==");
-            return new MvelConstraint(context.getPkg().getName(), mvelExpr, isIndexable);
+            MVELCompilationUnit compilationUnit = null;
+            // MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, null);
+            return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
             return restriction != null ? new LiteralConstraint(extractor, restriction) : null;
         }
     }
 
-    private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue, Restriction restriction) {
+    private static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
         // resolve ambiguity between variable and bound value with the same name in unifications
         if (leftValue.equals(rightValue)) {
             rightValue = rightValue + "__";
@@ -172,14 +173,13 @@ public class ConstraintBuilder {
                                                               LiteralRestrictionDescr literalRestrictionDescr,
                                                               FieldValue field,
                                                               ValueType vtype) {
-        Evaluator evaluator = buildLiteralEvaluator(context, extractor, literalRestrictionDescr, field, vtype);
+        Evaluator evaluator = buildLiteralEvaluator(context, extractor, literalRestrictionDescr, vtype);
         return evaluator == null ? null : new LiteralRestriction(field, evaluator, extractor);
     }
 
     public static Evaluator buildLiteralEvaluator( RuleBuildContext context,
                                                    InternalReadAccessor extractor,
                                                    LiteralRestrictionDescr literalRestrictionDescr,
-                                                   FieldValue field,
                                                    ValueType vtype) {
         EvaluatorDefinition.Target right = getRightTarget( extractor );
         EvaluatorDefinition.Target left = EvaluatorDefinition.Target.FACT;
@@ -232,8 +232,19 @@ public class ConstraintBuilder {
         return evaluator;
     }
 
+    public static MVELCompilationUnit buildCompilationUnit(RuleBuildContext context, Pattern pattern, String expression, Declaration[] declarations) {
+        Dialect dialect = context.getDialect();
+        context.setDialect( context.getDialect( "mvel" ) );
+
+        PredicateDescr predicateDescr = new PredicateDescr( context.getRuleDescr().getResource(), expression );
+        AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, null);
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, declarations, null, predicateDescr, analysis);
+
+        context.setDialect(dialect);
+        return compilationUnit;
+    }
+
     public static MVELCompilationUnit buildCompilationUnit( final RuleBuildContext context,
-                                                            final BoundIdentifiers usedIdentifiers,
                                                             final Declaration[] previousDeclarations,
                                                             final Declaration[] localDeclarations,
                                                             final PredicateDescr predicateDescr,
@@ -261,14 +272,14 @@ public class ConstraintBuilder {
                         ((ClassObjectType) p.getObjectType()).getClassType() );
             }
 
-            unit = dialect.getMVELCompilationUnit(  (String) predicateDescr.getContent(),
-                                                                        analysis,
-                                                                        previousDeclarations,
-                                                                        localDeclarations,
-                                                                        null,
-                                                                        context,
-                                                                        "drools",
-                                                                        KnowledgeHelper.class);
+            unit = dialect.getMVELCompilationUnit( (String) predicateDescr.getContent(),
+                                                    analysis,
+                                                    previousDeclarations,
+                                                    localDeclarations,
+                                                    null,
+                                                    context,
+                                                    "drools",
+                                                    KnowledgeHelper.class );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
