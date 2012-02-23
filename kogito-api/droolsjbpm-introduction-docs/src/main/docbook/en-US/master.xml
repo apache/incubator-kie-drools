@@ -38,6 +38,4 @@
   <xi:include href="Chapter-Release_Notes/Chapter-ReleaseNotes.xml" />
   <xi:include href="Chapter-Compatibility/Chapter-Compatibility_matrix.xml" />
 
-  <index/>
-
 </book>
