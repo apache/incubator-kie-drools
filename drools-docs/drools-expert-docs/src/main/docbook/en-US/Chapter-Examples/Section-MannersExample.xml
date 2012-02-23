@@ -431,8 +431,7 @@ end</programlisting>
           <mediaobject>
 
             <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/make_path.png" format="PNG"
-                         scalefit="1" />
+        <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/make_path.png" format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>

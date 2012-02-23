@@ -21,7 +21,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_Guided.png" format="PNG" scalefit="2" />
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_Guided.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -33,7 +33,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_DSL.png" format="PNG" scalefit="2" />
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_DSL.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -105,7 +105,7 @@ then
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-ruleflow.png" format="PNG" scalefit="1" />
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-ruleflow.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -208,7 +208,7 @@ Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-website.png" format="PNG" scalefit="2" />
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-website.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>

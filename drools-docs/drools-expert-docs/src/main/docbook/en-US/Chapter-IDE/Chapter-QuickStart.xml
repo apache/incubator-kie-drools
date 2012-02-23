@@ -39,8 +39,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-IDE/all.png" format="PNG"
-                   scalefit="1" width=""></imagedata>
+        <imagedata fileref="images/Chapter-IDE/all.png" format="PNG" width=""></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -157,7 +156,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes.png"
-                     format="PNG" role="" scalefit="1" width=""></imagedata>
+                     format="PNG" role="" width=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -170,7 +169,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes-add.png"
-                     format="PNG" role="" scalefit="1"></imagedata>
+                     format="PNG" role=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -202,7 +201,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes-add2.png"
-                     format="PNG" role="" scalefit="1"></imagedata>
+                     format="PNG" role=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -217,7 +216,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes2.png"
-                     format="PNG" role="" scalefit="1" width=""></imagedata>
+                     format="PNG" role="" width=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -230,7 +229,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes3.png"
-                     format="PNG" role="" scalefit="1" width=""></imagedata>
+                     format="PNG" role="" width=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -262,7 +261,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes-newproject.png"
-                     format="PNG" role="" scalefit="1"></imagedata>
+                     format="PNG" role=""></imagedata>
         </imageobject>
       </mediaobject>
 
@@ -280,7 +279,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/drools-runtimes-project.png"
-                     format="PNG" role="" scalefit="1"></imagedata>
+                     format="PNG" role=""></imagedata>
         </imageobject>
       </mediaobject>
     </section>
@@ -301,7 +300,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/new_project1.png"
-                     format="PNG" scalefit="1"></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -320,7 +319,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-IDE/new_project2.png"
-                     format="PNG" scalefit="1"></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -362,7 +361,7 @@
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-IDE/wizards.png"
-                     format="PNG" scalefit="1"></imagedata>
+                     format="PNG"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>

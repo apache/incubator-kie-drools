@@ -16,7 +16,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Rule_Language/meta_data.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -28,7 +28,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Rule_Language/type_declaration.png"
-                   format="PNG" scalefit="1"></imagedata>
+                   format="PNG"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
