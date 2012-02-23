@@ -20,5 +20,7 @@ package org.drools.command;
 public interface World extends Context {
     public static final String        ROOT             = "ROOT";
     
+    public Context createContext(String identifier);   
+    
     public Context getContext(String identifier);   
 }

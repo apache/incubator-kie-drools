@@ -27,5 +27,5 @@ public interface Context {
     void set(String identifier,
              Object value);
 
-    void remove(String identifier);
+    Object remove(String identifier);
 }
