@@ -501,7 +501,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/declarative-model-annotations.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -513,7 +513,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/declarative-model-annotations-editor.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -534,7 +534,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/cep-guided-editor.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -560,7 +560,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-basic.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -579,7 +579,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/dtable-merged.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -598,7 +598,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/dtable-datatype-sorting.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -619,7 +619,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/dtable-scrolling.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -651,7 +651,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/negate-fact-pattern.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -681,7 +681,7 @@ end
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/negate-rule-option.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
 
@@ -689,7 +689,7 @@ end
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/negate-rule.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -751,7 +751,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/otherwise.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -778,7 +778,7 @@ end</programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/editspringcontextguvnor.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>

@@ -68,7 +68,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg" scale="80" scalefit="1"></imagedata>
+          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg" scale="80"></imagedata>
         </imageobject>
       </mediaobject>
     </section>
@@ -303,8 +303,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-1.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-1.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -314,8 +313,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-2.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-2.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -325,8 +323,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-3.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-3.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -336,8 +333,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-4.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-4.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -347,8 +343,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-5.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-5.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -358,8 +353,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-6.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-6.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -377,8 +371,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-column-formatting.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-column-formatting.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -398,7 +391,7 @@ f.newPath("init")
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-patterns.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -408,8 +401,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -429,7 +421,7 @@ f.newPath("init")
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-extended-entry.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -443,7 +435,7 @@ f.newPath("init")
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-limited-entry.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -460,8 +452,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding1.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding1.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -471,8 +462,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding2.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding2.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -509,8 +499,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems1.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems1.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -520,8 +509,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems2.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems2.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -531,8 +519,7 @@ f.newPath("init")
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems3.png" format="PNG"
-                       scalefit="0"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems3.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

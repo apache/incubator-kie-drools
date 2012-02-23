@@ -146,7 +146,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-xls-declare.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -291,7 +291,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-advanced-columns.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -309,7 +309,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-brl-condition.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -321,7 +321,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-brl-action.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -341,7 +341,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-brl-columns.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -363,7 +363,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/dtable-copy-paste-rows.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -387,7 +387,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/brl-remove-value-types.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -408,7 +408,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/NewChangeSet1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
