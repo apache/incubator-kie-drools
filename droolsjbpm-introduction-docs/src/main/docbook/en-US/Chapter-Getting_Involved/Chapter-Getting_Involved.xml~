@@ -9,20 +9,165 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Getting Involved</title>
 
-  <para>I've always stated that end business users struggle understanding the
-  differences between rules and processes, and more recently rules and event
-  processing. For them they have t</para>
+  <para>We are often asked "How do I get involved". Luckily the answer is
+  simple, just write some code and submit it :) There are no hoops you have to
+  jump through or secret handshakes. We have a very minimal "overhead" that we
+  do request to allow for scalable project development. Below we provide a
+  general overview of the tools and "workflow" we request, along with some
+  general advice.</para>
 
-  <para>Create a JIRA</para>
+  <para>If you contribute some good work, don't forget to blog about it
+  :)</para>
 
-  <para></para>
+  <section>
+    <title>Sign the Contributor Agreement</title>
 
-  <para> on Drools, and that some of it rubs off on you during your
-  adventures.</para>
+    <para>The only form you need to sign is the contributor agreement, which
+    is fully automated via the web. As the image below says "This establishes
+    the terms and conditions for your contributions and ensures that source
+    code can be licensed appropriately"</para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/Chapter-Welcome/mark.png"></imagedata>
-    </imageobject>
-  </mediaobject>
+    <para><link
+    xlink:href="https://cla.jboss.org/">https://cla.jboss.org/</link></para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/sign_contributor.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Sign up to JIRA</title>
+
+    <para>To be able to interact with the core development team you will need
+    to use JIRA, the issue tracker. This ensures that all requests are logged
+    and allocated to a release schedule and all discussions captured in one
+    place. Bug reports, bug fixes, feature requests and feature submitions
+    should all go here. General questions should be undertaken at the mailing
+    lists.</para>
+
+    <para>Minor code submissions, like format or documentation fixes do not
+    need an associated JIRA issue created.</para>
+
+    <para><link xlink:href="???">https://issues.jboss.org/browse/JBRULES
+    </link>(Drools)</para>
+
+    <para><link
+    xlink:href="https://issues.jboss.org/browse/JBPM">https://issues.jboss.org/browse/JBPM</link></para>
+
+    <para><link
+    xlink:href="https://issues.jboss.org/browse/GUVNOR">https://issues.jboss.org/browse/GUVNOR</link></para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/submit_jira.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Fork Github</title>
+
+    <para>With the contribute agreement signed and your requests submitted to
+    jira you should now be ready to code :) Create a github account and fork
+    any of the drools, jbpm or guvnor sub modules. The fork will create a copy
+    in your own github space which you can work on at your own pace. If you
+    make a mistake, don't worry blow it away and fork again. Note each github
+    repository provides you the clone (checkout) url, github will provide you
+    urls specific to your fork.</para>
+
+    <para><link
+    xlink:href="https://github.com/droolsjbpm">https://github.com/droolsjbpm</link></para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/fork_github.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Writing Tests</title>
+
+    <para>When writting tests, try and keep them minimal and self contained.
+    We prefer to keep the drl fragments within the test, as it makes for
+    quicker reviewing. If their are a large number of rules then using a
+    String is not practicalm so then by all means place them in separate drl
+    files instead to be loaded from the classpath. If you tests need to use a
+    model, please try to use those already existing for other unit tests; such
+    as Person, Cheese and Order. If no classes exist that have the fields you
+    need, try and update fields of existing classes before adding a new
+    class.</para>
+
+    <para>There are a vast array of tests to look over, MiscTest is a good
+    place to start.</para>
+
+    <para><link
+    xlink:href="https://github.com/droolsjbpm">https://github.com/droolsjbpm/drools/blob/master/drools-compiler/src/test/java/org/drools/integrationtests/MiscTest.java</link></para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/unit_test.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Commit with Correct Conventions</title>
+
+    <para>When you commit make sure you use the correct conventions. The
+    commit must start with the JIRA issue id, such as JBRULES-220. This
+    ensures the commits are cross referenced via JIRA, so we can see all
+    commits for a given issue in the same place. After the id the title of the
+    issue should come next. Then use a newline, indented with a dash, to
+    provide additional information related to this commmit. Use an additonal
+    new line and dash for each separate point you wish to make. You may add
+    additional JIRA cross references to the same commit, if it's
+    appropropriate. In general try to avoid combining unrelated issues in the
+    same commits.</para>
+
+    <para>Don't forget to rebase your local fork from the original master and
+    then push your commits back to your fork.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/jira_crossreferenced.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
+    <title>Submit Pull Requests</title>
+
+    <para>With your code rebased from original master and pushed to your
+    personal github area, you can now submit your work as a pull request. If
+    you look at the top of the page in github for your work their will be a
+    "Pull Request" button. Selecting this will then provide a gui to automate
+    the submission of your pull request.</para>
+
+    <para>The pull request then goes into a queue for everyone to see and
+    comment on. Below you can see a typical pull request. The pull requests
+    allow for discussions and it shows all associated commits and the diffs
+    for each commit. The discussions typically involve code reviews which
+    provide suggestions for improvements, and allows us to leave inline
+    comments on specific parts of the code. Don't be disheartened if we don't
+    merge straight away, it can often take several revisions before we accept
+    a pull request. Luckily github makes it very trivial to go back to your
+    code, do some more commits and then update your pull request to your
+    latest and greatest. </para>
+
+    <para>It can take time for us to get round to responding to pull requests,
+    so please be patient. Submitted tests that come with a fix will generally
+    be applied quite quickly, where as just tests will often way until we get
+    time to also submit that with a fix. Don't forget to rebase and resubmit
+    your request from time to time, otherwise over time it will have merge
+    conflicts and core developers will general ignore those.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/submit_pull_request.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
 </chapter>
