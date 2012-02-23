@@ -43,7 +43,7 @@
     <para>To be able to interact with the core development team you will need
     to use JIRA, the issue tracker. This ensures that all requests are logged
     and allocated to a release schedule and all discussions captured in one
-    place. Bug reports, bug fixes, feature requests and feature submitions
+    place. Bug reports, bug fixes, feature requests and feature submissions
     should all go here. General questions should be undertaken at the mailing
     lists.</para>
 
@@ -74,8 +74,8 @@
     any of the drools, jbpm or guvnor sub modules. The fork will create a copy
     in your own github space which you can work on at your own pace. If you
     make a mistake, don't worry blow it away and fork again. Note each github
-    repository provides you the clone (checkout) url, github will provide you
-    urls specific to your fork.</para>
+    repository provides you the clone (checkout) URL, github will provide you
+    URLs specific to your fork.</para>
 
     <para><link
     xlink:href="https://github.com/droolsjbpm">https://github.com/droolsjbpm</link></para>
@@ -90,15 +90,14 @@
   <section>
     <title>Writing Tests</title>
 
-    <para>When writting tests, try and keep them minimal and self contained.
-    We prefer to keep the drl fragments within the test, as it makes for
-    quicker reviewing. If their are a large number of rules then using a
-    String is not practicalm so then by all means place them in separate drl
-    files instead to be loaded from the classpath. If you tests need to use a
-    model, please try to use those already existing for other unit tests; such
-    as Person, Cheese and Order. If no classes exist that have the fields you
-    need, try and update fields of existing classes before adding a new
-    class.</para>
+    <para>When writing tests, try and keep them minimal and self contained. We
+    prefer to keep the drl fragments within the test, as it makes for quicker
+    reviewing. If their are a large number of rules then using a String is not
+    practical so then by all means place them in separate Del files instead to
+    be loaded from the classpath. If you tests need to use a model, please try
+    to use those already existing for other unit tests; such as Person, Cheese
+    and Order. If no classes exist that have the fields you need, try and
+    update fields of existing classes before adding a new class.</para>
 
     <para>There are a vast array of tests to look over, MiscTest is a good
     place to start.</para>
@@ -121,11 +120,11 @@
     ensures the commits are cross referenced via JIRA, so we can see all
     commits for a given issue in the same place. After the id the title of the
     issue should come next. Then use a newline, indented with a dash, to
-    provide additional information related to this commmit. Use an additonal
+    provide additional information related to this commit. Use an additional
     new line and dash for each separate point you wish to make. You may add
-    additional JIRA cross references to the same commit, if it's
-    appropropriate. In general try to avoid combining unrelated issues in the
-    same commits.</para>
+    additional JIRA cross references to the same commit, if it's appropriate.
+    In general try to avoid combining unrelated issues in the same
+    commits.</para>
 
     <para>Don't forget to rebase your local fork from the original master and
     then push your commits back to your fork.</para>
@@ -155,7 +154,7 @@
     merge straight away, it can often take several revisions before we accept
     a pull request. Luckily github makes it very trivial to go back to your
     code, do some more commits and then update your pull request to your
-    latest and greatest. </para>
+    latest and greatest.</para>
 
     <para>It can take time for us to get round to responding to pull requests,
     so please be patient. Submitted tests that come with a fix will generally
