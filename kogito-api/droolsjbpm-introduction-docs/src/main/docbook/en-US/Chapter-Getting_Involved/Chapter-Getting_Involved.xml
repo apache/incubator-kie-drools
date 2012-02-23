@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xml:id="gettinginvolved" xmlns="http://docbook.org/ns/docbook"
+         xml:base="../" xml:id="welcome" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -69,7 +69,7 @@
   <section>
     <title>Fork Github</title>
 
-    <para>With the contribute agreement signed and your requests submitted to
+    <para>With the contributor agreement signed and your requests submitted to
     jira you should now be ready to code :) Create a github account and fork
     any of the drools, jbpm or guvnor sub modules. The fork will create a copy
     in your own github space which you can work on at your own pace. If you
@@ -93,14 +93,14 @@
     <para>When writing tests, try and keep them minimal and self contained. We
     prefer to keep the drl fragments within the test, as it makes for quicker
     reviewing. If their are a large number of rules then using a String is not
-    practical so then by all means place them in separate Del files instead to
-    be loaded from the classpath. If you tests need to use a model, please try
-    to use those already existing for other unit tests; such as Person, Cheese
-    and Order. If no classes exist that have the fields you need, try and
-    update fields of existing classes before adding a new class.</para>
+    practical so then by all means place them in separate drl files instead to
+    be loaded from the classpath. If your tests need to use a model, please
+    try to use those that already exist for other unit tests; such as Person,
+    Cheese or Order. If no classes exist that have the fields you need, try
+    and update fields of existing classes before adding a new class.</para>
 
-    <para>There are a vast array of tests to look over, MiscTest is a good
-    place to start.</para>
+    <para>There are a vast numer of tests to look over to get an idea,
+    MiscTest is a good place to start.</para>
 
     <para><link
     xlink:href="https://github.com/droolsjbpm">https://github.com/droolsjbpm/drools/blob/master/drools-compiler/src/test/java/org/drools/integrationtests/MiscTest.java</link></para>
@@ -115,7 +115,7 @@
   <section>
     <title>Commit with Correct Conventions</title>
 
-    <para>When you commit make sure you use the correct conventions. The
+    <para>When you commit, make sure you use the correct conventions. The
     commit must start with the JIRA issue id, such as JBRULES-220. This
     ensures the commits are cross referenced via JIRA, so we can see all
     commits for a given issue in the same place. After the id the title of the
@@ -124,7 +124,7 @@
     new line and dash for each separate point you wish to make. You may add
     additional JIRA cross references to the same commit, if it's appropriate.
     In general try to avoid combining unrelated issues in the same
-    commits.</para>
+    commit.</para>
 
     <para>Don't forget to rebase your local fork from the original master and
     then push your commits back to your fork.</para>
@@ -141,19 +141,19 @@
 
     <para>With your code rebased from original master and pushed to your
     personal github area, you can now submit your work as a pull request. If
-    you look at the top of the page in github for your work their will be a
-    "Pull Request" button. Selecting this will then provide a gui to automate
-    the submission of your pull request.</para>
+    you look at the top of the page in github for your work area their will be
+    a "Pull Request" button. Selecting this will then provide a gui to
+    automate the submission of your pull request.</para>
 
     <para>The pull request then goes into a queue for everyone to see and
     comment on. Below you can see a typical pull request. The pull requests
     allow for discussions and it shows all associated commits and the diffs
     for each commit. The discussions typically involve code reviews which
-    provide suggestions for improvements, and allows us to leave inline
-    comments on specific parts of the code. Don't be disheartened if we don't
-    merge straight away, it can often take several revisions before we accept
-    a pull request. Luckily github makes it very trivial to go back to your
-    code, do some more commits and then update your pull request to your
+    provide helpful suggestions for improvements, and allows for us to leave
+    inline comments on specific parts of the code. Don't be disheartened if we
+    don't merge straight away, it can often take several revisions before we
+    accept a pull request. Luckily github makes it very trivial to go back to
+    your code, do some more commits and then update your pull request to your
     latest and greatest.</para>
 
     <para>It can take time for us to get round to responding to pull requests,
