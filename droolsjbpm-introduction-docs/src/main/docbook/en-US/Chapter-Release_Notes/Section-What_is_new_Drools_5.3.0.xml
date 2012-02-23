@@ -222,8 +222,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends1.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends1.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -233,8 +232,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends2.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends2.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -321,7 +319,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/asset-viewer.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/asset-viewer.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -371,7 +369,7 @@ end
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-predicate-value-list1.png"
-                           format="PNG" scalefit="0"></imagedata>
+                           format="PNG"></imagedata>
               </imageobject>
             </mediaobject>
           </figure>
@@ -382,7 +380,7 @@ end
             <mediaobject>
               <imageobject>
                 <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-predicate-value-list2.png"
-                           format="PNG" scalefit="0"></imagedata>
+                           format="PNG"></imagedata>
               </imageobject>
             </mediaobject>
           </figure>
@@ -416,7 +414,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard-invoke.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -428,7 +426,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -440,7 +438,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -452,7 +450,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard3.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -464,7 +462,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard4.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -476,7 +474,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard5.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -488,7 +486,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard6a.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -501,7 +499,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard6b.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -513,7 +511,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/wizard7.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -532,7 +530,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/asset-viewer2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -544,7 +542,7 @@ end
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/asset-viewer3.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

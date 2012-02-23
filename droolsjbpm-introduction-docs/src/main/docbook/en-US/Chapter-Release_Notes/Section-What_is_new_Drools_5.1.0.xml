@@ -686,7 +686,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/discussion1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -712,7 +712,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/inbox1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -762,7 +762,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/inbox2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -865,7 +865,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/from_builder.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -907,7 +907,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/fromcollect.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -923,7 +923,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/fromaccumulate.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -962,7 +962,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/ruletemplate1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -974,7 +974,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/ruletemplate2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -986,7 +986,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/ruletemplate3.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -998,7 +998,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/ruletemplate4.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1019,7 +1019,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/facttypes.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1031,7 +1031,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/workingsets1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1043,7 +1043,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/workingsets2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1055,7 +1055,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/workingsets3.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1067,7 +1067,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/workingsets4.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1091,7 +1091,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/factconstraints1.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1103,7 +1103,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/factconstraints2.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1115,7 +1115,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/factconstraints3.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1127,7 +1127,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/factconstraints4.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1139,7 +1139,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/factconstraints5.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1166,7 +1166,7 @@ etc </programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/patternordering1.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -1178,7 +1178,7 @@ etc </programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Release_Notes/patternordering2.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -1210,7 +1210,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/Group By.jpg"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -1222,7 +1222,7 @@ etc </programlisting>
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/SortBy.jpg"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>

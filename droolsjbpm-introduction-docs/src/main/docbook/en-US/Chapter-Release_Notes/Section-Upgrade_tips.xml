@@ -262,8 +262,7 @@ end
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Chapter-Release_Notes/ruleflowproperties.png" format="PNG"
-                     scalefit="1" />
+          <imagedata align="center" fileref="images/Chapter-Release_Notes/ruleflowproperties.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>

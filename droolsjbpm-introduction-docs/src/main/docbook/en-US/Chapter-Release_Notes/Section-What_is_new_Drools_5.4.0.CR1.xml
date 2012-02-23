@@ -64,7 +64,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-brl.png"
-                       format="PNG" scalefit="0"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -81,8 +81,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png" format="PNG"
-                       scalefit="0"></imagedata>
+                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -101,7 +100,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -111,8 +110,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-converted.png" format="PNG"
-                       scalefit="1"></imagedata>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-converted.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -139,7 +137,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
