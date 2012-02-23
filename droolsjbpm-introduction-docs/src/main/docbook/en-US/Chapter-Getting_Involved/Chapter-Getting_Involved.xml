@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xml:id="welcome" xmlns="http://docbook.org/ns/docbook"
+         xml:base="../" xml:id="gettingstarted" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -99,7 +99,7 @@
     Cheese or Order. If no classes exist that have the fields you need, try
     and update fields of existing classes before adding a new class.</para>
 
-    <para>There are a vast numer of tests to look over to get an idea,
+    <para>There are a vast number of tests to look over to get an idea,
     MiscTest is a good place to start.</para>
 
     <para><link
