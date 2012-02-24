@@ -37,6 +37,8 @@ import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
  */
 public class TspPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/drools/planner/examples/tsp/swingui/tspLogo.png";
+
     private TspWorldPanel tspWorldPanel;
     private TspListPanel tspListPanel;
 

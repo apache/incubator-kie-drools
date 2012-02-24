@@ -50,6 +50,7 @@ import org.drools.planner.examples.examination.app.ExaminationApp;
 import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
 import org.drools.planner.examples.tsp.app.TspApp;
+import org.drools.planner.examples.tsp.swingui.TspPanel;
 
 public class DroolsPlannerExamplesApp extends JFrame {
 
@@ -130,7 +131,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 "Official competition name: TSP - Traveling salesman problem\n" +
                         "Determine the order in which to visit all cities.\n\n" +
                         "Find the shortest route to visit all cities.",
-                null, new Runnable() {
+                TspPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new TspApp().init(false);
             }
