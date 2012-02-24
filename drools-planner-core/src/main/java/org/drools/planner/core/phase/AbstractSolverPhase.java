@@ -77,7 +77,6 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
         termination.phaseEnded(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
     }
