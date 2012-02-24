@@ -73,7 +73,7 @@ public class MVELCompilationUnit
 
     private int                                  allVarsLength;
 
-    public static final Map                      INTERCEPTORS = new InterceptorMap();
+    public static final Map<String, Interceptor> INTERCEPTORS = new InterceptorMap();
 
     static {
         //for handling dates as string literals
@@ -283,7 +283,7 @@ public class MVELCompilationUnit
 
         InternalFactHandle[] handles;
         if( tuples != null ) {
-            handles = ((LeftTuple) tuples).toFactHandles();
+            handles = tuples.toFactHandles();
         } else {
             handles = new InternalFactHandle[0];
         }
@@ -329,7 +329,7 @@ public class MVELCompilationUnit
                     InternalFactHandle handle = getFactHandle( decl,
                                                                handles );
 
-                    Object o = decl.getValue( (InternalWorkingMemory) workingMemory,
+                    Object o = decl.getValue( workingMemory,
                                               handle.getObject() );
                     if ( knowledgeHelper != null && decl.isPatternDeclaration() ) {
                         identityMap.put( o,
@@ -343,7 +343,7 @@ public class MVELCompilationUnit
         if ( this.localDeclarations != null && this.localDeclarations.length > 0 ) {
             for ( int j = 0, length = this.localDeclarations.length; j < length; j++ ) {
                 Declaration decl = this.localDeclarations[j];
-                Object o = decl.getValue( (InternalWorkingMemory) workingMemory,
+                Object o = decl.getValue( workingMemory,
                                           rightObject );
                 factory.getIndexedVariableResolver( i++ ).setValue( o );
             }
@@ -396,11 +396,8 @@ public class MVELCompilationUnit
             parserContext.setDebugSymbols( true );
         }
 
-        Serializable expr = null;
-        expr = MVEL.compileExpression( text.trim(),
+        return MVEL.compileExpression( text.trim(),
                                        parserContext );
-
-        return expr;
     }
 
     public static Class loadClass( ClassLoader classLoader,

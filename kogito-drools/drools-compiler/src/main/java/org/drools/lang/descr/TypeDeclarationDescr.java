@@ -23,10 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.drools.core.util.StringUtils;
-import org.drools.io.Resource;
-import org.drools.rule.Namespaceable;
- 
 public class TypeDeclarationDescr
     extends AbstractClassTypeDeclarationDescr
     implements Comparable<TypeDeclarationDescr> {
@@ -102,12 +98,12 @@ public class TypeDeclarationDescr
             }
         }
         for ( TypeFieldDescr field : this.getFields().values() ) {
-            if ( descr.getType().equals( field.getPattern().getObjectType() ) ) {
+            if ( descr.getTypeName().equals( field.getPattern().getObjectType() ) ) {
                 return -1;
             }
         }
         for ( TypeFieldDescr field : descr.getFields().values() ) {
-            if ( this.getType().equals( field.getPattern().getObjectType() ) ) {
+            if ( this.getTypeName().equals( field.getPattern().getObjectType() ) ) {
                 return +1;
             }
         }

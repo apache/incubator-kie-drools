@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
 import java.util.regex.Pattern;
 
 import org.drools.rule.Declaration;
@@ -18,7 +17,6 @@ import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.integration.impl.ImmutableDefaultFactory;
 import org.mvel2.optimizers.dynamic.DynamicGetAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessorNest;
@@ -155,16 +153,12 @@ public class ConditionAnalyzer {
 
         if (node instanceof BinaryOperation) {
             BinaryOperation op = (BinaryOperation)node;
-            if (node.getClass() == BinaryOperation.class) {
-                return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
-            } else {
-                return new FixedExpression(op.getEgressType(), op.getReducedValue(parserContext, null, new ImmutableDefaultFactory()));
-            }
+            return new AritmeticExpression(analyzeNode(op.getLeft()), AritmeticOperator.fromMvelOpCode(op.getOperation()), analyzeNode(op.getRight()));
         }
 
         if (node instanceof Union) {
-            ASTNode main = getFieldValue(Union.class, "main", (Union)node);
-            Accessor accessor = getFieldValue(Union.class, "accessor", (Union)node);
+            ASTNode main = ((Union)node).getMain();
+            Accessor accessor = ((Union)node).getAccessor();
 
             EvaluatedExpression expression = new EvaluatedExpression();
             expression.firstExpression = analyzeNode(main);
@@ -182,11 +176,40 @@ public class ConditionAnalyzer {
         Accessor accessor = node.getAccessor();
 
         if (accessor instanceof IndexedVariableAccessor) {
-            return new VariableExpression(node.getName(), analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()), node.getEgressType());
+            String variableName = node.getName();
+            int dot = variableName.indexOf('.');
+            if (dot > 0) {
+                variableName = variableName.substring(0, dot);
+            }
+            return new VariableExpression(variableName, analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()), node.getEgressType());
         }
 
         if (accessor == null && node instanceof NewObjectNode) {
             accessor = ((NewObjectNode)node).getNewObjectOptimizer();
+        }
+
+        if (accessor instanceof VariableAccessor) {
+            VariableAccessor variableAccessor = (VariableAccessor)accessor;
+            AccessorNode accessorNode = variableAccessor.getNextNode();
+            if (accessorNode == null || !isStaticAccessor(accessorNode)) {
+                String variableName = (String)(variableAccessor.getProperty());
+                Class<?> variableType = getVariableType(variableName);
+                if (variableType != null) {
+                    return new VariableExpression(variableName, analyzeExpressionNode(accessorNode), variableType);
+                } else {
+                    // it's not a variable but a method invocation on this
+                    Class<?> thisClass = parserContext.getInputs().get("this");
+                    try {
+                        return new EvaluatedExpression(new MethodInvocation(thisClass.getMethod(variableName)));
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+
+        if (accessor == null) {
+            throw new RuntimeException("Null accessor on node: " + node);
         }
 
         return analyzeAccessor(accessor);
@@ -194,16 +217,6 @@ public class ConditionAnalyzer {
 
     private Expression analyzeAccessor(Accessor accessor) {
         AccessorNode accessorNode;
-
-        if (accessor instanceof VariableAccessor) {
-            VariableAccessor variableAccessor = (VariableAccessor)accessor;
-            accessorNode = variableAccessor.getNextNode();
-            if (accessorNode == null || !isStaticAccessor(accessorNode)) {
-                String variableName = (String)(variableAccessor.getProperty());
-                return new VariableExpression(variableName, analyzeExpressionNode(accessorNode), getVariableType(variableName));
-            }
-        }
-
         if (accessor instanceof DynamicGetAccessor) {
             accessorNode = (AccessorNode)((DynamicGetAccessor)accessor).getAccessor();
         } else if (accessor instanceof AccessorNode) {
@@ -385,18 +398,10 @@ public class ConditionAnalyzer {
     private Class<?> getVariableType(String name) {
         for (Declaration declaration : declarations) {
             if (declaration.getBindingName().equals(name)) {
-                Class<?> clazz = declaration.getValueType().getClassType();
-                // FIXME: cast to boxed type sholdn't be necessary
-                if (clazz == int.class) {
-                    return Integer.class;
-                }
-                if (clazz == long.class) {
-                    return Long.class;
-                }
-                return clazz;
+                return declaration.getValueType().getClassType();
             }
         }
-        return Object.class;
+        return null;
     }
 
     private <T, V> V getFieldValue(Class<T> clazz, String fieldName, T object) {
@@ -589,6 +594,12 @@ public class ConditionAnalyzer {
         Expression firstExpression;
         final List<Invocation> invocations = new ArrayList<Invocation>();
 
+        EvaluatedExpression () { }
+
+        EvaluatedExpression (Invocation invocation ) {
+            addInvocation(invocation);
+        }
+
         void addInvocation(Invocation invocation) {
             invocations.add(invocation);
         }
@@ -656,7 +667,7 @@ public class ConditionAnalyzer {
 
             if (operator.isBitwiseOperation()) {
                 Class<?> type = left instanceof VariableExpression ? ((VariableExpression)left).getVariableType() : left.getType();
-                return type == Long.class ? long.class : int.class;
+                return type == long.class || type == Long.class ? long.class : int.class;
             }
 
             if (left.getType().isPrimitive() && left.getType() == right.getType()) {

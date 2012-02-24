@@ -2,7 +2,9 @@ package org.drools.integrationtests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
@@ -47,7 +49,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
 
     @Test
     public void testHelloWorldDebug() throws Exception {
-        final List<String> knownVariables = new ArrayList<String>();
+        final Set<String> knownVariables = new HashSet<String>();
         MVELRuntime.resetDebugger();
         MVELDebugHandler.setDebugMode(true);
         MVELRuntime.setThreadDebugger(new Debugger() {

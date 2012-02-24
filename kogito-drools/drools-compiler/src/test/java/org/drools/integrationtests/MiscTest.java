@@ -9134,7 +9134,7 @@ public class MiscTest extends CommonTestMethodBase {
         String str = "package org.drools\n" +
                      "rule r1\n" +
                      "when\n" +
-                     "    Primitives( classAttr == (java.lang.String.class), \n" +
+                     "    Primitives( classAttr == java.lang.String.class, \n" +
                      "                eval(classAttr.equals( java.lang.String.class ) ),\n" +
                      "                classAttr == String.class )\n" +
                      "then\n" +

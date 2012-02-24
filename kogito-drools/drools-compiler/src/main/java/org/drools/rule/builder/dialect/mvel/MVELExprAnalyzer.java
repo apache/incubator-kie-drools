@@ -30,9 +30,7 @@ import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
@@ -74,7 +72,7 @@ public class MVELExprAnalyzer {
                                                 final Map<String, Class< ? >> localTypes,
                                                 String contextIndeifier,
                                                 Class kcontextClass) {
-        MVELAnalysisResult result = null;
+        MVELAnalysisResult result;
         if ( expr.trim().length() > 0 ) {
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
@@ -105,7 +103,7 @@ public class MVELExprAnalyzer {
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
-            Class< ? > returnType = null;
+            Class< ? > returnType;
 
             try {
                 returnType = MVEL.analyze( expr,
@@ -147,7 +145,7 @@ public class MVELExprAnalyzer {
             parserContext2.setInterceptors( dialect.getInterceptors() );
 
             for ( String str : requiredInputs ) {
-                Class< ? > cls = null;
+                Class< ? > cls;
                 cls = availableIdentifiers.getDeclrClasses().get( str );
                 if ( cls != null ) {
                     parserContext2.addInput( str,
@@ -155,44 +153,37 @@ public class MVELExprAnalyzer {
                     continue;
                 }
 
-                if ( cls == null ) {
-                    cls = availableIdentifiers.getGlobals().get( str );
-                    if ( cls != null ) {                        
-                        parserContext2.addInput( str,
-                                                 cls );
-                        continue;
-                    }
+                cls = availableIdentifiers.getGlobals().get( str );
+                if ( cls != null ) {
+                    parserContext2.addInput( str,
+                                             cls );
+                    continue;
                 }
 
-                if ( cls == null ) {
-                    cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null;
-                    if ( cls != null ) {                        
-                        parserContext2.addInput( str,
-                                                 cls );
-                        continue;
-                    }
+                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null;
+                if ( cls != null ) {
+                    parserContext2.addInput( str,
+                                             cls );
+                    continue;
                 }
 
-                if ( cls == null ) {
-                    if ( str.equals( contextIndeifier ) ) {
-                        parserContext2.addInput( contextIndeifier,
-                                                 kcontextClass );
-                    } else if ( str.equals( "kcontext" ) ) {
-                        parserContext2.addInput( "kcontext",
-                                                 kcontextClass );
-                    }
-                    if ( str.equals( "rule" ) ) {
-                        parserContext2.addInput( "rule",
-                                                 Rule.class );
-                    }
+                if ( str.equals( contextIndeifier ) ) {
+                    parserContext2.addInput( contextIndeifier,
+                                             kcontextClass );
+                } else if ( str.equals( "kcontext" ) ) {
+                    parserContext2.addInput( "kcontext",
+                                             kcontextClass );
                 }
-                
-                if ( cls == null && localTypes != null ) {
+                if ( str.equals( "rule" ) ) {
+                    parserContext2.addInput( "rule",
+                                             Rule.class );
+                }
+
+                if ( localTypes != null ) {
                     cls = localTypes.get( str );
                     if ( cls != null ) {  
                         parserContext2.addInput( str,
                                                  cls );
-                        continue;
                     }
                 }
             }   
@@ -296,7 +287,7 @@ public class MVELExprAnalyzer {
             if ( identifiers.contains( op.getKey() ) ) {
                 usedOperators.put( op.getKey(),
                                    op.getValue() );
-                notBound.remove( op );
+                notBound.remove( op.getKey() );
             }
         }
 

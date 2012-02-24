@@ -452,7 +452,54 @@ public class PatternBuilder
             }
         }
 
-        pattern.combineConstraints();
+        combineConstraints(context, pattern);
+    }
+
+    private void combineConstraints(RuleBuildContext context, Pattern pattern) {
+        List<MvelConstraint> combinableConstraints = pattern.getCombinableConstraints();
+
+        if (combinableConstraints.size() < 2) {
+            return;
+        }
+
+        List<Declaration> declarations = new ArrayList<Declaration>();
+        Set<String> declarationNames = new HashSet<String>();
+
+        boolean isFirst = true;
+        String packageName = null;
+        StringBuilder expressionBuilder = new StringBuilder(combinableConstraints.size() * 25);
+        for (MvelConstraint constraint : combinableConstraints) {
+            pattern.removeConstraint(constraint);
+            if (isFirst) {
+                packageName = constraint.getPackageName();
+                isFirst = false;
+            } else {
+                expressionBuilder.append(" && ");
+            }
+            String constraintExpression = constraint.getExpression();
+            boolean isComplex = constraintExpression.contains("&&") || constraintExpression.contains("||");
+            if (isComplex) {
+                expressionBuilder.append("( ");
+            }
+            expressionBuilder.append(constraintExpression);
+            if (isComplex) {
+                expressionBuilder.append(" )");
+            }
+            for (Declaration declaration : constraint.getRequiredDeclarations()) {
+                if (declarationNames.add(declaration.getBindingName())) {
+                    declarations.add(declaration);
+                }
+            }
+        }
+
+        String expression = expressionBuilder.toString();
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, expression);
+
+        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression,
+                                                               declarations.toArray(new Declaration[declarations.size()]),
+                                                               compilationUnit, false, null, null, false);
+
+        pattern.addConstraint(combinedConstraint);
     }
 
     private void processPositional( final RuleBuildContext context,
@@ -1021,29 +1068,13 @@ public class PatternBuilder
             return;
         }
 
-        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+        Declaration[][] usedDeclarations = getUsedDeclarations(context, pattern, analysis);
+        Declaration[] previousDeclarations = usedDeclarations[0];
+        Declaration[] localDeclarations = usedDeclarations[1];
 
-        final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
-        final List<Declaration> factDeclarations = new ArrayList<Declaration>();
-        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                      id );
-            if ( decl.getPattern() == pattern ) {
-                factDeclarations.add( decl );
-            } else {
-                tupleDeclarations.add( decl );
-            }
-        }
-        this.createImplicitBindings( context,
-                                     pattern,
-                                     analysis.getNotBoundedIdentifiers(),
-                                     analysis.getBoundIdentifiers(),
-                                     factDeclarations );
-
-        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
-        final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
-        final String[] requiredOperators = usedIdentifiers.getOperators().keySet().toArray( new String[usedIdentifiers.getOperators().size()] );
+        BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+        String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
+        String[] requiredOperators = usedIdentifiers.getOperators().keySet().toArray( new String[usedIdentifiers.getOperators().size()] );
 
         Arrays.sort( previousDeclarations,
                      SortDeclarations.instance );
@@ -1096,6 +1127,31 @@ public class PatternBuilder
         }
     }
 
+    public static Declaration[][] getUsedDeclarations(RuleBuildContext context, Pattern pattern, AnalysisResult analysis) {
+        BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+        final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
+        final List<Declaration> factDeclarations = new ArrayList<Declaration>();
+
+        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
+            if ( decl.getPattern() == pattern ) {
+                factDeclarations.add( decl );
+            } else {
+                tupleDeclarations.add( decl );
+            }
+        }
+
+        createImplicitBindings( context,
+                pattern,
+                analysis.getNotBoundedIdentifiers(),
+                analysis.getBoundIdentifiers(),
+                factDeclarations );
+
+        Declaration[][] usedDeclarations = new Declaration[2][];
+        usedDeclarations[0] = tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        usedDeclarations[1] = factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+        return usedDeclarations;
+    }
 
     public static AnalysisResult buildAnalysis(RuleBuildContext context, Pattern pattern, PredicateDescr predicateDescr, Map<String, OperatorDescr> aliases) {
         Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr, context, true );
@@ -1192,7 +1248,7 @@ public class PatternBuilder
      * @param unboundIdentifiers
      * @param factDeclarations
      */
-    private void createImplicitBindings( final RuleBuildContext context,
+    private static void createImplicitBindings( final RuleBuildContext context,
                                          final Pattern pattern,
                                          final Set<String> unboundIdentifiers,
                                          final BoundIdentifiers boundIdentifiers,

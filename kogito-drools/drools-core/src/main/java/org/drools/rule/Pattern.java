@@ -97,7 +97,7 @@ public class Pattern
                                                 new PatternExtractor( objectType ),
                                                 this,
                                                 isInternalFact );
-            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
+            this.declarations = new HashMap<String, Declaration>( 2 ); // default to avoid immediate resize
             this.declarations.put( this.declaration.getIdentifier(),
                                    this.declaration );
         } else {
@@ -110,7 +110,7 @@ public class Pattern
         objectType = (ObjectType) in.readObject();
         constraints = (List<Constraint>) in.readObject();
         declaration = (Declaration) in.readObject();
-        declarations = (Map) in.readObject();
+        declarations = (Map<String, Declaration>) in.readObject();
         behaviors = (List<Behavior>) in.readObject();
         index = in.readInt();
         source = (PatternSource) in.readObject();
@@ -163,7 +163,7 @@ public class Pattern
         }
 
         if( this.declarations != null ) {
-            for( Declaration decl : (Iterable<Declaration>) this.declarations.values() ) {
+            for ( Declaration decl : this.declarations.values() ) {
                 Declaration addedDeclaration = clone.addDeclaration( decl.getIdentifier() );
                 addedDeclaration.setReadAccessor( decl.getExtractor() );
                 addedDeclaration.setBindingName( decl.getBindingName() );
@@ -216,11 +216,7 @@ public class Pattern
         return Collections.unmodifiableList( this.constraints );
     }
 
-    public void addConstraint(final Constraint constraint) {
-        addConstraint(constraint, false);
-    }
-
-    public void addConstraint(final Constraint constraint, boolean isComposite) {
+    public void addConstraint(Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
@@ -230,61 +226,21 @@ public class Pattern
         this.constraints.add( constraint );
     }
 
-    public void combineConstraints() {
+    public void removeConstraint(Constraint constraint) {
+        this.constraints.remove( constraint );
+    }
+
+    public List<MvelConstraint> getCombinableConstraints() {
         List<MvelConstraint> combinableConstraints = new ArrayList<MvelConstraint>();
         for (Constraint constraint : constraints) {
             if (constraint instanceof MvelConstraint &&
                     !((MvelConstraint)constraint).isUnification() &&
                     !((MvelConstraint)constraint).isIndexable() &&
-                    ((MvelConstraint)constraint).getType() == ConstraintType.BETA) { // don't combine alpha nodes to allow nodes sharing
+                    constraint.getType() == ConstraintType.BETA) { // don't combine alpha nodes to allow nodes sharing
                 combinableConstraints.add((MvelConstraint)constraint);
             }
         }
-
-        if (true || combinableConstraints.size() < 2) {
-            return;
-        }
-
-        List<Declaration> declarations = new ArrayList<Declaration>();
-        Set<String> declarationNames = new HashSet<String>();
-
-        boolean isFirst = true;
-        String packageName = null;
-        StringBuilder expression = new StringBuilder(combinableConstraints.size() * 25);
-        for (MvelConstraint constraint : combinableConstraints) {
-            constraints.remove(constraint);
-            if (isFirst) {
-                packageName = constraint.getPackageName();
-                isFirst = false;
-            } else {
-                expression.append(" && ");
-            }
-            String constraintExpression = constraint.getExpression();
-            boolean isComplex = constraintExpression.contains("&&") || constraintExpression.contains("||");
-            if (isComplex) {
-                expression.append("( ");
-            }
-            expression.append(constraintExpression);
-            if (isComplex) {
-                expression.append(" )");
-            }
-            for (Declaration declaration : constraint.getRequiredDeclarations()) {
-                if (declarationNames.add(declaration.getBindingName())) {
-                    declarations.add(declaration);
-                }
-            }
-        }
-
-        MvelConstraint combinedConstraint = new MvelConstraint(packageName, expression.toString(),
-                                                               declarations.toArray(new Declaration[declarations.size()]),
-                                                               null, false, null, null, false);
-        addConstraint(combinedConstraint);
-    }
-
-    private boolean isCombinable(Constraint constraint, boolean isComposite) {
-        return constraint instanceof MvelConstraint &&
-                !((MvelConstraint)constraint).isUnification() &&
-                (isComposite || !((MvelConstraint)constraint).isIndexable());
+        return combinableConstraints;
     }
 
     public Declaration addDeclaration(final String identifier) {
@@ -301,7 +257,7 @@ public class Pattern
     
     public void addDeclaration(final Declaration decl) {
         if ( this.declarations == null ) {
-            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
+            this.declarations = new HashMap<String, Declaration>( 2 ); // default to avoid immediate resize
         }        
         this.declarations.put( decl.getIdentifier(),
                                decl );        
@@ -342,7 +298,7 @@ public class Pattern
     }
 
     public Declaration resolveDeclaration(final String identifier) {
-        return (this.declarations != null) ? (Declaration) this.declarations.get( identifier ) : null;
+        return (this.declarations != null) ? this.declarations.get( identifier ) : null;
     }
 
     public String toString() {

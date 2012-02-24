@@ -155,7 +155,7 @@ public class SequentialAgendaGroupImpl
         return "AgendaGroup '" + this.name + "'";
     }
 
-    public boolean equal(final Object object) {
+    public boolean equals(final Object object) {
         if ( (object == null) || !(object instanceof SequentialAgendaGroupImpl) ) {
             return false;
         }

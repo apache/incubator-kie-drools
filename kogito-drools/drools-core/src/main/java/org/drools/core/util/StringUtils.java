@@ -1120,7 +1120,7 @@ public class StringUtils {
                     else {
                         // Not 7 Bit use the unicode system
                         sb.append("&#");
-                        sb.append(new Integer(ci).toString());
+                        sb.append(Integer.valueOf(ci).toString());
                         sb.append(';');
                         }
                     }
