@@ -105,27 +105,38 @@ public class DroolsPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColors.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("N queens", "No 2 queens can attack each other.",
-                "/org/drools/planner/examples/nqueens/swingui/queenImage.png",
-                new Runnable() {
+        panel.add(createExampleButton("N queens",
+                "Place n queens on a chessboard of size N.\n\n" +
+                        "No 2 queens must be able to attack each other.",
+                "/org/drools/planner/examples/nqueens/swingui/queenImage.png", new Runnable() {
                     public void run() {
                         new NQueensApp().init(false);
                     }
                 }));
-        panel.add(createExampleButton("Cloud balancing", "Assign processes to servers.", null, new Runnable() {
+        panel.add(createExampleButton("Traveling salesman",
+                "Official competition name: TSP - Traveling salesman problem\n" +
+                        "Determine the order in which to visit all cities.\n\n" +
+                        "Find the shortest route to visit all cities.",
+                null, new Runnable() {
             public void run() {
-                new CloudBalancingApp().init(false);
+                new TspApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Miss Manners 2009", "Assign guests to tables.", null, new Runnable() {
+        panel.add(createExampleButton("Miss Manners 2009",
+                "A much larger variant of the classic Miss Manners problem.\n" +
+                        "Assign guests to seats at tables.",
+                null, new Runnable() {
             public void run() {
                 new Manners2009App().init(false);
             }
         }));
-        panel.add(createExampleButton("Traveling salesman problem", "Find the shortest route to visit all cities.",
+        panel.add(createExampleButton("Cloud balancing",
+                "Assign processes to servers.\n\n" +
+                        "Each server must have enough hardware to run all of it's processes.\n" +
+                        "Each server used inflicts a maintenance cost.",
                 null, new Runnable() {
             public void run() {
-                new TspApp().init(false);
+                new CloudBalancingApp().init(false);
             }
         }));
         return panel;
@@ -137,24 +148,31 @@ public class DroolsPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColors.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("Curriculum course timetabling", "(ITC2007 track3)", null, new Runnable() {
-            public void run() {
-                new CurriculumCourseApp().init(false);
-            }
-        }));
-        panel.add(createExampleButton("Machine reassignment", "(ROADEF 2012)", null, new Runnable() {
-            public void run() {
-                new MachineReassignmentApp().init(false);
-            }
-        }));
-        panel.add(createExampleButton("Patient admission scheduling", "Hospital bed planning", null, new Runnable() {
+        panel.add(createExampleButton("Hospital bed planning",
+                "Official competition name: PAS - Patient admission scheduling\n" +
+                        "Assign patients to beds.",
+                null, new Runnable() {
             public void run() {
                 new PatientAdmissionScheduleApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Nurse rostering", "(INRC2010)", null, new Runnable() {
+        panel.add(createDisabledExampleButton("Vehicle routing",
+                "Not yet implemented",
+                null));
+        panel.add(createExampleButton("Course timetabling",
+                "Official competition name: ITC 2007 track3 - Curriculum course timetabling\n" +
+                        "Assign lectures to periods and rooms.",
+                null, new Runnable() {
             public void run() {
-                new NurseRosteringApp().init(false);
+                new CurriculumCourseApp().init(false);
+            }
+        }));
+        panel.add(createExampleButton("Machine reassignment",
+                "Official competition name: Google ROADEF 2012 - Machine reassignment.\n" +
+                        "Reassign processes to machines.",
+                null, new Runnable() {
+            public void run() {
+                new MachineReassignmentApp().init(false);
             }
         }));
         return panel;
@@ -166,16 +184,31 @@ public class DroolsPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColors.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("Traveling tournament problem", "(TTP)", null, new Runnable() {
+        panel.add(createExampleButton("Employee rostering",
+                "Official competition name: INRC2010 - Nurse rostering\n" +
+                        "Assign shifts to employees.",
+                null, new Runnable() {
+            public void run() {
+                new NurseRosteringApp().init(false);
+            }
+        }));
+        panel.add(createExampleButton("Traveling tournament problem",
+                "Official competition name: TTP - Traveling tournament problem\n" +
+                        "Assign matches to days.",
+                null, new Runnable() {
             public void run() {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Examination timetabling", "(ITC2007 track1)", null, new Runnable() {
+        panel.add(createExampleButton("Exam timetabling",
+                "Official competition name: ITC 2007 track1 - Examination timetabling\n" +
+                        "Assign exams to timeslots and rooms.",
+                null, new Runnable() {
             public void run() {
                 new ExaminationApp().init(false);
             }
         }));
+        panel.add(new JPanel());
         // TODO TrainDesign is still in working progress
 //        contentPane.add(createExampleButton("Train design", "(RAS2011)", new Runnable() {
 //            public void run() {
@@ -185,6 +218,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
         return panel;
     }
     
+    private JButton createDisabledExampleButton(final String title, final String description, String iconResource) {
+        JButton exampleButton = createExampleButton(title, description, iconResource, null);
+        exampleButton.setEnabled(false);
+        return exampleButton;
+    }
+
     private JButton createExampleButton(final String title, final String description, String iconResource,
             final Runnable runnable) {
         ImageIcon icon = iconResource == null ? null : new ImageIcon(getClass().getResource(iconResource));
