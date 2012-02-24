@@ -487,6 +487,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 case 1:
                                     castedPattern.setDayIndex1ShiftType(shiftType);
                                     break;
+                                default:
+                                    throw new IllegalArgumentException("The patternEntryIndex ("
+                                            + patternEntryIndex + ") is not supported.");
                             }
                         } else if (pattern instanceof ShiftType3DaysPattern) {
                             ShiftType3DaysPattern castedPattern = (ShiftType3DaysPattern) pattern;
@@ -517,6 +520,9 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 case 2:
                                     castedPattern.setDayIndex2ShiftType(shiftType);
                                     break;
+                                default:
+                                    throw new IllegalArgumentException("The patternEntryIndex ("
+                                            + patternEntryIndex + ") is not supported.");
                             }
                         } else {
                             throw new IllegalStateException("Unsupported patternClass (" + pattern.getClass() + ").");
