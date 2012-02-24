@@ -92,6 +92,10 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
         decider.phaseStarted(localSearchSolverPhaseScope);
+        if (!localSearchSolverPhaseScope.isWorkingSolutionInitialized()) {
+            throw new IllegalStateException("Phase localSearch started with an uninitialized Solution." +
+                    " First initialize the Solution. For example, run a phase constructionHeuristic first.");
+        }
     }
 
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
@@ -122,7 +126,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseEnded(localSearchSolverPhaseScope);
         decider.phaseEnded(localSearchSolverPhaseScope);
-        logger.info("Phase local search ended: step total ({}), time spend ({}), best score ({}).",
+        logger.info("Phase localSearch ended: step total ({}), time spend ({}), best score ({}).",
                 new Object[]{localSearchSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
                 localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
                 localSearchSolverPhaseScope.getBestScore()});
