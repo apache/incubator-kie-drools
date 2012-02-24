@@ -18,8 +18,10 @@ package org.drools.planner.examples.common.persistence;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
@@ -41,7 +43,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
     public Solution readSolution(File inputFile) {
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(inputFile));
+            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF-8"));
             TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
             txtInputBuilder.setInputFile(inputFile);
             txtInputBuilder.setBufferedReader(bufferedReader);

@@ -16,10 +16,15 @@
 
 package org.drools.planner.examples.common.persistence;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
@@ -41,7 +46,7 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
     public void writeSolution(Solution solution, File outputFile) {
         BufferedWriter bufferedWriter = null;
         try {
-            bufferedWriter = new BufferedWriter(new FileWriter(outputFile));
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
             TxtOutputBuilder txtOutputBuilder = createTxtOutputBuilder();
             txtOutputBuilder.setBufferedWriter(bufferedWriter);
             txtOutputBuilder.setSolution(solution);
