@@ -77,4 +77,11 @@ public interface Marshaller {
                    StatefulKnowledgeSession ksession) throws IOException,
                                                     ClassNotFoundException;
 
+    /**
+     * Returns the MarshallingConfiguration object for this marshaller
+     * 
+     * @return
+     */
+    public MarshallingConfiguration getMarshallingConfiguration();
+
 }

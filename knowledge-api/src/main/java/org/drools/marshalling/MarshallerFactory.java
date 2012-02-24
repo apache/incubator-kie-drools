@@ -16,10 +16,6 @@
 
 package org.drools.marshalling;
 
-import java.io.ByteArrayOutputStream;
-
-import javax.imageio.spi.ServiceRegistry;
-
 import org.drools.KnowledgeBase;
 import org.drools.util.ServiceRegistryImpl;
 
