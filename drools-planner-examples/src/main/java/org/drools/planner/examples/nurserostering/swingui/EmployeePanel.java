@@ -166,6 +166,7 @@ public class EmployeePanel extends JPanel {
         shiftAssignmentButton.setToolTipText((employee == null ? "Unassigned" : employee.getLabel())
                 + " on " + shift.getLabel());
         shiftPanel.add(shiftAssignmentButton);
+        shiftPanel.repaint();
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);
     }
 
@@ -173,6 +174,7 @@ public class EmployeePanel extends JPanel {
         JPanel shiftPanel = shiftPanelMap.get(shiftAssignment.getShift());
         JButton shiftAssignmentButton = shiftAssignmentButtonMap.remove(shiftAssignment);
         shiftPanel.remove(shiftAssignmentButton);
+        shiftPanel.repaint();
     }
 
     public void clearShiftAssignments() {
