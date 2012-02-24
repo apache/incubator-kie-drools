@@ -36,8 +36,10 @@ import javax.swing.JTextArea;
 import javax.swing.border.TitledBorder;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.drools.planner.examples.cloudbalancing.swingui.CloudBalancingPanel;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
+import org.drools.planner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 import org.drools.planner.examples.nqueens.app.NQueensApp;
 import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
@@ -119,7 +121,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 "Assign processes to servers.\n\n" +
                         "Each server must have enough hardware to run all of it's processes.\n" +
                         "Each server used inflicts a maintenance cost.",
-                null, new Runnable() {
+                CloudBalancingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new CloudBalancingApp().init(false);
             }
@@ -161,7 +163,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton("Machine reassignment",
                 "Official competition name: Google ROADEF 2012 - Machine reassignment.\n" +
                         "Reassign processes to machines.",
-                null, new Runnable() {
+                MachineReassignmentPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new MachineReassignmentApp().init(false);
             }

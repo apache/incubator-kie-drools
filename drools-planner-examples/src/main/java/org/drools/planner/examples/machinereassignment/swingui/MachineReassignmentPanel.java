@@ -42,6 +42,9 @@ import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
 public class MachineReassignmentPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH
+            = "/org/drools/planner/examples/machinereassignment/swingui/machineReassignmentLogo.png";
+
     private JPanel machineListPanel;
 
     private MrMachinePanel unassignedPanel;

@@ -48,6 +48,8 @@ import org.drools.planner.examples.common.swingui.TangoColors;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/drools/planner/examples/cloudbalancing/swingui/cloudBalancingLogo.png";
+
     private JPanel computersPanel;
 
     private CloudComputerPanel unassignedPanel;
