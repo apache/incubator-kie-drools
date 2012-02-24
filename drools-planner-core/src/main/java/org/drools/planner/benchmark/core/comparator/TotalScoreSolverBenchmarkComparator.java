@@ -16,12 +16,13 @@
 
 package org.drools.planner.benchmark.core.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 
-public class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark> {
+public class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
 
     private WorstScoreSolverBenchmarkComparator worstScoreSolverBenchmarkComparator
             = new WorstScoreSolverBenchmarkComparator();

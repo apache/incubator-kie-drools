@@ -269,16 +269,13 @@ public class TerminationConfig implements Cloneable {
 
     @Override
     public TerminationConfig clone() {
-        TerminationConfig clone = new TerminationConfig();
-        clone.terminationClass = terminationClass;
-        clone.terminationCompositionStyle = terminationCompositionStyle;
-        clone.maximumTimeMillisSpend = maximumTimeMillisSpend;
-        clone.maximumSecondsSpend = maximumSecondsSpend;
-        clone.maximumMinutesSpend = maximumMinutesSpend;
-        clone.maximumHoursSpend = maximumHoursSpend;
-        clone.scoreAttained = scoreAttained;
-        clone.maximumStepCount = maximumStepCount;
-        clone.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
+        TerminationConfig clone;
+        try {
+            clone = (TerminationConfig) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new IllegalStateException("Impossible exception because TerminationConfig implements Cloneable.", e);
+        }
+        // Deep clone terminationConfigList
         if (terminationConfigList != null) {
             List<TerminationConfig> clonedTerminationConfigList = new ArrayList<TerminationConfig>(
                     terminationConfigList.size());
@@ -287,6 +284,8 @@ public class TerminationConfig implements Cloneable {
                 clonedTerminationConfigList.add(clonedTerminationConfig);
             }
             clone.terminationConfigList = clonedTerminationConfigList;
+        } else {
+            clone.terminationConfigList = null;
         }
         return clone;
     }
