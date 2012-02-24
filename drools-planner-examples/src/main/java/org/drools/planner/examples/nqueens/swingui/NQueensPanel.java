@@ -48,6 +48,7 @@ import org.drools.planner.examples.nqueens.solver.move.RowChangeMove;
  */
 public class NQueensPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/drools/planner/examples/nqueens/swingui/nqueensLogo.png";
     private static final String QUEEN_IMAGE_PATH = "/org/drools/planner/examples/nqueens/swingui/queenImage.png";
 
     private ImageIcon queenImageIcon;

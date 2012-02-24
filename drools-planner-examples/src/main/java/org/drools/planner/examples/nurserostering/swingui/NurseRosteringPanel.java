@@ -46,6 +46,8 @@ import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove
 
 public class NurseRosteringPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/drools/planner/examples/nurserostering/swingui/nurseRosteringLogo.png";
+
     private JPanel employeeListPanel;
 
     private EmployeePanel unassignedPanel;

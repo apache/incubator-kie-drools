@@ -39,7 +39,9 @@ import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.drools.planner.examples.nqueens.app.NQueensApp;
+import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
+import org.drools.planner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp;
 import org.drools.planner.examples.examination.app.ExaminationApp;
@@ -108,7 +110,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton("N queens",
                 "Place queens on a chessboard.\n\n" +
                         "No 2 queens must be able to attack each other.",
-                "/org/drools/planner/examples/nqueens/swingui/queenImage.png", new Runnable() {
+                NQueensPanel.LOGO_PATH, new Runnable() {
                     public void run() {
                         new NQueensApp().init(false);
                     }
@@ -195,7 +197,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton("Employee rostering",
                 "Official competition name: INRC2010 - Nurse rostering\n" +
                         "Assign shifts to employees.",
-                null, new Runnable() {
+                NurseRosteringPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new NurseRosteringApp().init(false);
             }
