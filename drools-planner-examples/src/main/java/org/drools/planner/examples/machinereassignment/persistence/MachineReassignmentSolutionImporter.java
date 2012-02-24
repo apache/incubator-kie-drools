@@ -18,8 +18,10 @@ package org.drools.planner.examples.machinereassignment.persistence;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -351,7 +353,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     inputFileName.replaceFirst(inputFilePrefix, "assignment_"));
             BufferedReader assignmentBufferedReader = null;
             try {
-                assignmentBufferedReader = new BufferedReader(new FileReader(assignmentInputFile));
+                assignmentBufferedReader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(assignmentInputFile), "UTF-8"));
                 try {
                     return assignmentBufferedReader.readLine();
                 } catch (IllegalArgumentException e) {
