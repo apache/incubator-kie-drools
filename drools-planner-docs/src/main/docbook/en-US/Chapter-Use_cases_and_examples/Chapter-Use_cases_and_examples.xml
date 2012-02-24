@@ -21,227 +21,212 @@
   <section>
     <title>Toy examples</title>
 
-    <para>todo</para>
-  </section>
-
-  <section>
-    <title>Real examples</title>
-
-    <para>todo</para>
-  </section>
-
-  <section>
-    <title>Difficult examples</title>
-
-    <para>todo</para>
-  </section>
-
-  <section>
-    <title>N queens example</title>
-
     <section>
-      <title>Problem statement</title>
+      <title>N queens</title>
 
-      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the following constraints:</para>
+      <section>
+        <title>Problem statement</title>
 
-      <itemizedlist>
-        <listitem>
-          <para>Use a chessboard of <emphasis>n</emphasis> columns and <emphasis>n</emphasis> rows.</para>
-        </listitem>
+        <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the following constraints:</para>
 
-        <listitem>
-          <para>Place <emphasis>n</emphasis> queens on the chessboard.</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>Use a chessboard of <emphasis>n</emphasis> columns and <emphasis>n</emphasis> rows.</para>
+          </listitem>
 
-        <listitem>
-          <para>No 2 queens can attack each other. Note that a queen can attack any other queen on the same horizontal,
-          vertical or diagonal line.</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>Place <emphasis>n</emphasis> queens on the chessboard.</para>
+          </listitem>
 
-      <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We 'll explain
-      Drools Planner using the 4 queens puzzle as the primary example.</para>
+          <listitem>
+            <para>No 2 queens can attack each other. Note that a queen can attack any other queen on the same
+            horizontal, vertical or diagonal line.</para>
+          </listitem>
+        </itemizedlist>
 
-      <para>A proposed solution could be:</para>
+        <para>The most common n queens puzzle is the 8 queens puzzle, with <emphasis>n = 8</emphasis>. We 'll explain
+        Drools Planner using the 4 queens puzzle as the primary example.</para>
 
-      <figure>
-        <title>A wrong solution for the 4 queens puzzle</title>
+        <para>A proposed solution could be:</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                       format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
+        <figure>
+          <title>A wrong solution for the 4 queens puzzle</title>
 
-      <para>The above solution is wrong because queens <literal>A1</literal> and <literal>B0</literal> can attack each
-      other (as can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal> would
-      respect the "no 2 queens can attack each other" constraint, but would break the "place n queens"
-      constraint.</para>
-    </section>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-    <section>
-      <title>Solution(s)</title>
+        <para>The above solution is wrong because queens <literal>A1</literal> and <literal>B0</literal> can attack each
+        other (as can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal>
+        would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens"
+        constraint.</para>
+      </section>
 
-      <para>Below is a correct solution:</para>
+      <section>
+        <title>Solution(s)</title>
 
-      <figure>
-        <title>A correct solution for the 4 queens puzzle</title>
+        <para>Below is a correct solution:</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
+        <figure>
+          <title>A correct solution for the 4 queens puzzle</title>
 
-      <para>All the constraints have been met, so the solution is correct. Note that most n queens puzzles have multiple
-      correct solutions. We 'll focus on finding a single correct solution for a given n, not on finding the number of
-      possible correct solutions for a given n.</para>
-    </section>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/solvedNQueens04.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-    <section>
-      <title>Screenshot</title>
+        <para>All the constraints have been met, so the solution is correct. Note that most n queens puzzles have
+        multiple correct solutions. We 'll focus on finding a single correct solution for a given n, not on finding the
+        number of possible correct solutions for a given n.</para>
+      </section>
 
-      <para>Here is a screenshot of the example:</para>
+      <section>
+        <title>Screenshot</title>
 
-      <figure>
-        <title>Screenshot of the n queens example</title>
+        <para>Here is a screenshot of the example:</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
+        <figure>
+          <title>Screenshot of the n queens example</title>
 
-    <section>
-      <title>Problem size</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Use_cases_and_examples/screenshotNQueens.png"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
 
-      <para>These numbers might give you some insight on the size of this problem.</para>
+      <section>
+        <title>Problem size</title>
 
-      <table>
-        <title>NQueens problem size</title>
+        <para>These numbers might give you some insight on the size of this problem.</para>
 
-        <tgroup cols="5">
-          <thead>
-            <row>
-              <entry># queens (n)</entry>
+        <table>
+          <title>NQueens problem size</title>
 
-              <entry># possible solutions (each queen its own column)</entry>
+          <tgroup cols="5">
+            <thead>
+              <row>
+                <entry># queens (n)</entry>
 
-              <entry># feasible solutions (= optimal in this use case)</entry>
+                <entry># possible solutions (each queen its own column)</entry>
 
-              <entry># optimal solutions</entry>
+                <entry># feasible solutions (= optimal in this use case)</entry>
 
-              <entry># optimal <emphasis>out of</emphasis> # possible</entry>
-            </row>
-          </thead>
+                <entry># optimal solutions</entry>
 
-          <tbody>
-            <row>
-              <entry>4</entry>
+                <entry># optimal <emphasis>out of</emphasis> # possible</entry>
+              </row>
+            </thead>
 
-              <entry>256</entry>
+            <tbody>
+              <row>
+                <entry>4</entry>
 
-              <entry>2</entry>
+                <entry>256</entry>
 
-              <entry>2</entry>
+                <entry>2</entry>
 
-              <entry>1 <emphasis>out of </emphasis>128</entry>
-            </row>
+                <entry>2</entry>
 
-            <row>
-              <entry>8</entry>
+                <entry>1 <emphasis>out of </emphasis>128</entry>
+              </row>
 
-              <entry>16777216</entry>
+              <row>
+                <entry>8</entry>
 
-              <entry>64</entry>
+                <entry>16777216</entry>
 
-              <entry>64</entry>
+                <entry>64</entry>
 
-              <entry>1 <emphasis>out of</emphasis> 262144</entry>
-            </row>
+                <entry>64</entry>
 
-            <row>
-              <entry>16</entry>
+                <entry>1 <emphasis>out of</emphasis> 262144</entry>
+              </row>
 
-              <entry>18446744073709551616</entry>
+              <row>
+                <entry>16</entry>
 
-              <entry>14772512</entry>
+                <entry>18446744073709551616</entry>
 
-              <entry>14772512</entry>
+                <entry>14772512</entry>
 
-              <entry>1 <emphasis>out of</emphasis> 1248720872503</entry>
-            </row>
+                <entry>14772512</entry>
 
-            <row>
-              <entry>32</entry>
+                <entry>1 <emphasis>out of</emphasis> 1248720872503</entry>
+              </row>
 
-              <entry>1.46150163733090291820368483e+48</entry>
+              <row>
+                <entry>32</entry>
 
-              <entry>?</entry>
+                <entry>1.46150163733090291820368483e+48</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>?</entry>
-            </row>
+                <entry>?</entry>
 
-            <row>
-              <entry>64</entry>
+                <entry>?</entry>
+              </row>
 
-              <entry>3.94020061963944792122790401e+115</entry>
+              <row>
+                <entry>64</entry>
 
-              <entry>?</entry>
+                <entry>3.94020061963944792122790401e+115</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>?</entry>
-            </row>
+                <entry>?</entry>
 
-            <row>
-              <entry>n</entry>
+                <entry>?</entry>
+              </row>
 
-              <entry>n ^ n</entry>
+              <row>
+                <entry>n</entry>
 
-              <entry>?</entry>
+                <entry>n ^ n</entry>
 
-              <entry># feasible solutions</entry>
+                <entry>?</entry>
 
-              <entry>?</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+                <entry># feasible solutions</entry>
 
-      <para>The Drools Planner implementation has not been optimized because it functions as a beginner example.
-      Nevertheless, it can easily handle 64 queens.</para>
-    </section>
+                <entry>?</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
 
-    <section>
-      <title>Domain model</title>
+        <para>The Drools Planner implementation has not been optimized because it functions as a beginner example.
+        Nevertheless, it can easily handle 64 queens.</para>
+      </section>
 
-      <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
-      Planner. This is the domain model for the n queens example:</para>
+      <section>
+        <title>Domain model</title>
 
-      <programlisting language="java">public class Column {
+        <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
+        Planner. This is the domain model for the n queens example:</para>
+
+        <programlisting language="java">public class Column {
     
     private int index;
 
     // ... getters and setters
 }</programlisting>
 
-      <programlisting language="java">public class Row {
+        <programlisting language="java">public class Row {
     
     private int index;
 
     // ... getters and setters
 }</programlisting>
 
-      <programlisting language="java">public class Queen {
+        <programlisting language="java">public class Queen {
     
     private Column column;
     private Row row;
@@ -252,7 +237,7 @@
     // ... getters and setters
 }</programlisting>
 
-      <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
     
     private int n;
     private List&lt;Column&gt; columnList;
@@ -265,215 +250,287 @@
     // ... getters and setters
 }</programlisting>
 
-      <para>A <literal>Queen</literal> instance has a <literal>Column</literal> (for example: 0 is column A, 1 is column
-      B, ...) and a <literal>Row</literal> (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the column and
-      the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The column and row
-      indexes start from the upper left corner of the chessboard.</para>
+        <para>A <literal>Queen</literal> instance has a <literal>Column</literal> (for example: 0 is column A, 1 is
+        column B, ...) and a <literal>Row</literal> (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the
+        column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The
+        column and row indexes start from the upper left corner of the chessboard.</para>
 
-      <table>
-        <title>A solution for the 4 queens puzzle shown in the domain model</title>
+        <table>
+          <title>A solution for the 4 queens puzzle shown in the domain model</title>
 
-        <tgroup cols="6">
-          <thead>
-            <row>
-              <entry align="center">A solution</entry>
+          <tgroup cols="6">
+            <thead>
+              <row>
+                <entry align="center">A solution</entry>
 
-              <entry align="center">Queen</entry>
+                <entry align="center">Queen</entry>
 
-              <entry>columnIndex</entry>
+                <entry>columnIndex</entry>
 
-              <entry>rowIndex</entry>
+                <entry>rowIndex</entry>
 
-              <entry>ascendingDiagonalIndex (columnIndex + rowIndex)</entry>
+                <entry>ascendingDiagonalIndex (columnIndex + rowIndex)</entry>
 
-              <entry>descendingDiagonalIndex (columnIndex - rowIndex)</entry>
-            </row>
-          </thead>
+                <entry>descendingDiagonalIndex (columnIndex - rowIndex)</entry>
+              </row>
+            </thead>
 
-          <tbody>
-            <row>
-              <entry morerows="3"><mediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
-                               format="PNG"></imagedata>
-                  </imageobject>
-                </mediaobject></entry>
+            <tbody>
+              <row>
+                <entry morerows="3"><mediaobject>
+                    <imageobject>
+                      <imagedata fileref="images/Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png"
+                                 format="PNG"></imagedata>
+                    </imageobject>
+                  </mediaobject></entry>
 
-              <entry>A1</entry>
+                <entry>A1</entry>
 
-              <entry>0</entry>
+                <entry>0</entry>
 
-              <entry>1</entry>
+                <entry>1</entry>
 
-              <entry><emphasis role="bold">1 (**)</emphasis></entry>
+                <entry><emphasis role="bold">1 (**)</emphasis></entry>
 
-              <entry>-1</entry>
-            </row>
+                <entry>-1</entry>
+              </row>
 
-            <row>
-              <entry>B0</entry>
+              <row>
+                <entry>B0</entry>
 
-              <entry>1</entry>
+                <entry>1</entry>
 
-              <entry><emphasis role="bold">0 (*)</emphasis></entry>
+                <entry><emphasis role="bold">0 (*)</emphasis></entry>
 
-              <entry><emphasis role="bold">1 (**)</emphasis></entry>
+                <entry><emphasis role="bold">1 (**)</emphasis></entry>
 
-              <entry>1</entry>
-            </row>
+                <entry>1</entry>
+              </row>
 
-            <row>
-              <entry>C2</entry>
+              <row>
+                <entry>C2</entry>
 
-              <entry>2</entry>
+                <entry>2</entry>
 
-              <entry>2</entry>
+                <entry>2</entry>
 
-              <entry>4</entry>
+                <entry>4</entry>
 
-              <entry>0</entry>
-            </row>
+                <entry>0</entry>
+              </row>
 
-            <row>
-              <entry>D0</entry>
+              <row>
+                <entry>D0</entry>
 
-              <entry>3</entry>
+                <entry>3</entry>
 
-              <entry><emphasis role="bold">0 (*)</emphasis></entry>
+                <entry><emphasis role="bold">0 (*)</emphasis></entry>
 
-              <entry>3</entry>
+                <entry>3</entry>
 
-              <entry>3</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
+                <entry>3</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
 
-      <para>When 2 queens share the same column, row or diagonal line, such as (*) and (**), they can attack each
-      other.</para>
+        <para>When 2 queens share the same column, row or diagonal line, such as (*) and (**), they can attack each
+        other.</para>
 
-      <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
-      is the <literal>Solution</literal> implementation which will be supplied to, solved by and retrieved from the
-      Solver. Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return
-      4.</para>
+        <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
+        is the <literal>Solution</literal> implementation which will be supplied to, solved by and retrieved from the
+        Solver. Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return
+        4.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Cloud balancing</title>
+
+      <section>
+        <title>Problem statement</title>
+
+        <para>Assign each process to a server.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Every server should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
+            network bandwidth) of all its processes.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Each server that has one or more processes assigned, has a fixed maintenance cost. Minimize the total
+            cost.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>This is a form of bin packing.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceUseCase.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
+
+      <section>
+        <title>Domain model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceClassDiagram.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
+    </section>
+
+    <section>
+      <title>Traveling salesman (TSP - Traveling salesman problem)</title>
+
+      <section>
+        <title>Problem statement</title>
+
+        <para>Given a list of cities, find the shortest tour for a salesman that visits each city exactly once. <link
+        xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">See the wikipedia definition of the
+        traveling Salesman Problem.</link></para>
+
+        <para>It is <link xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in
+        computational mathematics. Yet, in the real world, it's often only part of a planning problem, along with other
+        constraints, such as employee shift time constraints.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Manners 2009</title>
+
+      <section>
+        <title>Problem statement</title>
+
+        <para>In Manners 2009, miss Manners is throwing a party again.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>This time she invited 144 guests and prepared 12 round tables with 12 seats each.</para>
+          </listitem>
+
+          <listitem>
+            <para>Every guest should sit next to someone (left and right) of the opposite gender.</para>
+          </listitem>
+
+          <listitem>
+            <para>And that neighbour should have at least one hobby in common with the guest.</para>
+          </listitem>
+
+          <listitem>
+            <para>Also, this time there should be 2 politicians, 2 doctors, 2 socialites, 2 sports stars, 2 teachers and
+            2 programmers at each table.</para>
+          </listitem>
+
+          <listitem>
+            <para>And the 2 politicians, 2 doctors, 2 sports stars and 2 programmers shouldn't be the same kind.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
+        heuristic to solve it. Drools Planner's implementation employs far more scalable heuristics while still using
+        Drools Expert to calculate the score..</para>
+      </section>
     </section>
   </section>
 
   <section>
-    <title>Cloud balancing example</title>
+    <title>Real examples</title>
 
     <section>
-      <title>Problem statement</title>
+      <title>Course timetabling (ITC 2007 track 3 - Curriculum course scheduling)</title>
 
-      <para>Assign each process to a server.</para>
+      <section>
+        <title>Problem statement</title>
 
-      <para>Hard constraints:</para>
+        <para>Schedule each lecture into a timeslot and into a room.</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Every server should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
-          network bandwidth) of all its processes.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Soft constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Each server that has one or more processes assigned, has a fixed maintenance cost. Minimize the total
-          cost.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>This is a form of bin packing.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+        <para>The problem is defined by <link
+        xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
+        Timetabling Competition 2007 track 3</link>.</para>
+      </section>
     </section>
 
     <section>
-      <title>Domain model</title>
+      <title>Machine reassignment (Google ROADEF 2012)</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceClassDiagram.png"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </section>
-  </section>
+      <section>
+        <title>Problem statement</title>
 
-  <section>
-    <title>Machine reassignment example (ROADEF 2012)</title>
+        <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
+        process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
+        balancing example.</para>
 
-    <section>
-      <title>Problem statement</title>
+        <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
+        Challenge 2012</link>.</para>
 
-      <para>Assign each process to a machine. All processes already have an original (unoptimized) assignment. Each
-      process requires an amount of each resource (such as CPU, RAM, ...). This is more complex version of the Cloud
-      balancing example.</para>
+        <para>Hard constraints:</para>
 
-      <para>The problem is defined by <link xlink:href="http://challenge.roadef.org/2012/en/">the Google ROADEF/EURO
-      Challenge 2012</link>.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.</para>
+          </listitem>
 
-      <para>Hard constraints:</para>
+          <listitem>
+            <para>Conflict: Processes of the same service must run on distinct machines.</para>
+          </listitem>
 
-      <itemizedlist>
-        <listitem>
-          <para>Maximum capacity: The maximum capacity for each resource for each machine must not be exceeded.</para>
-        </listitem>
+          <listitem>
+            <para>Spread: Processes of the same service must be spread across locations.</para>
+          </listitem>
 
-        <listitem>
-          <para>Conflict: Processes of the same service must run on distinct machines.</para>
-        </listitem>
+          <listitem>
+            <para>Dependency: The processes of a service depending on another service must run in the neighborhood of a
+            process of the other service.</para>
+          </listitem>
 
-        <listitem>
-          <para>Spread: Processes of the same service must be spread across locations.</para>
-        </listitem>
+          <listitem>
+            <para>Transient usage: Some resources are transient and count towards the maximum capacity of both the
+            original machine as the newly assigned machine.</para>
+          </listitem>
+        </itemizedlist>
 
-        <listitem>
-          <para>Dependency: The processes of a service depending on another service must run in the neighborhood of a
-          process of the other service.</para>
-        </listitem>
+        <para>Soft constraints:</para>
 
-        <listitem>
-          <para>Transient usage: Some resources are transient and count towards the maximum capacity of both the
-          original machine as the newly assigned machine.</para>
-        </listitem>
-      </itemizedlist>
+        <itemizedlist>
+          <listitem>
+            <para>Load: The safety capacity for each resource for each machine should not be exceeded.</para>
+          </listitem>
 
-      <para>Soft constraints:</para>
+          <listitem>
+            <para>Balance: Leave room for future assignments by balancing the available resources on each
+            machine.</para>
+          </listitem>
 
-      <itemizedlist>
-        <listitem>
-          <para>Load: The safety capacity for each resource for each machine should not be exceeded.</para>
-        </listitem>
+          <listitem>
+            <para>Process move cost: A process has a move cost.</para>
+          </listitem>
 
-        <listitem>
-          <para>Balance: Leave room for future assignments by balancing the available resources on each machine.</para>
-        </listitem>
+          <listitem>
+            <para>Service move cost: A service has a move cost.</para>
+          </listitem>
 
-        <listitem>
-          <para>Process move cost: A process has a move cost.</para>
-        </listitem>
+          <listitem>
+            <para>Machine move cost: Moving a process from machine A to machine B has another A-B specific move
+            cost.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
 
-        <listitem>
-          <para>Service move cost: A service has a move cost.</para>
-        </listitem>
+      <section>
+        <title>Problem size</title>
 
-        <listitem>
-          <para>Machine move cost: Moving a process from machine A to machine B has another A-B specific move
-          cost.</para>
-        </listitem>
-      </itemizedlist>
-    </section>
-
-    <section>
-      <title>Problem size</title>
-
-      <programlisting>model_a1_1: 2 resources, 1 neighborhoods, 4 locations, 4 machines, 79 services, 100 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^60).
+        <programlisting>model_a1_1: 2 resources, 1 neighborhoods, 4 locations, 4 machines, 79 services, 100 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^60).
 model_a1_2: 4 resources, 2 neighborhoods, 4 locations, 100 machines, 980 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
 model_a1_3: 3 resources, 5 neighborhoods, 25 locations, 100 machines, 216 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
 model_a1_4: 3 resources, 50 neighborhoods, 50 locations, 50 machines, 142 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
@@ -483,707 +540,646 @@ model_a2_2: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 170 servi
 model_a2_3: 12 resources, 5 neighborhoods, 25 locations, 100 machines, 129 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^2000).
 model_a2_4: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 180 services, 1000 processes and 1 balancePenalties with flooredPossibleSolutionSize (10^1698).
 model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 services, 1000 processes and 0 balancePenalties with flooredPossibleSolutionSize (10^1698).</programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>Hospital bed planning (PAS - Patient admission scheduling)</title>
+
+      <section>
+        <title>Problem statement</title>
+
+        <para>Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay
+        in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure
+        dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
+
+        <para>There are a couple of hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>2 patients shouldn't be assigned to the same bed in the same night.</para>
+          </listitem>
+
+          <listitem>
+            <para>A room can have a gender limitation: only females, only males, the same gender in the same night or no
+            gender limitation at all.</para>
+          </listitem>
+
+          <listitem>
+            <para>A department can have a minimum or maximum age.</para>
+          </listitem>
+
+          <listitem>
+            <para>A patient can require a room with specific equipment(s).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>And of course, there are also some soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>A patient can prefer a maximum room size, for example if he/she want a single room.</para>
+          </listitem>
+
+          <listitem>
+            <para>A patient is best assigned to a department that specializes in his/her problem.</para>
+          </listitem>
+
+          <listitem>
+            <para>A patient is best assigned to a room that specializes in his/her problem.</para>
+          </listitem>
+
+          <listitem>
+            <para>A patient can prefer a room with specific equipment(s).</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and
+        the test data comes from real world hospitals.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
   </section>
 
   <section>
-    <title>Manners 2009 example</title>
+    <title>Difficult examples</title>
 
     <section>
-      <title>Problem statement</title>
+      <title>Exam timetabling (ITC 2007 track 1 - Examination)</title>
 
-      <para>In Manners 2009, miss Manners is throwing a party again.</para>
+      <section>
+        <title>Problem statement</title>
 
-      <itemizedlist>
-        <listitem>
-          <para>This time she invited 144 guests and prepared 12 round tables with 12 seats each.</para>
-        </listitem>
+        <para>Schedule each exam into a period and into a room. Multiple exams can share the same room during the same
+        period.</para>
 
-        <listitem>
-          <para>Every guest should sit next to someone (left and right) of the opposite gender.</para>
-        </listitem>
+        <para>There are a number of hard constraints that cannot be broken:</para>
 
-        <listitem>
-          <para>And that neighbour should have at least one hobby in common with the guest.</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>Exam conflict: 2 exams that share students should not occur in the same period.</para>
+          </listitem>
 
-        <listitem>
-          <para>Also, this time there should be 2 politicians, 2 doctors, 2 socialites, 2 sports stars, 2 teachers and 2
-          programmers at each table.</para>
-        </listitem>
+          <listitem>
+            <para>Room capacity: A room's seating capacity should suffice at all times.</para>
+          </listitem>
 
-        <listitem>
-          <para>And the 2 politicians, 2 doctors, 2 sports stars and 2 programmers shouldn't be the same kind.</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>Period duration: A period's duration should suffice for all of its exams.</para>
+          </listitem>
 
-      <para>Drools Expert also has the normal miss Manners examples (which is much smaller) and employs a brute force
-      heuristic to solve it. Drools Planner's implementation employs far more scalable heuristics while still using
-      Drools Expert to calculate the score..</para>
+          <listitem>
+            <para>Period related hard constraints should be fulfilled:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Coincidence: 2 exams should use the same period (but possibly another room).</para>
+              </listitem>
+
+              <listitem>
+                <para>Exclusion: 2 exams should not use the same period.</para>
+              </listitem>
+
+              <listitem>
+                <para>After: 1 exam should occur in a period after another exam's period.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Room related hard constraints should be fulfilled:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Exclusive: 1 exam should not have to share its room with any other exam.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+
+        <para>There are also a number of soft constraints that should be minimized (each of which has parameterized
+        penalty's):</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>2 exams in a row.</para>
+          </listitem>
+
+          <listitem>
+            <para>2 exams in a day.</para>
+          </listitem>
+
+          <listitem>
+            <para>Period spread: 2 exams that share students should be a number of periods apart.</para>
+          </listitem>
+
+          <listitem>
+            <para>Mixed durations: 2 exams that share a room should not have different durations.</para>
+          </listitem>
+
+          <listitem>
+            <para>Front load: Large exams should be scheduled earlier in the schedule.</para>
+          </listitem>
+
+          <listitem>
+            <para>Period penalty: Some periods have a penalty when used.</para>
+          </listitem>
+
+          <listitem>
+            <para>Room penalty: Some rooms have a penalty when used.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>It uses large test data sets of real-life universities.</para>
+
+        <para>The problem is defined by <link
+        xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">the International Timetabling
+        Competition 2007 track 1</link>.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <para>These numbers might give you some insight on the size of this problem.</para>
+
+        <table>
+          <title>Examination problem size</title>
+
+          <tgroup cols="8">
+            <thead>
+              <row>
+                <entry>Set</entry>
+
+                <entry># students</entry>
+
+                <entry># exams/topics</entry>
+
+                <entry># periods</entry>
+
+                <entry># rooms</entry>
+
+                <entry># possible solutions</entry>
+
+                <entry># feasible solutions</entry>
+
+                <entry># optimal solutions</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>exam_comp_set1</entry>
+
+                <entry>7883</entry>
+
+                <entry>607</entry>
+
+                <entry>54</entry>
+
+                <entry>7</entry>
+
+                <entry>10^1564</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set2</entry>
+
+                <entry>12484</entry>
+
+                <entry>870</entry>
+
+                <entry>40</entry>
+
+                <entry>49</entry>
+
+                <entry>10^2864</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set3</entry>
+
+                <entry>16365</entry>
+
+                <entry>934</entry>
+
+                <entry>36</entry>
+
+                <entry>48</entry>
+
+                <entry>10^3023</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set4</entry>
+
+                <entry>4421</entry>
+
+                <entry>273</entry>
+
+                <entry>21</entry>
+
+                <entry>1</entry>
+
+                <entry>10^360</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set5</entry>
+
+                <entry>8719</entry>
+
+                <entry>1018</entry>
+
+                <entry>42</entry>
+
+                <entry>3</entry>
+
+                <entry>10^2138</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set6</entry>
+
+                <entry>7909</entry>
+
+                <entry>242</entry>
+
+                <entry>16</entry>
+
+                <entry>8</entry>
+
+                <entry>10^509</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set7</entry>
+
+                <entry>13795</entry>
+
+                <entry>1096</entry>
+
+                <entry>80</entry>
+
+                <entry>28</entry>
+
+                <entry>10^3671</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>exam_comp_set8</entry>
+
+                <entry>7718</entry>
+
+                <entry>598</entry>
+
+                <entry>80</entry>
+
+                <entry>8</entry>
+
+                <entry>10^1678</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+
+              <row>
+                <entry>?</entry>
+
+                <entry>s</entry>
+
+                <entry>t</entry>
+
+                <entry>p</entry>
+
+                <entry>r</entry>
+
+                <entry>(p * r) ^ e</entry>
+
+                <entry>?</entry>
+
+                <entry>1?</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <para>Geoffrey De Smet (the Drools Planner lead) finished 4th in the International Timetabling Competition
+        2007's examination track with a very early version of Drools Planner. Many improvements have been made since
+        then.</para>
+      </section>
+
+      <section>
+        <title>Domain model</title>
+
+        <para>Below you can see the main examination domain classes:</para>
+
+        <figure>
+          <title>Examination domain class diagram</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationDomainDiagram.png"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Notice that we've split up the exam concept into an <literal>Exam</literal> class and a
+        <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving (this is the
+        planning entity class), when they get another period or room property. The <literal>Topic</literal>,
+        <literal>Period</literal> and <literal>Room</literal> instances never change during solving (these are problem
+        facts, just like some other classes).</para>
+      </section>
     </section>
-  </section>
-
-  <section>
-    <title>Traveling Salesman Problem example (TSP)</title>
 
     <section>
-      <title>Problem statement</title>
+      <title>Employee rostering (INRC 2010 - Nurse rostering)</title>
 
-      <para>Given a list of cities, find the shortest tour for a salesman that visits each city exactly once. <link
-      xlink:href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">See the wikipedia definition of the
-      traveling Salesman Problem.</link></para>
+      <section>
+        <title>Problem statement</title>
 
-      <para>It is <link xlink:href="http://www.tsp.gatech.edu/">one of the most intensively studied problems</link> in
-      computational mathematics. Yet, in the real world, it's often only part of a planning problem, along with other
-      constraints, such as employee shift time constraints.</para>
-    </section>
-  </section>
+        <para>For each shift, assign a nurse to work that shift.</para>
 
-  <section>
-    <title>Traveling Tournament Problem example (TTP)</title>
+        <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
+        International Nurse Rostering Competition 2010</link>.</para>
 
-    <section>
-      <title>Problem statement</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png"></imagedata>
+          </imageobject>
+        </mediaobject>
 
-      <para>Schedule matches between <emphasis>n</emphasis> teams with the following hard constraints:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"></imagedata>
+          </imageobject>
+        </mediaobject>
 
-      <itemizedlist>
-        <listitem>
-          <para>Each team plays twice against every other team: once home and once away.</para>
-        </listitem>
-
-        <listitem>
-          <para>Each team has exactly 1 match on each timeslot.</para>
-        </listitem>
-
-        <listitem>
-          <para>No team must have more than 3 consecutive home or 3 consecutive away matches.</para>
-        </listitem>
-
-        <listitem>
-          <para>No repeaters: no 2 consecutive matches of the same 2 opposing teams.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>and the following soft constraint:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Minimize the total distance traveled by all teams.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">Michael Trick's website (which
-      contains several world records too)</link>.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section>
-      <title>Simple and smart implementation</title>
+      <title>Sport scheduling (TTP - Traveling tournament problem)</title>
 
-      <para>There are 2 implementations (simple and smart) to demonstrate the importance of some performance tips. The
-      <literal>DroolsPlannerExamplesApp</literal> always runs the smart implementation, but with these commands you can
-      compare the 2 implementations yourself:</para>
+      <section>
+        <title>Problem statement</title>
 
-      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+        <para>Schedule matches between <emphasis>n</emphasis> teams with the following hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Each team plays twice against every other team: once home and once away.</para>
+          </listitem>
+
+          <listitem>
+            <para>Each team has exactly 1 match on each timeslot.</para>
+          </listitem>
+
+          <listitem>
+            <para>No team must have more than 3 consecutive home or 3 consecutive away matches.</para>
+          </listitem>
+
+          <listitem>
+            <para>No repeaters: no 2 consecutive matches of the same 2 opposing teams.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>and the following soft constraint:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Minimize the total distance traveled by all teams.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The problem is defined on <link xlink:href="http://mat.gsia.cmu.edu/TOURN/">Michael Trick's website (which
+        contains several world records too)</link>.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/travelingTournamentUseCase.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </section>
+
+      <section>
+        <title>Simple and smart implementation</title>
+
+        <para>There are 2 implementations (simple and smart) to demonstrate the importance of some performance tips. The
+        <literal>DroolsPlannerExamplesApp</literal> always runs the smart implementation, but with these commands you
+        can compare the 2 implementations yourself:</para>
+
+        <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
 ...
 $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
-      <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>
-    </section>
+        <para>The smart implementation performs and scales exponentially better than the simple implementation.</para>
+      </section>
 
-    <section>
-      <title>Problem size</title>
+      <section>
+        <title>Problem size</title>
 
-      <para>These numbers might give you some insight on the size of this problem.</para>
+        <para>These numbers might give you some insight on the size of this problem.</para>
 
-      <table>
-        <title>Traveling tournament problem size</title>
+        <table>
+          <title>Traveling tournament problem size</title>
 
-        <tgroup cols="7">
-          <thead>
-            <row>
-              <entry># teams</entry>
+          <tgroup cols="7">
+            <thead>
+              <row>
+                <entry># teams</entry>
 
-              <entry># days</entry>
+                <entry># days</entry>
 
-              <entry># matches</entry>
+                <entry># matches</entry>
 
-              <entry># possible solutions (simple)</entry>
+                <entry># possible solutions (simple)</entry>
 
-              <entry># possible solutions (smart)</entry>
+                <entry># possible solutions (smart)</entry>
 
-              <entry># feasible solutions</entry>
+                <entry># feasible solutions</entry>
 
-              <entry># optimal solutions</entry>
-            </row>
-          </thead>
+                <entry># optimal solutions</entry>
+              </row>
+            </thead>
 
-          <tbody>
-            <row>
-              <entry>4</entry>
+            <tbody>
+              <row>
+                <entry>4</entry>
 
-              <entry>6</entry>
+                <entry>6</entry>
 
-              <entry>12</entry>
+                <entry>12</entry>
 
-              <entry>2176782336</entry>
+                <entry>2176782336</entry>
 
-              <entry>&lt;= 518400</entry>
+                <entry>&lt;= 518400</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>6</entry>
+              <row>
+                <entry>6</entry>
 
-              <entry>10</entry>
+                <entry>10</entry>
 
-              <entry>30</entry>
+                <entry>30</entry>
 
-              <entry>1000000000000000000000000000000</entry>
+                <entry>1000000000000000000000000000000</entry>
 
-              <entry>&lt;= 47784725839872000000</entry>
+                <entry>&lt;= 47784725839872000000</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>8</entry>
+              <row>
+                <entry>8</entry>
 
-              <entry>14</entry>
+                <entry>14</entry>
 
-              <entry>56</entry>
+                <entry>56</entry>
 
-              <entry>1.52464943788290465606136043e+64</entry>
+                <entry>1.52464943788290465606136043e+64</entry>
 
-              <entry>&lt;= 5.77608277425558771434498864e+43</entry>
+                <entry>&lt;= 5.77608277425558771434498864e+43</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>10</entry>
+              <row>
+                <entry>10</entry>
 
-              <entry>18</entry>
+                <entry>18</entry>
 
-              <entry>90</entry>
+                <entry>90</entry>
 
-              <entry>9.43029892325559280477052413e+112</entry>
+                <entry>9.43029892325559280477052413e+112</entry>
 
-              <entry>&lt;= 1.07573451027871200629339068e+79</entry>
+                <entry>&lt;= 1.07573451027871200629339068e+79</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>12</entry>
+              <row>
+                <entry>12</entry>
 
-              <entry>22</entry>
+                <entry>22</entry>
 
-              <entry>132</entry>
+                <entry>132</entry>
 
-              <entry>1.58414112478195320415135060e+177</entry>
+                <entry>1.58414112478195320415135060e+177</entry>
 
-              <entry>&lt;= 2.01650616733413376416949843e+126</entry>
+                <entry>&lt;= 2.01650616733413376416949843e+126</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>14</entry>
+              <row>
+                <entry>14</entry>
 
-              <entry>26</entry>
+                <entry>26</entry>
 
-              <entry>182</entry>
+                <entry>182</entry>
 
-              <entry>3.35080635695103223315189511e+257</entry>
+                <entry>3.35080635695103223315189511e+257</entry>
 
-              <entry>&lt;= 1.73513467024013808570420241e+186</entry>
+                <entry>&lt;= 1.73513467024013808570420241e+186</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>16</entry>
+              <row>
+                <entry>16</entry>
 
-              <entry>30</entry>
+                <entry>30</entry>
 
-              <entry>240</entry>
+                <entry>240</entry>
 
-              <entry>3.22924601799855400751522483e+354</entry>
+                <entry>3.22924601799855400751522483e+354</entry>
 
-              <entry>&lt;= 2.45064610271441678267620602e+259</entry>
+                <entry>&lt;= 2.45064610271441678267620602e+259</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
+                <entry>1?</entry>
+              </row>
 
-            <row>
-              <entry>n</entry>
+              <row>
+                <entry>n</entry>
 
-              <entry>2 * (n - 1)</entry>
+                <entry>2 * (n - 1)</entry>
 
-              <entry>n * (n - 1)</entry>
+                <entry>n * (n - 1)</entry>
 
-              <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
+                <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
 
-              <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
+                <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
 
-              <entry>?</entry>
+                <entry>?</entry>
 
-              <entry>1?</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-    </section>
-  </section>
-
-  <section>
-    <title>Curriculum course scheduling example (ITC 2007 track 3)</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>Schedule each lecture into a timeslot and into a room.</para>
-
-      <para>The problem is defined by <link
-      xlink:href="http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm">the International
-      Timetabling Competition 2007 track 3</link>.</para>
-    </section>
-  </section>
-
-  <section>
-    <title>Examination timetabling example (ITC 2007 track 1)</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>Schedule each exam into a period and into a room. Multiple exams can share the same room during the same
-      period.</para>
-
-      <para>There are a number of hard constraints that cannot be broken:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Exam conflict: 2 exams that share students should not occur in the same period.</para>
-        </listitem>
-
-        <listitem>
-          <para>Room capacity: A room's seating capacity should suffice at all times.</para>
-        </listitem>
-
-        <listitem>
-          <para>Period duration: A period's duration should suffice for all of its exams.</para>
-        </listitem>
-
-        <listitem>
-          <para>Period related hard constraints should be fulfilled:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>Coincidence: 2 exams should use the same period (but possibly another room).</para>
-            </listitem>
-
-            <listitem>
-              <para>Exclusion: 2 exams should not use the same period.</para>
-            </listitem>
-
-            <listitem>
-              <para>After: 1 exam should occur in a period after another exam's period.</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-
-        <listitem>
-          <para>Room related hard constraints should be fulfilled:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>Exclusive: 1 exam should not have to share its room with any other exam.</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-      </itemizedlist>
-
-      <para>There are also a number of soft constraints that should be minimized (each of which has parameterized
-      penalty's):</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>2 exams in a row.</para>
-        </listitem>
-
-        <listitem>
-          <para>2 exams in a day.</para>
-        </listitem>
-
-        <listitem>
-          <para>Period spread: 2 exams that share students should be a number of periods apart.</para>
-        </listitem>
-
-        <listitem>
-          <para>Mixed durations: 2 exams that share a room should not have different durations.</para>
-        </listitem>
-
-        <listitem>
-          <para>Front load: Large exams should be scheduled earlier in the schedule.</para>
-        </listitem>
-
-        <listitem>
-          <para>Period penalty: Some periods have a penalty when used.</para>
-        </listitem>
-
-        <listitem>
-          <para>Room penalty: Some rooms have a penalty when used.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>It uses large test data sets of real-life universities.</para>
-
-      <para>The problem is defined by <link
-      xlink:href="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">the International Timetabling
-      Competition 2007 track 1</link>.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </section>
-
-    <section>
-      <title>Problem size</title>
-
-      <para>These numbers might give you some insight on the size of this problem.</para>
-
-      <table>
-        <title>Examination problem size</title>
-
-        <tgroup cols="8">
-          <thead>
-            <row>
-              <entry>Set</entry>
-
-              <entry># students</entry>
-
-              <entry># exams/topics</entry>
-
-              <entry># periods</entry>
-
-              <entry># rooms</entry>
-
-              <entry># possible solutions</entry>
-
-              <entry># feasible solutions</entry>
-
-              <entry># optimal solutions</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry>exam_comp_set1</entry>
-
-              <entry>7883</entry>
-
-              <entry>607</entry>
-
-              <entry>54</entry>
-
-              <entry>7</entry>
-
-              <entry>10^1564</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set2</entry>
-
-              <entry>12484</entry>
-
-              <entry>870</entry>
-
-              <entry>40</entry>
-
-              <entry>49</entry>
-
-              <entry>10^2864</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set3</entry>
-
-              <entry>16365</entry>
-
-              <entry>934</entry>
-
-              <entry>36</entry>
-
-              <entry>48</entry>
-
-              <entry>10^3023</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set4</entry>
-
-              <entry>4421</entry>
-
-              <entry>273</entry>
-
-              <entry>21</entry>
-
-              <entry>1</entry>
-
-              <entry>10^360</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set5</entry>
-
-              <entry>8719</entry>
-
-              <entry>1018</entry>
-
-              <entry>42</entry>
-
-              <entry>3</entry>
-
-              <entry>10^2138</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set6</entry>
-
-              <entry>7909</entry>
-
-              <entry>242</entry>
-
-              <entry>16</entry>
-
-              <entry>8</entry>
-
-              <entry>10^509</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set7</entry>
-
-              <entry>13795</entry>
-
-              <entry>1096</entry>
-
-              <entry>80</entry>
-
-              <entry>28</entry>
-
-              <entry>10^3671</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>exam_comp_set8</entry>
-
-              <entry>7718</entry>
-
-              <entry>598</entry>
-
-              <entry>80</entry>
-
-              <entry>8</entry>
-
-              <entry>10^1678</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-
-            <row>
-              <entry>?</entry>
-
-              <entry>s</entry>
-
-              <entry>t</entry>
-
-              <entry>p</entry>
-
-              <entry>r</entry>
-
-              <entry>(p * r) ^ e</entry>
-
-              <entry>?</entry>
-
-              <entry>1?</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-      <para>Geoffrey De Smet (the Drools Planner lead) finished 4th in the International Timetabling Competition 2007's
-      examination track with a very early version of Drools Planner. Many improvements have been made since then.</para>
-    </section>
-
-    <section>
-      <title>Domain model</title>
-
-      <para>Below you can see the main examination domain classes:</para>
-
-      <figure>
-        <title>Examination domain class diagram</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/examinationDomainDiagram.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>Notice that we've split up the exam concept into an <literal>Exam</literal> class and a
-      <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving (this is the planning
-      entity class), when they get another period or room property. The <literal>Topic</literal>,
-      <literal>Period</literal> and <literal>Room</literal> instances never change during solving (these are problem
-      facts, just like some other classes).</para>
-    </section>
-  </section>
-
-  <section>
-    <title>Patient admission scheduling (hospital bed planning) example (PAS)</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay in
-      the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure dates of
-      the patients is fixed: only a bed needs to be assigned for each night.</para>
-
-      <para>There are a couple of hard constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>2 patients shouldn't be assigned to the same bed in the same night.</para>
-        </listitem>
-
-        <listitem>
-          <para>A room can have a gender limitation: only females, only males, the same gender in the same night or no
-          gender limitation at all.</para>
-        </listitem>
-
-        <listitem>
-          <para>A department can have a minimum or maximum age.</para>
-        </listitem>
-
-        <listitem>
-          <para>A patient can require a room with specific equipment(s).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>And of course, there are also some soft constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>A patient can prefer a maximum room size, for example if he/she want a single room.</para>
-        </listitem>
-
-        <listitem>
-          <para>A patient is best assigned to a department that specializes in his/her problem.</para>
-        </listitem>
-
-        <listitem>
-          <para>A patient is best assigned to a room that specializes in his/her problem.</para>
-        </listitem>
-
-        <listitem>
-          <para>A patient can prefer a room with specific equipment(s).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and
-      the test data comes from real world hospitals.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </section>
-  </section>
-
-  <section>
-    <title>Nurse rostering example (INRC 2010)</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>For each shift, assign a nurse to work that shift.</para>
-
-      <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
-      International Nurse Rostering Competition 2010</link>.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"></imagedata>
-        </imageobject>
-      </mediaobject>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"></imagedata>
-        </imageobject>
-      </mediaobject>
+                <entry>1?</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
     </section>
   </section>
 </chapter>

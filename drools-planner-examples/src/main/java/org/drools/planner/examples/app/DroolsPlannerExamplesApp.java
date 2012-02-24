@@ -106,13 +106,22 @@ public class DroolsPlannerExamplesApp extends JFrame {
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("N queens",
-                "Place n queens on a chessboard of size N.\n\n" +
+                "Place queens on a chessboard.\n\n" +
                         "No 2 queens must be able to attack each other.",
                 "/org/drools/planner/examples/nqueens/swingui/queenImage.png", new Runnable() {
                     public void run() {
                         new NQueensApp().init(false);
                     }
                 }));
+        panel.add(createExampleButton("Cloud balancing",
+                "Assign processes to servers.\n\n" +
+                        "Each server must have enough hardware to run all of it's processes.\n" +
+                        "Each server used inflicts a maintenance cost.",
+                null, new Runnable() {
+            public void run() {
+                new CloudBalancingApp().init(false);
+            }
+        }));
         panel.add(createExampleButton("Traveling salesman",
                 "Official competition name: TSP - Traveling salesman problem\n" +
                         "Determine the order in which to visit all cities.\n\n" +
@@ -122,21 +131,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new TspApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Miss Manners 2009",
+        panel.add(createExampleButton("Manners 2009",
                 "A much larger variant of the classic Miss Manners problem.\n" +
                         "Assign guests to seats at tables.",
                 null, new Runnable() {
             public void run() {
                 new Manners2009App().init(false);
-            }
-        }));
-        panel.add(createExampleButton("Cloud balancing",
-                "Assign processes to servers.\n\n" +
-                        "Each server must have enough hardware to run all of it's processes.\n" +
-                        "Each server used inflicts a maintenance cost.",
-                null, new Runnable() {
-            public void run() {
-                new CloudBalancingApp().init(false);
             }
         }));
         return panel;
@@ -148,19 +148,8 @@ public class DroolsPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColors.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("Hospital bed planning",
-                "Official competition name: PAS - Patient admission scheduling\n" +
-                        "Assign patients to beds.",
-                null, new Runnable() {
-            public void run() {
-                new PatientAdmissionScheduleApp().init(false);
-            }
-        }));
-        panel.add(createDisabledExampleButton("Vehicle routing",
-                "Not yet implemented",
-                null));
         panel.add(createExampleButton("Course timetabling",
-                "Official competition name: ITC 2007 track3 - Curriculum course timetabling\n" +
+                "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n" +
                         "Assign lectures to periods and rooms.",
                 null, new Runnable() {
             public void run() {
@@ -175,6 +164,17 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new MachineReassignmentApp().init(false);
             }
         }));
+        panel.add(createDisabledExampleButton("Vehicle routing",
+                "Not yet implemented",
+                null));
+        panel.add(createExampleButton("Hospital bed planning",
+                "Official competition name: PAS - Patient admission scheduling\n" +
+                        "Assign patients to beds.",
+                null, new Runnable() {
+            public void run() {
+                new PatientAdmissionScheduleApp().init(false);
+            }
+        }));
         return panel;
     }
 
@@ -184,6 +184,14 @@ public class DroolsPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColors.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        panel.add(createExampleButton("Exam timetabling",
+                "Official competition name: ITC 2007 track1 - Examination timetabling\n" +
+                        "Assign exams to timeslots and rooms.",
+                null, new Runnable() {
+            public void run() {
+                new ExaminationApp().init(false);
+            }
+        }));
         panel.add(createExampleButton("Employee rostering",
                 "Official competition name: INRC2010 - Nurse rostering\n" +
                         "Assign shifts to employees.",
@@ -192,20 +200,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new NurseRosteringApp().init(false);
             }
         }));
-        panel.add(createExampleButton("Traveling tournament problem",
+        panel.add(createExampleButton("Sport scheduling",
                 "Official competition name: TTP - Traveling tournament problem\n" +
                         "Assign matches to days.",
                 null, new Runnable() {
             public void run() {
                 new SmartTravelingTournamentApp().init(false);
-            }
-        }));
-        panel.add(createExampleButton("Exam timetabling",
-                "Official competition name: ITC 2007 track1 - Examination timetabling\n" +
-                        "Assign exams to timeslots and rooms.",
-                null, new Runnable() {
-            public void run() {
-                new ExaminationApp().init(false);
             }
         }));
         panel.add(new JPanel());
