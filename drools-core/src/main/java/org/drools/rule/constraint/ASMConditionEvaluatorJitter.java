@@ -894,7 +894,7 @@ public class ASMConditionEvaluatorJitter {
                     return i;
                 }
             }
-            throw new RuntimeException("Unknown variable name");
+            throw new RuntimeException("Unknown variable name: " + variableName);
         }
     }
 

@@ -30,7 +30,6 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.command.Command;
 import org.drools.command.Context;
-import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
@@ -152,7 +151,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        WorkingMemoryEventListenerWrapper wrapper = null;
+        WorkingMemoryEventListenerWrapper wrapper;
         if ( listener != null && !(listener instanceof WorkingMemoryEventListenerWrapper) ) {
             wrapper = new WorkingMemoryEventListenerWrapper( listener );
         } else {
@@ -191,7 +190,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        AgendaEventListenerWrapper wrapper = null;
+        AgendaEventListenerWrapper wrapper;
         if ( listener != null && !(listener instanceof AgendaEventListenerWrapper) ) {
             wrapper = new AgendaEventListenerWrapper( listener );
         } else {
@@ -201,7 +200,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     private InternalProcessRuntime getInternalProcessRuntime() {
-        InternalProcessRuntime processRuntime = ((InternalProcessRuntime) this.session.getProcessRuntime());
+        InternalProcessRuntime processRuntime = this.session.getProcessRuntime();
         if ( processRuntime == null ) throw new RuntimeException( "There is no ProcessRuntime available: are jBPM libraries missing on classpath?" );
         return processRuntime;
     }
@@ -511,8 +510,7 @@ public class StatefulKnowledgeSessionImpl
             }
 
             int i = 0;
-            for ( Iterator it = iterator(); it.hasNext(); ) {
-                it.next();
+            for (Object o : this) {
                 i++;
             }
 
@@ -520,7 +518,7 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public Iterator< ? > iterator() {
-            Iterator it = null;
+            Iterator it;
             if ( type == OBJECT ) {
                 if ( filter != null ) {
                     it = store.iterateObjects( filter );
@@ -556,8 +554,8 @@ public class StatefulKnowledgeSessionImpl
             }
 
             int i = 0;
-            for ( Iterator it = iterator(); it.hasNext(); ) {
-                array[i++] = it.next();
+            for (Object o : this) {
+                array[i++] = o;
             }
 
             return array;
@@ -790,13 +788,6 @@ public class StatefulKnowledgeSessionImpl
         return new NativeQueryResults( this.session.getQueryResults( query,
                                                                      arguments ) );
     }
-
-    private KnowledgeCommandContext commandContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                                                        null ),
-                                                                                       null,
-                                                                                       this.kbase,
-                                                                                       this,
-                                                                                       null );
 
     public <T> T execute(Command<T> command) {
         return execute( null,

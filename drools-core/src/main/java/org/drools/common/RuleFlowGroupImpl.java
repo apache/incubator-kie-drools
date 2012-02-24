@@ -259,7 +259,7 @@ public class RuleFlowGroupImpl
         return "RuleFlowGroup '" + this.name + "'";
     }
 
-    public boolean equal(final Object object) {
+    public boolean equals(final Object object) {
         if ( (object == null) || !(object instanceof RuleFlowGroupImpl) ) {
             return false;
         }

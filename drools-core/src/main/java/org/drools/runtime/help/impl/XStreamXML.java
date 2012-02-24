@@ -158,10 +158,8 @@ public class XStreamXML {
 public static class FactHandleConverter
   implements
   Converter {
-  private Mapper mapper;
 
   public FactHandleConverter(XStream xstream) {
-      this.mapper = mapper;
   }
 
   public boolean canConvert(Class aClass) {
@@ -222,9 +220,7 @@ public static class ModifyConverter
           reader.moveUp();
       }
 
-      Command cmd = CommandFactory.newModify( factHandle,
-                                              setters );
-      return cmd;
+      return CommandFactory.newModify( factHandle, setters );
   }
 
   public boolean canConvert(Class clazz) {
@@ -254,9 +250,7 @@ public static class RetractConverter extends AbstractCollectionConverter
                           UnmarshallingContext context) {
       FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
 
-      Command cmd = CommandFactory.newRetract( factHandle );
-
-      return cmd;
+      return CommandFactory.newRetract( factHandle );
   }
 
   public boolean canConvert(Class clazz) {

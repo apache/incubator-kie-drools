@@ -1,6 +1,5 @@
 package org.drools.rule.constraint;
 
-import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;

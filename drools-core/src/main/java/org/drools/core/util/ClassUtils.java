@@ -63,9 +63,7 @@ public final class ClassUtils {
      */
     public static String stripExtension(final String pResourceName) {
         final int i = pResourceName.lastIndexOf( '.' );
-        final String withoutExtension = pResourceName.substring( 0,
-                                                                 i );
-        return withoutExtension;
+        return pResourceName.substring( 0, i );
     }
 
     public static String toJavaCasing(final String pName) {
@@ -79,19 +77,15 @@ public final class ClassUtils {
         final int rootLength = base.getAbsolutePath().length();
         final String absFileName = file.getAbsolutePath();
         final int p = absFileName.lastIndexOf( '.' );
-        final String relFileName = absFileName.substring( rootLength + 1,
-                                                          p );
-        final String clazzName = relFileName.replace( File.separatorChar,
-                                                      '.' );
-        return clazzName;
+        final String relFileName = absFileName.substring( rootLength + 1, p );
+        return relFileName.replace( File.separatorChar, '.' );
     }
 
     public static String relative(final File base,
                                   final File file) {
         final int rootLength = base.getAbsolutePath().length();
         final String absFileName = file.getAbsolutePath();
-        final String relFileName = absFileName.substring( rootLength + 1 );
-        return relFileName;
+        return absFileName.substring( rootLength + 1 );
     }
 
     public static String canonicalName(Class clazz) {
@@ -173,7 +167,7 @@ public final class ClassUtils {
             }
         }
 
-        Object object = null;
+        Object object;
         try {
             object = cls.newInstance();
         } catch ( Throwable e ) {
@@ -195,31 +189,31 @@ public final class ClassUtils {
         }
 
         String[] items = str.split( " " );
-        for ( int i = 0; i < items.length; i++ ) {
-            String qualifiedNamespace = items[i].substring( 0,
-                                                            items[i].lastIndexOf( '.' ) ).trim();
-            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
-            Object object = patterns.get( qualifiedNamespace );
-            if ( object == null ) {
-                if ( STAR.equals( name ) ) {
-                    patterns.put( qualifiedNamespace,
-                                  STAR );
+        for (String item : items) {
+            String qualifiedNamespace = item.substring(0,
+                    item.lastIndexOf('.')).trim();
+            String name = item.substring(item.lastIndexOf('.') + 1).trim();
+            Object object = patterns.get(qualifiedNamespace);
+            if (object == null) {
+                if (STAR.equals(name)) {
+                    patterns.put(qualifiedNamespace,
+                            STAR);
                 } else {
                     // create a new list and add it
                     List list = new ArrayList();
-                    list.add( name );
-                    patterns.put( qualifiedNamespace,
-                                  list );
+                    list.add(name);
+                    patterns.put(qualifiedNamespace,
+                            list);
                 }
-            } else if ( name.equals( STAR ) ) {
+            } else if (name.equals(STAR)) {
                 // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
-                patterns.put( qualifiedNamespace,
-                              STAR );
+                patterns.put(qualifiedNamespace,
+                        STAR);
             } else {
                 // its a list so add it if it doesn't already exist
                 List list = (List) object;
-                if ( !list.contains( object ) ) {
-                    list.add( name );
+                if (!list.contains(name)) {
+                    list.add(name);
                 }
             }
         }

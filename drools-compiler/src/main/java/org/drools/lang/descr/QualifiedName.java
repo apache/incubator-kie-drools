@@ -63,9 +63,7 @@ public class QualifiedName {
         QualifiedName that = (QualifiedName) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (namespace != null ? !namespace.equals(that.namespace) : that.namespace != null) return false;
-
-        return true;
+        return !(namespace != null ? !namespace.equals(that.namespace) : that.namespace != null);
     }
 
     public int hashCode() {

@@ -57,9 +57,9 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
 
         VariableResolverFactory factory = compilationUnit.createFactory();
         compilationUnit.updateFactory( null, null, object,
-                leftTuple, null, workingMemory,
-                workingMemory.getGlobalResolver(),
-                factory );
+                                       leftTuple, null, workingMemory,
+                                       workingMemory.getGlobalResolver(),
+                                       factory );
 
         org.drools.rule.Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -125,6 +125,9 @@ public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionE
     }
 
     private ASTNode unwrapSubstatement(ASTNode node) {
+        if (node instanceof LineLabel) {
+            return node.nextASTNode;
+        }
         return node instanceof Substatement ? ((ExecutableAccessor)((Substatement)node).getStatement()).getNode() : node;
     }
 

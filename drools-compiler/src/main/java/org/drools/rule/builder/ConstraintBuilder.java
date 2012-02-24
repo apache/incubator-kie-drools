@@ -19,7 +19,6 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.rule.constraint.EvaluatorConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.Constraint;
@@ -28,7 +27,9 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Restriction;
+import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
+import org.mvel2.util.CompatibilityStrategy;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.drools.rule.builder.PatternBuilder.buildAnalysis;
+import static org.drools.rule.builder.PatternBuilder.getUsedDeclarations;
 import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class ConstraintBuilder {
@@ -45,6 +47,7 @@ public class ConstraintBuilder {
 
     static {
         if (USE_MVEL_EXPRESSION) {
+            CompatibilityStrategy.setCompatibilityEvaluator(StringCoercionCompatibilityEvaluator.INSTANCE);
             DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
             DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
 
@@ -87,8 +90,7 @@ public class ConstraintBuilder {
                 expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
             }
             boolean isIndexable = operator.equals("==");
-            MVELCompilationUnit compilationUnit = null;
-            // MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, expression, declarations);
+            MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression);
             return new MvelConstraint(context.getPkg().getName(), expression, declarations, compilationUnit, isIndexable, getIndexingDeclaration(restriction), extractor, isUnification);
         } else {
             return new VariableConstraint(extractor, restriction);
@@ -113,8 +115,7 @@ public class ConstraintBuilder {
 
             String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
             boolean isIndexable = operator.equals("==");
-            MVELCompilationUnit compilationUnit = null;
-            // MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, null);
+            MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
             return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
@@ -232,13 +233,19 @@ public class ConstraintBuilder {
         return evaluator;
     }
 
-    public static MVELCompilationUnit buildCompilationUnit(RuleBuildContext context, Pattern pattern, String expression, Declaration[] declarations) {
+    public static MVELCompilationUnit buildCompilationUnit(RuleBuildContext context, Pattern pattern, String expression) {
         Dialect dialect = context.getDialect();
         context.setDialect( context.getDialect( "mvel" ) );
 
         PredicateDescr predicateDescr = new PredicateDescr( context.getRuleDescr().getResource(), expression );
         AnalysisResult analysis = buildAnalysis(context, pattern, predicateDescr, null);
-        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, declarations, null, predicateDescr, analysis);
+        if ( analysis == null ) {
+            // something bad happened
+            return null;
+        }
+
+        Declaration[][] usedDeclarations = getUsedDeclarations(context, pattern, analysis);
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, usedDeclarations[0], usedDeclarations[1], predicateDescr, analysis);
 
         context.setDialect(dialect);
         return compilationUnit;
@@ -289,5 +296,40 @@ public class ConstraintBuilder {
         }
 
         return unit;
+    }
+
+    public static class BooleanConversionHandler implements ConversionHandler {
+
+        private static final BooleanConversionHandler INSTANCE = new BooleanConversionHandler();
+
+        private BooleanConversionHandler() { }
+
+        public Object convertFrom(Object in) {
+            if (in.getClass() == Boolean.class || in.getClass() == boolean.class) {
+                return in;
+            }
+            return in instanceof String && ((String)in).equalsIgnoreCase("true");
+        }
+
+        public boolean canConvertFrom(Class cls) {
+            return cls == Boolean.class || cls == boolean.class || cls == String.class;
+        }
+    }
+
+    public static class StringCoercionCompatibilityEvaluator extends CompatibilityStrategy.DefaultCompatibilityEvaluator {
+
+        private static final CompatibilityStrategy.CompatibilityEvaluator INSTANCE = new StringCoercionCompatibilityEvaluator();
+
+        private StringCoercionCompatibilityEvaluator() { }
+
+        @Override
+        public boolean areEqualityCompatible(Class<?> c1, Class<?> c2) {
+            return true;
+        }
+
+        @Override
+        public boolean areComparisonCompatible(Class<?> c1, Class<?> c2) {
+            return super.areEqualityCompatible(c1, c2);
+        }
     }
 }
