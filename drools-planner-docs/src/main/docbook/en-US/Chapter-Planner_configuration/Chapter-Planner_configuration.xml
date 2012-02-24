@@ -108,7 +108,7 @@
       <para>As an alternative to the XML file, a solver configuration can also be configured with the
       <literal>SolverConfig</literal> API:</para>
 
-      <programlisting>        SolverConfig solverConfig = new SolverConfig();
+      <programlisting language="java">        SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
         Set&lt;Class&lt;?&gt;&gt; planningEntityClassSet = new HashSet&lt;Class&lt;?&gt;&gt;();
@@ -139,7 +139,7 @@
       <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
       runtime:</para>
 
-      <programlisting>        XmlSolverFactory solverFactory = new XmlSolverFactory();
+      <programlisting language="java">        XmlSolverFactory solverFactory = new XmlSolverFactory();
         solverFactory.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         SolverConfig solverConfig = solverFactory.getSolverConfig();
@@ -198,14 +198,14 @@
       interface <literal>Serializable</literal> is recommended (but not required). For example in n queens, the columns
       and rows are problem facts:</para>
 
-      <programlisting>public class Column implements Serializable {
+      <programlisting language="java">public class Column implements Serializable {
 
     private int index;
 
     // ... getters
 }</programlisting>
 
-      <programlisting>public class Row implements Serializable {
+      <programlisting language="java">public class Row implements Serializable {
 
     private int index;
 
@@ -214,7 +214,7 @@
 
       <para>A problem fact can reference other problem facts of course:</para>
 
-      <programlisting>public class Course implements Serializable {
+      <programlisting language="java">public class Course implements Serializable {
 
     private String code;
 
@@ -262,7 +262,7 @@
         its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
         column never changes during solving, while its row does change.</para>
 
-        <programlisting>@PlanningEntity
+        <programlisting language="java">@PlanningEntity
 public class Queen {
 
     private Column column;
@@ -279,7 +279,7 @@ public class Queen {
         <literal>Room</literal> so it has 2 planning variables (period and room). For example: the course Mathematics
         has 8 lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
 
-        <programlisting>@PlanningEntity
+        <programlisting language="java">@PlanningEntity
 public class Lecture {
 
     private Course course;
@@ -294,7 +294,7 @@ public class Lecture {
 
         <para>The solver configuration also needs to be made aware of each planning entity class:</para>
 
-        <programlisting>&lt;solver&gt;
+        <programlisting language="java">&lt;solver&gt;
   ...
   &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
   ...
@@ -330,12 +330,12 @@ public class Lecture {
         <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
         <literal>@PlanningEntity</literal> annotation:</para>
 
-        <programlisting>@PlanningEntity(difficultyComparatorClass = CloudProcessAssignmentDifficultyComparator.class)
+        <programlisting language="java">@PlanningEntity(difficultyComparatorClass = CloudProcessAssignmentDifficultyComparator.class)
 public class CloudProcessAssignment {
     // ...
 }</programlisting>
 
-        <programlisting>public class CloudProcessAssignmentDifficultyComparator implements Comparator&lt;CloudProcessAssignment&gt; {
+        <programlisting language="java">public class CloudProcessAssignmentDifficultyComparator implements Comparator&lt;CloudProcessAssignment&gt; {
 
     public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
         return new CompareToBuilder()
@@ -357,18 +357,18 @@ public class CloudProcessAssignment {
         <literal>@PlanningEntity</literal> annotation, so you have access to the rest of the problem facts from the
         solution too:</para>
 
-        <programlisting>@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
+        <programlisting language="java">@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 public class Queen {
     // ...
 }</programlisting>
 
-        <programlisting>public interface PlanningEntityDifficultyWeightFactory {
+        <programlisting language="java">public interface PlanningEntityDifficultyWeightFactory {
 
     Comparable createDifficultyWeight(Solution solution, Object planningEntity);
 
 }</programlisting>
 
-        <programlisting>public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+        <programlisting language="java">public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
 
     public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
         NQueens nQueens = (NQueens) solution;
@@ -418,7 +418,7 @@ public class Queen {
         <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation.
         Furthermore, it needs a <literal>@ValueRange</literal> annotation too.</para>
 
-        <programlisting>@PlanningEntity
+        <programlisting language="java">@PlanningEntity
 public class Queen {
 
     private Row row;
@@ -481,13 +481,13 @@ public class Queen {
           <literal>Collection</literal>. Any value from that <literal>Collection</literal> is a possible planning value
           for this planning variable.</para>
 
-          <programlisting>    @PlanningVariable
+          <programlisting language="java">    @PlanningVariable
     @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "rowList")
     public Row getRow() {
         return row;
     }</programlisting>
 
-          <programlisting>public class NQueens implements Solution&lt;SimpleScore&gt; {
+          <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     // ...
 
@@ -505,7 +505,7 @@ public class Queen {
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
           department, lectures of that teacher can limit their room value range to the rooms of his department.</para>
 
-          <programlisting>    @PlanningVariable
+          <programlisting language="java">    @PlanningVariable
     @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "possibleRoomList")
     public Room getRoom() {
         return room;
@@ -536,7 +536,7 @@ public class Queen {
           <title><literal>ValueRange</literal> undefinied</title>
 
           <para>Leaves the value range undefined. Some optimization algorithms do not support this value
-          range.<programlisting>    @PlanningVariable
+          range.<programlisting language="java">    @PlanningVariable
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public Row getRow() {
         return row;
@@ -555,13 +555,13 @@ public class Queen {
         <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
         <literal>@PlanningVariable</literal> annotation:</para>
 
-        <programlisting>    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
+        <programlisting language="java">    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
     // ...
     public CloudComputer getCloudComputer() {
         // ...
     }</programlisting>
 
-        <programlisting>public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
+        <programlisting language="java">public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
 
     public int compare(CloudComputer a, CloudComputer b) {
         return new CompareToBuilder()
@@ -584,20 +584,19 @@ public class Queen {
         <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the
         solution too:</para>
 
-        <programlisting>    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+        <programlisting language="java">    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     // ...
     public Row getRow() {
         // ...
     }</programlisting>
 
-        <programlisting>public interface PlanningValueStrengthWeightFactory {
+        <programlisting language="java">public interface PlanningValueStrengthWeightFactory {
 
     Comparable createStrengthWeight(Solution solution, Object planningValue);
 
 }</programlisting>
 
-        <programlisting>
-public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
+        <programlisting language="java">public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
 
     public Comparable createStrengthWeight(Solution solution, Object planningValue) {
         NQueens nQueens = (NQueens) solution;
@@ -717,7 +716,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
         <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
 
-        <programlisting>public class CurriculumCourseSchedule implements Solution&lt;HardAndSoftScore&gt; {
+        <programlisting language="java">public class CurriculumCourseSchedule implements Solution&lt;HardAndSoftScore&gt; {
 
     private HardAndSoftScore score;
 
@@ -769,7 +768,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         <para>For example in examination, a cache problem fact <literal>TopicConflict</literal> is created for every 2
         <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
 
-        <programlisting>    public Collection&lt;? extends Object&gt; getProblemFacts() {
+        <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
         // ...
         facts.addAll(calculateTopicConflictList());
@@ -901,7 +900,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         <para>Usually, most of this data comes from your data layer, and your <literal>Solution</literal> implementation
         just aggregates that data and creates the uninitialized planning entity instances to plan:</para>
 
-        <programlisting>        private void createLectureList(CurriculumCourseSchedule schedule) {
+        <programlisting language="java">        private void createLectureList(CurriculumCourseSchedule schedule) {
             List&lt;Course&gt; courseList = schedule.getCourseList();
             List&lt;Lecture&gt; lectureList = new ArrayList&lt;Lecture&gt;(courseList.size());
             for (Course course : courseList) {
@@ -1126,7 +1125,7 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
       to the logging adaptor for your logging framework of choice. If you're not using any logging framework yet, you
       can use Logback by adding this Maven dependency:</para>
 
-      <programlisting>    &lt;dependency&gt;
+      <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
       &lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
       &lt;version&gt;1.x&lt;/version&gt;
@@ -1136,7 +1135,7 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
 
       <para>In Logback, configure it in your <filename>logback.xml</filename> file:</para>
 
-      <programlisting>&lt;configuration&gt;
+      <programlisting language="xml">&lt;configuration&gt;
 
   &lt;logger name="org.drools.planner" level="debug"/&gt;
 
@@ -1146,7 +1145,7 @@ INFO  Solving ended: time spend (13), best score (0), average calculate count pe
 
       <para>In Log4J, configure it in your <filename>log4j.xml</filename> file:</para>
 
-      <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+      <programlisting language="xml">&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
 
   &lt;category name="org.drools.planner"&gt;
     &lt;priority value="debug" /&gt;

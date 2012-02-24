@@ -317,7 +317,7 @@
       <para>To use one or multiple build-in <literal>MoveFactory</literal> implementations, configure it as a
       <literal>Selector</literal>:</para>
 
-      <programlisting>  &lt;localSearch&gt;
+      <programlisting language="xml">  &lt;localSearch&gt;
     &lt;selector&gt;
       &lt;selector&gt;
         &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;

@@ -100,7 +100,7 @@
     <literal>ProblemFactChange</literal> to the <literal>Solver</literal> which it will execute in the solver thread as
     soon as possible.</para>
 
-    <programlisting>public interface Solver {
+    <programlisting language="java">public interface Solver {
 
     ...
 
@@ -112,7 +112,7 @@
 
 }</programlisting>
 
-    <programlisting>public interface ProblemFactChange {
+    <programlisting language="java">public interface ProblemFactChange {
 
     void doChange(SolutionDirector solutionDirector);
 
@@ -120,7 +120,7 @@
 
     <para>Here's an example:</para>
 
-    <programlisting>    public void deleteComputer(final CloudComputer cloudComputer) {
+    <programlisting language="java">    public void deleteComputer(final CloudComputer cloudComputer) {
         solver.addProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();

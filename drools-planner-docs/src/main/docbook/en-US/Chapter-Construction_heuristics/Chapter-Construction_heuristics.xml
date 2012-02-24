@@ -43,7 +43,7 @@
 
       <para>Configure this <literal>SolverPhase</literal>:</para>
 
-      <programlisting>  &lt;constructionHeuristic&gt;
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
     &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
@@ -100,7 +100,7 @@
 
       <para>Configure this <literal>SolverPhase</literal>:</para>
 
-      <programlisting>  &lt;constructionHeuristic&gt;
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
     &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
@@ -132,7 +132,7 @@
 
       <para>Configure this <literal>SolverPhase</literal>:</para>
 
-      <programlisting>  &lt;constructionHeuristic&gt;
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
     &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;
@@ -163,7 +163,7 @@
 
       <para>Configure this <literal>SolverPhase</literal>:</para>
 
-      <programlisting>  &lt;constructionHeuristic&gt;
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
     &lt;constructionHeuristicType&gt;BEST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
     &lt;!-- Speedup that can be applied to most, but not all use cases: --&gt;
     &lt;!-- &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt; --&gt;

@@ -36,7 +36,7 @@
 
       <para>Using the brute force algorithm is easy:</para>
 
-      <programlisting>&lt;solver&gt;
+      <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;bruteForce&gt;
   &lt;/bruteForce&gt;

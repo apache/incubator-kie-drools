@@ -428,7 +428,7 @@
 
     <para>Here's a configuration that runs 3 phases in sequence:</para>
 
-    <programlisting>&lt;solver&gt;
+    <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;constructionHeuristic&gt;
     ... &lt;!-- First phase: First Fit decreasing --&gt;
@@ -447,7 +447,7 @@
     <para>Some phases (especially construction heuristics) will terminate automatically. Other phases (especially
     metaheuristics) will only terminate if the phase is configured to terminate:</para>
 
-    <programlisting>&lt;solver&gt;
+    <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;termination&gt;&lt;!-- Solver termination --&gt;
     &lt;maximumSecondsSpend&gt;90&lt;/maximumSecondsSpend&gt;
@@ -659,7 +659,7 @@
 
     <para>Implement the <literal>CustomSolverPhaseCommand</literal> interface:</para>
 
-    <programlisting>public interface CustomSolverPhaseCommand {
+    <programlisting language="java">public interface CustomSolverPhaseCommand {
 
     void changeWorkingSolution(SolutionDirector solutionDirector);
 
@@ -667,7 +667,7 @@
 
     <para>For example:</para>
 
-    <programlisting>public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
+    <programlisting language="java">public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
 
     public void changeWorkingSolution(SolutionDirector solutionDirector) {
         Examination examination = (Examination) solutionDirector.getWorkingSolution();
@@ -699,7 +699,7 @@
 
     <para>And configure it like this:</para>
 
-    <programlisting>&lt;solver&gt;
+    <programlisting language="xml">&lt;solver&gt;
   ...
   &lt;customSolverPhase&gt;
     &lt;customSolverPhaseCommandClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;

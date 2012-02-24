@@ -209,21 +209,21 @@
       <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
       Planner. This is the domain model for the n queens example:</para>
 
-      <programlisting>public class Column {
+      <programlisting language="java">public class Column {
     
     private int index;
 
     // ... getters and setters
 }</programlisting>
 
-      <programlisting>public class Row {
+      <programlisting language="java">public class Row {
     
     private int index;
 
     // ... getters and setters
 }</programlisting>
 
-      <programlisting>public class Queen {
+      <programlisting language="java">public class Queen {
     
     private Column column;
     private Row row;
@@ -234,7 +234,7 @@
     // ... getters and setters
 }</programlisting>
 
-      <programlisting>public class NQueens implements Solution&lt;SimpleScore&gt; {
+      <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
     
     private int n;
     private List&lt;Column&gt; columnList;
