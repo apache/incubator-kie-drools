@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.TitledBorder;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.drools.planner.examples.common.swingui.TangoColors;
@@ -51,6 +52,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
     public static void main(String[] args) {
         DroolsPlannerExamplesApp droolsPlannerExamplesApp = new DroolsPlannerExamplesApp();
         droolsPlannerExamplesApp.pack();
+        droolsPlannerExamplesApp.setLocationRelativeTo(null);
         droolsPlannerExamplesApp.setVisible(true);
     }
     
@@ -63,64 +65,53 @@ public class DroolsPlannerExamplesApp extends JFrame {
     }
 
     private Container createContentPane() {
-        JPanel contentPane = new JPanel(new BorderLayout());
+        JPanel contentPane = new JPanel(new BorderLayout(10, 10));
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         JLabel titleLabel = new JLabel("Which example do you want to see?", JLabel.CENTER);
         titleLabel.setFont(titleLabel.getFont().deriveFont(20.0f));
         contentPane.add(titleLabel, BorderLayout.NORTH);
-        JPanel examplesPanel = createExamplesPanel();
-        contentPane.add(examplesPanel, BorderLayout.CENTER);
+        JScrollPane examplesScrollPane = new JScrollPane(createExamplesPanel());
+        examplesScrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+        examplesScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        contentPane.add(examplesScrollPane, BorderLayout.CENTER);
         contentPane.add(createDescriptionPanel(), BorderLayout.SOUTH);
         return contentPane;
     }
 
     private JPanel createExamplesPanel() {
         JPanel examplesPanel = new JPanel();
+        examplesPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         GroupLayout layout = new GroupLayout(examplesPanel);
         examplesPanel.setLayout(layout);
-        JLabel toyExamplesLabel = new JLabel(" Toy examples");
-        toyExamplesLabel.setForeground(TangoColors.CHAMELEON_3);
-        JScrollPane toyExamplesScrollPane = new JScrollPane(createToyExamplesPanel());
-        JLabel realExamplesLabel = new JLabel(" Real examples");
-        realExamplesLabel.setForeground(TangoColors.BUTTER_3);
-        JScrollPane realExamplesScrollPane = new JScrollPane(createRealExamplesPanel());
-        JLabel difficultExamplesLabel = new JLabel(" Difficult examples");
-        difficultExamplesLabel.setForeground(TangoColors.SCARLET_3);
-        JScrollPane difficultExamplesScrollPane = new JScrollPane(createDifficultExamplesPanel());
-        layout.setHorizontalGroup(layout.createParallelGroup()
-                .addComponent(toyExamplesLabel).addComponent(toyExamplesScrollPane)
-                .addComponent(realExamplesLabel).addComponent(realExamplesScrollPane)
-                .addComponent(difficultExamplesLabel).addComponent(difficultExamplesScrollPane));
-        layout.setVerticalGroup(layout.createSequentialGroup()
+        JPanel toyExamplesPanel = createToyExamplesPanel();
+        JPanel realExamplesPanel = createRealExamplesPanel();
+        JPanel difficultExamplesPanel = createDifficultExamplesPanel();
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addComponent(toyExamplesPanel)
                 .addGap(10)
-                .addComponent(toyExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addComponent(toyExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(realExamplesPanel)
                 .addGap(10)
-                .addComponent(realExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addComponent(realExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addGap(10)
-                .addComponent(difficultExamplesLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addComponent(difficultExamplesScrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
-                        GroupLayout.PREFERRED_SIZE)
-                .addGap(10));
+                .addComponent(difficultExamplesPanel));
+        layout.setVerticalGroup(layout.createParallelGroup()
+                .addComponent(toyExamplesPanel)
+                .addComponent(realExamplesPanel)
+                .addComponent(difficultExamplesPanel));
         return examplesPanel;
     }
 
     private JPanel createToyExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Toy examples");
+        titledBorder.setTitleColor(TangoColors.CHAMELEON_3);
+        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("N queens", "No 2 queens can attack each other.",
                 "/org/drools/planner/examples/nqueens/swingui/queenImage.png",
                 new Runnable() {
-            public void run() {
-                new NQueensApp().init(false);
-            }
-        }));
+                    public void run() {
+                        new NQueensApp().init(false);
+                    }
+                }));
         panel.add(createExampleButton("Cloud balancing", "Assign processes to servers.", null, new Runnable() {
             public void run() {
                 new CloudBalancingApp().init(false);
@@ -141,8 +132,11 @@ public class DroolsPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createRealExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Real examples");
+        titledBorder.setTitleColor(TangoColors.BUTTER_3);
+        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Curriculum course timetabling", "(ITC2007 track3)", null, new Runnable() {
             public void run() {
                 new CurriculumCourseApp().init(false);
@@ -167,8 +161,11 @@ public class DroolsPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createDifficultExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 3, 5, 5));
-        panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+        TitledBorder titledBorder = BorderFactory.createTitledBorder("Difficult examples");
+        titledBorder.setTitleColor(TangoColors.SCARLET_3);
+        panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Traveling tournament problem", "(TTP)", null, new Runnable() {
             public void run() {
                 new SmartTravelingTournamentApp().init(false);
@@ -218,7 +215,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
         descriptionTextArea = new JTextArea(8, 80);
         descriptionTextArea.setEditable(false);
         descriptionPanel.add(new JScrollPane(descriptionTextArea,
-                JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         return descriptionPanel;
     }
 
