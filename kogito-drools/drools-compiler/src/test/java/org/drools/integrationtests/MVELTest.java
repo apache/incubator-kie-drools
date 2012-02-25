@@ -856,4 +856,37 @@ public class MVELTest extends CommonTestMethodBase {
     	MVEL.executeExpression(o, vars);
     	System.out.println( o );
     }
+
+    @Test
+    public void testTokensInString(){
+        //should query antldr DFA63 class but don't know how
+        String [] operators = {"," ,"=" , "|=", "*"};
+        //test various in consequence
+        String strBegin = "" +
+            "package org.drools \n" +
+            "import org.drools.Cheese \n" +
+            "dialect \"mvel\"\n" +
+            "rule rule1 \n" +
+            "when \n" +
+            "$c:Cheese(type==\"swiss\") \n" +
+            "then \n"+
+            "modify($c){ type = \"swiss";
+
+        String strEnd= "good\"};\n" +
+                "end\n";
+        StringBuffer failures = new StringBuffer();
+        for(String oper:operators){
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            String rule = strBegin+oper+strEnd;
+            System.out.print(rule);
+            kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+            if (kbuilder.hasErrors()) {
+                failures.append(kbuilder.getErrors().toString());
+            }
+        }
+        String failStr = failures.toString();
+        if(failStr.length()>0){
+            fail(failStr);
+        }
+    }
 }
