@@ -57,6 +57,10 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                     Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
                             variableDescriptor);
                     Collection<?> values = variableDescriptor.extractAllPlanningValues(workingSolution);
+                    if (values.size() > 500) {
+                        // TODO https://issues.jboss.org/browse/JBRULES-3371
+                        throw new IllegalStateException("TODO fix JBRULES-3371 so this works.");
+                    }
                     for (Object anchor : values) {
                         // value can never be null because nullable isn't allowed with chained
                         if (!entityDescriptor.getPlanningEntityClass().isAssignableFrom(anchor.getClass())) {
