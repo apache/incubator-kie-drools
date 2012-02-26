@@ -30,7 +30,8 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("VrpCustomer")
 public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
-    private VrpLocation location; // the destinationCity
+    private VrpLocation location;
+    private int demand;
     
     // Planning variables: changes during planning, between score calculations.
     private VrpAppearance previousAppearance;
@@ -41,6 +42,14 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 
     public void setLocation(VrpLocation location) {
         this.location = location;
+    }
+
+    public int getDemand() {
+        return demand;
+    }
+
+    public void setDemand(int demand) {
+        this.demand = demand;
     }
 
     @PlanningVariable(chained = true)

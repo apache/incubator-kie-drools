@@ -133,6 +133,29 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         }
 
+        public long readLongValue() throws IOException {
+            return readLongValue("");
+        }
+
+        public long readLongValue(String prefix) throws IOException {
+            return readLongValue(prefix, "");
+        }
+
+        public long readLongValue(String prefix, String suffix) throws IOException {
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                throw new IllegalArgumentException("File ends before a line is expected to contain an integer value ("
+                        + prefix + "<value>" + suffix + ").");
+            }
+            String value = removePrefixSuffixFromLine(line, prefix, suffix);
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
+                        + value + ").", e);
+            }
+        }
+
         public String readStringValue() throws IOException {
             return readStringValue("");
         }

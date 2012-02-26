@@ -49,28 +49,28 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
         this.name = name;
     }
 
-    public List<VrpLocation> getVrpLocationList() {
+    public List<VrpLocation> getLocationList() {
         return locationList;
     }
 
-    public void setVrpLocationList(List<VrpLocation> locationList) {
+    public void setLocationList(List<VrpLocation> locationList) {
         this.locationList = locationList;
     }
 
-    public List<VrpVehicle> getVrpVehicleList() {
+    public List<VrpVehicle> getVehicleList() {
         return vehicleList;
     }
 
-    public void setVrpVehicleList(List<VrpVehicle> vehicleList) {
+    public void setVehicleList(List<VrpVehicle> vehicleList) {
         this.vehicleList = vehicleList;
     }
 
     @PlanningEntityCollectionProperty
-    public List<VrpCustomer> getVrpCustomerList() {
+    public List<VrpCustomer> getCustomerList() {
         return customerList;
     }
 
-    public void setVrpCustomerList(List<VrpCustomer> customerList) {
+    public void setCustomerList(List<VrpCustomer> customerList) {
         this.customerList = customerList;
     }
 
@@ -103,23 +103,23 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
         clone.name = name;
         clone.locationList = locationList;
         clone.vehicleList = vehicleList;
-        List<VrpCustomer> clonedVrpCustomerList = new ArrayList<VrpCustomer>(customerList.size());
-        Map<Long, VrpCustomer> idToClonedVrpCustomerMap = new HashMap<Long, VrpCustomer>(
+        List<VrpCustomer> clonedCustomerList = new ArrayList<VrpCustomer>(customerList.size());
+        Map<Long, VrpCustomer> idToClonedCustomerMap = new HashMap<Long, VrpCustomer>(
                 customerList.size());
         for (VrpCustomer customer : customerList) {
-            VrpCustomer clonedVrpCustomer = customer.clone();
-            clonedVrpCustomerList.add(clonedVrpCustomer);
-            idToClonedVrpCustomerMap.put(clonedVrpCustomer.getId(), clonedVrpCustomer);
+            VrpCustomer clonedCustomer = customer.clone();
+            clonedCustomerList.add(clonedCustomer);
+            idToClonedCustomerMap.put(clonedCustomer.getId(), clonedCustomer);
         }
         // Fix: Previous should point to the new clones instead of the old instances
-        for (VrpCustomer clonedVrpCustomer : clonedVrpCustomerList) {
-            VrpAppearance previousVrpAppearance = clonedVrpCustomer.getPreviousAppearance();
-            if (previousVrpAppearance instanceof VrpCustomer) {
-                Long previousVrpCustomerId = ((VrpCustomer) previousVrpAppearance).getId();
-                clonedVrpCustomer.setPreviousAppearance(idToClonedVrpCustomerMap.get(previousVrpCustomerId));
+        for (VrpCustomer clonedCustomer : clonedCustomerList) {
+            VrpAppearance previousAppearance = clonedCustomer.getPreviousAppearance();
+            if (previousAppearance instanceof VrpCustomer) {
+                Long previousVrpCustomerId = ((VrpCustomer) previousAppearance).getId();
+                clonedCustomer.setPreviousAppearance(idToClonedCustomerMap.get(previousVrpCustomerId));
             }
         }
-        clone.customerList = clonedVrpCustomerList;
+        clone.customerList = clonedCustomerList;
         clone.score = score;
         return clone;
     }
@@ -137,9 +137,9 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
             }
             for (Iterator<VrpCustomer> it = customerList.iterator(), otherIt = other.customerList.iterator(); it.hasNext();) {
                 VrpCustomer customer = it.next();
-                VrpCustomer otherVrpCustomer = otherIt.next();
+                VrpCustomer otherCustomer = otherIt.next();
                 // Notice: we don't use equals()
-                if (!customer.solutionEquals(otherVrpCustomer)) {
+                if (!customer.solutionEquals(otherCustomer)) {
                     return false;
                 }
             }

@@ -23,6 +23,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
 
     private VrpLocation depotLocation;
+    private int capacity;
 
     public VrpLocation getDepotLocation() {
         return depotLocation;
@@ -30,6 +31,14 @@ public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
 
     public void setDepotLocation(VrpLocation depotLocation) {
         this.depotLocation = depotLocation;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     // ************************************************************************
