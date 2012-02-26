@@ -30,8 +30,8 @@ import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("VehicleRoutingSchedule")
-public class VehicleRoutingSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
+@XStreamAlias("VrpSchedule")
+public class VrpSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private String name;
     private List<VrpLocation> locationList;
@@ -97,8 +97,8 @@ public class VehicleRoutingSchedule extends AbstractPersistable implements Solut
     /**
      * Clone will only deep copy the {@link #customerList}.
      */
-    public VehicleRoutingSchedule cloneSolution() {
-        VehicleRoutingSchedule clone = new VehicleRoutingSchedule();
+    public VrpSchedule cloneSolution() {
+        VrpSchedule clone = new VrpSchedule();
         clone.id = id;
         clone.name = name;
         clone.locationList = locationList;
@@ -128,10 +128,10 @@ public class VehicleRoutingSchedule extends AbstractPersistable implements Solut
         if (this == o) {
             return true;
         }
-        if (id == null || !(o instanceof VehicleRoutingSchedule)) {
+        if (id == null || !(o instanceof VrpSchedule)) {
             return false;
         } else {
-            VehicleRoutingSchedule other = (VehicleRoutingSchedule) o;
+            VrpSchedule other = (VrpSchedule) o;
             if (customerList.size() != other.customerList.size()) {
                 return false;
             }
