@@ -82,6 +82,10 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);

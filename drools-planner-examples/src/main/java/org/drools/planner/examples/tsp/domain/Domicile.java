@@ -32,4 +32,8 @@ public class Domicile extends AbstractPersistable implements Appearance {
         this.city = city;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
 }

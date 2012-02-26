@@ -82,6 +82,10 @@ public class VehicleRoutingSchedule extends AbstractPersistable implements Solut
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);

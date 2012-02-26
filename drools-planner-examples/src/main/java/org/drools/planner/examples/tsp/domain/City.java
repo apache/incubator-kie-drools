@@ -51,6 +51,10 @@ public class City extends AbstractPersistable {
         this.longitude = longitude;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     /**
      * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
      * @param city never null
