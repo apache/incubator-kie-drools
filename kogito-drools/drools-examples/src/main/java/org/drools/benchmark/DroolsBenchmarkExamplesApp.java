@@ -44,7 +44,7 @@ public class DroolsBenchmarkExamplesApp extends JFrame {
     }
 
     public DroolsBenchmarkExamplesApp() {
-        super("Drools Benchmark examples");
+        super("JBoss BRMS Benchmark examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

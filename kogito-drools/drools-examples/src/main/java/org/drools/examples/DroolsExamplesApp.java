@@ -57,7 +57,7 @@ public class DroolsExamplesApp extends JFrame {
     }
 
     public DroolsExamplesApp() {
-        super("Drools examples");
+        super("JBoss BRMS examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }

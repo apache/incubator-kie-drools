@@ -87,7 +87,7 @@ public class SudokuExample implements ActionListener {
     }
 
     public SudokuExample() throws Exception {
-        mainFrame = new JFrame("Drools Sudoku Example");
+        mainFrame = new JFrame("JBoss BRMS Sudoku Example");
         for (String sampleName : SudokuGridSamples.getInstance().getSampleNames()){
             JMenuItem menuItem = new JMenuItem(sampleName);
             menuItem.addActionListener(this);
