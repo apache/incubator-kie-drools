@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -30,12 +31,16 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SharableNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.Pattern;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.reteoo.PropertySpecificUtil.addListenedPropertiesToMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
 import static org.drools.reteoo.PropertySpecificUtil.getNodeClass;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
@@ -61,7 +66,7 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           nextRightTupleSinkNode;
 
     private long declaredMask;
-    private long networkMask;
+    private long inferredMask;
 
     public AlphaNode() {
 
@@ -89,36 +94,59 @@ public class AlphaNode extends ObjectSource
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
 
-        initPropertySpecificMask(context);
+        initDeclaredMask(context);
     }
 
-    private void initPropertySpecificMask(BuildContext context) {
-        Class<?> nodeClass = getNodeClass(getObjectTypeNode());
-        List<String> settableProperties = getSettableProperties(context.getRuleBase(), nodeClass);
-        if (settableProperties != null) {
+    public void initDeclaredMask(BuildContext context) {
+        Pattern pattern = context.getLastBuiltPatterns()[0];
+        ObjectType objectType = pattern.getObjectType();
+        
+        if ( !(objectType instanceof ClassObjectType)) {
+            // Only ClassObjectType can use property specific
+            declaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
+        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
+            // if property specific is not on, then accept all modification propagations
+            declaredMask = Long.MAX_VALUE;             
+        } else {
+            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
             declaredMask = calculateDeclaredMask(settableProperties);
-            networkMask = declaredMask;
-        }
-
-        List<String> listenedProperties = context.getListenedPropertiesFor(nodeClass);
-        if (listenedProperties != null) {
-            networkMask = addListenedPropertiesToMask(listenedProperties, networkMask, settableProperties);
         }
     }
+    
+    public void resetInferredMask() {
+        this.inferredMask = 0;
+    }
+    
+    public long updateMask(long mask) {
+        long returnMask;
+        if (source instanceof AlphaNode) {
+            returnMask = ((AlphaNode) source).updateMask( declaredMask | mask );
+        } else { // else ObjectTypeNode
+            returnMask = declaredMask | mask;
+        }
+        inferredMask = inferredMask | returnMask;
+        return returnMask;
+        
+    }     
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
         declaredMask = in.readLong();
-        networkMask = in.readLong();
+        inferredMask = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(constraint);
         out.writeLong(declaredMask);
-        out.writeLong(networkMask);
+        out.writeLong(inferredMask);
     }
 
     /**
@@ -136,7 +164,7 @@ public class AlphaNode extends ObjectSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.source.addObjectSink( this );
+        this.source.addObjectSink( this );     
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -153,8 +181,8 @@ public class AlphaNode extends ObjectSource
                                     propagationContext,
                                     workingMemory );
         }
-    }
-
+    }   
+    
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -173,12 +201,7 @@ public class AlphaNode extends ObjectSource
                              final ModifyPreviousTuples modifyPreviousTuples,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-
-        long propagationMask = context.getPropagationMask();
-        if ( context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), propagationMask | networkMask) ) {
-
-            context.setPropagationMask(propagationMask | declaredMask);
+        if ( intersect(context.getModificationMask(), inferredMask ) ) {
 
             final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
             if ( this.constraint.isAllowed( factHandle,
@@ -189,8 +212,6 @@ public class AlphaNode extends ObjectSource
                         context,
                         workingMemory );
             }
-
-            context.setPropagationMask(propagationMask);
         } else {
             byPassModifyToBetaNode(modifyPreviousTuples);
         }
@@ -378,26 +399,64 @@ public class AlphaNode extends ObjectSource
     @Override
     public long getDeclaredMask() {
         return declaredMask;
+    }  
+
+    public long getInferredMask() {
+        return inferredMask;
+    }
+
+    public void setInferredMask(long inferredMask) {
+        this.inferredMask = inferredMask;
+    }
+
+    public void setDeclaredMask(long declaredMask) {
+        this.declaredMask = declaredMask;
     }
 
     @Override
     public void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink(objectSink);
-        addToNetworkMask(objectSink);
     }
+    
+//    private long updateMask(ObjectSink objectSink) {
+//        long mask = 0;
+//        if (objectSink instanceof AlphaNode) {
+//            mask = ((AlphaNode)objectSink).networkMask;
+//        }        
+//        
+//        if (source instanceof AlphaNode) {
+//             return mask | ((AlphaNode)source).updateMask(this, mask);
+//        } else { // instanceof ObjectTypeNode
+//            return mask;
+//        }
+//      }      
+//    
+//    private long updateMask(ObjectSink objectSink, long mask) {
+//      if (objectSink instanceof AlphaNode) {
+//          inferredMask = inferredMask | mask;
+//          //return de
+//          //networkMask |= ((AlphaNode)objectSink).networkMask;
+//      }        
+//      
+//      if (source instanceof AlphaNode) {
+//           return mask | ((AlphaNode)source).updateMask(this, mask);
+//      } else { // instanceof ObjectTypeNode
+//          return mask;
+//      }
+//    }    
 
-    private void addToNetworkMask(ObjectSink objectSink) {
-        if (objectSink instanceof AlphaNode) {
-            networkMask |= ((AlphaNode)objectSink).networkMask;
-        } else if (objectSink instanceof BetaNode) {
-            networkMask |= ((BetaNode)objectSink).getDeclaredMask();
-        }
-        if (source instanceof AlphaNode) {
-            ((AlphaNode)source).addToNetworkMask(this);
-        }
-    }
-
+//    private void addToNetworkMask(ObjectSink objectSink) {
+//        if (objectSink instanceof AlphaNode) {
+//            networkMask |= ((AlphaNode)objectSink).networkMask;
+//        } else if (objectSink instanceof BetaNode) {
+//            networkMask |= ((BetaNode)objectSink).getDeclaredMask();
+//        }
+//        if (source instanceof AlphaNode) {
+//            ((AlphaNode)source).addToNetworkMask(this);
+//        }
+//    }
+//
     public void sharedWith(AlphaNode node) {
-        networkMask |= node.networkMask;
+        //networkMask |= node.networkMask;
     }
 }

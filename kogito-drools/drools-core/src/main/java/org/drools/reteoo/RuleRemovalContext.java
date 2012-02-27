@@ -20,7 +20,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
 
@@ -36,6 +39,8 @@ public class RuleRemovalContext
     private Rule rule;
     
     private CleanupAdapter cleanupAdapter;
+    
+    private List<BaseNode> removedNodes;
 
     public RuleRemovalContext( final Rule rule ) {
         this.rule = rule;
@@ -68,5 +73,13 @@ public class RuleRemovalContext
     public static interface CleanupAdapter {
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory);
+    }
+    
+    public List<BaseNode> getRemovedNodes() {
+        if ( removedNodes == null ) {
+            removedNodes = new ArrayList<BaseNode>();
+        }
+        
+        return removedNodes;
     }
 }

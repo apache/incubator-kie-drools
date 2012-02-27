@@ -73,6 +73,8 @@ public class PatternBuilder
 
         final Pattern pattern = (Pattern) rce;
 
+        context.setLastBuiltPattern( pattern );
+        
         context.pushRuleComponent( pattern );
         this.attachPattern( context,
                             utils,
@@ -105,8 +107,6 @@ public class PatternBuilder
                                 pattern,
                                 alphaConstraints,
                                 betaConstraints );
-
-        context.registerListenedProperties(pattern);
 
         // Create BetaConstraints object
         context.setBetaconstraints( betaConstraints );

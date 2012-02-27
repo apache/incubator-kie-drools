@@ -84,8 +84,6 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
 
-    private Map<Class<?>, List<String>>      listenedPropertiesForClass;
-
     // the current entry point
     private EntryPoint                       currentEntryPoint;
 
@@ -108,6 +106,8 @@ public class BuildContext {
     private TemporalDependencyMatrix         temporal;
 
     private ObjectTypeNode rootObjectTypeNode;
+    
+    private Pattern[]                        lastBuiltPatterns;
 
     private boolean attachPQN;
 
@@ -343,28 +343,6 @@ public class BuildContext {
         this.alphaConstraints = alphaConstraints;
     }
 
-    public Map<Class<?>, List<String>> getListenedProperties() {
-        return listenedPropertiesForClass;
-    }
-
-    public List<String> getListenedPropertiesFor(Class<?> clazz) {
-        return listenedPropertiesForClass == null ? null : listenedPropertiesForClass.get(clazz);
-    }
-
-    public void registerListenedProperties(Pattern pattern) {
-        List<String> listenedProperties = pattern.getListenedProperties();
-        if (listenedProperties == null) {
-            return;
-        }
-        ObjectType objectType = pattern.getObjectType();
-        if (!(objectType instanceof ClassObjectType)) {
-            return;
-        }
-        if (listenedPropertiesForClass == null) {
-            listenedPropertiesForClass = new HashMap<Class<?>, List<String>>();
-        }
-        listenedPropertiesForClass.put(((ClassObjectType)objectType).getClassType(), listenedProperties);
-    }
 
     public boolean isTupleMemoryEnabled() {
         return this.tupleMemoryEnabled;
@@ -503,6 +481,19 @@ public class BuildContext {
     
     public ObjectTypeNode getRootObjectTypeNode() {
         return rootObjectTypeNode;
+    }
+
+    public Pattern[] getLastBuiltPatterns() {
+        return lastBuiltPatterns;
+    }
+
+    public void setLastBuiltPattern(Pattern lastBuiltPattern) {
+        if (this.lastBuiltPatterns == null ) {            
+            this.lastBuiltPatterns = new Pattern[] { lastBuiltPattern, null };
+        } else {
+            this.lastBuiltPatterns[1] = this.lastBuiltPatterns[0];
+            this.lastBuiltPatterns[0] = lastBuiltPattern;
+        }
     }
 
     public void setAttachPQN( final boolean attachPQN ) {
