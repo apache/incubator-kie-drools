@@ -30,7 +30,6 @@ import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.common.SharableNode;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.EntryPointNode;
@@ -154,9 +153,6 @@ public class BuildUtils {
         } else {
             // shared node found
             // undo previous id assignment
-            if (node instanceof SharableNode) {
-                ((SharableNode) node).sharedWith(candidate);
-            }
             context.releaseId( candidate.getId() );
         }
         node.addAssociation( context.getRule(), context.peekRuleComponent() );

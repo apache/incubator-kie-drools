@@ -52,7 +52,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.time.impl.Timer;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
@@ -91,6 +92,7 @@ public class RuleTerminalNode extends BaseNode
 
     private long             declaredMask;
     private long             inferredMask;
+    private long             negativeMask;
 
     // ------------------------------------------------------------
     // Constructors
@@ -159,8 +161,9 @@ public class RuleTerminalNode extends BaseNode
             declaredMask = Long.MAX_VALUE;             
         } else  {
             List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-            declaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);
-        } 
+            declaredMask = calculatePositiveMask(pattern.getListenedProperties(), settableProperties);
+            negativeMask = calculateNegativeMask(pattern.getListenedProperties(), settableProperties);
+        }
     }
     
     public void initInferredMask() {
@@ -170,7 +173,8 @@ public class RuleTerminalNode extends BaseNode
             inferredMask = alphaNode.updateMask( declaredMask );
         } else {
             inferredMask = declaredMask;
-        }        
+        }
+        inferredMask &= (Long.MAX_VALUE - negativeMask);
     }
 
     private LeftTupleSource unwrapTupleSource() {
@@ -194,6 +198,7 @@ public class RuleTerminalNode extends BaseNode
         fireDirect = rule.getActivationListener().equals( "direct" );
         declaredMask = in.readLong();
         inferredMask = in.readLong();        
+        negativeMask = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -208,6 +213,7 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( declarations );
         out.writeLong(declaredMask);
         out.writeLong(inferredMask);        
+        out.writeLong(negativeMask);
     }
 
     /**
@@ -239,16 +245,12 @@ public class RuleTerminalNode extends BaseNode
         return declaredMask;
     }
 
-    public void setDeclaredMask(long declaredMask) {
-        this.declaredMask = declaredMask;
-    }
-
     public long getInferredMask() {
         return inferredMask;
     }
 
-    public void setInferredMask(long inferredMask) {
-        this.inferredMask = inferredMask;
+    public long getNegativeMask() {
+        return negativeMask;
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,

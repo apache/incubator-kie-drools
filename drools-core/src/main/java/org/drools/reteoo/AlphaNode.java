@@ -28,7 +28,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
-import org.drools.common.SharableNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Pattern;
@@ -39,9 +38,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.addListenedPropertiesToMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
-import static org.drools.reteoo.PropertySpecificUtil.getNodeClass;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
@@ -54,8 +50,7 @@ import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 public class AlphaNode extends ObjectSource
     implements
     ObjectSinkNode,
-    NodeMemory,
-    SharableNode<AlphaNode> {
+    NodeMemory {
 
     private static final long        serialVersionUID = 510l;
 
@@ -411,58 +406,8 @@ public class AlphaNode extends ObjectSource
         return inferredMask;
     }
 
-    public void setInferredMask(long inferredMask) {
-        this.inferredMask = inferredMask;
-    }
-
-    public void setDeclaredMask(long declaredMask) {
-        this.declaredMask = declaredMask;
-    }
-
     @Override
     public void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink(objectSink);
-    }
-    
-//    private long updateMask(ObjectSink objectSink) {
-//        long mask = 0;
-//        if (objectSink instanceof AlphaNode) {
-//            mask = ((AlphaNode)objectSink).networkMask;
-//        }        
-//        
-//        if (source instanceof AlphaNode) {
-//             return mask | ((AlphaNode)source).updateMask(this, mask);
-//        } else { // instanceof ObjectTypeNode
-//            return mask;
-//        }
-//      }      
-//    
-//    private long updateMask(ObjectSink objectSink, long mask) {
-//      if (objectSink instanceof AlphaNode) {
-//          inferredMask = inferredMask | mask;
-//          //return de
-//          //networkMask |= ((AlphaNode)objectSink).networkMask;
-//      }        
-//      
-//      if (source instanceof AlphaNode) {
-//           return mask | ((AlphaNode)source).updateMask(this, mask);
-//      } else { // instanceof ObjectTypeNode
-//          return mask;
-//      }
-//    }    
-
-//    private void addToNetworkMask(ObjectSink objectSink) {
-//        if (objectSink instanceof AlphaNode) {
-//            networkMask |= ((AlphaNode)objectSink).networkMask;
-//        } else if (objectSink instanceof BetaNode) {
-//            networkMask |= ((BetaNode)objectSink).getDeclaredMask();
-//        }
-//        if (source instanceof AlphaNode) {
-//            ((AlphaNode)source).addToNetworkMask(this);
-//        }
-//    }
-//
-    public void sharedWith(AlphaNode node) {
-        //networkMask |= node.networkMask;
     }
 }
