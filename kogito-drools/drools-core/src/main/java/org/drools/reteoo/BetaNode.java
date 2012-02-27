@@ -150,7 +150,7 @@ public abstract class BetaNode extends LeftTupleSource
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( !typeDeclaration.isPropertySpecific() ) {
+        if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             rightDeclaredMask = Long.MAX_VALUE;             
         } else {
@@ -170,8 +170,7 @@ public abstract class BetaNode extends LeftTupleSource
         pattern = context.getLastBuiltPatterns()[1]; // left input pattern
         objectType = pattern.getObjectType();
         
-        if ( objectType == ClassObjectType.InitialFact_ObjectType ||  !(objectType instanceof ClassObjectType) ) {
-            // InitialFact has no type declaration and cannot be property specific
+        if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
             leftDeclaredMask = Long.MAX_VALUE;
             return;
@@ -179,7 +178,7 @@ public abstract class BetaNode extends LeftTupleSource
         
         objectClass = ((ClassObjectType)objectType).getClassType();        
         typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( !typeDeclaration.isPropertySpecific() ) {
+        if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = Long.MAX_VALUE;             
         } else  {
