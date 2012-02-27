@@ -5,15 +5,17 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>XML Rule Language</title>
-
+  <warning>
+    <para>The XML rule language has not been updated to support functionality
+          introduced in Drools 5.x and is consider a deprecated feature.</para>
+  </warning>
   <para>As an option, Drools also supports a "native" <indexterm>
       <primary>XML</primary>
     </indexterm> rule language as an alternative to DRL. This allows you to
   capture and manage your rules as XML data. Just like the non-XML DRL format,
   the XML format is parsed into the internal "AST" representation - as fast as
   possible (using a SAX parser). There is no external transformation step
-  required. All the features are available with XML that are available to
-  DRL.</para>
+  required. </para>
 
   <section>
     <title>Legacy Drools 2.x XML rule format</title>
