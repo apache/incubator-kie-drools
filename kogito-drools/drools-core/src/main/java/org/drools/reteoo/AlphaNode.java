@@ -98,6 +98,12 @@ public class AlphaNode extends ObjectSource
     }
 
     public void initDeclaredMask(BuildContext context) {
+        if ( context == null || context.getLastBuiltPatterns() == null ) {
+            // only happens during unit tests
+            declaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
         

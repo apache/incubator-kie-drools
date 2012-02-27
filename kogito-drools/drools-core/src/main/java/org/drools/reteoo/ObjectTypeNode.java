@@ -35,6 +35,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.UpdateContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
@@ -72,7 +73,6 @@ import org.drools.time.impl.PointInTimeTrigger;
  * Filters <code>Objects</code> coming from the <code>Rete</code> using a
  * <code>ObjectType</code> semantic module.
  *
- * @see ObjectType
  * @see Rete
  */
 public class ObjectTypeNode extends ObjectSource
@@ -376,7 +376,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public void networkUpdated() {
+    public void networkUpdated(UpdateContext updateContext) {
         this.skipOnModify = canSkipOnModify( this.sink.getSinks(),
                                              true );
     }
