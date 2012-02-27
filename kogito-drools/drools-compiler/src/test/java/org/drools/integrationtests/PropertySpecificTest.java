@@ -23,8 +23,10 @@ import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PropertySpecificUtil;
+
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -322,8 +324,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), rtNode.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), rtNode.getInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("a"), sp), rtNode.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a"), sp), rtNode.getInferredMask() );        
     }       
     
     @Test
@@ -338,14 +340,14 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getInferredMask());
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getInferredMask());
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];        
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
         assertEquals(  0, rtNode.getDeclaredMask() ); // rtn declares nothing
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), rtNode.getInferredMask() ); // rtn infers from alpha 
+        assertEquals(  calculatePositiveMask(list("a"), sp), rtNode.getInferredMask() ); // rtn infers from alpha 
     }  
     
     @Test
@@ -360,14 +362,14 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b"), 0L, sp), alphaNode.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode.getInferredMask() );
         
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) alphaNode.getSinkPropagator().getSinks()[0];        
         
         RuleTerminalNode rtNode = ( RuleTerminalNode ) liaNode.getSinkPropagator().getSinks()[0];
-        assertEquals(  calculateMaskFromPattern(list("b"), 0L, sp), rtNode.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b"), 0L, sp), rtNode.getInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("b"), sp), rtNode.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b"), sp), rtNode.getInferredMask() );         
     }      
     
     @Test
@@ -383,42 +385,42 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode1_1.getInferredMask() );  
         
         LeftInputAdapterNode liaNode1 = ( LeftInputAdapterNode ) alphaNode1_1.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtNode1 = ( RuleTerminalNode ) liaNode1.getSinkPropagator().getSinks()[0];
         
         assertEquals( 0, rtNode1.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b"), 0L, sp), rtNode1.getInferredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b"), sp), rtNode1.getInferredMask() );
         
         
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i"), sp), alphaNode1_2.getInferredMask() );
         
         LeftInputAdapterNode liaNode2 = ( LeftInputAdapterNode ) alphaNode1_2.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtNode2 = ( RuleTerminalNode ) liaNode2.getSinkPropagator().getSinks()[0];
         
         assertEquals( 0, rtNode2.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i"), 0L, sp), rtNode2.getInferredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i"), sp), rtNode2.getInferredMask() );
         
         // test rule removal        
         kbase.removeRule( "org.drools", "r0" );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i"), sp), alphaNode1.getInferredMask() );
 
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i"), sp), alphaNode1_2.getInferredMask() );
         
         assertEquals(  0, rtNode2.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i"), 0L, sp), rtNode2.getInferredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i"), sp), rtNode2.getInferredMask() );
         
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
@@ -427,23 +429,23 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b"), 0L, sp), alphaNode1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode1.getInferredMask() );   
         
         alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b"), 0L, sp), alphaNode1_1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode1_1.getInferredMask() );   
         
         liaNode1 = ( LeftInputAdapterNode ) alphaNode1_1.getSinkPropagator().getSinks()[0];
         rtNode1 = ( RuleTerminalNode ) liaNode1.getSinkPropagator().getSinks()[0];       
         assertEquals(  0, rtNode1.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b"), 0L, sp), rtNode1.getInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("a", "b"), sp), rtNode1.getInferredMask() );         
     }      
     
     @Test
     public void testRtnSharedAlphaWithWatches() {
-        String rule1 = "A( a == 10, b == 15 ) @watch(c)";
-        String rule2 = "A( a == 10, i == 20 ) @watch(s)";
+        String rule1 = "A( a == 10, b == 15 ) @watch(c, !a)";
+        String rule2 = "A( a == 10, i == 20 ) @watch(s, !i)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
@@ -453,43 +455,46 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c", "s", "i"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c", "s", "i"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );  
         
         LeftInputAdapterNode liaNode1 = ( LeftInputAdapterNode ) alphaNode1_1.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtNode1 = ( RuleTerminalNode ) liaNode1.getSinkPropagator().getSinks()[0];
         
-        assertEquals(  calculateMaskFromPattern(list("c"), 0L, sp), rtNode1.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), rtNode1.getInferredMask() );
-        
+        assertEquals(  calculatePositiveMask(list("c"), sp), rtNode1.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "c"), sp), rtNode1.getInferredMask() );
+        assertEquals(  calculateNegativeMask(list("!a"), sp), rtNode1.getNegativeMask() );
+
         
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), alphaNode1_2.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "s"), sp), alphaNode1_2.getInferredMask() );  
         
         LeftInputAdapterNode liaNode2 = ( LeftInputAdapterNode ) alphaNode1_2.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtNode2 = ( RuleTerminalNode ) liaNode2.getSinkPropagator().getSinks()[0];
         
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), rtNode2.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), rtNode2.getInferredMask() );
-        
+        assertEquals(  calculatePositiveMask(list("s"), sp), rtNode2.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "s"), sp), rtNode2.getInferredMask() );
+        assertEquals(  calculateNegativeMask(list("!i"), sp), rtNode2.getNegativeMask() );
+
         // test rule removal        
         kbase.removeRule( "org.drools", "r0" );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "s"), sp), alphaNode1.getInferredMask() );
 
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "s"), sp), alphaNode1_2.getInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), rtNode2.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), rtNode2.getInferredMask() );
-        
+        assertEquals(  calculatePositiveMask(list("s"), sp), rtNode2.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "s"), sp), rtNode2.getInferredMask() );
+        assertEquals(  calculateNegativeMask(list("!i"), sp), rtNode2.getNegativeMask() );
+
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
@@ -497,19 +502,20 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1.getInferredMask() );   
         
         alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );   
         
         liaNode1 = ( LeftInputAdapterNode ) alphaNode1_1.getSinkPropagator().getSinks()[0];
         rtNode1 = ( RuleTerminalNode ) liaNode1.getSinkPropagator().getSinks()[0];       
-        assertEquals(  calculateMaskFromPattern(list("c"), 0L, sp), rtNode1.getDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), rtNode1.getInferredMask() );        
-    } 
-    
+        assertEquals(  calculatePositiveMask(list("c"), sp), rtNode1.getDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "c"), sp), rtNode1.getInferredMask() );
+        assertEquals(  calculateNegativeMask(list("!a"), sp), rtNode1.getNegativeMask() );
+    }
+
     @Test
     public void testBetaNoConstraintsNoWatches() {
         String rule1 = "B() A()";
@@ -538,11 +544,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         BetaNode betaNode = ( BetaNode )  otn.getSinkPropagator().getSinks()[0];                
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), betaNode.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), betaNode.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), betaNode.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), betaNode.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getLeftInferredMask() );        
     }  
     
     @Test
@@ -557,20 +563,20 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b"), 0L, sp), alphaNode.getInferredMask());
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode.getInferredMask());
         
         BetaNode betaNode = ( BetaNode )  alphaNode.getSinkPropagator().getSinks()[0];
-        assertEquals(  calculateMaskFromPattern(list( "b" ), 0L, sp), betaNode.getRightDeclaredMask() ); // beta declares nothing
-        assertEquals(  calculateMaskFromPattern(list("a", "b"), 0L, sp), betaNode.getRightInferredMask() ); // beta infers from alpha 
+        assertEquals(  calculatePositiveMask(list( "b" ), sp), betaNode.getRightDeclaredMask() ); // beta declares nothing
+        assertEquals(  calculatePositiveMask(list("a", "b"), sp), betaNode.getRightInferredMask() ); // beta infers from alpha 
         
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getInferredMask());        
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getInferredMask());        
         
         assertEquals(  0, betaNode.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a"), 0L, sp), betaNode.getLeftInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("a"), sp), betaNode.getLeftInferredMask() );         
     }    
     
     @Test
@@ -585,26 +591,56 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);
         
         AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "s"), 0L, sp), alphaNode.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "s"), sp), alphaNode.getInferredMask() );
         
         BetaNode betaNode = ( BetaNode )  alphaNode.getSinkPropagator().getSinks()[0];
-        assertEquals(  calculateMaskFromPattern(list("b","s"), 0L, sp), betaNode.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "s"), 0L, sp), betaNode.getRightInferredMask() );   
+        assertEquals( calculatePositiveMask(list("b","s"), sp), betaNode.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b", "s"), sp), betaNode.getRightInferredMask() );
         
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "c"), 0L, sp), alphaNode.getInferredMask());        
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());        
         
-        assertEquals(  calculateMaskFromPattern(list( "c"), 0L, sp), betaNode.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "c"), 0L, sp), betaNode.getLeftInferredMask() );         
-    }   
-    
+        assertEquals( calculatePositiveMask(list( "c"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode.getLeftInferredMask() );
+    }
+
+    @Test
+    public void testBetaWithConstraintsWithNegativeWatches() {
+        String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == $b.b ) @watch(s, !a, !b)";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "A" );
+        assertNotNull( otn );
+
+        List<String> sp = getSettableProperties(wm, otn);
+
+        AlphaNode alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "s"), sp), alphaNode.getInferredMask() );
+
+        BetaNode betaNode = ( BetaNode )  alphaNode.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("b","s"), sp), betaNode.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("s"), sp), betaNode.getRightInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a", "!b"), sp), betaNode.getRightNegativeMask() );
+
+        otn = getObjectTypeNode(kbase, "B" );
+        alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());
+
+        assertEquals( calculatePositiveMask(list( "c"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode.getLeftNegativeMask() );
+    }
+
     @Test
     public void testBetaSharedAlphaNoWatches() {
-        String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, s == 15, b == $b.b  )";
-        String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b  )";
+        String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, s == 15, b == $b.b  )";
+        String rule2 = "$b : B( a == 15) @watch(j, !i) A( a == 10, i == 20, b == $b.b  )";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
@@ -614,47 +650,50 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "s", "i"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "s", "i"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("s"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "s", "b"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("s"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "s", "b"), sp), alphaNode1_1.getInferredMask() );  
         
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "s", "b"), 0L, sp), betaNode1.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("b"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "s", "b"), sp), betaNode1.getRightInferredMask() );
 
-        assertEquals( calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "c"), 0L, sp), betaNode1.getLeftInferredMask() );        
-        
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
+
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b"), sp), alphaNode1_2.getInferredMask() );
         
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_2.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("b"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "b"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals( calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "j"), 0L, sp), betaNode2.getLeftInferredMask() );        
-        
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!i"), sp), betaNode2.getLeftNegativeMask() );
+
         // test rule removal        
         kbase.removeRule( "org.drools", "r0" );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b"), sp), alphaNode1.getInferredMask() );
 
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b"), sp), alphaNode1_2.getInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("b"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("b"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "b"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals( calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "c"), 0L, sp), betaNode1.getLeftInferredMask() );          
-        
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
+
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
@@ -662,28 +701,26 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "s", "b"), 0L, sp), alphaNode1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "s", "b"), sp), alphaNode1.getInferredMask() );   
         
         alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("s"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "s", "b"), 0L, sp), alphaNode1_1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("s"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "s", "b"), sp), alphaNode1_1.getInferredMask() );   
         
         betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("b"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "s", "b"), 0L, sp), betaNode1.getRightInferredMask() );   
+        assertEquals(  calculatePositiveMask(list("b"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "s", "b"), sp), betaNode1.getRightInferredMask() );   
         
-        assertEquals( calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "j"), 0L, sp), betaNode2.getLeftInferredMask() );           
-    }     
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!i"), sp), betaNode2.getLeftNegativeMask() );
+    }
     
     @Test
     public void testBetaSharedAlphaWithWatches() {
-//        String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, s == 15, b == $b.b  )";
-//        String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b  )";
-        
-        String rule1 = "$b : B( a == 15) @watch(c) A( a == 10, b == 15, b == $b.b  ) @watch(c)";
-        String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b ) @watch(s)";
+        String rule1 = "$b : B( a == 15) @watch(c, !a) A( a == 10, b == 15, b == $b.b  ) @watch(c, !b)";
+        String rule2 = "$b : B( a == 15) @watch(j) A( a == 10, i == 20, b == $b.b ) @watch(s, !a)";
         KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
@@ -693,48 +730,55 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c", "s", "i"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c", "s", "i"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );  
         
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("b", "c"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), betaNode1.getRightInferredMask() );
-        
-        assertEquals( calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "c"), 0L, sp), betaNode1.getLeftInferredMask() );        
-        
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode1.getRightInferredMask() );
+        assertEquals( calculateNegativeMask(list("!b"), sp), betaNode1.getRightNegativeMask() );
+
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
+
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "s"), 0L, sp), alphaNode1_2.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "s"), sp), alphaNode1_2.getInferredMask() );  
         
 
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_2.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("b", "s"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b", "s"), 0L, sp), betaNode2.getRightInferredMask() );
-        
-        assertEquals( calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "j"), 0L, sp), betaNode2.getLeftInferredMask() );   
-        
+        assertEquals( calculatePositiveMask(list("b", "s"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("i", "b", "s"), sp), betaNode2.getRightInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode2.getRightNegativeMask() );
+
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( 0L, betaNode2.getLeftNegativeMask() );
+
         // test rule removal        
         kbase.removeRule( "org.drools", "r0" );
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "s"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "s"), sp), alphaNode1.getInferredMask() );
 
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "s"), 0L, sp), alphaNode1_2.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "s"), sp), alphaNode1_2.getInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("b", "s"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b", "s"), 0L, sp), betaNode2.getRightInferredMask() );
-        
-        assertEquals( calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "j"), 0L, sp), betaNode2.getLeftInferredMask() );        
-        
+        assertEquals( calculatePositiveMask(list("b", "s"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("i", "b", "s"), sp), betaNode2.getRightInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode2.getRightNegativeMask() );
+
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "j"), sp), betaNode2.getLeftInferredMask() );
+        assertEquals( 0L, betaNode2.getLeftNegativeMask() );
+
         // have to rebuild to remove r1
         kbase = getKnowledgeBase(rule1, rule2);
         
@@ -742,20 +786,22 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         otn = getObjectTypeNode(kbase, "A" );
         
         alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1.getInferredMask() );   
         
         alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );   
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );   
         
         betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("b", "c"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), betaNode1.getRightInferredMask() );
-        
-        assertEquals( calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals( calculateMaskFromPattern(list("a", "c"), 0L, sp), betaNode1.getLeftInferredMask() );        
-    }     
+        assertEquals(  calculatePositiveMask(list("b", "c"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "c"), sp), betaNode1.getRightInferredMask() );
+        assertEquals( calculateNegativeMask(list("!b"), sp), betaNode1.getRightNegativeMask() );
+
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode1.getLeftInferredMask() );
+        assertEquals( calculateNegativeMask(list("!a"), sp), betaNode1.getLeftNegativeMask() );
+    }
     
     @Test
     public void testComplexBetaSharedAlphaWithWatches() {
@@ -771,50 +817,50 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c", "s", "i", "j"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c", "s", "i", "j"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );  
         
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), betaNode1.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("c"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b", "c"), sp), betaNode1.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("i"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "i"), 0L, sp), betaNode1.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("i"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "i"), sp), betaNode1.getLeftInferredMask() );        
         
         // second share
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i", "s", "j"), 0L, sp), alphaNode1_2.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i", "s", "j"), sp), alphaNode1_2.getInferredMask() );  
         
 
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_2.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("s"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "s"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "j"), 0L, sp), betaNode2.getLeftInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftInferredMask() );         
         
         // third share
         AlphaNode alphaNode1_3 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_3.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i", "s", "j"), 0L, sp), alphaNode1_3.getInferredMask() ); 
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_3.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i", "s", "j"), sp), alphaNode1_3.getInferredMask() ); 
         
         AlphaNode alphaNode1_4 = ( AlphaNode ) alphaNode1_3.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_4.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i", "j"), 0L, sp), alphaNode1_4.getInferredMask() );          
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_4.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i", "j"), sp), alphaNode1_4.getInferredMask() );          
         
 
         BetaNode betaNode3 = ( BetaNode )  alphaNode1_4.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode3.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b", "j"), 0L, sp), betaNode3.getRightInferredMask() ); 
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode3.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "b", "j"), sp), betaNode3.getRightInferredMask() ); 
         
-        assertEquals(  calculateMaskFromPattern(list("k"), 0L, sp), betaNode3.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("c", "k"), 0L, sp), betaNode3.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("k"), sp), betaNode3.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("c", "k"), sp), betaNode3.getLeftInferredMask() );        
     }   
     
     @Test
@@ -833,45 +879,45 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "s","j"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "s","j"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "s", "j"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "s", "j"), sp), alphaNode1_1.getInferredMask() );  
         
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), betaNode1.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("s"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "s"), sp), betaNode1.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "j"), 0L, sp), betaNode1.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "j"), sp), betaNode1.getLeftInferredMask() );        
         
         // fist share, second alpha
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i", "s", "j"), 0L, sp), alphaNode1_2.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i", "s", "j"), sp), alphaNode1_2.getInferredMask() );  
         
 
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_2.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("s"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "s"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "j"), 0L, sp), betaNode2.getLeftInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftInferredMask() );         
         
         // second split, third alpha
         AlphaNode alphaNode1_3 = ( AlphaNode ) alphaNode1_2.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_3.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "i", "j"), 0L, sp), alphaNode1_3.getInferredMask() ); 
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_3.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "i", "j"), sp), alphaNode1_3.getInferredMask() ); 
 
         BetaNode betaNode3 = ( BetaNode )  alphaNode1_3.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode3.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b", "j"), 0L, sp), betaNode3.getRightInferredMask() ); 
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode3.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "b", "j"), sp), betaNode3.getRightInferredMask() ); 
         
-        assertEquals(  calculateMaskFromPattern(list("k"), 0L, sp), betaNode3.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("c", "k"), 0L, sp), betaNode3.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("k"), sp), betaNode3.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("c", "k"), sp), betaNode3.getLeftInferredMask() );        
     }       
     
     @Test
@@ -890,37 +936,37 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c", "i", "j"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c", "i", "j"), sp), alphaNode1.getInferredMask() );
                 
         // first split
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );  
         
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), betaNode1.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("c"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b", "c"), sp), betaNode1.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("i"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "i"), 0L, sp), betaNode1.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("i"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "i"), sp), betaNode1.getLeftInferredMask() );        
         
         // fist share, second alpha
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "j"), 0L, sp), alphaNode1_2.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "j"), sp), alphaNode1_2.getInferredMask() );  
         
         AlphaNode alphaNode1_3 = ( AlphaNode ) alphaNode1_2.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_3.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "b", "j"), 0L, sp), alphaNode1_3.getInferredMask() );         
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_3.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "b", "j"), sp), alphaNode1_3.getInferredMask() );         
         
 
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_3.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "b", "j"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "b", "j"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("k"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("c", "k"), 0L, sp), betaNode2.getLeftInferredMask() );         
+        assertEquals(  calculatePositiveMask(list("k"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("c", "k"), sp), betaNode2.getLeftInferredMask() );         
            
     }         
     
@@ -940,34 +986,34 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         List<String> sp = getSettableProperties(wm, otn);        
 
         AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("a"), 0L, sp), alphaNode1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c", "i", "s"), 0L, sp), alphaNode1.getInferredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c", "i", "s"), sp), alphaNode1.getInferredMask() );
                 
         // first share
         AlphaNode alphaNode1_1 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
-        assertEquals( calculateMaskFromPattern(list("b"), 0L, sp), alphaNode1_1.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), alphaNode1_1.getInferredMask() );  
+        assertEquals( calculatePositiveMask(list("b"), sp), alphaNode1_1.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode1_1.getInferredMask() );  
         
         // first split
         BetaNode betaNode1 = ( BetaNode )  alphaNode1_1.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("c"), 0L, sp), betaNode1.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "b", "c"), 0L, sp), betaNode1.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("c"), sp), betaNode1.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "b", "c"), sp), betaNode1.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("i"), 0L, sp), betaNode1.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "i"), 0L, sp), betaNode1.getLeftInferredMask() );        
+        assertEquals(  calculatePositiveMask(list("i"), sp), betaNode1.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "i"), sp), betaNode1.getLeftInferredMask() );        
         
         // second split
         AlphaNode alphaNode1_2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
-        assertEquals( calculateMaskFromPattern(list("i"), 0L, sp), alphaNode1_2.getDeclaredMask( ) );
-        assertEquals( calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), alphaNode1_2.getInferredMask() );           
+        assertEquals( calculatePositiveMask(list("i"), sp), alphaNode1_2.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "i", "s"), sp), alphaNode1_2.getInferredMask() );           
         
 
         BetaNode betaNode2 = ( BetaNode )  alphaNode1_2.getSinkPropagator().getSinks()[0];        
-        assertEquals(  calculateMaskFromPattern(list("s"), 0L, sp), betaNode2.getRightDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("a", "i", "s"), 0L, sp), betaNode2.getRightInferredMask() );
+        assertEquals(  calculatePositiveMask(list("s"), sp), betaNode2.getRightDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("a", "i", "s"), sp), betaNode2.getRightInferredMask() );
         
-        assertEquals(  calculateMaskFromPattern(list("j"), 0L, sp), betaNode2.getLeftDeclaredMask() );
-        assertEquals(  calculateMaskFromPattern(list("b", "j"), 0L, sp), betaNode2.getLeftInferredMask() );            
+        assertEquals(  calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
+        assertEquals(  calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftInferredMask() );            
     }    
 
     @Test(timeout = 5000)

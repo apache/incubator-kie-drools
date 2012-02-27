@@ -13,41 +13,28 @@ import java.util.List;
 
 public class PropertySpecificUtil {
 
-    public static long calculateMaskFromPattern(List<String> listenedProperties, long mask, List<String> settableProperties) {
-        if (listenedProperties == null) {
-            return mask;
-        }
-        for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*") || propertyName.equals("!*")) {
-                continue;
-            }
-            boolean isNegative = propertyName.startsWith("!");
-            if (isNegative) {
-                propertyName = propertyName.substring(1).trim();
-            }
-
-            int pos = settableProperties.indexOf(propertyName);
-            if (pos < 0) {
-                throw new RuntimeException("Unknown property: " + propertyName);
-            }
-            mask = isNegative ? BitMaskUtil.reset(mask, pos) : BitMaskUtil.set(mask, pos);
-        }
-        return mask;
+    public static long calculatePositiveMask(List<String> listenedProperties, List<String> settableProperties) {
+        return calculatePatternMask(listenedProperties, settableProperties, true);
     }
 
-    /**
-     * Add only positive listened properties ignoring negative ones (used for shared nodes)
-     */
-    public static long addListenedPropertiesToMask(List<String> listenedProperties, long mask, List<String> settableProperties) {
+    public static long calculateNegativeMask(List<String> listenedProperties, List<String> settableProperties) {
+        return calculatePatternMask(listenedProperties, settableProperties, false);
+    }
+
+    private static long calculatePatternMask(List<String> listenedProperties, List<String> settableProperties, boolean isPositive) {
+        long mask = 0L;
         if (listenedProperties == null) {
             return mask;
         }
         for (String propertyName : listenedProperties) {
-            if (propertyName.equals("*")) {
+            if (propertyName.equals(isPositive ? "*" : "!*")) {
                 return Long.MAX_VALUE;
             }
-            if (propertyName.startsWith("!")) {
+            if (propertyName.startsWith("!") ^ !isPositive) {
                 continue;
+            }
+            if (!isPositive) {
+                propertyName = propertyName.substring(1);
             }
 
             int pos = settableProperties.indexOf(propertyName);
