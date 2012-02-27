@@ -101,6 +101,7 @@ public abstract class BaseNode
                        ReteooBuilder builder,
                        BaseNode node,
                        InternalWorkingMemory[] workingMemories) {
+        context.getRemovedNodes().add(  this  );       
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
@@ -184,5 +185,5 @@ public abstract class BaseNode
      */
     public void removeAssociation( Rule rule ) {
         this.associations.remove( rule );
-    }
+    }   
 }

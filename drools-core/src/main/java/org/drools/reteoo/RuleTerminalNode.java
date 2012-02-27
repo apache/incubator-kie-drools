@@ -44,7 +44,9 @@ import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Activation;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -89,6 +91,9 @@ public class RuleTerminalNode extends BaseNode
     private boolean           fireDirect;
 
     private Map<Class<?>, List<String>> listenedProperties;
+    
+    private long             declaredMask;
+    private long             inferredMask;
 
     // ------------------------------------------------------------
     // Constructors
@@ -129,21 +134,45 @@ public class RuleTerminalNode extends BaseNode
         Arrays.sort( this.declarations, SortDeclarations.instance  );
         fireDirect = rule.getActivationListener().equals( "direct" );
 
-        initPropertySpecifcMask(source, context);
+        initDeclaredMask(context);        
+        initInferredMask();
     }
 
-    private void initPropertySpecifcMask(LeftTupleSource source, BuildContext context) {
-        listenedProperties = context.getListenedProperties();
-        // if the source is a BetaNode the listenedProperties are already managed there so it's possible to avoid to do it again here
-        if (listenedProperties != null && source instanceof BetaNode) {
-            ObjectType objectType = ((BetaNode)source).getObjectTypeNode().getObjectType();
-            if (objectType instanceof ClassObjectType) {
-                listenedProperties.remove(((ClassObjectType) objectType).getClassType());
-            }
-            if (listenedProperties.isEmpty()) {
-                listenedProperties = null;
-            }
+    public void initDeclaredMask(BuildContext context) {        
+        if ( !(tupleSource instanceof LeftInputAdapterNode)) {
+            // RTN's not after LIANode are not relevant for property specific, so don't block anything.
+            declaredMask = Long.MAX_VALUE;
+            return;            
         }
+        
+        Pattern pattern = context.getLastBuiltPatterns()[0];
+        ObjectType objectType = pattern.getObjectType();
+        
+        if ( objectType == ClassObjectType.InitialFact_ObjectType || !(objectType instanceof ClassObjectType) ) {
+            // InitialFact has no type declaration and cannot be property specific
+            // Only ClassObjectType can use property specific
+            declaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
+        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        if ( !typeDeclaration.isPropertySpecific() ) {
+            // if property specific is not on, then accept all modification propagations
+            declaredMask = Long.MAX_VALUE;             
+        } else  {
+            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            declaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);
+        } 
+    }
+    
+    public void initInferredMask() {
+        if ( tupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)tupleSource).getParentObjectSource() instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)tupleSource).getParentObjectSource();
+            inferredMask = alphaNode.updateMask( declaredMask );
+        } else {
+            inferredMask = declaredMask;
+        }        
     }
 
     // ------------------------------------------------------------
@@ -162,6 +191,8 @@ public class RuleTerminalNode extends BaseNode
         declarations = ( Declaration[]) in.readObject();
         fireDirect = rule.getActivationListener().equals( "direct" );
         listenedProperties = (Map<Class<?>, List<String>>) in.readObject();
+        declaredMask = in.readLong();
+        inferredMask = in.readLong();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -175,6 +206,8 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
         out.writeObject( listenedProperties );
+        out.writeLong(declaredMask);
+        out.writeLong(inferredMask);        
     }
 
     /**
@@ -202,9 +235,21 @@ public class RuleTerminalNode extends BaseNode
         return this.tupleSource;
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.drools.impl.TupleSink
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    public long getDeclaredMask() {
+        return declaredMask;
+    }
+
+    public void setDeclaredMask(long declaredMask) {
+        this.declaredMask = declaredMask;
+    }
+
+    public long getInferredMask() {
+        return inferredMask;
+    }
+
+    public void setInferredMask(long inferredMask) {
+        this.inferredMask = inferredMask;
+    }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
@@ -364,23 +409,7 @@ public class RuleTerminalNode extends BaseNode
                                 InternalWorkingMemory workingMemory) {
         LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
 
-        boolean mustPropagate = context.getModificationMask() == Long.MAX_VALUE;
-        if (!mustPropagate) {
-            ObjectType objectType = context.getObjectType();
-            Class<?> objectClass = objectType != null && objectType instanceof ClassObjectType ?
-                    ((ClassObjectType)objectType).getClassType() :
-                    factHandle.getObject().getClass();
-            List<String> listenedPropertiesForClass = listenedProperties == null ? null : listenedProperties.get(objectClass);
-            if (listenedPropertiesForClass == null) {
-                mustPropagate = intersect(context.getModificationMask(), context.getPropagationMask());
-            } else {
-                List<String> settableProperties = getSettableProperties((InternalRuleBase)workingMemory.getRuleBase(), objectClass);
-                long propagationMask = calculateMaskFromPattern(listenedPropertiesForClass, context.getPropagationMask(), settableProperties);
-                mustPropagate = intersect(context.getModificationMask(), propagationMask);
-            }
-        }
-
-        if (mustPropagate) {
+        if ( intersect(context.getModificationMask(), inferredMask)) {
             if ( leftTuple != null ) {
                 leftTuple.reAdd(); //
                 // LeftTuple previously existed, so continue as modify
