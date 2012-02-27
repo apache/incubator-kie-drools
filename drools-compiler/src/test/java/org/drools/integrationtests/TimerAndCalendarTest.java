@@ -41,6 +41,7 @@ import org.drools.time.Calendar;
 import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
+import org.junit.Ignore;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -983,6 +984,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
     
     @Test
+    @Ignore
     public void testTimerWithNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
@@ -1001,6 +1003,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testHaltWithTimer() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
@@ -1221,6 +1224,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
 
     @Test
+    @Ignore
     public void testHaltAfterSomeTime() throws Exception {
         String drl = "package org.drools.test;\n" +
                 "\n" +
