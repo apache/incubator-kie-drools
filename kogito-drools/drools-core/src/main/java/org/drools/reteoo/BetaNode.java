@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.*;
 import org.drools.core.util.FastIterator;
@@ -31,7 +32,10 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
+import org.drools.rule.Pattern;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
@@ -82,7 +86,11 @@ public abstract class BetaNode extends LeftTupleSource
 
     private boolean indexedUnificationJoin;
 
-    private long declaredMask;
+    private long rightDeclaredMask;
+    private long rightInferredMask;
+    
+    private long leftDeclaredMask;
+    private long leftInferredMask;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -118,17 +126,75 @@ public abstract class BetaNode extends LeftTupleSource
         }
         setUnificationJoin();
 
-        initPropertySpecificMask(context);
+        initDeclaredMask(context);        
+        initInferredMask();
     }
 
-    private void initPropertySpecificMask(BuildContext context) {
-        if (context != null) {
-            Class<?> nodeClass = getNodeClass(getObjectTypeNode());
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), nodeClass);
-            if (settableProperties != null) {
-                declaredMask = calculateDeclaredMask(settableProperties, context.getListenedPropertiesFor(nodeClass));
-            }
+    public void initDeclaredMask(BuildContext context) {            
+        Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
+        ObjectType objectType = pattern.getObjectType();
+        
+        if ( !(objectType instanceof ClassObjectType)) {
+            // InitialFact has no type declaration and cannot be property specific
+            // Only ClassObjectType can use property specific
+            rightDeclaredMask = Long.MAX_VALUE;
+            
         }
+        
+        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        if ( !typeDeclaration.isPropertySpecific() ) {
+            // if property specific is not on, then accept all modification propagations
+            rightDeclaredMask = Long.MAX_VALUE;             
+        } else {
+            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            rightDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);            
+            rightDeclaredMask = rightDeclaredMask | calculateDeclaredMask(settableProperties, pattern.getListenedProperties());
+        } 
+        
+        /*******/
+        
+        if ( !(leftInput instanceof LeftInputAdapterNode)) {
+            // BetaNode's not after LIANode are not relevant for left mask property specific, so don't block anything.
+            leftDeclaredMask = Long.MAX_VALUE;
+            return;            
+        }
+        
+        pattern = context.getLastBuiltPatterns()[1]; // left input pattern
+        objectType = pattern.getObjectType();
+        
+        if ( objectType == ClassObjectType.InitialFact_ObjectType ||  !(objectType instanceof ClassObjectType) ) {
+            // InitialFact has no type declaration and cannot be property specific
+            // Only ClassObjectType can use property specific
+            leftDeclaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
+        objectClass = ((ClassObjectType)objectType).getClassType();        
+        typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        if ( !typeDeclaration.isPropertySpecific() ) {
+            // if property specific is not on, then accept all modification propagations
+            leftDeclaredMask = Long.MAX_VALUE;             
+        } else  {
+            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            leftDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);
+        }               
+    }
+    
+    public void initInferredMask() {        
+        if ( rightInput instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) rightInput;
+            rightInferredMask = alphaNode.updateMask( rightDeclaredMask );
+        } else {        
+            rightInferredMask = rightDeclaredMask;
+        }
+        
+        if ( leftInput instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftInput).getParentObjectSource() instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftInput).getParentObjectSource();
+            leftInferredMask = alphaNode.updateMask( leftDeclaredMask );
+        } else {
+            leftInferredMask = leftDeclaredMask;
+        }          
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -140,7 +206,8 @@ public abstract class BetaNode extends LeftTupleSource
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
         lrUnlinkingEnabled = in.readBoolean();
-        declaredMask = in.readLong();
+        rightDeclaredMask = in.readLong();
+        rightInferredMask = in.readLong();
         setUnificationJoin();
         super.readExternal(in);
     }
@@ -161,7 +228,8 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
         out.writeBoolean(lrUnlinkingEnabled);
-        out.writeLong(declaredMask);
+        out.writeLong(rightDeclaredMask);
+        out.writeLong(rightInferredMask);
 
         super.writeExternal(out);
     }
@@ -421,8 +489,7 @@ public abstract class BetaNode extends LeftTupleSource
                              InternalWorkingMemory workingMemory) {
         RightTuple rightTuple = removeRightTuple(modifyPreviousTuples);
 
-        if ( context.getModificationMask() == Long.MAX_VALUE ||
-                intersect(context.getModificationMask(), context.getPropagationMask() | declaredMask) ) {
+        if ( intersect(context.getModificationMask(), rightInferredMask) ) {
 
             // Propagate only if listened property mask intersects the modification one (slot specific)
             if ( rightTuple != null ) {
@@ -452,19 +519,22 @@ public abstract class BetaNode extends LeftTupleSource
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( createLeftTuple( factHandle,
-                                              this,
-                                              true ),
-                             context,
-                             workingMemory );
+        
+        if ( intersect(context.getModificationMask(), leftInferredMask) ) {
+            if ( leftTuple != null ) {
+                leftTuple.reAdd(); //
+                // LeftTuple previously existed, so continue as modify
+                modifyLeftTuple( leftTuple,
+                                 context,
+                                 workingMemory );
+            } else {
+                // LeftTuple does not exist, so create and continue as assert
+                assertLeftTuple( createLeftTuple( factHandle,
+                                                  this,
+                                                  true ),
+                                 context,
+                                 workingMemory );
+            }
         }
     }
 
@@ -672,11 +742,35 @@ public abstract class BetaNode extends LeftTupleSource
         return calculateMaskFromPattern(listenedProperties, mask, settableProperties);
     }
 
-    public long getDeclaredMask() {
-        return declaredMask;
+    public long getRightDeclaredMask() {
+        return rightDeclaredMask;
     }
 
-    void setDeclaredMask(long declaredMask) {
-        this.declaredMask = declaredMask;
+    public void setRightDeclaredMask(long rightDeclaredMask) {
+        this.rightDeclaredMask = rightDeclaredMask;
     }
+
+    public long getRightInferredMask() {
+        return rightInferredMask;
+    }
+
+    public void setRightInferredMask(long rightInferredMask) {
+        this.rightInferredMask = rightInferredMask;
+    }
+
+    public long getLeftDeclaredMask() {
+        return leftDeclaredMask;
+    }
+
+    public void setLeftDeclaredMask(long leftDeclaredMask) {
+        this.leftDeclaredMask = leftDeclaredMask;
+    }
+
+    public long getLeftInferredMask() {
+        return leftInferredMask;
+    }
+
+    public void setLeftInferredMask(long leftInferredMask) {
+        this.leftInferredMask = leftInferredMask;
+    }  
 }

@@ -26,12 +26,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.drools.RuleIntegrationException;
 import org.drools.base.SalienceInteger;
@@ -260,6 +262,75 @@ public class ReteooBuilder
                          this,
                          null,
                          workingMemories );
+        }
+        
+        resetMasks(context);
+    }
+    
+    /**
+     * Rule removal now keeps a list of all the visited nodes.
+     * We iterate each of those to find the nodes still in use, who's inferred mask is now stale.
+     * For each node we find the tip, which is either BetaNode or RuleTerminalNode and re initialise
+     * the inferred mask, which will trickle back up to the OTN
+     * 
+     */
+    public void resetMasks(RuleRemovalContext context) {
+        List<BaseNode> nodes = context.getRemovedNodes();
+        Set<BaseNode> leafSet = new HashSet<BaseNode>();
+        
+        for ( BaseNode node : nodes ) {
+            if ( node.isInUse() ) {
+                if ( node instanceof AlphaNode ) {
+                    updateLeafSet(node, leafSet );
+                } else if( node instanceof BetaNode ) {
+                    BetaNode betaNode = ( BetaNode ) node;
+                    if ( betaNode.isInUse() ) {
+                        leafSet.add( betaNode );
+                    }
+                } else if ( node instanceof RuleTerminalNode ) {
+                    RuleTerminalNode rtNode = ( RuleTerminalNode ) node;
+                    if ( rtNode.isInUse() ) {
+                        leafSet.add( rtNode );
+                    }                    
+                }
+            }
+        }
+        
+        for ( BaseNode node : leafSet ) {
+            if ( node instanceof RuleTerminalNode ) {
+                ((RuleTerminalNode)node).initInferredMask();
+            } else { // else node instanceof BetaNode
+                ((BetaNode)node).initInferredMask();
+            }
+        }
+    }
+    
+    private void updateLeafSet(BaseNode baseNode, Set<BaseNode> leafSet) {
+        if ( baseNode instanceof AlphaNode ) {
+            ((AlphaNode) baseNode).resetInferredMask();
+            for ( ObjectSink sink : ((AlphaNode) baseNode).getSinkPropagator().getSinks() ) {
+                if ( ((BaseNode)sink).isInUse() ) {
+                    updateLeafSet( ( BaseNode ) sink, leafSet );
+                }
+            }
+        } else  if ( baseNode instanceof LeftInputAdapterNode ) {
+            for ( LeftTupleSink sink : ((LeftInputAdapterNode) baseNode).getSinkPropagator().getSinks() ) {
+                if ( sink instanceof RuleTerminalNode ) {
+                    leafSet.add( (BaseNode) sink );
+                } else if ( ((BaseNode)sink).isInUse() ) {
+                    updateLeafSet( ( BaseNode ) sink, leafSet );
+                }
+            }
+        } else if ( baseNode instanceof EvalConditionNode ) {
+            for ( LeftTupleSink sink : ((EvalConditionNode) baseNode).getSinkPropagator().getSinks() ) {
+                if ( ((BaseNode)sink).isInUse() ) { 
+                    updateLeafSet( ( BaseNode ) sink, leafSet );
+                }
+            }
+        } else if ( baseNode instanceof LeftTupleSink ) {
+            if ( ((BaseNode)baseNode).isInUse() ) {
+                leafSet.add( (BaseNode) baseNode );
+            }
         }
     }
 

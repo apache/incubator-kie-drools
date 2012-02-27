@@ -18,6 +18,8 @@ package org.drools.common;
 
 import java.io.Externalizable;
 
+import org.drools.definition.rule.Rule;
+
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
  * for exposing information events.
