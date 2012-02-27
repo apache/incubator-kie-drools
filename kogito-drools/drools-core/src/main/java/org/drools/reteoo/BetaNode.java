@@ -130,7 +130,14 @@ public abstract class BetaNode extends LeftTupleSource
         initInferredMask();
     }
 
-    public void initDeclaredMask(BuildContext context) {            
+    public void initDeclaredMask(BuildContext context) {      
+        if ( context == null || context.getLastBuiltPatterns() == null ) {
+            // only happens during unit tests
+            rightDeclaredMask = Long.MAX_VALUE;
+            leftDeclaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
         Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
         ObjectType objectType = pattern.getObjectType();
         
