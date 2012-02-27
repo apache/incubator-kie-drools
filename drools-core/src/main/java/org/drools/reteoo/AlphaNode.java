@@ -109,7 +109,7 @@ public class AlphaNode extends ObjectSource
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( !typeDeclaration.isPropertySpecific() ) {
+        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             declaredMask = Long.MAX_VALUE;             
         } else {

@@ -148,7 +148,7 @@ public class RuleTerminalNode extends BaseNode
         Pattern pattern = context.getLastBuiltPatterns()[0];
         ObjectType objectType = pattern.getObjectType();
         
-        if ( objectType == ClassObjectType.InitialFact_ObjectType || !(objectType instanceof ClassObjectType) ) {
+        if ( !(objectType instanceof ClassObjectType) ) {
             // InitialFact has no type declaration and cannot be property specific
             // Only ClassObjectType can use property specific
             declaredMask = Long.MAX_VALUE;
@@ -157,7 +157,7 @@ public class RuleTerminalNode extends BaseNode
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( !typeDeclaration.isPropertySpecific() ) {
+        if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             declaredMask = Long.MAX_VALUE;             
         } else  {
