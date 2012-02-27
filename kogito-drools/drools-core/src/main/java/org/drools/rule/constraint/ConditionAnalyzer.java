@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
+import org.drools.base.ClassFieldReader;
 import org.drools.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
@@ -39,6 +40,8 @@ import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+
+import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 
 public class ConditionAnalyzer {
 
@@ -158,7 +161,7 @@ public class ConditionAnalyzer {
 
         if (node instanceof Union) {
             ASTNode main = ((Union)node).getMain();
-            Accessor accessor = ((Union)node).getAccessor();
+            Accessor accessor = node.getAccessor();
 
             EvaluatedExpression expression = new EvaluatedExpression();
             expression.firstExpression = analyzeNode(main);
@@ -181,7 +184,10 @@ public class ConditionAnalyzer {
             if (dot > 0) {
                 variableName = variableName.substring(0, dot);
             }
-            return new VariableExpression(variableName, analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()), node.getEgressType());
+            Class<?> variableType = getVariableType(variableName);
+            return new VariableExpression(variableName,
+                                          analyzeExpressionNode(((IndexedVariableAccessor) accessor).getNextNode()),
+                                          variableType != null ? variableType : node.getEgressType());
         }
 
         if (accessor == null && node instanceof NewObjectNode) {
@@ -398,7 +404,11 @@ public class ConditionAnalyzer {
     private Class<?> getVariableType(String name) {
         for (Declaration declaration : declarations) {
             if (declaration.getBindingName().equals(name)) {
-                return declaration.getValueType().getClassType();
+                if (declaration.getExtractor() instanceof ClassFieldReader) {
+                    return ((ClassFieldReader) declaration.getExtractor()).getExtractToClass();
+                } else {
+                    return declaration.getValueType().getClassType();
+                }
             }
         }
         return null;
@@ -578,10 +588,6 @@ public class ConditionAnalyzer {
         }
 
         public Class<?> getType() {
-            return subsequentInvocations != null ? subsequentInvocations.getType() : Object.class;
-        }
-
-        public Class<?> getVariableType() {
             return subsequentInvocations != null ? subsequentInvocations.getType() : type;
         }
 
@@ -666,7 +672,7 @@ public class ConditionAnalyzer {
             }
 
             if (operator.isBitwiseOperation()) {
-                Class<?> type = left instanceof VariableExpression ? ((VariableExpression)left).getVariableType() : left.getType();
+                Class<?> type = left.getType();
                 return type == long.class || type == Long.class ? long.class : int.class;
             }
 
@@ -674,7 +680,9 @@ public class ConditionAnalyzer {
                 return left.getType();
             }
 
-            return double.class;
+            Class<?> primitiveLeft = convertToPrimitiveType(left.getType());
+            Class<?> primitiveRight = convertToPrimitiveType(right.getType());
+            return primitiveLeft == primitiveRight ? primitiveLeft : double.class;
         }
     }
 

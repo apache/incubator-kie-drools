@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.mvel2.asm.Opcodes.*;
 
@@ -137,10 +139,20 @@ public class ASMConditionEvaluatorJitter {
                 return;
             }
             jitExpression(left, type);
-            castPrimitiveToPrimitive(left.getType(), type);
+            castExpressionResultToPrimitive(left, type);
             jitExpression(right, type);
-            castPrimitiveToPrimitive(right.getType(), type);
+            castExpressionResultToPrimitive(right, type);
             jitPrimitiveOperation(singleCondition.getOperation(), type);
+        }
+
+        private void castExpressionResultToPrimitive(Expression expression, Class<?> type) {
+            if (!expression.isFixed()) {
+                if (expression.getType().isPrimitive()) {
+                    castPrimitiveToPrimitive(expression.getType(), type);
+                } else {
+                    castToPrimitive(type);
+                }
+            }
         }
 
         private void jitObjectBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
@@ -148,13 +160,19 @@ public class ASMConditionEvaluatorJitter {
                 throw new RuntimeException("Unmanaged fixed left"); // TODO
             }
 
-            Class<?> leftType = left.getType();
-            Class<?> rightType = right.getType();
+            Class<?> leftType = isDeclarationExpression(left) ? convertFromPrimitiveType(left.getType()) : left.getType();
+            Class<?> rightType = isDeclarationExpression(right) ? convertFromPrimitiveType(right.getType()) : right.getType();
 
             jitExpression(left, type != null ? type : leftType);
+            if (isDeclarationExpression(left)) {
+                cast(leftType);
+            }
             store(LEFT_OPERAND, leftType);
 
             jitExpression(right, type != null ? type : rightType);
+            if (isDeclarationExpression(right)) {
+                cast(rightType);
+            }
             store(RIGHT_OPERAND, rightType);
 
             Label shortcutEvaluation = new Label();
@@ -406,12 +424,18 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitExpressionToPrimitiveType(Expression expression, Class<?> primitiveType) {
-            jitExpression(expression, Object.class);
-            if (expression.isFixed() || expression.getType().isPrimitive()) {
-                castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), primitiveType);
-            } else {
-                castToPrimitive(primitiveType);
+            jitExpression(expression, primitiveType);
+            if (!isDeclarationExpression(expression) && !expression.isFixed()) {
+                if (expression.getType().isPrimitive()) {
+                    castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), primitiveType);
+                } else {
+                    castToPrimitive(primitiveType);
+                }
             }
+        }
+
+        private boolean isDeclarationExpression(Expression expression) {
+            return expression instanceof VariableExpression && ((VariableExpression)expression).subsequentInvocations == null;
         }
 
         private void jitAritmeticOperation(Class<?> operationType, AritmeticOperator operator) {
