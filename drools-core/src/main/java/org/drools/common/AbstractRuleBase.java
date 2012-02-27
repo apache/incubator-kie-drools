@@ -519,7 +519,8 @@ abstract public class AbstractRuleBase
                 // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
                 pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
             }
-
+            
+            // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
@@ -554,6 +555,10 @@ abstract public class AbstractRuleBase
                                                       "unable to resolve Type Declaration class '" + lastType.getTypeName() +
                                                               "'" );
                 }
+            }
+
+            for (Package newPkg : newPkgs) {
+                Package pkg = this.pkgs.get( newPkg.getName() );
 
                 // now merge the new package into the existing one
                 mergePackage( pkg,
