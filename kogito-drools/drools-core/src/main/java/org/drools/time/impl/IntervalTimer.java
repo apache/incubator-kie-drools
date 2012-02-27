@@ -22,7 +22,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
 import org.drools.time.Trigger;
 
 public class IntervalTimer
@@ -54,6 +57,7 @@ public class IntervalTimer
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( startTime );
         out.writeObject( endTime );
+        out.writeInt( repeatLimit );
         out.writeLong( delay );
         out.writeLong( period );
     }
@@ -62,6 +66,7 @@ public class IntervalTimer
                                             ClassNotFoundException {
         this.startTime = (Date) in.readObject();
         this.endTime = (Date) in.readObject();
+        this.repeatLimit = in.readInt();
         this.delay = in.readLong();
         this.period = in.readLong();
     }
@@ -80,6 +85,13 @@ public class IntervalTimer
 
     public long getPeriod() {
         return period;
+    }
+
+    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        String[] calendarNames = item.getRule().getCalendars();
+        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
     }
 
     public Trigger createTrigger(long timestamp,
@@ -102,6 +114,7 @@ public class IntervalTimer
         result = prime * result + (int) (delay ^ (delay >>> 32));
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
         result = prime * result + (int) (period ^ (period >>> 32));
+        result = prime * result + repeatLimit;
         result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         return result;
     }
@@ -113,6 +126,7 @@ public class IntervalTimer
         if ( getClass() != obj.getClass() ) return false;
         IntervalTimer other = (IntervalTimer) obj;
         if ( delay != other.delay ) return false;
+        if ( repeatLimit != other.repeatLimit ) return false;
         if ( endTime == null ) {
             if ( other.endTime != null ) return false;
         } else if ( !endTime.equals( other.endTime ) ) return false;

@@ -99,13 +99,13 @@ public class RuleTerminalNode extends BaseNode
     }
 
     /**
-     * Construct.
      *
-     * @param inputSource
-     *            The parent tuple source.
+     * @param id
+     * @param source
      * @param rule
-     *            The rule.
-     * @param subruleIndex 
+     * @param subrule
+     * @param subruleIndex
+     * @param context
      */
     public RuleTerminalNode(final int id,
                             final LeftTupleSource source,

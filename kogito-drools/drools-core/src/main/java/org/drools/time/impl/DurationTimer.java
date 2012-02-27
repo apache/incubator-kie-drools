@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.NumberUtils;
 import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
 import org.drools.time.Trigger;
 
 public class DurationTimer
@@ -50,6 +53,13 @@ public class DurationTimer
 
     public long getDuration() {
         return duration;
+    }
+
+    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        String[] calendarNames = item.getRule().getCalendars();
+        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
     }
 
     public Trigger createTrigger(long timestamp,

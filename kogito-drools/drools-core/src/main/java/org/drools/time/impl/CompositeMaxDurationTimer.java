@@ -20,7 +20,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
 import org.drools.time.Trigger;
 
 /**
@@ -51,6 +54,14 @@ public class CompositeMaxDurationTimer
 
     public void setTimer( Timer timer ) {
         this.timer = timer;
+    }
+
+
+    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        String[] calendarNames = item.getRule().getCalendars();
+        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
     }
 
     public Trigger createTrigger( long timestamp, // current time

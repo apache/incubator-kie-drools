@@ -33,7 +33,6 @@ import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.LeftTuple;
-import org.drools.runtime.Calendars;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -57,16 +56,14 @@ public final class Scheduler {
      * 
      * @param item
      *            The item to schedule.
-     * @param wm 
-     * @param workingMemory
+     * @param agenda
+     * @param wm
      *            The working memory session.
      */
     public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda, InternalWorkingMemory wm) {
-        String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = wm.getCalendars();
-        
-        Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime(), calendarNames, calendars);
-        
+
+        Trigger trigger = item.getRule().getTimer().createTrigger( item, wm );
+
         ActivationTimerJob job = new ActivationTimerJob();
         ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                 

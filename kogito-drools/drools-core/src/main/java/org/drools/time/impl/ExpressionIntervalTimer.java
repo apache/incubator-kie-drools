@@ -16,47 +16,58 @@
 
 package org.drools.time.impl;
 
+import org.drools.WorkingMemory;
+import org.drools.base.mvel.MVELObjectExpression;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
+import org.drools.time.TimeUtils;
+import org.drools.time.Trigger;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.text.ParseException;
 import java.util.Date;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.runtime.Calendars;
-import org.drools.spi.Activation;
-import org.drools.time.Trigger;
-
-public class CronTimer
+public class ExpressionIntervalTimer
     implements
     Timer,
     Externalizable {
-    private Date           startTime;
-    private Date           endTime;
-    private int            repeatLimit;
-    private CronExpression cronExpression;
-    
-    public CronTimer() {
-        
+
+    private Date startTime;
+
+    private Date endTime;
+
+    private int  repeatLimit;
+
+    private MVELObjectExpression delay;
+    private MVELObjectExpression period;
+
+    public ExpressionIntervalTimer() {
+
     }
 
-    public CronTimer(Date startTime,
-                     Date endTime,
-                     int repeatLimit,
-                     CronExpression cronExpression) {
+
+
+    public ExpressionIntervalTimer(Date startTime,
+                                   Date endTime,
+                                   int repeatLimit,
+                                   MVELObjectExpression delay,
+                                   MVELObjectExpression period) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.repeatLimit = repeatLimit;
-        this.cronExpression = cronExpression;
+        this.delay = delay;
+        this.period = period;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( startTime );
         out.writeObject( endTime );
         out.writeInt( repeatLimit );
-        out.writeObject( cronExpression.getCronExpression() );
+        out.writeObject( delay );
+        out.writeObject( period );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -64,13 +75,8 @@ public class CronTimer
         this.startTime = (Date) in.readObject();
         this.endTime = (Date) in.readObject();
         this.repeatLimit = in.readInt();
-        String string = (String) in.readObject();
-        try {
-            this.cronExpression = new CronExpression( string );
-        } catch ( ParseException e ) {
-            throw new RuntimeException( "Unable to marshal CronExpression '" + string + "'",
-                                        e );
-        }
+        this.delay = (MVELObjectExpression) in.readObject();
+        this.period = (MVELObjectExpression) in.readObject();
     }
 
     public Date getStartTime() {
@@ -81,37 +87,73 @@ public class CronTimer
         return endTime;
     }
 
-    public CronExpression getCronExpression() {
-        return cronExpression;
+    public MVELObjectExpression getDelay() {
+        return delay;
+    }
+
+    public MVELObjectExpression getPeriod() {
+        return period;
     }
 
 
     public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
-        return createTrigger( timestamp, calendarNames, calendars );
+
+        return new IntervalTrigger( timestamp,
+                                    this.startTime,
+                                    this.endTime,
+                                    this.repeatLimit,
+                                    evalDelay( item, wm ),
+                                    evalPeriod( item, wm ),
+                                    calendarNames,
+                                    calendars );
     }
+
+    private long evalPeriod( Activation item, WorkingMemory wm ) {
+        Object p = this.period.getValue( item.getTuple(), item.getRule(), wm );
+        if ( p instanceof Number ) {
+            return ((Number) p).longValue();
+        } else {
+            return TimeUtils.parseTimeString( p.toString() );
+        }
+    }
+
+    private long evalDelay(Activation item, WorkingMemory wm) {
+        Object d = this.delay.getValue( item.getTuple(), item.getRule(), wm );
+        if ( d instanceof Number ) {
+            return ((Number) d).longValue();
+        } else {
+            return TimeUtils.parseTimeString( d.toString() );
+        }
+    }
+
 
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
                                  Calendars calendars) {
-        return new CronTrigger( timestamp,
-                                this.startTime,
-                                this.endTime,
-                                this.repeatLimit,
-                                this.cronExpression,
-                                calendarNames,
-                                calendars );
+        return new IntervalTrigger( timestamp,
+                                    this.startTime,
+                                    this.endTime,
+                                    this.repeatLimit,
+                                    0,
+                                    0,
+                                    calendarNames,
+                                    calendars );
     }
+
+
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((cronExpression.getCronExpression() == null) ? 0 : cronExpression.getCronExpression().hashCode());
-        result = prime * result + repeatLimit;
+        result = prime * result + delay.hashCode();
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+        result = prime * result + period.hashCode();
+        result = prime * result + repeatLimit;
         result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         return result;
     }
@@ -121,18 +163,16 @@ public class CronTimer
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        CronTimer other = (CronTimer) obj;
+        ExpressionIntervalTimer other = (ExpressionIntervalTimer) obj;
+        if ( delay != other.delay ) return false;
         if ( repeatLimit != other.repeatLimit ) return false;
-        if ( cronExpression.getCronExpression() == null ) {
-            if ( other.cronExpression.getCronExpression() != null ) return false;
-        } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) return false;
         if ( endTime == null ) {
             if ( other.endTime != null ) return false;
         } else if ( !endTime.equals( other.endTime ) ) return false;
+        if ( period != other.period ) return false;
         if ( startTime == null ) {
             if ( other.startTime != null ) return false;
         } else if ( !startTime.equals( other.startTime ) ) return false;
         return true;
     }
-
 }
