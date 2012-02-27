@@ -33,7 +33,6 @@ import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -90,8 +89,6 @@ public class RuleTerminalNode extends BaseNode
     
     private boolean           fireDirect;
 
-    private Map<Class<?>, List<String>> listenedProperties;
-    
     private long             declaredMask;
     private long             inferredMask;
 
@@ -117,9 +114,9 @@ public class RuleTerminalNode extends BaseNode
                             final GroupElement subrule,
                             final int subruleIndex, 
                             final BuildContext context) {
-        super( id,
-               context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+        super(id,
+                context.getPartitionId(),
+                context.getRuleBase().getConfiguration().isMultithreadEvaluation());
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
@@ -139,7 +136,7 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public void initDeclaredMask(BuildContext context) {        
-        if ( !(tupleSource instanceof LeftInputAdapterNode)) {
+        if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
             declaredMask = Long.MAX_VALUE;
             return;            
@@ -167,12 +164,17 @@ public class RuleTerminalNode extends BaseNode
     }
     
     public void initInferredMask() {
-        if ( tupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)tupleSource).getParentObjectSource() instanceof AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)tupleSource).getParentObjectSource();
+        LeftTupleSource leftTupleSource = unwrapTupleSource();
+        if ( leftTupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource() instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource();
             inferredMask = alphaNode.updateMask( declaredMask );
         } else {
             inferredMask = declaredMask;
         }        
+    }
+
+    private LeftTupleSource unwrapTupleSource() {
+        return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
     }
 
     // ------------------------------------------------------------
@@ -190,7 +192,6 @@ public class RuleTerminalNode extends BaseNode
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
         fireDirect = rule.getActivationListener().equals( "direct" );
-        listenedProperties = (Map<Class<?>, List<String>>) in.readObject();
         declaredMask = in.readLong();
         inferredMask = in.readLong();        
     }
@@ -205,7 +206,6 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
-        out.writeObject( listenedProperties );
         out.writeLong(declaredMask);
         out.writeLong(inferredMask);        
     }

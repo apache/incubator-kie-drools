@@ -40,7 +40,6 @@ import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.reteoo.PropertySpecificUtil.calculateMaskFromPattern;
-import static org.drools.reteoo.PropertySpecificUtil.getNodeClass;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
@@ -141,24 +140,23 @@ public abstract class BetaNode extends LeftTupleSource
         if ( !(rightInput instanceof RightInputAdapterNode) ) {
             Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
             ObjectType objectType = pattern.getObjectType();
-            
+
             if ( !(objectType instanceof ClassObjectType)) {
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
                 rightDeclaredMask = Long.MAX_VALUE;
-                
+
             }
-            
-            Class objectClass = ((ClassObjectType)objectType).getClassType();        
+
+            Class objectClass = ((ClassObjectType)objectType).getClassType();
             TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
             if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
                 // if property specific is not on, then accept all modification propagations
-                rightDeclaredMask = Long.MAX_VALUE;             
+                rightDeclaredMask = Long.MAX_VALUE;
             } else {
                 List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-                rightDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);            
-                rightDeclaredMask = rightDeclaredMask | calculateDeclaredMask(settableProperties, pattern.getListenedProperties());
-            } 
+                rightDeclaredMask = calculateDeclaredMask(settableProperties, pattern.getListenedProperties());
+            }
         } else {
             rightDeclaredMask = Long.MAX_VALUE;
             // There would have been no right input pattern, so swap current to first, so leftInput can still work
@@ -175,38 +173,48 @@ public abstract class BetaNode extends LeftTupleSource
         
         Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
         ObjectType objectType = pattern.getObjectType();
-        
+
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
             leftDeclaredMask = Long.MAX_VALUE;
             return;
         }
-        
-        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+
+        Class objectClass = ((ClassObjectType)objectType).getClassType();
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
-            leftDeclaredMask = Long.MAX_VALUE;             
+            leftDeclaredMask = Long.MAX_VALUE;
         } else  {
             List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
             leftDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);
-        }               
+        }
     }
-    
-    public void initInferredMask() {        
-        if ( rightInput instanceof AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) rightInput;
+
+    public void initInferredMask() {
+        ObjectSource unwrappedRight = unwrapRightInput();
+        if ( unwrappedRight instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) unwrappedRight;
             rightInferredMask = alphaNode.updateMask( rightDeclaredMask );
         } else {        
             rightInferredMask = rightDeclaredMask;
         }
-        
-        if ( leftInput instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftInput).getParentObjectSource() instanceof AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftInput).getParentObjectSource();
+
+        LeftTupleSource unwrappedLeft = unwrapLeftInput();
+        if ( unwrappedLeft instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource() instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource();
             leftInferredMask = alphaNode.updateMask( leftDeclaredMask );
         } else {
             leftInferredMask = leftDeclaredMask;
         }          
+    }
+
+    private ObjectSource unwrapRightInput() {
+        return rightInput instanceof PropagationQueuingNode ? ((PropagationQueuingNode)rightInput).getParentObjectSource() : rightInput;
+    }
+
+    private LeftTupleSource unwrapLeftInput() {
+        return leftInput instanceof FromNode ? ((FromNode)leftInput).getLeftTupleSource() : leftInput;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -273,7 +281,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public FastIterator getRightIterator(RightTupleMemory memory) {
-        if ( !this.indexedUnificationJoin ) {
+        if ( !this.indexedUnificationJoin) {
             return memory.fastIterator();
         } else {
             return memory.fullFastIterator();
@@ -281,7 +289,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public FastIterator getLeftIterator(LeftTupleMemory memory) {
-        if ( !this.indexedUnificationJoin ) {
+        if ( !this.indexedUnificationJoin) {
             return memory.fastIterator();
         } else {
             return memory.fullFastIterator();
