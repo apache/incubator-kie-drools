@@ -24,6 +24,7 @@ import static org.mvel2.asm.Opcodes.ACONST_NULL;
 import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ANEWARRAY;
 import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.BIPUSH;
 import static org.mvel2.asm.Opcodes.CHECKCAST;
 import static org.mvel2.asm.Opcodes.D2F;
 import static org.mvel2.asm.Opcodes.D2I;
@@ -477,6 +478,8 @@ public class ClassGenerator {
 
             if (type == String.class || type == Object.class) {
                 mv.visitLdcInsn(obj);
+            } else if (type == char.class) {
+                mv.visitIntInsn(BIPUSH, (int)((Character)obj).charValue());
             } else if (type.isPrimitive()) {
                 if (obj instanceof String) {
                     obj = coerceStringToPrimitive(type, (String)obj);
@@ -485,9 +488,9 @@ public class ClassGenerator {
                 }
                 mv.visitLdcInsn(obj);
             } else if (type == Class.class) {
-                mv.visitLdcInsn(cg.toType((Class<?>)obj));
+                mv.visitLdcInsn(cg.toType((Class<?>) obj));
             } else if (type == Character.class) {
-                invokeConstructor(type, new Object[]{ obj.toString().charAt(0) }, char.class);
+                invokeConstructor(Character.class, new Object[]{ obj.toString().charAt(0) }, char.class);
             } else {
                 invokeConstructor(type, new Object[]{ obj.toString() }, String.class);
             }
@@ -495,13 +498,13 @@ public class ClassGenerator {
 
         private Object coercePrimitiveToPrimitive(Class<?> primitiveType, Object value) {
             if (primitiveType == long.class) {
-                return new Long(value.toString());
-            }
-            if (primitiveType == float.class) {
-                return new Float(value.toString());
+                return ((Number)value).longValue();
             }
             if (primitiveType == double.class) {
-                return new Double(value.toString());
+                return ((Number)value).doubleValue();
+            }
+            if (primitiveType == float.class) {
+                return ((Number)value).floatValue();
             }
             return value;
         }
@@ -542,32 +545,6 @@ public class ClassGenerator {
             mv.visitTypeInsn(INSTANCEOF, internalName(clazz));
         }
 
-        protected final Class<?> convertFromPrimitiveType(Class<?> type) {
-            if (!type.isPrimitive()) return type;
-            if (type == int.class) return Integer.class;
-            if (type == long.class) return Long.class;
-            if (type == float.class) return Float.class;
-            if (type == double.class) return Double.class;
-            if (type == short.class) return Short.class;
-            if (type == byte.class) return Byte.class;
-            if (type == char.class) return Character.class;
-            if (type == boolean.class) return Boolean.class;
-            throw new RuntimeException("Class not convertible from primitive: " + type.getName());
-        }
-
-        protected final Class<?> convertToPrimitiveType(Class<?> type) {
-            if (type.isPrimitive()) return type;
-            if (type == Integer.class) return int.class;
-            if (type == Long.class) return long.class;
-            if (type == Float.class) return float.class;
-            if (type == Double.class) return double.class;
-            if (type == Short.class) return short.class;
-            if (type == Byte.class) return byte.class;
-            if (type == Character.class) return char.class;
-            if (type == Boolean.class) return boolean.class;
-            throw new RuntimeException("Class not convertible to primitive: " + type.getName());
-        }
-
         protected final void castPrimitiveToPrimitive(Class<?> from, Class<?> to) {
             if (from == to) return;
             if (from == int.class) {
@@ -596,6 +573,9 @@ public class ClassGenerator {
             if (clazz == boolean.class) {
                 cast(Boolean.class);
                 invokeVirtual(Boolean.class, "booleanValue", boolean.class);
+            } else if (clazz == char.class) {
+                cast(Character.class);
+                invokeVirtual(Character.class, "charValue", char.class);
             } else {
                 cast(Number.class);
                 invokeVirtual(Number.class, clazz.getName() + "Value", clazz);
