@@ -25,9 +25,9 @@
       <version>2.3.4.Final</version>
     </dependency>
     <dependency>
-	<groupId>org.jboss.bpm</groupId>
-  	<artifactId>activity-monitor-model</artifactId>
-  	<version>1.0.0-Beta2</version>
+      <groupId>org.jboss.bpm</groupId>
+      <artifactId>activity-monitor-model</artifactId>
+      <version>1.0.0-Beta2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
@@ -104,17 +104,17 @@
   </dependencies>
   
   <build>
-  	<pluginManagement>
-	   <plugins>
+    <pluginManagement>
+     <plugins>
           <plugin>
-           <groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-war-plugin</artifactId>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
             <configuration>
                <!-- exclude old codec version from gwt-console-server -->
                <dependentWarExcludes>WEB-INF/lib/commons-codec-1.3.jar,WEB-INF/lib/mvel2-2.0.18-RC4.jar</dependentWarExcludes>   
             </configuration>
           </plugin>
        </plugins>
-  	</pluginManagement>
+    </pluginManagement>
   </build>
 </project>

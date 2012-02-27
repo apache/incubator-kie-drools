@@ -26,10 +26,10 @@
       <version>2.3.4.Final</version>
     </dependency>
     <dependency>
-  		<groupId>org.jboss.bpm</groupId>
-  		<artifactId>activity-monitor-model</artifactId>
-  		<version>1.0.0-Beta2</version>
-	</dependency>
+      <groupId>org.jboss.bpm</groupId>
+      <artifactId>activity-monitor-model</artifactId>
+      <version>1.0.0-Beta2</version>
+    </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
@@ -39,9 +39,9 @@
       <artifactId>mina-core</artifactId>
     </dependency> 
     <dependency>
-    	<groupId>org.jbpm</groupId>
-    	<artifactId>jbpm-gwt-shared</artifactId>
-    	<scope>compile</scope>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-shared</artifactId>
+      <scope>compile</scope>
     </dependency>
     <dependency>
        <groupId>org.jbpm</groupId>

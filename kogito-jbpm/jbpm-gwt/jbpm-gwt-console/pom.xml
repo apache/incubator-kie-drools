@@ -29,10 +29,10 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
     <dependency>
-  		<groupId>org.jboss.bpm</groupId>
-  		<artifactId>activity-monitor-model</artifactId>
-  		<version>1.0.0-Beta2</version>
-	</dependency>
+      <groupId>org.jboss.bpm</groupId>
+      <artifactId>activity-monitor-model</artifactId>
+      <version>1.0.0-Beta2</version>
+    </dependency>
   </dependencies>
 
 </project>

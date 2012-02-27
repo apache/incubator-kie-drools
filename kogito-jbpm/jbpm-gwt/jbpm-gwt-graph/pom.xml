@@ -30,10 +30,10 @@
       <version>2.3.4.Final</version>
     </dependency>
     <dependency>
-  		<groupId>org.jboss.bpm</groupId>
-  		<artifactId>activity-monitor-model</artifactId>
-  		<version>1.0.0-Beta2</version>
-	</dependency>
+      <groupId>org.jboss.bpm</groupId>
+      <artifactId>activity-monitor-model</artifactId>
+      <version>1.0.0-Beta2</version>
+  </dependency>
     <!-- Following 2 dependencies needed for making the build work with JDK5 -->
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
