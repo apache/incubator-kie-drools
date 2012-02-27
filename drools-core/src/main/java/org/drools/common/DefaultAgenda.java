@@ -129,10 +129,8 @@ public class DefaultAgenda
     /**
      * Construct.
      * 
-     * @param workingMemory
-     *            The <code>WorkingMemory</code> of this agenda.
-     * @param conflictResolver
-     *            The conflict resolver.
+     * @param rb
+     *            The <code>InternalRuleBase</code> of this agenda.
      */
     public DefaultAgenda(InternalRuleBase rb) {
         this( rb,
@@ -142,10 +140,10 @@ public class DefaultAgenda
     /**
      * Construct.
      * 
-     * @param workingMemory
-     *            The <code>WorkingMemory</code> of this agenda.
-     * @param conflictResolver
-     *            The conflict resolver.
+     * @param rb
+     *            The <code>InternalRuleBase</code> of this agenda.
+     * @param initMain
+     *            Flag to initialize the MAIN agenda group
      */
     public DefaultAgenda(InternalRuleBase rb,
                          boolean initMain) {
@@ -1121,8 +1119,8 @@ public class DefaultAgenda
     /**
      * Fire this item.
      * 
-     * @param workingMemory
-     *            The working memory context.
+     * @param activation
+     *            The activation to fire
      * 
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.

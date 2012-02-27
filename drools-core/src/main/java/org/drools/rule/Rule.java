@@ -499,7 +499,7 @@ public class Rule
      * Add a pattern to the rule. All patterns are searched for bindings which are then added to the rule
      * as declarations
      *
-     * @param condition
+     * @param element
      *            The <code>Test</code> to add.
      * @throws InvalidRuleException
      */

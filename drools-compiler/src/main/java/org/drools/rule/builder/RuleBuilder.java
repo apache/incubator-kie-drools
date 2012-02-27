@@ -20,10 +20,12 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.base.mvel.MVELObjectExpression;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.RuleBuildError;
 import org.drools.core.util.DateUtils;
@@ -36,10 +38,12 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.dialect.mvel.MVELObjectExpressionBuilder;
 import org.drools.spi.Salience;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.CronExpression;
 import org.drools.time.impl.CronTimer;
+import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.time.impl.Timer;
 import org.mvel2.MVEL;
@@ -258,7 +262,7 @@ public class RuleBuilder {
         int colonPos = timerString.indexOf( ":" );
         String protocol = null;
         if ( colonPos == -1 ) {
-            if (timerString.startsWith("int") || timerString.startsWith("cron")) {
+            if ( timerString.startsWith( "int" ) || timerString.startsWith( "cron" ) || timerString.startsWith( "expr" ) ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect timer definition '" + timerString + "' - missing colon?" );
                 context.addError( err );
@@ -363,6 +367,25 @@ public class RuleBuilder {
             }
 
             timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);
+        } else if ( "expr".equals( protocol ) ) {
+            body = body.trim();
+            StringTokenizer tok = new StringTokenizer( body, ",;" );
+
+            if ( tok.countTokens() > 2 ) {
+                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                        "Incorrect number of arguments for expression timer '" + timerString + "'" );
+                context.addError( err );
+                return;
+            }
+
+            MVELObjectExpressionBuilder builder = new MVELObjectExpressionBuilder();
+            MVELObjectExpression times = builder.build( tok.nextToken().trim(), context );
+            MVELObjectExpression period = null;
+            if ( tok.hasMoreTokens() ) {
+                period = builder.build( tok.nextToken().trim(), context );
+            }
+
+            timer = new ExpressionIntervalTimer( startDate, endDate, repeatLimit, times, period );
         } else {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   "Protocol for timer does not exist '" + timerString +"'" );
