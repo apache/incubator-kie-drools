@@ -153,7 +153,58 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         
         assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
         assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );
-    }       
+    }  
+    
+    @Test
+    public void testInitialFactBetaNodeWithRightInputAdapter() {
+        String rule = "package org.drools\n" +
+                      "import " + Person.class.getCanonicalName() + "\n" +
+                      "import " + Cheese.class.getCanonicalName() + "\n" +
+                      "rule r1\n" +
+                      "when\n" +
+                      "   exists(eval(1==1))\n" +
+                      "then\n" +
+                      "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "InitialFactImpl" );
+        assertNotNull( otn );
+        
+        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
+        BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
+        
+        assertEquals( Long.MAX_VALUE, betaNode.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getLeftInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );                
+    }  
+    
+    @Test
+    public void testPersonFactBetaNodeWithRightInputAdapter() {
+        String rule = "package org.drools\n" +
+                      "import " + Person.class.getCanonicalName() + "\n" +
+                      "import " + Cheese.class.getCanonicalName() + "\n" +
+                      "rule r1\n" +
+                      "when\n" +
+                      "   Person()\n" + 
+                      "   exists(eval(1==1))\n" +
+                      "then\n" +
+                      "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+        
+        ObjectTypeNode otn = getObjectTypeNode(kbase, "Person" );
+        assertNotNull( otn );
+        
+        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otn.getSinkPropagator().getSinks()[0];
+        BetaNode betaNode = ( BetaNode ) liaNode.getSinkPropagator().getSinks()[1];
+        
+        assertEquals( Long.MAX_VALUE, betaNode.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getLeftInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getRightDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNode.getRightInferredMask() );                
+    }    
     
     @Test
     public void testSharedAlphanodeWithBetaNodeConstraintsNoPropertySpecific() {

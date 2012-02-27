@@ -138,26 +138,32 @@ public abstract class BetaNode extends LeftTupleSource
             return;
         }
         
-        Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
-        ObjectType objectType = pattern.getObjectType();
-        
-        if ( !(objectType instanceof ClassObjectType)) {
-            // InitialFact has no type declaration and cannot be property specific
-            // Only ClassObjectType can use property specific
-            rightDeclaredMask = Long.MAX_VALUE;
+        if ( !(rightInput instanceof RightInputAdapterNode) ) {
+            Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
+            ObjectType objectType = pattern.getObjectType();
             
-        }
-        
-        Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
-            // if property specific is not on, then accept all modification propagations
-            rightDeclaredMask = Long.MAX_VALUE;             
+            if ( !(objectType instanceof ClassObjectType)) {
+                // InitialFact has no type declaration and cannot be property specific
+                // Only ClassObjectType can use property specific
+                rightDeclaredMask = Long.MAX_VALUE;
+                
+            }
+            
+            Class objectClass = ((ClassObjectType)objectType).getClassType();        
+            TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+            if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
+                // if property specific is not on, then accept all modification propagations
+                rightDeclaredMask = Long.MAX_VALUE;             
+            } else {
+                List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+                rightDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);            
+                rightDeclaredMask = rightDeclaredMask | calculateDeclaredMask(settableProperties, pattern.getListenedProperties());
+            } 
         } else {
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-            rightDeclaredMask = calculateMaskFromPattern(pattern.getListenedProperties(), 0L, settableProperties);            
-            rightDeclaredMask = rightDeclaredMask | calculateDeclaredMask(settableProperties, pattern.getListenedProperties());
-        } 
+            rightDeclaredMask = Long.MAX_VALUE;
+            // There would have been no right input pattern, so swap current to first, so leftInput can still work
+            context.setLastBuiltPattern(  context.getLastBuiltPatterns()[0] );           
+        }
         
         /*******/
         
@@ -167,8 +173,8 @@ public abstract class BetaNode extends LeftTupleSource
             return;            
         }
         
-        pattern = context.getLastBuiltPatterns()[1]; // left input pattern
-        objectType = pattern.getObjectType();
+        Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
+        ObjectType objectType = pattern.getObjectType();
         
         if ( !(objectType instanceof ClassObjectType) ) {
             // Only ClassObjectType can use property specific
@@ -176,8 +182,8 @@ public abstract class BetaNode extends LeftTupleSource
             return;
         }
         
-        objectClass = ((ClassObjectType)objectType).getClassType();        
-        typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = Long.MAX_VALUE;             
@@ -214,6 +220,8 @@ public abstract class BetaNode extends LeftTupleSource
         lrUnlinkingEnabled = in.readBoolean();
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
+        leftDeclaredMask = in.readLong();
+        leftInferredMask = in.readLong();        
         setUnificationJoin();
         super.readExternal(in);
     }
@@ -236,7 +244,8 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean(lrUnlinkingEnabled);
         out.writeLong(rightDeclaredMask);
         out.writeLong(rightInferredMask);
-
+        out.writeLong(leftDeclaredMask);
+        out.writeLong(leftInferredMask);
         super.writeExternal(out);
     }
 
