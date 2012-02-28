@@ -26,7 +26,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.drools.adventures.TextAdventure;
 import org.drools.examples.datadriventemplate.DataDrivenTemplateExample;
 import org.drools.examples.decisiontable.PricingRuleDTExample;
 import org.drools.examples.decisiontable.PricingRuleTemplateExample;
@@ -47,6 +46,7 @@ import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
 import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample1;
 import org.drools.examples.workitemconsequence.WorkItemConsequenceExample2;
+import org.drools.games.adventures.TextAdventure;
 
 public class DroolsExamplesApp extends JFrame {
 

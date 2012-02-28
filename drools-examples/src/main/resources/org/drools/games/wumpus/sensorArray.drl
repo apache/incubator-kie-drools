@@ -1,0 +1,81 @@
+package org.drools.games.wumpus
+
+dialect "mvel"
+
+rule "Send SensorArray" salience -100 when
+    $sa : SensorArray()
+then
+    channels["sensors"].send( $sa );
+    retract( $sa );
+end    
+
+rule "Feel Breeze Sensor Array Update" when
+    FeelBreeze()
+    $sa : SensorArray()
+then
+    $sa.feelBreeze = true;   
+end
+
+rule "Breeze Gone Array Update" when
+    not FeelBreeze()
+    $sa : SensorArray()    
+then
+    $sa.feelBreeze = false;  
+end
+
+rule "Smell Stench Array Update" when
+    SmellStench()
+    $sa : SensorArray()     
+then  
+    $sa.smellStench = true;
+end
+
+rule "Stench Gone Array Update" when
+    not SmellStench()
+    $sa : SensorArray()     
+then 
+    $sa.smellStench = false;
+end
+
+rule "See Glitter Array Update" when
+    SeeGlitter()
+    $sa : SensorArray()     
+then
+     $sa.seeGlitter = true;
+end
+
+rule "Glitter Gone Array Update" when
+    not SeeGlitter()
+    $sa : SensorArray()     
+then
+     $sa.seeGlitter = false;
+end
+
+rule "Feel Bump Array Update" when
+    FeelBump()
+    $sa : SensorArray()     
+then 
+    $sa.feelBump = true;
+end
+
+rule "Bump Gone Array Update" when
+    not FeelBump()
+    $sa : SensorArray()     
+then   
+   $sa.feelBump = false;
+end
+
+
+rule "Hear Scream Array Update" when
+    HearScream()
+    $sa : SensorArray()     
+then
+    $sa.hearScream = true;
+end
+
+rule "Scream Gone Array Update"  when
+    not HearScream()
+    $sa : SensorArray()     
+then
+    $sa.hearScream = false;
+end
