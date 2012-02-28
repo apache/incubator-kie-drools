@@ -304,6 +304,9 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
     
     public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
-        modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+        }
     }
 }

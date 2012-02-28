@@ -222,7 +222,9 @@ public class AlphaNode extends ObjectSource
         for (ObjectSink objectSink : sink.getSinks()) {            
             if (objectSink instanceof BetaNode) {
                 RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
-                if ( rightTuple != null ) rightTuple.reAdd();
+                if ( rightTuple != null ) {
+                    rightTuple.reAdd();
+                }
             } else if ( objectSink instanceof LeftInputAdapterNode ) {
                 ((LeftInputAdapterNode) objectSink).getSinkPropagator().byPassModifyToLeftTupleSink( modifyPreviousTuples );                
             } else if (objectSink instanceof AlphaNode) {
