@@ -302,4 +302,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         childLeftTuple.unlinkFromLeftParent();
         return temp;
     }
+    
+    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
+        modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+    }
 }

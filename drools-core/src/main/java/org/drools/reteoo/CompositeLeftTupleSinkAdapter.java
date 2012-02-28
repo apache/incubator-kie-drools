@@ -180,6 +180,8 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         }
         return null; //To change body of implemented methods use File | Settings | File Templates.
     }
+    
+    
 
     public LeftTupleSink[] getSinks() {
         final LeftTupleSink[] sinkArray = new LeftTupleSink[this.sinks.size()];
@@ -369,6 +371,12 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             childLeftTuple = temp;
         }
         return childLeftTuple;
+    }
+
+    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+        }
     }
 
 }
