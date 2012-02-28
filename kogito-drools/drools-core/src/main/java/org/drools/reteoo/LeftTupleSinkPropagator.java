@@ -74,6 +74,8 @@ public interface LeftTupleSinkPropagator
     public BaseNode getMatchingNode(BaseNode candidate);
 
     public LeftTupleSink[] getSinks();
+    
+    public void byPassModifyToLeftTupleSink (ModifyPreviousTuples modifyPreviousTuples);
 
     //    public void propagateNewTupleSink(TupleMatch tupleMatch,
     //                                      PropagationContext context,

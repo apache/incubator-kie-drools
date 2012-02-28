@@ -219,10 +219,12 @@ public class AlphaNode extends ObjectSource
     }
 
     private void byPassModifyToBetaNode (ModifyPreviousTuples modifyPreviousTuples) {
-        for (ObjectSink objectSink : sink.getSinks()) {
+        for (ObjectSink objectSink : sink.getSinks()) {            
             if (objectSink instanceof BetaNode) {
                 RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
                 if ( rightTuple != null ) rightTuple.reAdd();
+            } else if ( objectSink instanceof LeftInputAdapterNode ) {
+                ((LeftInputAdapterNode) objectSink).getSinkPropagator().byPassModifyToLeftTupleSink( modifyPreviousTuples );                
             } else if (objectSink instanceof AlphaNode) {
                 ((AlphaNode)objectSink).byPassModifyToBetaNode( modifyPreviousTuples );
             }
