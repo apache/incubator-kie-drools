@@ -1,0 +1,74 @@
+package org.drools.examples.wumpus
+
+import org.drools.examples.wumpus.Arrow
+import org.drools.examples.wumpus.Move
+import org.drools.examples.wumpus.Direction
+import org.drools.examples.wumpus.MoveCommand
+import org.drools.examples.wumpus.ShootCommand
+import org.drools.examples.wumpus.Cell
+import org.drools.runtime.rule.Activation
+
+dialect "mvel"
+
+declare Cell
+	@propertySpecific
+end		
+
+
+rule "Shoot Arrow" when
+    $sc : ShootCommand();
+    $h  : Hero( arrows == 1 )
+then
+    retract ( $sc );
+    modify( $h ) { arrows = 0 };
+    insert( new Arrow($h.row, $h.col, $h.direction) );
+end 
+
+rule "No Arrows , retract Shoot Arrow"  when
+    $sc : ShootCommand()
+    $h  : Hero( arrows != 1 )    
+then
+    retract ( $sc );
+end 
+
+rule "Move Arrow Up"  when
+     $a :  Arrow( direction == Direction.UP)    
+then
+    modify( $a ) { row = $a.row + 1 };
+end   
+
+rule "Move Arrow Down"  when
+     $a :  Arrow( direction == Direction.DOWN)    
+then
+    modify( $a ) { row = $a.row - 1 };
+end   
+
+rule "Move Arrow Left"  when
+     $a :  Arrow( direction == Direction.LEFT)    
+then
+    modify( $a ) { col = $a.col - 1 };
+end    
+
+rule "Move Arrow Right" when
+     $a :  Arrow( direction == Direction.RIGHT)
+then
+    modify( $a ) { col = $a.col + 1 };
+end  
+
+rule "Wumpus Killed" when
+    $a  : Arrow()
+    $w  : Wumpus(row == $a.row, col == $a.col, alive == true )
+    $c  : Cell(row == $a.row, col == $a.col )        
+then    
+    retract( $a );
+    insert( new HearScream() );
+    modify( $w ) { alive = false };
+end
+    
+
+rule "Cave Boundary, Remove Arrow" when
+     $a : Arrow() 
+     not Cell(row == $a.row, col == $a.col )            
+then
+    retract ( $a );
+end  

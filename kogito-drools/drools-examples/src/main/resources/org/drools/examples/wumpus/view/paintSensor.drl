@@ -65,7 +65,7 @@ end
 
 rule "Base Sensor" when
     $gui : GameUI( sensorPanel != null && sensorPanel.sensorG != null )
-    $sd : SensorDirty() @watch(!*)    
+    $sd : SensorDirty()    
 then
 end    
 
@@ -140,7 +140,7 @@ then
     modify( $sd ) { dirty = true };  
 end
 
-rule "Redraw Sensors" no-loop salience -500 when
+rule "Redraw Sensors" no-loop salience -100 when
    $gui : GameUI() 
    $sd : SensorDirty( dirty == true )
 then

@@ -1,6 +1,6 @@
 package org.drools.examples.wumpus;
 
-public class ClimbCommand extends Command {
+public class ClimbCommand implements Command {
 
     @Override
     public String toString() {
