@@ -511,7 +511,10 @@ public abstract class BetaNode extends LeftTupleSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        RightTuple rightTuple = removeRightTuple(modifyPreviousTuples);
+        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple(this);
+        if ( rightTuple != null ) {
+            rightTuple.reAdd();
+        }
 
         if ( intersect(context.getModificationMask(), rightInferredMask) ) {
 
@@ -530,23 +533,17 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    private RightTuple removeRightTuple(ModifyPreviousTuples modifyPreviousTuples) {
-        RightTuple rightTuple = modifyPreviousTuples.removeRightTuple(this);
-        if ( rightTuple != null ) {
-            rightTuple.reAdd();
-        }
-        return rightTuple;
-    }
-
     public void modifyLeftTuple(InternalFactHandle factHandle,
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(this);
+        if ( leftTuple != null ) {
+            leftTuple.reAdd();
+        }        
         
         if ( intersect(context.getModificationMask(), leftInferredMask) ) {
             if ( leftTuple != null ) {
-                leftTuple.reAdd(); //
                 // LeftTuple previously existed, so continue as modify
                 modifyLeftTuple( leftTuple,
                                  context,
