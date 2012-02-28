@@ -1,0 +1,25 @@
+package org.drools.games.wumpus
+
+dialect "mvel"
+
+rule "init" when
+then
+    channels["commands"].send( new MoveCommand( Move.TURN_LEFT ) );
+    insert( 0 );
+end 
+
+rule "Rotate" timer(int: 500ms) when
+    $i : Integer( this < 7 )
+    $sa : SensorArray()
+then
+    retract( $sa );
+    retract( $i );   
+    insert( $i + 1 );
+    channels["commands"].send( new MoveCommand( Move.TURN_LEFT ) );    
+end
+
+rule "Print Sensor" when
+    $sa : SensorArray()
+then
+    System.out.println( $sa );
+end    

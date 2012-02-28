@@ -1,0 +1,45 @@
+package org.drools.games.wumpus
+
+
+dialect "mvel"
+
+declare Score
+	@propertySpecific
+end	
+    
+rule "Move -1" salience 100 when
+         $m : MoveCommand()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 1 };  
+end 
+
+rule "Shoot Arrow -10" salience 100 when
+         ShootCommand()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 10 };
+end   
+     
+
+rule "Gold Win +100" salience 100 when  
+         GoldWin()
+    $s : Score()
+then
+    modify( $s ) { value = $s.value  + 100 };
+end     
+   
+rule "Pit Death -1000" salience 100 when
+         PitDeath()
+    $s : Score()
+then
+    modify( $s) { value = $s.value  - 1000 };
+end 
+
+rule "Wumpus Death -1000" salience 100 when
+         WumpusDeath()
+    $s : Score()
+then
+     modify( $s) { value = $s.value - 1000 };  
+end          
+
