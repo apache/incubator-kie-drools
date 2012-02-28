@@ -1526,7 +1526,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         FactType factTypeA = kbase.getFactType( "org.drools", "A" );
         Object factA = factTypeA.newInstance();
         factTypeA.set( factA, "i", 1 );
-        ksession.insert( factA );
+        ksession.insert(factA);
 
         FactType factTypeB = kbase.getFactType( "org.drools", "B" );
         Object factB = factTypeB.newInstance();
@@ -1824,10 +1824,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }    
 
-    List<String> list(String... items) {
-        List list = new ArrayList();
-        for ( String str : items ) {
-            list.add( str );
+    <T> List<T> list(T... items) {
+        List<T> list = new ArrayList<T>();
+        for ( T item : items ) {
+            list.add( item);
         }
         return list;
     }
@@ -1840,5 +1840,192 @@ public class PropertySpecificTest extends CommonTestMethodBase {
             }
         }
         return null;
+    }
+
+    @Test(timeout = 5000)
+    public void testNoConstraint2() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
+                "rule R1 when\n" +
+                "   $o : Order()\n" +
+                "   $i : OrderItem( orderId == $o.id, quantity > 2 )\n" +
+                "then\n" +
+                "   modify( $o ) { setDiscounted( true ) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Order order1 = new Order("1");
+        OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
+        OrderItem orderItem12 = new OrderItem("1", 2, 1.2);
+        OrderItem orderItem13 = new OrderItem("1", 3, 1.3);
+        order1.setItems(list(orderItem11, orderItem12, orderItem13));
+        ksession.insert(order1);
+        ksession.insert(orderItem11);
+        ksession.insert(orderItem12);
+        ksession.insert(orderItem13);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertTrue(order1.isDiscounted());
+    }
+
+    @Test(timeout = 5000)
+    public void testEval() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "rule R1 when\n" +
+                "   $o : Order()\n" +
+                "   eval($o.getId().equals(\"1\"))" +
+                "then\n" +
+                "   modify( $o ) { setDiscounted( true ) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Order order1 = new Order("1");
+        ksession.insert(order1);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertTrue(order1.isDiscounted());
+    }
+
+    @Test(timeout = 5000)
+    public void testFrom() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
+                "rule R1 when\n" +
+                "   $o : Order()\n" +
+                "   $i : OrderItem( $price : price, quantity > 1 ) from $o.items\n" +
+                "then\n" +
+                "   modify( $o ) { setDiscounted( true ) };\n" +
+                "   modify( $i ) { setPrice( $price - 0.1 ) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Order order1 = new Order("1");
+        OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
+        OrderItem orderItem12 = new OrderItem("1", 2, 1.2);
+        OrderItem orderItem13 = new OrderItem("1", 3, 1.3);
+        order1.setItems(list(orderItem11, orderItem12, orderItem13));
+        ksession.insert(order1);
+        ksession.insert(orderItem11);
+        ksession.insert(orderItem12);
+        ksession.insert(orderItem13);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(2, rules);
+        assertEquals(1.1, orderItem11.getPrice(), 0.005);
+        assertEquals(1.1, orderItem12.getPrice(), 0.005);
+        assertEquals(1.2, orderItem13.getPrice(), 0.005);
+        assertTrue(order1.isDiscounted());
+    }
+
+    @Test(timeout = 5000)
+    public void testAccumulate() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.Order\n" +
+                "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
+                "rule R1 when\n" +
+                "   $o : Order()\n" +
+                "   $i : Number( doubleValue > 5 ) from accumulate( OrderItem( orderId == $o.id, $value : value ),\n" +
+                "                                                   sum( $value ) )\n" +
+                "then\n" +
+                "   modify( $o ) { setDiscounted( true ) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Order order1 = new Order("1");
+        OrderItem orderItem11 = new OrderItem("1", 1, 1.1);
+        OrderItem orderItem12 = new OrderItem("1", 2, 1.2);
+        OrderItem orderItem13 = new OrderItem("1", 3, 1.3);
+        order1.setItems(list(orderItem11, orderItem12, orderItem13));
+        ksession.insert(order1);
+        ksession.insert(orderItem11);
+        ksession.insert(orderItem12);
+        ksession.insert(orderItem13);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertTrue(order1.isDiscounted());
+    }
+
+    @PropertySpecific
+    public static class Order {
+        private String id;
+        private List<OrderItem> items;
+        private boolean discounted;
+
+        public Order(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+        public List<OrderItem> getItems() {
+            return items;
+        }
+
+        public void setItems(List<OrderItem> items) {
+            this.items = items;
+        }
+
+        public boolean isDiscounted() {
+            return discounted;
+        }
+        public void setDiscounted(boolean discounted) {
+            this.discounted = discounted;
+        }
+    }
+
+    @PropertySpecific
+    public static class OrderItem {
+        private String orderId;
+        private int quantity;
+        private double price;
+
+        public OrderItem(String orderId, int quantity, double price) {
+            this.orderId = orderId;
+            this.quantity = quantity;
+            this.price = price;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+        public void setPrice(double price) {
+            this.price = price;
+        }
+
+        public double getValue() {
+            return price * quantity;
+        }
     }
 }
