@@ -20,6 +20,19 @@
   :)</para>
 
   <section>
+    <title>Sign up to jboss.org</title>
+
+    <para>Signing to jboss.org will give you access to the JBoss wiki, forums and Jira. Go to 
+    <link xlink:href="http://www.jboss.org/">http://www.jboss.org/</link> and click "Register".</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Getting_Involved/sign_jbossorg.png"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section>
     <title>Sign the Contributor Agreement</title>
 
     <para>The only form you need to sign is the contributor agreement, which
@@ -33,19 +46,6 @@
     <mediaobject>
       <imageobject>
         <imagedata fileref="images/Chapter-Getting_Involved/sign_contributor.png"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </section>
-
-  <section>
-    <title>Sign up to jboss.org</title>
-
-    <para>Signing to jboss.org will give you access to the JBoss wiki, forums and Jira. Go to 
-    <link xlink:href="http://www.jboss.org/">http://www.jboss.org/</link> and click "Register".</para>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Getting_Involved/sign_jbossorg.png"></imagedata>
       </imageobject>
     </mediaobject>
   </section>
