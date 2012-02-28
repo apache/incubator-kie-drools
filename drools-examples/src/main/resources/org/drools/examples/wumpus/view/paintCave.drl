@@ -84,7 +84,7 @@ end
 
 rule "Base Paint" when
     $c : Cell()
-    $cin : CompositeImageName( cell == $c );
+    $cin : CompositeImageName( cell == $c )
 then
 end    
 
@@ -130,7 +130,6 @@ then
    modify( $cin ) { wumpus = "" }
 end
 
-
 rule "Paint Hero Direction Up" extends "Base Paint" when 
     $h : Hero( direction == Direction.UP, row == $c.row, col == $c.col )
 then
@@ -163,7 +162,7 @@ end
 
 rule "Paint Hidden Room" when 
     $gui : GameUI( cavePanel != null && cavePanel.caveG != null  )
-    $cd : CaveDirty() @watch(!*)
+    $cd : CaveDirty()
     $gv : GameView(showAllCells == false)
     $c : Cell(hidden == true) 
 then
@@ -174,7 +173,7 @@ end
 
 rule "Paint Empty Room" when 
    $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
-    $cd : CaveDirty() @watch(!*)   
+    $cd : CaveDirty()   
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )      
    CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" )
@@ -185,7 +184,7 @@ end
 
 rule "Paint Non Empty Room" when
    $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
-   $cd : CaveDirty() @watch(!*)   
+   $cd : CaveDirty()   
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )    
    $cin : CompositeImageName( cell == $c, ( !(hero != "" && pit != "")  &&  // don't draw a hero on the same square as a pit or an alive wumpus, as the game is over
@@ -196,7 +195,7 @@ then
     modify( $cd ) { dirty = true };
 end
 
-rule "Redraw Cave" no-loop salience -500 when
+rule "Redraw Cave" no-loop salience -100 when
    $gui : GameUI() 
    $cd : CaveDirty( dirty == true )
 then

@@ -17,11 +17,17 @@ import org.drools.examples.wumpus.PitDeath
 import org.drools.examples.wumpus.GoldWin
 import org.drools.examples.wumpus.Reset
 import org.drools.examples.wumpus.Score
+import org.drools.examples.wumpus.Init
+import org.drools.examples.wumpus.Play
+import org.drools.examples.wumpus.GoldWin
 import org.drools.examples.wumpus.view.GameView
 
 import org.drools.runtime.StatefulKnowledgeSession
 import org.drools.logger.KnowledgeRuntimeLogger
 import org.drools.logger.KnowledgeRuntimeLoggerFactory
+
+import org.drools.event.rule.DebugAgendaEventListener
+import org.drools.event.rule.DebugWorkingMemoryEventListener
 
 import javax.swing.JOptionPane
 
@@ -59,9 +65,9 @@ then
     retract( $gv );
 end
 
-rule "Init Game View" salience -200 when
+rule "Init Game View"  when
+    Play()
     $ui : GameUI()
-    not Reset()
     not GameView()
     $w : Wumpus()
     $g : Gold()
@@ -72,43 +78,49 @@ then
     $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
     $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
     
+    /*
     new java.io.File("log").mkdir();
     KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
-    $gv.setKlogger( klogger );   
+    $gv.setKlogger( klogger );
+    */
+         
      $ui.gameView = $gv; 
     insert( $gv );
 end    
 
 rule "Score Updated" when
     $gv : GameView()
-    $s : Score()
+    $s : Score() @watch(*)
 then
     channels["score"].send( $s );
 end
 
 rule "Wumpus Death View" dialect "java"   when
-          WumpusDeath() 
-    $g  : GameView()          
+    $g  : GameView()
+    $wd : WumpusDeath()       
 then
 	JOptionPane.showMessageDialog( null,
                                    "Oh No! You where killed by the Wumpus" );
-    insert( new Reset() );   
+    retract( $wd );                                   
+    insert( new Reset() );
 end
 
 rule "Pit Game View" dialect "java" when
-         PitDeath()
     $g : GameView()
+    $pd : PitDeath()
 then    
 	JOptionPane.showMessageDialog( null,
                                    "Oh No! You where killed by a Pit" );
-    insert( new Reset() );  
+    retract( $pd );                                   
+    insert( new Reset() );
 end
 
 rule "Gold Win View" dialect "java"  when
-		 GoldWin()
     $g : GameView()
+    $gw : GoldWin()    
 then
 	JOptionPane.showMessageDialog( null,
                                    "Congratulations! You retreived the gold from the cave" );
-    insert( new Reset() );  
+    retract( $gw );                                       
+    insert( new Reset() );
 end

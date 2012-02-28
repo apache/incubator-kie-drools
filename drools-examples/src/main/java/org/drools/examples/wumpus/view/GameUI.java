@@ -89,7 +89,7 @@ public class GameUI {
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
         frame.setSize( 926, 603 );
-        frame.getContentPane().setLayout( new MigLayout("", "[520px][grow,fill]", "[30px,top][300px,top][100px,top][grow]") );
+        frame.getContentPane().setLayout( new MigLayout("", "[540px:n][grow,fill]", "[30px,top][300px,top][100px,top][grow]") );
         
         JPanel scorePanel = new JPanel();
         FlowLayout flowLayout = (FlowLayout) scorePanel.getLayout();
@@ -117,7 +117,7 @@ public class GameUI {
         JPanel actionPanel = new JPanel();
         actionPanel.setBackground( Color.WHITE );
         frame.getContentPane().add( actionPanel, "cell 0 1,grow" );
-        actionPanel.setLayout( new MigLayout("", "[200px,left][300px]", "[grow]") );
+        actionPanel.setLayout( new MigLayout("", "[200px,left][320px:n]", "[grow]") );
 
         JPanel controls = new JPanel();
         controls.setBackground( Color.WHITE );

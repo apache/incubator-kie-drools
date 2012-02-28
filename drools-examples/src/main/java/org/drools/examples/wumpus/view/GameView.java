@@ -8,12 +8,12 @@ import org.drools.examples.wumpus.Gold;
 import org.drools.examples.wumpus.Hero;
 import org.drools.examples.wumpus.Pit;
 import org.drools.examples.wumpus.Wumpus;
-import org.drools.examples.wumpus.WumpusWorldServer;
+import org.drools.examples.wumpus.WumpusWorldMain;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class GameView {
-    private WumpusWorldServer        wumpusWorld;
+    private WumpusWorldMain        wumpusWorld;
     
     private Wumpus                   wumpus;
     private Gold                     gold;
@@ -71,11 +71,11 @@ public class GameView {
         this.cols = cols;
     }
 
-    public WumpusWorldServer getWumpusWorld() {
+    public WumpusWorldMain getWumpusWorld() {
         return wumpusWorld;
     }
 
-    public void setWumpusWorld(WumpusWorldServer wumpusWorld) {
+    public void setWumpusWorld(WumpusWorldMain wumpusWorld) {
         this.wumpusWorld = wumpusWorld;
     }
 

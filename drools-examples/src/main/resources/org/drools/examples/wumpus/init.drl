@@ -6,34 +6,38 @@ dialect "mvel"
 
 declare Score
 	@propertySpecific
-end	
-
+end
 
 declare Cell
 	@propertySpecific
-end		
+end
 
 declare Hero
 	@propertySpecific
-end	
+end
 
 declare Gold
 	@propertySpecific
-end	
+end
 
 declare Wumpus
     @propertySpecific
-end  
+end
+
+rule "Start Game Init Process" when
+then
+   insert( new Init() );
+end
 
 rule "Insert Score" when
-    not Reset()
+    Init()
     not Score()
 then
     insert( new Score() );
 end        
 	
-rule CreateCells when
-    not Reset()
+rule "Create Cells" when
+    Init()
 	$i : Integer() from [0, 1, 2, 3, 4]
 	$j : Integer() from [0, 1, 2, 3, 4]
 	$c : Cell() from new Cell($i, $j)
@@ -41,13 +45,15 @@ then
     insert( $c );
 end
 
-rule ShowFirstCell when
-    $c : Cell( row == 0, col == 0 )
+rule "Show First Cell" when
+    Init()
+    $c : Cell( row == 0, col == 0, hidden == true )
 then
     modify( $c ) { hidden = false };
 end    
 
-rule CreatePitt when
+rule "Create Pitt" when
+    Init()
     $c : Cell( row != 0, col != 0 )
     Number( this > 0 && <= 20 ) from randomInteger.nextInt( 100 )
 then
@@ -55,22 +61,25 @@ then
     insert( pit );
 end    
 
-rule CreateWumpus when
+rule "Create Wumpus" when
+    Init()
     not Wumpus()// here to break sharing, to force new random numbers, also retriggers on retraction
     $row : Integer() from randomInteger.nextInt( 4 )
     $col : Integer() from randomInteger.nextInt( 4 )
 then
     Wumpus wumpus = new Wumpus($row, $col);
-    insert( wumpus );
+    insert( wumpus );    
 end
 
-rule InvalidWumpus salience 500 when
+rule "Invalid Wumpus" when
+    Init()
     $w : Wumpus( row == 0, col == 0 )    
 then
     retract( $w ); // retraction triggers the "not" CE
 end    
 
-rule CreateGold when
+rule "Create Gold" when
+    Init()
     not Gold() // here to break sharing, to force new random numbers, also retriggers on retraction
     $row : Integer() from randomInteger.nextInt( 4 )
     $col : Integer() from randomInteger.nextInt( 4 )
@@ -79,53 +88,49 @@ then
     insert( gold );
 end
 
-rule InvalidGold salience 500 when
+rule "Invalid Gold"  when
+    Init()
     $g : Gold( row == 0, col == 0 )  
     not Hero( gold == true ) // gold can be in row first square, if hero is carrying it
 then
     retract( $g ); // retraction triggers the "not" CE
-end 
-
-rule CreateHero when
-    not Reset()
-then
-    insert( new Hero( 0, 0 ) );
-end    
-
-rule "Reset Wumpus Death" when
-    Reset()
-    $wd : WumpusDeath()
-then
-    retract( $wd );
-end 
-
-rule "Reset Pit Death" when
-    Reset()
-    $pd : PitDeath()
-then
-    retract( $pd );
 end   
 
-rule "Reset Gold Win" when
-    Reset()
-    $gw : GoldWin()
+rule "Create Hero" when
+    Init()
+    exists Wumpus( row != 0 || col != 0 ) // create the Hero after the Wumpus has been created in a safe location
+    exists Gold( row != 0 || col != 0 ) // create the Hero after the Gold has been placed in a good location
 then
-    retract( $gw );
+    insert( new Hero( 0, 0 ) );
 end
 
-rule "Reset Pits" when
+rule "Trigger Play" salience -100 when
+    $i : Init()
+then
+    retract( $i );
+    insert( new Play() );
+end
+
+rule "End Play" salience 100 when
     Reset()
-    $p : Pit()
+    $p : Play()
 then
     retract( $p );
-end 
-
+    insert( new SensorArray() );
+end
 
 rule "Reset Cells" when
     Reset()
     $c : Cell()
 then
     retract( $c );
+end 
+
+rule "Reset Pits" when
+    Reset()
+    $p : Pit()
+then
+    retract( $p );
 end 
 
 rule "Reset Score" when
@@ -135,10 +140,13 @@ then
     retract( $s );
 end  
 
-rule "Reset Done" salience -100 when
+rule "Reset Wumpus, Gold and Hero" when
     $r : Reset()
     not Pit()
     not Cell()
+    not PitDeath()
+    not GoldWin()
+    not WumpusDeath()
     $w : Wumpus()
     $g : Gold()
     $h : Hero()
@@ -146,7 +154,8 @@ then
     retract( $w );
     retract( $g );    
     retract( $h );
-    retract( $r );    
+    retract( $r );
+    insert( new Init() );
 end 
 
   
