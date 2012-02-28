@@ -1,0 +1,131 @@
+package org.drools.games.wumpus.view
+
+import org.drools.games.wumpus.Cell
+import org.drools.games.wumpus.Direction
+import org.drools.games.wumpus.Hero
+import org.drools.games.wumpus.Gold
+import org.drools.games.wumpus.Pit
+import org.drools.games.wumpus.Wumpus
+import org.drools.games.wumpus.Thing
+import org.drools.games.wumpus.FeelBreeze
+import org.drools.games.wumpus.SeeGlitter
+import org.drools.games.wumpus.FeelBump
+import org.drools.games.wumpus.SmellStench
+import org.drools.games.wumpus.HearScream
+
+import javax.imageio.ImageIO
+import java.awt.image.BufferedImage
+
+import java.awt.Color;
+import java.awt.Graphics
+
+import javax.swing.JPanel;
+
+function void paintSensorCell(String image, int x, int y,  GameUI gui, Graphics sensorG) {     
+     sensorG.setColor( Color.WHITE ); // background
+     sensorG.fillRect( x, y,  100, 100);
+     sensorG.drawImage( ImageIO.read( GameView.class.getResource( image ) ), x, y,100,100, gui.getSensorPanel() );
+}
+
+function void clearSensorCell(int x, int y,  Graphics sensorG) {     
+     sensorG.setColor( Color.WHITE ); // background
+     sensorG.fillRect( x, y,  100, 100);
+}
+
+dialect "mvel"
+
+declare SensorDirty
+	@propertySpecific
+    dirty : boolean
+end  
+
+rule "Init SensorDirty" when
+    not SensorDirty()
+then
+    insert( new SensorDirty() );
+end
+
+rule "Base Sensor" when
+    $gui : GameUI( sensorPanel != null && sensorPanel.sensorG != null )
+    $sd : SensorDirty()    
+then
+end    
+
+rule "Feel Breeze" extends "Base Sensor" when
+    FeelBreeze()
+then
+    paintSensorCell("breeze.png", 0, 0, $gui, $gui.sensorPanel.sensorG );    
+   modify( $sd ) { dirty = true };    
+end
+
+rule "Breeze Gone" extends "Base Sensor" when
+    not FeelBreeze()
+then
+    clearSensorCell( 0, 0, $gui.sensorPanel.sensorG );  
+    modify( $sd ) { dirty = true };  
+end
+
+rule "Smell Stench" extends "Base Sensor" when
+    SmellStench()
+then
+    paintSensorCell("stench.png", 103, 0, $gui, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
+end
+
+rule "Stench Gone" extends "Base Sensor" when
+    not SmellStench()
+then
+    clearSensorCell( 103, 0, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
+end
+
+rule "See Glitter" extends "Base Sensor" when
+    SeeGlitter()
+then
+    paintSensorCell("glitter.png", 206, 0, $gui, $gui.sensorPanel.sensorG );   
+    modify( $sd ) { dirty = true }; 
+end
+
+rule "Glitter Gone" extends "Base Sensor" when
+    not SeeGlitter()
+then
+    clearSensorCell( 206, 0, $gui.sensorPanel.sensorG );    
+    modify( $sd ) { dirty = true };
+end
+
+rule "Feel Bump" extends "Base Sensor" when
+    FeelBump()
+then
+    paintSensorCell("bump.png", 309, 0, $gui, $gui.sensorPanel.sensorG );   
+    modify( $sd ) { dirty = true }; 
+end
+
+rule "Bump Gone"  extends "Base Sensor"when
+    not FeelBump()
+then
+    clearSensorCell( 309, 0, $gui.sensorPanel.sensorG ); 
+    modify( $sd ) { dirty = true };   
+end
+
+
+rule "Hear Scream"  extends "Base Sensor"when
+    HearScream()
+then
+    paintSensorCell("scream.png", 412, 0, $gui, $gui.sensorPanel.sensorG );    
+    modify( $sd ) { dirty = true };
+end
+
+rule "Scream Gone"  extends "Base Sensor" when
+    not HearScream()
+then
+    clearSensorCell( 412, 0, $gui.sensorPanel.sensorG );  
+    modify( $sd ) { dirty = true };  
+end
+
+rule "Redraw Sensors" no-loop salience -100 when
+   $gui : GameUI() 
+   $sd : SensorDirty( dirty == true )
+then
+   $gui.updateSensors();
+   modify( $sd ) { dirty = false };
+end
