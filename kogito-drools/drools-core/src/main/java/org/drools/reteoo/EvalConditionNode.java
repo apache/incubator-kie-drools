@@ -29,7 +29,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
@@ -96,6 +95,8 @@ public class EvalConditionNode extends LeftTupleSource
         this.condition = eval;
         this.tupleSource = tupleSource;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+
+        initMasks(context, tupleSource);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -195,27 +196,6 @@ public class EvalConditionNode extends LeftTupleSource
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
-        }
-    }
-
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( createLeftTuple( factHandle,
-                                              this,
-                                              true ),
-                             context,
-                             workingMemory );
         }
     }
 

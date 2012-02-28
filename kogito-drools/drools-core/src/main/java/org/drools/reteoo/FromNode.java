@@ -85,6 +85,8 @@ public class FromNode extends LeftTupleSource
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
         resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
+
+        initMasks(context, tupleSource);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -183,27 +185,6 @@ public class FromNode extends LeftTupleSource
             }
             matches.put( object,
                          rightTuple );
-        }
-    }
-
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( createLeftTuple( factHandle,
-                                              this,
-                                              true ),
-                             context,
-                             workingMemory );
         }
     }
 
