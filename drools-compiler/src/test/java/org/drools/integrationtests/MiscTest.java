@@ -119,6 +119,10 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.DefaultPackageNameOption;
+import org.drools.command.CommandFactory;
+import org.drools.command.Setter;
+import org.drools.command.runtime.rule.InsertObjectCommand;
+import org.drools.command.runtime.rule.ModifyCommand;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -9544,6 +9548,35 @@ public class MiscTest {
 		ksession.dispose();
     }
 
+    /**
+     * https://bugzilla.redhat.com/show_bug.cgi?id=769587
+     */
+    @Test
+    public void testModifyCommand() {
+        StatefulKnowledgeSession session = loadKnowledgeBase().newStatefulKnowledgeSession();
+
+        Person p1 = new Person("John", "nobody", 25);
+
+        InsertObjectCommand ic = new InsertObjectCommand();
+        ic.setObject(p1);
+        
+        session.execute(ic);
+        org.drools.runtime.rule.FactHandle fh = session.getFactHandle(p1);
+        
+        Person p = new Person("Frank", "nobody", 30);
+        List<Setter> setterList = new ArrayList<Setter>();
+        setterList.add(CommandFactory.newSetter("age", String.valueOf(p.getAge())));
+        setterList.add(CommandFactory.newSetter("name", p.getName()));
+        setterList.add(CommandFactory.newSetter("likes", p.getLikes()));
+        
+        ModifyCommand mc = new ModifyCommand();
+        mc.setFactHandleFromString(fh.toExternalForm());
+        mc.setSetters(setterList);
+        session.execute(mc); 
+        assertEquals(p.getName(), "Frank");
+        assertEquals(p.getAge(), 30);
+    }
+    
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
