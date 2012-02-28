@@ -375,7 +375,10 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
 
     public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+            LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
+            if ( leftTuple != null ) {
+                leftTuple.reAdd(); //
+            }
         }
     }
 

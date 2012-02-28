@@ -168,4 +168,9 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         
     }
 
+    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
