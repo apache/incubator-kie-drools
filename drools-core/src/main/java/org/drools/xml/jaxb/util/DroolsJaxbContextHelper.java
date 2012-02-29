@@ -43,26 +43,27 @@ import org.drools.runtime.rule.impl.FlatQueryResults;
 
 public class DroolsJaxbContextHelper {
 
-    public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
-                                                        SetGlobalCommand.class.getName(),
-                                                        GetGlobalCommand.class.getName(),
-                                                        FireAllRulesCommand.class.getName(),
-                                                        InsertElementsCommand.class.getName(),
-                                                        InsertObjectCommand.class.getName(),
-                                                        ModifyCommand.class.getName(),
-                                                        SetterImpl.class.getName(),
-                                                        QueryCommand.class.getName(),
-                                                        RetractCommand.class.getName(),
-                                                        AbortWorkItemCommand.class.getName(),
-                                                        SignalEventCommand.class.getName(),
-                                                        StartProcessCommand.class.getName(),
-                                                        BatchExecutionCommandImpl.class.getName(),
-                                                        ExecutionResultImpl.class.getName(),
-                                                        DefaultFactHandle.class.getName(),
-                                                        JaxbListWrapper.class.getName(),
-                                                        FlatQueryResults.class.getName(),
-                                                        CompleteWorkItemCommand.class.getName(),
-                                                        GetObjectsCommand.class.getName()
+    public static final String[] JAXB_ANNOTATED_CMD = {
+            BatchExecutionCommandImpl.class.getName(),
+            SetGlobalCommand.class.getName(),
+            GetGlobalCommand.class.getName(),
+            FireAllRulesCommand.class.getName(),
+            InsertElementsCommand.class.getName(),
+            InsertObjectCommand.class.getName(),
+            ModifyCommand.class.getName(),
+            SetterImpl.class.getName(),
+            QueryCommand.class.getName(),
+            RetractCommand.class.getName(),
+            AbortWorkItemCommand.class.getName(),
+            SignalEventCommand.class.getName(),
+            StartProcessCommand.class.getName(),
+            BatchExecutionCommandImpl.class.getName(),
+            ExecutionResultImpl.class.getName(),
+            DefaultFactHandle.class.getName(),
+            JaxbListWrapper.class.getName(),
+            FlatQueryResults.class.getName(),
+            CompleteWorkItemCommand.class.getName(),
+            GetObjectsCommand.class.getName()
     };
 
     public static JAXBContext createDroolsJaxbContext(List<String> classNames, Map<String, ?> properties) throws ClassNotFoundException, JAXBException {
