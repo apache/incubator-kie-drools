@@ -58,6 +58,7 @@ public class GroupElementBuilder
             // gets child to build
             final BaseDescr child = (BaseDescr) it.next();
             child.setResource(context.getRuleDescr().getResource());
+            child.setNamespace(context.getRuleDescr().getNamespace());
 
             // gets corresponding builder
             final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( child.getClass() );

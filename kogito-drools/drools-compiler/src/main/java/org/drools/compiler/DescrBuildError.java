@@ -38,6 +38,11 @@ public class DescrBuildError extends DroolsError {
         this.errorLines[0] = getLine();
     }
 
+    @Override
+    public String getNamespace() {
+        return parentDescr != null ? parentDescr.getNamespace() : descr.getNamespace();
+    }
+
     public BaseDescr getParentDescr() {
         return this.parentDescr;
     }

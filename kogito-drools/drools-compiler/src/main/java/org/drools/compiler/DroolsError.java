@@ -34,4 +34,11 @@ public abstract class DroolsError extends BaseKnowledgeBuilderResultImpl impleme
         return ResultSeverity.ERROR;
     }
 
+    /**
+     * Default implementation (overriden where possible and meaningful) returning just an empty string
+     * @return
+     */
+    public String getNamespace() {
+        return "";
+    }
 }

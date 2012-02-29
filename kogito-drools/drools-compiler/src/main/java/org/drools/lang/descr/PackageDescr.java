@@ -34,7 +34,6 @@ public class PackageDescr extends BaseDescr
     Namespaceable,
     KnowledgeDescr {
     private static final long               serialVersionUID       = 530l;
-    private String                          namespace;
     private String                          documentation;
 
     private List<ImportDescr>               imports                = Collections.emptyList();
@@ -60,7 +59,7 @@ public class PackageDescr extends BaseDescr
 
     public PackageDescr(final String namespace,
                         final String documentation) {
-        this.namespace = namespace;
+        setNamespace(namespace);
         this.documentation = documentation;
     }
 
@@ -68,7 +67,6 @@ public class PackageDescr extends BaseDescr
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         super.readExternal( in );
-        namespace = (String) in.readUTF();
         documentation = in.readUTF();
         imports = (List<ImportDescr>) in.readObject();
         functionImports = (List<FunctionImportDescr>) in.readObject();
@@ -84,7 +82,6 @@ public class PackageDescr extends BaseDescr
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
-        out.writeUTF( namespace );
         out.writeUTF( documentation );
         out.writeObject( imports );
         out.writeObject( functionImports );
@@ -98,20 +95,12 @@ public class PackageDescr extends BaseDescr
         out.writeObject( enumDeclarations );
     }
 
-    public String getNamespace() {
-        return this.namespace;
-    }
-
-    public void setNamespace( String namespace ) {
-        this.namespace = namespace;
-    }
-
     public String getName() {
-        return this.namespace == null ? "" : this.namespace;
+        return getNamespace() == null ? "" : getNamespace();
     }
     
     public void setName( String name ) {
-        this.namespace = name;
+        setNamespace(name);
     }
 
     public String getDocumentation() {

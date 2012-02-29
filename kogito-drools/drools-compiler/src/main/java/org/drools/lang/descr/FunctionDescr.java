@@ -29,7 +29,6 @@ public class FunctionDescr extends BaseDescr
     Namespaceable {
     private static final long serialVersionUID = 510l;
 
-    private String            namespace;
     private String            name;
     private String            returnType;
     private String            dialect;
@@ -51,15 +50,6 @@ public class FunctionDescr extends BaseDescr
         this.name = name;
         this.returnType = returnType == null ? "void" : returnType;
         this.dialect = "java";
-        this.namespace = null;
-    }
-
-    public void setNamespace( String namespace ) {
-        this.namespace = namespace;
-    }
-
-    public String getNamespace() {
-        return this.namespace;
     }
 
     public String getName() {

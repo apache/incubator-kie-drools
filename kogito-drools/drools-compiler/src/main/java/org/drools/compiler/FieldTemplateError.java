@@ -26,17 +26,24 @@ public class FieldTemplateError extends DroolsError {
     private Object    object;
     private String    message;
     private int[]     line;
+    private String    namespace;
 
     public FieldTemplateError(final Package pkg,
                               final BaseDescr descr,
                               final Object object,
                               final String message) {
         super(descr.getResource());
+        this.namespace = pkg.getName();
         this.pkg = pkg;
         this.descr = descr;
         this.object = object;
         this.message = message;
         this.line = new int[] { ( this.descr != null ) ? this.descr.getLine() : -1 };
+    }
+
+    @Override
+    public String getNamespace() {
+        return namespace;
     }
 
     public Package getPackage() {

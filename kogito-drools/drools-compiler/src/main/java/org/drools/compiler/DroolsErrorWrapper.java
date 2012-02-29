@@ -24,10 +24,14 @@ import org.drools.builder.KnowledgeBuilderResult;
 public class DroolsErrorWrapper extends DroolsError {
     
     KnowledgeBuilderResult backingProblem;
+    private String namespace = "";
     
     public DroolsErrorWrapper (KnowledgeBuilderResult problem) {
         super(problem.getResource());
         this.backingProblem = problem;
+        if (problem instanceof DroolsError) {
+            namespace = ((DroolsError)problem).getNamespace();
+        }
     }
     
     @Override
@@ -40,4 +44,8 @@ public class DroolsErrorWrapper extends DroolsError {
         return backingProblem.getLines();
     }
 
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
 }

@@ -33,6 +33,11 @@ public class ActionError extends DroolsError {
         this.message = message;
     }
 
+    @Override
+    public String getNamespace() {
+        return descr.getNamespace();
+    }
+
     public BaseDescr getDescr() {
         return this.descr;
     }

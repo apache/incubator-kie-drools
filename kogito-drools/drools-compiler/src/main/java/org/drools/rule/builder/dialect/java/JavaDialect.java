@@ -547,6 +547,7 @@ public class JavaDialect
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         ImportDescr importDescr = new ImportDescr(functionClassName + "." + functionDescr.getName());
         importDescr.setResource(functionDescr.getResource());
+        importDescr.setNamespace(functionDescr.getNamespace());
         this.packageRegistry.addStaticImport( importDescr );
     }
 

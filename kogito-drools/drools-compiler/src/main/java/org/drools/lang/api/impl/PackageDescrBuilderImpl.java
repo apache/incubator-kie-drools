@@ -3,6 +3,7 @@ package org.drools.lang.api.impl;
 import org.drools.io.Resource;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -10,13 +11,9 @@ import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
 
 /**
  * A builder implementation for PackageDescrs using a fluent API.
@@ -62,25 +59,19 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
 
     public ImportDescrBuilder newImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, false );
-        ImportDescr importDescr = impl.getDescr();
-        importDescr.setResource( resource );
-        descr.addImport( importDescr );
+        descr.addImport( initDescr(impl) );
         return impl;
     }
 
     public ImportDescrBuilder newFunctionImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, true );
-        FunctionImportDescr importDescr = (FunctionImportDescr) impl.getDescr();
-        importDescr.setResource( resource );
-        descr.addFunctionImport( importDescr );
+        descr.addFunctionImport( (FunctionImportDescr) initDescr(impl) );
         return impl;
     }
 
     public GlobalDescrBuilder newGlobal() {
         GlobalDescrBuilder global = new GlobalDescrBuilderImpl( this );
-        GlobalDescr globalDescr = global.getDescr();
-        globalDescr.setResource( resource );
-        descr.addGlobal( globalDescr );
+        descr.addGlobal( initDescr(global) );
         return global;
     }
 
@@ -91,34 +82,33 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
 
     public RuleDescrBuilder newRule() {
         RuleDescrBuilder rule = new RuleDescrBuilderImpl( this );
-        RuleDescr ruleDescr = rule.getDescr();
-        ruleDescr.setResource( resource );
-        descr.addRule( ruleDescr );
+        descr.addRule( initDescr(rule) );
         return rule;
     }
 
     public QueryDescrBuilder newQuery() {
         QueryDescrBuilder query = new QueryDescrBuilderImpl( this );
-        QueryDescr queryDescr = query.getDescr();
-        queryDescr.setResource( resource );
-        descr.addRule( queryDescr );
+        descr.addRule( initDescr(query) );
         return query;
     }
 
     public FunctionDescrBuilder newFunction() {
         FunctionDescrBuilder function = new FunctionDescrBuilderImpl( this );
-        FunctionDescr functionDescr = function.getDescr();
-        descr.addFunction( functionDescr );
-        functionDescr.setResource( resource );
+        descr.addFunction( initDescr(function) );
         return function;
     }
 
     public AttributeDescrBuilder<PackageDescrBuilder> attribute( String name ) {
         AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<PackageDescrBuilder>( this, name );
-        AttributeDescr attributeDescr = attribute.getDescr();
-        attributeDescr.setResource( resource );
-        descr.addAttribute( attributeDescr );
+        descr.addAttribute( initDescr(attribute) );
         return attribute;
+    }
+
+    private <T extends BaseDescr> T initDescr(DescrBuilder<PackageDescrBuilder, T> builder) {
+        T descr = builder.getDescr();
+        descr.setResource(resource);
+        descr.setNamespace(descr.getNamespace());
+        return descr;
     }
 
     public PackageDescrBuilder attribute( String name,

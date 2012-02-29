@@ -19,17 +19,22 @@ package org.drools.compiler;
 import org.drools.lang.descr.ImportDescr;
 
 public class ImportError extends DroolsError {
-    private String importName;
+    private final ImportDescr importDescr;
     private int[]  line;
 
     public ImportError(final ImportDescr importDescr, final int line) {
         super(importDescr.getResource());
-        this.importName = importDescr.getTarget();
+        this.importDescr = importDescr;
         this.line = new int[] { line };
     }
 
+    @Override
+    public String getNamespace() {
+        return importDescr.getNamespace();
+    }
+
     public String getGlobal() {
-        return this.importName;
+        return importDescr.getTarget();
     }
 
     public int[] getLines() {
@@ -37,7 +42,7 @@ public class ImportError extends DroolsError {
     }
 
     public String getMessage() {
-        return "Error importing : '" + this.importName + "'";
+        return "Error importing : '" + getGlobal() + "'";
     }
     
     public String toString() {
