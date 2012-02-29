@@ -54,7 +54,7 @@ public class InsertObjectCommand
 
     @XmlAttribute(name="entry-point")
     private String entryPoint;
-          @XmlAttribute(name="disconnected")
+    @XmlAttribute(name="disconnected")
     private boolean disconnected = false;
 
     public InsertObjectCommand() {
@@ -96,7 +96,7 @@ public class InsertObjectCommand
             session.getExecutionResult().getFactHandles().put( this.outIdentifier,
                                                          factHandle );
         }
-        if ( disconnected ){
+        if ( disconnected ) {
             DefaultFactHandle disconnectedHandle = ((DefaultFactHandle)factHandle).clone();
             disconnectedHandle.disconnect();
             return disconnectedHandle;
