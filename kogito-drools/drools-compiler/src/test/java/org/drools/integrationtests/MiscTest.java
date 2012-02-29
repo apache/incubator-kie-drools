@@ -75,6 +75,7 @@ import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
 import org.drools.compiler.xml.XmlDumper;
+import org.drools.conf.AssertBehaviorOption;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definition.type.FactType;
@@ -10117,5 +10118,51 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
 
         assertTrue( kbuilder.hasErrors() );
+    }
+
+    @Test @Ignore // TODO: uncomment the @Ignore after mvel 2.1.0.drools9
+    public void testMVELTypeCoercion() {
+        String str = "package org.drools.test; \n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean\n" +
+                // NOTICE: THIS WORKS WHEN THE FIELD IS "LIST", BUT USED TO WORK WITH ARRAYLIST TOO
+                "  field : java.util.ArrayList\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when  \n" +
+                "then\n" +
+                "  insert( new Bean( new java.util.ArrayList( java.util.Arrays.asList( \"x\" ) ) ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( $fld : field == [\"x\"] )\n" +
+                "then\n" +
+                "  System.out.println( $fld );\n" +
+                "  list.add( \"OK\" ); \n" +
+                "end";
+
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbConf.setOption(AssertBehaviorOption.EQUALITY);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertTrue( list.contains( "OK" ) );
+
+        ksession.dispose();
     }
 }
