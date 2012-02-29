@@ -19,16 +19,21 @@ package org.drools.factmodel;
 
 import org.drools.base.TypeResolver;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-public class AnnotationDefinition {
+public class AnnotationDefinition implements Externalizable {
 
     private String name;
 
     private Map<String,AnnotationPropertyVal> values;
 
+    public AnnotationDefinition() { }
 
     public AnnotationDefinition(String name) {
         this.name = name;
@@ -40,6 +45,15 @@ public class AnnotationDefinition {
         return values;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.name = (String) in.readObject();
+        this.values = (Map<String,AnnotationPropertyVal>) in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( this.name );
+        out.writeObject( this.values );
+    }
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -82,35 +96,34 @@ public class AnnotationDefinition {
     }
 
     private static AnnotationPropertyVal rebuild(String key, Class annotationClass, String valueStr, TypeResolver resolver) throws NoSuchMethodException {
-            Method prop = annotationClass.getMethod(key);
-            Class returnType = prop.getReturnType();
-            Object val = decode(returnType, valueStr, resolver);
-            AnnotationPropertyVal.ValType valType;
-                if (returnType.isPrimitive()) {
-                    valType = AnnotationPropertyVal.ValType.PRIMITIVE;
-                } else if (returnType.isEnum()) {
-                    valType = AnnotationPropertyVal.ValType.ENUMERATION;
-                } else if (returnType.isArray()) {
+        Method prop = annotationClass.getMethod(key);
+        Class returnType = prop.getReturnType();
+        Object val = decode(returnType, valueStr, resolver);
+        AnnotationPropertyVal.ValType valType;
 
-                    if (returnType.getComponentType().isEnum()) {
-                        valType = AnnotationPropertyVal.ValType.ENUMARRAY;
-                    } else if (returnType.getComponentType().isPrimitive()) {
-                        valType = AnnotationPropertyVal.ValType.PRIMARRAY;
-                    } else if (String.class.equals(returnType.getComponentType())) {
-                        valType = AnnotationPropertyVal.ValType.STRINGARRAY;
-                    } else {
-                        valType = AnnotationPropertyVal.ValType.CLASSARRAY;
-                    }
+        if (returnType.isPrimitive()) {
+            valType = AnnotationPropertyVal.ValType.PRIMITIVE;
+        } else if (returnType.isEnum()) {
+            valType = AnnotationPropertyVal.ValType.ENUMERATION;
+        } else if (returnType.isArray()) {
 
-                } else if (String.class.equals(returnType)) {
-                    valType = AnnotationPropertyVal.ValType.STRING;
-                } else {
-                    valType = AnnotationPropertyVal.ValType.KLASS;
-                }
+            if (returnType.getComponentType().isEnum()) {
+                valType = AnnotationPropertyVal.ValType.ENUMARRAY;
+            } else if (returnType.getComponentType().isPrimitive()) {
+                valType = AnnotationPropertyVal.ValType.PRIMARRAY;
+            } else if (String.class.equals(returnType.getComponentType())) {
+                valType = AnnotationPropertyVal.ValType.STRINGARRAY;
+            } else {
+                valType = AnnotationPropertyVal.ValType.CLASSARRAY;
+            }
 
+        } else if (String.class.equals(returnType)) {
+            valType = AnnotationPropertyVal.ValType.STRING;
+        } else {
+            valType = AnnotationPropertyVal.ValType.KLASS;
+        }
 
-            AnnotationPropertyVal pv = new AnnotationPropertyVal(key, returnType, val, valType);
-            return pv;
+        return new AnnotationPropertyVal(key, returnType, val, valType);
     }
 
     private static Object decode(Class returnType, String valueStr, TypeResolver resolver) {
@@ -184,7 +197,7 @@ public class AnnotationDefinition {
 
 
 
-    public static class AnnotationPropertyVal {
+    public static class AnnotationPropertyVal implements Externalizable {
 
         private String property;
         private Class type;
@@ -196,12 +209,27 @@ public class AnnotationDefinition {
             PRIMITIVE, KLASS, STRING, ENUMERATION, STRINGARRAY, ENUMARRAY, PRIMARRAY, CLASSARRAY;
         }
 
+        private AnnotationPropertyVal() { }
 
         private AnnotationPropertyVal(String property, Class type, Object value, ValType valType) {
             this.property = property;
             this.type = type;
             this.value = value;
             this.valType = valType;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            this.property = (String) in.readObject();
+            this.type = (Class) in.readObject();
+            this.value = in.readObject();
+            this.valType = (ValType) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( this.property );
+            out.writeObject( this.type );
+            out.writeObject( value );
+            out.writeObject( valType );
         }
 
         @Override
