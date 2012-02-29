@@ -42,9 +42,7 @@ public class PackageBuilderResults extends ArrayList<KnowledgeBuilderResult>
             SerializableDroolsError[] temp = new SerializableDroolsError[this.errors.length];
             int i = 0;
             for ( BaseKnowledgeBuilderResultImpl error : this.errors ) {
-                temp[i] = new SerializableDroolsError( error.getMessage(),
-                                                       error.getLines(),
-                                                       error.getClass().getName() );
+                temp[i] = new SerializableDroolsError( error );
             }
             out.writeObject( temp );
         } else {

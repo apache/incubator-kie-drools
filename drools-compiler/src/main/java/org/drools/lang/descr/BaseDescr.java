@@ -17,6 +17,7 @@
 package org.drools.lang.descr;
 
 import org.drools.io.Resource;
+import org.drools.rule.Namespaceable;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -28,7 +29,8 @@ import java.io.ObjectOutput;
  */
 public class BaseDescr
     implements
-    Externalizable {
+    Externalizable,
+    Namespaceable {
 
     private static final long serialVersionUID = 510l;
     private int               startCharacter   = -1;
@@ -39,6 +41,7 @@ public class BaseDescr
     private int               endColumn        = -1;
     private String            text             = "";
     private Resource          resource;
+    private String            namespace        = "";
 
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
@@ -50,6 +53,7 @@ public class BaseDescr
         endColumn = in.readInt();
         text = (String) in.readObject();
         resource = (Resource) in.readObject();
+        namespace = in.readUTF();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
@@ -61,6 +65,7 @@ public class BaseDescr
         out.writeInt( endColumn );
         out.writeObject(text);
         out.writeObject( resource );
+        out.writeUTF( namespace );
     }
 
     public Resource getResource() {
@@ -71,6 +76,14 @@ public class BaseDescr
         if (resource != null) {
             this.resource = resource;
         }
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public final String getNamespace() {
+        return this.namespace;
     }
 
     public String getText() {

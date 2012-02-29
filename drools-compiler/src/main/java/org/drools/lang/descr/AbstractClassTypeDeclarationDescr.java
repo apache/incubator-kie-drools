@@ -64,11 +64,8 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
     }
 
     public void setNamespace( String namespace ) {
+        super.setNamespace(namespace);
         this.type.setNamespace(namespace);
-    }
-
-    public String getNamespace() {
-        return this.type.getNamespace();
     }
 
     /**

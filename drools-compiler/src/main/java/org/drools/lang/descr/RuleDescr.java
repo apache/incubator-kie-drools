@@ -27,11 +27,9 @@ import org.drools.rule.Namespaceable;
 
 public class RuleDescr extends AnnotatedBaseDescr
     implements
-    Dialectable,
-    Namespaceable {
+    Dialectable {
 
     private static final long           serialVersionUID = 510l;
-    private String                      namespace;
     private String                      name;
     private String                      parentName;
     private String                      documentation;
@@ -70,7 +68,6 @@ public class RuleDescr extends AnnotatedBaseDescr
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        namespace = (String) in.readObject();
         name = (String) in.readObject();
         parentName = (String) in.readObject();
         documentation = (String) in.readObject();
@@ -86,7 +83,6 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( namespace );
         out.writeObject( name );
         out.writeObject( parentName );
         out.writeObject( documentation );
@@ -98,14 +94,6 @@ public class RuleDescr extends AnnotatedBaseDescr
         out.writeInt( offset );
         out.writeObject( attributes );
         out.writeObject( className );
-    }
-
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
-
-    public String getNamespace() {
-        return this.namespace;
     }
 
     public String getName() {

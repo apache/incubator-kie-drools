@@ -23,7 +23,7 @@ public class FunctionError extends DroolsError {
     final private FunctionDescr functionDescr;
     final private Object        object;
     final private String        message;
-    private int[]         errorLines;
+    private int[]               errorLines;
 
     public FunctionError(final FunctionDescr functionDescr,
                          final Object object,
@@ -32,6 +32,11 @@ public class FunctionError extends DroolsError {
         this.functionDescr = functionDescr;
         this.object = object;
         this.message = createMessage( message );
+    }
+
+    @Override
+    public String getNamespace() {
+        return functionDescr.getNamespace();
     }
 
     public FunctionDescr getFunctionDescr() {

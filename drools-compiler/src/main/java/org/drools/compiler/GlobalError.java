@@ -19,29 +19,32 @@ package org.drools.compiler;
 import org.drools.lang.descr.GlobalDescr;
 
 public class GlobalError extends DroolsError {
-    private String global;
-    private int[]  line;
+    private final GlobalDescr globalDescr;
 
     public GlobalError(final GlobalDescr globalDescr) {
         super(globalDescr.getResource());
-        this.global = globalDescr.getIdentifier();
-        this.line = new int[] { globalDescr.getLine() };
+        this.globalDescr = globalDescr;
+    }
+
+    @Override
+    public String getNamespace() {
+        return globalDescr.getNamespace();
     }
 
     public String getGlobal() {
-        return this.global;
+        return globalDescr.getIdentifier();
     }
     
     public int[] getLines() {
-        return this.line;
+        return new int[] { globalDescr.getLine() };
     }
 
     public String getMessage() {
-        return this.global;
+        return getGlobal();
     }
     
     public String toString() {
-        return "GlobalError: " + this.global;
+        return "GlobalError: " + getGlobal();
     }
 
 }

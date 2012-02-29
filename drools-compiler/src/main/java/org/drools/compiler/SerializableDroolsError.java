@@ -25,15 +25,22 @@ public class SerializableDroolsError extends DroolsError implements Externalizab
     private String message;
     private int[] errorLines;
     private String errorClassName;
-    
+    private String namespace;
+
     public SerializableDroolsError() { }
     
-    public SerializableDroolsError(String message, int[] errorLines, String errorClassName) {
-        this.message = message;
-        this.errorLines = errorLines;
-        this.errorClassName = errorClassName;
+    public SerializableDroolsError(BaseKnowledgeBuilderResultImpl error) {
+        this.message = error.getMessage();
+        this.errorLines = error.getLines();
+        this.errorClassName = error.getClass().getName();
+        this.namespace = error instanceof DroolsError ? ((DroolsError)error).getNamespace() : "";
     }
-    
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
     /**
      * Classes that extend this must provide a printable message,
      * which summarises the error.
@@ -58,6 +65,7 @@ public class SerializableDroolsError extends DroolsError implements Externalizab
         out.writeObject( this.message );
         out.writeObject( this.errorLines );
         out.writeObject( this.errorClassName );
+        out.writeObject( this.namespace );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -65,6 +73,7 @@ public class SerializableDroolsError extends DroolsError implements Externalizab
         this.message = ( String ) in.readObject();
         this.errorLines = ( int[] ) in.readObject();
         this.errorClassName = ( String ) in.readObject();
+        this.namespace = ( String ) in.readObject();
     }
     
 }
