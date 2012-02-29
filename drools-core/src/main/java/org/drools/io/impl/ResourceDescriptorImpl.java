@@ -133,5 +133,28 @@ public class ResourceDescriptorImpl implements ResourceDescriptor, Serializable{
     public void setVersion(String version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ResourceDescriptorImpl other = (ResourceDescriptorImpl) obj;
+        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + (this.id != null ? this.id.hashCode() : 0);
+        return hash;
+    }
+    
     
 }
