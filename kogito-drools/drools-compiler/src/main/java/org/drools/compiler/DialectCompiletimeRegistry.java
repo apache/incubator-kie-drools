@@ -68,7 +68,11 @@ public class DialectCompiletimeRegistry {
         for (Dialect dialect : map.values()) {
             List<KnowledgeBuilderResult> results = dialect.getResults();
             if ( results != null ) {
-                list.addAll( results );
+                for (KnowledgeBuilderResult result : results) {
+                    if (!list.contains(result)) {
+                        list.add(result);
+                    }
+                }
             }
         }
         return list;
