@@ -17,6 +17,7 @@
 package org.drools.factmodel;
 
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Declares an enum to be dynamically generated.
  */
-public class EnumLiteralDefinition {
+public class EnumLiteralDefinition implements Externalizable {
 
     private String             name             = null;
     private List<String>       constructorArgs  = null;

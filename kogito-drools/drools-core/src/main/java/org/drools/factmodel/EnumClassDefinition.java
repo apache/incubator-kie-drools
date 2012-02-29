@@ -31,7 +31,7 @@ public class EnumClassDefinition
 
     private List<EnumLiteralDefinition>     enumLiterals = Collections.emptyList();
 
-
+    public EnumClassDefinition() { }
 
     public EnumClassDefinition(String className, String fullSuperType, String[] interfax ) {
         super( className,
