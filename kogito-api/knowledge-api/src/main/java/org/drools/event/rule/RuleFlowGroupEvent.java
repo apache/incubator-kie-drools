@@ -17,8 +17,14 @@
 package org.drools.event.rule;
 
 import org.drools.event.KnowledgeRuntimeEvent;
+import org.drools.runtime.rule.RuleFlowGroup;
 
 public interface RuleFlowGroupEvent extends KnowledgeRuntimeEvent {
 
-
+    /**
+     * The RuleFlowGroup for this event
+     *
+     * @return the RuleFlowGroup for this event
+     */
+    RuleFlowGroup getRuleFlowGroup();
 }
