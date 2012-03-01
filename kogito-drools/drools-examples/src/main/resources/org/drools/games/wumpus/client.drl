@@ -3,7 +3,6 @@ package org.drools.games.wumpus
 dialect "mvel"
 
 
-/*
 rule "init" when
 then
     channels["commands"].send( new MoveCommand( Move.TURN_LEFT ) );
@@ -19,7 +18,7 @@ then
     insert( $i + 1 );
     channels["commands"].send( new MoveCommand( Move.TURN_LEFT ) );    
 end
-*/
+
 rule "Print Sensor" when
     $sa : SensorArray()
 then
