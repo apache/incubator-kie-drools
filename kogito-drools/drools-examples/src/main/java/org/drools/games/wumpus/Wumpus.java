@@ -1,5 +1,8 @@
 package org.drools.games.wumpus;
 
+import org.drools.definition.type.PropertyReactive;
+
+@PropertyReactive
 public class Wumpus extends Thing { 
     private boolean alive;
 

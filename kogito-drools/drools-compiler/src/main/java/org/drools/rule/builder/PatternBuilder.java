@@ -393,7 +393,7 @@ public class PatternBuilder
             context.addError( new DescrBuildError( context.getParentDescr(),
                     patternDescr,
                     null,
-                    "Wrong usage of @" + Pattern.ATTR_LISTENED_PROPS + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertySpecific" ) );
+                    "Wrong usage of @" + Pattern.ATTR_LISTENED_PROPS + " annotation on class " + patternClass.getName() + " that is not annotated as @PropertyReactive" ) );
         }
         typeDeclaration.setTypeClass(patternClass);
         return typeDeclaration.getSettableProperties();

@@ -3,7 +3,7 @@ package org.drools.games.wumpus.view;
 import java.util.List;
 
 import org.drools.KnowledgeBase;
-import org.drools.definition.type.PropertySpecific;
+import org.drools.definition.type.PropertyReactive;
 import org.drools.games.wumpus.Cell;
 import org.drools.games.wumpus.Gold;
 import org.drools.games.wumpus.Hero;
@@ -13,7 +13,7 @@ import org.drools.games.wumpus.WumpusWorldMain;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-@PropertySpecific
+@PropertyReactive
 public class GameView {
     private WumpusWorldMain          wumpusWorld;
 

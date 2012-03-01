@@ -56,8 +56,8 @@ public class TypeDeclaration
     public static final String ATTR_KEY                 = "key";
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
-    public static final String ATTR_PROP_SPECIFIC       = "propertySpecific";
-    public static final String ATTR_NOT_PROP_SPECIFIC   = "notPropertySpecific";
+    public static final String ATTR_PROP_SPECIFIC       = "propertyReactive";
+    public static final String ATTR_NOT_PROP_SPECIFIC   = "classReactive";
 
     public int setMask                                  = 0;
 

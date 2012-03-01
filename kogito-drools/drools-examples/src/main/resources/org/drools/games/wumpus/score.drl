@@ -4,7 +4,7 @@ package org.drools.games.wumpus
 dialect "mvel"
 
 declare Score
-	@propertySpecific
+	@propertyReactive
 end	
     
 rule "Move -1" salience 100 when

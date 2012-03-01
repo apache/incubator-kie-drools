@@ -14,7 +14,7 @@ import org.drools.builder.conf.PropertySpecificOption;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.type.FactType;
 import org.drools.definition.type.Modifies;
-import org.drools.definition.type.PropertySpecific;
+import org.drools.definition.type.PropertyReactive;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -263,7 +263,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         String rule = "package org.drools\n" +
                 "global java.util.List list;\n" +
                 "declare A\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    a : int\n" +
                 "    b : int\n" +
                 "    c : int\n" +
@@ -273,7 +273,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    k : int\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    a : int\n" +
                 "    b : int\n" +
                 "    c : int\n" +
@@ -1027,7 +1027,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    i : int\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    s : String\n" +
                 "    i : int\n" +
                 "end\n" +
@@ -1108,7 +1108,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    s : String\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    on : boolean\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -1156,7 +1156,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    s : String\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    on : boolean\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -1204,7 +1204,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    s : String\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    on : boolean\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -1235,7 +1235,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    s : String\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    on : boolean\n" +
                 "    s : String\n" +
                 "end\n" +
@@ -1387,18 +1387,58 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
+    @Test(expected=RuntimeException.class)
+    public void testClassReactive() throws Exception {
+        String rule = "package org.drools\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+                "declare B\n" +
+                "    @classReactive\n" +
+                "    on : boolean\n" +
+                "    s : String\n" +
+                "end\n" +
+                "rule R1\n" +
+                "when\n" +
+                "    $b : B(s == \"test\")\n" +
+                "then\n" +
+                "    modify($b) { setOn(true) }\n" +
+                "    if (counter.incrementAndGet() > 10) throw new RuntimeException();\n" +
+                "end\n";
+
+        KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        config.setOption(PropertySpecificOption.ALWAYS);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( config, rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        ksession.setGlobal( "counter", counter );
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        factTypeB.set( factB, "s", "test" );
+        factTypeB.set( factB, "on", false );
+        ksession.insert( factB );
+
+        try {
+            ksession.fireAllRules();
+        } finally {
+            assertTrue((Boolean)factTypeB.get(factB, "on"));
+            assertTrue(counter.get() >= 10);
+            ksession.dispose();
+        }
+    }
+
     @Test(timeout = 5000)
     public void testSharedWatchAnnotation() throws Exception {
         String rule = "package org.drools\n" +
                 "declare A\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    a : int\n" +
                 "    b : int\n" +
                 "    s : String\n" +
                 "    i : int\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    s : String\n" +
                 "    i : int\n" +
                 "end\n" +
@@ -1438,7 +1478,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals("end", factTypeA.get(factA, "s"));
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class C {
         private boolean on;
         private String s;
@@ -1505,11 +1545,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testPropSpecOnPatternWithThis() throws Exception {
         String rule = "package org.drools\n" +
                 "declare A\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    i : int\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    a : A\n" +
                 "end\n" +
                 "rule R1\n" +
@@ -1541,11 +1581,11 @@ public class PropertySpecificTest extends CommonTestMethodBase {
     public void testPropSpecOnBetaNode() throws Exception {
         String rule = "package org.drools\n" +
                 "declare A\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    i : int\n" +
                 "end\n" +
                 "declare B\n" +
-                "    @propertySpecific\n" +
+                "    @propertyReactive\n" +
                 "    i : int\n" +
                 "    j : int\n" +
                 "end\n" +
@@ -1616,7 +1656,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "import org.drools.integrationtests.PropertySpecificTest.Init\n" +
                 "import org.drools.integrationtests.PropertySpecificTest.CompositeImageName\n" +
                 "declare CompositeImageName\n" +
-                "   @propertySpecific\n" +
+                "   @propertyReactive\n" +
                 "end\n" +
                 "rule \"Show First Cell\" when\n" +
                 "   Init()\n" +
@@ -1714,10 +1754,10 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(4, rules);
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class Init { }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class Hero {
         private boolean canMove;
         private int position;
@@ -1762,7 +1802,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class MoveCommand {
         private int move;
 
@@ -1780,7 +1820,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class Cell {
         private int col;
         private int row;
@@ -1959,7 +1999,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertTrue(order1.isDiscounted());
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class Order {
         private String id;
         private List<OrderItem> items;
@@ -1991,7 +2031,7 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         }
     }
 
-    @PropertySpecific
+    @PropertyReactive
     public static class OrderItem {
         private String orderId;
         private int quantity;

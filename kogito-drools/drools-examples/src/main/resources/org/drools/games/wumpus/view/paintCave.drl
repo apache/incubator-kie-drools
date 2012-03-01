@@ -5,7 +5,8 @@ import org.drools.games.wumpus.Direction
 import org.drools.games.wumpus.Hero
 import org.drools.games.wumpus.Gold
 import org.drools.games.wumpus.Pit
-import org.drools.games.wumpus.Wumpusimport org.drools.games.wumpus.Thing
+import org.drools.games.wumpus.Wumpus
+import org.drools.games.wumpus.Thing
 
 import java.awt.image.BufferedImage
 import java.awt.Color;
@@ -33,7 +34,7 @@ function void paintCaveCell(String image, Cell cell, GameView gv, GameUI gui) {
 dialect "mvel"
 
 declare CompositeImageName
-    @propertySpecific
+    @propertyReactive
     cell : Cell
     pit : String
     wumpus : String
@@ -42,7 +43,7 @@ declare CompositeImageName
 end 
 
 declare CaveDirty
-	@propertySpecific
+	@propertyReactive
     dirty : boolean
 end   
 

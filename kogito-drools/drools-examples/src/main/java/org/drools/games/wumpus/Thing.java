@@ -1,8 +1,8 @@
 package org.drools.games.wumpus;
 
-import org.drools.definition.type.PropertySpecific;
+import org.drools.definition.type.PropertyReactive;
 
-@PropertySpecific
+@PropertyReactive
 public class Thing {
     private int row;
     private int col;
