@@ -59,7 +59,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     public void build() {
-        pkgBuilder.record();
+        if (!pkgBuilder.initFirstRecord()) {
+            pkgBuilder.record();
+        }
         PackageBuilder currentBuilder = pkgBuilder.get();
         buildPackages(currentBuilder);
         buildResources(currentBuilder);
