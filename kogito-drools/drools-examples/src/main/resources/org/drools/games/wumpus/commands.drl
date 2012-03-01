@@ -2,22 +2,6 @@ package org.drools.games.wumpus
 
 dialect "mvel"
 
-declare Cell
-	@propertySpecific
-end		
-
-declare Hero
-	@propertySpecific
-end	
-
-declare Gold
-	@propertySpecific
-end	
-
-declare Wumpus
-    @propertySpecific
-end 
-
 rule "Create Sensor Array" salience 100 when
     Command() 
 then

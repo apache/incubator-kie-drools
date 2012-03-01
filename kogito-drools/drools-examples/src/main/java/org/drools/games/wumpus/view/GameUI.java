@@ -56,7 +56,7 @@ public class GameUI {
         this.gameView = gameView;
         if (this.gameView == null ) {
                 this.gameView = new GameView();
-                this.gameView.init( new Wumpus( 2, 1 ), new Gold( 3, 1 ), new Hero( 0, 0 ), 50, 50, 3, 20, 5, 5 );
+                this.gameView.init( 50, 50, 3, 20, 5, 5 );
         }
         initialize();
     }
@@ -66,6 +66,10 @@ public class GameUI {
         if ( frame == null ) {
             initialize();
         }
+    }
+    
+    public JFrame getParentJFrame() {
+        return frame;
     }
 
     public GameView getGameView() {

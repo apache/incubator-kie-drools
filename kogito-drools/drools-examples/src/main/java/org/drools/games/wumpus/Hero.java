@@ -1,5 +1,8 @@
 package org.drools.games.wumpus;
 
+import org.drools.definition.type.PropertySpecific;
+
+@PropertySpecific
 public class Hero extends Thing {
 
     private Direction direction;
