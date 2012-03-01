@@ -13,7 +13,7 @@ import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.knowledgebase.AfterProcessAddedEvent;
 import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
@@ -343,15 +343,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                 }
 			}
     	});
-    	if (workingMemory != null) {
-	        workingMemory.addEventListener( new org.drools.event.DefaultAgendaEventListener() {
-	            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
-	                                                      final WorkingMemory workingMemory) {
-	                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
-	                                           null );
-	            }
-	        } );
-    	}
+
+        kruntime.addEventListener(new DefaultAgendaEventListener() {
+            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
+                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
+                        null );
+            }
+        } );
     }
 
 	public void abortProcessInstance(long processInstanceId) {
