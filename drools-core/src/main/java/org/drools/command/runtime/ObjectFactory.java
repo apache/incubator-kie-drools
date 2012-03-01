@@ -25,12 +25,17 @@ import org.drools.command.runtime.SetGlobalCommand;
 
 @XmlRegistry
 public class ObjectFactory {
+
     public BatchExecutionCommandImpl createBatchExecutionCommand() {
         return new BatchExecutionCommandImpl();
     }
     
     public GetGlobalCommand createGetGlobalCommand() {
         return new GetGlobalCommand();
+    }
+
+    public GetIdCommand createGetIdCommand() {
+        return new GetIdCommand();
     }
     
     public SetGlobalCommand createSetGlobalCommand() {
