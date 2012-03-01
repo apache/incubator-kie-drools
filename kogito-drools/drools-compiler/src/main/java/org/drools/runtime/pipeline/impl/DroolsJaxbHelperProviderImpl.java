@@ -75,30 +75,29 @@ import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.Model;
 
 public class DroolsJaxbHelperProviderImpl
-    implements
-    DroolsJaxbHelperProvider {
+    implements DroolsJaxbHelperProvider {
 
-    public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
-                                                       SetGlobalCommand.class.getName(),
-                                                       GetGlobalCommand.class.getName(),
-                                                       FireAllRulesCommand.class.getName(),
-                                                       InsertElementsCommand.class.getName(),
-                                                        InsertObjectCommand.class.getName(),
-                                                        ModifyCommand.class.getName(),
-                                                        SetterImpl.class.getName(),
-                                                        QueryCommand.class.getName(),
-                                                        RetractCommand.class.getName(),
-                                                        AbortWorkItemCommand.class.getName(),
-                                                        SignalEventCommand.class.getName(),
-                                                        StartProcessCommand.class.getName(),
-                                                        BatchExecutionCommandImpl.class.getName(),
-                                                        ExecutionResultImpl.class.getName() ,
-                                                        DefaultFactHandle.class.getName(),
-                                                        JaxbListWrapper.class.getName(),
-                                                        FlatQueryResults.class.getName(),
-                                                        CompleteWorkItemCommand.class.getName(),
-                                                        GetObjectsCommand.class.getName()
-                                                        };
+    public static final String[] JAXB_ANNOTATED_CMD = {
+            BatchExecutionCommandImpl.class.getName(),
+            SetGlobalCommand.class.getName(),
+            GetGlobalCommand.class.getName(),
+            FireAllRulesCommand.class.getName(),
+            InsertElementsCommand.class.getName(),
+            InsertObjectCommand.class.getName(),
+            ModifyCommand.class.getName(),
+            SetterImpl.class.getName(),
+            QueryCommand.class.getName(),
+            RetractCommand.class.getName(),
+            AbortWorkItemCommand.class.getName(),
+            SignalEventCommand.class.getName(),
+            StartProcessCommand.class.getName(),
+            BatchExecutionCommandImpl.class.getName(),
+            ExecutionResultImpl.class.getName(),
+            DefaultFactHandle.class.getName(),
+            JaxbListWrapper.class.getName(),
+            FlatQueryResults.class.getName(),
+            CompleteWorkItemCommand.class.getName(),
+            GetObjectsCommand.class.getName()};
 
     public static String[] addXsdModel(Resource resource,
                                 PackageBuilder pkgBuilder,
@@ -164,6 +163,21 @@ public class DroolsJaxbHelperProviderImpl
         pkgBuilder.updateResults();
 
         return classNames.toArray( new String[classNames.size()] );
+    }
+
+    public static JAXBContext createDroolsJaxbContext(List<String> classNames, Map<String, ?> properties) throws ClassNotFoundException, JAXBException {
+        int i = 0;
+        Class<?>[] classes = new Class[classNames.size() + JAXB_ANNOTATED_CMD.length];
+
+        for (i = 0; i < classNames.size(); i++) {
+            classes[i] = Class.forName(classNames.get(i));
+        }
+        int j = 0;
+        for (i = classNames.size(); i < classes.length; i++, j++) {
+            classes[i] = Class.forName(JAXB_ANNOTATED_CMD[j]);
+        }
+        return JAXBContext.newInstance(classes, properties);
+
     }
 
     public String[] addXsdModel(Resource resource,
