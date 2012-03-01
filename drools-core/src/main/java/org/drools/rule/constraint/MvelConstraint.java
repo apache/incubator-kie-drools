@@ -224,6 +224,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
         for (int i = 0; i < declarations.length; i++) {
             if (declarations[i].equals(oldDecl)) {
+                if (compilationUnit != null) {
+                    compilationUnit.replaceDeclaration(declarations[i], newDecl);
+                }
                 declarations[i] = newDecl;
                 break;
             }
