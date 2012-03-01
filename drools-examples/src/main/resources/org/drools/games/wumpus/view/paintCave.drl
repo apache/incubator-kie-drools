@@ -91,12 +91,6 @@ then
    modify( $cin ) { pit = "pit" };
 end
 
-rule "Paint Empty Pit" extends "Base Paint" when
-    not Pit(row == $c.row, col == $c.col)  
-then
-   modify( $cin ) { pit = "" };
-end
-
 rule "Paint Wumpus Alive" extends "Base Paint" when
     Wumpus(alive == true, row == $c.row, col == $c.col)  
 then
@@ -107,12 +101,6 @@ rule "Paint Wumpus Dead" extends "Base Paint" when
     Wumpus(alive == false, row == $c.row, col == $c.col)  
 then
    modify( $cin ) { wumpus = "wumpus_dead" }
-end
-
-rule "Paint Empty Wumpus" extends "Base Paint" when
-    not Wumpus(row == $c.row, col == $c.col)  
-then
-   modify( $cin ) { wumpus = "" }
 end
 
 rule "Paint Hero Direction Up" extends "Base Paint" when 

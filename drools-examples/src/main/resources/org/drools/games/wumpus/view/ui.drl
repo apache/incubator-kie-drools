@@ -32,29 +32,24 @@ rule "Reset View" when
     Reset()
     $gv : GameView()
 then
-    retract( $gv );
+    $gv.showAllCells = false;
 end
 
 rule "Init Game View"  when
     Play()
     $ui : GameUI()
-    not GameView()
-    $w : Wumpus()
-    $g : Gold()
-    $h : Hero()    
+    not GameView()  
 then    
     GameView $gv = new GameView();
-    $gv.init($w, $g, $h, 50, 50, 3, 20, 5, 5);
+    $gv.init(50, 50, 3, 20, 5, 5);
     $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
     $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).knowledgeBase );
     
-    /*
     new java.io.File("log").mkdir();
-    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus");   
+    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);   
     $gv.setKlogger( klogger );
-    */
          
-     $ui.gameView = $gv; 
+    $ui.gameView = $gv; 
     insert( $gv );
 end    
 
@@ -67,9 +62,10 @@ end
 
 rule "Wumpus Death View" dialect "java"   when
     $g  : GameView()
+    $ui : GameUI()    
     $wd : WumpusDeath()       
 then
-	JOptionPane.showMessageDialog( null,
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Oh No! You where killed by the Wumpus" );
     retract( $wd );                                   
     insert( new Reset() );
@@ -77,9 +73,10 @@ end
 
 rule "Pit Game View" dialect "java" when
     $g : GameView()
+    $ui : GameUI()    
     $pd : PitDeath()
 then    
-	JOptionPane.showMessageDialog( null,
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Oh No! You where killed by a Pit" );
     retract( $pd );                                   
     insert( new Reset() );
@@ -87,9 +84,10 @@ end
 
 rule "Gold Win View" dialect "java"  when
     $g : GameView()
+    $ui : GameUI()    
     $gw : GoldWin()    
 then
-	JOptionPane.showMessageDialog( null,
+	JOptionPane.showMessageDialog( $ui.getParentJFrame(),
                                    "Congratulations! You retreived the gold from the cave" );
     retract( $gw );                                       
     insert( new Reset() );
