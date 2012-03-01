@@ -7872,8 +7872,8 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     // this isn't possible, we can only narrow with type safety, not widen.
+    // unless typesafe=false is used
     public void testAccessFieldsFromSubClass() throws Exception {
 
         // Exception in ClassFieldAccessorStore line: 116
@@ -7883,6 +7883,7 @@ public class MiscTest extends CommonTestMethodBase {
         rule += "import org.drools.Person;\n";
         rule += "import org.drools.Pet;\n";
         rule += "import org.drools.Cat;\n";
+        rule += "declare Person @typesafe(false) end\n";
         rule += "rule \"Test Rule\"\n";
         rule += "when\n";
         rule += "    Person(\n";
