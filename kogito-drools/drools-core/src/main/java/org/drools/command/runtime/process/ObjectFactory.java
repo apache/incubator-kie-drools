@@ -27,6 +27,7 @@ import org.drools.command.runtime.process.StartProcessCommand;
 
 @XmlRegistry
 public class ObjectFactory {
+
     public AbortWorkItemCommand createAbortWorkItemCommand() {
         return new AbortWorkItemCommand();
     }
@@ -35,6 +36,10 @@ public class ObjectFactory {
         return new CompleteWorkItemCommand();
     }
     
+    public CreateProcessInstanceCommand createCreateProcessInstanceCommand() {
+        return new CreateProcessInstanceCommand();
+    }
+
     public SignalEventCommand createSignalEventCommand() {
         return new SignalEventCommand();
     }
@@ -42,4 +47,5 @@ public class ObjectFactory {
     public StartProcessCommand createStartProcessCommand() {
         return new StartProcessCommand();
     }
+
 }
