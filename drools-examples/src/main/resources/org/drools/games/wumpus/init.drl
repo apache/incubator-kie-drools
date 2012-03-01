@@ -89,6 +89,7 @@ rule "Trigger Play" salience -100 when
 then
     retract( $i );
     insert( new Play() );
+    insert( new SensorArray() );    
 end
 
 rule "End Play" salience 100 when
@@ -96,7 +97,6 @@ rule "End Play" salience 100 when
     $p : Play()
 then
     retract( $p );
-    insert( new SensorArray() );
 end
 
 rule "Reset Cells" when

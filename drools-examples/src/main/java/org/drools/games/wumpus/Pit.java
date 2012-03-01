@@ -1,5 +1,8 @@
 package org.drools.games.wumpus;
 
+import org.drools.definition.type.PropertySpecific;
+
+@PropertySpecific
 public class Pit extends Thing {
 
     public Pit(int row,

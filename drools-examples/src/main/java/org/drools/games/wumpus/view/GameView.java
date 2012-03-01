@@ -15,12 +15,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 @PropertySpecific
 public class GameView {
-    private WumpusWorldMain        wumpusWorld;
-    
-    private Wumpus                   wumpus;
-    private Gold                     gold;
-    private Hero                     hero;
-    
+    private WumpusWorldMain          wumpusWorld;
+
     private int                      cellHeight;
     private int                      cellWidth;
     private int                      cellPadding;
@@ -30,10 +26,10 @@ public class GameView {
     private StatefulKnowledgeSession ksession;
     private KnowledgeBase            kbase;
     private boolean                  showAllCells;
-    
+
     private int                      pittPercentage;
     private int                      rows;
-    private int                      cols;    
+    private int                      cols;
 
     public GameView() {
 
@@ -47,24 +43,17 @@ public class GameView {
         this.kbase = kbase;
     }
 
-    
     public void init(Cell[][] cells) {
-        
+
     }
-    
-    public void init(Wumpus wumpus,
-                     Gold gold,
-                     Hero hero,
-                     int cellHeight,
+
+    public void init(int cellHeight,
                      int cellWidth,
                      int cellPadding,
                      int pittPercentage,
                      int rows,
                      int cols) {
         this.showAllCells = false;
-        this.wumpus = wumpus;
-        this.gold = gold;
-        this.hero = hero;
         this.cellHeight = cellHeight;
         this.cellWidth = cellWidth;
         this.cellPadding = cellPadding;
@@ -87,30 +76,6 @@ public class GameView {
 
     public void setKsession(StatefulKnowledgeSession ksession) {
         this.ksession = ksession;
-    }
-
-    public Wumpus getWumpus() {
-        return wumpus;
-    }
-
-    public void setWumpus(Wumpus wumpus) {
-        this.wumpus = wumpus;
-    }
-
-    public Gold getGold() {
-        return gold;
-    }
-
-    public void setGold(Gold gold) {
-        this.gold = gold;
-    }
-
-    public Hero getHero() {
-        return hero;
-    }
-
-    public void setHero(Hero hero) {
-        this.hero = hero;
     }
 
     public boolean isShowAllCells() {
@@ -177,5 +142,4 @@ public class GameView {
         this.cols = cols;
     }
 
-    
 }
