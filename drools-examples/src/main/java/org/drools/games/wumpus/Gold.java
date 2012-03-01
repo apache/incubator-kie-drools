@@ -1,9 +1,9 @@
 package org.drools.games.wumpus;
 
-import org.drools.definition.type.PropertySpecific;
+import org.drools.definition.type.PropertyReactive;
 
 
-@PropertySpecific
+@PropertyReactive
 public class Gold extends Thing {
 
     public Gold(int row,

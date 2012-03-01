@@ -70,11 +70,11 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
+import org.drools.definition.type.ClassReactive;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Modifies;
-import org.drools.definition.type.NotPropertySpecific;
 import org.drools.definition.type.Position;
-import org.drools.definition.type.PropertySpecific;
+import org.drools.definition.type.PropertyReactive;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassBuilderFactory;
@@ -1350,8 +1350,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         typeDeclaration.setTypeClass( cls );
 
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
-        boolean propertySpecific = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertySpecific.class),
-                                                                         cls.isAnnotationPresent(NotPropertySpecific.class));
+        boolean propertySpecific = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
+                                                                         cls.isAnnotationPresent(ClassReactive.class));
         typeDeclaration.setPropertySpecific( propertySpecific );
 
         ClassDefinition clsDef = typeDeclaration.getTypeClassDef();

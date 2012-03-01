@@ -627,7 +627,7 @@ abstract public class AbstractRuleBase
                                             newDecl.isDynamic(),
                                             true ) );
         existingDecl.setPropertySpecific(mergeLeft(existingDecl.getTypeName(),
-                "Unable to merge @propertySpecific attribute for type declaration of class:",
+                "Unable to merge @propertyReactive attribute for type declaration of class:",
                 existingDecl.isPropertySpecific(),
                 newDecl.isPropertySpecific(),
                 true));

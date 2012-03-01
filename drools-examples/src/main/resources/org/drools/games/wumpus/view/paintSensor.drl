@@ -35,7 +35,7 @@ function void clearSensorCell(int x, int y,  Graphics sensorG) {
 dialect "mvel"
 
 declare SensorDirty
-	@propertySpecific
+	@propertyReactive
     dirty : boolean
 end  
 
