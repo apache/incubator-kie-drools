@@ -6,12 +6,21 @@ public class Memento<T> {
 
     private T old;
     private T current;
+    private boolean firstRecord = true;
 
     public Memento(T object) {
         if (!(object instanceof DeepCloneable || object instanceof Externalizable)) {
             throw new RuntimeException("Memento object must be either DeepCloneable or Externalizable");
         }
         current = object;
+    }
+
+    public boolean initFirstRecord() {
+        if (!firstRecord) {
+            return false;
+        }
+        firstRecord = false;
+        return true;
     }
 
     public T get() {
