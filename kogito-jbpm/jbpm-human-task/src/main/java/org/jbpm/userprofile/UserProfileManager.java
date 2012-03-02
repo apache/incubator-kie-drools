@@ -35,7 +35,6 @@ import org.jboss.seam.security.Identity;
 	    <property name="userProfileRepository">org.drools.task.MockFileBasedUserProfileRepository</property>
     </component>
  *   
- * @author Jervis Lliu
  */
 
 @Scope(ScopeType.APPLICATION)

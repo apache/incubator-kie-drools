@@ -33,7 +33,6 @@ import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 /**
  * Test case to see if this component works.
  * 
- * @author Mariano De Maio
  */
 public class JMSTaskServerAsyncTest extends TestCase {
 

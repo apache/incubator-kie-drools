@@ -45,7 +45,6 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler
 
 /**
  *
- * @author salaboy
  */
 public class AsyncTaskServiceWrapper implements TaskService {
 

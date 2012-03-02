@@ -20,7 +20,6 @@ package org.jbpm.task.service;
  * Exception thrown from the <code>TaskServiceSession</code> when there is a problem adding task. This exception
  * is specififically thrown when custom logic in rules has not allowed the <code>Task</code> to be added.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  * @see org.jbpm.task.service.TaskServiceSession#addTask(org.jbpm.task.Task, ContentData)
  */
 public class CannotAddTaskException extends TaskException {

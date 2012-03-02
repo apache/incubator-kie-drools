@@ -39,7 +39,6 @@ import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
 /**
  *
- * @author salaboy
  */
 public interface AsyncTaskService {
 

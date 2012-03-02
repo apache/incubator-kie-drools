@@ -21,7 +21,6 @@ import org.drools.event.AbstractEventSupport;
 import java.util.Iterator;
 
 /**
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public class TaskEventSupport extends AbstractEventSupport<TaskEventListener> {
 

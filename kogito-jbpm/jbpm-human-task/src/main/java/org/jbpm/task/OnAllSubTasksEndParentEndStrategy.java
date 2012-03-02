@@ -27,7 +27,6 @@ import org.jbpm.task.service.persistence.TaskServiceSession;
 
 /**
  *
- * @author salaboy
  */
 @Entity
 public class OnAllSubTasksEndParentEndStrategy  extends SubTasksStrategy {
