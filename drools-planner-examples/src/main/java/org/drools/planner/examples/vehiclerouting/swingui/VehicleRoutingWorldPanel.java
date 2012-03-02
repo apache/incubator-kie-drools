@@ -81,7 +81,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics g = createCanvas(width, height);
-        g.setColor(TangoColors.PLUM_2);
+        g.setColor(TangoColors.ORANGE_2);
         g.setFont(g.getFont().deriveFont(8.0f));
         for (VrpCustomer customer : schedule.getCustomerList()) {
             VrpLocation location = customer.getLocation();
@@ -96,39 +96,43 @@ public class VehicleRoutingWorldPanel extends JPanel {
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
         }
-        g.setColor(TangoColors.CHOCOLATE_1);
-        for (VrpCustomer customer : schedule.getCustomerList()) {
-            if (customer.getPreviousAppearance() != null) {
-                VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
-                int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
-                int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
-                VrpLocation location = customer.getLocation();
-                int x = translator.translateLongitudeToX(location.getLongitude());
-                int y = translator.translateLatitudeToY(location.getLatitude());
-                g.drawLine(previousX, previousY, x, y);
-                // Back to vehicle line
-                boolean needsBackToVehicleLineDraw = true;
-                for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
-                    if (trailingCustomer.getPreviousAppearance() == customer) {
-                        needsBackToVehicleLineDraw = false;
-                        break;
+        int colorIndex = 0;
+        // TODO Too many for loops
+        for (VrpVehicle vehicle : schedule.getVehicleList()) {
+            g.setColor(TangoColors.SEQUENCE_2[colorIndex]);
+            for (VrpCustomer customer : schedule.getCustomerList()) {
+                if (customer.getPreviousAppearance() != null && customer.getVehicle() == vehicle) {
+                    VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
+                    int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
+                    int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
+                    VrpLocation location = customer.getLocation();
+                    int x = translator.translateLongitudeToX(location.getLongitude());
+                    int y = translator.translateLatitudeToY(location.getLatitude());
+                    g.drawLine(previousX, previousY, x, y);
+                    // Line back to the vehicle depot
+                    boolean needsBackToVehicleLineDraw = true;
+                    for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
+                        if (trailingCustomer.getPreviousAppearance() == customer) {
+                            needsBackToVehicleLineDraw = false;
+                            break;
+                        }
+                    }
+                    if (needsBackToVehicleLineDraw) {
+                        VrpLocation vehicleLocation = vehicle.getLocation();
+                        int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
+                        int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
+                        g.drawLine(x, y,vehicleX, vehicleY);
                     }
                 }
-                if (needsBackToVehicleLineDraw) {
-                    // TODO support more than 1 vehicle
-                    VrpVehicle vehicle = schedule.getVehicleList().get(0);
-                    VrpLocation vehicleLocation = vehicle.getLocation();
-                    int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
-                    int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
-                    g.drawLine(x, y,vehicleX, vehicleY);
-                }
             }
+            colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_2.length;
         }
+
         // Legend
         g.setFont(g.getFont().deriveFont(8.0f));
-        g.setColor(TangoColors.PLUM_2);
+        g.setColor(TangoColors.ORANGE_2);
         g.fillRect(6, (int) height - 19, 3, 3);
-        g.drawString("Customer with demand", 15, (int) height - 15);
+        g.drawString("Customer demand", 15, (int) height - 15);
         g.setColor(TangoColors.SCARLET_2);
         g.fillRect(5, (int) height - 10, 5, 5);
         g.drawString("Depot", 15, (int) height - 5);

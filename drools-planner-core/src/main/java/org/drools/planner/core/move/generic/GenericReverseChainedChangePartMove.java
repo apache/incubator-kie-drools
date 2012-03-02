@@ -73,11 +73,9 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         // Change the entity
         planningVariableDescriptor.setValue(lastEntity, toPlanningValue);
-        workingMemory.update(workingMemory.getFactHandle(lastEntity), lastEntity);
         Object previousEntity = firstEntity;
         for (Object entity : entitiesSubChain.subList(1, entitiesSubChain.size())) {
             planningVariableDescriptor.setValue(previousEntity, entity);
-            workingMemory.update(workingMemory.getFactHandle(previousEntity), previousEntity);
             previousEntity = entity;
         }
         if (firstEntity.equals(newTrailingEntity)) {
@@ -85,17 +83,34 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
             // Reroute the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, firstEntity);
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
             }
         } else {
             // Close the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
             }
             // Reroute the new chain
             if (newTrailingEntity != null) {
                 planningVariableDescriptor.setValue(newTrailingEntity, firstEntity);
+            }
+        }
+
+        // After the model is valid again, notify the SolutionDirector
+        workingMemory.update(workingMemory.getFactHandle(lastEntity), lastEntity);
+        previousEntity = firstEntity;
+        for (Object entity : entitiesSubChain.subList(1, entitiesSubChain.size())) {
+            workingMemory.update(workingMemory.getFactHandle(previousEntity), previousEntity);
+            previousEntity = entity;
+        }
+        if (firstEntity.equals(newTrailingEntity)) {
+            if (oldTrailingEntity != null) {
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+            }
+        } else {
+            if (oldTrailingEntity != null) {
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+            }
+            if (newTrailingEntity != null) {
                 workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
             }
         }
