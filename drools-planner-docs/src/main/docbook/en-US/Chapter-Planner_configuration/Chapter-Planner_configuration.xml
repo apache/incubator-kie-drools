@@ -516,9 +516,9 @@ public class Queen {
     }</programlisting>
 
           <para>Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a
-          feasible solution). For example, when a teacher can not teach in a room that does not belong to his department
-          <emphasis>unless there is no other way</emphasis>, the teacher should <emphasis>not</emphasis> be limited in
-          his room value range.</para>
+          feasible solution). For example: <emphasis>Unless there is no other way</emphasis>, a teacher can not teach in
+          a room that does not belong to his department. In this case, the teacher should <emphasis>not</emphasis> be
+          limited in his room value range (because sometimes there is no other way).</para>
 
           <note>
             <para>By limiting the value range specifically of 1 planning entity, you are effectively making a
@@ -528,7 +528,7 @@ public class Queen {
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
-          range. It would only try to solve the planning problem itself and interfere with the optimization
+          range. That would only try to make it solve the planning problem itself and interfere with the optimization
           algorithms.</para>
         </section>
 
@@ -541,6 +541,159 @@ public class Queen {
     public Row getRow() {
         return row;
     }</programlisting></para>
+        </section>
+
+        <section>
+          <title>Combining ValueRanges</title>
+
+          <para>Value ranges can be combined, for example:<programlisting language="java">    @PlanningVariable(...)
+    @ValueRanges({
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "companyCarList"),
+            @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "personalCarList"})
+    public Car getCar() {
+        return car;
+    }</programlisting></para>
+        </section>
+
+        <section>
+          <title>A <literal>ValueRange</literal> which includes other planning entities</title>
+
+          <para>In some cases (such as in chaining), the planning value itself is sometimes another planning entity. In
+          such cases, it's often required that a planning entity is only eligible as a planning value if it's
+          initialized:</para>
+
+          <programlisting language="java">    @PlanningVariable
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "copList", excludeUninitializedPlanningEntity = true)
+    public Cop getPartner() {
+        return partner;
+    }</programlisting>
+
+          <para>TODO: this is likely to change in the future (<link
+          xlink:href="https://issues.jboss.org/browse/JBRULES-3408">jira</link>), as it should support specific planning
+          variable initialization too.</para>
+        </section>
+
+        <section>
+          <title>Chained</title>
+
+          <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
+          planning entities point to each other and form a chain.</para>
+
+          <para>A variable that is chained either:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Directly points to a planning fact, which is called an <emphasis>anchor</emphasis>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Points to another planning entity with the same planning variable, which recursively points to an
+              anchor.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Here's some example of a chain:</para>
+
+          <para>TODO image</para>
+
+          <para><emphasis role="bold">Every initialized planning entity is part of an open-ended chain that begins from
+          an anchor.</emphasis> A valid model means that:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>A chain is never a loop. The tail is always open.</para>
+            </listitem>
+
+            <listitem>
+              <para>Every chain always has exactly 1 anchor. The anchor is a problem fact, never a planning
+              entity.</para>
+            </listitem>
+
+            <listitem>
+              <para>A chain is never a tree, it is always a line. Every anchor or planning entity has at most 1 trailing
+              planning entity.</para>
+            </listitem>
+
+            <listitem>
+              <para>Every initialized planning entity is part of a chain.</para>
+            </listitem>
+
+            <listitem>
+              <para>An anchor with no planning entities pointing to it, is also considered a chain.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to
+          guarantee that the model stays valid.</para>
+
+          <warning>
+            <para>A planning problem instance given to the <literal>Solver</literal> must be valid. A custom
+            <literal>Move</literal> implementation must leave the model in a valid state.</para>
+          </warning>
+
+          <note>
+            <para>If your constraints dictate a closed chain, model it as an open-ended chain (which is easier to
+            persist in a database) and implement a score constraint for the last entity back to the anchor.</para>
+          </note>
+
+          <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is the
+          vehicle):</para>
+
+          <programlisting language="java">public class Domicile ... implements Appearance {
+
+    ...
+
+    public City getCity() {...}
+
+}</programlisting>
+
+          <para>The anchor (which is a problem fact) and the planning entity implement a common interface, for example
+          TSP's <literal>Appearance</literal>:</para>
+
+          <programlisting language="java">public interface Appearance {
+
+    City getCity();
+
+}</programlisting>
+
+          <para>That interface is the return type of the planning variable. Furthermore, the planning variable is
+          chained. For example TSP's <literal>Visit</literal> (in vehicle routing it is the customer):</para>
+
+          <programlisting language="java">@PlanningEntity
+public class Visit ... implements Appearance {
+
+    ...
+
+    public City getCity() {...}
+
+    @PlanningVariable(chained = true)
+    @ValueRanges({
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList",
+                    excludeUninitializedPlanningEntity = true)})
+    public Appearance getPreviousAppearance() {
+        return previousAppearance;
+    }
+
+    public void setPreviousAppearance(Appearance previousAppearance) {
+        this.previousAppearance = previousAppearance;
+    }
+
+}</programlisting>
+
+          <para>Notice how 2 value ranges need to be combined:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>The value range which holds the anchors, for example <literal>domicileList</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>The value range which holds the initialized planning entities, for example
+              <literal>visitList</literal>. This always requires an enabled
+              <literal>excludeUninitializedPlanningEntity</literal>.</para>
+            </listitem>
+          </itemizedlist>
         </section>
       </section>
 
