@@ -40,6 +40,8 @@ import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
  */
 public class VehicleRoutingWorldPanel extends JPanel {
 
+    private static final int TEXT_SIZE = 8;
+
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
     private BufferedImage canvas = null;
@@ -82,7 +84,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
         Graphics g = createCanvas(width, height);
         g.setColor(TangoColors.ORANGE_2);
-        g.setFont(g.getFont().deriveFont(8.0f));
+        g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         for (VrpCustomer customer : schedule.getCustomerList()) {
             VrpLocation location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
@@ -97,11 +99,15 @@ public class VehicleRoutingWorldPanel extends JPanel {
             g.fillRect(x - 2, y - 2, 5, 5);
         }
         int colorIndex = 0;
-        // TODO Too many for loops
+        // TODO Too many nested for loops
         for (VrpVehicle vehicle : schedule.getVehicleList()) {
             g.setColor(TangoColors.SEQUENCE_2[colorIndex]);
+            VrpCustomer longestDistanceCustomer = null;
+            int longestDistance = -1;
+            int load = 0;
             for (VrpCustomer customer : schedule.getCustomerList()) {
                 if (customer.getPreviousAppearance() != null && customer.getVehicle() == vehicle) {
+                    load += customer.getDemand();
                     VrpLocation previousLocation = customer.getPreviousAppearance().getLocation();
                     int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
                     int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
@@ -109,6 +115,11 @@ public class VehicleRoutingWorldPanel extends JPanel {
                     int x = translator.translateLongitudeToX(location.getLongitude());
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
+                    int distance = customer.getDistanceToPreviousAppearance();
+                    if (longestDistance < distance) {
+                        longestDistance = distance;
+                        longestDistanceCustomer = customer;
+                    }
                     // Line back to the vehicle depot
                     boolean needsBackToVehicleLineDraw = true;
                     for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
@@ -125,11 +136,24 @@ public class VehicleRoutingWorldPanel extends JPanel {
                     }
                 }
             }
+            if (longestDistanceCustomer != null) {
+                if (load > vehicle.getCapacity()) {
+                    g.setColor(TangoColors.SCARLET_2);
+                }
+                VrpLocation previousLocation = longestDistanceCustomer.getPreviousAppearance().getLocation();
+                VrpLocation location = longestDistanceCustomer.getLocation();
+                double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
+                int x = translator.translateLongitudeToX(longitude);
+                double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
+                int y = translator.translateLatitudeToY(latitude);
+                boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
+                        ^ (previousLocation.getLatitude() < location.getLatitude());
+                g.drawString(load + " / " + vehicle.getCapacity(), x + 3, (ascending ? y - 3 : y + TEXT_SIZE + 3));
+            }
             colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_2.length;
         }
 
         // Legend
-        g.setFont(g.getFont().deriveFont(8.0f));
         g.setColor(TangoColors.ORANGE_2);
         g.fillRect(6, (int) height - 19, 3, 3);
         g.drawString("Customer demand", 15, (int) height - 15);
