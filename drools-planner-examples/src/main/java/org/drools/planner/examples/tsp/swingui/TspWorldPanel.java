@@ -88,26 +88,26 @@ public class TspWorldPanel extends JPanel {
         if (tourName.startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
-        g.setColor(TangoColors.ALUMINIUM_6);
         g.setFont(g.getFont().deriveFont(8.0f));
-        for (City city : travelingSalesmanTour.getCityList()) {
-            if (city.getName() != null) {
-                int x = translator.translateLongitudeToX(city.getLongitude());
-                int y = translator.translateLatitudeToY(city.getLatitude());
-                g.drawString(city.getName(), x + 3, y - 3);
-            }
-        }
         g.setColor(TangoColors.PLUM_2);
-        for (City city : travelingSalesmanTour.getCityList()) {
+        for (Visit visit : travelingSalesmanTour.getVisitList()) {
+            City city = visit.getCity();
             int x = translator.translateLongitudeToX(city.getLongitude());
             int y = translator.translateLatitudeToY(city.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
+            if (city.getName() != null) {
+                g.drawString(city.getName(), x + 3, y - 3);
+            }
         }
-        g.setColor(TangoColors.SCARLET_2);
+        g.setColor(TangoColors.ALUMINIUM_4);
         for (Domicile domicile : travelingSalesmanTour.getDomicileList()) {
-            int x = translator.translateLongitudeToX(domicile.getCity().getLongitude());
-            int y = translator.translateLatitudeToY(domicile.getCity().getLatitude());
+            City city = domicile.getCity();
+            int x = translator.translateLongitudeToX(city.getLongitude());
+            int y = translator.translateLatitudeToY(city.getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
+            if (city.getName() != null) {
+                g.drawString(city.getName(), x + 3, y - 3);
+            }
         }
         g.setColor(TangoColors.CHOCOLATE_1);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
@@ -142,7 +142,7 @@ public class TspWorldPanel extends JPanel {
         g.setColor(TangoColors.PLUM_2);
         g.fillRect(6, (int) height - 19, 3, 3);
         g.drawString("Visit", 15, (int) height - 15);
-        g.setColor(TangoColors.SCARLET_2);
+        g.setColor(TangoColors.ALUMINIUM_4);
         g.fillRect(5, (int) height - 10, 5, 5);
         g.drawString("Domicile", 15, (int) height - 5);
         repaint();

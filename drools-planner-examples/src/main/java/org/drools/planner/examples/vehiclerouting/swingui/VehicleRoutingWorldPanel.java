@@ -92,7 +92,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
             g.fillRect(x - 1, y - 1, 3, 3);
             g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
         }
-        g.setColor(TangoColors.SCARLET_2);
+        g.setColor(TangoColors.ALUMINIUM_4);
         for (VrpDepot depot : schedule.getDepotList()) {
             int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
@@ -157,7 +157,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
         g.setColor(TangoColors.ORANGE_2);
         g.fillRect(6, (int) height - 19, 3, 3);
         g.drawString("Customer demand", 15, (int) height - 15);
-        g.setColor(TangoColors.SCARLET_2);
+        g.setColor(TangoColors.ALUMINIUM_4);
         g.fillRect(5, (int) height - 10, 5, 5);
         g.drawString("Depot", 15, (int) height - 5);
         repaint();
