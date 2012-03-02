@@ -34,7 +34,7 @@ public class BankingExamplesApp extends JFrame {
     }
 
     public BankingExamplesApp() {
-        super("Drools Banking tutorial");
+        super("JBoss BRMS Banking tutorial");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
