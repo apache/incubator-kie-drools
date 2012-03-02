@@ -28,12 +28,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.Group;
-import org.jbpm.task.User;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.persistence;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,15 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import javax.transaction.UserTransaction;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.core.util.StringUtils;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
@@ -47,42 +45,48 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
-import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.Allowed;
+import org.jbpm.task.service.CannotAddTaskException;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.EscalatedDeadlineHandler;
+import org.jbpm.task.service.FaultData;
+import org.jbpm.task.service.Operation;
+import org.jbpm.task.service.OperationCommand;
+import org.jbpm.task.service.PermissionDeniedException;
+import org.jbpm.task.service.SendIcal;
+import org.jbpm.task.service.TaskException;
+import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
+import org.jbpm.task.service.TaskServiceRequest;
+import org.jbpm.task.service.UserGroupCallbackManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TaskServiceSession {
 
+    private final TaskPersistenceManager tpm;
+    
     private final TaskService service;
-    private final EntityManager em;
     private Map<String, RuleBase> ruleBases;
     private Map<String, Map<String, Object>> globals;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
-    private String transactionType = "default";
     
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
 
-    public TaskServiceSession(final TaskService service, final EntityManager em) {
+    public TaskServiceSession(final TaskService service, final EntityManagerFactory emf) {
         this.service = service;
-        this.em = em;
+        this.tpm = new TaskPersistenceManager(emf);
     }
     
-    public void setTransactionType(String type) {
-    	this.transactionType = type;
-    }
-
     public void dispose() {
-        if( em.isOpen() ) { 
-            em.close();
-        }
+        tpm.endPersistenceContext();
     }
 
-    public EntityManager getEntityManager() {
-        return em;
+    public TaskPersistenceManager getTaskPersistenceManager() { 
+        return tpm;
     }
-
+    
     public org.jbpm.task.service.TaskService getService() {
         return service;
     }
@@ -172,13 +176,13 @@ public class TaskServiceSession {
         
         doOperationInTransaction(new TransactedOperation() {
             public void doOperation() {
-                em.persist(task);
+                tpm.saveEntity(task);
 
                 if (contentData != null) {
                     Content content = new Content(contentData.getContent());
-                    em.persist(content);
+                    tpm.saveEntity(content);
 
-                    taskData.setDocument(content.getId(), contentData);
+                    task.getTaskData().setDocument(content.getId(), contentData);
                 }
             }
         });
@@ -383,11 +387,11 @@ public class TaskServiceSession {
         
         User user = getEntity(User.class, userId);
 
-        boolean transactionStarted = false;
+        boolean transactionOwner = false;
         try {
             final List<OperationCommand> commands = service.getCommandsForOperation(operation);
 
-            transactionStarted = beginOrUseExistingTransaction();
+            transactionOwner = tpm.beginTransaction();
 
             evalCommand(operation, commands, task, user, targetEntity, groupIds);
 
@@ -417,20 +421,18 @@ public class TaskServiceSession {
                 	break;
                 }
             }
-        } catch (RuntimeException e) {
-        	if ("default".equals(transactionType)) {
-	            if (em.getTransaction().isActive()) {
-	                em.getTransaction().rollback();
-	            }
-        	} else if ("local-JTA".equals(transactionType)) {
-        		try {
-        			UserTransaction ut = (UserTransaction)
-        				new InitialContext().lookup( "java:comp/UserTransaction" );
-        			ut.setRollbackOnly();
-        		} catch (Exception exc) {
-        			throw new RuntimeException(e);
-        		}
-        	}
+            
+            tpm.endTransaction(transactionOwner);
+            
+        } catch (RuntimeException re) {
+            
+            // DBG
+            re.printStackTrace();
+            
+            // We may not be the tx owner -- but something has gone wrong.
+            // ..which is why we make ourselves owner, and roll the tx back. 
+            boolean takeOverTransaction = true;
+            tpm.rollBackTransaction(takeOverTransaction);
 
             doOperationInTransaction(new TransactedOperation() {
                 public void doOperation() {
@@ -438,28 +440,9 @@ public class TaskServiceSession {
                 }
             });
 
-            throw e;
-        } finally {
-        	if ("default".equals(transactionType)) {
-	            if (em.getTransaction().isActive()) {
-	                em.getTransaction().commit();
-	            }
-        	} else if ("local-JTA".equals(transactionType)) {
-        		if (transactionStarted) {
-        			try {
-        				UserTransaction ut = (UserTransaction)
-        					new InitialContext().lookup( "java:comp/UserTransaction" );
-        				if (ut.getStatus() == javax.transaction.Status.STATUS_MARKED_ROLLBACK) {
-							ut.rollback();
-        				} else {
-        					ut.commit();
-        				}
-        			} catch (Exception e) {
-        				throw new RuntimeException(e);
-        			}
-        		}
-        	}
-        }
+            throw re;
+        } 
+
         switch (operation) {
 	        case Claim: {
 	            postTaskClaimOperation(task);
@@ -497,7 +480,6 @@ public class TaskServiceSession {
         checkSubTaskStrategy(task);
     }
     
-    
     private void postTaskCompleteOperation(final Task task) {
         // trigger event support
         service.getEventSupport().fireTaskCompleted(task.getId(), task.getTaskData().getActualOwner().getId());
@@ -528,6 +510,14 @@ public class TaskServiceSession {
         return getEntity(Task.class, taskId);
     }
 
+    public Deadline getDeadline(final long deadlineId) { 
+        return (Deadline) tpm.findEntity(Deadline.class, deadlineId);
+    }
+    
+    public void setTaskStatus(final long taskId, Status status) { 
+        tpm.setTaskStatusInTransaction(taskId, status);
+    }
+    
     public void addComment(final long taskId, final Comment comment) {
         final Task task = getTask(taskId);
         doCallbackOperationForComment(comment);
@@ -545,8 +535,7 @@ public class TaskServiceSession {
 
         doOperationInTransaction(new TransactedOperation() {
             public void doOperation() {
-                em.persist(content);
-
+                tpm.saveEntity(content);
                 attachment.setContent(content);
                 task.getTaskData().addAttachment(attachment);
             }
@@ -558,7 +547,7 @@ public class TaskServiceSession {
 
         doOperationInTransaction(new TransactedOperation() {
             public void doOperation() {
-                em.persist(content);
+                tpm.saveEntity(content);
 
                 task.getTaskData().setDocumentContentId(content.getId());
             }
@@ -570,9 +559,10 @@ public class TaskServiceSession {
     }
 
     public void deleteAttachment(final long taskId, final long attachmentId, final long contentId) {
-        // @TODO I can't get this to work with HQL deleting the Attachment. Hibernate needs both the item removed from the collection
-        // and also the item deleted, so for now have to load the entire Task, I suspect that this is due to using the same EM which 
-        // is caching things.
+        // TODO I can't get this to work with HQL deleting the Attachment. 
+        // Hibernate needs both the item removed from the collection and also the item deleted, 
+        // so for now, we have to load the entire Task. 
+        // I suspect that this is due to using the same EM which is caching things.
         final Task task = getTask(taskId);
 
         doOperationInTransaction(new TransactedOperation() {
@@ -581,12 +571,14 @@ public class TaskServiceSession {
 
                 if (removedAttachment != null) {
                     // need to do this otherwise it just removes the link id, without removing the attachment
-                    em.remove(removedAttachment);
+                    tpm.deleteEntity(removedAttachment);
                 }
 
                 // we do this as HQL to avoid streaming in the entire HQL
                 final String deleteContent = "delete from Content c where c.id = :id";
-                em.createQuery(deleteContent).setParameter("id", contentId).executeUpdate();
+                Query query = tpm.createNewQuery(deleteContent);
+                query.setParameter("id", contentId);
+                query.executeUpdate();
             }
         });
     }
@@ -603,65 +595,41 @@ public class TaskServiceSession {
 
                 if (removedComment != null) {
                     // need to do this otherwise it just removes the link id, without removing the attachment
-                    em.remove(removedComment);
+                    tpm.deleteEntity(removedComment);
                 }
             }
         });
     }
 
-    @SuppressWarnings("unchecked")
-    public List<DeadlineSummary> getUnescalatedDeadlines() {
-        return (List<DeadlineSummary>) em.createNamedQuery("UnescalatedDeadlines").getResultList();
-    }
-
     public Task getTaskByWorkItemId(final long workItemId) {
-        final Query task = em.createNamedQuery("TaskByWorkItemId");
-        task.setParameter("workItemId", workItemId);
-
-        return (Task) task.getSingleResult();
+        Query query = tpm.createQuery("TaskByWorkItemId");
+        query.setParameter("workItemId", workItemId);
+        Object taskObject =  query.getSingleResult();
+        
+        return (Task) taskObject;
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksOwned(final String userId, final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksOwned = em.createNamedQuery("TasksOwned");
-        tasksOwned.setParameter("userId", userId);
-        tasksOwned.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksOwned.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksOwned", userId, language);
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(final String userId,
                                                                      final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsBusinessAdministrator = em.createNamedQuery("TasksAssignedAsBusinessAdministrator");
-        tasksAssignedAsBusinessAdministrator.setParameter("userId", userId);
-        tasksAssignedAsBusinessAdministrator.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksAssignedAsBusinessAdministrator.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsBusinessAdministrator", userId, language);
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsExcludedOwner(final String userId,
                                                              final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsExcludedOwner = em.createNamedQuery("TasksAssignedAsExcludedOwner");
-        tasksAssignedAsExcludedOwner.setParameter("userId", userId);
-        tasksAssignedAsExcludedOwner.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksAssignedAsExcludedOwner.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsExcludedOwner", userId, language);
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId,
                                                               final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwner");
-        tasksAssignedAsPotentialOwner.setParameter("userId", userId);
-        tasksAssignedAsPotentialOwner.setParameter("language", language);
-
-        return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsPotentialOwner", userId, language);
     }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
@@ -675,7 +643,8 @@ public class TaskServiceSession {
                                                               final String language, final int firstResult, int maxResults) {
         doCallbackUserOperation(userId);
         groupIds = doUserGroupCallbackOperation(userId, groupIds);
-        final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups");
+        
+        final Query tasksAssignedAsPotentialOwner = tpm.createQuery("TasksAssignedAsPotentialOwnerWithGroups");
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
         tasksAssignedAsPotentialOwner.setParameter("groupIds", groupIds);
         tasksAssignedAsPotentialOwner.setParameter("language", language);
@@ -691,7 +660,8 @@ public class TaskServiceSession {
     public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(final long parentId, final String userId,
                                                                  final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("SubTasksAssignedAsPotentialOwner");
+        
+        final Query tasksAssignedAsPotentialOwner = tpm.createQuery("SubTasksAssignedAsPotentialOwner");
         tasksAssignedAsPotentialOwner.setParameter("parentId", parentId);
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
         tasksAssignedAsPotentialOwner.setParameter("language", language);
@@ -703,7 +673,7 @@ public class TaskServiceSession {
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByGroup(final String groupId,
                                                                      final String language) {
         doCallbackGroupOperation(groupId);
-        final Query tasksAssignedAsPotentialOwnerByGroup = em.createNamedQuery("TasksAssignedAsPotentialOwnerByGroup");
+        final Query tasksAssignedAsPotentialOwnerByGroup = tpm.createQuery("TasksAssignedAsPotentialOwnerByGroup");
         tasksAssignedAsPotentialOwnerByGroup.setParameter("groupId", groupId);
         tasksAssignedAsPotentialOwnerByGroup.setParameter("language", language);
 
@@ -712,48 +682,37 @@ public class TaskServiceSession {
 
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getSubTasksByParent(final long parentId, final String language) {
-        final Query subTaskByParent = em.createNamedQuery("GetSubTasksByParentTaskId");
+        final Query subTaskByParent = tpm.createQuery("GetSubTasksByParentTaskId");
         subTaskByParent.setParameter("parentId", parentId);
         subTaskByParent.setParameter("language", language);
 
         return (List<TaskSummary>) subTaskByParent.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsRecipient(final String userId,
                                                          final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsRecipient = em.createNamedQuery("TasksAssignedAsRecipient");
-        tasksAssignedAsRecipient.setParameter("userId", userId);
-        tasksAssignedAsRecipient.setParameter("language", language);
 
-        return (List<TaskSummary>) tasksAssignedAsRecipient.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsRecipient", userId, language);
+
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsTaskInitiator(final String userId,
                                                              final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsTaskInitiator = em.createNamedQuery("TasksAssignedAsTaskInitiator");
-        tasksAssignedAsTaskInitiator.setParameter("userId", userId);
-        tasksAssignedAsTaskInitiator.setParameter("language", language);
 
-        return (List<TaskSummary>) tasksAssignedAsTaskInitiator.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsTaskInitiator", userId, language);
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsTaskStakeholder(final String userId,
                                                                final String language) {
         doCallbackUserOperation(userId);
-        final Query tasksAssignedAsTaskStakeholder = em.createNamedQuery("TasksAssignedAsTaskStakeholder");
-        tasksAssignedAsTaskStakeholder.setParameter("userId", userId);
-        tasksAssignedAsTaskStakeholder.setParameter("language", language);
 
-        return (List<TaskSummary>) tasksAssignedAsTaskStakeholder.getResultList();
+        return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsTaskStakeholder", userId, language);
     }
     
     public List<?> query(final String qlString, final Integer size, final Integer offset) {
-    	final Query genericQuery = em.createQuery(qlString);
+    	final Query genericQuery = tpm.createNewQuery(qlString);
     	genericQuery.setMaxResults(size);
     	genericQuery.setFirstResult(offset);
     	return genericQuery.getResultList();
@@ -793,32 +752,39 @@ public class TaskServiceSession {
     	}
     }
     
+    private Task getTaskAndCheckTaskUserId(long taskId, String userId, String operation) { 
+        Task task = getEntity(Task.class, taskId);
+        if (!userId.equals(task.getTaskData().getActualOwner().getId())) {
+            throw new RuntimeException(
+                    "User " + userId 
+                    + " is not the actual owner of the task " + taskId 
+                    + " and can't perform " + operation);
+        }
+        return task;
+    }
+
     public void setOutput(final long taskId, final String userId, final ContentData outputContentData) {
+        final Task task = getTaskAndCheckTaskUserId(taskId, userId, "setOutput");
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
-    			Task task = getEntity(Task.class, taskId);
-    			if (!userId.equals(task.getTaskData().getActualOwner().getId())) {
-    				throw new RuntimeException("User " + userId + " is not the actual owner of the task " + taskId + " and can't perform setOutput");
-    			}
-    			Content content = new Content();
-    			content.setContent(outputContentData.getContent());
-    			em.persist(content);
-    			task.getTaskData().setOutput(content.getId(), outputContentData);
+    	        Content content = new Content();
+    	        content.setContent(outputContentData.getContent());
+    	        tpm.saveEntity(content);
+    	        task.getTaskData().setOutput(content.getId(), outputContentData);
+
     		}
     	});
     }
     
     public void setFault(final long taskId, final String userId, final FaultData faultContentData) {
+        final Task task = getTaskAndCheckTaskUserId(taskId, userId, "setFault");
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
-    			Task task = getEntity(Task.class, taskId);
-    			if (!userId.equals(task.getTaskData().getActualOwner().getId())) {
-    				throw new RuntimeException("User " + userId + " is not the actual owner of the task " + taskId + " and can't perform setFault");
-    			}
-    			Content content = new Content();
-    			content.setContent(faultContentData.getContent());
-    			em.persist(content);
-    			task.getTaskData().setFault(content.getId(), faultContentData);
+    	        Content content = new Content();
+    	        content.setContent(faultContentData.getContent());
+    	        tpm.saveEntity(content);
+    	        task.getTaskData().setFault(content.getId(), faultContentData);
+    	 
     		}
     	});
     }
@@ -833,45 +799,34 @@ public class TaskServiceSession {
     }
     
     public void deleteOutput(final long taskId, final String userId) {
+        final Task task = getTaskAndCheckTaskUserId(taskId, userId, "deleteOutput");
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
-    			Task task = getEntity(Task.class, taskId);
-    			if (!userId.equals(task.getTaskData().getActualOwner().getId())) {
-    				throw new RuntimeException("User " + userId + " is not the actual owner of the task " + taskId + " and can't perform deleteOutput");
-    			}
-    			long contentId = task.getTaskData().getOutputContentId();
-    			Content content = getEntity(Content.class, contentId);
-    			ContentData data = new ContentData();
-    			em.remove(content);
-    			task.getTaskData().setOutput(0, data);
+    	        long contentId = task.getTaskData().getOutputContentId();
+    	        Content content = (Content) tpm.findEntity(Content.class, contentId);
+    	        ContentData data = new ContentData();
+    	        tpm.deleteEntity(content);
+    	        task.getTaskData().setOutput(0, data);
     		}
     	});
     }
     
     public void deleteFault(final long taskId, final String userId) {
+        final Task task = getTask(taskId);
+        if (! userId.equals(task.getTaskData().getActualOwner().getId())) {
+            throw new RuntimeException("User " + userId + " is not the actual owner of the task " + taskId + " and can't perform deleteFault");
+        }
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
-    			Task task = getEntity(Task.class, taskId);
-    			if (!userId.equals(task.getTaskData().getActualOwner().getId())) {
-    				throw new RuntimeException("User " + userId + " is not the actual owner of the task " + taskId + " and can't perform deleteFault");
-    			}
-    			long contentId = task.getTaskData().getFaultContentId();
-    			Content content = getEntity(Content.class, contentId);
-    			FaultData data = new FaultData();
-    			em.remove(content);
-    			task.getTaskData().setFault(0, data);
+    	        long contentId = task.getTaskData().getFaultContentId();
+    	        Content content = (Content) tpm.findEntity(Content.class, contentId);
+    	        FaultData data = new FaultData();
+    	        tpm.deleteEntity(content);
+    	        task.getTaskData().setFault(0, data);
     		}
     	});
     }
     
-    private boolean isAllowed(final User user, final List<OrganizationalEntity>[] people) {
-        for (List<OrganizationalEntity> list : people) {
-            if (isAllowed(user, null, list)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
         // for now just do a contains, I'll figure out group membership later.
@@ -909,7 +864,7 @@ public class TaskServiceSession {
      * @throws EntityNotFoundException if entity not found
      */
     private <T> T getEntity(final Class<T> entityClass, final Object primaryKey) {
-        final T entity = em.find(entityClass, primaryKey);
+        final T entity = (T) tpm.findEntity(entityClass, primaryKey);
 
         if (entity == null) {
             throw new EntityNotFoundException("No " + entityClass.getSimpleName() + " with ID " + primaryKey + " was found!");
@@ -927,37 +882,9 @@ public class TaskServiceSession {
     private void persistInTransaction(final Object object) {
         doOperationInTransaction(new TransactedOperation() {
             public void doOperation() {
-                em.persist(object);
+                tpm.saveEntity(object);
             }
         });
-    }
-
-    /**
-     * Starts a transaction if there isn't one currently in progess.
-     */
-    private boolean beginOrUseExistingTransaction() {
-    	if ("default".equals(transactionType)) {
-	        final EntityTransaction tx = em.getTransaction();
-	        if (!tx.isActive()) {
-	            tx.begin();
-	            return true;
-	        }
-	        return false;
-    	} else if ("local-JTA".equals(transactionType)) {
-    		try {
-    			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-		    	if (ut.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION) {
-		    		ut.begin();
-		    		em.joinTransaction();
-		    		return true;
-		    	}
-		    	return false;
-    		} catch (Throwable t) {
-        		throw new RuntimeException(t);
-        	}
-    	} else {
-    		throw new IllegalArgumentException("Unknown transaction type " + transactionType);
-    	}
     }
 
     /**
@@ -967,39 +894,79 @@ public class TaskServiceSession {
      * @param operation operation to execute
      */
     private void doOperationInTransaction(final TransactedOperation operation) {
-    	if ("default".equals(transactionType)) {
-	        final EntityTransaction tx = em.getTransaction();
-	        try {
-	            if (!tx.isActive()) {
-	                tx.begin();
-	            }
-	            operation.doOperation();
-	            tx.commit();
-	        } finally {
-	            if( tx.isActive() ) {
-	                tx.rollback();
-	            }
-	        }
-    	} else if ("local-JTA".equals(transactionType)) {
-    		try {
-    			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-		    	if (ut.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION) {
-		    		ut.begin();
-		    		em.joinTransaction();
-				    operation.doOperation();
-				    ut.commit();
-		    	} else {
-		    		em.joinTransaction();
-		            operation.doOperation();
-		    	}
-        	} catch (Throwable t) {
-        		throw new RuntimeException(t);
-        	}
-    	}
+
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        try {
+            txOwner = tpm.beginTransaction();
+            txStarted = true;
+            
+            operation.doOperation();
+            operationSuccessful = true;
+            
+            tpm.endTransaction(txOwner);
+        } catch(Exception e) {
+            // DBG
+            e.printStackTrace();
+            
+            tpm.rollBackTransaction(txOwner);
+            
+            String message; 
+            if( !txStarted ) { message = "Could not start transaction."; }
+            else if( !operationSuccessful ) { message = "Operation failed"; }
+            else { message = "Could not commit transaction"; }
+            
+            throw new RuntimeException(message, e);
+        }
+        
     }
 
     private interface TransactedOperation {
         void doOperation();
+    }
+
+    /**
+     * This method is run 
+     * @param escalatedDeadlineHandler
+     * @param service
+     * @param taskId
+     * @param deadlineId
+     */
+    public synchronized void executeEscalatedDeadline(EscalatedDeadlineHandler escalatedDeadlineHandler, TaskService service, long taskId, long deadlineId) { 
+
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        try {
+            txOwner = tpm.beginTransaction();
+            txStarted = true;
+
+            Task task = (Task) tpm.findEntity(Task.class, taskId);
+            Deadline deadline = (Deadline) tpm.findEntity(Deadline.class, deadlineId);
+
+            TaskData taskData = task.getTaskData();
+            Content content = null;
+            if ( taskData != null ) {
+                content = (Content) tpm.findEntity(Content.class, taskData.getDocumentContentId() );
+            }
+
+            escalatedDeadlineHandler.executeEscalatedDeadline(task,
+                    deadline,
+                    content,
+                    service);     
+
+            tpm.endTransaction(txOwner);
+        } catch(Exception e) {
+            tpm.rollBackTransaction(txOwner);
+
+            String message; 
+            if( !txStarted ) { message = "Could not start transaction."; }
+            else if( !operationSuccessful ) { message = "Operation failed"; }
+            else { message = "Could not commit transaction"; }
+
+            throw new RuntimeException(message, e);
+        }
     }
     
     private List<String> doUserGroupCallbackOperation(String userId, List<String> groupIds) {
@@ -1007,8 +974,8 @@ public class TaskServiceSession {
             doCallbackUserOperation(userId);
             doCallbackGroupsOperation(userId, groupIds);
             // get all groups
-            @SuppressWarnings("unchecked")
-			List<Group> allGroups = ((List<Group>) em.createQuery("from Group").getResultList());
+            Query query = tpm.createNewQuery("from Group");
+			List<Group> allGroups = ((List<Group>) query.getResultList());
             List<String> allGroupIds = new ArrayList<String>();
             if(allGroups != null) {
             	for(Group g : allGroups) {
@@ -1302,9 +1269,10 @@ public class TaskServiceSession {
     
     private void addGroupFromCallbackOperation(String groupId) {
         try {
-            if(!isEmpty(groupId) && em.find(Group.class, groupId) == null) {
-                Group g = new Group(groupId);
-                addGroup(g);
+            boolean groupExists = tpm.findEntity(Group.class, groupId) != null;
+            if( ! StringUtils.isEmpty(groupId) && ! groupExists ) {
+                Group group = new Group(groupId);
+                persistInTransaction(group);
             }
         } catch (Throwable t) {
             logger.debug("Trying to add group " + groupId + ", but it already exists. ");
@@ -1313,24 +1281,14 @@ public class TaskServiceSession {
     
     private void addUserFromCallbackOperation(String userId) { 
         try {
-            if(!isEmpty(userId) && em.find(User.class, userId) == null ) {
-                User toCreateUser = new User(userId);
-                addUser(toCreateUser);
+            boolean userExists = tpm.findEntity(User.class, userId) != null;
+            if( ! StringUtils.isEmpty(userId) && ! userExists ) {
+                User user = new User(userId);
+                persistInTransaction(user);
             }
         } catch (Throwable t) {
             logger.debug("Unable to add user " + userId);
         }
     }
-    
-    private boolean isEmpty(final CharSequence str) {
-        if ( str == null || str.length() == 0 ) {
-            return true;
-        }
-        for ( int i = 0, length = str.length(); i < length; i++ ){
-            if ( str.charAt( i ) != ' ' ) {
-                return false;
-            }
-        }
-        return true;
-    }
+
 }

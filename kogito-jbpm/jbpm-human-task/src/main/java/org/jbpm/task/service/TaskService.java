@@ -28,50 +28,26 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKeys;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.EmailNotification;
-import org.jbpm.task.EmailNotificationHeader;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.Group;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.NotificationType;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.StatusChange;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
-import org.jbpm.task.User;
-import org.jbpm.task.UserInfo;
-import org.jbpm.task.WorkItemNotification;
+import org.jbpm.task.*;
 import org.jbpm.task.event.MessagingTaskEventListener;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.event.TaskEventSupport;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.persistence.TaskPersistenceManager;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 public class TaskService {
-    EntityManagerFactory emf;
-    EntityManager em;
 
+    private EntityManagerFactory emf;
+    
     ScheduledThreadPoolExecutor scheduler;
 
     private EscalatedDeadlineHandler escalatedDeadlineHandler;
@@ -95,9 +71,11 @@ public class TaskService {
     public TaskService(EntityManagerFactory emf, SystemEventListener systemEventListener, EscalatedDeadlineHandler escalationHandler) {
         this.emf = emf;
         this.systemEventListener = systemEventListener;
-        this.em = emf.createEntityManager();
         if (escalationHandler != null) {
             this.escalatedDeadlineHandler = escalationHandler;
+        }
+        else { 
+            this.escalatedDeadlineHandler = new DefaultEscalatedDeadlineHandler();
         }
 
         eventSupport = new TaskEventSupport();
@@ -106,13 +84,14 @@ public class TaskService {
         scheduler = new ScheduledThreadPoolExecutor(3);
 
         long now = System.currentTimeMillis();
-        for (Object object : em.createNamedQuery("UnescalatedDeadlines").getResultList()) {
-            DeadlineSummary summary = (DeadlineSummary) object;
+        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        for (DeadlineSummary summary : tpm.getUnescalatedDeadlines() ) { 
             schedule(new ScheduledTaskDeadline(summary.getTaskId(),
                     summary.getDeadlineId(),
                     this),
                     summary.getDate().getTime() - now);
         }
+        tpm.endPersistenceContext();
 
         Map vars = new HashMap();
 
@@ -136,7 +115,7 @@ public class TaskService {
     }
 
     public TaskServiceSession createSession() {
-        return new TaskServiceSession(this, emf.createEntityManager());
+        return new TaskServiceSession(this, emf);
     }
 
     public void schedule(ScheduledTaskDeadline deadline,
@@ -182,32 +161,18 @@ public class TaskService {
         this.userInfo = userInfo;
     }
 
-    public EntityManager getEntityManager() {
-        return em;
-    }
-
     public void setEscalatedDeadlineHandler(EscalatedDeadlineHandler escalatedDeadlineHandler) {
         this.escalatedDeadlineHandler = escalatedDeadlineHandler;
     }
 
-    public void executeEscalatedDeadline(long taskId,
-                                         long deadlineId) {
-        EntityManager localEm = emf.createEntityManager();
-        Task task = localEm.find(Task.class,
-                taskId);
-        Deadline deadline = localEm.find(Deadline.class,
-                deadlineId);
+    public void executeEscalatedDeadline(final long taskId, final long deadlineId) {
+        TaskServiceSession session = createSession();
+        
+        session.executeEscalatedDeadline(escalatedDeadlineHandler, this, taskId, deadlineId);
 
-        if (escalatedDeadlineHandler == null) {
-            escalatedDeadlineHandler = new DefaultEscalatedDeadlineHandler();
-        }
-
-        escalatedDeadlineHandler.executeEscalatedDeadline(task,
-                deadline,
-                localEm,
-                this);
-        localEm.close();
+        session.dispose();
     }
+
 
     public static String toString(Reader reader) throws IOException {
         int charValue  ;

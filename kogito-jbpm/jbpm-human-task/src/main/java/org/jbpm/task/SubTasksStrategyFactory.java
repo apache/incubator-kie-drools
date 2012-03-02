@@ -18,7 +18,7 @@ package org.jbpm.task;
 
 /**
  *
- * @author salaboy
+ *
  */
 public  class SubTasksStrategyFactory  {
 

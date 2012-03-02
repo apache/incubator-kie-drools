@@ -16,16 +16,16 @@
 
 package org.jbpm.task.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
-
-import javax.persistence.EntityManager;
+import java.util.Properties;
 
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemManager;
@@ -44,11 +44,8 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Reassignment;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
-import org.mvel2.MVEL;
-import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.templates.TemplateRuntime;
 
 public class DefaultEscalatedDeadlineHandler
@@ -125,41 +122,38 @@ public class DefaultEscalatedDeadlineHandler
 
     public void executeEscalatedDeadline(Task task,
                                          Deadline deadline,
-                                         EntityManager em,
+                                         Content content,
                                          TaskService service) {
         if ( deadline == null || deadline.getEscalations() == null ) {
             return;
         }
-        
+
         for ( Escalation escalation : deadline.getEscalations() ) {
-            // we won't impl constraints for now
-            //escalation.getConstraints()
-            String language = "en-UK";
+            // TODO: we won't impl constraints for now
+            // escalation.getConstraints()
+            
             for ( Notification notification : escalation.getNotifications() ) {
                 if ( notification.getNotificationType() == NotificationType.Email) {
-                    executeEmailNotification( (EmailNotification) notification, task, em );
+                    executeEmailNotification( (EmailNotification) notification, task, content );
                 }        
             }
-
 
             if ( !escalation.getReassignments().isEmpty()) {
                 // get first and ignore the rest.
                 Reassignment reassignment = escalation.getReassignments().get( 0 );
-                em.getTransaction().begin();
+                
                 task.getTaskData().setStatus( Status.Ready );
                 List potentialOwners = new ArrayList( reassignment.getPotentialOwners() );
                 task.getPeopleAssignments().setPotentialOwners( potentialOwners );
-                em.getTransaction().commit();
             }            
         }
-        em.getTransaction().begin();
+        
         deadline.setEscalated( true );
-        em.getTransaction().commit();
     }
 
     public void executeEmailNotification(EmailNotification notification,
                                          Task task,
-                                         EntityManager em) {
+                                         Content content) {
         Map<String, EmailNotificationHeader> headers = notification.getEmailHeaders();
 
         // group users into languages
@@ -184,17 +178,11 @@ public class DefaultEscalatedDeadlineHandler
             }
         }
 
-        TaskData taskData = task.getTaskData();
         Map<String, Object> doc = null;
-        if ( taskData != null ) {
-            Content content = em.find( Content.class,
-                                       taskData.getDocumentContentId() );
-            if ( content != null ) {
-                ExpressionCompiler compiler = new ExpressionCompiler( new String( content.getContent() ) );
-                doc = (Map<String, Object>) MVEL.executeExpression( compiler.compile() );
-            } else {
-                doc = Collections.emptyMap();
-            }
+        if ( content != null ) {
+            doc = (Map<String, Object>) TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
+        } else {
+            doc = Collections.emptyMap();
         }
 
         for ( Iterator<Entry<String, List<User>>> it = users.entrySet().iterator(); it.hasNext(); ) {

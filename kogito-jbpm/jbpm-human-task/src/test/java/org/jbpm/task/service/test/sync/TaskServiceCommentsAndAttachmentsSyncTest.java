@@ -18,13 +18,9 @@ package org.jbpm.task.service.test.sync;
 
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskServiceCommentsAndAttachmentsBaseSyncTest;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
-import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 
 public class TaskServiceCommentsAndAttachmentsSyncTest extends TaskServiceCommentsAndAttachmentsBaseSyncTest {

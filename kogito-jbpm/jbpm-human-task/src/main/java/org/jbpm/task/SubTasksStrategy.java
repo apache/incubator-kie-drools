@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
+
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
@@ -31,11 +31,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 
 /**
  *
- * @author salaboy
+ *
  */
 
 @Entity

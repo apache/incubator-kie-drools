@@ -41,10 +41,7 @@ public class TaskServiceDeadlinesLocalSyncTest extends TaskServiceDeadlinesBaseS
 		getWiser().setPort(Integer.parseInt(getConf().getProperty("mail.smtp.port")));        
 		getWiser().start();
                 
-		client = new LocalTaskService(taskSession);
-                    
-
-		
+		client = new LocalTaskService( taskService);
 	}
 
 	protected void tearDown() throws Exception {

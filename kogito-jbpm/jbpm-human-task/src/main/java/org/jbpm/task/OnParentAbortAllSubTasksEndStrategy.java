@@ -17,16 +17,16 @@
 package org.jbpm.task;
 
 import java.util.List;
+
 import javax.persistence.Entity;
 
 import org.jbpm.task.event.InternalTaskEventListener;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 
 /**
  *
- * @author salaboy
  */
 @Entity
 public class OnParentAbortAllSubTasksEndStrategy extends SubTasksStrategy {

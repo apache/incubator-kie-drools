@@ -17,6 +17,7 @@
 package org.jbpm.task.service.test.sync;
 
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.jbpm.task.service.AsyncTaskServiceWrapper;

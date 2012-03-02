@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.task.Task;
 import org.jbpm.task.query.DeadlineSummary;
-import org.jbpm.task.service.TaskServiceEscalationBaseTest.MockEscalatedDeadlineHandler;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler;
+import org.jbpm.task.service.persistence.TaskPersistenceManager;
 
 public class QueryTest extends BaseTest {
 
@@ -49,7 +49,8 @@ public class QueryTest extends BaseTest {
         long now = ((Date)vars.get( "now" )).getTime();
         
         // should be three, one is marked as escalated
-        List<DeadlineSummary> list = taskSession.getUnescalatedDeadlines();
+        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        List<DeadlineSummary> list = tpm.getUnescalatedDeadlines();
         
         assertEquals( 3,
                       list.size() );

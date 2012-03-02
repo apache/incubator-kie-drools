@@ -28,7 +28,7 @@ public class WSHumanTaskHandlerLocalSyncTest extends WSHumanTaskHandlerBaseSyncT
     protected void setUp() throws Exception {
         super.setUp();
        
-        setClient(new LocalTaskService(taskSession));
+        setClient(new LocalTaskService(taskService));
         
         setHandler(new SyncWSHumanTaskHandler(getClient(), ksession));
     }

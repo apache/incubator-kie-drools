@@ -18,7 +18,6 @@ package org.jbpm.task.service.local.sync;
 
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
-import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
 
 /**
@@ -28,13 +27,9 @@ import org.jbpm.task.service.local.LocalTaskService;
 public class ClaimTaskTwiceLocalSyncTest extends ClaimTaskTwiceTest {
 
     protected TaskService createClient(String clientName) throws Exception { 
-        TaskServiceSession taskSession = taskSessionFactory.createSession();
-        TaskService client = new LocalTaskService(taskSession);
+        TaskService client = new LocalTaskService(taskService);
         return client;
     }
     
-    protected void cleanupClient(TaskService client) throws Exception { 
-        ((LocalTaskService) client).dispose();
-    }
     
 }

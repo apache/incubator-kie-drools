@@ -9,7 +9,6 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
 
 public class LocalHumanTaskService {
 	
@@ -28,12 +27,13 @@ public class LocalHumanTaskService {
 	}
 	
 	public static org.jbpm.task.TaskService getTaskService(StatefulKnowledgeSession ksession) {
-		TaskServiceSession taskServiceSession = getService(ksession.getEnvironment()).createSession();
-		taskServiceSession.setTransactionType("local-JTA");
+	    TaskService taskService = getService(ksession.getEnvironment());
+		
 		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
-			new LocalTaskService(taskServiceSession), ksession);
+			new LocalTaskService(taskService), ksession);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
-		return new LocalTaskService(taskServiceSession);
+		
+		return new LocalTaskService(taskService);
 	}
 
 }

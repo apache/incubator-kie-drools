@@ -24,19 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Deadline;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
-import org.jbpm.task.service.EscalatedDeadlineHandler;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceEscalationBaseUserGroupCallbackTest.MockEscalatedDeadlineHandler.Item;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 
 public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
@@ -49,7 +42,7 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
     }
     
     public void testUnescalatedDeadlines() throws Exception {
-        Map vars = new HashMap();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put( "users", users );
         vars.put( "groups", groups );
 
@@ -57,7 +50,7 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
         taskService.setEscalatedDeadlineHandler( handler );  
         
         //Reader reader;
-        Reader reader = new InputStreamReader( TaskServiceEscalationBaseUserGroupCallbackTest.class.getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( TaskServiceEscalationBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.UnescalatedDeadlines ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         long now = ((Date)vars.get( "now" )).getTime();
@@ -71,24 +64,38 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
                 task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
             }
             client.addTask( task, null, addTaskResponseHandler ); 
-            addTaskResponseHandler.waitTillDone( 3000 );
+            addTaskResponseHandler.waitTillDone( 1000 );
         }
 
-        handler.wait( 3, 30000 );
+        handler.wait( 3, 8000 );
         
-        assertEquals( 3, handler.list.size() );
+        assertEquals( 3, handler.getList().size() );
         
-        Item item0 = handler.list.get( 0 );        
-        assertEquals( now + 20000,
-                      item0.getDeadline().getDate().getTime() );
+        boolean firstDeadlineMet = false;
+        boolean secondDeadlineMet = false;
+        boolean thirdDeadlineMet = false;
+        for( Item item : handler.getList() ) { 
+            long deadlineTime = item.getDeadline().getDate().getTime();
+            if( deadlineTime == now + 2000 ) { 
+                firstDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 4000 ) { 
+                secondDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 6000 ) { 
+                thirdDeadlineMet = true;
+            }
+            else { 
+                fail( deadlineTime + " is not an expected deadline time." );
+            }
+        }
         
-        Item item1 = handler.list.get( 1 );
-        assertEquals( now + 22000,
-                      item1.getDeadline().getDate().getTime() );
+        assertTrue( "First deadline was not met." , firstDeadlineMet );
+        assertTrue( "Second deadline was not met." , secondDeadlineMet );
+        assertTrue( "Third deadline was not met." , thirdDeadlineMet );
         
-        Item item2 = handler.list.get( 2 );
-        assertEquals( now + 24000,
-                      item2.getDeadline().getDate().getTime() );        
+        // Wait for deadlines to finish
+        Thread.sleep(1000);
     }
     
     public void testUnescalatedDeadlinesOnStartup() throws Exception {
@@ -97,7 +104,7 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
         vars.put( "groups", groups );
 
         //Reader reader;
-        Reader reader = new InputStreamReader( TaskServiceEscalationBaseUserGroupCallbackTest.class.getResourceAsStream( "../QueryData_UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( TaskServiceEscalationBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.UnescalatedDeadlines ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         long now = ((Date)vars.get( "now" )).getTime();
@@ -116,115 +123,35 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
         
         // now create a new service, to see if it initiates from the DB correctly
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
-        TaskService local = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
-                
-        handler.wait( 3, 30000 );
+        new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
         
-        assertEquals( 3, handler.list.size() );
-
-        Item item0 = handler.list.get( 0 );
-        assertEquals( item0.getDeadline().getDate().getTime(),
-                      now + 20000 );
+        handler.wait( 3, 8000 );
         
-        Item item1 = handler.list.get( 1 );
-        assertEquals( item1.getDeadline().getDate().getTime(),
-                      now + 22000 );
-        
-        Item item2 = handler.list.get( 2 );
-        assertEquals( item2.getDeadline().getDate().getTime(),
-                      now + 24000 );            
-    }
-
-    public static class MockEscalatedDeadlineHandler
-        implements
-        EscalatedDeadlineHandler {
-
-        List<Item> list = new ArrayList<Item>();
-        
-        TaskService taskService;
-
-        public void executeEscalatedDeadline(Task task,
-                                             Deadline deadline,
-                                             EntityManager em,
-                                             TaskService taskService) {
-            list.add( new Item( task,
-                                deadline,
-                                em,
-                                taskService ) );
+        boolean firstDeadlineMet = false;
+        boolean secondDeadlineMet = false;
+        boolean thirdDeadlineMet = false;
+        for( Item item : handler.getList() ) { 
+            long deadlineTime = item.getDeadline().getDate().getTime();
+            if( deadlineTime == now + 2000 ) { 
+                firstDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 4000 ) { 
+                secondDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 6000 ) { 
+                thirdDeadlineMet = true;
+            }
+            else { 
+                fail( deadlineTime + " is not an expected deadline time." );
+            }
         }
         
-        public List<Item> getList() {
-            return this.list;
-        }
-
-        public static class Item {
-            Task          task;
-            Deadline      deadline;
-            EntityManager em;
-
-            public Item(Task task,
-                        Deadline deadline,
-                        EntityManager em,
-                        TaskService taskService) {
-                this.deadline = deadline;
-                this.em = em;
-                this.task = task;
-            }
-
-            public Task getTask() {
-                return task;
-            }
-
-            public void setTask(Task task) {
-                this.task = task;
-            }
-
-            public Deadline getDeadline() {
-                return deadline;
-            }
-
-            public void setDeadline(Deadline deadline) {
-                this.deadline = deadline;
-            }
-
-            public EntityManager getEntityManager() {
-                return em;
-            }
-
-            public void setEntityManager(EntityManager em) {
-                this.em = em;
-            }
-
-            public EntityManager getEm() {
-                return em;
-            }
-
-            public void setEm(EntityManager em) {
-                this.em = em;
-            }                        
-        }   
+        assertTrue( "First deadline was not met." , firstDeadlineMet );
+        assertTrue( "Second deadline was not met." , secondDeadlineMet );
+        assertTrue( "Third deadline was not met." , thirdDeadlineMet );    
         
-        public synchronized void wait(int totalSize, int totalWait) {
-            int wait = 0;
-            int size = 0;
-            
-            while ( true ) {
-                synchronized ( list ) {
-                    size = list.size();
-                }
-                
-                if ( size >= totalSize || wait >= totalWait ) {
-                    break;
-                }
-                
-                try {
-                    Thread.sleep( 250 );
-                } catch( Exception e ) {
-                    throw new RuntimeException( "Unable to sleep", e);
-                }
-                wait += 250;
-            }
-        }
+        // Wait for deadlines to finish
+        Thread.sleep(1000);
     }
     
 }

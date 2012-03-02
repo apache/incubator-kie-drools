@@ -31,6 +31,7 @@ import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 
 public class TaskServerHandler {
 
@@ -62,6 +63,7 @@ public class TaskServerHandler {
 
             switch (cmd.getName()) {
                 case OperationRequest: {
+                    // prepare
                     response = CommandName.OperationResponse;
                     Operation operation = (Operation) cmd.getArguments().get(0);
 
@@ -81,35 +83,41 @@ public class TaskServerHandler {
                             }
                         }
                     }
+                    
+                    // execute
                     taskSession.taskOperation(operation, taskId, userId, targetEntityId, data, groupIds);
 
+                    // return 
                     List args = Collections.emptyList();
-
                     Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                     session.write(resultsCmnd);
                     break;
                 }
                 case GetTaskRequest: {
+                    // prepare
                     response = CommandName.GetTaskResponse;
                     long taskId = (Long) cmd.getArguments().get(0);
 
+                    // execute
                     Task task = taskSession.getTask(taskId);
 
-                    List args = new ArrayList(1);
-                    args.add(task);
+                    // return
+                    List args = Arrays.asList((new Task[] {task}));
                     Command resultsCmnd = new Command(cmd.getId(), CommandName.GetTaskResponse, args);
                     session.write(resultsCmnd);
-
                     break;
                 }
                 case AddTaskRequest: {
+                    // prepare
                     response = CommandName.AddTaskResponse;
                     Task task = (Task) cmd.getArguments().get(0);
                     ContentData content = (ContentData) cmd.getArguments().get(1);
+                    
+                    // execute
                     taskSession.addTask(task, content);
 
-                    List args = new ArrayList(1);
-                    args.add(task.getId());
+                    // return
+                    List args = Arrays.asList((new Long[] {task.getId()}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.AddTaskResponse,
                             args);
@@ -117,13 +125,15 @@ public class TaskServerHandler {
                     break;
                 }
                 case AddCommentRequest: {
+                    // prepare
                     response = CommandName.AddCommentResponse;
                     Comment comment = (Comment) cmd.getArguments().get(1);
-                    taskSession.addComment((Long) cmd.getArguments().get(0),
-                            comment);
+                    
+                    // execute
+                    taskSession.addComment((Long) cmd.getArguments().get(0), comment);
 
-                    List args = new ArrayList(1);
-                    args.add(comment.getId());
+                    // return
+                    List args = Arrays.asList((new Long[] {comment.getId()}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.AddCommentResponse,
                             args);
@@ -131,12 +141,15 @@ public class TaskServerHandler {
                     break;
                 }
                 case DeleteCommentRequest: {
+                    // prepare
                     response = CommandName.DeleteCommentResponse;
                     long taskId = (Long) cmd.getArguments().get(0);
                     long commentId = (Long) cmd.getArguments().get(1);
-                    taskSession.deleteComment(taskId,
-                            commentId);
+                    
+                    // execute
+                    taskSession.deleteComment(taskId, commentId);
 
+                    // return
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.DeleteCommentResponse,
                             Collections.emptyList());
@@ -144,16 +157,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case AddAttachmentRequest: {
+                    // prepare
                     response = CommandName.AddAttachmentResponse;
                     Attachment attachment = (Attachment) cmd.getArguments().get(1);
                     Content content = (Content) cmd.getArguments().get(2);
-                    taskSession.addAttachment((Long) cmd.getArguments().get(0),
-                            attachment,
-                            content);
+                    
+                    // execute
+                    taskSession.addAttachment((Long) cmd.getArguments().get(0), attachment, content);
 
-                    List args = new ArrayList(2);
-                    args.add(attachment.getId());
-                    args.add(content.getId());
+                    // return
+                    List args = Arrays.asList((new Long[] {attachment.getId(), content.getId()}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.AddAttachmentResponse,
                             args);
@@ -161,13 +174,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case DeleteAttachmentRequest: {
+                    // prepare
                     response = CommandName.DeleteAttachmentResponse;
                     long taskId = (Long) cmd.getArguments().get(0);
                     long attachmentId = (Long) cmd.getArguments().get(1);
                     long contentId = (Long) cmd.getArguments().get(2);
-                    taskSession.deleteAttachment(taskId,
-                            attachmentId,
-                            contentId);
+                    
+                    // execute
+                    taskSession.deleteAttachment(taskId, attachmentId, contentId);
+                    
+                    // return
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.DeleteAttachmentResponse,
                             Collections.emptyList());
@@ -175,14 +191,17 @@ public class TaskServerHandler {
                     break;
                 }
                 case SetDocumentContentRequest: {
+                    // prepare
                     response = CommandName.SetDocumentContentResponse;
                     long taskId = (Long) cmd.getArguments().get(0);
                     Content content = (Content) cmd.getArguments().get(1);
+                    
+                    // execute
                     taskSession.setDocumentContent(taskId,
                             content);
 
-                    List args = new ArrayList(1);
-                    args.add(content.getId());
+                    // return
+                    List args = Arrays.asList((new Long[] {content.getId()}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.SetDocumentContentResponse,
                             args);
@@ -190,11 +209,15 @@ public class TaskServerHandler {
                     break;
                 }
                 case GetContentRequest: {
+                    // prepare
                     response = CommandName.GetContentResponse;
                     long contentId = (Long) cmd.getArguments().get(0);
+                    
+                    // execute
                     Content content = taskSession.getContent(contentId);
-                    List args = new ArrayList(1);
-                    args.add(content);
+
+                    // return
+                    List args = Arrays.asList((new Content[] {content}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.GetContentResponse,
                             args);
@@ -202,10 +225,14 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTaskByWorkItemId: {
+                    // prepare
                     response = CommandName.QueryTaskByWorkItemIdResponse;
+                    
+                    // execute
                     Task result = taskSession.getTaskByWorkItemId((Long) cmd.getArguments().get(0));
-                    List args = new ArrayList(1);
-                    args.add(result);
+
+                    // return
+                    List args = Arrays.asList((new Task[] {result}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskByWorkItemIdResponse,
                             args);
@@ -213,11 +240,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksOwned: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksOwned((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksOwned(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -225,11 +257,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsBusinessAdministrator: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsBusinessAdministrator((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsBusinessAdministrator(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -237,11 +274,17 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsPotentialOwner: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -249,15 +292,19 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsPotentialOwnerWithGroup: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
+                    
+                    // execute
                     List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner(
                     		(String) cmd.getArguments().get(0),
                             (List<String>) cmd.getArguments().get(1),
                             (String) cmd.getArguments().get(2),
                             (Integer) cmd.getArguments().get(3),
                             (Integer) cmd.getArguments().get(4));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -265,11 +312,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsPotentialOwnerByGroup: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwnerByGroup((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwnerByGroup(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -277,12 +329,17 @@ public class TaskServerHandler {
                     break;
                 }
                 case QuerySubTasksAssignedAsPotentialOwner: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getSubTasksAssignedAsPotentialOwner((Long) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getSubTasksAssignedAsPotentialOwner(
+                            (Long) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1),
                             (String) cmd.getArguments().get(2));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -290,11 +347,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryGetSubTasksByParentTaskId: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getSubTasksByParent((Long) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getSubTasksByParent(
+                            (Long) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -304,11 +366,16 @@ public class TaskServerHandler {
 
 
                 case QueryTasksAssignedAsTaskInitiator: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsTaskInitiator((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsTaskInitiator(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -316,11 +383,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsExcludedOwner: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsExcludedOwner((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsExcludedOwner(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -328,11 +400,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsRecipient: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsRecipient((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsRecipient(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -340,11 +417,16 @@ public class TaskServerHandler {
                     break;
                 }
                 case QueryTasksAssignedAsTaskStakeholder: {
+                    // prepare
                     response = CommandName.QueryTaskSummaryResponse;
-                    List<TaskSummary> results = taskSession.getTasksAssignedAsTaskStakeholder((String) cmd.getArguments().get(0),
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksAssignedAsTaskStakeholder(
+                            (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
-                    List args = new ArrayList(1);
-                    args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                     Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryTaskSummaryResponse,
                             args);
@@ -352,30 +434,42 @@ public class TaskServerHandler {
                     break;
                 }
                 case RegisterForEventRequest: {
+                    // prepare
                     response = CommandName.EventTriggerResponse;
                     EventKey key = (EventKey) cmd.getArguments().get(0);
                     boolean remove = (Boolean) cmd.getArguments().get(1);
                     String uuid = (String) cmd.getArguments().get(2);
+                    
+                    // execute
                     clients.put(uuid, session);
                     EventTransport transport = new EventTransport(uuid,
 									                            cmd.getId(),
 									                            clients,
 									                            remove);
+                    
                     service.getEventKeys().register(key, transport);
                     break;
                 }
                 case RegisterClient: {
+                    // prepare
+                    response = CommandName.RegisterClient;
                     String uuid = (String) cmd.getArguments().get(0);
+                    
+                    // execute
                     clients.put(uuid, session);
                     break;
                 }
                 case QueryGenericRequest: {
+                    // prepare
                 	String qlString = (String) cmd.getArguments().get(0);
                 	Integer size = (Integer) cmd.getArguments().get(1);
                 	Integer offset = (Integer) cmd.getArguments().get(2);
+                	
+                    // execute
                 	List<?> results = taskSession.query(qlString, size, offset);
-                	List args = new ArrayList(1);
-                	args.add(results);
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
                 	Command resultsCmnd = new Command(cmd.getId(),
                             CommandName.QueryGenericResponse,
                             args);
@@ -383,41 +477,47 @@ public class TaskServerHandler {
                     break;
                 }
                 case NominateTaskRequest:  {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	List<OrganizationalEntity> potentialOwners = (List<OrganizationalEntity>) cmd.getArguments().get(2);
                 	
+                    // execute
                 	taskSession.nominateTask(taskId, userId, potentialOwners);
                 	
+                    // return
                 	List args = Collections.emptyList();
-                	
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
-                	
                 	break;
                 }
                 case SetOutputRequest: {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	ContentData outputContentData = (ContentData) cmd.getArguments().get(2);
                 	
+                    // execute
                 	taskSession.setOutput(taskId, userId, outputContentData);
                 	
+                    // return
                 	List args = Collections.emptyList();
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
-                	
                 	break;
                 }
                 case DeleteOutputRequest: {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	
+                    // execute
                 	taskSession.deleteOutput(taskId, userId);
                 	
+                    // return
                 	List args = Collections.emptyList();
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
@@ -425,44 +525,50 @@ public class TaskServerHandler {
                 	break;
                 }
                 case SetFaultRequest: {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	FaultData data = (FaultData) cmd.getArguments().get(2);
                 	
+                    // execute
                 	taskSession.setFault(taskId, userId, data);
                 	
+                    // return
                 	List args = Collections.emptyList();
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
-                	
                 	break;
                 }
                 case DeleteFaultRequest: {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	
+                    // execute
                 	taskSession.deleteFault(taskId, userId);
                 	
+                    // return
                 	List args = Collections.emptyList();
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
-                	
                 	break;
                 }
                 case SetPriorityRequest: {
+                    // prepare
                 	response = CommandName.OperationResponse;
                 	long taskId = (Long) cmd.getArguments().get(0);
                 	String userId = (String) cmd.getArguments().get(1);
                 	int priority = (Integer) cmd.getArguments().get(2);
                 	
+                    // execute
                 	taskSession.setPriority(taskId, userId, priority);
                 	
+                    // return
                 	List args = Collections.emptyList();
                 	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
                 	session.write(resultsCmnd);
-                	
                 	break;
                 }
                 default: {
@@ -481,7 +587,4 @@ public class TaskServerHandler {
         }
     }
 
-//    public void sessionIdle(SessionWriter session, IdleStatus status) throws Exception {
-//        systemEventListener.debug("Server IDLE " + session.getIdleCount(status));
-//    }
 }

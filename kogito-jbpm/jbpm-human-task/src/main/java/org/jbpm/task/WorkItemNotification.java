@@ -30,6 +30,9 @@ import org.drools.runtime.process.WorkItemManager;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.ExpressionCompiler;
 
+//TODO: DELETE ME -- this class doesn't seem to be used
+
+@Deprecated
 public class WorkItemNotification {
     private String workItemExp;
     private WorkItemHandler workItemHandler;

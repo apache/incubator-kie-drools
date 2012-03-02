@@ -19,11 +19,10 @@
  */
 package org.jbpm.task.service;
 
-import javax.persistence.EntityManager;
-
+import org.jbpm.task.Content;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Task;
 
 public interface EscalatedDeadlineHandler {
-    public void executeEscalatedDeadline(Task task, Deadline deadline, EntityManager em, TaskService service);
+    public void executeEscalatedDeadline(Task task, Deadline deadline, Content content, TaskService service);
 }

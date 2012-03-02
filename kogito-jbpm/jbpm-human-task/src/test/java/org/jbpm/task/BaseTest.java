@@ -31,8 +31,8 @@ import junit.framework.TestCase;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
