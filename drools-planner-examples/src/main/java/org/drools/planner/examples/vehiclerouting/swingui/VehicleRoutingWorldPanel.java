@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
+import org.drools.planner.examples.vehiclerouting.domain.VrpDepot;
 import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
 import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
@@ -80,23 +81,19 @@ public class VehicleRoutingWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics g = createCanvas(width, height);
-        g.setColor(TangoColors.ALUMINIUM_6);
+        g.setColor(TangoColors.PLUM_2);
         g.setFont(g.getFont().deriveFont(8.0f));
         for (VrpCustomer customer : schedule.getCustomerList()) {
-            int x = translator.translateLongitudeToX(customer.getLocation().getLongitude());
-            int y = translator.translateLatitudeToY(customer.getLocation().getLatitude());
-            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
-        }
-        g.setColor(TangoColors.PLUM_2);
-        for (VrpLocation location : schedule.getLocationList()) {
+            VrpLocation location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
+            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
         }
         g.setColor(TangoColors.SCARLET_2);
-        for (VrpVehicle vehicle : schedule.getVehicleList()) {
-            int x = translator.translateLongitudeToX(vehicle.getLocation().getLongitude());
-            int y = translator.translateLatitudeToY(vehicle.getLocation().getLatitude());
+        for (VrpDepot depot : schedule.getDepotList()) {
+            int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
+            int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
         }
         g.setColor(TangoColors.CHOCOLATE_1);
@@ -131,10 +128,10 @@ public class VehicleRoutingWorldPanel extends JPanel {
         g.setFont(g.getFont().deriveFont(8.0f));
         g.setColor(TangoColors.PLUM_2);
         g.fillRect(6, (int) height - 19, 3, 3);
-        g.drawString("Customer", 15, (int) height - 15);
+        g.drawString("Customer with demand", 15, (int) height - 15);
         g.setColor(TangoColors.SCARLET_2);
         g.fillRect(5, (int) height - 10, 5, 5);
-        g.drawString("Vehicle", 15, (int) height - 5);
+        g.drawString("Depot", 15, (int) height - 5);
         repaint();
     }
 

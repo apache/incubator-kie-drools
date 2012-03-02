@@ -127,9 +127,13 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                             + ") has no location (" + location + ").");
                 }
                 customer.setLocation(location);
-                customer.setDemand(Integer.parseInt(lineTokens[1]));
+                int demand = Integer.parseInt(lineTokens[1]);
+                customer.setDemand(demand);
                 // Notice that we leave the PlanningVariable properties on null
-                customerList.add(customer);
+                // Do not add a customer that has no demand
+                if (demand != 0) {
+                    customerList.add(customer);
+                }
             }
             schedule.setCustomerList(customerList);
         }

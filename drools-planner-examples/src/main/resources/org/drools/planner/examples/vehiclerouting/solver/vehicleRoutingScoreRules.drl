@@ -30,6 +30,25 @@ import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 global HardAndSoftScoreCalculator scoreCalculator;
 
 // ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "vehicleCapacity"
+    when
+        $vehicle : VrpVehicle($capacity : capacity)
+        $demandTotal : Number(intValue > $capacity) from accumulate(
+            VrpCustomer(
+                vehicle == $vehicle,
+                $demand : demand),
+            sum($demand)
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("vehicleCapacity", ConstraintType.NEGATIVE_HARD,
+                $demandTotal.intValue() - $capacity,
+                $vehicle));
+end
+
+// ############################################################################
 // Soft constraints
 // ############################################################################
 
