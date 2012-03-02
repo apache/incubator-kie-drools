@@ -1840,7 +1840,13 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackTest extends Base
             assertNotNull(nominateHandler.getError());
             assertNotNull(nominateHandler.getError().getMessage());
             String somethingAboutCreated = "Created";
-            String errorMessage = nominateHandler.getError().getCause().getMessage();
+            String errorMessage = null;
+            if( nominateHandler.getError().getCause() != null ) { 
+                errorMessage = nominateHandler.getError().getCause().getMessage();
+            }
+            else { 
+                errorMessage = nominateHandler.getError().getMessage();
+            }
             assertTrue("Error message does not contain '" + somethingAboutCreated + "' : " + errorMessage, 
                     errorMessage.contains(somethingAboutCreated));
         }

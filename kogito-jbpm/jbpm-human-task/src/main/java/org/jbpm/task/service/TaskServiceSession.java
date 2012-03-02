@@ -74,7 +74,9 @@ public class TaskServiceSession {
     }
 
     public void dispose() {
-        em.close();
+        if( em.isOpen() ) { 
+            em.close();
+        }
     }
 
     public EntityManager getEntityManager() {
