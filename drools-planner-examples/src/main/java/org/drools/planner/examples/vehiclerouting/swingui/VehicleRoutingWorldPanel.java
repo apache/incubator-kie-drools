@@ -154,12 +154,14 @@ public class VehicleRoutingWorldPanel extends JPanel {
         }
 
         // Legend
+        g.setColor(TangoColors.ALUMINIUM_4);
+        g.fillRect(5, (int) height - 30, 5, 5);
+        g.drawString("Depot", 15, (int) height - 25);
         g.setColor(TangoColors.ORANGE_2);
         g.fillRect(6, (int) height - 19, 3, 3);
         g.drawString("Customer demand", 15, (int) height - 15);
-        g.setColor(TangoColors.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 10, 5, 5);
-        g.drawString("Depot", 15, (int) height - 5);
+        g.setColor(TangoColors.SCARLET_2);
+        g.drawString("Vehicle load / capacity", 15, (int) height - 5);
         repaint();
     }
 

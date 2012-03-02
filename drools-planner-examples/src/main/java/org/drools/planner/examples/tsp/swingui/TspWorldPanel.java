@@ -39,6 +39,8 @@ import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
  */
 public class TspWorldPanel extends JPanel {
 
+    private static final int TEXT_SIZE = 8;
+
     private final TspPanel tspPanel;
 
     private BufferedImage canvas = null;
@@ -88,7 +90,7 @@ public class TspWorldPanel extends JPanel {
         if (tourName.startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
-        g.setFont(g.getFont().deriveFont(8.0f));
+        g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         g.setColor(TangoColors.PLUM_2);
         for (Visit visit : travelingSalesmanTour.getVisitList()) {
             City city = visit.getCity();
@@ -138,13 +140,12 @@ public class TspWorldPanel extends JPanel {
             }
         }
         // Legend
-        g.setFont(g.getFont().deriveFont(8.0f));
-        g.setColor(TangoColors.PLUM_2);
-        g.fillRect(6, (int) height - 19, 3, 3);
-        g.drawString("Visit", 15, (int) height - 15);
         g.setColor(TangoColors.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 10, 5, 5);
-        g.drawString("Domicile", 15, (int) height - 5);
+        g.fillRect(5, (int) height - 20, 5, 5);
+        g.drawString("Domicile", 15, (int) height - 15);
+        g.setColor(TangoColors.PLUM_2);
+        g.fillRect(6, (int) height - 9, 3, 3);
+        g.drawString("Visit", 15, (int) height - 5);
         repaint();
     }
 
