@@ -312,7 +312,7 @@ public class StatefulKnowledgeSessionUtil {
             handler.connect();
         } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
             TaskService taskService = HumanTaskService.getService();
-            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService.createSession()), ksession);
+            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService), ksession);
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         }
     }

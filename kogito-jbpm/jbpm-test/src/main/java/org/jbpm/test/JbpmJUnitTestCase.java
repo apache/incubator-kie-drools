@@ -50,7 +50,6 @@ import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -549,14 +548,12 @@ public abstract class JbpmJUnitTestCase extends Assert {
     		taskService = new org.jbpm.task.service.TaskService(
 				emf, SystemEventListenerFactory.getSystemEventListener());
     	}
-		TaskServiceSession taskServiceSession = taskService.createSession();
-		taskServiceSession.setTransactionType("local-JTA");
 		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
-			new LocalTaskService(taskServiceSession), ksession);
+			new LocalTaskService(taskService), ksession);
 		humanTaskHandler.setLocal(true);
 		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
-		return new LocalTaskService(taskServiceSession);
+		return new LocalTaskService(taskService);
     }
     
     public org.jbpm.task.service.TaskService getService() {

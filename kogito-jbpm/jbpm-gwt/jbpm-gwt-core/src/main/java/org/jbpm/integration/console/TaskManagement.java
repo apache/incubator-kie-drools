@@ -76,7 +76,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
 			if (service == null) {
 				org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
-				service = new LocalTaskService(taskService.createSession());
+				service = new LocalTaskService(taskService);
 				loadUserGroups();
 			}
 		}
