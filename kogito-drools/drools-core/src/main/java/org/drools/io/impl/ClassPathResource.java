@@ -143,7 +143,7 @@ public class ClassPathResource extends BaseResource
             long date = conn.getLastModified();
             return date;
         } catch ( IOException e ) {
-            throw new RuntimeException( "Unable to get LastMofified for ClasspathResource",
+            throw new RuntimeException( "Unable to get LastModified for ClasspathResource",
                                         e );
         }
     }
