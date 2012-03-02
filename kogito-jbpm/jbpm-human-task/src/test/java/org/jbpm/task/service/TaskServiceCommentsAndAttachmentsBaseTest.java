@@ -29,8 +29,6 @@ import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddCommentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;

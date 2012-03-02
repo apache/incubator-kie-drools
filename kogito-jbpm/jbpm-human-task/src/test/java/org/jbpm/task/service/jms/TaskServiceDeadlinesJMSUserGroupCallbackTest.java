@@ -25,6 +25,9 @@ import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceDeadlinesBaseUserGroupCallbackTest;
+import org.jbpm.task.service.jms.JMSTaskClientConnector;
+import org.jbpm.task.service.jms.JMSTaskClientHandler;
+import org.jbpm.task.service.jms.JMSTaskServer;
 import org.subethamail.wiser.Wiser;
 
 public class TaskServiceDeadlinesJMSUserGroupCallbackTest extends TaskServiceDeadlinesBaseUserGroupCallbackTest {

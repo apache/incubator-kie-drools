@@ -18,6 +18,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 import org.jbpm.task.event.TaskEventKey;
+import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClientConnector;
 import org.slf4j.Logger;
@@ -27,14 +28,11 @@ import org.jbpm.task.service.Command;
 public class JMSTaskClientConnector implements TaskClientConnector {
 	
 	private static final Logger logger = LoggerFactory.getLogger(JMSTaskClientConnector.class);
-	protected QueueConnection connection;
-	protected QueueSession producerSession;
-	protected QueueSession consumerSession;
-	protected Queue taskServerQueue;
-	protected Queue responseQueue;
-	protected final BaseJMSHandler handler;
+	
+	protected final BaseClientHandler handler;
 	protected final String name;
 	protected AtomicInteger counter;
+	
 	private MessageProducer producer;
 	private Properties connectionProperties;
 	private Context context;
@@ -42,9 +40,13 @@ public class JMSTaskClientConnector implements TaskClientConnector {
     private boolean enableLog = false;
 	
 	private String selector;
-	
+	protected QueueConnection connection;
+	protected QueueSession producerSession;
+	protected QueueSession consumerSession;
+	protected Queue taskServerQueue;
+	protected Queue responseQueue;
 
-	public JMSTaskClientConnector(String name, BaseJMSHandler handler, Properties connectionProperties, Context context) {
+	public JMSTaskClientConnector(String name, BaseClientHandler handler, Properties connectionProperties, Context context) {
 		if (name == null) {
 			throw new IllegalArgumentException("Name can not be null");
 		}

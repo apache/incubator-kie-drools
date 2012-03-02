@@ -21,14 +21,18 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseJMSTaskServer extends TaskServer {
 
-	private boolean running;
 	private static final Logger logger = LoggerFactory.getLogger(BaseJMSTaskServer.class);
+	
 	private JMSTaskServerHandler handler;
+	
 	private Properties connectionProperties;
 	private Context context;
 	private Queue queue;
 	private Queue responseQueue;
 	private QueueConnection connection;
+	
+	private boolean running;
+	
 	private QueueSession session;
 	private MessageConsumer consumer;
 	

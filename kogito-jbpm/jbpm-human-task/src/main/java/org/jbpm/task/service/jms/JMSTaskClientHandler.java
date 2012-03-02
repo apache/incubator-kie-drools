@@ -10,10 +10,11 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.drools.SystemEventListener;
+import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
 
-public class JMSTaskClientHandler extends BaseJMSHandler {
+public class JMSTaskClientHandler extends BaseClientHandler {
 	private TaskClientHandler handler;
 	private Map<String, MessageProducer> producers;
 

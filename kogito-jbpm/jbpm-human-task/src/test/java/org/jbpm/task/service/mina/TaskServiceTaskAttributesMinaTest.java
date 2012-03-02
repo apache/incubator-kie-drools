@@ -3,6 +3,9 @@ package org.jbpm.task.service.mina;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceTaskAttributesBaseTest;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.jbpm.task.service.mina.MinaTaskServer;
 
 public class TaskServiceTaskAttributesMinaTest extends TaskServiceTaskAttributesBaseTest {
 

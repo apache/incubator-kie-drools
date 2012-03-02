@@ -26,14 +26,12 @@ import java.util.Map;
 import javax.mail.BodyPart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.subethamail.wiser.Wiser;

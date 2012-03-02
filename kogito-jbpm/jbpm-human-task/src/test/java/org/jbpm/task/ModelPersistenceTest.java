@@ -24,23 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AllowedToDelegate;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.BooleanExpression;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Deadline;
-import org.jbpm.task.Deadlines;
-import org.jbpm.task.Delegation;
-import org.jbpm.task.Escalation;
-import org.jbpm.task.I18NText;
-import org.jbpm.task.Notification;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.PeopleAssignments;
-import org.jbpm.task.Reassignment;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskData;
 import org.jbpm.task.service.TaskServiceSession;
 
 public class ModelPersistenceTest extends BaseTest {

@@ -26,6 +26,9 @@ import org.easymock.EasyMock;
 import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceEventMessagingBaseTest;
+import org.jbpm.task.service.jms.JMSTaskClientConnector;
+import org.jbpm.task.service.jms.JMSTaskClientHandler;
+import org.jbpm.task.service.jms.JMSTaskServer;
 
 public class TaskServiceEventMessagingJMSTest extends TaskServiceEventMessagingBaseTest {
 

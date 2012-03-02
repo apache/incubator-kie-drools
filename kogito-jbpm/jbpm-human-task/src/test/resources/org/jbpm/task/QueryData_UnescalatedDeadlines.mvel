@@ -13,7 +13,7 @@ tasks = [
 	    deadlines = ( with ( new Deadlines() ) {
 	        startDeadlines = [ 
 	            (with (new Deadline()) {
-	                date = new Date( now.getTime() + 20000 ),
+	                date = new Date( now.getTime() + 2000 ),
 	                escalated = false,
 	                escalations = [ 
 	                    (with (new Escalation()) {
@@ -36,7 +36,7 @@ tasks = [
 	        ],
 	        endDeadlines = [ 
 	            (with (new Deadline()) {
-	                date =  new Date( now.getTime() + 22000 ),
+	                date =  new Date( now.getTime() + 4000 ),
 	                escalated = false,
 	                escalations = [ 
 	                    (with (new Escalation()) {
@@ -94,7 +94,7 @@ tasks = [
 	        ],
 	        endDeadlines = [ 
 	            (with (new Deadline()) {
-	                date =  new Date( now.getTime() + 24000 ),
+	                date =  new Date( now.getTime() + 6000 ),
 	                escalations = [ 
 	                    (with (new Escalation()) {
 	                        name = "My End Escalation",

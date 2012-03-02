@@ -18,7 +18,6 @@ package org.jbpm.task.service;
 import java.util.List;
 
 import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.service.UserGroupCallbackManager;
 
 public class UserGroupCallbackTest extends BaseTestNoUserGroupSetup {
     

@@ -30,8 +30,6 @@ import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskCompletedEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;

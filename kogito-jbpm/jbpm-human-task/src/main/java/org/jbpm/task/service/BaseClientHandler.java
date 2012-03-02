@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.hornetq;
+package org.jbpm.task.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,11 +22,11 @@ import java.util.Map;
 import org.drools.task.service.ResponseHandler;
 import org.jbpm.task.service.BaseHandler;
 
-public class BaseHornetQHandler implements BaseHandler {
+public class BaseClientHandler implements BaseHandler {
 
 	protected Map<Integer, ResponseHandler> responseHandlers;
 
-	public BaseHornetQHandler() {
+	public BaseClientHandler() {
 		responseHandlers = new HashMap<Integer, ResponseHandler>();
 	}
 

@@ -23,16 +23,12 @@ import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.BaseTest;
 import org.jbpm.task.BaseTestNoUserGroupSetup;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskClaimedEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.TaskUserEvent;
-import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;

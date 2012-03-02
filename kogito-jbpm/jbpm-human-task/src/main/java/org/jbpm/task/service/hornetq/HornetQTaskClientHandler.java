@@ -22,10 +22,11 @@ import java.util.Map;
 import org.drools.SystemEventListener;
 import org.hornetq.api.core.client.ClientProducer;
 import org.hornetq.api.core.client.ClientSession;
+import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler;
 
-public class HornetQTaskClientHandler extends BaseHornetQHandler {
+public class HornetQTaskClientHandler extends BaseClientHandler {
     
 	private TaskClientHandler handler;
 	private Map<String, ClientProducer> producers;

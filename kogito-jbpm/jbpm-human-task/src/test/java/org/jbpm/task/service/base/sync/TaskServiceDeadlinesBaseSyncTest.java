@@ -17,7 +17,7 @@ package org.jbpm.task.service.base.sync;
 
 
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +39,7 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
+import org.jbpm.task.service.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
@@ -70,10 +71,9 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        String string = toString(new InputStreamReader(getClass().getResourceAsStream("../../DeadlineWithNotification.mvel")));
-
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
         
-        Task task = (Task) eval(new StringReader(string), vars);
         client.addTask(task, null);
         long taskId = task.getId();
 
@@ -118,6 +118,7 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
         assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
     }
+    
     //TODO: this test is not working for the local implementation and needs to be fixed  
     public void FIXtestDelayedReassignmentOnDeadline() throws Exception {
         Map vars = new HashMap();
@@ -143,10 +144,8 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        String string = toString(new InputStreamReader(getClass().getResourceAsStream("../../DeadlineWithReassignment.mvel")));
-
-        
-        Task task = (Task) eval(new StringReader(string), vars);
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
+        Task task = (Task) eval(reader, vars);
         client.addTask(task, null);
         long taskId = task.getId();
 

@@ -18,10 +18,10 @@ package org.jbpm.task.service.hornetq;
 
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
+import org.jbpm.task.service.TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest;
 
 public class TaskServiceCommentsAndAttachmentsHornetQUserGroupCallbackTest extends TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest {
 

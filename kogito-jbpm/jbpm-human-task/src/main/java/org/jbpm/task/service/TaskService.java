@@ -268,8 +268,23 @@ public class TaskService {
         }
     }
 
-    public Object eval(String str,
-                       Map vars) {
+    public static Object eval(Reader reader) { 
+        try {
+            return eval(toString(reader), null);
+        } catch (IOException e) {
+            throw new RuntimeException("Exception Thrown",e);
+        }
+    }
+    
+    public static Object eval(Reader reader, Map vars) {
+        try {
+            return eval(toString(reader), vars);
+        } catch (IOException e) {
+            throw new RuntimeException("Exception Thrown",e);
+        }
+    }
+    
+    public static Object eval(String str, Map vars) {
     	ParserConfiguration pconf = new ParserConfiguration();
     	pconf.addPackageImport("org.jbpm.task");
     	pconf.addPackageImport("org.jbpm.task.service");
@@ -280,7 +295,13 @@ public class TaskService {
         }
     	ParserContext context = new ParserContext(pconf);
         Serializable s = MVEL.compileExpression(str.trim(), context);
+
+        if( vars != null ) { 
         return MVEL.executeExpression(s, vars);
+    }
+        else { 
+            return MVEL.executeExpression(s);
+        }
     }
 
     public static class ScheduledTaskDeadline

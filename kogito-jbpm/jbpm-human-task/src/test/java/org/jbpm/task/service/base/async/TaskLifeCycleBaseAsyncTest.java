@@ -16,8 +16,6 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,12 +40,8 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
     protected TaskServer server;
     protected AsyncTaskService client;
 
-    @SuppressWarnings("unchecked")
     public void testLifeCycle() throws Exception {
-        Map<String, Object> vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map <String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
@@ -99,12 +93,8 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
         assertEquals(Status.Completed, task1.getTaskData().getStatus());
     }
 
-    @SuppressWarnings("unchecked")
     public void testLifeCycleMultipleTasks() throws Exception {
-        Map<String, Object> vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map <String, Object> vars = fillVariables();
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
@@ -113,54 +103,67 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = (Task) eval(new StringReader(str), vars);
-        client.addTask(task, null, addTaskResponseHandler);
-        long taskId = addTaskResponseHandler.getTaskId();
-
-        EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
+        // First task
+        // In own scope to make sure that no objects in scope can be used in second task
+        long taskId = 0;
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
-        client.registerForEvent(key, true, handler);
+        {
+            BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+            Task task = (Task) eval(new StringReader(str), vars);
+            client.addTask(task, null, addTaskResponseHandler);
+            taskId = addTaskResponseHandler.getTaskId();
+            assertTrue( taskId != 0 );
 
-        BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
-        List<TaskSummary> tasks = taskSummaryResponseHandler.getResults();
-        assertEquals(1, tasks.size());
-        assertEquals(Status.Reserved, tasks.get(0).getStatus());
+            EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
+            client.registerForEvent(key, true, handler);
 
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start(taskId, users.get("bobba").getId(), responseHandler);
+            BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+            client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
+            List<TaskSummary> tasks = taskSummaryResponseHandler.getResults();
+            assertEquals(1, tasks.size());
+            assertEquals(Status.Reserved, tasks.get(0).getStatus());
 
-        taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
-        tasks = taskSummaryResponseHandler.getResults();
-        assertEquals(1, tasks.size());
-        assertEquals(Status.InProgress, tasks.get(0).getStatus());
+            BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+            client.start(taskId, users.get("bobba").getId(), responseHandler);
 
-        BlockingAddTaskResponseHandler addTaskResponseHandler2 = new BlockingAddTaskResponseHandler();
-        Task task2 = (Task) eval(new StringReader(str), vars);
-        client.addTask(task2, null, addTaskResponseHandler2);
-        long taskId2 = addTaskResponseHandler.getTaskId();
+            taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+            client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
+            tasks = taskSummaryResponseHandler.getResults();
+            assertEquals(1, tasks.size());
+            assertEquals(Status.InProgress, tasks.get(0).getStatus());
+        }
 
-        EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
+        // Second task
+        // In own scope to make sure that no objects in scope can be used elsewhere
+        long taskId2 = 0;
         BlockingEventResponseHandler handler2 = new BlockingEventResponseHandler();
-        client.registerForEvent(key2, true, handler2);
+        {
+            BlockingAddTaskResponseHandler addTaskResponseHandler2 = new BlockingAddTaskResponseHandler();
+            Task task2 = (Task) eval(new StringReader(str), vars);
+            client.addTask(task2, null, addTaskResponseHandler2);
+            taskId2 = addTaskResponseHandler2.getTaskId();
+            assertTrue( taskId2 != 0 );
+            assertTrue( "Tasks should have different ids.", taskId != taskId2 );
 
-        taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
-        tasks = taskSummaryResponseHandler.getResults();
-        assertEquals(2, tasks.size());
+            EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
+            client.registerForEvent(key2, true, handler2);
 
-        responseHandler = new BlockingTaskOperationResponseHandler();
-        client.complete(taskId, users.get("bobba").getId(), null, responseHandler);
+            BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+            client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
+            List<TaskSummary> tasks = taskSummaryResponseHandler.getResults();
+            assertEquals(2, tasks.size());
 
-        responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start(taskId2, users.get("bobba").getId(), responseHandler);
+            BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+            client.complete(taskId, users.get("bobba").getId(), null, responseHandler);
 
-        taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
-        client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
-        tasks = taskSummaryResponseHandler.getResults();
-        assertEquals(1, tasks.size());
+            responseHandler = new BlockingTaskOperationResponseHandler();
+            client.start(taskId2, users.get("bobba").getId(), responseHandler);
+
+            taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+            client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
+            tasks = taskSummaryResponseHandler.getResults();
+            assertEquals(1, tasks.size());
+        }
 
         Payload payload = handler.getPayload();
         TaskCompletedEvent event = (TaskCompletedEvent) payload.get();
@@ -168,10 +171,10 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
 
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
         client.getTask(taskId, getTaskResponseHandler);
-        task = getTaskResponseHandler.getTask();
+        Task task = getTaskResponseHandler.getTask();
         assertEquals(Status.Completed, task.getTaskData().getStatus());
 
-        responseHandler = new BlockingTaskOperationResponseHandler();
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete(taskId2, users.get("bobba").getId(), null, responseHandler);
 
         payload = handler2.getPayload();
@@ -180,7 +183,7 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
 
         BlockingGetTaskResponseHandler getTaskResponseHandler2 = new BlockingGetTaskResponseHandler();
         client.getTask(taskId2, getTaskResponseHandler2);
-        task2 = getTaskResponseHandler2.getTask();
+        Task task2 = getTaskResponseHandler2.getTask();
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
     }
 }

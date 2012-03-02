@@ -36,6 +36,7 @@ import org.hornetq.api.core.client.HornetQClient;
 import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
 import org.hornetq.core.remoting.impl.netty.TransportConstants;
+import org.jbpm.task.service.BaseClientHandler;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClientConnector;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 
 	protected ClientSession session;
 
-	protected final BaseHornetQHandler handler;
+	protected final BaseClientHandler handler;
 	protected final String name;   
 	protected AtomicInteger counter;
 
@@ -58,7 +59,7 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 	private ClientProducer producer;
 	private ClientConsumer consumer;
 
-	public HornetQTaskClientConnector(String name, BaseHornetQHandler handler) {
+	public HornetQTaskClientConnector(String name, BaseClientHandler handler) {
 		if (name == null) {
 			throw new IllegalArgumentException("Name can not be null");
 		}

@@ -17,7 +17,7 @@
 package org.jbpm.task.service;
 
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,9 +37,6 @@ import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
@@ -74,10 +71,10 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         
         taskService.setEscalatedDeadlineHandler( notificationHandler );
         
-        String string = toString( new InputStreamReader( getClass().getResourceAsStream( "../DeadlineWithNotification.mvel" ) ) );
+        Reader reader =  new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.DeadlineWithNotification ) );
+        Task task = ( Task )  eval( reader, vars );
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( string ), vars );
         client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();    
                                         
@@ -148,10 +145,10 @@ public abstract class TaskServiceDeadlinesBaseTest extends BaseTest {
         
         taskService.setEscalatedDeadlineHandler( notificationHandler );
         
-        String string = toString( new InputStreamReader( getClass().getResourceAsStream( "../DeadlineWithReassignment.mvel" ) ) );
+        Reader reader =  new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.DeadlineWithReassignment ) );
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( string ), vars );               
+        Task task = ( Task )  eval( reader, vars );               
         client.addTask( task, null, addTaskResponseHandler );
         long taskId = addTaskResponseHandler.getTaskId();    
         

@@ -16,7 +16,7 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
+import org.jbpm.task.service.MvelFilePath;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
@@ -73,10 +74,10 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        String string = toString(new InputStreamReader(getClass().getResourceAsStream("../../DeadlineWithNotification.mvel")));
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
+        Task task = (Task) eval(reader, vars);
 
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = (Task) eval(new StringReader(string), vars);
         client.addTask(task, null, addTaskResponseHandler);
         long taskId = addTaskResponseHandler.getTaskId();
 
@@ -147,10 +148,11 @@ public abstract class TaskServiceDeadlinesBaseAsyncTest extends BaseTest {
 
         taskService.setEscalatedDeadlineHandler(notificationHandler);
 
-        String string = toString(new InputStreamReader(getClass().getResourceAsStream("../../DeadlineWithReassignment.mvel")));
+        String expressionDataPath = "/org/jbpm/task/service/DeadlineWithReassignment.mvel";
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(expressionDataPath));
+        Task task = (Task) eval(reader, vars);
 
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = (Task) eval(new StringReader(string), vars);
         client.addTask(task, null, addTaskResponseHandler);
         long taskId = addTaskResponseHandler.getTaskId();
 

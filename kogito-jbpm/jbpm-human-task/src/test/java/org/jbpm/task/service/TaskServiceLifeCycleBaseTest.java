@@ -18,7 +18,6 @@ package org.jbpm.task.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1584,7 +1583,10 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         } catch (RuntimeException e) { //expected
         	assertNotNull(nominateHandler.getError());
         	assertNotNull(nominateHandler.getError().getMessage());
-        	assertTrue(nominateHandler.getError().getMessage().contains("Created"));
+            String somethingAboutCreated = "Created";
+            String errorMessage = nominateHandler.getError().getCause().getMessage();
+            assertTrue("Error message does not contain '" + somethingAboutCreated + "' : " + errorMessage, 
+                    errorMessage.contains(somethingAboutCreated));
         }
         
         //shouldn't affect the assignments

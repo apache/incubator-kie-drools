@@ -30,7 +30,6 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskClaimedEvent;
 import org.jbpm.task.event.TaskEventKey;
-import org.jbpm.task.service.Operation;
 
 public class MockEventMessagingTest extends BaseTest {    
     public void testMockTransport() throws Exception {      

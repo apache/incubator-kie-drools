@@ -17,6 +17,9 @@ package org.jbpm.task.service.hornetq;
 
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
+import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.TaskServiceLifeCycleBaseUserGroupCallbackTest;
 
 public class TaskServiceLifeCycleHornetQUserGroupCallbackTest extends TaskServiceLifeCycleBaseUserGroupCallbackTest {

@@ -15,7 +15,6 @@
  */
 package org.jbpm.process.workitem.wsht.sync;
 
-import org.jbpm.process.workitem.wsht.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -28,11 +27,12 @@ import java.util.Map;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.task.AccessType;
-import org.jbpm.task.TaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
@@ -55,7 +55,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         return client;
     }
 
-    public void FIXME_testTask() throws Exception {
+    public void testTask() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -78,18 +78,13 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals("Darth Vader", task.getActualOwner().getId());
         assertEquals(10, task.getProcessInstanceId());
 
-        System.out.println("Starting task " + task.getId());
-        
         client.start(task.getId(), "Darth Vader");
-        System.out.println("Started task " + task.getId());
-        System.out.println("Completing task " + task.getId());
         client.complete(task.getId(), "Darth Vader", null);
-        System.out.println("Completed task " + task.getId());
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
 
-    public void FIXME_testTaskMultipleActors() throws Exception {
+    public void testTaskMultipleActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -109,22 +104,12 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Ready, task.getStatus());
 
-        System.out.println("Claiming task " + task.getId());
-        
         getClient().claim(task.getId(), "Darth Vader");
-        System.out.println("Claimed task " + task.getId());
 
-        System.out.println("Starting task " + task.getId());
-        
         getClient().start(task.getId(), "Darth Vader");
-        System.out.println("Started task " + task.getId());
 
-        System.out.println("Completing task " + task.getId());
-        
         getClient().complete(task.getId(), "Darth Vader", null);
         
-        System.out.println("Completed task " + task.getId());
-
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
 
@@ -151,9 +136,6 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Ready, taskSummary.getStatus());
 
-        System.out.println("Claiming task " + taskSummary.getId());
-        
-        
         PermissionDeniedException denied = null;
         try {
             getClient().claim(taskSummary.getId(), "Darth Vader");
@@ -162,7 +144,6 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         }
 
         assertNotNull("Should get permissed denied exception", denied);
-        System.out.println("Claimed task " + taskSummary.getId());
 
         //Check if the parent task is InProgress
         
@@ -171,7 +152,7 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(Status.Ready, task.getTaskData().getStatus());
     }
 
-    public void FIXME_testTaskSingleAndGroupActors() throws Exception {
+    public void testTaskSingleAndGroupActors() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -221,18 +202,10 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
 
-        System.out.println("Starting task " + task.getId());
-        
         getClient().start(task.getId(), "Darth Vader");
-        
-        System.out.println("Started task " + task.getId());
-
-        System.out.println("Failing task " + task.getId());
         
         getClient().fail(task.getId(), "Darth Vader", null);
         
-        System.out.println("Failed task " + task.getId());
-
         assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
     }
 
@@ -258,12 +231,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
 
-        System.out.println("Skipping task " + task.getId());
-        
         getClient().skip(task.getId(), "Darth Vader");
         
-        System.out.println("Skipped task " + task.getId());
-
         assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
     }
 
@@ -342,14 +311,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         in.close();
         assertEquals("This is the content", data);
 
-        System.out.println("Starting task " + task.getId());
-        
         getClient().start(task.getId(), "Darth Vader");
        
-        System.out.println("Started task " + task.getId());
-
-        System.out.println("Completing task " + task.getId());
-        
         ContentData result = new ContentData();
         result.setAccessType(AccessType.Inline);
         result.setType("java.lang.String");
@@ -360,8 +323,6 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         result.setContent(bos.toByteArray());
         getClient().complete(task.getId(), "Darth Vader", result);
         
-        System.out.println("Completed task " + task.getId());
-
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
         Map<String, Object> results = manager.getResults();
         assertNotNull(results);
@@ -419,13 +380,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals("10", data.get("Priority"));
         assertEquals("MyObjectValue", ((MyObject) ((Map<String, Object>) data.get("MyMap")).get("MyObjectInsideTheMap")).getValue());
 
-        System.out.println("Starting task " + task.getId());
-        
         getClient().start(task.getId(), "Darth Vader");
-        System.out.println("Started task " + task.getId());
 
-        System.out.println("Completing task " + task.getId());
-        
         ContentData result = new ContentData();
         result.setAccessType(AccessType.Inline);
         result.setType("java.lang.String");
@@ -435,7 +391,6 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         out.close();
         result.setContent(bos.toByteArray());
         getClient().complete(task.getId(), "Darth Vader", result);
-        System.out.println("Completed task " + task.getId());
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
         Map<String, Object> results = manager.getResults();
@@ -495,11 +450,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
    
         //Start the parent task
-        System.out.println("Starting task " + task.getId());
         getClient().start(task.getId(), "Darth Vader");
         
-        System.out.println("Started task " + task.getId());
-
         //Check if the parent task is InProgress
         
         
@@ -518,22 +470,12 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertNotNull(subTaskSummary2);
 
         //Starting the sub task 1
-        System.out.println("Starting sub task " + subTaskSummary1.getId());
-        
         getClient().start(subTaskSummary1.getId(), "Darth Vader");
         
-        System.out.println("Started sub task " + subTaskSummary1.getId());
-
         //Starting the sub task 2
-        System.out.println("Starting sub task " + subTaskSummary2.getId());
-        
         getClient().start(subTaskSummary2.getId(), "Darth Vader");
         
-        System.out.println("Started sub task " + subTaskSummary2.getId());
-
         //Check if the child task 1 is InProgress
-       
-        
         Task subTask1 = getClient().getTask(subTaskSummary1.getId());
         assertEquals(Status.InProgress, subTask1.getTaskData().getStatus());
         assertEquals(users.get("darth"), subTask1.getTaskData().getActualOwner());
@@ -546,19 +488,11 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(users.get("darth"), subTask2.getTaskData().getActualOwner());
 
         // Complete the child task 1
-        System.out.println("Completing sub task " + subTask1.getId());
-        
         getClient().complete(subTask1.getId(), "Darth Vader", null);
         
-        System.out.println("Completed sub task " + subTask1.getId());
-
         // Complete the child task 2
-        System.out.println("Completing sub task " + subTask2.getId());
-        
         getClient().complete(subTask2.getId(), "Darth Vader", null);
        
-        System.out.println("Completed sub task " + subTask2.getId());
-
         //Check if the child task 1 is Completed
 
        
@@ -629,14 +563,9 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         getHandler().executeWorkItem(workItem, manager);
 
         //Start the parent task
-        System.out.println("Starting task " + task.getId());
-        
         getClient().start(task.getId(), "Darth Vader");
-        System.out.println("Started task " + task.getId());
 
         //Check if the parent task is InProgress
-        
-        
         Task parentTask = getClient().getTask(task.getId());
         assertEquals(Status.InProgress, parentTask.getTaskData().getStatus());
         assertEquals(users.get("darth"), parentTask.getTaskData().getActualOwner());
@@ -652,19 +581,11 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertNotNull(subTaskSummary2);
 
         //Starting the sub task 1
-        System.out.println("Starting sub task " + subTaskSummary1.getId());
-        
         getClient().start(subTaskSummary1.getId(), "Darth Vader");
         
-        System.out.println("Started sub task " + subTaskSummary1.getId());
-
         //Starting the sub task 2
-        System.out.println("Starting sub task " + subTaskSummary2.getId());
-        
         getClient().start(subTaskSummary2.getId(), "Darth Vader");
         
-        System.out.println("Started sub task " + subTaskSummary2.getId());
-
         //Check if the child task 1 is InProgress
         
         
@@ -680,12 +601,8 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals(users.get("darth"), subTask2.getTaskData().getActualOwner());
 
         // Complete the parent task
-        System.out.println("Completing parent task " + parentTask.getId());
-        
         getClient().skip(parentTask.getId(), "Darth Vader");
         
-        System.out.println("Completed parent task " + parentTask.getId());
-
         //Check if the child task 1 is Completed
         
         

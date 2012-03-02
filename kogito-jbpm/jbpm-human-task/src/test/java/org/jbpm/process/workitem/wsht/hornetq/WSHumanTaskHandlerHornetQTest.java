@@ -17,7 +17,6 @@
 package org.jbpm.process.workitem.wsht.hornetq;
 
 import org.drools.SystemEventListenerFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseTest;
 import org.jbpm.task.TestStatefulKnowledgeSession;

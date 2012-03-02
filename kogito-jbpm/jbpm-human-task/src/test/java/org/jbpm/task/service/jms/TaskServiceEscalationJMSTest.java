@@ -25,6 +25,9 @@ import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceEscalationBaseTest;
+import org.jbpm.task.service.jms.JMSTaskClientConnector;
+import org.jbpm.task.service.jms.JMSTaskClientHandler;
+import org.jbpm.task.service.jms.JMSTaskServer;
 
 public class TaskServiceEscalationJMSTest extends TaskServiceEscalationBaseTest {
 

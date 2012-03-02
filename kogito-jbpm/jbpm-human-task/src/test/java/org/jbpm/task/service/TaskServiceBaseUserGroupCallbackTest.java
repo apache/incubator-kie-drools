@@ -42,7 +42,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         vars.put( "groups", groups );        
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_TasksOwned.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwned ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -51,7 +51,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         }
 
         // Test UK I18N  
-        reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryResults_TasksOwnedInEnglish.mvel" ) );
+        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwnedInEnglish ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 
@@ -86,7 +86,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
                                             actual ) );
 
         // Test DK I18N 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryResults_TasksOwnedInGerman.mvel" ) );
+        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwnedInGerman ) );
         expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                           vars );
 
@@ -128,7 +128,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         vars.put( "groups", groups );        
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_TasksPotentialOwner.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksPotentialOwner ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -158,14 +158,14 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         vars.put( "groups",
                   groups );
 
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_TasksOwned.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwned ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
             taskSession.addTask( task, null );
         }
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryResults_PeopleAssignmentQuerries.mvel" ) );
+        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.PeopleAssignmentQuerries ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 

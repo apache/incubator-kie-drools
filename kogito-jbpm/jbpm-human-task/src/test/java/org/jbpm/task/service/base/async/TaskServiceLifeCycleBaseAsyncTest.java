@@ -1589,7 +1589,10 @@ public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
         } catch (RuntimeException e) { //expected
         	assertNotNull(nominateHandler.getError());
         	assertNotNull(nominateHandler.getError().getMessage());
-        	assertTrue(nominateHandler.getError().getMessage().contains("Created"));
+            String somethingAboutCreated = "Created";
+            String errorMessage = nominateHandler.getError().getCause().getMessage();
+            assertTrue("Error message does not contain '" + somethingAboutCreated + "' : " + errorMessage, 
+                    errorMessage.contains(somethingAboutCreated));
         }
         
         //shouldn't affect the assignments

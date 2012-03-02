@@ -18,12 +18,12 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.User;
 import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
@@ -31,8 +31,6 @@ import org.jbpm.task.service.jms.JMSTaskServer;
 
 /**
  * Test case to see if this component works.
- * 
- * @author Mariano De Maio
  */
 public class JMSTaskServerSyncTest extends TestCase {
 
