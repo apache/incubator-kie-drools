@@ -55,10 +55,7 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseAsyncTest extends Bas
     }
 
     public void testAddRemoveComment() {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "deadlines = new Deadlines(),";
@@ -136,10 +133,7 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseAsyncTest extends Bas
     }
 
     public void testAddRemoveAttachment() throws Exception {
-        Map vars = new HashMap();
-        vars.put("users", users);
-        vars.put("groups", groups);
-        vars.put("now", new Date());
+        Map<String, Object> vars = fillVariables();
 
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "deadlines = new Deadlines(),";

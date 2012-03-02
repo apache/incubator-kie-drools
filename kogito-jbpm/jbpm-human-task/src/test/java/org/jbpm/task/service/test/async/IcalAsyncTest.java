@@ -36,7 +36,7 @@ public class IcalAsyncTest extends IcalBaseAsyncTest {
         setEmailHost(props.getProperty("host", "locahost"));
         setEmailPort(props.getProperty("port", "2345"));        
         
-        server = startServer(taskService);
+        server = startAsyncServer(taskService);
 
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();

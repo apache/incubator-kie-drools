@@ -1,28 +1,20 @@
 package org.jbpm.task.service.test;
 
-import org.drools.SystemEventListenerFactory;
+import static org.jbpm.task.service.test.impl.TestServerUtil.*;
+
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceTaskAttributesBaseUserGroupCallbackTest;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
-import org.jbpm.task.service.hornetq.HornetQTaskServer;
+import org.jbpm.task.service.test.impl.TestTaskServer;
 
 public class TaskServiceTaskAttributesUserGroupCallbackTest extends TaskServiceTaskAttributesBaseUserGroupCallbackTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        server = new HornetQTaskServer(taskService, 5446);
-        Thread thread = new Thread(server);
-        thread.start();
-        System.out.println("Waiting for the HornetQTask Server to come up");
-        while (!server.isRunning()) {
-            System.out.print(".");
-            Thread.sleep( 50 );
-        }
+        
+        server = startServer(taskService);
 
-        client = new TaskClient(new HornetQTaskClientConnector("client 1",
-                                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-        client.connect("127.0.0.1", 5446);
+        client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
+        client.connect();
     }
 
     protected void tearDown() throws Exception {

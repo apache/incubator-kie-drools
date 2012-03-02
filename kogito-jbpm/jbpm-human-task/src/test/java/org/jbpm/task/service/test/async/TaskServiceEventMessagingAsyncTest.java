@@ -22,16 +22,14 @@ import org.jbpm.task.MockUserInfo;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskServiceEventMessagingBaseAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
-import org.junit.Ignore;
 
-@Ignore
-public class TaskServiceEventMessagingHornetQAsyncTest extends TaskServiceEventMessagingBaseAsyncTest {
+public class TaskServiceEventMessagingAsyncTest extends TaskServiceEventMessagingBaseAsyncTest {
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         
-        server = startServer(taskService);
+        server = startAsyncServer(taskService);
 
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();

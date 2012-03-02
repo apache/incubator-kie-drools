@@ -19,18 +19,16 @@ package org.jbpm.task.service.test.async;
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.base.async.TaskServiceEscalationBaseAsyncTest;
+import org.jbpm.task.service.base.async.TaskServiceLifeCycleBaseAsyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
-import org.junit.Ignore;
 
-@Ignore
-public class TaskServiceEscalationHornetQAsyncTest extends TaskServiceEscalationBaseAsyncTest {
+public class TaskServiceLifeCycleAsyncTest extends TaskServiceLifeCycleBaseAsyncTest {
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
         
-        server = startServer(taskService);
+        server = startAsyncServer(taskService);
 
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();

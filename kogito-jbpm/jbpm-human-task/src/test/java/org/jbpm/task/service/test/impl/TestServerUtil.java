@@ -67,6 +67,10 @@ public class TestServerUtil {
         return startServer(taskService, numClients, true);
     }
     
+    public static TaskServer startAsyncServer(TaskService taskService, int numClients) throws Exception { 
+        return startServer(taskService, numClients, false);
+    }
+    
     public static TaskServer startServer(TaskService taskService, int numClients, boolean synchronous) throws Exception { 
         TestTaskServer server = new TestTaskServer(taskService, synchronous);
         server.setNumberOfClients(numClients);

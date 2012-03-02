@@ -17,8 +17,6 @@
 package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.task.AccessType;
@@ -30,6 +28,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.service.TaskServiceTaskAttributesBaseTest;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
@@ -51,10 +50,7 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     }
 
 	public void testAddRemoveOutput() {
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
+        Map<String, Object>  vars = fillVariables();
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
         str += "actualOwner = new User('Darth Vader')}),";
@@ -116,10 +112,7 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     }
     
     public void testAddRemoveFault() throws Exception {
-    	Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
+    	Map<String, Object>  vars = fillVariables();
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
         str += "actualOwner = new User('Darth Vader')}),";
@@ -184,43 +177,7 @@ public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     } 
     
     public void testSetPriority() throws Exception {
-    	Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
-        
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
-        str += "actualOwner = new User('Darth Vader')}),";
-        str += "deadlines = new Deadlines(),";
-        str += "delegation = new Delegation(),";
-        str += "peopleAssignments = new PeopleAssignments(),";
-        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-            
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null, addTaskResponseHandler );
-        
-        long taskId = addTaskResponseHandler.getTaskId();
-        
-        int newPriority = 33;
-        
-        BlockingTaskOperationResponseHandler setPriorityResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.setPriority(taskId, "Darth Vader", newPriority, setPriorityResponseHandler );
-        setPriorityResponseHandler.waitTillDone(1000);
-        assertFalse( setPriorityResponseHandler.hasError() );
-        
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        Task task1 = getTaskResponseHandler.getTask();
-        assertNotSame(task, task1);
-        assertFalse(  task.equals( task1) );
-       
-        int newPriority1 = task1.getPriority();
-        assertEquals(newPriority, newPriority1);
-
-        // Make the same as the returned tasks, so we can test equals
-        task.setPriority( newPriority );
-        task.getTaskData().setStatus( Status.Created );
-        assertEquals(task, task1);       
+        TaskServiceTaskAttributesBaseTest.testSetPriority(fillVariables(), client);
     }
+        
 }

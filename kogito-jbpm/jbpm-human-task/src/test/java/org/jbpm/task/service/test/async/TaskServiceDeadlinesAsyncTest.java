@@ -18,28 +18,42 @@ package org.jbpm.task.service.test.async;
 
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.base.async.TaskServiceLifeCycleBaseAsyncTest;
-import org.jbpm.task.service.test.impl.TestTaskServer;
-import org.junit.Ignore;
+import java.util.Properties;
 
-@Ignore
-public class TaskServiceLifeCycleHornetQAsyncTest extends TaskServiceLifeCycleBaseAsyncTest {
+import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseAsyncTest;
+import org.jbpm.task.service.test.impl.TestTaskServer;
+import org.subethamail.wiser.Wiser;
+
+public class TaskServiceDeadlinesAsyncTest extends TaskServiceDeadlinesBaseAsyncTest {
 
 	@Override
-	protected void setUp() throws Exception {
+	protected void setUp() throws Exception {        
 		super.setUp();
+
+		setConf(new Properties());
+		getConf().setProperty("mail.smtp.host", "localhost");
+		getConf().setProperty("mail.smtp.port", "2345");
+		getConf().setProperty("from", "from@domain.com");
+		getConf().setProperty("replyTo", "replyTo@domain.com");
+		getConf().setProperty("defaultLanguage", "en-UK");
         
-        server = startServer(taskService);
+        server = startAsyncServer(taskService);
 
         client = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         client.connect();
+
+		setWiser(new Wiser());
+		getWiser().setHostname(getConf().getProperty("mail.smtp.host"));
+		getWiser().setPort(Integer.parseInt(getConf().getProperty("mail.smtp.port")));        
+		getWiser().start();
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		client.disconnect();
 		server.stop();
+		getWiser().stop();
 	}
 
 }

@@ -36,7 +36,7 @@ public class ClaimTaskTwiceAsyncTest extends ClaimTaskTwiceTest {
     
     protected void setUp() throws Exception {
         super.setUp();
-        server = startServer(taskService, clientCount);
+        server = startAsyncServer(taskService, clientCount);
     }
 
     protected void tearDown() throws Exception {
