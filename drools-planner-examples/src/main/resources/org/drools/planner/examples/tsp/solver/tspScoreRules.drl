@@ -44,7 +44,7 @@ end
 rule "distanceFromLastVisitToDomicile"
     when
         $visit : Visit(previousAppearance != null)
-        not Visit (previousAppearance == $visit)
+        not Visit(previousAppearance == $visit)
         $domicile : Domicile()
     then
         insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.NEGATIVE_SOFT,

@@ -61,16 +61,16 @@ rule "distanceToPreviousAppearance"
                 $customer));
 end
 
-//rule "distanceFromLastVisitToDomicile"
-//    when
-//        $visit : Visit(previousAppearance != null)
-//        not Visit (previousAppearance == $visit)
-//        $domicile : Domicile()
-//    then
-//        insertLogical(new IntConstraintOccurrence("distanceFromLastVisitToDomicile", ConstraintType.NEGATIVE_SOFT,
-//                $visit.getDistanceTo($domicile),
-//                $visit, $domicile));
-//end
+rule "distanceFromLastCustomerToDepot"
+    when
+        $customer : VrpCustomer(previousAppearance != null)
+        not VrpCustomer(previousAppearance == $customer)
+    then
+        VrpVehicle vehicle = $customer.getVehicle();
+        insertLogical(new IntConstraintOccurrence("distanceFromLastCustomerToDepot", ConstraintType.NEGATIVE_SOFT,
+                $customer.getDistanceTo(vehicle),
+                $customer));
+end
 
 // ############################################################################
 // Calculate score
