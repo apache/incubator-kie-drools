@@ -42,13 +42,13 @@ public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
 
     @Test(timeout = 180000)
     public void solveModel_a2_1() {
-        File unsolvedDataFile = new File("data/tsp/unsolved/A-n33-k6.xml");
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-950soft");
     }
 
     @Test(timeout = 180000)
     public void solveModel_a2_1Debug() {
-        File unsolvedDataFile = new File("data/tsp/unsolved/A-n33-k6.xml");
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-1019soft", EnvironmentMode.DEBUG);
     }
 
