@@ -1467,7 +1467,11 @@ public class PatternBuilder
             }
         } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) {
             // we need MVEL extractor for expressions
+            Dialect dialect = context.getDialect();
             try {
+                MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
+                context.setDialect( mvelDialect );
+
                 Map<String, Class< ? >> declarations = getDeclarationsMap( descr,
                                                                            context,
                                                                            false );
@@ -1522,6 +1526,8 @@ public class PatternBuilder
                 }
                 // if there was an error, set the reader back to null
                 reader = null;
+            } finally {
+                context.setDialect( dialect );
             }
         } else {
             try {

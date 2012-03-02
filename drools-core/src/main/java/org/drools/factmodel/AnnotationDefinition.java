@@ -209,7 +209,7 @@ public class AnnotationDefinition implements Externalizable {
             PRIMITIVE, KLASS, STRING, ENUMERATION, STRINGARRAY, ENUMARRAY, PRIMARRAY, CLASSARRAY;
         }
 
-        private AnnotationPropertyVal() { }
+        public AnnotationPropertyVal() { }
 
         private AnnotationPropertyVal(String property, Class type, Object value, ValType valType) {
             this.property = property;
