@@ -36,7 +36,6 @@ public class ConsequenceGenerator {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
         final boolean isOrRule = rtn.getRule().getTransformedLhs().length > 1;
-        final String[] declarationTypes = stub.getDeclarationTypes();
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
@@ -89,6 +88,7 @@ public class ConsequenceGenerator {
                     invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
                     mv.visitVarInsn(ASTORE, handlePos);
 
+                    String declarationType = declarations[i].getTypeName();
                     if (stub.getNotPatterns()[i]) {
                         // notPattern indexes field declarations
                         
@@ -101,7 +101,7 @@ public class ConsequenceGenerator {
                         mv.visitVarInsn(ALOAD, handlePos); // handle[i]
                         invokeInterface(InternalFactHandle.class, "getObject", Object.class);
 
-                        storeObjectFromDeclaration(declarations[i], declarationTypes[i]);
+                        storeObjectFromDeclaration(declarations[i], declarationType);
 
                         // The facthandle should be set to that of the field, if it's an object, otherwise this will return null
                         // fact[i] = (InternalFactHandle)workingMemory.getFactHandle(obj);
@@ -113,8 +113,8 @@ public class ConsequenceGenerator {
                     } else {
                         mv.visitVarInsn(ALOAD, handlePos); // handle[i]
                         invokeInterface(InternalFactHandle.class, "getObject", Object.class);
-                        mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                        objAstorePos += store(objPos, declarationTypes[i]); // obj[i]
+                        mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
+                        objAstorePos += store(objPos, declarationType); // obj[i]
                     }
                 }
 
@@ -124,7 +124,7 @@ public class ConsequenceGenerator {
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // handle[i]
-                    consequenceMethodDescr.append(typeDescr(declarationTypes[i])).append("Lorg/drools/FactHandle;");
+                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName())).append("Lorg/drools/FactHandle;");
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

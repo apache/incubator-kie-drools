@@ -35,10 +35,6 @@ public class InvokerContext implements InvokerDataProvider {
         return (String) invokerContext.get("methodName");
     }
 
-    public String[] getDeclarationTypes() {
-        return (String[]) invokerContext.get("declarationTypes");
-    }
-
     public String[] getGlobals() {
         return (String[]) invokerContext.get("globals");
     }

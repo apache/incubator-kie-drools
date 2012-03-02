@@ -184,6 +184,10 @@ public class ClassFieldReader
         return this.reader.getNativeReadMethod();
     }
 
+    public String getNativeReadMethodName() {
+        return this.reader.getNativeReadMethod().getName();
+    }
+
     public int getHashCode(InternalWorkingMemory workingMemory,
                            final Object object) {
         return this.reader.getHashCode( workingMemory,

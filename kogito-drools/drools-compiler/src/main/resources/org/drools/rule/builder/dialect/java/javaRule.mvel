@@ -1,21 +1,21 @@
 @declare{"returnValueMethod"}
-public static org.drools.spi.FieldValue @{methodName}(@foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
-                                                      @foreach{type : localDeclarationTypes, declr : localDeclarations} @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+public static org.drools.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
     return org.drools.base.FieldFactory.getFieldValue( @{text} );
 }
 @end{}
 
 @declare{"predicateMethod"}
-public static boolean @{methodName}(@foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
-                                                      @foreach{type : localDeclarationTypes, declr : localDeclarations } @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{declr : localDeclarations } @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
     return ( @{text} );
 }
 @end{}
 
 @declare{"evalMethod"}
-public static boolean @{methodName}(@foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
+public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
                                     @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
     return ( @{text} );
 }
@@ -36,7 +36,7 @@ public static class @{className} implements java.io.Serializable {
     public @{className}() {
     }
 
-    public void init(@foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{} 
+    public void init(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
                      ) throws Exception {
         @{initCode}
@@ -46,7 +46,7 @@ public static class @{className} implements java.io.Serializable {
                            org.drools.common.InternalFactHandle handle,
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
-                           @foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+                           @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
@@ -67,13 +67,13 @@ public static class @{className} implements java.io.Serializable {
                            ) throws Exception {
         @if{supportsReverse == "true"}
         ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Integer.valueOf( handle.getId() ) );
-        @foreach{type : declarationTypes, declr : declarations}@{type} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
+        @foreach{declr : declarations}@{declr.typeName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
         @end{}
         @{reverseCode}
     }
     
-    public Object getResult(@foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
+    public Object getResult(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
                             @foreach{type : globalTypes, identifier : globals}@{type} @{identifier} @end{","}
                            ) throws Exception {
         return ( @{resultCode} );
@@ -85,13 +85,13 @@ public static class @{className} implements java.io.Serializable {
     
     @if{supportsReverse == "true"}
     private static class ReverseSnapshot implements java.io.Serializable {
-        @foreach{type : declarationTypes, declr : declarations} public final @{type} @{declr.identifier};@end{}
+        @foreach{declr : declarations} public final @{declr.typeName} @{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}public final @{declr.extractor.extractToClassName} @{declr.identifier};@end{}
         
-        public ReverseSnapshot(@foreach{type : declarationTypes, declr : declarations}final @{type} @{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
+        public ReverseSnapshot(@foreach{declr : declarations}final @{declr.typeName} @{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
                                @foreach{declr : innerDeclarations}final @{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                               ) {
-            @foreach{type : declarationTypes, declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+            @foreach{declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
             @foreach{declr : innerDeclarations}this.@{declr.identifier} = @{declr.identifier};@end{}
         }
     } 
@@ -100,7 +100,7 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{type : declarationTypes, declr : declarations} @{type} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.drools.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.drools.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}

@@ -32,7 +32,6 @@ public class EvalGenerator {
                                 final WorkingMemory workingMemory) {
 
         final LeftTuple leftTuple = (LeftTuple)tuple;
-        final String[] declarationTypes = stub.getDeclarationTypes();
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
 
@@ -79,14 +78,14 @@ public class EvalGenerator {
                     invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
 
-                    storeObjectFromDeclaration(declarations[i], declarationTypes[i]);
+                    storeObjectFromDeclaration(declarations[i], declarations[i].getTypeName());
                 }
 
                 // @{ruleClassName}.@{methodName}(@foreach{declarations}, @foreach{globals})
                 StringBuilder evalMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < declarations.length; i++) {
                     load(declarationsParamsPos[i]); // declarations[i]
-                    evalMethodDescr.append(typeDescr(declarationTypes[i]));
+                    evalMethodDescr.append(typeDescr(declarations[i].getTypeName()));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

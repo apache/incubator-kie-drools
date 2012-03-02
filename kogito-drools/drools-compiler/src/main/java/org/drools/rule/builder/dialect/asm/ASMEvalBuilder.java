@@ -40,18 +40,17 @@ public class ASMEvalBuilder extends AbstractASMEvalBuilder {
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 final Declaration[] declarations = (Declaration[])vars.get("declarations");
-                final String[] declarationTypes = (String[])vars.get("declarationTypes");
                 final String[] globals = (String[])vars.get("globals");
                 final String[] globalTypes = (String[])vars.get("globalTypes");
 
                 objAstorePos = 5;
-                int[] declarationsParamsPos = parseDeclarations(declarations, declarationTypes, 2, 1, 3, true);
+                int[] declarationsParamsPos = parseDeclarations(declarations, 2, 1, 3, true);
 
                 // @{ruleClassName}.@{methodName}(@foreach{declarations}, @foreach{globals})
                 StringBuilder evalMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < declarations.length; i++) {
                     load(declarationsParamsPos[i]); // declarations[i]
-                    evalMethodDescr.append(typeDescr(declarationTypes[i]));
+                    evalMethodDescr.append(typeDescr(declarations[i].getTypeName()));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

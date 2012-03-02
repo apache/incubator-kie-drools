@@ -566,6 +566,10 @@ public class CompositeObjectSinkAdapterTest {
             return null;
         }
 
+        public String getNativeReadMethodName() {
+            return null;
+        }
+
         public short getShortValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
             //  Auto-generated method stub

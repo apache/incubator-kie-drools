@@ -173,6 +173,10 @@ public class PatternExtractor
         }
     }
 
+    public String getNativeReadMethodName() {
+        return "getValue";
+    }
+
     public boolean isNullValue(InternalWorkingMemory workingMemory,
                                final Object object) {
         return getValue( workingMemory,

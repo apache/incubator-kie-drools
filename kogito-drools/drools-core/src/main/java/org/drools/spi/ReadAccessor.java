@@ -27,40 +27,42 @@ import org.drools.base.ValueType;
  */
 public interface ReadAccessor {
 
-    public Object getValue(Object object);
+    Object getValue(Object object);
 
-    public BigDecimal getBigDecimalValue(Object object);
+    BigDecimal getBigDecimalValue(Object object);
 
-    public BigInteger getBigIntegerValue(Object object);
+    BigInteger getBigIntegerValue(Object object);
 
-    public char getCharValue(Object object);
+    char getCharValue(Object object);
 
-    public int getIntValue(Object object);
+    int getIntValue(Object object);
 
-    public byte getByteValue(Object object);
+    byte getByteValue(Object object);
 
-    public short getShortValue(Object object);
+    short getShortValue(Object object);
 
-    public long getLongValue(Object object);
+    long getLongValue(Object object);
 
-    public float getFloatValue(Object object);
+    float getFloatValue(Object object);
 
-    public double getDoubleValue(Object object);
+    double getDoubleValue(Object object);
 
-    public boolean getBooleanValue(Object object);
+    boolean getBooleanValue(Object object);
 
-    public boolean isNullValue(Object object);
+    boolean isNullValue(Object object);
 
-    public ValueType getValueType();
+    ValueType getValueType();
 
-    public Class< ? > getExtractToClass();
+    Class< ? > getExtractToClass();
 
-    public String getExtractToClassName();
+    String getExtractToClassName();
 
-    public Method getNativeReadMethod();
+    Method getNativeReadMethod();
 
-    public int getHashCode(Object object);
+    String getNativeReadMethodName();
 
-    public int getIndex();
+    int getHashCode(Object object);
+
+    int getIndex();
 
 }

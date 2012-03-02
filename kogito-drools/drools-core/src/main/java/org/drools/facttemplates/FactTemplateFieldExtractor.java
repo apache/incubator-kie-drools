@@ -131,6 +131,10 @@ public class FactTemplateFieldExtractor
         }
     }
 
+    public String getNativeReadMethodName() {
+        return "getValue";
+    }
+
     public int getHashCode(InternalWorkingMemory workingMemory,
                            final Object object) {
         return getValue( workingMemory,

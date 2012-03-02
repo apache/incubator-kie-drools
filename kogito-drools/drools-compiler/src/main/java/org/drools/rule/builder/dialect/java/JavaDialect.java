@@ -127,7 +127,6 @@ public class JavaDialect
     }
 
     //
-    private static final DeclarationTypeFixer        typeFixer                     = new DeclarationTypeFixer();
     private static final JavaExprAnalyzer            analyzer                      = new JavaExprAnalyzer();
 
     private JavaDialectConfiguration                 configuration;
@@ -294,13 +293,6 @@ public class JavaDialect
         return this.packageRegistry.getTypeResolver();
     }
 
-    /**
-     * @return the typeFixer
-     */
-    public DeclarationTypeFixer getTypeFixer() {
-        return this.typeFixer;
-    }
-
     public RuleConditionBuilder getBuilder(final Class clazz) {
         return (RuleConditionBuilder) this.builders.get( clazz );
     }
@@ -464,8 +456,8 @@ public class JavaDialect
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( this.ID );
 
-        for ( final Iterator it = context.getInvokers().keySet().iterator(); it.hasNext(); ) {
-            final String className = (String) it.next();
+        for ( Map.Entry<String, String> invokers : context.getInvokers().entrySet() ) {
+            final String className = invokers.getKey();
 
             // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
@@ -474,7 +466,7 @@ public class JavaDialect
                 data.putInvoker( className,
                                  invoker );
             }
-            final String text = (String) context.getInvokers().get( className );
+            final String text = invokers.getValue();
 
             final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
             addClassCompileTask( className,

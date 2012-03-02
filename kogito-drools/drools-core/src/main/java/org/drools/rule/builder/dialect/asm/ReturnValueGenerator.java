@@ -31,8 +31,6 @@ public class ReturnValueGenerator {
                                 final WorkingMemory workingMemory) {
 
         final LeftTuple leftTuple = (LeftTuple)tuple;
-        final String[] previousDeclarationTypes = stub.getDeclarationTypes();
-        final String[] localDeclarationTypes = stub.getLocalDeclarationTypes();
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
 
@@ -74,20 +72,20 @@ public class ReturnValueGenerator {
                     invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
 
-                    storeObjectFromDeclaration(previousDeclarations[i], previousDeclarationTypes[i]);
+                    storeObjectFromDeclaration(previousDeclarations[i], previousDeclarations[i].getTypeName());
                 }
 
-                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, false);
+                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, 4, 2, 5, false);
 
                 // @{ruleClassName}.@{methodName}(@foreach{previousDeclarations}, @foreach{localDeclarations}, @foreach{globals})
                 StringBuilder returnValueMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < previousDeclarations.length; i++) {
                     load(previousDeclarationsParamsPos[i]); // previousDeclarations[i]
-                    returnValueMethodDescr.append(typeDescr(previousDeclarationTypes[i]));
+                    returnValueMethodDescr.append(typeDescr(previousDeclarations[i].getTypeName()));
                 }
                 for (int i = 0; i < localDeclarations.length; i++) {
                     load(localDeclarationsParamsPos[i]); // localDeclarations[i]
-                    returnValueMethodDescr.append(typeDescr(localDeclarationTypes[i]));
+                    returnValueMethodDescr.append(typeDescr(localDeclarations[i].getTypeName()));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

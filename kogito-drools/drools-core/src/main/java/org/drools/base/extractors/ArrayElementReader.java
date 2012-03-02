@@ -136,18 +136,20 @@ public class ArrayElementReader
 
     public Method getNativeReadMethod() {
         try {
-            String method = "";
-            if ( type.isPrimitive() ) {
-                method = StringUtils.ucFirst( type.getName() );
-            }
-
-            return this.getClass().getDeclaredMethod( "get" + method + "Value",
+            return this.getClass().getDeclaredMethod( getNativeReadMethodName(),
                                                       new Class[]{InternalWorkingMemory.class, Object.class} );
-
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
+    }
+
+    public String getNativeReadMethodName() {
+        String method = "";
+        if ( type.isPrimitive() ) {
+            method = StringUtils.ucFirst( type.getName() );
+        }
+        return "get" + method + "Value";
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory,
