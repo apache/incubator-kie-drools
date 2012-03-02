@@ -1989,4 +1989,59 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         ksession.dispose();
     }
+
+    public static class MyObj {
+        public static class NestedObj {
+            public long value;
+
+            public NestedObj(long value) {
+                this.value = value;
+            }
+        }
+
+        private NestedObj nestedObj;
+
+        public MyObj(long value) {
+            nestedObj = new NestedObj(value);
+        }
+
+        public NestedObj getNestedObj() {
+            return nestedObj;
+        }
+    }
+
+    @Test
+    public void testAccumulateWithBoundExpression() {
+        String drl = "package org.drools;\n" +
+                "import org.drools.integrationtests.AccumulateTest.MyObj;\n" +
+                "global java.util.List results\n" +
+                "rule init\n" +
+                "when\n" +
+                "then\n" +
+                "insert( new MyObj(5) );\n" +
+                "insert( new MyObj(4) );\n" +
+                "end\n" +
+                "rule foo\n" +
+                "salience -10\n" +
+                "when\n" +
+                "$n : Number() from accumulate( MyObj( $val : nestedObj.value ),\n" +
+                "sum( $val ) )\n" +
+                "then\n" +
+                "System.out.println($n);\n" +
+                "results.add($n);\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 9.0,
+                      results.get( 0 ) );
+    }
 }
