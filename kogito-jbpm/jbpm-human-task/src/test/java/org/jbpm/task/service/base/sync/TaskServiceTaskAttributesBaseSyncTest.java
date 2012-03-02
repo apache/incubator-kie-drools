@@ -17,8 +17,7 @@
 package org.jbpm.task.service.base.sync;
 
 import java.io.StringReader;
-import java.util.Date;
-import java.util.HashMap;
+import java.lang.reflect.Field;
 import java.util.Map;
 
 import org.jbpm.task.AccessType;
@@ -47,10 +46,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
     }
 
 	public void testAddRemoveOutput() {
-        Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
+        Map<String, Object> vars = fillVariables();
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
         str += "actualOwner = new User('Darth Vader')}),";
@@ -58,7 +54,6 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         str += "delegation = new Delegation(),";
         str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-            
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
@@ -70,11 +65,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         outputData.setContent("This is my output!!!!".getBytes());
         outputData.setType("text/plain");
         
-       
         client.setOutput( taskId, "Darth Vader", outputData );
-        
-        
-        
         
         Task task1 = client.getTask( taskId );
         // If we use a local implementation it will be the same Object
@@ -93,13 +84,10 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         
         // Make the same as the returned tasks, so we can test equals
         task.getTaskData().setOutput( outputContentId, outputData );
-        task.getTaskData().setStatus( Status.Created );
-        assertEquals(task, task1);       
+        testThatTasksAreEqual(task, task1);
 
         //test delete output
-        
         client.deleteOutput( taskId, "Darth Vader" );
-
         
         task1 = client.getTask( taskId );
         assertEquals(0, task1.getTaskData().getOutputContentId() );   
@@ -108,10 +96,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
     }
     
     public void testAddRemoveFault() throws Exception {
-    	Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
+        Map<String, Object> vars = fillVariables();
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
         str += "actualOwner = new User('Darth Vader')}),";
@@ -119,7 +104,6 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         str += "delegation = new Delegation(),";
         str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
-            
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
@@ -132,12 +116,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         faultData.setFaultName("fault1");
         faultData.setType("text/plain");
         
-        
         client.setFault( taskId, "Darth Vader", faultData );
-        
-        
-        
-        
         
         Task task1 = client.getTask( taskId );
         
@@ -147,9 +126,6 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         long faultContentId = task1.getTaskData().getFaultContentId();
         assertNotSame(0, faultContentId);
 
-        
-        
-        
         Content content = client.getContent(faultContentId);
         assertNotNull(content);
         assertEquals("This is my fault!!!!", new String(content.getContent()));
@@ -160,8 +136,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         
         // Make the same as the returned tasks, so we can test equals
         task.getTaskData().setOutput( faultContentId, faultData );
-        task.getTaskData().setStatus( Status.Created );
-        assertEquals(task, task1);       
+        testThatTasksAreEqual(task, task1);
 
         //test delete fault
         
@@ -175,10 +150,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
     } 
     
     public void testSetPriority() throws Exception {
-    	Map  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );
+        Map<String, Object> vars = fillVariables();
         
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now,";
         str += "actualOwner = new User('Darth Vader')}),";
@@ -195,11 +167,7 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
         
         int newPriority = 33;
         
-        
         client.setPriority(taskId, "Darth Vader", newPriority );
-        
-        
-        
         
         Task task1 = client.getTask( taskId );
         //If we use the local implementation the object will be the same
@@ -211,7 +179,24 @@ public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
 
         // Make the same as the returned tasks, so we can test equals
         task.setPriority( newPriority );
+        testThatTasksAreEqual(task, task1);
+    }
+
+    
+    private void testThatTasksAreEqual(Task task, Task task1 ) { 
         task.getTaskData().setStatus( Status.Created );
-        assertEquals(task, task1);       
+        try { 
+            Field versionField = Task.class.getDeclaredField("version");
+            versionField.setAccessible(true);
+            
+            // set version fields to the same thing
+            versionField.setInt(task, 0);
+            versionField.setInt(task1, 0);
+        } catch(Exception e ) { 
+            e.printStackTrace();
+            fail( e.getLocalizedMessage() );
+        }
+        
+        assertEquals(task, task1);
     }
 }
