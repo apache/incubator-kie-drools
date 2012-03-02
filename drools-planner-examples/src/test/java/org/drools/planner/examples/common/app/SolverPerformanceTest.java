@@ -25,6 +25,7 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.SolutionDao;
+import org.junit.Before;
 
 import static org.junit.Assert.*;
 
@@ -40,6 +41,21 @@ import static org.junit.Assert.*;
  * then specify a timeout of 3 minutes.
  */
 public abstract class SolverPerformanceTest extends LoggingTest {
+
+    protected SolutionDao solutionDao;
+
+    @Before
+    public void setUp() {
+        solutionDao = createSolutionDao();
+        File dataDir = solutionDao.getDataDir();
+        if (!dataDir.exists()) {
+            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
+                    + ") does not exist." +
+                    " The working directory should be set to the directory that contains the data directory." +
+                    " This is different in a git clone (drools-planner/drools-planner-examples)" +
+                    " and the release zip (examples).");
+        }
+    }
 
     protected abstract String createSolverConfigResource();
 
@@ -66,7 +82,6 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     private Solver solve(XmlSolverFactory solverFactory, File unsolvedDataFile) {
-        SolutionDao solutionDao = createSolutionDao();
         Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
         Solver solver = solverFactory.buildSolver();
         solver.setPlanningProblem(planningProblem);
