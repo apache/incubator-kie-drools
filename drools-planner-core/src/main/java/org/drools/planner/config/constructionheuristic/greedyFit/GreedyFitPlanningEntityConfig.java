@@ -58,12 +58,9 @@ public class GreedyFitPlanningEntityConfig {
 
     public PlanningEntitySelector buildPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
         PlanningEntityDescriptor planningEntityDescriptor;
+        Class<?> resolvedEntityClass;
         if (planningEntityClass != null) {
-            planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
-            if (planningEntityDescriptor == null) {
-                throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("
-                        + planningEntityClass + ") that has not been configured as a planningEntity.");
-            }
+            resolvedEntityClass = planningEntityClass;
         } else {
             Set<Class<?>> planningEntityImplementationClassSet
                     = solutionDescriptor.getPlanningEntityImplementationClassSet();
@@ -72,9 +69,13 @@ public class GreedyFitPlanningEntityConfig {
                         "The greedyFitPlanningEntity has no planningEntityClass but there are multiple ("
                                 + planningEntityImplementationClassSet.size() + ") planningEntityClasses.");
             }
-            planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
-                    planningEntityImplementationClassSet.iterator().next());
+            resolvedEntityClass = planningEntityImplementationClassSet.iterator().next();
         }
+        if (!solutionDescriptor.hasPlanningEntityDescriptor(planningEntityClass)) {
+            throw new IllegalArgumentException("The greedyFitPlanningEntity has a planningEntityClass ("
+                    + planningEntityClass + ") that has not been configured as a planningEntity.");
+        }
+        planningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(planningEntityClass);
         PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(planningEntityDescriptor);
         planningEntitySelector.setSelectionOrder(selectionOrder != null ? selectionOrder
                 : PlanningEntitySelectionOrder.ORIGINAL);

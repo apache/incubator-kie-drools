@@ -109,6 +109,19 @@ public class SolutionDescriptor {
         return planningEntityDescriptorMap.values();
     }
 
+    public boolean hasPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
+        PlanningEntityDescriptor planningEntityDescriptor = null;
+        Class<?> planningEntityClass = planningEntityImplementationClass;
+        while (planningEntityClass != null) {
+            planningEntityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
+            if (planningEntityDescriptor != null) {
+                return true;
+            }
+            planningEntityClass = planningEntityClass.getSuperclass();
+        }
+        return false;
+    }
+
     public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
         PlanningEntityDescriptor planningEntityDescriptor = null;
         Class<?> planningEntityClass = planningEntityImplementationClass;
@@ -119,7 +132,11 @@ public class SolutionDescriptor {
             }
             planningEntityClass = planningEntityClass.getSuperclass();
         }
-        return null;
+        throw new IllegalArgumentException("A planningEntity is an instance of a planningEntityImplementationClass ("
+                + planningEntityImplementationClass + ") that is not configured as a planningEntity.\n" +
+                "If that class (" + planningEntityImplementationClass.getSimpleName() + ") is not a " +
+                "planningEntityClass (or subclass thereof), check your Solution implementation's annotated methods.\n" +
+                "If it is, check your solver configuration.");
     }
 
     public Collection<Object> getAllFacts(Solution solution) {
