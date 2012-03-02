@@ -97,6 +97,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
         VrpCustomer clone = new VrpCustomer();
         clone.id = id;
         clone.location = location;
+        clone.demand = demand;
         clone.previousAppearance = previousAppearance;
         return clone;
     }

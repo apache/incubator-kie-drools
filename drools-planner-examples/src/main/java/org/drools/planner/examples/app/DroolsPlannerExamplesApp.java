@@ -52,6 +52,7 @@ import org.drools.planner.examples.manners2009.app.Manners2009App;
 import org.drools.planner.examples.tsp.app.TspApp;
 import org.drools.planner.examples.tsp.swingui.TspPanel;
 import org.drools.planner.examples.vehiclerouting.app.VehicleRoutingApp;
+import org.drools.planner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 
 public class DroolsPlannerExamplesApp extends JFrame {
 
@@ -171,8 +172,8 @@ public class DroolsPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Vehicle routing",
-                "Pick up all items of all customers with limited vehicles in the shortest route possible.",
-                null, new Runnable() {
+                "Pick up all items of all customers with a few vehicles in the shortest route possible.",
+                VehicleRoutingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new VehicleRoutingApp().init(false);
             }

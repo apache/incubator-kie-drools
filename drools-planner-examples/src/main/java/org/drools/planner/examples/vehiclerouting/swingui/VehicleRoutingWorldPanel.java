@@ -82,12 +82,10 @@ public class VehicleRoutingWorldPanel extends JPanel {
         Graphics g = createCanvas(width, height);
         g.setColor(TangoColors.ALUMINIUM_6);
         g.setFont(g.getFont().deriveFont(8.0f));
-        for (VrpLocation location : schedule.getLocationList()) {
-            if (location.getName() != null) {
-                int x = translator.translateLongitudeToX(location.getLongitude());
-                int y = translator.translateLatitudeToY(location.getLatitude());
-                g.drawString(location.getName(), x + 3, y - 3);
-            }
+        for (VrpCustomer customer : schedule.getCustomerList()) {
+            int x = translator.translateLongitudeToX(customer.getLocation().getLongitude());
+            int y = translator.translateLatitudeToY(customer.getLocation().getLatitude());
+            g.drawString(Integer.toString(customer.getDemand()), x + 3, y - 3);
         }
         g.setColor(TangoColors.PLUM_2);
         for (VrpLocation location : schedule.getLocationList()) {

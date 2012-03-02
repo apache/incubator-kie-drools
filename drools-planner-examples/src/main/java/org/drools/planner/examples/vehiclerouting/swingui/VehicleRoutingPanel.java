@@ -112,7 +112,8 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 VrpCustomer newCustomer = new VrpCustomer();
                 newCustomer.setId(newLocation.getId());
                 newCustomer.setLocation(newLocation);
-                newCustomer.setDemand(demandRandom.nextInt(5));
+                // Demand must not be 0
+                newCustomer.setDemand(demandRandom.nextInt(10) + 1);
                 solution.getCustomerList().add(newCustomer);
             }
         });
