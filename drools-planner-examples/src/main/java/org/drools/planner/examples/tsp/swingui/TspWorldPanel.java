@@ -27,8 +27,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.TangoColors;
+import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Domicile;
 import org.drools.planner.examples.tsp.domain.Visit;

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+
+  <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+
+  <termination>
+    <maximumMinutesSpend>2</maximumMinutesSpend>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
+      </selector>
+    </selector>
+    <acceptor>
+      <solutionTabuSize>1000</solutionTabuSize>
+      <propertyTabuSize>7</propertyTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>10000</minimalAcceptedSelection>
+    </forager>
+  </localSearch>
+  <!--<localSearch>-->
+    <!--<selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+    <!--</selector>-->
+    <!--<acceptor>-->
+      <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+    <!--</forager>-->
+  <!--</localSearch>-->
+</solver>

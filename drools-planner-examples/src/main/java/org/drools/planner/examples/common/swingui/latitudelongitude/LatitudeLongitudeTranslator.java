@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.tsp.swingui;
+package org.drools.planner.examples.common.swingui.latitudelongitude;
 
-class LatitudeLongitudeTranslator {
+public class LatitudeLongitudeTranslator {
 
     public static final double MARGIN_RATIO = 0.04;
 

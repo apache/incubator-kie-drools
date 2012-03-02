@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.drools.planner.examples.vehiclerouting.domain.VrpDepot;
 import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
 import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
@@ -53,31 +54,34 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
 
     public class VrpScheduleInputBuilder extends TxtInputBuilder {
 
-        private VrpSchedule vrpSchedule;
+        private VrpSchedule schedule;
 
         private int locationListSize;
         private int capacity;
         private Map<Long, VrpLocation> locationMap;
+        private List<VrpDepot> depotList;
 
         public Solution readSolution() throws IOException {
-            vrpSchedule = new VrpSchedule();
-            vrpSchedule.setId(0L);
+            schedule = new VrpSchedule();
+            schedule.setId(0L);
             readHeaders();
             readLocationList();
             readCustomerList();
-            readVehicleList();
+            readDepotList();
+            createVehicleList();
             readConstantLine("EOF");
-            logger.info("VrpSchedule with {} vehicles and {} customers.",
-                    vrpSchedule.getVehicleList().size(), vrpSchedule.getCustomerList().size());
-            BigInteger possibleSolutionSize = factorial(vrpSchedule.getLocationList().size() - 1);
+            logger.info("VrpSchedule with {} depots, {} vehicles and {} customers.",
+                    new Object[]{schedule.getDepotList().size(), schedule.getVehicleList().size(),
+                            schedule.getCustomerList().size()});
+            BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("VrpSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
-            return vrpSchedule;
+            return schedule;
         }
 
         private void readHeaders() throws IOException {
-            vrpSchedule.setName(readStringValue("NAME :"));
+            schedule.setName(readStringValue("NAME :"));
             readUntilConstantLine("TYPE : CVRP");
             locationListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
@@ -105,7 +109,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 locationList.add(location);
                 locationMap.put(location.getId(), location);
             }
-            vrpSchedule.setLocationList(locationList);
+            schedule.setLocationList(locationList);
         }
 
         private void readCustomerList() throws IOException {
@@ -127,28 +131,54 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 // Notice that we leave the PlanningVariable properties on null
                 customerList.add(customer);
             }
-            vrpSchedule.setCustomerList(customerList);
-
-            
+            schedule.setCustomerList(customerList);
         }
 
-        private void readVehicleList() throws IOException {
+        private void readDepotList() throws IOException {
             readConstantLine("DEPOT_SECTION");
-            List<VrpVehicle> vehicleList = new ArrayList<VrpVehicle>(locationListSize);
+            depotList = new ArrayList<VrpDepot>(locationListSize);
             long id = readLongValue();
             while (id != -1) {
-                VrpVehicle vehicle = new VrpVehicle();
-                vehicle.setId(id);
+                VrpDepot depot = new VrpDepot();
+                depot.setId(id);
                 VrpLocation location = locationMap.get(id);
                 if (location == null) {
-                    throw new IllegalArgumentException("The customer with id (" + id
+                    throw new IllegalArgumentException("The depot with id (" + id
                             + ") has no location (" + location + ").");
                 }
-                vehicle.setDepotLocation(location);
-                vehicleList.add(vehicle);
+                depot.setLocation(location);
+                depotList.add(depot);
                 id = readLongValue();
             }
-            vrpSchedule.setVehicleList(vehicleList);
+            schedule.setDepotList(depotList);
+        }
+
+        private void createVehicleList() throws IOException {
+            String inputFileName = inputFile.getName();
+            String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";
+            if (!inputFileName.matches(inputFileNameRegex)) {
+                throw new IllegalArgumentException("The inputFileName (" + inputFileName
+                        + ") does not match the inputFileNameRegex (" + inputFileNameRegex + ").");
+            }
+            String vehicleListSizeString = inputFileName.replaceAll(inputFileNameRegex, "$1");
+            int vehicleListSize;
+            try {
+                vehicleListSize = Integer.parseInt(vehicleListSizeString);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("The inputFileName (" + inputFileName
+                        + ") has a vehicleListSizeString (" + vehicleListSizeString + ") that is not a number.", e);
+            }
+            List<VrpVehicle> vehicleList = new ArrayList<VrpVehicle>(vehicleListSize);
+            long id = 0;
+            for (int i = 0; i < vehicleListSize; i++) {
+                VrpVehicle vehicle = new VrpVehicle();
+                vehicle.setId(id);
+                id++;
+                vehicle.setCapacity(capacity);
+                vehicle.setDepot(depotList.get(0));
+                vehicleList.add(vehicle);
+            }
+            schedule.setVehicleList(vehicleList);
         }
 
         private BigInteger factorial(int base) {

@@ -35,6 +35,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
 
     private String name;
     private List<VrpLocation> locationList;
+    private List<VrpDepot> depotList;
     private List<VrpVehicle> vehicleList;
 
     private List<VrpCustomer> customerList;
@@ -55,6 +56,14 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
 
     public void setLocationList(List<VrpLocation> locationList) {
         this.locationList = locationList;
+    }
+
+    public List<VrpDepot> getDepotList() {
+        return depotList;
+    }
+
+    public void setDepotList(List<VrpDepot> depotList) {
+        this.depotList = depotList;
     }
 
     public List<VrpVehicle> getVehicleList() {
@@ -89,6 +98,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(locationList);
+        facts.addAll(depotList);
         facts.addAll(vehicleList);
         // Do not add the planning entity's (customerList) because that will be done automatically
         return facts;
@@ -102,6 +112,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardAnd
         clone.id = id;
         clone.name = name;
         clone.locationList = locationList;
+        clone.depotList = depotList;
         clone.vehicleList = vehicleList;
         List<VrpCustomer> clonedCustomerList = new ArrayList<VrpCustomer>(customerList.size());
         Map<Long, VrpCustomer> idToClonedCustomerMap = new HashMap<Long, VrpCustomer>(

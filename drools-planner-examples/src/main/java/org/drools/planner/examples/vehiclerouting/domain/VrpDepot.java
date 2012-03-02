@@ -19,34 +19,21 @@ package org.drools.planner.examples.vehiclerouting.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("VrpVehicle")
-public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
+@XStreamAlias("VrpDepot")
+public class VrpDepot extends AbstractPersistable {
 
-    private int capacity;
-    private VrpDepot depot;
+    private VrpLocation location;
 
-    public int getCapacity() {
-        return capacity;
+    public VrpLocation getLocation() {
+        return location;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public VrpDepot getDepot() {
-        return depot;
-    }
-
-    public void setDepot(VrpDepot depot) {
-        this.depot = depot;
+    public void setLocation(VrpLocation location) {
+        this.location = location;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public VrpLocation getLocation() {
-        return depot.getLocation();
-    }
 
 }

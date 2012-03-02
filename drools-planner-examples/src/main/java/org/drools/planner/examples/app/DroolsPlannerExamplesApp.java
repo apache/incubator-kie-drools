@@ -51,6 +51,7 @@ import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
 import org.drools.planner.examples.tsp.app.TspApp;
 import org.drools.planner.examples.tsp.swingui.TspPanel;
+import org.drools.planner.examples.vehiclerouting.app.VehicleRoutingApp;
 
 public class DroolsPlannerExamplesApp extends JFrame {
 
@@ -169,9 +170,13 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new MachineReassignmentApp().init(false);
             }
         }));
-        panel.add(createDisabledExampleButton("Vehicle routing",
-                "Not yet implemented",
-                null));
+        panel.add(createExampleButton("Vehicle routing",
+                "Pick up all items of all customers with limited vehicles in the shortest route possible.",
+                null, new Runnable() {
+            public void run() {
+                new VehicleRoutingApp().init(false);
+            }
+        }));
         panel.add(createExampleButton("Hospital bed planning",
                 "Official competition name: PAS - Patient admission scheduling\n" +
                         "Assign patients to beds.",
