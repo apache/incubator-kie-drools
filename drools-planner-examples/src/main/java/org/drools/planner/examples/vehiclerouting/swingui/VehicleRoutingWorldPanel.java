@@ -161,7 +161,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
         g.fillRect(6, (int) height - 19, 3, 3);
         g.drawString("Customer demand", 15, (int) height - 15);
         g.setColor(TangoColors.SCARLET_2);
-        g.drawString("Vehicle load / capacity", 15, (int) height - 5);
+        g.drawString(schedule.getVehicleList().size() + " vehicles: load / capacity", 15, (int) height - 5);
         repaint();
     }
 
