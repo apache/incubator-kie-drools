@@ -171,6 +171,10 @@ public class GlobalExtractor
         }
     }
 
+    public String getNativeReadMethodName() {
+        return "getValue";
+    }
+
     public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
         final Object value = getValue( workingMemory, object );
         return (value != null) ? value.hashCode() : 0;

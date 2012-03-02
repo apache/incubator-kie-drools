@@ -744,6 +744,10 @@ public class EvaluatorFactoryTest {
             return null;
         }
 
+        public String getNativeReadMethodName() {
+            return null;
+        }
+
         public short getShortValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
             return object != null ? ((Number) object).shortValue() : (short) 0;

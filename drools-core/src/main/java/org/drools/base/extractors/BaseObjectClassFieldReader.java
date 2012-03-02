@@ -183,12 +183,20 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+            return this.getClass().getMethod( getNativeReadMethodName(),
+                                              new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
+    }
+
+    public String getNativeReadMethodName() {
+        Class<?> type = getExtractToClass();
+        if (!type.isPrimitive()) {
+            return "getValue";
+        }
+        return "get" + type.getName().substring(0, 1).toUpperCase() + type.getName().substring(1) + "Value";
     }
 
     public int getHashCode(InternalWorkingMemory workingMemory,

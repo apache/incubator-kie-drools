@@ -52,7 +52,7 @@ public class PackageBuildContext {
     private List                        methods;
 
     // map<String invokerClassName, String invokerCode> of generated invokers
-    private Map                         invokers;
+    private Map<String, String>         invokers;
 
     // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
     private Map                         invokerLookups;
@@ -89,7 +89,7 @@ public class PackageBuildContext {
         this.parentDescr = parentDescr;
 
         this.methods = new ArrayList();
-        this.invokers = new HashMap();
+        this.invokers = new HashMap<String, String>();
         this.invokerLookups = new HashMap();
         this.descrLookups = new HashMap();
         this.errors = new ArrayList<DroolsError>();
@@ -185,11 +185,11 @@ public class PackageBuildContext {
      * Returns the Map<String invokerClassName, String invokerCode> of generated invokers
      * @return
      */
-    public Map getInvokers() {
+    public Map<String, String> getInvokers() {
         return this.invokers;
     }
 
-    public void setInvokers(final Map invokers) {
+    public void setInvokers(final Map<String, String> invokers) {
         this.invokers = invokers;
     }
 

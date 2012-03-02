@@ -271,6 +271,10 @@ public class BigDecimalEqualityTest {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
+        public String getNativeReadMethodName() {
+            return null;
+        }
+
         public int getHashCode(Object object) {
             return 0;  //To change body of implemented methods use File | Settings | File Templates.
         }

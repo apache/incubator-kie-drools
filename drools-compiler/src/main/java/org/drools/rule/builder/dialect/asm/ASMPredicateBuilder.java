@@ -33,25 +33,23 @@ public class ASMPredicateBuilder extends AbstractASMPredicateBuilder {
         }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 final Declaration[] previousDeclarations = (Declaration[])vars.get("declarations");
-                final String[] previousDeclarationTypes = (String[])vars.get("declarationTypes");
                 final Declaration[] localDeclarations = (Declaration[])vars.get("localDeclarations");
-                final String[] localDeclarationTypes = (String[])vars.get("localDeclarationTypes");
                 final String[] globals = (String[])vars.get("globals");
                 final String[] globalTypes = (String[])vars.get("globalTypes");
 
                 objAstorePos = 7;
-                int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, previousDeclarationTypes, 3, 2, 5, true);
-                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, false);
+                int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, 3, 2, 5, true);
+                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, 4, 2, 5, false);
 
                 // @{ruleClassName}.@{methodName}(@foreach{previousDeclarations}, @foreach{localDeclarations}, @foreach{globals})
                 StringBuilder predicateMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < previousDeclarations.length; i++) {
                     load(previousDeclarationsParamsPos[i]); // previousDeclarations[i]
-                    predicateMethodDescr.append(typeDescr(previousDeclarationTypes[i]));
+                    predicateMethodDescr.append(typeDescr(previousDeclarations[i].getTypeName()));
                 }
                 for (int i = 0; i < localDeclarations.length; i++) {
                     load(localDeclarationsParamsPos[i]); // localDeclarations[i]
-                    predicateMethodDescr.append(typeDescr(localDeclarationTypes[i]));
+                    predicateMethodDescr.append(typeDescr(localDeclarations[i].getTypeName()));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

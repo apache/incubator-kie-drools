@@ -70,10 +70,6 @@ public class InvokerGenerator {
                 push(data.getInvokerClassName());
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "getDeclarationTypes", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) {
-                returnAsArray(data.getDeclarationTypes());
-            }
         }).addMethod(ACC_PUBLIC, "getGlobals", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 returnAsArray(data.getGlobals());

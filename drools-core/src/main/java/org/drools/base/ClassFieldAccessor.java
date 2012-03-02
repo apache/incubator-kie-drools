@@ -199,6 +199,10 @@ public class ClassFieldAccessor
         return this.reader.getNativeReadMethod();
     }
 
+    public String getNativeReadMethodName() {
+        return this.reader.getNativeReadMethodName();
+    }
+
     public int getHashCode(final Object object) {
         return this.reader.getHashCode( null,
                                         object );
