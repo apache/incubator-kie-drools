@@ -536,23 +536,27 @@ public class Queen {
           <title><literal>ValueRange</literal> undefinied</title>
 
           <para>Leaves the value range undefined. Some optimization algorithms do not support this value
-          range.<programlisting language="java">    @PlanningVariable
+          range.</para>
+
+          <programlisting language="java">    @PlanningVariable
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public Row getRow() {
         return row;
-    }</programlisting></para>
+    }</programlisting>
         </section>
 
         <section>
           <title>Combining ValueRanges</title>
 
-          <para>Value ranges can be combined, for example:<programlisting language="java">    @PlanningVariable(...)
+          <para>Value ranges can be combined, for example:</para>
+
+          <programlisting language="java">    @PlanningVariable(...)
     @ValueRanges({
             @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "companyCarList"),
             @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "personalCarList"})
     public Car getCar() {
         return car;
-    }</programlisting></para>
+    }</programlisting>
         </section>
 
         <section>
@@ -596,7 +600,7 @@ public class Queen {
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/chainedPrinciples.png"></imagedata>
+              <imagedata fileref="images/Chapter-Planner_configuration/chainPrinciples.png"></imagedata>
             </imageobject>
           </mediaobject>
 
@@ -641,7 +645,7 @@ public class Queen {
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/chainedCorrection.png"></imagedata>
+              <imagedata fileref="images/Chapter-Planner_configuration/chainCorrection.png"></imagedata>
             </imageobject>
           </mediaobject>
 

@@ -14,8 +14,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.0 r9654"
-   sodipodi:docname="chainedCorrection.svg"
-   inkscape:export-filename="chainedCorrection.png"
+   sodipodi:docname="chainCorrection.svg"
+   inkscape:export-filename="chainCorrection.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -246,7 +246,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.2833333"
-     inkscape:cx="364.9821"
+     inkscape:cx="368.09898"
      inkscape:cy="288.81388"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -305,7 +305,7 @@
            x="50"
            y="220.0002"
            style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4621">Chained correction</flowPara></flowRoot>    <g
+         id="flowPara4621">Chain correction</flowPara></flowRoot>    <g
        id="g3709"
        transform="translate(0,19.999997)" />
     <flowRoot
@@ -567,7 +567,7 @@
            y="429.99966"
            style="font-size:22px;fill:#000000;fill-opacity:1" /></flowRegion><flowPara
          style="font-size:22px;fill:#000000;fill-opacity:1"
-         id="flowPara3424">Changing 1 planning variable may inflict up to 2 chained corrections.</flowPara></flowRoot>    <g
+         id="flowPara3424">Changing 1 planning variable may inflict up to 2 chain corrections.</flowPara></flowRoot>    <g
        id="g3289"
        transform="translate(305,38.350362)">
       <rect
