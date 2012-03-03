@@ -583,7 +583,7 @@ public class Queen {
           <para>Some use cases, such as TSP and Vehicle Routing, require <emphasis>chaining</emphasis>. This means the
           planning entities point to each other and form a chain.</para>
 
-          <para>A variable that is chained either:</para>
+          <para>A planning variable that is chained either:</para>
 
           <itemizedlist>
             <listitem>
