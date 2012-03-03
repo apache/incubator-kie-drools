@@ -592,9 +592,13 @@ public class Queen {
             </listitem>
           </itemizedlist>
 
-          <para>Here's some example of a chain:</para>
+          <para>Here are some example of valid and invalid chains:</para>
 
-          <para>TODO image</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Planner_configuration/chainedPrinciples.png"></imagedata>
+            </imageobject>
+          </mediaobject>
 
           <para><emphasis role="bold">Every initialized planning entity is part of an open-ended chain that begins from
           an anchor.</emphasis> A valid model means that:</para>
@@ -623,18 +627,27 @@ public class Queen {
             </listitem>
           </itemizedlist>
 
-          <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to
-          guarantee that the model stays valid.</para>
-
           <warning>
-            <para>A planning problem instance given to the <literal>Solver</literal> must be valid. A custom
-            <literal>Move</literal> implementation must leave the model in a valid state.</para>
+            <para>A planning problem instance given to the <literal>Solver</literal> must be valid.</para>
           </warning>
 
           <note>
             <para>If your constraints dictate a closed chain, model it as an open-ended chain (which is easier to
             persist in a database) and implement a score constraint for the last entity back to the anchor.</para>
           </note>
+
+          <para>The optimization algorithms and build-in <literal>MoveFactory</literal>'s do chain correction to
+          guarantee that the model stays valid:</para>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Planner_configuration/chainedCorrection.png"></imagedata>
+            </imageobject>
+          </mediaobject>
+
+          <warning>
+            <para>A custom <literal>Move</literal> implementation must leave the model in a valid state.</para>
+          </warning>
 
           <para>For example, in TSP the anchor is a <literal>Domicile</literal> (in vehicle routing it is the
           vehicle):</para>
@@ -691,7 +704,8 @@ public class Visit ... implements Appearance {
             <listitem>
               <para>The value range which holds the initialized planning entities, for example
               <literal>visitList</literal>. This always requires an enabled
-              <literal>excludeUninitializedPlanningEntity</literal>.</para>
+              <literal>excludeUninitializedPlanningEntity</literal>, because an intialized entity should never point to
+              an unintialized entity: that would break the principle that every chain must have an anchor.</para>
             </listitem>
           </itemizedlist>
         </section>
