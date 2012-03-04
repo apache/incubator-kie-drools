@@ -169,17 +169,17 @@ public class DefaultSolutionDirector implements SolutionDirector {
     }
 
     /**
-     * @param presumedScore never null
+     * @param workingScore never null
      */
-    public void assertWorkingScore(Score presumedScore) {
+    public void assertWorkingScore(Score workingScore) {
         DefaultSolutionDirector uncorruptedSolutionDirector = cloneWithoutWorkingSolution();
         uncorruptedSolutionDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
-        if (!presumedScore.equals(uncorruptedScore)) {
+        if (!workingScore.equals(uncorruptedScore)) {
             String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
             uncorruptedSolutionDirector.disposeWorkingSolution();
             throw new IllegalStateException(
-                    "Score corruption: the presumedScore (" + presumedScore + ") is not the uncorruptedScore ("
+                    "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
                             + uncorruptedScore + "):\n"
                             + scoreCorruptionAnalysis);
         } else {

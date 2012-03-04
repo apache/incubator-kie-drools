@@ -129,8 +129,8 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.calculateScoreFromWorkingMemory();
     }
 
-    public void assertWorkingScore(Score presumedScore) {
-        solverScope.assertWorkingScore(presumedScore);
+    public void assertWorkingScore(Score workingScore) {
+        solverScope.assertWorkingScore(workingScore);
     }
 
     public Random getWorkingRandom() {

@@ -101,8 +101,8 @@ public class DefaultSolverScope {
         return solutionDirector.calculateScoreFromWorkingMemory();
     }
 
-    public void assertWorkingScore(Score presumedScore) {
-        solutionDirector.assertWorkingScore(presumedScore);
+    public void assertWorkingScore(Score workingScore) {
+        solutionDirector.assertWorkingScore(workingScore);
     }
 
     public Random getWorkingRandom() {
