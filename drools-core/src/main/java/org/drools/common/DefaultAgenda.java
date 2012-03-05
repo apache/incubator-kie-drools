@@ -328,13 +328,16 @@ public class DefaultAgenda
         return declarativeAgenda;
     }
     
-    public void removeActivation(final AgendaItem activation) {    
+    public void removeActivation(final AgendaItem activation) {
         if ( declarativeAgenda ) {
             workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
 
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
             }
+        }
+        if ( activation instanceof ScheduledAgendaItem ) {
+            removeScheduleItem( (ScheduledAgendaItem) activation );
         }
     }
     
