@@ -332,7 +332,7 @@ public class DefaultAgenda
         return declarativeAgenda;
     }
     
-    public void removeActivation(final AgendaItem activation) {    
+    public void removeActivation(final AgendaItem activation) {
         if ( declarativeAgenda ) {
             workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
 
@@ -341,11 +341,7 @@ public class DefaultAgenda
             }
         }
         if ( activation instanceof ScheduledAgendaItem ) {
-            ScheduledAgendaItem scheduledAgendaItem = (ScheduledAgendaItem) activation;
-            if ( scheduledAgendaItem.isEnqueued() ) {
-                scheduledAgendaItem.getJobHandle().setCancel( true );
-                removeScheduleItem( scheduledAgendaItem );
-            }
+            removeScheduleItem( (ScheduledAgendaItem) activation );
         }
     }
     
