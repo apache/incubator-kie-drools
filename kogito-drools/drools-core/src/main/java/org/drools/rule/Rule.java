@@ -592,7 +592,7 @@ public class Rule
             setSalience( (Salience) object );
         } else if ( object instanceof Enabled ) {
             setEnabled( (Enabled) object );
-        } else {
+        } else if ( object instanceof Consequence ) {
             Consequence c = (Consequence) object;
             if ( "default".equals( c.getName() ) ) {
                 setConsequence( c );
