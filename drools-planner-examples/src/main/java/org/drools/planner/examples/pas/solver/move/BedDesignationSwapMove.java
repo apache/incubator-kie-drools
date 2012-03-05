@@ -29,12 +29,12 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 
-public class BedDesignationSwitchMove implements Move, TabuPropertyEnabled {
+public class BedDesignationSwapMove implements Move, TabuPropertyEnabled {
 
     private BedDesignation leftBedDesignation;
     private BedDesignation rightBedDesignation;
 
-    public BedDesignationSwitchMove(BedDesignation leftBedDesignation, BedDesignation rightBedDesignation) {
+    public BedDesignationSwapMove(BedDesignation leftBedDesignation, BedDesignation rightBedDesignation) {
         this.leftBedDesignation = leftBedDesignation;
         this.rightBedDesignation = rightBedDesignation;
     }
@@ -44,7 +44,7 @@ public class BedDesignationSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new BedDesignationSwitchMove(rightBedDesignation, leftBedDesignation);
+        return new BedDesignationSwapMove(rightBedDesignation, leftBedDesignation);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -68,8 +68,8 @@ public class BedDesignationSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof BedDesignationSwitchMove) {
-            BedDesignationSwitchMove other = (BedDesignationSwitchMove) o;
+        } else if (o instanceof BedDesignationSwapMove) {
+            BedDesignationSwapMove other = (BedDesignationSwapMove) o;
             return new EqualsBuilder()
                     .append(leftBedDesignation, other.leftBedDesignation)
                     .append(rightBedDesignation, other.rightBedDesignation)

@@ -29,12 +29,12 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
 
-public class ExamSwitchMove implements Move, TabuPropertyEnabled {
+public class ExamSwapMove implements Move, TabuPropertyEnabled {
 
     private Exam leftExam;
     private Exam rightExam;
 
-    public ExamSwitchMove(Exam leftExam, Exam rightExam) {
+    public ExamSwapMove(Exam leftExam, Exam rightExam) {
         this.leftExam = leftExam;
         this.rightExam = rightExam;
     }
@@ -45,7 +45,7 @@ public class ExamSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new ExamSwitchMove(rightExam, leftExam);
+        return new ExamSwapMove(rightExam, leftExam);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -72,8 +72,8 @@ public class ExamSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ExamSwitchMove) {
-            ExamSwitchMove other = (ExamSwitchMove) o;
+        } else if (o instanceof ExamSwapMove) {
+            ExamSwapMove other = (ExamSwapMove) o;
             return new EqualsBuilder()
                     .append(leftExam, other.leftExam)
                     .append(rightExam, other.rightExam)

@@ -39,7 +39,7 @@ import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.drools.planner.examples.manners2009.domain.Table;
-import org.drools.planner.examples.manners2009.solver.move.SeatDesignationSwitchMove;
+import org.drools.planner.examples.manners2009.solver.move.SeatDesignationSwapMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -148,7 +148,7 @@ public class Manners2009Panel extends SolutionPanel {
                     "Select seat designation to switch with", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 SeatDesignation switchSeatDesignation = (SeatDesignation) seatDesignationListField.getSelectedItem();
-                solutionBusiness.doMove(new SeatDesignationSwitchMove(seatDesignation, switchSeatDesignation));
+                solutionBusiness.doMove(new SeatDesignationSwapMove(seatDesignation, switchSeatDesignation));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

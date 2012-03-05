@@ -87,7 +87,7 @@
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -113,7 +113,7 @@
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>

@@ -70,10 +70,10 @@
             <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
@@ -98,10 +98,10 @@
             <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
@@ -123,10 +123,10 @@
             <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->

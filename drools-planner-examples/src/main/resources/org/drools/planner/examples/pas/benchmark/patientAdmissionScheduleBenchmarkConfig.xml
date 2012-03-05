@@ -92,7 +92,7 @@
       <!--<localSearch>-->
         <!--<selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->

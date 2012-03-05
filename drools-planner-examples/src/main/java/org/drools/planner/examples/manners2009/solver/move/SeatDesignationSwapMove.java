@@ -29,12 +29,12 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-public class SeatDesignationSwitchMove implements Move, TabuPropertyEnabled {
+public class SeatDesignationSwapMove implements Move, TabuPropertyEnabled {
 
     private SeatDesignation leftSeatDesignation;
     private SeatDesignation rightSeatDesignation;
 
-    public SeatDesignationSwitchMove(SeatDesignation leftSeatDesignation, SeatDesignation rightSeatDesignation) {
+    public SeatDesignationSwapMove(SeatDesignation leftSeatDesignation, SeatDesignation rightSeatDesignation) {
         this.leftSeatDesignation = leftSeatDesignation;
         this.rightSeatDesignation = rightSeatDesignation;
     }
@@ -44,7 +44,7 @@ public class SeatDesignationSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new SeatDesignationSwitchMove(rightSeatDesignation, leftSeatDesignation);
+        return new SeatDesignationSwapMove(rightSeatDesignation, leftSeatDesignation);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -68,8 +68,8 @@ public class SeatDesignationSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof SeatDesignationSwitchMove) {
-            SeatDesignationSwitchMove other = (SeatDesignationSwitchMove) o;
+        } else if (o instanceof SeatDesignationSwapMove) {
+            SeatDesignationSwapMove other = (SeatDesignationSwapMove) o;
             return new EqualsBuilder()
                     .append(leftSeatDesignation, other.leftSeatDesignation)
                     .append(rightSeatDesignation, other.rightSeatDesignation)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nurserostering.solver.move.factory;
+package org.drools.planner.examples.examination.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,21 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
-import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.nurserostering.solver.move.ShiftAssignmentSwitchMove;
+import org.drools.planner.examples.examination.domain.Exam;
+import org.drools.planner.examples.examination.domain.Examination;
+import org.drools.planner.examples.examination.solver.move.ExamSwapMove;
 
-public class ShiftAssignmentSwitchMoveFactory extends CachedMoveFactory {
+public class ExamSwapMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
-        NurseRoster nurseRoster = (NurseRoster) solution;
-        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
+        Examination examination = (Examination) solution;
+        List<Exam> examList = examination.getExamList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
-            ShiftAssignment leftShiftAssignment = leftIt.next();
-            for (ListIterator<ShiftAssignment> rightIt = shiftAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                ShiftAssignment rightShiftAssignment = rightIt.next();
-                moveList.add(new ShiftAssignmentSwitchMove(leftShiftAssignment, rightShiftAssignment));
+        for (ListIterator<Exam> leftIt = examList.listIterator(); leftIt.hasNext();) {
+            Exam leftExam = leftIt.next();
+            for (ListIterator<Exam> rightIt = examList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                Exam rightExam = rightIt.next();
+                moveList.add(new ExamSwapMove(leftExam, rightExam));
             }
         }
         return moveList;

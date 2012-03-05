@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.solver.move.factory;
+package org.drools.planner.examples.nurserostering.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,21 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
-import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
-import org.drools.planner.examples.cloudbalancing.solver.move.CloudProcessSwitchMove;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
+import org.drools.planner.examples.nurserostering.domain.NurseRoster;
+import org.drools.planner.examples.nurserostering.solver.move.ShiftAssignmentSwapMove;
 
-public class CloudProcessSwitchMoveFactory extends CachedMoveFactory {
+public class ShiftAssignmentSwapMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
-        CloudBalance cloudBalance = (CloudBalance) solution;
-        List<CloudProcess> cloudProcessList = cloudBalance.getProcessList();
+        NurseRoster nurseRoster = (NurseRoster) solution;
+        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<CloudProcess> leftIt = cloudProcessList.listIterator(); leftIt.hasNext();) {
-            CloudProcess leftCloudProcess = leftIt.next();
-            for (ListIterator<CloudProcess> rightIt = cloudProcessList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                CloudProcess rightCloudProcess = rightIt.next();
-                moveList.add(new CloudProcessSwitchMove(leftCloudProcess, rightCloudProcess));
+        for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
+            ShiftAssignment leftShiftAssignment = leftIt.next();
+            for (ListIterator<ShiftAssignment> rightIt = shiftAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                ShiftAssignment rightShiftAssignment = rightIt.next();
+                moveList.add(new ShiftAssignmentSwapMove(leftShiftAssignment, rightShiftAssignment));
             }
         }
         return moveList;

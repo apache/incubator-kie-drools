@@ -69,7 +69,7 @@
             <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -110,7 +110,7 @@
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -146,7 +146,7 @@
       <localSearch>
         <selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -185,10 +185,10 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -226,10 +226,10 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>

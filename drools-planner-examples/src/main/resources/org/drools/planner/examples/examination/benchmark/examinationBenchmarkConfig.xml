@@ -51,7 +51,7 @@
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -77,7 +77,7 @@
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -104,7 +104,7 @@
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -131,7 +131,7 @@
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>

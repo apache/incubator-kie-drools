@@ -31,7 +31,7 @@ import org.drools.planner.core.localsearch.decider.selector.AbstractSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory;
+import org.drools.planner.examples.examination.solver.move.factory.ExamSwapMoveFactory;
 import org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory;
 import org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory;
 
@@ -42,7 +42,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
 
     protected PeriodChangeMoveFactory periodChangeMoveFactory = new PeriodChangeMoveFactory();
     protected RoomChangeMoveFactory roomChangeMoveFactory = new RoomChangeMoveFactory();
-    protected ExamSwitchMoveFactory examSwitchMoveFactory = new ExamSwitchMoveFactory();
+    protected ExamSwapMoveFactory examSwapMoveFactory = new ExamSwapMoveFactory();
 
     protected Map<Exam, List<Move>> cachedExamToMoveMap;
     protected List<Exam> shuffledExamList;
@@ -53,7 +53,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
         super.setDecider(decider);
         periodChangeMoveFactory.setDecider(decider);
         roomChangeMoveFactory.setDecider(decider);
-        examSwitchMoveFactory.setDecider(decider);
+        examSwapMoveFactory.setDecider(decider);
     }
 
     // ************************************************************************
@@ -64,7 +64,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         periodChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
         roomChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
-        examSwitchMoveFactory.phaseStarted(localSearchSolverPhaseScope);
+        examSwapMoveFactory.phaseStarted(localSearchSolverPhaseScope);
         createCachedExamToMoveMap(localSearchSolverPhaseScope);
     }
 
@@ -73,12 +73,12 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
         int examListSize = examination.getExamList().size();
         List<Move> cachedPeriodChangeMoveList = periodChangeMoveFactory.getCachedMoveList();
         List<Move> cachedRoomChangeMoveList = roomChangeMoveFactory.getCachedMoveList();
-        List<Move> cachedExamSwitchMoveList = examSwitchMoveFactory.getCachedMoveList();
+        List<Move> cachedExamSwapMoveList = examSwapMoveFactory.getCachedMoveList();
         cachedExamToMoveMap = new HashMap<Exam, List<Move>>(cachedPeriodChangeMoveList.size()
-                + cachedRoomChangeMoveList.size() + cachedExamSwitchMoveList.size());
+                + cachedRoomChangeMoveList.size() + cachedExamSwapMoveList.size());
         addToCachedExamToMoveMap(examListSize, cachedPeriodChangeMoveList);
         addToCachedExamToMoveMap(examListSize, cachedRoomChangeMoveList);
-        addToCachedExamToMoveMap(examListSize, cachedExamSwitchMoveList);
+        addToCachedExamToMoveMap(examListSize, cachedExamSwapMoveList);
         shuffledExamList = new ArrayList<Exam>(cachedExamToMoveMap.keySet());
         // shuffling is lazy (just in time in the selectMoveList method)
         nextShuffledExamListIndex = Integer.MAX_VALUE;
@@ -103,7 +103,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         periodChangeMoveFactory.beforeDeciding(localSearchStepScope);
         roomChangeMoveFactory.beforeDeciding(localSearchStepScope);
-        examSwitchMoveFactory.beforeDeciding(localSearchStepScope);
+        examSwapMoveFactory.beforeDeciding(localSearchStepScope);
     }
 
     public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
@@ -122,21 +122,21 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         periodChangeMoveFactory.stepDecided(localSearchStepScope);
         roomChangeMoveFactory.stepDecided(localSearchStepScope);
-        examSwitchMoveFactory.stepDecided(localSearchStepScope);
+        examSwapMoveFactory.stepDecided(localSearchStepScope);
     }
 
     @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         periodChangeMoveFactory.stepTaken(localSearchStepScope);
         roomChangeMoveFactory.stepTaken(localSearchStepScope);
-        examSwitchMoveFactory.stepTaken(localSearchStepScope);
+        examSwapMoveFactory.stepTaken(localSearchStepScope);
     }
 
     @Override
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         periodChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
         roomChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
-        examSwitchMoveFactory.phaseEnded(localSearchSolverPhaseScope);
+        examSwapMoveFactory.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }

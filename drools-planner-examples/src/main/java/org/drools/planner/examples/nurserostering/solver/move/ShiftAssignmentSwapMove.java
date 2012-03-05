@@ -28,12 +28,12 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-public class ShiftAssignmentSwitchMove implements Move, TabuPropertyEnabled {
+public class ShiftAssignmentSwapMove implements Move, TabuPropertyEnabled {
 
     private ShiftAssignment leftShiftAssignment;
     private ShiftAssignment rightShiftAssignment;
 
-    public ShiftAssignmentSwitchMove(ShiftAssignment leftShiftAssignment, ShiftAssignment rightShiftAssignment) {
+    public ShiftAssignmentSwapMove(ShiftAssignment leftShiftAssignment, ShiftAssignment rightShiftAssignment) {
         this.leftShiftAssignment = leftShiftAssignment;
         this.rightShiftAssignment = rightShiftAssignment;
     }
@@ -43,7 +43,7 @@ public class ShiftAssignmentSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new ShiftAssignmentSwitchMove(rightShiftAssignment, leftShiftAssignment);
+        return new ShiftAssignmentSwapMove(rightShiftAssignment, leftShiftAssignment);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -60,8 +60,8 @@ public class ShiftAssignmentSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof ShiftAssignmentSwitchMove) {
-            ShiftAssignmentSwitchMove other = (ShiftAssignmentSwitchMove) o;
+        } else if (o instanceof ShiftAssignmentSwapMove) {
+            ShiftAssignmentSwapMove other = (ShiftAssignmentSwapMove) o;
             return new EqualsBuilder()
                     .append(leftShiftAssignment, other.leftShiftAssignment)
                     .append(rightShiftAssignment, other.rightShiftAssignment)

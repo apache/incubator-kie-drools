@@ -25,9 +25,9 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
-import org.drools.planner.examples.curriculumcourse.solver.move.LectureSwitchMove;
+import org.drools.planner.examples.curriculumcourse.solver.move.LectureSwapMove;
 
-public class LectureSwitchMoveFactory extends CachedMoveFactory {
+public class LectureSwapMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
@@ -38,7 +38,7 @@ public class LectureSwitchMoveFactory extends CachedMoveFactory {
             for (ListIterator<Lecture> rightIt = lectureList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
                 Lecture rightLecture = rightIt.next();
                 if (!leftLecture.getCourse().equals(rightLecture.getCourse())) {
-                    moveList.add(new LectureSwitchMove(leftLecture, rightLecture));
+                    moveList.add(new LectureSwapMove(leftLecture, rightLecture));
                 }
             }
         }

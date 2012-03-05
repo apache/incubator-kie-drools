@@ -26,10 +26,10 @@
         <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
       <!--</selector>-->
       <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwapMoveFactorymoveFactoryClass>-->
       <!--</selector>-->
       <selector>
-        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveFactoryClass>
       </selector>
     </selector>
     <acceptor>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.examination.solver.move.factory;
+package org.drools.planner.examples.cloudbalancing.solver.move.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +23,21 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.examination.domain.Exam;
-import org.drools.planner.examples.examination.domain.Examination;
-import org.drools.planner.examples.examination.solver.move.ExamSwitchMove;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
+import org.drools.planner.examples.cloudbalancing.solver.move.CloudProcessSwapMove;
 
-public class ExamSwitchMoveFactory extends CachedMoveFactory {
+public class CloudProcessSwapMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
-        Examination examination = (Examination) solution;
-        List<Exam> examList = examination.getExamList();
+        CloudBalance cloudBalance = (CloudBalance) solution;
+        List<CloudProcess> cloudProcessList = cloudBalance.getProcessList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<Exam> leftIt = examList.listIterator(); leftIt.hasNext();) {
-            Exam leftExam = leftIt.next();
-            for (ListIterator<Exam> rightIt = examList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                Exam rightExam = rightIt.next();
-                moveList.add(new ExamSwitchMove(leftExam, rightExam));
+        for (ListIterator<CloudProcess> leftIt = cloudProcessList.listIterator(); leftIt.hasNext();) {
+            CloudProcess leftCloudProcess = leftIt.next();
+            for (ListIterator<CloudProcess> rightIt = cloudProcessList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                CloudProcess rightCloudProcess = rightIt.next();
+                moveList.add(new CloudProcessSwapMove(leftCloudProcess, rightCloudProcess));
             }
         }
         return moveList;

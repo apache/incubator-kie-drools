@@ -29,12 +29,12 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 
-public class LectureSwitchMove implements Move, TabuPropertyEnabled {
+public class LectureSwapMove implements Move, TabuPropertyEnabled {
 
     private Lecture leftLecture;
     private Lecture rightLecture;
 
-    public LectureSwitchMove(Lecture leftLecture, Lecture rightLecture) {
+    public LectureSwapMove(Lecture leftLecture, Lecture rightLecture) {
         this.leftLecture = leftLecture;
         this.rightLecture = rightLecture;
     }
@@ -45,7 +45,7 @@ public class LectureSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new LectureSwitchMove(rightLecture, leftLecture);
+        return new LectureSwapMove(rightLecture, leftLecture);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -72,8 +72,8 @@ public class LectureSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof LectureSwitchMove) {
-            LectureSwitchMove other = (LectureSwitchMove) o;
+        } else if (o instanceof LectureSwapMove) {
+            LectureSwapMove other = (LectureSwapMove) o;
             return new EqualsBuilder()
                     .append(leftLecture, other.leftLecture)
                     .append(rightLecture, other.rightLecture)

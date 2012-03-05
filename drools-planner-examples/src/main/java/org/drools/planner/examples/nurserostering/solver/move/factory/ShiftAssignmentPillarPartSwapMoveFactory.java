@@ -34,7 +34,7 @@ import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeMultipleChangeMove;
 
-public class ShiftAssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
+public class ShiftAssignmentPillarPartSwapMoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;

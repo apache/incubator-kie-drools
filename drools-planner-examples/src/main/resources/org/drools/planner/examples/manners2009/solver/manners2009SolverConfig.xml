@@ -19,7 +19,7 @@
   </customSolverPhase>
   <localSearch>
     <selector>
-      <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
+      <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwapMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>

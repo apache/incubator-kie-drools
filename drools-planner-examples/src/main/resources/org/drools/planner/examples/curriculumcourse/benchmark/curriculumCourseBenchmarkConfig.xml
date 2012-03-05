@@ -129,7 +129,7 @@
             <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
@@ -158,7 +158,7 @@
             <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
@@ -186,7 +186,7 @@
             <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
@@ -209,7 +209,7 @@
             <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
           <!--</selector>-->
           <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactorymoveFactoryClass>-->
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->

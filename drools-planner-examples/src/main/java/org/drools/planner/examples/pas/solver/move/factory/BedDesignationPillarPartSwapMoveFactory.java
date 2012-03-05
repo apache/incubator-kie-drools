@@ -36,7 +36,7 @@ import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.solver.move.BedChangeMove;
 import org.apache.commons.lang.builder.CompareToBuilder;
 
-public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFactory {
+public class BedDesignationPillarPartSwapMoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;

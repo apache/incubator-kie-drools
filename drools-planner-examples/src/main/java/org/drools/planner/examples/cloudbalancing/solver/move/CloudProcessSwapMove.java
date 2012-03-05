@@ -28,12 +28,12 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
+public class CloudProcessSwapMove implements Move, TabuPropertyEnabled {
 
     private CloudProcess leftCloudProcess;
     private CloudProcess rightCloudProcess;
 
-    public CloudProcessSwitchMove(CloudProcess leftCloudProcess, CloudProcess rightCloudProcess) {
+    public CloudProcessSwapMove(CloudProcess leftCloudProcess, CloudProcess rightCloudProcess) {
         this.leftCloudProcess = leftCloudProcess;
         this.rightCloudProcess = rightCloudProcess;
     }
@@ -43,7 +43,7 @@ public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new CloudProcessSwitchMove(rightCloudProcess, leftCloudProcess);
+        return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -60,8 +60,8 @@ public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudProcessSwitchMove) {
-            CloudProcessSwitchMove other = (CloudProcessSwitchMove) o;
+        } else if (o instanceof CloudProcessSwapMove) {
+            CloudProcessSwapMove other = (CloudProcessSwapMove) o;
             return new EqualsBuilder()
                     .append(leftCloudProcess, other.leftCloudProcess)
                     .append(rightCloudProcess, other.rightCloudProcess)

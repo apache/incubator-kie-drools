@@ -25,9 +25,9 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.solver.move.BedDesignationSwitchMove;
+import org.drools.planner.examples.pas.solver.move.BedDesignationSwapMove;
 
-public class BedDesignationSwitchMoveFactory extends CachedMoveFactory {
+public class BedDesignationSwapMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
@@ -39,7 +39,7 @@ public class BedDesignationSwitchMoveFactory extends CachedMoveFactory {
                     rightIt.hasNext();) {
                 BedDesignation rightBedDesignation = rightIt.next();
                 if (leftBedDesignation.getAdmissionPart().calculateSameNightCount(rightBedDesignation.getAdmissionPart()) > 0) {
-                    moveList.add(new BedDesignationSwitchMove(leftBedDesignation, rightBedDesignation));
+                    moveList.add(new BedDesignationSwapMove(leftBedDesignation, rightBedDesignation));
                 }
             }
         }
