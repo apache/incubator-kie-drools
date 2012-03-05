@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.cloudbalancing.swingui;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
@@ -44,7 +43,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.common.swingui.TangoColors;
 
 public class CloudBalancingPanel extends SolutionPanel {
 
@@ -122,7 +120,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         CloudBalance cloudBalance = (CloudBalance) solution;
         Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(cloudComputerToPanelMap.keySet());
         deadCloudComputerSet.remove(null);
-        for (CloudComputer cloudComputer : cloudBalance.getCloudComputerList()) {
+        for (CloudComputer cloudComputer : cloudBalance.getComputerList()) {
             deadCloudComputerSet.remove(cloudComputer);
             CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
             if (cloudComputerPanel == null) {
@@ -133,10 +131,10 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
         Set<CloudProcess> deadCloudProcessSet = new LinkedHashSet<CloudProcess>(
                 cloudProcessToPanelMap.keySet());
-        for (CloudProcess cloudProcess : cloudBalance.getCloudProcessList()) {
+        for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
             deadCloudProcessSet.remove(cloudProcess);
             CloudComputerPanel cloudComputerPanel = cloudProcessToPanelMap.get(cloudProcess);
-            CloudComputer cloudComputer = cloudProcess.getCloudComputer();
+            CloudComputer cloudComputer = cloudProcess.getComputer();
             if (cloudComputerPanel != null
                     && !ObjectUtils.equals(cloudComputerPanel.getCloudComputer(), cloudComputer)) {
                 cloudProcessToPanelMap.remove(cloudProcess);
@@ -169,15 +167,15 @@ public class CloudBalancingPanel extends SolutionPanel {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
                 // First remove the planning fact from all planning entities that use it
-                for (CloudProcess cloudProcess : cloudBalance.getCloudProcessList()) {
-                    if (ObjectUtils.equals(cloudProcess.getCloudComputer(), cloudComputer)) {
+                for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
+                    if (ObjectUtils.equals(cloudProcess.getComputer(), cloudComputer)) {
                         FactHandle cloudProcessHandle = workingMemory.getFactHandle(cloudProcess);
-                        cloudProcess.setCloudComputer(null);
+                        cloudProcess.setComputer(null);
                         workingMemory.retract(cloudProcessHandle);
                     }
                 }
                 // Next remove it the planning fact itself
-                for (Iterator<CloudComputer> it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
+                for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingCloudComputer = it.next();
                     if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {
                         FactHandle cloudComputerHandle = workingMemory.getFactHandle(workingCloudComputer);
@@ -201,9 +199,9 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<CloudComputer> cloudComputerList = getCloudBalance().getCloudComputerList();
+            List<CloudComputer> cloudComputerList = getCloudBalance().getComputerList();
             JComboBox cloudComputerListField = new JComboBox(cloudComputerList.toArray());
-            cloudComputerListField.setSelectedItem(cloudProcess.getCloudComputer());
+            cloudComputerListField.setSelectedItem(cloudProcess.getComputer());
             int result = JOptionPane.showConfirmDialog(CloudBalancingPanel.this.getRootPane(), cloudComputerListField,
                     "Select cloud computer", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {

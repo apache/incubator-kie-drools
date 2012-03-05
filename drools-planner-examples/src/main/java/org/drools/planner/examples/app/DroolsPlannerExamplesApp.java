@@ -121,9 +121,9 @@ public class DroolsPlannerExamplesApp extends JFrame {
                     }
                 }));
         panel.add(createExampleButton("Cloud balancing",
-                "Assign processes to servers.\n\n" +
-                        "Each server must have enough hardware to run all of it's processes.\n" +
-                        "Each server used inflicts a maintenance cost.",
+                "Assign processes to computers.\n\n" +
+                        "Each computer must have enough hardware to run all of it's processes.\n" +
+                        "Each computer used inflicts a maintenance cost.",
                 CloudBalancingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new CloudBalancingApp().init(false);

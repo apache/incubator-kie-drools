@@ -33,61 +33,61 @@ global HardAndSoftScoreCalculator scoreCalculator;
 
 rule "requiredCpuPowerTotal"
     when
-        $cloudComputer : CloudComputer($cpuPower : cpuPower)
+        $computer : CloudComputer($cpuPower : cpuPower)
         $requiredCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
             CloudProcess(
-                cloudComputer == $cloudComputer,
+                computer == $computer,
                 $requiredCpuPower : requiredCpuPower),
             sum($requiredCpuPower)
         )
     then
         insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
                 $requiredCpuPowerTotal.intValue() - $cpuPower,
-                $cloudComputer));
+                $computer));
 end
 
 rule "requiredMemoryTotal"
     when
-        $cloudComputer : CloudComputer($memory : memory)
+        $computer : CloudComputer($memory : memory)
         $requiredMemoryTotal : Number(intValue > $memory) from accumulate(
             CloudProcess(
-                cloudComputer == $cloudComputer,
+                computer == $computer,
                 $requiredMemory : requiredMemory),
             sum($requiredMemory)
         )
     then
         insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.NEGATIVE_HARD,
                 $requiredMemoryTotal.intValue() - $memory,
-                $cloudComputer));
+                $computer));
 end
 
 rule "requiredNetworkBandwidthTotal"
     when
-        $cloudComputer : CloudComputer($networkBandwidth : networkBandwidth)
+        $computer : CloudComputer($networkBandwidth : networkBandwidth)
         $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
             CloudProcess(
-                cloudComputer == $cloudComputer,
+                computer == $computer,
                 $requiredNetworkBandwidth : requiredNetworkBandwidth),
             sum($requiredNetworkBandwidth)
         )
     then
         insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.NEGATIVE_HARD,
                 $requiredNetworkBandwidthTotal.intValue() - $networkBandwidth,
-                $cloudComputer));
+                $computer));
 end
 
 // ############################################################################
 // Soft constraints
 // ############################################################################
 
-rule "cloudComputerCost"
+rule "computerCost"
     when
-        $cloudComputer : CloudComputer($cost : cost)
-        exists CloudProcess(cloudComputer == $cloudComputer)
+        $computer : CloudComputer($cost : cost)
+        exists CloudProcess(computer == $computer)
     then
-        insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("computerCost", ConstraintType.NEGATIVE_SOFT,
                 $cost,
-                $cloudComputer));
+                $computer));
 end
 
 // ############################################################################

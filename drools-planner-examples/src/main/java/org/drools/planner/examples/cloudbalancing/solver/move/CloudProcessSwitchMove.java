@@ -39,7 +39,7 @@ public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(leftCloudProcess.getCloudComputer(), rightCloudProcess.getCloudComputer());
+        return !ObjectUtils.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
@@ -47,8 +47,8 @@ public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        CloudComputer oldLeftCloudComputer = leftCloudProcess.getCloudComputer();
-        CloudComputer oldRightCloudComputer = rightCloudProcess.getCloudComputer();
+        CloudComputer oldLeftCloudComputer = leftCloudProcess.getComputer();
+        CloudComputer oldRightCloudComputer = rightCloudProcess.getComputer();
         CloudBalancingMoveHelper.moveCloudComputer(workingMemory, leftCloudProcess, oldRightCloudComputer);
         CloudBalancingMoveHelper.moveCloudComputer(workingMemory, rightCloudProcess, oldLeftCloudComputer);
     }

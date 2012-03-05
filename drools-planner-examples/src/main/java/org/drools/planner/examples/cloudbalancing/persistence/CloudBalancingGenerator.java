@@ -143,9 +143,9 @@ public class CloudBalancingGenerator extends LoggingMain {
         createCloudComputerList(cloudBalance,cloudComputerListSize);
         createCloudProcessList(cloudBalance, cloudProcessListSize);
         logger.info("CloudBalance {} with {} computers and {} processes.",
-                cloudBalance.getCloudComputerList().size(), cloudBalance.getCloudProcessList().size());
-        BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
-                cloudBalance.getCloudProcessList().size());
+                cloudBalance.getComputerList().size(), cloudBalance.getProcessList().size());
+        BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getComputerList().size()).pow(
+                cloudBalance.getProcessList().size());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize ({}).",
                 flooredPossibleSolutionSize, possibleSolutionSize);
@@ -172,7 +172,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             cloudComputer.setCost(cost);
             cloudComputerList.add(cloudComputer);
         }
-        cloudBalance.setCloudComputerList(cloudComputerList);
+        cloudBalance.setComputerList(cloudComputerList);
     }
 
     private int distortIndex(int referenceIndex, int length) {
@@ -208,7 +208,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             // Notice that we leave the PlanningVariable properties on null
             cloudProcessList.add(cloudProcess);
         }
-        cloudBalance.setCloudProcessList(cloudProcessList);
+        cloudBalance.setProcessList(cloudProcessList);
     }
 
     private int generateRandom(int maximumValue) {

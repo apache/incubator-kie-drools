@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
+
+  <!-- Domain model configuration -->
   <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
   <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
 
+  <!-- Score configuration -->
   <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
-  
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <maximumSecondsSpend>120</maximumSecondsSpend>
+  </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
   </constructionHeuristic>
   <localSearch>
-    <termination>
-      <maximumSecondsSpend>120</maximumSecondsSpend>
-    </termination>
     <selector>
       <selector>
         <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>

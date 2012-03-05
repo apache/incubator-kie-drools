@@ -246,7 +246,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.1866667"
-     inkscape:cx="471.41244"
+     inkscape:cx="473.09783"
      inkscape:cy="324.11269"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -581,7 +581,7 @@
            x="40"
            y="140.00014"
            style="font-size:14px;text-align:start;text-anchor:start" /></flowRegion><flowPara
-         id="flowPara4308-6">Assign each process to a server.</flowPara></flowRoot>    <rect
+         id="flowPara4308-6">Assign each process to a computer.</flowPara></flowRoot>    <rect
        ry="5"
        rx="4.999999"
        y="592.86218"
@@ -1799,7 +1799,7 @@
            x="265"
            y="77.558319"
            style="font-size:14px" /></flowRegion><flowPara
-         id="flowPara4155">Servers</flowPara></flowRoot>    <flowRoot
+         id="flowPara4155">Computers</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4157"
        style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion

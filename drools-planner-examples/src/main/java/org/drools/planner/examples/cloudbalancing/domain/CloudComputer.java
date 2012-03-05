@@ -26,7 +26,7 @@ public class CloudComputer extends AbstractPersistable {
     private int cpuPower; // in gigahertz
     private int memory; // in gigabyte RAM
     private int networkBandwidth; // in gigabyte per hour
-    private int cost; // in euro per hour
+    private int cost; // in euro per month
 
     public int getCpuPower() {
         return cpuPower;
@@ -59,6 +59,10 @@ public class CloudComputer extends AbstractPersistable {
     public void setCost(int cost) {
         this.cost = cost;
     }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
 
     public int getMultiplicand() {
         return cpuPower * memory * networkBandwidth;

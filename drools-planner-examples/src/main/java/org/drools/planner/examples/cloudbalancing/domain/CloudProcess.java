@@ -36,7 +36,7 @@ public class CloudProcess extends AbstractPersistable {
     private int requiredNetworkBandwidth; // in gigabyte per hour
 
     // Planning variables: changes during planning, between score calculations.
-    private CloudComputer cloudComputer;
+    private CloudComputer computer;
 
     public int getRequiredCpuPower() {
         return requiredCpuPower;
@@ -63,13 +63,13 @@ public class CloudProcess extends AbstractPersistable {
     }
 
     @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "cloudComputerList")
-    public CloudComputer getCloudComputer() {
-        return cloudComputer;
+    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "computerList")
+    public CloudComputer getComputer() {
+        return computer;
     }
 
-    public void setCloudComputer(CloudComputer cloudComputer) {
-        this.cloudComputer = cloudComputer;
+    public void setComputer(CloudComputer computer) {
+        this.computer = computer;
     }
 
     // ************************************************************************
@@ -90,7 +90,7 @@ public class CloudProcess extends AbstractPersistable {
         clone.requiredCpuPower = requiredCpuPower;
         clone.requiredMemory = requiredMemory;
         clone.requiredNetworkBandwidth = requiredNetworkBandwidth;
-        clone.cloudComputer = cloudComputer;
+        clone.computer = computer;
         return clone;
     }
 
@@ -106,7 +106,7 @@ public class CloudProcess extends AbstractPersistable {
             CloudProcess other = (CloudProcess) o;
             return new EqualsBuilder()
                     .append(id, other.id)
-                    .append(cloudComputer, other.cloudComputer)
+                    .append(computer, other.computer)
                     .isEquals();
         } else {
             return false;
@@ -121,13 +121,13 @@ public class CloudProcess extends AbstractPersistable {
     public int solutionHashCode() {
         return new HashCodeBuilder()
                 .append(id)
-                .append(cloudComputer)
+                .append(computer)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
-        return getLabel() + "->" + cloudComputer;
+        return getLabel() + "->" + computer;
     }
 
 }

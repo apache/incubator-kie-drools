@@ -16,8 +16,6 @@
 
 package org.drools.planner.examples.cloudbalancing.app;
 
-import java.util.List;
-
 import org.drools.planner.config.SolverFactory;
 import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.core.Solver;
@@ -49,8 +47,8 @@ public class CloudBalancingHelloWorld {
 
     public static String toDisplayString(CloudBalance cloudBalance) {
         StringBuilder displayString = new StringBuilder();
-        for (CloudProcess process : cloudBalance.getCloudProcessList()) {
-            CloudComputer computer = process.getCloudComputer();
+        for (CloudProcess process : cloudBalance.getProcessList()) {
+            CloudComputer computer = process.getComputer();
             displayString.append("  ").append(process.getLabel()).append(" -> ")
                     .append(computer == null ? null : computer.getLabel()).append("\n");
         }

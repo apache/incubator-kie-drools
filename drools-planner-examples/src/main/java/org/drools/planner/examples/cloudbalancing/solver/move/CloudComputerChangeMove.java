@@ -39,11 +39,11 @@ public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(cloudProcess.getCloudComputer(), toCloudComputer);
+        return !ObjectUtils.equals(cloudProcess.getComputer(), toCloudComputer);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new CloudComputerChangeMove(cloudProcess, cloudProcess.getCloudComputer());
+        return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
 
     public void doMove(WorkingMemory workingMemory) {

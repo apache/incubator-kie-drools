@@ -31,7 +31,7 @@ public class CloudProcessSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         CloudBalance cloudBalance = (CloudBalance) solution;
-        List<CloudProcess> cloudProcessList = cloudBalance.getCloudProcessList();
+        List<CloudProcess> cloudProcessList = cloudBalance.getProcessList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<CloudProcess> leftIt = cloudProcessList.listIterator(); leftIt.hasNext();) {
             CloudProcess leftCloudProcess = leftIt.next();

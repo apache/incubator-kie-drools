@@ -32,8 +32,8 @@ public class CloudComputerChangeMoveFactory extends CachedMoveFactory {
     public List<Move> createCachedMoveList(Solution solution) {
         CloudBalance cloudBalance = (CloudBalance) solution;
         List<Move> moveList = new ArrayList<Move>();
-        List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        for (CloudProcess cloudProcess : cloudBalance.getCloudProcessList()) {
+        List<CloudComputer> cloudComputerList = cloudBalance.getComputerList();
+        for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
             for (CloudComputer cloudComputer : cloudComputerList) {
                 moveList.add(new CloudComputerChangeMove(cloudProcess, cloudComputer));
             }
