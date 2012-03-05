@@ -340,8 +340,8 @@ public class CloudProcess {
 
     public int compare(CloudProcess a, CloudProcess b) {
         return new CompareToBuilder()
-                .append(a.getCloudProcess().getRequiredMultiplicand(), b.getCloudProcess().getRequiredMultiplicand())
-                .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
+                .append(a.getId(), b.getId())
                 .toComparison();
     }
 
@@ -728,7 +728,7 @@ public class Visit ... implements Appearance {
 
         <programlisting language="java">    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
     // ...
-    public CloudComputer getCloudComputer() {
+    public CloudComputer getComputer() {
         // ...
     }</programlisting>
 
