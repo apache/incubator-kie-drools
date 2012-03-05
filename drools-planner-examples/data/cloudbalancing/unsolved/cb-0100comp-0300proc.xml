@@ -1,6 +1,6 @@
 <CloudBalance id="1">
   <id>0</id>
-  <cloudComputerList id="2">
+  <computerList id="2">
     <CloudComputer id="3">
       <id>0</id>
       <cpuPower>24</cpuPower>
@@ -701,8 +701,8 @@
       <networkBandwidth>2</networkBandwidth>
       <cost>350</cost>
     </CloudComputer>
-  </cloudComputerList>
-  <cloudProcessList id="103">
+  </computerList>
+  <processList id="103">
     <CloudProcess id="104">
       <id>0</id>
       <requiredCpuPower>3</requiredCpuPower>
@@ -2503,5 +2503,5 @@
       <requiredMemory>31</requiredMemory>
       <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
-  </cloudProcessList>
+  </processList>
 </CloudBalance>
