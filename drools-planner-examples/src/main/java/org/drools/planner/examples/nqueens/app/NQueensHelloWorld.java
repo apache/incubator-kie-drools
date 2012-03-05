@@ -33,7 +33,7 @@ public class NQueensHelloWorld {
                 "/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
 
-        // Load the problem
+        // Load a problem with 8 queens
         NQueens unsolved8Queens = new NQueensGenerator().createNQueens(8);
 
         // Solve the problem
@@ -42,11 +42,11 @@ public class NQueensHelloWorld {
         NQueens solved8Queens = (NQueens) solver.getBestSolution();
 
         // Display the result
-        System.out.println("\nSolved 8 queens:\n" + toGridString(solved8Queens));
+        System.out.println("\nSolved 8 queens:\n" + toDisplayString(solved8Queens));
     }
 
-    public static String toGridString(NQueens nQueens) {
-        StringBuilder gridString = new StringBuilder();
+    public static String toDisplayString(NQueens nQueens) {
+        StringBuilder displayString = new StringBuilder();
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
         for (int row = 0; row < n; row++) {
@@ -55,16 +55,16 @@ public class NQueensHelloWorld {
                 if (queen.getColumn().getIndex() != column) {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
-                gridString.append(" ");
+                displayString.append(" ");
                 if (queen.getRow() != null && queen.getRow().getIndex() == row) {
-                    gridString.append("Q");
+                    displayString.append("Q");
                 } else {
-                    gridString.append("_");
+                    displayString.append("_");
                 }
             }
-            gridString.append("\n");
+            displayString.append("\n");
         }
-        return gridString.toString();
+        return displayString.toString();
     }
 
 }

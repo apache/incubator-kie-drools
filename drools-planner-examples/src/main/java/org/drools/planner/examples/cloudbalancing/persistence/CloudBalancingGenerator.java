@@ -136,7 +136,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         return new File(outputDir, outputFileName);
     }
 
-    private CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
+    public CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
         random = new Random(47);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
