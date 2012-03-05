@@ -126,11 +126,11 @@
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
                 // First remove the planning fact from all planning entities that use it
-                for (CloudProcessAssignment cloudProcessAssignment : cloudBalance.getCloudProcessAssignmentList()) {
-                    if (ObjectUtils.equals(cloudProcessAssignment.getCloudComputer(), cloudComputer)) {
-                        FactHandle cloudProcessAssignmentHandle = workingMemory.getFactHandle(cloudProcessAssignment);
-                        cloudProcessAssignment.setCloudComputer(null);
-                        workingMemory.retract(cloudProcessAssignmentHandle);
+                for (CloudProcess cloudProcess : cloudBalance.getCloudProcessList()) {
+                    if (ObjectUtils.equals(cloudProcess.getCloudComputer(), cloudComputer)) {
+                        FactHandle cloudProcessHandle = workingMemory.getFactHandle(cloudProcess);
+                        cloudProcess.setCloudComputer(null);
+                        workingMemory.retract(cloudProcessHandle);
                     }
                 }
                 // Next remove it the planning fact itself

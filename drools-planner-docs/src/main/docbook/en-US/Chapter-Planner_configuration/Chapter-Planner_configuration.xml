@@ -331,14 +331,14 @@ public class Lecture {
         <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
         <literal>@PlanningEntity</literal> annotation:</para>
 
-        <programlisting language="java">@PlanningEntity(difficultyComparatorClass = CloudProcessAssignmentDifficultyComparator.class)
-public class CloudProcessAssignment {
+        <programlisting language="java">@PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
+public class CloudProcess {
     // ...
 }</programlisting>
 
-        <programlisting language="java">public class CloudProcessAssignmentDifficultyComparator implements Comparator&lt;CloudProcessAssignment&gt; {
+        <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
 
-    public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
+    public int compare(CloudProcess a, CloudProcess b) {
         return new CompareToBuilder()
                 .append(a.getCloudProcess().getRequiredMultiplicand(), b.getCloudProcess().getRequiredMultiplicand())
                 .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
