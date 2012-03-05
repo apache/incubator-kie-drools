@@ -120,25 +120,25 @@
 
     <para>Here's an example:</para>
 
-    <programlisting language="java">    public void deleteComputer(final CloudComputer cloudComputer) {
+    <programlisting language="java">    public void deleteComputer(final CloudComputer computer) {
         solver.addProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
                 // First remove the planning fact from all planning entities that use it
-                for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
-                    if (ObjectUtils.equals(cloudProcess.getComputer(), cloudComputer)) {
-                        FactHandle cloudProcessHandle = workingMemory.getFactHandle(cloudProcess);
-                        cloudProcess.setCloudComputer(null);
-                        workingMemory.retract(cloudProcessHandle);
+                for (CloudProcess process : cloudBalance.getProcessList()) {
+                    if (ObjectUtils.equals(process.getComputer(), cloudComputer)) {
+                        FactHandle processHandle = workingMemory.getFactHandle(process);
+                        process.setComputer(null);
+                        workingMemory.retract(processHandle);
                     }
                 }
                 // Next remove it the planning fact itself
                 for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-                    CloudComputer workingCloudComputer = it.next();
-                    if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {
-                        FactHandle cloudComputerHandle = workingMemory.getFactHandle(workingCloudComputer);
-                        workingMemory.retract(cloudComputerHandle);
+                    CloudComputer workingComputer = it.next();
+                    if (ObjectUtils.equals(workingComputer, computer)) {
+                        FactHandle computerHandle = workingMemory.getFactHandle(workingComputer);
+                        workingMemory.retract(computerHandle);
                         it.remove(); // remove from list
                         break;
                     }

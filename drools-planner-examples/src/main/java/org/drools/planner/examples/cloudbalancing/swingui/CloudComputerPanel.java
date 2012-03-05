@@ -41,8 +41,8 @@ import org.drools.planner.examples.common.swingui.TangoColors;
 public class CloudComputerPanel extends JPanel {
 
     private final CloudBalancingPanel cloudBalancingPanel;
-    private CloudComputer cloudComputer;
-    private List<CloudProcess> cloudProcessList = new ArrayList<CloudProcess>();
+    private CloudComputer computer;
+    private List<CloudProcess> processList = new ArrayList<CloudProcess>();
 
     private JLabel computerLabel;
     private JButton deleteButton;
@@ -57,10 +57,10 @@ public class CloudComputerPanel extends JPanel {
     private CloudBar networkBandwidthBar;
     private JButton detailsButton;
 
-    public CloudComputerPanel(CloudBalancingPanel cloudBalancingPanel, CloudComputer cloudComputer) {
+    public CloudComputerPanel(CloudBalancingPanel cloudBalancingPanel, CloudComputer computer) {
         super(new GridLayout(0, 5));
         this.cloudBalancingPanel = cloudBalancingPanel;
-        this.cloudComputer = cloudComputer;
+        this.computer = computer;
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(1, 2, 1, 2),
@@ -70,28 +70,28 @@ public class CloudComputerPanel extends JPanel {
         createBarsUI();
     }
 
-    public CloudComputer getCloudComputer() {
-        return cloudComputer;
+    public CloudComputer getComputer() {
+        return computer;
     }
 
     private String getComputerLabel() {
-        return cloudComputer == null ? "Unassigned" : cloudComputer.getLabel();
+        return computer == null ? "Unassigned" : computer.getLabel();
     }
 
     private int getComputerCpuPower() {
-        return cloudComputer == null ? 0 : cloudComputer.getCpuPower();
+        return computer == null ? 0 : computer.getCpuPower();
     }
 
     private int getComputerMemory() {
-        return cloudComputer == null ? 0 : cloudComputer.getMemory();
+        return computer == null ? 0 : computer.getMemory();
     }
 
     private int getComputerNetworkBandwidth() {
-        return cloudComputer == null ? 0 : cloudComputer.getNetworkBandwidth();
+        return computer == null ? 0 : computer.getNetworkBandwidth();
     }
 
     private int getComputerCost() {
-        return cloudComputer == null ? 0 : cloudComputer.getCost();
+        return computer == null ? 0 : computer.getCost();
     }
 
     private void createTotalsUI() {
@@ -99,10 +99,10 @@ public class CloudComputerPanel extends JPanel {
         computerLabel = new JLabel(getComputerLabel());
         computerLabel.setEnabled(false);
         labelAndDeletePanel.add(computerLabel, BorderLayout.CENTER);
-        if (cloudComputer != null) {
+        if (computer != null) {
             deleteButton = new JButton(new AbstractAction("X") {
                 public void actionPerformed(ActionEvent e) {
-                    cloudBalancingPanel.deleteComputer(cloudComputer);
+                    cloudBalancingPanel.deleteComputer(computer);
                 }
             });
             labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
@@ -141,25 +141,25 @@ public class CloudComputerPanel extends JPanel {
         add(networkBandwidthBar);
         detailsButton = new JButton(new AbstractAction("Details") {
             public void actionPerformed(ActionEvent e) {
-                CloudProcessListDialog cloudProcessListDialog = new CloudProcessListDialog();
-                cloudProcessListDialog.setLocationRelativeTo(getRootPane());
-                cloudProcessListDialog.setVisible(true);
+                CloudProcessListDialog processListDialog = new CloudProcessListDialog();
+                processListDialog.setLocationRelativeTo(getRootPane());
+                processListDialog.setVisible(true);
             }
         });
         detailsButton.setEnabled(false);
         add(detailsButton);
     }
 
-    public void addCloudProcess(CloudProcess cloudProcess) {
-        cloudProcessList.add(cloudProcess);
+    public void addProcess(CloudProcess process) {
+        processList.add(process);
     }
 
-    public void removeCloudProcess(CloudProcess cloudProcess) {
-        cloudProcessList.remove(cloudProcess);
+    public void removeProcess(CloudProcess process) {
+        processList.remove(process);
     }
 
-    public void clearCloudProcesss() {
-        cloudProcessList.clear();
+    public void clearProcess() {
+        processList.clear();
     }
 
     public void update() {
@@ -170,16 +170,16 @@ public class CloudComputerPanel extends JPanel {
         int usedNetworkBandwidth = 0;
         networkBandwidthBar.clearProcessValues();
         int colorIndex = 0;
-        for (CloudProcess cloudProcess : cloudProcessList) {
-            usedCpuPower += cloudProcess.getRequiredCpuPower();
-            cpuPowerBar.addProcessValue(cloudProcess.getRequiredCpuPower());
-            usedMemory += cloudProcess.getRequiredMemory();
-            memoryBar.addProcessValue(cloudProcess.getRequiredMemory());
-            usedNetworkBandwidth += cloudProcess.getRequiredNetworkBandwidth();
-            networkBandwidthBar.addProcessValue(cloudProcess.getRequiredNetworkBandwidth());
+        for (CloudProcess process : processList) {
+            usedCpuPower += process.getRequiredCpuPower();
+            cpuPowerBar.addProcessValue(process.getRequiredCpuPower());
+            usedMemory += process.getRequiredMemory();
+            memoryBar.addProcessValue(process.getRequiredMemory());
+            usedNetworkBandwidth += process.getRequiredNetworkBandwidth();
+            networkBandwidthBar.addProcessValue(process.getRequiredNetworkBandwidth());
             colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_1.length;
         }
-        boolean used = cloudProcessList.size() > 0;
+        boolean used = processList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
         updateBars(used);
     }
@@ -200,7 +200,7 @@ public class CloudComputerPanel extends JPanel {
     }
 
     private void updateBars(boolean used) {
-        numberOfProcessesLabel.setText("    " + cloudProcessList.size() + " processes");
+        numberOfProcessesLabel.setText("    " + processList.size() + " processes");
         numberOfProcessesLabel.setEnabled(used);
         cpuPowerBar.setEnabled(used);
         cpuPowerBar.repaint();
@@ -306,18 +306,18 @@ public class CloudComputerPanel extends JPanel {
         private JPanel createAssignmentsPanel() {
             JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
             int colorIndex = 0;
-            for (CloudProcess cloudProcess : cloudProcessList) {
-                JLabel cloudProcessLabel = new JLabel(cloudProcess.getLabel());
-                cloudProcessLabel.setForeground(TangoColors.SEQUENCE_1[colorIndex]);
-                assignmentsPanel.add(cloudProcessLabel);
+            for (CloudProcess process : processList) {
+                JLabel processLabel = new JLabel(process.getLabel());
+                processLabel.setForeground(TangoColors.SEQUENCE_1[colorIndex]);
+                assignmentsPanel.add(processLabel);
 
-                JTextField cpuPowerField = new JTextField(cloudProcess.getRequiredCpuPower() + " GHz");
+                JTextField cpuPowerField = new JTextField(process.getRequiredCpuPower() + " GHz");
                 cpuPowerField.setEditable(false);
                 assignmentsPanel.add(cpuPowerField);
-                JTextField memoryField = new JTextField(cloudProcess.getRequiredMemory() + " GB");
+                JTextField memoryField = new JTextField(process.getRequiredMemory() + " GB");
                 memoryField.setEditable(false);
                 assignmentsPanel.add(memoryField);
-                JTextField networkBandwidthField = new JTextField(cloudProcess.getRequiredNetworkBandwidth() + " GB");
+                JTextField networkBandwidthField = new JTextField(process.getRequiredNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
                 assignmentsPanel.add(networkBandwidthField);
                 assignmentsPanel.add(new JLabel(""));
