@@ -984,7 +984,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
     
     @Test
-    @Ignore
     public void testTimerWithNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
