@@ -106,8 +106,8 @@ public class ExpressionIntervalTimer
                                     this.startTime,
                                     this.endTime,
                                     this.repeatLimit,
-                                    evalDelay( item, wm ),
-                                    evalPeriod( item, wm ),
+                                    delay  != null ? evalDelay( item, wm ) : 0,
+                                    period != null ? evalPeriod( item, wm ) : 0,
                                     calendarNames,
                                     calendars );
     }
