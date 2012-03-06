@@ -18,41 +18,37 @@ public class JittedConditionEvaluator implements ConditionEvaluator {
 
     private List<GeneratorHelper.DeclarationMatcher> declarationMatchers;
 
-    private Object[] array;
-
     public JittedConditionEvaluator(ConditionAnalyzer.Condition condition, Declaration[] declarations, ClassLoader classLoader) {
         this.declarations = declarations;
         conditionEvaluator = jitEvaluator(condition, declarations, classLoader);
-        if (declarations.length > 0) {
-            array = new Object[declarations.length];
-            if (declarations.length > 1) {
-                declarationMatchers = matchDeclarationsToTuple(declarations);
-            }
+        if (declarations.length > 1) {
+            declarationMatchers = matchDeclarationsToTuple(declarations);
         }
     }
 
     public boolean evaluate(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
-        updateValues(object, workingMemory, leftTuple);
-        return conditionEvaluator.evaluate(object, array);
+        return conditionEvaluator.evaluate(object, updateValues(object, workingMemory, leftTuple));
     }
 
-    private void updateValues(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+    private Object[] updateValues(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         if (declarations.length == 0) {
-            return;
+            return null;
         }
+
+        Object[] array = new Object[declarations.length];
 
         if (leftTuple == null) {
             for (int i = 0; i < declarations.length; i++) {
                 array[i] = declarations[i].getExtractor().getValue(workingMemory, object);
             }
-            return;
+            return array;
         }
 
         if (declarations.length == 1) {
             array[0] = declarations[0].getPattern().getOffset() > leftTuple.getIndex() ?
                     declarations[0].getExtractor().getValue(workingMemory, object) :
                     declarations[0].getExtractor().getValue(workingMemory, leftTuple.get(declarations[0]).getObject());
-            return;
+            return array;
         }
 
         for (GeneratorHelper.DeclarationMatcher declarationMatcher : declarationMatchers) {
@@ -65,5 +61,6 @@ public class JittedConditionEvaluator implements ConditionEvaluator {
             }
             array[declarationMatcher.getOriginalIndex()] = declarationMatcher.getDeclaration().getExtractor().getValue(workingMemory, leftTuple.getHandle().getObject());
         }
+        return array;
     }
 }
