@@ -83,6 +83,7 @@ public final class Scheduler {
             agenda.fireActivation( item );
             if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
                 agenda.getScheduledActivationsLinkedList().remove( item );
+                item.setEnqueued( false );
             } else {
                 // the activation has been rescheduled, the Agenda would have set it's activated to false
                 // so reset the activated to true here
