@@ -67,25 +67,19 @@ public class GenericChainedChangePartMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
-        // Change the entity
-        planningVariableDescriptor.setValue(firstEntity, toPlanningValue);
         // Close the old chain
         if (oldTrailingEntity != null) {
             planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+            workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+        }
+        // Change the entity
+        planningVariableDescriptor.setValue(firstEntity, toPlanningValue);
+        for (Object entity : entitiesSubChain) {
+            workingMemory.update(workingMemory.getFactHandle(entity), entity);
         }
         // Reroute the new chain
         if (newTrailingEntity != null) {
             planningVariableDescriptor.setValue(newTrailingEntity, lastEntity);
-        }
-
-        // After the model is valid again, notify the SolutionDirector
-        for (Object entity : entitiesSubChain) {
-            workingMemory.update(workingMemory.getFactHandle(entity), entity);
-        }
-        if (oldTrailingEntity != null) {
-            workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
-        }
-        if (newTrailingEntity != null) {
             workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
         }
     }
