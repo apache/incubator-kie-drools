@@ -73,6 +73,9 @@ public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
         // HACK TODO Invent a system like DependentPlanningVariable or PlanningVariableListener to cope with this
         VrpAppearance firstAppearance = getPreviousAppearance();
         while (firstAppearance instanceof VrpCustomer) {
+            if (firstAppearance == this) {
+                throw new IllegalStateException("Impossible state"); // fail fast during infinite loop
+            }
             firstAppearance = ((VrpCustomer) firstAppearance).getPreviousAppearance();
         }
         return (VrpVehicle) firstAppearance;
