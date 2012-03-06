@@ -2,7 +2,6 @@ package org.drools.integrationtests;
 
 import static org.drools.integrationtests.SerializationHelper.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.InputStreamReader;
@@ -12,20 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.*;
+import org.drools.Father;
 import org.drools.Cheese;
-import org.drools.CheeseEqual;
-import org.drools.ClassObjectFilter;
-import org.drools.CommonTestMethodBase;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.Sensor;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -1043,6 +1031,62 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kSession.fireAllRules();
         assertEquals(0,list.size());
  
+        //System.err.println(reportWMObjects(kSession));
+    }
+
+    @Test @Ignore("FIXME")
+    public void testTMSWithLateUpdate() {
+        String str =""+
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.Father;\n" +
+                "import org.drools.YoungestFather;\n" +
+                "\n" +
+                "rule \"findMarriedCouple\"\n" +
+                "when\n" +
+                "    $h: Father()\n" +
+                "    not Father(father == $h)\n" +
+                "then\n" +
+                "    insertLogical(new YoungestFather($h));\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
+
+        Father abraham = new Father("abraham");
+        Father bart = new Father("bart");
+        Collection<Object> youngestFathers;
+
+        bart.setFather(abraham);
+        FactHandle abrahamHandle = kSession.insert(abraham);
+        FactHandle bartHandle = kSession.insert(bart);
+        kSession.fireAllRules();
+        youngestFathers = kSession.getObjects(
+                new ClassObjectFilter(YoungestFather.class));
+        assertEquals(1, youngestFathers.size());
+        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
+
+        Father homer = new Father("homer");
+        FactHandle homerHandle = kSession.insert(homer);
+
+        homer.setFather(abraham);
+        // If we do kSession.update(homerHandle, homer) here instead of after bart.setFather(homer) it works
+        // But in some use cases we cannot do this because fact fields are actually called
+        // while the facts are in an invalid temporary state
+        bart.setFather(homer);
+        // Late update call for homer, after bart has been changed too, but before fireAllRules
+        kSession.update(homerHandle, homer);
+        kSession.update(bartHandle, bart);
+        kSession.fireAllRules();
+        youngestFathers = kSession.getObjects(
+                new ClassObjectFilter(YoungestFather.class));
+        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
+        assertEquals(1, youngestFathers.size());
+
         //System.err.println(reportWMObjects(kSession));
     }
     
