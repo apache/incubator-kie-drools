@@ -45,7 +45,9 @@ public class ScheduledAgendaItem extends AgendaItem
     private LinkedListNode           next;
 
 //
-    private InternalAgenda     agenda;
+    private InternalAgenda           agenda;
+
+    private boolean                  enqueued;
     
     private JobHandle jobHandle;
 
@@ -56,16 +58,19 @@ public class ScheduledAgendaItem extends AgendaItem
                                final RuleTerminalNode rtn) {
         super(activationNumber, tuple, 0, context, rtn );
         this.agenda = agenda;
+        this.enqueued = false;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );        
-        agenda    = (InternalAgenda)in.readObject();
+        agenda   = (InternalAgenda)in.readObject();
+        enqueued = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject(agenda);
+        out.writeObject( agenda );
+        out.writeBoolean( enqueued );
     }
     public LinkedListNode getNext() {
         return this.next;
@@ -103,4 +108,11 @@ public class ScheduledAgendaItem extends AgendaItem
         return "[ScheduledActivation rule=" + getRule().getName() + ", tuple=" + getTuple() + "]";
     }
 
+    public boolean isEnqueued() {
+        return enqueued;
+    }
+
+    public void setEnqueued( boolean enqueued ) {
+        this.enqueued = enqueued;
+    }
 }

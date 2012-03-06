@@ -263,7 +263,7 @@ public class DefaultAgenda
                                       this,
                                       wm );
         this.scheduledActivations.add( item );
-
+        item.setEnqueued( true );
     }
 
     
@@ -337,7 +337,11 @@ public class DefaultAgenda
             }
         }
         if ( activation instanceof ScheduledAgendaItem ) {
-            removeScheduleItem( (ScheduledAgendaItem) activation );
+            ScheduledAgendaItem scheduledAgendaItem = (ScheduledAgendaItem) activation;
+            if ( scheduledAgendaItem.isEnqueued() ) {
+                scheduledAgendaItem.getJobHandle().setCancel( true );
+                removeScheduleItem( scheduledAgendaItem );
+            }
         }
     }
     
@@ -440,9 +444,12 @@ public class DefaultAgenda
     }
     
     public void removeScheduleItem(final ScheduledAgendaItem item) {
-        this.scheduledActivations.remove( item );
-        Scheduler.removeAgendaItem( item,
-                                    this );
+        if ( item.isEnqueued() ) {
+            this.scheduledActivations.remove( item );
+            item.setEnqueued( false );
+            Scheduler.removeAgendaItem( item,
+                                        this );
+        }
     }
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
@@ -875,6 +882,7 @@ public class DefaultAgenda
         // reset scheduled activations
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );
             }
@@ -912,6 +920,7 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
