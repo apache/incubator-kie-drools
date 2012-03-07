@@ -17,7 +17,6 @@
 package org.drools.reteoo;
 
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.Operator;
 import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -29,8 +28,7 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.rule.LiteralConstraint;
-import org.drools.runtime.rule.Evaluator;
+import org.drools.rule.IndexableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -110,15 +108,14 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
-                final Evaluator evaluator = literalConstraint.getEvaluator();
+            if ( fieldConstraint instanceof IndexableConstraint) {
+                final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
 
-                if ( evaluator.getOperator() == Operator.EQUAL && 
-                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                if ( indexableConstraint.isIndexable() && indexableConstraint.getField() != null &&
+                        indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
-                        !( literalConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
-                    final InternalReadAccessor readAccessor = literalConstraint.getFieldExtractor();
+                        !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
+                    final InternalReadAccessor readAccessor = indexableConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       readAccessor );
@@ -127,7 +124,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
-                        final FieldValue value = literalConstraint.getField();
+                        final FieldValue value = indexableConstraint.getField();
                         // no need to check, we know  the sink  does not exist
                         this.hashedSinkMap.put( new HashKey( index,
                                                              value,
@@ -157,16 +154,15 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
-                final Evaluator evaluator = literalConstraint.getEvaluator();
-                final FieldValue value = literalConstraint.getField();
+            if ( fieldConstraint instanceof IndexableConstraint ) {
+                final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+                final FieldValue value = indexableConstraint.getField();
 
-                if ( evaluator.getOperator() == Operator.EQUAL && 
-                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                if ( indexableConstraint.isIndexable()  && indexableConstraint.getField() != null &&
+                        indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
-                        !( literalConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
-                    final InternalReadAccessor fieldAccessor = literalConstraint.getFieldExtractor();
+                        !( indexableConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
+                    final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
@@ -212,7 +208,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         while ( currentSink != null ) {
             final AlphaNode alphaNode = (AlphaNode) currentSink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
-            final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
+            final IndexableConstraint indexableConstraint = (IndexableConstraint)  fieldConstraint;
 
             // position to the next sink now because alphaNode may be removed if the index is equal. If we were to do this
             // afterwards, currentSink.nextNode would be null
@@ -220,8 +216,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
             // only alpha nodes that have an Operator.EQUAL are in hashableSinks, so only check if it is
             // the right field index
-            if ( index == literalConstraint.getFieldExtractor().getIndex() ) {
-                final FieldValue value = literalConstraint.getField();
+            if ( index == indexableConstraint.getFieldExtractor().getIndex() ) {
+                final FieldValue value = indexableConstraint.getField();
                 this.hashedSinkMap.put( new HashKey( index,
                                                      value,
                                                      fieldReader ),
@@ -249,12 +245,12 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         while ( entry != null ) {
             final AlphaNode alphaNode = (AlphaNode) entry.getValue();
-            final LiteralConstraint literalConstraint = (LiteralConstraint) alphaNode.getConstraint();
+            final IndexableConstraint indexableConstraint = (IndexableConstraint) alphaNode.getConstraint();
 
             // only alpha nodes that have an Operator.EQUAL are in sinks, so only check if it is
             // the right field index
-            if ( index == literalConstraint.getFieldExtractor().getIndex() ) {
-                final FieldValue value = literalConstraint.getField();
+            if ( index == indexableConstraint.getFieldExtractor().getIndex() ) {
+                final FieldValue value = indexableConstraint.getField();
                 if ( this.hashableSinks == null ) {
                     this.hashableSinks = new ObjectSinkNodeList();
                 }
@@ -708,7 +704,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     } else if ( this.ovalue instanceof Boolean ) {
                         return ((Boolean) this.ovalue).booleanValue();
                     } else if ( this.ovalue instanceof String ) {
-                        return Boolean.valueOf( (String) this.ovalue ).booleanValue();
+                        return Boolean.valueOf((String) this.ovalue).booleanValue();
                     } else {
                         throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a boolean value." );
                     }

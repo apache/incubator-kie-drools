@@ -2,6 +2,8 @@ package org.drools.integrationtests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,17 +31,59 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.CompositeObjectSinkAdapter;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.ObjectSinkNodeList;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.rule.IndexableConstraint;
+import org.drools.rule.constraint.MvelConstraint;
 import org.junit.Test;
 
 
 public class IndexingTest {
-    
+
+    @Test
+    public void testBuildsIndexedAlphaNodes() {
+        String drl = "";
+        drl += "package org.test\n";
+        drl += "import org.drools.Person\n";
+        drl += "rule test1\n";
+        drl += "when\n";
+        drl += "   Person(name == \"Mark\", age == 37)\n";
+        drl += "   Person(name == \"Mark\", happy == true)\n";
+        drl += "then\n";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getSinkPropagator();
+        ObjectSinkNodeList hashableSinks = sinkAdapter.getHashableSinks();
+        assertNotNull(hashableSinks);
+        assertEquals(2, hashableSinks.size());
+
+        AlphaNode alphaNode2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
+        assertSame(hashableSinks.getFirst(), alphaNode2);
+
+        AlphaNode alphaNode3 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
+        assertSame(hashableSinks.getLast(), alphaNode3);
+    }
+
     @Test
     public void testBuildsIndexedMemory() {
         // tests indexes are correctly built        
@@ -75,15 +119,7 @@ public class IndexingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
-        ObjectTypeNode node = null;
-        for ( ObjectTypeNode n : nodes ) {
-            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
-                node = n;
-                break;
-            }
-        }
-        
+        ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
         
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
@@ -212,5 +248,15 @@ public class IndexingTest {
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( j );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );        
+    }
+
+    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
+                return n;
+            }
+        }
+        return null;
     }
 }

@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -33,6 +36,7 @@ import org.drools.spi.InternalReadAccessor;
 public class LiteralConstraint
     implements
     AlphaNodeFieldConstraint,
+    IndexableConstraint,
     AcceptsReadAccessor,
     Externalizable {
 
@@ -153,5 +157,17 @@ public class LiteralConstraint
 
     public boolean isTemporal() {
         return this.restriction.isTemporal();
+    }
+
+    public boolean isUnification() {
+        return false;
+    }
+
+    public boolean isIndexable() {
+        return getEvaluator().getOperator() == Operator.EQUAL;
+    }
+
+    public AbstractHashTable.FieldIndex getFieldIndex() {
+        return null;
     }
 }
