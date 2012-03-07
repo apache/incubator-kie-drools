@@ -80,7 +80,7 @@ public class ConsequenceGenerator {
                         // We do not generate an invoker per 'or' branch, so use runtime traversal for that
                         traverseTuplesUntilDeclarationWithOr(i, 4, 3, 5);                        
                     } else {
-                        currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 4, 3, 5);                        
+                        currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 3);
                     }
 
                     // handle = tuple.getHandle()

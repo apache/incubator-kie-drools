@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.mvel2.asm.Opcodes.AASTORE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ACC_STATIC;
@@ -84,7 +85,7 @@ public class ClassGenerator {
         this.className = className;
         this.classDescriptor = className.replace('.', '/');
         this.classLoader = new InternalClassLoader(classLoader);
-        this.typeResolver = typeResolver == null ? INTERNAL_TYPE_RESOLVER : typeResolver;
+        this.typeResolver = typeResolver == null ? new InternalTypeResolver(this.classLoader) : typeResolver;
     }
 
     private interface ClassPartDescr {
@@ -112,6 +113,14 @@ public class ClassGenerator {
     public <T> T newInstance() {
         try {
             return (T)generateClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public <T> T newInstance(Class paramType, Object param) {
+        try {
+            return (T)generateClass().getConstructor(paramType).newInstance(param);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -277,7 +286,7 @@ public class ClassGenerator {
         return addDefaultConstructor(EMPTY_METHOD_BODY);
     }
 
-    public ClassGenerator addDefaultConstructor(final MethodBody body) {
+    public ClassGenerator addDefaultConstructor(final MethodBody body, Class<?>... args) {
         MethodBody constructorBody = new MethodBody() {
             public void body(MethodVisitor mv) {
                 body.setClassGenerator(cg);
@@ -288,7 +297,8 @@ public class ClassGenerator {
                 body.body(mv);
             }
         };
-        return addMethod(ACC_PUBLIC, "<init>", "()V", null, null, constructorBody);
+
+        return addMethod(ACC_PUBLIC, "<init>", methodDescr(null, args), constructorBody);
     }
 
     public ClassGenerator addMethod(int access, String name, String desc) {
@@ -569,6 +579,11 @@ public class ClassGenerator {
             }
         }
 
+        protected final void castFromPrimitive(Class<?> clazz) {
+            Class<?> boxedType = convertFromPrimitiveType(clazz);
+            invokeStatic(boxedType, "valueOf", boxedType, clazz);
+        }
+
         protected final void castToPrimitive(Class<?> clazz) {
             if (clazz == boolean.class) {
                 cast(Boolean.class);
@@ -629,11 +644,18 @@ public class ClassGenerator {
             mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
         }
 
+        protected final void putFieldInThisFromRegistry(String name, Class<?> type, int regNr) {
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, regNr);
+            putFieldInThis(name, type);
+        }
+
         protected final void putFieldInThis(String name, Class<?> type) {
             mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
         protected final void getFieldFromThis(String name, Class<?> type) {
+            mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn(GETFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
@@ -728,9 +750,25 @@ public class ClassGenerator {
 
     // InternalTypeResolver
 
-    private static final InternalTypeResolver INTERNAL_TYPE_RESOLVER = new InternalTypeResolver();
-
     private static class InternalTypeResolver implements TypeResolver {
+
+        public static final Map<String, Class<?>> primitiveClassMap = new HashMap<String, Class<?>>() {{
+            put("int", int.class);
+            put("boolean", boolean.class);
+            put("float", float.class);
+            put("long", long.class);
+            put("short", short.class);
+            put("byte", byte.class);
+            put("double", double.class);
+            put("char", char.class);
+        }};
+
+        private final ClassLoader classLoader;
+
+        private InternalTypeResolver(ClassLoader classLoader) {
+            this.classLoader = classLoader;
+        }
+
         public Set<String> getImports() {
             throw new RuntimeException("Not Implemented");
         }
@@ -740,7 +778,8 @@ public class ClassGenerator {
         }
 
         public Class resolveType(String className) throws ClassNotFoundException {
-            return Class.forName(className);
+            Class primitiveClassName = primitiveClassMap.get(className);
+            return primitiveClassName != null ? primitiveClassName : Class.forName(className, true, classLoader);
         }
 
         public String getFullTypeName(String shortName) throws ClassNotFoundException {

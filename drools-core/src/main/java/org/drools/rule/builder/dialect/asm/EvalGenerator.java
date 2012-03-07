@@ -67,7 +67,7 @@ public class EvalGenerator {
                     int i = matcher.getOriginalIndex();
                     declarationsParamsPos[i] = objAstorePos;
 
-                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 2, 5, 6);                    
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 5);
 
                     mv.visitVarInsn(ALOAD, 2);
                     push(i);

@@ -75,7 +75,6 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
                 // synchronized(this) {
                 mv.visitInsn(MONITORENTER);
                 mv.visitLabel(syncStart);
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("consequence", Consequence.class);
                 // if (consequence == null) ...
                 Label ifNotInitialized = new Label();
@@ -99,7 +98,6 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
                 mv.visitInsn(ATHROW);
                 mv.visitLabel(syncEnd);
                 // } end of synchronized
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("consequence", Consequence.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
@@ -108,9 +106,7 @@ public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
             }
         }).addMethod(ACC_PUBLIC, "setConsequence", generator.methodDescr(null, Consequence.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                putFieldInThis("consequence", Consequence.class);
+                putFieldInThisFromRegistry("consequence", Consequence.class, 1);
                 mv.visitInsn(RETURN);
             }
         });

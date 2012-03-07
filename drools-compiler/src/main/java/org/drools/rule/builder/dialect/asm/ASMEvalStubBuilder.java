@@ -47,7 +47,6 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label l1 = new Label();
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("eval", EvalExpression.class);
                 mv.visitJumpInsn(IFNONNULL, l1);
                 mv.visitVarInsn(ALOAD, 0);
@@ -56,7 +55,6 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 3);
                 invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("eval", EvalExpression.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
@@ -67,9 +65,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
             }
         }).addMethod(ACC_PUBLIC, "setEval", generator.methodDescr(null, EvalExpression.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                putFieldInThis("eval", EvalExpression.class);
+                putFieldInThisFromRegistry("eval", EvalExpression.class, 1);
                 mv.visitInsn(RETURN);
             }
         });

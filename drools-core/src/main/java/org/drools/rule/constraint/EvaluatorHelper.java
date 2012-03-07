@@ -30,22 +30,6 @@ public class EvaluatorHelper {
         return map;
     }
 
-    public static Object[] valuesAsArray(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, Declaration[] declarations) {
-        if (declarations.length == 0) {
-            return null;
-        }
-        Object[] array = new Object[declarations.length];
-        for (int i = 0; i < declarations.length; i++) {
-            if (leftTuple == null) {
-                array[i] = declarations[i].getExtractor().getValue(workingMemory, object);
-            } else {
-                InternalFactHandle fact = leftTuple.get(declarations[i]);
-                array[i] = declarations[i].getExtractor().getValue(workingMemory, fact != null ? fact.getObject() : object);
-            }
-        }
-        return array;
-    }
-
     public static int arrayLenght(Object array) {
         if (array instanceof Object[]) {
             return ((Object[])array).length;

@@ -7,7 +7,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
-import org.drools.base.ClassFieldReader;
 import org.drools.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
@@ -404,8 +403,8 @@ public class ConditionAnalyzer {
     private Class<?> getVariableType(String name) {
         for (Declaration declaration : declarations) {
             if (declaration.getBindingName().equals(name)) {
-                if (declaration.getExtractor() instanceof ClassFieldReader) {
-                    return ((ClassFieldReader) declaration.getExtractor()).getExtractToClass();
+                if (declaration.getExtractor() != null) {
+                    return declaration.getExtractor().getExtractToClass();
                 } else {
                     return declaration.getValueType().getClassType();
                 }
