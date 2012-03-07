@@ -16,28 +16,19 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map.Entry;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
-import org.drools.definition.rule.Rule;
-import org.drools.reteoo.builder.BuildContext;
-import org.drools.rule.EvalCondition;
-import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleComponent;
-
 import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
@@ -60,12 +51,9 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     private static final long serialVersionUID = 510l;
 
-    /** The source of incoming <code>Tuples</code>. */
-    private LeftTupleSource   tupleSource;
-
     protected boolean         tupleMemoryEnabled;
 
-    private BetaNode    betaNode;
+    private BetaNode          betaNode;
     
     private LeftTupleSinkNode previousTupleSinkNode;
     
@@ -93,7 +81,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
-        this.tupleSource = tupleSource;
+        setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
@@ -101,14 +89,12 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         betaNode = (BetaNode) in.readObject();
-        tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject(   betaNode  );
-        out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
     }
 
@@ -122,7 +108,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
 
     public void attach( BuildContext context ) {
-        this.tupleSource.addTupleSink( this, context );
+        this.leftInput.addTupleSink( this, context );
         if (context == null) {
             return;
         }
@@ -133,14 +119,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
+            this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        this.leftInput.networkUpdated(updateContext);
     }
 
     // ------------------------------------------------------------
@@ -188,7 +174,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
 
     public int hashCode() {
-        return this.tupleSource.hashCode();
+        return this.leftInput.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -224,7 +210,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        this.tupleSource.remove( context,
+        this.leftInput.remove( context,
                                  builder,
                                  this,
                                  workingMemories );
@@ -275,7 +261,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
 
     public short getType() {
-        return NodeTypeEnums.EvalConditionNode;
+        return NodeTypeEnums.QueryRiaFixerNode;
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -312,10 +298,10 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
+        return this.leftInput;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        return tupleSource.getObjectTypeNode();
+        return leftInput.getObjectTypeNode();
     }
 }

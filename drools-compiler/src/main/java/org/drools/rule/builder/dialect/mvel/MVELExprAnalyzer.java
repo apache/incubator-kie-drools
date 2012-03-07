@@ -58,7 +58,11 @@ public class MVELExprAnalyzer {
      * 
      * @param expr
      *            The expression to analyze.
+<<<<<<< HEAD
      * @param availableIdentifiers
+=======
+     * @param availDecls
+>>>>>>> JBRULES-3414 Segment based unlinking
      *            Total set of declarations available.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
@@ -99,6 +103,7 @@ public class MVELExprAnalyzer {
                 parserContext1.addInput( "this",
                                          availableIdentifiers.getThisClass() );
             }
+
             if ( availableIdentifiers.getOperators() != null ) {
                 for ( Entry<String, EvaluatorWrapper> opEntry : availableIdentifiers.getOperators().entrySet() ) {
                     parserContext1.addInput( opEntry.getKey(), opEntry.getValue().getClass() );
@@ -248,7 +253,18 @@ public class MVELExprAnalyzer {
 
     /**
      * Analyse an expression.
+<<<<<<< HEAD
      *
+=======
+     * 
+     * @param availDecls
+     *            Total set of declarations available.
+     * @param ast
+     *            The AST for the expression.
+     * 
+     * @return The <code>Set</code> of declarations used by the expression.
+     * 
+>>>>>>> JBRULES-3414 Segment based unlinking
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */

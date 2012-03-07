@@ -26,7 +26,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.ValueType;
-import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
@@ -34,7 +33,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.Iterator;
@@ -83,7 +82,7 @@ public class ObjectTypeNode extends ObjectSource
         implements
         ObjectSink,
         Externalizable,
-        NodeMemory
+        MemoryFactory
 {
     // ------------------------------------------------------------
     // Instance members
@@ -116,9 +115,6 @@ public class ObjectTypeNode extends ObjectSource
         return otnIdCounter;
     }
 
-    /** @see LRUnlinkingOption */
-    private boolean lrUnlinkingEnabled = false;
-
     public ObjectTypeNode() {
 
     }
@@ -140,7 +136,7 @@ public class ObjectTypeNode extends ObjectSource
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
-        this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
+
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
 
         if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( objectType ) ) {
@@ -163,7 +159,6 @@ public class ObjectTypeNode extends ObjectSource
 
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
-        lrUnlinkingEnabled = in.readBoolean();
         queryNode = in.readBoolean();
         dirty = true;
     }
@@ -173,9 +168,12 @@ public class ObjectTypeNode extends ObjectSource
         out.writeObject( objectType );
         out.writeBoolean( objectMemoryEnabled );
         out.writeLong( expirationOffset );
-        out.writeBoolean( lrUnlinkingEnabled );
         out.writeBoolean( queryNode );
     }
+    
+    public short getType() {
+        return NodeTypeEnums.ObjectTypeNode;
+    }    
 
     /**
      * Retrieve the semantic <code>ObjectType</code> differentiator.
@@ -231,7 +229,6 @@ public class ObjectTypeNode extends ObjectSource
                                           workingMemory );
         } else {
 
-            context.setCurrentPropagatingOTN( this );
             this.sink.propagateAssertObject( factHandle,
                                              context,
                                              workingMemory );
@@ -287,9 +284,16 @@ public class ObjectTypeNode extends ObjectSource
         factHandle.clearRightTuples();
 
         for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                           context,
-                                                           workingMemory );
+            // must go via the LiaNode, so that the fact counter is updated, for linking
+//            leftTuple.getLeftTupleSink().getLeftTupleSource().retractLeftTuple( leftTuple,
+//                                                                                context,
+//                                                                                workingMemory );            
+            ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
+                                                                                                         context,
+                                                                                                         workingMemory );
+//            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+//                                                           context,
+//                                                           workingMemory );            
         }
         factHandle.clearLeftTuples();
     }
@@ -321,59 +325,14 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        if ( lrUnlinkingEnabled ) {
-            // Update sink taking into account L&R unlinking peculiarities
-            updateLRUnlinking( sink, context, workingMemory );
-
-        } else {
-            // Regular updateSink
-            final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
-            Iterator it = memory.memory.iterator();
-    
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                sink.assertObject( (InternalFactHandle) entry.getValue(),
-                                   context,
-                                   workingMemory );
-            }
-        }
-
-    }
-
-    /**
-     *  When L&R Unlinking is enabled, updateSink() is used to populate 
-     *  a node's memory, but it has to take into account if it's propagating.
-     */
-    private void updateLRUnlinking(final ObjectSink sink,
-                                   final PropagationContext context,
-                                   final InternalWorkingMemory workingMemory) {
-
+        // Regular updateSink
         final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory( this );
-        
         Iterator it = memory.memory.iterator();
 
-        InternalFactHandle ctxHandle = (InternalFactHandle) context.getFactHandle();
-
-        if ( !context.isPropagating( this ) ||
-             (context.isPropagating( this ) && context.shouldPropagateAll()) ) {
-
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                // Assert everything
-                sink.assertObject( (InternalFactHandle) entry.getValue(),
-                                   context,
-                                   workingMemory );
-            }
-
-        } else {
-
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                // Exclude the current fact propagation
-                if ( handle.getId() != ctxHandle.getId() ) {
-                    sink.assertObject( handle,
-                                       context,
-                                       workingMemory );
-                }
-            }
+        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+            sink.assertObject( (InternalFactHandle) entry.getValue(),
+                               context,
+                               workingMemory );
         }
     }
 

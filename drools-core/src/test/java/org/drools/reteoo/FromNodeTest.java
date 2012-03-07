@@ -106,7 +106,7 @@ public class FromNodeTest {
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
-                                            null,
+                                            new MockTupleSource( 80 ),
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
                                             true,
@@ -227,7 +227,7 @@ public class FromNodeTest {
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
-                                            null,
+                                            new MockTupleSource( 40 ),
                                             new AlphaNodeFieldConstraint[0],
                                             betaConstraints,
                                             true,
@@ -333,7 +333,7 @@ public class FromNodeTest {
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
-                                            null,
+                                            new MockTupleSource( 30 ),
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
                                             true,
@@ -426,7 +426,7 @@ public class FromNodeTest {
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
-                                            null,
+                                            new MockTupleSource( 90 ),
                                             new AlphaNodeFieldConstraint[]{},
                                             null,
                                             true,

@@ -43,6 +43,8 @@ public class LeftTupleList
     private TupleHashTableIterator iterator;
 
     private int                    size;
+    
+    private boolean                stagingMemory;
 
     public LeftTupleList() {
         // this is not an index bucket        
@@ -63,6 +65,22 @@ public class LeftTupleList
     public LeftTuple getFirst() {
         return this.first;
     }
+    
+    public LeftTuple getLast() {
+        return this.last;
+    }
+    
+    public void split(final LeftTuple leftTuple, int count) {
+        this.first = leftTuple;
+        leftTuple.setPrevious( null );
+        size = size - count;
+    }
+    
+    public void clear() {
+        this.first = null;
+        this.last = null;
+        size = 0;
+    }    
     
     public void removeAdd(LeftTuple tuple) {
         remove(tuple);
@@ -130,12 +148,8 @@ public class LeftTupleList
             // remove everything
             this.last = null;
             this.first = null;
-        }
-        
-        leftTuple.setPrevious( null );
-        leftTuple.setNext( null );
-        leftTuple.setMemory( null );
-
+        }        
+        leftTuple.clear();
         this.size--;
     }
 
@@ -256,6 +270,14 @@ public class LeftTupleList
         }
 
         return builder.toString();
+    }
+
+    public boolean isStagingMemory() {
+        return stagingMemory;
+    }
+
+    public void setStagingMemory(boolean stagingMemory) {
+        this.stagingMemory = stagingMemory;
     }
 
 }

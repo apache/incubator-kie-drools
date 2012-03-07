@@ -26,10 +26,13 @@ public class ActivationGroupImpl
     private final String                          name;
 
     private final LinkedList<ActivationGroupNode> list;
+    
+    private long triggeredForRecency;
 
     public ActivationGroupImpl(final String name) {
         this.name = name;
         this.list = new LinkedList();
+        this.triggeredForRecency = -1;
     }
 
     public String getName() {
@@ -67,6 +70,14 @@ public class ActivationGroupImpl
 
     public LinkedList<ActivationGroupNode> getList() {
         return list;
+    }
+
+    public long getTriggeredForRecency() {
+        return triggeredForRecency;
+    }
+
+    public void setTriggeredForRecency(long executedForRecency) {
+        this.triggeredForRecency = executedForRecency;
     }
 
 }

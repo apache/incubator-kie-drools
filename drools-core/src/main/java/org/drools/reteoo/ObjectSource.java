@@ -28,7 +28,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
@@ -160,7 +160,7 @@ public abstract class ObjectSource extends BaseNode
     
     public long updateMask(long mask) {
         long returnMask;
-        if (!(source instanceof ObjectTypeNode)) {
+        if ( source.getType() != NodeTypeEnums.ObjectTypeNode ) {
             returnMask = source.updateMask( declaredMask | mask );
         } else { // else ObjectTypeNode
             returnMask = declaredMask | mask;
@@ -259,9 +259,9 @@ public abstract class ObjectSource extends BaseNode
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        if ( !this.isInUse() && this instanceof NodeMemory ) {
+        if ( !this.isInUse() && this instanceof MemoryFactory ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( (NodeMemory) this );
+                workingMemory.clearNodeMemory( (MemoryFactory) this );
             }
         }
         this.source.remove( context,
@@ -273,7 +273,7 @@ public abstract class ObjectSource extends BaseNode
     protected ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this;
         while (source != null) {
-            if (source instanceof ObjectTypeNode) {
+            if (source.getType() ==  NodeTypeEnums.ObjectTypeNode) {
                 return (ObjectTypeNode)source;
             }
             source = source.source;

@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.spi.PropagationContext;
 
 public class LIANodePropagation
@@ -60,6 +61,10 @@ public class LIANodePropagation
     }
 
     public void doPropagation(InternalWorkingMemory workingMemory) {
+        LiaNodeMemory memory = ( LiaNodeMemory ) workingMemory.getNodeMemory( node );
+        if ( memory.getSegmentMemory() == null ) {
+            BetaNode.createNodeSegmentMemory( node, workingMemory ); // initialises for all nodes in segment, including this one
+        }
         node.getSinkPropagator().createAndPropagateAssertLeftTuple( handle,
                                                                     context,
                                                                     workingMemory,

@@ -39,13 +39,14 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
@@ -198,14 +199,15 @@ public class OutputMarshaller {
 
         Map<String, ActivationGroup> activationGroups = agenda.getActivationGroupsMap();
 
-        AgendaGroup[] agendaGroups = (AgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
+        InternalAgendaGroup[] agendaGroups = (InternalAgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new InternalAgendaGroup[agenda.getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
 
-        for ( AgendaGroup group : agendaGroups ) {
+        for ( InternalAgendaGroup group : agendaGroups ) {
             context.writeShort( PersisterEnums.AGENDA_GROUP );
             context.writeUTF( group.getName() );
             context.writeBoolean( group.isActive() );
+            context.writeLong( group.getActivatedForRecency() );
         }
         context.writeShort( PersisterEnums.END );
 
@@ -689,7 +691,7 @@ public class OutputMarshaller {
             case NodeTypeEnums.RightInputAdaterNode : {
                 //context.out.println( ".... RightInputAdapterNode" );
                 // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when serializing to persistent storage
-                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
+                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (MemoryFactory) sink );
                 InternalFactHandle ifh = (InternalFactHandle) memory.get( leftTuple );
                 // first we serialize the generated fact handle ID
                 //context.out.println( "FactHandle id:"+ifh.getId() );
@@ -706,7 +708,7 @@ public class OutputMarshaller {
             case NodeTypeEnums.FromNode : {
                 //context.out.println( ".... FromNode" );
                 // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
-                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
+                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (MemoryFactory) sink );
 
                 Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
                 for ( RightTuple rightTuples : matches.values() ) {

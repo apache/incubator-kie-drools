@@ -60,6 +60,17 @@ public class ForallBuilder
                                                                            (PatternDescr) it.next() );
             forall.addRemainingPattern( anotherPattern );
         }
+        
+        
+        if ( forallDescr.getDescrs().size() == 1 ) {
+            // An optimization for unlinking, where we allow unlinking if the resulting 'not' node has no constraints
+            // we need to record this here, due to getRemainingPatterns injecting "this == " + BASE_IDENTIFIER $__forallBaseIdentifier 
+            // which we wish to ignore
+            PatternDescr p = ( PatternDescr ) forallDescr.getDescrs().get( 0 );
+            if ( p.getConstraint().getDescrs().isEmpty() ) {
+                forall.setEmptyBetaConstraints( true );
+            }
+        }        
 
         // poping the forall
         context.getBuildStack().pop();

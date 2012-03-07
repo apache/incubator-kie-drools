@@ -254,7 +254,7 @@ public class KnowledgeBaseImpl
     
     public Query getQuery(String packageName,
                           String queryName) {
-        return this.ruleBase.getPackage( packageName ).getRule( queryName );
+        return ( Query ) this.ruleBase.getPackage( packageName ).getRule( queryName );
     }
     
     public Set<String> getEntryPointIds() {

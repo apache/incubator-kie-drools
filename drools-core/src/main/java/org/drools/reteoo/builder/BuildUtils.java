@@ -36,6 +36,7 @@ import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
@@ -97,12 +98,12 @@ public class BuildUtils {
                                final BaseNode candidate) {
         BaseNode node = null;
         RuleBasePartitionId partition = null;
-        if ( candidate instanceof EntryPointNode ) {
+        if ( candidate.getType() == NodeTypeEnums.EntryPointNode ) {
             // entry point nodes are always shared
             node = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode) candidate).getEntryPoint() );
             // all EntryPointNodes belong to the main partition
             partition = RuleBasePartitionId.MAIN_PARTITION;
-        } else if ( candidate instanceof ObjectTypeNode ) {
+        } else if ( candidate.getType() == NodeTypeEnums.ObjectTypeNode ) {
             // object type nodes are always shared
             Map<ObjectType, ObjectTypeNode> map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
             if ( map != null ) {
@@ -118,9 +119,9 @@ public class BuildUtils {
             partition = RuleBasePartitionId.MAIN_PARTITION;
         } else if ( isSharingEnabledForNode( context,
                                              candidate ) ) {
-            if ( (context.getTupleSource() != null) && (candidate instanceof LeftTupleSink) ) {
+            if ( (context.getTupleSource() != null) && NodeTypeEnums.isLeftTupleSink( candidate ) ) {
                 node = context.getTupleSource().getSinkPropagator().getMatchingNode( candidate );
-            } else if ( (context.getObjectSource() != null) && (candidate instanceof ObjectSink) ) {
+            } else if ( (context.getObjectSource() != null) && NodeTypeEnums.isObjectSink( candidate ) ) {
                 node = context.getObjectSource().getSinkPropagator().getMatchingNode( candidate );
             } else {
                 throw new RuntimeDroolsException( "This is a bug on node sharing verification. Please report to development team." );
@@ -163,9 +164,9 @@ public class BuildUtils {
      */
     private boolean isSharingEnabledForNode(final BuildContext context,
                                             final BaseNode node) {
-        if ( node instanceof LeftTupleSource ) {
+        if ( NodeTypeEnums.isLeftTupleSource( node )) {
             return context.getRuleBase().getConfiguration().isShareBetaNodes();
-        } else if ( node instanceof ObjectSource ) {
+        } else if ( NodeTypeEnums.isObjectSource( node ) ) {
             return context.getRuleBase().getConfiguration().isShareAlphaNodes();
         }
         return false;

@@ -82,6 +82,9 @@ public class NotNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        this.objectSource = new MockObjectSource( 155 );
+        this.tupleSource = new MockTupleSource( 60 );
 
         // string1Declaration is bound to pattern 3 
         this.node = new NotNode( 15,

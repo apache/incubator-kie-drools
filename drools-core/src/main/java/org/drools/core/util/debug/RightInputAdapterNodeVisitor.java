@@ -21,7 +21,7 @@ import java.util.Stack;
 import org.drools.common.NetworkNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.reteoo.RightInputAdapterNode;
-import org.drools.reteoo.RightInputAdapterNode.RIAMemory;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 
 public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -36,7 +36,7 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
                            StatefulKnowledgeSessionInfo info) {
         RightInputAdapterNode an = (RightInputAdapterNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-        final ObjectHashMap memory = ((RIAMemory) info.getSession().getNodeMemory( an )).memory;
+        final ObjectHashMap memory = ((RiaNodeMemory) info.getSession().getNodeMemory( an )).getMap();
         
         ni.setMemoryEnabled( true );
         ni.setTupleMemorySize( memory.size() );

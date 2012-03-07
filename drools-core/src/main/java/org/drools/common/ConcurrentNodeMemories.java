@@ -38,9 +38,9 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     /**
      * @inheritDoc
-     * @see org.drools.common.NodeMemories#clearNodeMemory(org.drools.common.NodeMemory)
+     * @see org.drools.common.NodeMemories#clearNodeMemory(org.drools.common.MemoryFactory)
      */
-    public void clearNodeMemory( NodeMemory node ) {
+    public void clearNodeMemory( MemoryFactory node ) {
         this.memories.set( node.getId(),
                            null );
     }
@@ -57,9 +57,9 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * fails the checks, it will move into the critical sessions and re-check everything
      * before effectively doing any change on data structures. 
      *
-     * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.NodeMemory)
+     * @see org.drools.common.NodeMemories#getNodeMemory(org.drools.common.MemoryFactory)
      */
-    public Memory getNodeMemory( NodeMemory node ) {
+    public Memory getNodeMemory( MemoryFactory node ) {
         if( node.getId() >= this.memories.length() ) {
             resize( node );
         }
@@ -80,7 +80,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
      * @param node
      * @return
      */
-    private Memory createNodeMemory( NodeMemory node ) {
+    private Memory createNodeMemory( MemoryFactory node ) {
         try {
             this.lock.lock();
             // need to try again in a synchronized code block to make sure
@@ -104,7 +104,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
     /**
      * @param node
      */
-    private void resize( NodeMemory node ) {
+    private void resize( MemoryFactory node ) {
         try {
             this.lock.lock();
             if( node.getId() >= this.memories.length() ) {

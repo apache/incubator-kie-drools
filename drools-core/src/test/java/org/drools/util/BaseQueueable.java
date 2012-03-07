@@ -55,37 +55,29 @@ public class BaseQueueable
     }
 
     public void addLogicalDependency(LogicalDependency node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public ActivationGroupNode getActivationGroupNode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public long getActivationNumber() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public AgendaGroup getAgendaGroup() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public LinkedList getLogicalDependencies() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public PropagationContext getPropagationContext() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Rule getRule() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -95,82 +87,61 @@ public class BaseQueueable
     }
 
     public ActivationNode getActivationNode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public int getSalience() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public GroupElement getSubRule() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public LeftTupleImpl getTuple() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isActivated() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void remove() {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setActivated(boolean activated) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setActivationGroupNode(ActivationGroupNode activationGroupNode) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setLogicalDependencies(LinkedList<LogicalDependency> justified) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setActivationNode(ActivationNode ruleFlowGroupNode) {
-        // TODO Auto-generated method stub
-        
     }
 
     public List<FactHandle> getFactHandles() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public List<Object> getObjects() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object getDeclarationValue(String variableName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public List<String> getDeclarationIDs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public InternalFactHandle getFactHandle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isAdded() {
-        // TODO Auto-generated method stub
         return false;
     }
     
@@ -179,27 +150,19 @@ public class BaseQueueable
     }
 
     public void addBlocked(LogicalDependency node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public LinkedList getBlocked() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void setBlocked(LinkedList<LogicalDependency> justified) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void addBlocked(LinkedListNode node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public LinkedList getBlockers() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -209,7 +172,10 @@ public class BaseQueueable
     }
 
     public void setMatched(boolean matched) {
-        // TODO Auto-generated method stub
-        
+     
+    }
+  
+    public boolean isRuleNetworkEvaluatorActivation() {
+        return false;
     }    
 }

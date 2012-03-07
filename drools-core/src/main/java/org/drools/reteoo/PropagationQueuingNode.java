@@ -32,7 +32,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -51,7 +51,7 @@ import org.drools.spi.PropagationContext;
 public class PropagationQueuingNode extends ObjectSource
     implements
     ObjectSinkNode,
-    NodeMemory {
+    MemoryFactory {
 
     private static final long serialVersionUID        = 510l;
 
@@ -101,6 +101,10 @@ public class PropagationQueuingNode extends ObjectSource
         super.writeExternal( out );
         out.writeObject( action );
     }
+    
+    public short getType() {
+        return NodeTypeEnums.PropagationQueuingNode;
+    }     
 
     /**
      * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)

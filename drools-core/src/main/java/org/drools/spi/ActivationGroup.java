@@ -40,4 +40,8 @@ public interface ActivationGroup
     public int size();
 
     public void clear();
+    
+    public long getTriggeredForRecency();
+
+    public void setTriggeredForRecency(long executedForRecency);    
 }

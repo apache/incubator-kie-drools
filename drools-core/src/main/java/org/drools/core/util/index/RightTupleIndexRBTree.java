@@ -181,4 +181,12 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
             return false;
         }
     }
+    
+    public boolean isStagingMemory() {
+        return false;
+    }
+
+    public void setStagingMemory(boolean liaNodeMemory) {
+        throw new UnsupportedOperationException();
+    }    
 }

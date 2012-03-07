@@ -29,7 +29,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
@@ -53,8 +53,8 @@ import org.drools.spi.PropagationContext;
  *
  */
 public class WindowNode extends ObjectSource
-        implements ObjectSinkNode,
-        NodeMemory {
+                                            implements ObjectSinkNode,
+                                            MemoryFactory {
 
     private static final long              serialVersionUID = 540l;
 
@@ -109,6 +109,10 @@ public class WindowNode extends ObjectSource
         out.writeObject(behavior);
         out.writeObject(entryPoint);
     }
+    
+    public short getType() {
+        return NodeTypeEnums.WindowNode;
+    }      
 
     /**
      * Returns the <code>FieldConstraints</code>

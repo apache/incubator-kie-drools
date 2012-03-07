@@ -18,6 +18,7 @@ package org.drools.common;
 
 import org.drools.Agenda;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -39,7 +40,7 @@ public interface InternalAgenda
     
     public org.drools.core.util.LinkedList<ScheduledAgendaItem> getScheduledActivationsLinkedList();
 
-    public boolean fireNextItem(AgendaFilter filter) throws ConsequenceException;
+    public int fireNextItem(AgendaFilter filter) throws ConsequenceException;
 
     public void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
@@ -187,6 +188,8 @@ public interface InternalAgenda
      * @return
      */
     public ActivationsFilter getActivationsFilter();
-    
-    
+        
+    public RuleNetworkEvaluatorActivation createRuleNetworkEvaluatorActivation(final int salience,
+                                                       final RuleMemory rs,
+                                                       final RuleTerminalNode rtn);
 }

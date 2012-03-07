@@ -28,6 +28,7 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.IndexableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.FieldValue;
@@ -104,7 +105,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void addObjectSink(final ObjectSink sink) {
-        if ( sink instanceof AlphaNode ) {
+        if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
@@ -150,7 +151,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void removeObjectSink(final ObjectSink sink) {
-        if ( sink instanceof AlphaNode ) {
+        if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
 
@@ -574,6 +575,24 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
         return sinks;
     }
+    
+    public void doLinkRiaNode(InternalWorkingMemory wm) {
+        if ( this.otherSinks != null ) {
+            // this is only used for ria nodes when exists are shared, we know there is no indexing for those
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                SingleObjectSinkAdapter.staticDoLinkRiaNode( sink, wm );
+            }
+        }
+    }
+
+    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
+        if ( this.otherSinks != null ) {
+            // this is only used for ria nodes when exists are shared, we know there is no indexing for those
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                SingleObjectSinkAdapter.staticDoUnlinkRiaNode( sink, wm );
+            }
+        }
+    }     
 
     public int size() {
         return (this.otherSinks != null ? this.otherSinks.size() : 0) + (this.hashableSinks != null ? this.hashableSinks.size() : 0) + (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);

@@ -26,12 +26,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 import org.drools.RuleIntegrationException;
 import org.drools.base.SalienceInteger;
@@ -40,6 +38,7 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
@@ -150,11 +149,12 @@ public class ReteooBuilder
             // we should only do this on first call, its expected the RuleBase should not change afterwards.
             return;
         }
+
         Map<String, List<RuleTerminalNode>> map = new HashMap<String, List<RuleTerminalNode>>();
 
         for ( BaseNode[] nodes : this.rules.values() ) {
             for ( BaseNode node : nodes ) {
-                if ( node instanceof RuleTerminalNode ) {
+                if ( node.getType() == NodeTypeEnums.RuleTerminalNode ) {
                     RuleTerminalNode terminalNode = (RuleTerminalNode) node;
                     String agendaGroup = terminalNode.getRule().getAgendaGroup();
                     if ( "".equals(agendaGroup) ) {
@@ -249,6 +249,13 @@ public class ReteooBuilder
 
         final BaseNode[] nodes = (BaseNode[]) object;
         final RuleRemovalContext context = new RuleRemovalContext( rule );
+        
+        if (  ruleBase.getConfiguration().isUnlinkingEnabled() && !( ReteooRuleBuilder.unlinkingAllowedForRule( rule ) ) ) {
+            context.setUnlinkEnabled( true);
+        } else {
+            context.setUnlinkEnabled( false );
+        }
+        
         for (final BaseNode node : nodes) {
             node.remove( context,
                          this,
@@ -272,14 +279,14 @@ public class ReteooBuilder
         
         for ( BaseNode node : nodes ) {
             if ( node.isInUse() ) {
-                if ( node instanceof AlphaNode ) {
+                if ( node.getType() == NodeTypeEnums.AlphaNode ) {
                     updateLeafSet(node, leafSet );
-                } else if( node instanceof BetaNode ) {
+                } else if( NodeTypeEnums.isBetaNode( node ) ) {
                     BetaNode betaNode = ( BetaNode ) node;
                     if ( betaNode.isInUse() ) {
                         leafSet.add( betaNode );
                     }
-                } else if ( node instanceof RuleTerminalNode ) {
+                } else if ( NodeTypeEnums.isTerminalNode( node )  ) {
                     RuleTerminalNode rtNode = ( RuleTerminalNode ) node;
                     if ( rtNode.isInUse() ) {
                         leafSet.add( rtNode );
@@ -289,7 +296,7 @@ public class ReteooBuilder
         }
         
         for ( BaseNode node : leafSet ) {
-            if ( node instanceof RuleTerminalNode ) {
+            if ( NodeTypeEnums.isTerminalNode( node ) ) {
                 ((TerminalNode)node).initInferredMask();
             } else { // else node instanceof BetaNode
                 ((BetaNode)node).initInferredMask();
@@ -298,28 +305,28 @@ public class ReteooBuilder
     }
     
     private void updateLeafSet(BaseNode baseNode, NodeSet leafSet) {
-        if ( baseNode instanceof AlphaNode ) {
+        if ( baseNode.getType() == NodeTypeEnums.AlphaNode ) {
             ((AlphaNode) baseNode).resetInferredMask();
             for ( ObjectSink sink : ((AlphaNode) baseNode).getSinkPropagator().getSinks() ) {
                 if ( ((BaseNode)sink).isInUse() ) {
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
-        } else  if ( baseNode instanceof LeftInputAdapterNode ) {
+        } else  if ( baseNode.getType() ==  NodeTypeEnums.LeftInputAdapterNode ) {
             for ( LeftTupleSink sink : ((LeftInputAdapterNode) baseNode).getSinkPropagator().getSinks() ) {
-                if ( sink instanceof RuleTerminalNode ) {
+                if ( sink.getType() ==  NodeTypeEnums.RuleTerminalNode ) {
                     leafSet.add( (BaseNode) sink );
                 } else if ( ((BaseNode)sink).isInUse() ) {
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
-        } else if ( baseNode instanceof EvalConditionNode ) {
+        } else if ( baseNode.getType() == NodeTypeEnums.EvalConditionNode ) {
             for ( LeftTupleSink sink : ((EvalConditionNode) baseNode).getSinkPropagator().getSinks() ) {
                 if ( ((BaseNode)sink).isInUse() ) { 
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
-        } else if ( baseNode instanceof BetaNode ) {
+        } else if ( NodeTypeEnums.isBetaNode( baseNode ) ) {
             if ( ((BaseNode)baseNode).isInUse() ) {
                 leafSet.add( baseNode );
             }

@@ -28,7 +28,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.Iterator;
@@ -48,16 +48,20 @@ import org.drools.spi.PropagationContext;
 public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
-    NodeMemory {
+    MemoryFactory {
 
     private static final long serialVersionUID = 510l;
 
     private LeftTupleSource   tupleSource;
+    
+    private LeftTupleSource   startTupleSource;
 
     protected boolean         tupleMemoryEnabled;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+    
+    protected boolean         unlinkingEnabled;       
 
     public RightInputAdapterNode() {
     }
@@ -73,12 +77,15 @@ public class RightInputAdapterNode extends ObjectSource
      */
     public RightInputAdapterNode(final int id,
                                  final LeftTupleSource source,
+                                 final LeftTupleSource startTupleSource,
                                  final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.startTupleSource = startTupleSource;        
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -88,6 +95,8 @@ public class RightInputAdapterNode extends ObjectSource
         tupleMemoryEnabled = in.readBoolean();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        startTupleSource = ( LeftTupleSource ) in.readObject();
+        unlinkingEnabled = in.readBoolean();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -96,14 +105,61 @@ public class RightInputAdapterNode extends ObjectSource
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
+        out.writeObject( startTupleSource );
+        out.writeBoolean( unlinkingEnabled );
+    }    
 
+    public LeftTupleSource getStartTupleSource() {
+        return startTupleSource;
+    }
+
+    public void setStartTupleSource(LeftTupleSource startTupleSource) {
+        this.startTupleSource = startTupleSource;
     }
 
     /**
      * Creates and return the node memory
-     */
+     */    
     public Memory createMemory(final RuleBaseConfiguration config) {
-        return new RIAMemory();
+        RiaNodeMemory rianMem = new RiaNodeMemory();
+        
+        if ( this.unlinkingEnabled ) {
+            int segmentCount = 0;
+            int segmentPosMask = 1;
+            long allLinkedTestMask = 1; // set to one to cover current segment
+            
+            RiaRuleMemory rmem = new RiaRuleMemory(this);
+            LeftTupleSource tupleSource = getLeftTupleSource();
+            //int associationCount = tupleSource.getAssociations().size();        
+            while ( tupleSource != null && tupleSource != getStartTupleSource() ) {
+                if ( tupleSource.getLeftTupleSource() !=  getStartTupleSource() &&
+                        !BetaNode.parentInSameSegment( tupleSource ) ) {
+                    //associationCount = tupleSource.getAssociations().size();
+                    segmentPosMask = segmentPosMask << 1;                
+                    allLinkedTestMask = allLinkedTestMask | segmentPosMask;  
+                    segmentCount++;
+                }
+                tupleSource = tupleSource.getLeftTupleSource();            
+            }     
+            
+            // now iterate to root, but just shift, don't set
+            // This is because the RIANode mask only cares about nodes in it's subnetwork, 
+            // but offsets are still calculated from root
+    
+            while (tupleSource != null ) {
+                if ( !BetaNode.parentInSameSegment( tupleSource ) ) {
+                    allLinkedTestMask = allLinkedTestMask << 1;   
+                    segmentCount++;
+                }
+                tupleSource = tupleSource.getLeftTupleSource();
+                
+            }           
+            rmem.setAllLinkedMaskTest( allLinkedTestMask ); 
+            rianMem.setRuleSegments( rmem );
+            rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
+        }
+        
+        return rianMem;
     }
 
     /**
@@ -132,10 +188,9 @@ public class RightInputAdapterNode extends ObjectSource
         }         
         
         if ( useLeftMemory) {
-            final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
+            final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
             // add it to a memory mapping
-            memory.memory.put( leftTuple,
-                               handle );
+            memory.getMap().put( leftTuple, handle );
         }
 
         // propagate it
@@ -182,10 +237,10 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
+        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // retrieve handle from memory
-        final InternalFactHandle factHandle = (InternalFactHandle) memory.memory.remove( tuple );
-        
+        final InternalFactHandle factHandle = (InternalFactHandle) memory.getMap().remove( tuple );
+
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
@@ -211,9 +266,9 @@ public class RightInputAdapterNode extends ObjectSource
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
+        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // add it to a memory mapping
-        InternalFactHandle handle = (InternalFactHandle) memory.memory.get( leftTuple );
+        InternalFactHandle handle = (InternalFactHandle) memory.getMap().get( leftTuple );
 
         // propagate it
         for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
@@ -249,9 +304,9 @@ public class RightInputAdapterNode extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
-        final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
+        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator it = memory.memory.iterator();
+        final Iterator it = memory.getMap().iterator();
 
         // iterates over all propagated handles and assert them to the new sink
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
@@ -271,9 +326,9 @@ public class RightInputAdapterNode extends ObjectSource
 
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                final RIAMemory memory = (RIAMemory) workingMemory.getNodeMemory( this );
+                RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
 
-                Iterator it = memory.memory.iterator();
+                Iterator it = memory.getMap().iterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     LeftTuple leftTuple = (LeftTuple) entry.getKey();
                     leftTuple.unlinkFromLeftParent();
@@ -407,23 +462,46 @@ public class RightInputAdapterNode extends ObjectSource
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
-    }           
+    }
     
-    public static class RIAMemory implements Memory, Externalizable {
-        public ObjectHashMap memory = new ObjectHashMap();
-
+    public static class RiaNodeMemory implements Memory, Externalizable {
+        private ObjectHashMap map = new ObjectHashMap();
+        private RuleMemory ruleSegments;
+        
+        public RiaNodeMemory() {            
+        }
+        
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( memory );
+            out.writeObject( map );
+            out.writeObject( ruleSegments );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            memory = (ObjectHashMap) in.readObject();
+            map = (ObjectHashMap) in.readObject();
+            ruleSegments = ( RuleMemory ) in.readObject();
+        }        
+
+        public ObjectHashMap getMap() {
+            return map;
         }
 
+        public void setMap(ObjectHashMap map) {
+            this.map = map;
+        }
+
+        public RuleMemory getRuleSegments() {
+            return ruleSegments;
+        }
+
+        public void setRuleSegments(RuleMemory ruleSegments) {
+            this.ruleSegments = ruleSegments;
+        } 
+        
         public short getNodeType() {
             return NodeTypeEnums.RightInputAdaterNode;
-        }
+        }        
+        
     }
 
 }

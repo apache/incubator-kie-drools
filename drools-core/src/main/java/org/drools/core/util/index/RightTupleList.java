@@ -42,6 +42,10 @@ public class RightTupleList
     private final Index            index;
 
     private TupleHashTableIterator iterator;
+    
+    private int                    size;    
+    
+    private boolean                stagingMemory;
 
     public RightTupleList() {
         // this is not an index bucket
@@ -87,6 +91,18 @@ public class RightTupleList
         remove(rightTuple);
         add(rightTuple);
     }
+    
+    public void split(final RightTuple rightTuple, int count) {
+        this.first = rightTuple;
+        rightTuple.setPrevious( null );
+        size = size - count;
+    }
+    
+    public void clear() {
+        this.first = null;
+        this.last = null;
+        size = 0;
+    }
 
     public void add(final RightTuple rightTuple) {
         if ( this.last != null ) {
@@ -98,6 +114,7 @@ public class RightTupleList
             this.last = rightTuple;
         }
         rightTuple.setMemory( this );
+        this.size++;        
     }
 
     public void insertAfter(RightTuple rightTuple, RightTuple previous) {
@@ -150,10 +167,8 @@ public class RightTupleList
             this.last = null;
             this.first = null;
         }
-        
-        rightTuple.setPrevious( null );
-        rightTuple.setNext( null );
-        rightTuple.setMemory( null );
+        rightTuple.clear();
+        this.size--;
     }
 
     public RightTuple get(final InternalFactHandle handle) {
@@ -188,13 +203,7 @@ public class RightTupleList
     }
 
     public int size() {
-        int i = 0;
-        RightTuple current = this.first;
-        while ( current != null ) {
-            current = (RightTuple) current.getNext();
-            i++;
-        }
-        return i;
+        return this.size;
     }
 
     public FastIterator fastIterator() {
@@ -267,7 +276,6 @@ public class RightTupleList
     }
     
     public RightTuple[] toArray() {
-        int size = size();
         RightTuple[] tuples = new RightTuple[size];
 
         RightTuple current = first;
@@ -315,5 +323,13 @@ public class RightTupleList
 
     public IndexType getIndexType() {
         return IndexType.NONE;
+    }
+
+    public boolean isStagingMemory() {
+        return stagingMemory;
+    }
+
+    public void setStagingMemory(boolean stagingMemory) {
+        this.stagingMemory = stagingMemory;
     }
 }

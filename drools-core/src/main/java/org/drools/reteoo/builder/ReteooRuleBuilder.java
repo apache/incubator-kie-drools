@@ -22,14 +22,29 @@ import java.util.List;
 import org.drools.ActivationListenerFactory;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
+import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
+import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.RightTupleList;
+import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.BetaMemory;
+import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleBuilder;
+import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
 import org.drools.rule.ConditionalBranch;
@@ -41,6 +56,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.NamedConsequence;
 import org.drools.rule.Pattern;
+import org.drools.rule.Query;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
@@ -123,11 +139,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
             if (rulebase.getConfiguration().isSequential()) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
-                context.setAlphaNodeMemoryAllowed( false );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );
-                context.setAlphaNodeMemoryAllowed( true );
             }
 
             // adds subrule
@@ -171,7 +185,11 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                                                   context );
 
         BaseNode baseTerminalNode = (BaseNode) terminal;
-        baseTerminalNode.attach(context);
+        baseTerminalNode.attach(context);             
+        
+        if ( context.getRuleBase().getConfiguration().isUnlinkingEnabled() && !unlinkingAllowedForRule(context.getRule() ) ) {
+            setUnlinkDisabledCount( null, terminal.getLeftTupleSource(),  ( context.getWorkingMemories().length == 0) ? null : context.getWorkingMemories() ); 
+        }               
 
         baseTerminalNode.networkUpdated(new UpdateContext());
 
@@ -183,6 +201,67 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         return terminal;
     }
+    
+    public static boolean unlinkingAllowedForRule(Rule rule) {
+        return !(rule.isQuery() ||
+                   rule.getTimer() != null || 
+                   rule.getAutoFocus() || 
+                   rule.getSalience() instanceof MVELSalienceExpression);
+    }
+    
+    public void setUnlinkDisabledCount(LeftTupleSource startNode,
+                                       LeftTupleSource lt,
+                                       InternalWorkingMemory[] wms) {
+        while ( lt != null ) {
+            if ( startNode == lt ) {
+                return;
+            }
+            if ( NodeTypeEnums.isBetaNode( lt ) ) {
+                BetaNode betaNode = (BetaNode) lt;
+                if ( betaNode.isRightInputIsRiaNode() ) {
+                    RightInputAdapterNode riaNode = (RightInputAdapterNode) betaNode.getRightInput();
+                    lt = lt.getLeftTupleSource();
+                    setUnlinkDisabledCount( lt, riaNode.getLeftTupleSource(), wms );
+                    continue;
+                }
+
+                if ( wms != null && betaNode.isUnlinkingEnabled() ) {
+                    for ( InternalWorkingMemory wm : wms ) {
+                        BetaMemory bm;
+                        if ( NodeTypeEnums.AccumulateNode == lt.getType() ) {
+                            bm = ((AccumulateMemory) wm.getNodeMemory( (AccumulateNode) lt )).getBetaMemory();
+                        } else {
+                            bm = (BetaMemory) wm.getNodeMemory( (BetaNode) lt );
+                        }
+                        RightTupleList list = bm.getStagedAssertRightTupleList();
+                        int length = list.size();
+
+                        BetaNode.propagateAssertRightTuples( betaNode, list, length, wm );
+                        bm.clearStagingMemory();
+                    }
+                }
+                betaNode.setUnlinkingEnabled( false );
+                betaNode.setUnlinkedDisabledCount( betaNode.getUnlinkedDisabledCount() + 1 );
+            } else if ( NodeTypeEnums.LeftInputAdapterNode == lt.getType() ) {
+                LeftInputAdapterNode liaNode = ((LeftInputAdapterNode) lt);
+
+                if ( wms != null && liaNode.isUnlinkingEnabled() ) {
+                    for ( InternalWorkingMemory wm : wms ) {
+                        LiaNodeMemory lm = (LiaNodeMemory) wm.getNodeMemory( (LeftInputAdapterNode) lt );
+                        LeftTupleList list = lm.getStagedLeftTupleList();
+                        int length = list.size();
+
+                        LeftInputAdapterNode.propagateLeftTuples( (LeftInputAdapterNode) lt, list, length, wm );
+                        lm.setStagedLeftTupleList( null );
+                    }
+                }   
+                
+                liaNode.setUnlinkedDisabledCount( liaNode.getUnlinkedDisabledCount() + 1 );
+                liaNode.setUnlinkingEnabled( false );
+            }
+            lt = lt.getLeftTupleSource();
+        }
+    } 
 
     /**
      * Adds a query pattern to the given subrule
@@ -223,11 +302,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
         if ( ruleBase.getConfiguration().isSequential() ) {
             context.setTupleMemoryEnabled( false );
             context.setObjectTypeNodeMemoryEnabled( false );
-            context.setAlphaNodeMemoryAllowed( false );
         } else {
             context.setTupleMemoryEnabled( true );
             context.setObjectTypeNodeMemoryEnabled( true );
-            context.setAlphaNodeMemoryAllowed( true );
         }
         
         // gets the appropriate builder

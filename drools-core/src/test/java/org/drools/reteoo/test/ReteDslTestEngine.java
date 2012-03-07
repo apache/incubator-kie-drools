@@ -60,11 +60,11 @@ import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightInputAdapterNode;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.Sink;
-import org.drools.reteoo.RightInputAdapterNode.RIAMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.AccumulateNodeStep;
 import org.drools.reteoo.test.dsl.BetaNodeStep;
@@ -346,7 +346,7 @@ public class ReteDslTestEngine {
         
         final boolean lrUnlinkingEnabled = ((BuildContext) context
                 .get( BUILD_CONTEXT )).getRuleBase().getConfiguration()
-                .isLRUnlinkingEnabled();
+                .isUnlinkingEnabled();
 
         try {
             List<String[]> cmds = step.getCommands();
@@ -574,7 +574,7 @@ public class ReteDslTestEngine {
             List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
 
-            final ObjectHashMap memory = ((RIAMemory) wm.getNodeMemory( node )).memory;
+            final ObjectHashMap memory = ((RiaNodeMemory) wm.getNodeMemory( node )).getMap();
             for ( String[] cmd : cmds ) {
                 if ( cmd[0].equals( "leftMemory" ) ) {
                     String args = cmd[1];

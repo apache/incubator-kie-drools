@@ -22,9 +22,9 @@ package org.drools.common;
  */
 public interface NodeMemories {
 
-    public Memory getNodeMemory( NodeMemory node );
+    public Memory getNodeMemory( MemoryFactory node );
 
-    public void clearNodeMemory( NodeMemory node );
+    public void clearNodeMemory( MemoryFactory node );
 
     public void setRuleBaseReference(InternalRuleBase ruleBase);
     

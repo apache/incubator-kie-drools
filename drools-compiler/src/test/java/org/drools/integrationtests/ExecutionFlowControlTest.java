@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -32,8 +33,14 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.runtime.process.CreateProcessInstanceCommand;
+import org.drools.common.BaseNode;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.InternalAgenda;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.common.RuleNetworkEvaluatorActivation;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
@@ -42,7 +49,11 @@ import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.io.ResourceFactory;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.reteoo.RuleMemory;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -695,7 +706,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         workingMemory.setGlobal( "list", list );
 
         final Cheese brie = new Cheese( "brie", 12 );
-        workingMemory.insert( brie );
+        workingMemory.insert( brie );        
 
         DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
         final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
@@ -721,7 +732,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
         assertEquals( "rule0", list.get( 0 ) );
         assertEquals( "rule2", list.get( 1 ) );
-
     }
     
     @Test 
@@ -969,6 +979,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         final Person p3 = new Person( "p3" );
         p3.setCheese( stilton );
         wm.insert( p3 );
+        
+        wm.fireAllRules();
 
         assertEquals( 3, created.size() );
         assertEquals( 0, cancelled.size() );

@@ -73,6 +73,7 @@ public class CollectBuilder
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new RightInputAdapterNode( context.getNextId(),
                                                                                                  context.getTupleSource(),
+                                                                                                 tupleSource,
                                                                                                  context ) ) );
 
             // restore tuple source from before the start of the sub network

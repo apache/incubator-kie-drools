@@ -27,11 +27,6 @@ public class NotNodeLeftTuple extends BaseLeftTuple {
     private LeftTuple          blockedPrevious;
     private LeftTuple          blockedNext;
 
-    // node memory
-    private LeftTupleList memory;
-    private Entry              next;
-    private Entry              previous;
-
     public NotNodeLeftTuple() {
         // constructor needed for serialisation
     }

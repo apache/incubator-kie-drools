@@ -142,7 +142,7 @@ public class RuleBaseConfiguration
     private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
     private boolean                        classLoaderCacheEnabled;
-    private boolean                        lrUnlinkingEnabled;
+    private boolean                        unlinkingEnabled;
 
     private boolean                        declarativeAgenda;
     
@@ -201,7 +201,7 @@ public class RuleBaseConfiguration
         out.writeInt( maxThreads );
         out.writeObject( eventProcessingMode );
         out.writeBoolean( classLoaderCacheEnabled );
-        out.writeBoolean( lrUnlinkingEnabled );
+        out.writeBoolean( unlinkingEnabled );
         out.writeBoolean(  declarativeAgenda );
         out.writeObject( componentFactory );
     }
@@ -232,7 +232,7 @@ public class RuleBaseConfiguration
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
-        lrUnlinkingEnabled = in.readBoolean();
+        unlinkingEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (ReteooComponentFactory) in.readObject();
     }
@@ -329,7 +329,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
-            setLRUnlinkingEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
+            setUnlinkingEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         }
     }
 
@@ -386,7 +386,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
         } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isLRUnlinkingEnabled() );
+            return Boolean.toString( isUnlinkingEnabled() );
         }
 
         return null;
@@ -488,7 +488,7 @@ public class RuleBaseConfiguration
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
         
-        setLRUnlinkingEnabled( Boolean.valueOf( this.chainedProperties.getProperty( LRUnlinkingOption.PROPERTY_NAME,
+        setUnlinkingEnabled( Boolean.valueOf( this.chainedProperties.getProperty( LRUnlinkingOption.PROPERTY_NAME,
                                                                                     "false" ) ) );
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
@@ -522,7 +522,7 @@ public class RuleBaseConfiguration
 
     public void setSequential(boolean sequential) {
         this.sequential = sequential;
-        if (sequential && isLRUnlinkingEnabled()) {
+        if (sequential && isUnlinkingEnabled()) {
             throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right unlinking is enabled." );
         }
     }
@@ -710,7 +710,7 @@ public class RuleBaseConfiguration
             throw new IllegalArgumentException( "Multithread mode is currently not supported. Please disable it." );
         }
         this.multithread = enableMultithread;
-        if (multithread && isLRUnlinkingEnabled()) {
+        if (multithread && isUnlinkingEnabled()) {
             throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
         }
     }
@@ -760,20 +760,20 @@ public class RuleBaseConfiguration
     }
     
     /**
-     * @return whether or not Left & Right Unlinking is enabled.
+     * @return whether or not Unlinking is enabled.
      */
-    public boolean isLRUnlinkingEnabled() {
-        return this.lrUnlinkingEnabled;
+    public boolean isUnlinkingEnabled() {
+        return this.unlinkingEnabled;
     }
     
     /**
-     * Enable Left & Right Unlinking. It will also disable sequential mode 
+     * Enable Unlinking. It will also disable sequential mode 
      * and multithread evaluation as these are incompatible with L&R unlinking.
      * @param enabled
      */
-    public void setLRUnlinkingEnabled(boolean enabled) {
+    public void setUnlinkingEnabled(boolean enabled) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.lrUnlinkingEnabled = enabled;
+        this.unlinkingEnabled = enabled;
 
         if ( enabled && isSequential() ) {
             throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right Unlinking is enabled." );
@@ -1194,7 +1194,7 @@ public class RuleBaseConfiguration
         } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if ( LRUnlinkingOption.class.equals( option ) ) {
-            return (T) (this.isLRUnlinkingEnabled() ? LRUnlinkingOption.ENABLED : LRUnlinkingOption.DISABLED);
+            return (T) (this.isUnlinkingEnabled() ? LRUnlinkingOption.ENABLED : LRUnlinkingOption.DISABLED);
         } else if ( DeclarativeAgendaOption.class.equals( option )  ) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
@@ -1242,7 +1242,7 @@ public class RuleBaseConfiguration
         } else if ( option instanceof ClassLoaderCacheOption ) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
         } else if ( option instanceof LRUnlinkingOption ) {
-            setLRUnlinkingEnabled(((LRUnlinkingOption) option).isLRUnlinkingEnabled());
+            setUnlinkingEnabled(((LRUnlinkingOption) option).isLRUnlinkingEnabled());
         } else if ( option instanceof DeclarativeAgendaOption ) {
             setDeclarativeAgendaEnabled( ((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled() );
         }

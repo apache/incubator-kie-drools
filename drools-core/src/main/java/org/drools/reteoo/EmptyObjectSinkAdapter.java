@@ -101,6 +101,16 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
         return obj instanceof EmptyObjectSinkAdapter;
     }
 
+    public void doLinkRiaNode(InternalWorkingMemory wm) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void doUnlinkRiaNode(InternalWorkingMemory wm) {
+        // TODO Auto-generated method stub
+        
+    }
+
 
 
 }

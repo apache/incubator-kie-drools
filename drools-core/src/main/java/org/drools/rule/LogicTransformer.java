@@ -395,7 +395,7 @@ public class LogicTransformer {
                 for ( int j = ors.length - 1; j >= 0; j-- ) {
                     // we must insert at the beginning to keep the order
                     and.getChildren().add(0,
-                            ors[j].getChildren().get(indexes[j]).clone());
+                                          ors[j].getChildren().get(indexes[j]).clone());
                     if ( (i % mod) == 0 ) {
                         indexes[j] = (indexes[j] + 1) % ors[j].getChildren().size();
                     }
@@ -410,7 +410,7 @@ public class LogicTransformer {
 
                         // HERE IS THE MESSY PROBLEM: need to change further references to the appropriate cloned ref
                         and.getChildren().add( j,
-                                               ((RuleConditionElement) others[j]).clone() );
+                                               (RuleConditionElement) ((RuleConditionElement) others[j]).clone() );
                     }
                 }
                 parent.addChild( and );

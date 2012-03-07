@@ -29,11 +29,6 @@ public class LeftTupleImpl extends BaseLeftTuple {
     private LeftTuple          blockedPrevious;
     private LeftTuple          blockedNext;
 
-    // node memory
-    private LeftTupleList      memory;
-    private Entry              next;
-    private Entry              previous;
-
     public LeftTupleImpl() {
         // constructor needed for serialisation
     }
@@ -104,48 +99,6 @@ public class LeftTupleImpl extends BaseLeftTuple {
     public void unlinkFromRightParent() {
         super.unlinkFromRightParent();
         this.blocker = null;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getMemory()
-     */
-    public LeftTupleList getMemory() {
-        return this.memory;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
-     */
-    public void setMemory(LeftTupleList memory) {
-        this.memory = memory;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getPrevious()
-     */
-    public Entry getPrevious() {
-        return previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
-     */
-    public void setPrevious(Entry previous) {
-        this.previous = previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
-     */
-    public void setNext(final Entry next) {
-        this.next = next;
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getNext()
-     */
-    public Entry getNext() {
-        return this.next;
     }
 
     /* (non-Javadoc)

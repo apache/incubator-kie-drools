@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.reteoo;
 
-/**
- * A marker interface to specify unlinkable node memories. 
- */
-public interface Unlinkable {
+package org.drools.common;
 
-	/** Whether or not the left side is unlinked. */
-	boolean isLeftUnlinked();
+import org.drools.RuleBaseConfiguration;
 
-	/** Whether or not the right side is unlinked. */
-	boolean isRightUnlinked();
-	
-	void linkLeft();
-	
-	void linkRight();
-	
-	void unlinkLeft();
-	
-	void unlinkRight();
+public interface MemoryFactory {
+    public int getId();
+
+    public Memory createMemory(RuleBaseConfiguration config);
 
 }

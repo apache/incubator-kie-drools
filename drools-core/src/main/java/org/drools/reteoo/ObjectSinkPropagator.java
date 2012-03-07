@@ -49,5 +49,9 @@ public interface ObjectSinkPropagator
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory);
+    
+    public void doLinkRiaNode(InternalWorkingMemory wm);
+
+    public void doUnlinkRiaNode(InternalWorkingMemory wm);
 
 }

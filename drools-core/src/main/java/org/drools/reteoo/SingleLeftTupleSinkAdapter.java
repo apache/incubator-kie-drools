@@ -24,10 +24,13 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.spi.PropagationContext;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;
+    
+    private LeftTupleSink[] array;
 
     public SingleLeftTupleSinkAdapter() {
         this( RuleBasePartitionId.MAIN_PARTITION,
@@ -136,17 +139,40 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
             child.unlinkFromRightParent();
             child = temp;
         }
-    }
+    }    
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
-                                                  final PropagationContext context,
+                                                  final PropagationContext context,                                                  
                                                   final InternalWorkingMemory workingMemory,
-                                                  boolean leftTupleMemoryEnabled, LeftInputAdapterNode liaNode) {        
-        doPropagateAssertLeftTuple( context,
-                                    workingMemory,
-                                    sink.createLeftTuple( factHandle,
-                                                          this.sink,
-                                                          leftTupleMemoryEnabled ) );
+                                                  boolean leftTupleMemoryEnabled, LeftInputAdapterNode liaNode) {                
+        LeftTuple lt = sink.createLeftTuple( factHandle,
+                                             this.sink,
+                                             leftTupleMemoryEnabled );
+        lt.setPropagationContext( context );
+        
+        
+        if ( liaNode.isUnlinkingEnabled() ) {
+            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( liaNode );
+            if ( lm.getSegmentMemory() == null ) {
+                BetaNode.createNodeSegmentMemory( liaNode, workingMemory ); // initialises for all nodes in segment, including this one
+            }          
+            if ( lm.getStagedLeftTupleList().size() == 0 ) {
+                // link. We do this on staged tuples, instead of entire count, as the lazy agenda might need re-activating
+                lm.linkNode( workingMemory );
+            }  
+            if ( context.getReaderContext() == null ) {
+                lm.addAssertLeftTuple( lt, workingMemory );
+                lm.setCounter( lm.getCounter() + 1 ); // we need this to track when we unlink
+            } else {
+                doPropagateAssertLeftTuple( context,
+                                            workingMemory,
+                                            lt );                
+            }
+        } else {
+            doPropagateAssertLeftTuple( context,
+                                        workingMemory,
+                                        lt );
+        }
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
@@ -157,7 +183,10 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
 
     public LeftTupleSink[] getSinks() {
-        return new LeftTupleSink[]{this.sink};
+    	if ( array == null ) {
+    		array = new LeftTupleSink[]{this.sink};
+    	}
+        return array;
     }
 
     public int size() {

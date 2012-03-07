@@ -18,12 +18,29 @@ package org.drools.reteoo;
 
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
+import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
 import org.drools.common.TruthMaintenanceSystemHelper;
@@ -51,8 +68,7 @@ import java.util.Map;
  *
  * @see org.drools.rule.Rule
  */
-public class RuleTerminalNode extends AbstractTerminalNode {
-
+public class RuleTerminalNode extends AbstractTerminalNode implements MemoryFactory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -63,6 +79,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     /** The rule to invoke upon match. */
     private Rule                          rule;
+    
     /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
@@ -84,6 +101,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     private int                           leftInputOtnId;
 
     private String                        consequenceName;
+
+    private boolean                       unlinkingEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -114,6 +133,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.rule = rule;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
+        
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
 
@@ -168,8 +189,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             Arrays.sort( this.timerPeriodDeclarations, SortDeclarations.instance );             
         }
     }
-
-
+    
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -237,7 +257,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
+                                PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         //check if the rule is not effective or
         // if the current Rule is no-loop and the origin rule is the same then return
@@ -250,6 +270,17 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         }
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        
+        if( unlinkingEnabled ) {
+            // Find the most recent PropagationContext, as this caused this rule to elegible for firing
+            LeftTuple lt = leftTuple;
+            while ( lt != null ) {
+                if ( lt.getPropagationContext() != null && lt.getPropagationContext().getPropagationNumber() > context.getPropagationNumber() ) {
+                    context = lt.getPropagationContext();
+                }
+                lt = lt.getParent();
+            }
+        }
 
         boolean fire = agenda.createActivation( leftTuple, 
                                                 context, 
@@ -572,6 +603,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+
     }      
     
     public int getLeftInputOtnId() {
@@ -593,4 +625,31 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     protected ObjectTypeNode getObjectTypeNode() {
         return getLeftTupleSource().getObjectTypeNode();
     }
+
+    public Memory createMemory(RuleBaseConfiguration config) {
+        int segmentCount = 1; // always atleast one segment
+        int segmentPosMask = 1;
+        long allLinkedTestMask = 1;        
+        RuleMemory rmem = new RuleMemory(this);
+        LeftTupleSource tupleSource = getLeftTupleSource();
+        boolean updateBitInNewSegment = false; // this is so we can handle segments that don't have betanode's, as their bit will never be set
+        while ( tupleSource.getLeftTupleSource() != null ) {            
+            if ( !BetaNode.parentInSameSegment( tupleSource ) ) {
+                updateBitInNewSegment = true;
+                segmentPosMask = segmentPosMask << 1;  
+                segmentCount++;
+            }
+            
+            if ( updateBitInNewSegment && NodeTypeEnums.isBetaNode( tupleSource )) {
+                updateBitInNewSegment = false;
+                allLinkedTestMask = allLinkedTestMask | segmentPosMask;
+            }
+            
+            tupleSource = tupleSource.getLeftTupleSource();            
+        }        
+        rmem.setAllLinkedMaskTest( allLinkedTestMask );
+        rmem.setSegmentMemories( new SegmentMemory[segmentCount] );
+        return rmem;
+    }            
+
 }

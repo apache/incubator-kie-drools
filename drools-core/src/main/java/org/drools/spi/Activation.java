@@ -22,7 +22,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -115,10 +114,13 @@ public interface Activation
 
     public void setActivationNode(ActivationNode ruleFlowGroupNode);
     
-    InternalFactHandle getFactHandle();
-    
+    InternalFactHandle getFactHandle();   
+
     public boolean isMatched();
 
     public void setMatched(boolean matched);    
+
+    public boolean isRuleNetworkEvaluatorActivation();
+
     
 }

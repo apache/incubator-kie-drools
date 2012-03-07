@@ -52,8 +52,9 @@ public class RIANodeStep
         }
 
         RightInputAdapterNode riaNode = new RightInputAdapterNode( buildContext.getNextId(),
-                                                                 pnode,
-                                                                 buildContext );
+                                                                   pnode,
+                                                                   null,
+                                                                   buildContext );
         riaNode.attach(buildContext);
         context.put( name,
                      riaNode );

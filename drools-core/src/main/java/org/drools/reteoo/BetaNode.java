@@ -39,7 +39,7 @@ import org.drools.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.QuadroupleNonIndexSkipBetaConstraints;
@@ -51,7 +51,12 @@ import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.IndexUtil;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.Pattern;
@@ -73,15 +78,11 @@ public abstract class BetaNode extends LeftTupleSource
         LeftTupleSinkNode,
         ObjectSinkNode,
         RightTupleSink,
-        NodeMemory {
+        MemoryFactory {
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-
-    /** The left input <code>TupleSource</code>. */
-    protected LeftTupleSource leftInput;
-
     /** The right input <code>TupleSource</code>. */
     protected ObjectSource    rightInput;
 
@@ -97,8 +98,6 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
 
-    /** @see LRUnlinkingOption */
-    protected boolean         lrUnlinkingEnabled         = false;
 
     private boolean           indexedUnificationJoin;
 
@@ -110,8 +109,14 @@ public abstract class BetaNode extends LeftTupleSource
     private List<String>      rightListenedProperties;
 
     private transient int     rightInputOtnId;
+    
+    private boolean           rightInputIsRiaNode;
 
     private transient ObjectTypeNode objectTypeNode;
+
+    private boolean                  unlinkingEnabled;
+
+    private int                      unlinkedDisabledCount;
 
     // ------------------------------------------------------------
     // Constructors
@@ -136,17 +141,43 @@ public abstract class BetaNode extends LeftTupleSource
              final BetaConstraints constraints,
              final BuildContext context) {
         super( id,
-               partitionId,
-               partitionsEnabled );
-        this.leftInput = leftInput;
+                partitionId,
+                partitionsEnabled );
+        setLeftTupleSource(leftInput);
         this.rightInput = rightInput;
+        
+        if ( NodeTypeEnums.RightInputAdaterNode == rightInput.getType() ) {
+            rightInputIsRiaNode = true;
+        } else {
+            rightInputIsRiaNode = false;
+        }
+        
         this.constraints = constraints;
 
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
         }
 
-        initMasks(context, leftInput);
+        initMasks( context, leftInput );        
+        
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();      
+        this.unlinkedDisabledCount = 0;
+    }
+    
+    public boolean isUnlinkingEnabled() {
+        return unlinkingEnabled;
+    }
+
+    public void setUnlinkingEnabled(boolean unlinkingEnabled) {
+        this.unlinkingEnabled = unlinkingEnabled;
+    }
+    
+    public int getUnlinkedDisabledCount() {
+        return unlinkedDisabledCount;
+    }
+
+    public void setUnlinkedDisabledCount(int unlinkedDisabledCount) {
+        this.unlinkedDisabledCount = unlinkedDisabledCount;
     }
 
     @Override
@@ -159,7 +190,7 @@ public abstract class BetaNode extends LeftTupleSource
             return;
         }
 
-        if ( !(rightInput instanceof RightInputAdapterNode) ) {
+        if ( !isRightInputIsRiaNode() ) {
             Pattern pattern = context.getLastBuiltPatterns()[0]; // right input pattern
             ObjectType objectType = pattern.getObjectType();
 
@@ -202,7 +233,7 @@ public abstract class BetaNode extends LeftTupleSource
         super.initInferredMask( leftInput );
 
         ObjectSource unwrappedRight = unwrapRightInput();
-        if ( unwrappedRight instanceof AlphaNode ) {
+        if ( unwrappedRight.getType() == NodeTypeEnums.AlphaNode ) {
             AlphaNode alphaNode = (AlphaNode) unwrappedRight;
             rightInferredMask = alphaNode.updateMask( rightDeclaredMask );
         } else {
@@ -211,19 +242,19 @@ public abstract class BetaNode extends LeftTupleSource
         rightInferredMask &= (Long.MAX_VALUE - rightNegativeMask);
     }
 
-    public ObjectSource unwrapRightInput() {
-        return rightInput instanceof PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
+    public ObjectSource unwrapRightInput() {   
+        return rightInput.getType() == NodeTypeEnums.PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         constraints = (BetaConstraints) in.readObject();
-        leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
-        lrUnlinkingEnabled = in.readBoolean();
+        unlinkingEnabled = in.readBoolean();
+        unlinkedDisabledCount = in.readInt();
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
         rightNegativeMask = in.readLong();
@@ -231,6 +262,11 @@ public abstract class BetaNode extends LeftTupleSource
         rightListenedProperties = (List) in.readObject();
         setUnificationJoin();
         super.readExternal( in );
+        if ( NodeTypeEnums.RightInputAdaterNode == rightInput.getType() ) {
+            rightInputIsRiaNode = true;
+        } else {
+            rightInputIsRiaNode = false;
+        }        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -243,12 +279,12 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         out.writeObject( constraints );
-        out.writeObject( leftInput );
         out.writeObject( rightInput );
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
-        out.writeBoolean( lrUnlinkingEnabled );
+        out.writeBoolean( unlinkingEnabled );
+        out.writeInt( unlinkedDisabledCount );
         out.writeLong( rightDeclaredMask );
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );
@@ -256,8 +292,8 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( rightListenedProperties );
         super.writeExternal( out );
     }
-
-    private void setUnificationJoin() {
+    
+    public void setUnificationJoin() {
         // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
         // This ensure we get the correct iterator
         BetaNodeFieldConstraint[] betaCconstraints = this.constraints.getConstraints();
@@ -277,8 +313,102 @@ public abstract class BetaNode extends LeftTupleSource
                 this.indexedUnificationJoin = true;
             }
         }
+    }    
+    
+    public void assertObject( final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory wm ) {
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm);
+        
+
+        RightTuple rightTuple = createRightTuple( factHandle,
+                                                  this,
+                                                  context );
+        rightTuple.setPropagationContext( context );
+        
+        if ( !isUnlinkingEnabled() ) {
+            assertRightTuple(rightTuple, context, wm );
+            return;
+        }
+        
+        if ( isUnlinkingEnabled() && memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() ) {
+            // link node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
+            // Even if rule is already linked, still call this in case the lazy agenda item needs re-activating
+            memory.linkNode( wm );
+        }
+                        
+        if ( context.getReaderContext() != null || isRightInputIsRiaNode() ) {
+            // Always let rianodes propagate
+            assertRightTuple(rightTuple, context, wm );
+        } else {     
+            memory.addStagedAssertRightTuple( rightTuple, wm );
+        }
+    }    
+    
+    public abstract void assertRightTuple( final RightTuple rightTuple,
+                                           final PropagationContext context,
+                                           final InternalWorkingMemory workingMemory );    
+
+    public static void flushModifyStagedRightTuples(RightTupleList list, InternalWorkingMemory wm) {        
+        // propagateRightTuples((BetaNode) list.getFirst().getRightTupleSink(), list, list.size(), wm);
+        
+        RightTuple rightTuple = list.getFirst();
+        BetaNode bnode = (BetaNode) list.getFirst().getRightTupleSink();
+        for ( int i = 0, length = list.size(); i < length; i++ ) {  
+            RightTuple next =   ( RightTuple ) rightTuple.getNext();
+            
+            rightTuple.setPrevious( null );
+            rightTuple.setNext( null );
+
+            bnode.modifyRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
+            //betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
+            rightTuple.getPropagationContext().evaluateActionQueue( wm );
+            rightTuple = next;
+        }                
+    }
+    
+    public static RightTuple propagateAssertRightTuples(BetaNode betaNode, RightTupleList list, int length, InternalWorkingMemory wm) {
+        RightTuple rightTuple = list.getFirst();
+        for ( int i = 0; i < length; i++ ) {  
+            RightTuple next =   ( RightTuple ) rightTuple.getNext();
+            
+            rightTuple.setPrevious( null );
+            rightTuple.setNext( null );
+            
+            betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
+            rightTuple.getPropagationContext().evaluateActionQueue( wm );
+            rightTuple = next;
+        }        
+        
+        return rightTuple;
+    }   
+    
+//    public static RightTuple propagateRetractRightTuples(BetaNode betaNode, RightTupleList list, InternalWorkingMemory wm) {
+//        RightTuple rightTuple = list.getFirst();
+//        for ( int i = 0; i < length; i++ ) {  
+//            RightTuple next =   ( RightTuple ) rightTuple.getNext();
+//            
+//            rightTuple.setPrevious( null );
+//            rightTuple.setNext( null );
+//            
+//            betaNode.assertRightTuple( rightTuple, rightTuple.getPropagationContext(), wm );
+//            rightTuple.getPropagationContext().evaluateActionQueue( wm );
+//            rightTuple = next;
+//        }        
+//        
+//        return rightTuple;
+//    }     
+    
+
+
+    public boolean isRightInputIsRiaNode() {
+        return rightInputIsRiaNode;
     }
 
+    public ObjectSource getRightInput() {
+        return this.rightInput;
+    }
+    
     public FastIterator getRightIterator(RightTupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
@@ -354,11 +484,13 @@ public abstract class BetaNode extends LeftTupleSource
 
     public List<String> getRules() {
         final List<String> list = new ArrayList<String>();
-        for (LeftTupleSink sinkleftTupleSink : this.sink.getSinks()) {
-            if (sinkleftTupleSink instanceof RuleTerminalNode) {
-                list.add(((RuleTerminalNode) sinkleftTupleSink).getRule().getName());
-            } else if (sinkleftTupleSink instanceof BetaNode) {
-                list.addAll(((BetaNode) sinkleftTupleSink).getRules());
+
+        final LeftTupleSink[] sinks = this.sink.getSinks();
+        for ( int i = 0, length = sinks.length; i < length; i++ ) {
+            if ( sinks[i].getType() ==  NodeTypeEnums.RuleTerminalNode ) {
+                list.add( ((RuleTerminalNode) sinks[i]).getRule().getName() );
+            } else if ( NodeTypeEnums.isBetaNode( sinks[i] ) ) {
+                list.addAll( ((BetaNode) sinks[i]).getRules() );
             }
         }
         return list;
@@ -403,8 +535,7 @@ public abstract class BetaNode extends LeftTupleSource
              * that is initially linked. If there are tuples to be propagated,
              * they will trigger the update (thus, population) of the other side.
              * */
-            if (!lrUnlinkingEnabled || !(this instanceof JoinNode)) {
-
+            if (!unlinkingEnabled || !(this.getType() == NodeTypeEnums.JoinNode) ) {
                 this.rightInput.updateSink(this,
                         propagationContext,
                         workingMemory);
@@ -490,48 +621,93 @@ public abstract class BetaNode extends LeftTupleSource
             }
             context.setCleanupAdapter( null );
         }
-        this.leftInput.remove( context,
-                               builder,
-                               this,
-                               workingMemories );
+
+        handleUnlinking(context);
+
         this.rightInput.remove( context,
                                 builder,
                                 this,
                                 workingMemories );
+
+this.leftInput.remove( context,
+                       builder,
+                       this,
+                       workingMemories );
+    }
+    
+    public void handleUnlinking(final RuleRemovalContext context) {
+        if ( !context.isUnlinkEnabled( )  && unlinkedDisabledCount == 0) {
+            // if unlinkedDisabledCount is 0, then we know that unlinking is disabled globally
+            return;
+        }
+        
+        if ( context.isUnlinkEnabled( ) ) {
+            unlinkedDisabledCount--;
+            if ( unlinkedDisabledCount == 0 ) {
+                unlinkingEnabled = true;
+            }
+        }
+        
     }
 
     public void modifyObject(InternalFactHandle factHandle,
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
-                             InternalWorkingMemory workingMemory) {
+                             InternalWorkingMemory wm) {
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        
+
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null &&
                 ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() ) {
             modifyPreviousTuples.removeRightTuple();
+            rightTuple.setPropagationContext( context );
             // we skipped this node, due to alpha hashing, so retract now
+
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
-                                                              workingMemory );
+                                                              wm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
         if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() == getRightInputOtnId() ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
+            rightTuple.setPropagationContext( context );
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
-                // RightTuple previously existed, so continue as modify
+                // RightTuple previously existed, so continue as modify                
                 modifyRightTuple( rightTuple,
                                   context,
-                                  workingMemory );
+                                  wm );     
+                
+//                if ( rightTuple.getMemory() != null && rightTuple.getMemory().isStagingMemory() ) { // can be null for if unlinking is off
+//                    // RightTuple is still staged, hasn't propagated yet, just up date PropagationContext
+//                    rightTuple.setPropagationContext( context );                    
+//                } else {
+//                    if ( isUnlinkingEnabled() ) {
+//                        SegmentMemory sm;
+//                        if ( getType() == NodeTypeEnums.AccumulateNode ) {
+//                            sm = ((AccumulateMemory)wm.getNodeMemory( this )).getBetaMemory().getSegmentMemory();
+//                        } else {
+//                            sm = ((BetaMemory)wm.getNodeMemory( this )).getSegmentMemory();
+//                        }
+//                        //remove from main memory and stage
+//                        rightTuple.getMemory().remove( rightTuple );
+//                        sm.addModifyRightTuple( rightTuple, wm );
+//                    } else {
+//                        modifyRightTuple( rightTuple,
+//                                          context,
+//                                          wm );                        
+//                    }
+//                }
             }
         } else {
             if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
                 // RightTuple does not exist for this node, so create and continue as assert
                 assertObject( factHandle,
                               context,
-                              workingMemory );
+                              wm );
             }
         }
     }
@@ -709,44 +885,178 @@ public abstract class BetaNode extends LeftTupleSource
                                              sink );
         }
     }
-
-    protected boolean leftUnlinked(final PropagationContext context,
-                                   final InternalWorkingMemory workingMemory,
-                                   final BetaMemory memory) {
-
-        // If left input is unlinked, don't do anything.
-        if ( memory.isLeftUnlinked() ) {
-            return true;
+    
+    public static Object getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {        
+        BetaMemory memory;
+        if ( NodeTypeEnums.AccumulateNode == betaNode.getType()) {
+            memory = ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory();
+        } else {
+            memory = (BetaMemory) workingMemory.getNodeMemory( betaNode );
         }
-
-        if ( memory.isRightUnlinked() ) {
-            memory.linkRight();
-            context.setShouldPropagateAll( this );
-            // updates the right input memory before going on.
-            this.rightInput.updateSink( this, context, workingMemory );
+        
+        
+        if ( betaNode.isUnlinkingEnabled() && memory.getSegmentMemory() == null ) {
+            createNodeSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
         }
-
-        return false;
+        return memory;
     }
-
-    protected boolean rightUnlinked(final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory,
-                                    final BetaMemory memory) {
-
-        if ( memory.isRightUnlinked() ) {
+    
+    public static boolean parentInSameSegment(LeftTupleSource lt) {
+        LeftTupleSource parent = lt.getLeftTupleSource();        
+        if ( parent != null && ( parent.getSinkPropagator().size() == 1 || 
+               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
+             ( parent.getSinkPropagator().size() == 2 && 
+               NodeTypeEnums.isBetaNode( lt ) &&
+               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
             return true;
+        } else {        
+            return false;
         }
-
-        if ( memory.isLeftUnlinked() ) {
-
-            memory.linkLeft();
-            context.setShouldPropagateAll( this );
-            // updates the left input memory before going on.
-            this.leftInput.updateSink( this, context, workingMemory );
-        }
-
-        return false;
     }
+    
+    /**
+     * Initialises the NodeSegment memory for all nodes in the segment.
+     * @param wm
+     */
+	public static void createNodeSegmentMemory(LeftTupleSource tupleSource ,
+	                                           final InternalWorkingMemory wm) {
+		// find segment root
+		while ( parentInSameSegment(tupleSource)  ) {
+			tupleSource = tupleSource.getLeftTupleSource();
+		}
+		
+		LeftTupleSource segmentRoot = tupleSource;
+		
+		SegmentMemory smem = new SegmentMemory();
+
+		// Iterate all nodes on the same segment, assigning their position as a bit mask value
+		// allLinkedTestMask is the resulting mask used to test if all nodes are linked in
+		long nodePosMask = 1;	
+		long allLinkedTestMask = 0;
+		
+		while ( true ) {
+            if ( NodeTypeEnums.isBetaNode( tupleSource ) ) {
+                BetaMemory betaMemory;
+                if ( NodeTypeEnums.AccumulateNode == tupleSource.getType() ) {
+                    betaMemory = (( AccumulateMemory ) wm.getNodeMemory( ( AccumulateNode ) tupleSource )).getBetaMemory();
+                } else {
+                    betaMemory = ( BetaMemory ) wm.getNodeMemory( ( BetaNode ) tupleSource );
+
+                }
+                
+                betaMemory.createStagingMemory();
+
+                betaMemory.setSegmentMemory( smem );
+                betaMemory.setNodePosMaskBit( nodePosMask );
+                allLinkedTestMask = allLinkedTestMask | nodePosMask;
+                if ( NodeTypeEnums.NotNode == tupleSource.getType() ||  NodeTypeEnums.AccumulateNode == tupleSource.getType())  {
+                    // NotNode's and Accumulate are initialised as linkedin
+                    smem.linkNode( nodePosMask, wm );
+                }
+                nodePosMask = nodePosMask << 1;
+            } else if ( tupleSource.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+                LiaNodeMemory liaMemory = ( LiaNodeMemory ) wm.getNodeMemory( ( LeftInputAdapterNode ) tupleSource );
+                liaMemory.setSegmentMemory( smem );
+                liaMemory.setNodePosMaskBit( nodePosMask );
+                allLinkedTestMask = allLinkedTestMask | nodePosMask;
+
+                nodePosMask = nodePosMask << 1;                
+            }
+            
+            if ( tupleSource.sink.getSinks().length == 1 ) {
+                if ( NodeTypeEnums.isLeftTupleSource( tupleSource.sink.getSinks()[0] ) ) {
+                    tupleSource = ( LeftTupleSource ) tupleSource.sink.getSinks()[0];
+                } else {
+                    // rtn or rian
+                    break;
+                }
+            } else if ( tupleSource.sink.getSinks().length == 2 && 
+                           NodeTypeEnums.isBetaNode( tupleSource.sink.getSinks()[1] ) && 
+                               ((BetaNode)tupleSource.sink.getSinks()[1]).isRightInputIsRiaNode() ) {
+                // must be a subnetwork split, always take the non riaNode path
+                tupleSource = ( LeftTupleSource ) tupleSource.sink.getSinks()[1];
+            } else {
+                // not in same segment
+                break;
+            }   
+            
+		}		
+		smem.setAllLinkedMaskTest( allLinkedTestMask );
+	
+		
+		// iterate to find root and determine the SegmentNodes position in the RuleSegment
+	    LeftTupleSource parent = segmentRoot;	
+	    int ruleSegmentPosMask = 1;
+	    int counter = 0;
+	    while ( parent.getLeftTupleSource() != null ) {
+	           if ( !parentInSameSegment( parent ) ) {
+	               // for each new found segment, increase the mask bit position
+	               ruleSegmentPosMask = ruleSegmentPosMask << 1;
+	               counter++;
+	           }    	        
+	       parent = parent.getLeftTupleSource();	          
+	    }
+	    smem.setSegmentPosMaskBit( ruleSegmentPosMask );
+	    smem.setPos( counter );
+		
+		updateRiaAndTerminalMemory( 0, tupleSource, tupleSource, smem, wm );
+		
+		
+		if ( smem.isSegmentLinked() ) {
+		    // A segment that only Not nodes in it will all be true and must notify the Rule
+		    smem.notifyRuleLinkSegment( wm );
+		}
+	}
+	
+	/**
+	 * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
+	 * 
+	 * @param riaNode
+	 * @param leftTupleSource
+	 * @return
+	 */
+	public static boolean inSubNetwork(RightInputAdapterNode riaNode, LeftTupleSource leftTupleSource) {
+	    LeftTupleSource startTupleSource = riaNode.getStartTupleSource();
+	    LeftTupleSource parent = riaNode.getLeftTupleSource();
+	    
+	    while ( parent != startTupleSource ) {
+	        if ( parent == leftTupleSource) {
+	            return true;
+	        }
+	        parent = parent.getLeftTupleSource();
+	    }
+	    
+	    return false;
+	}
+	
+	public static void updateRiaAndTerminalMemory(int pos, LeftTupleSource lt,
+	                                              LeftTupleSource originalLt,
+	                                              SegmentMemory smem,
+	                                              InternalWorkingMemory wm) {
+	    for ( LeftTupleSink sink : lt.getSinkPropagator().getSinks() ) {
+    	    if (NodeTypeEnums.isLeftTupleSource( sink ) ) {
+    	        if ( sink.getType() == NodeTypeEnums.NotNode ) {
+    	            BetaMemory bm = ( BetaMemory) wm.getNodeMemory( (MemoryFactory) sink );
+    	             if ( bm.getSegmentMemory() == null ) {
+    	                 // Not nodes must be initialised
+    	                 BetaNode.createNodeSegmentMemory( (NotNode) sink, wm );
+    	             }
+    	        }
+    	        updateRiaAndTerminalMemory(++pos, ( LeftTupleSource ) sink, originalLt, smem, wm);
+    	    } else if ( sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
+    	        RiaNodeMemory memory = ( RiaNodeMemory ) wm.getNodeMemory( (MemoryFactory) sink );        	        
+    	        // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
+    	        if ( inSubNetwork( (RightInputAdapterNode)sink, originalLt ) ) {    	        
+    	            smem.getRuleMemories().add( memory.getRuleSegments() );
+    	        }
+    	    } else if ( NodeTypeEnums.isTerminalNode( sink) ) {
+    	        RuleMemory rmem = ( RuleMemory ) wm.getNodeMemory( (MemoryFactory) sink );
+                smem.getRuleMemories().add( rmem );
+                rmem.getSegmentMemories()[smem.getPos()] = smem;
+    	        
+    	    }
+	    }
+	}
 
     public long getRightDeclaredMask() {
         return rightDeclaredMask;

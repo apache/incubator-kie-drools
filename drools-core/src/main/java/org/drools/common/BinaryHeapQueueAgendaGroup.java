@@ -48,6 +48,10 @@ public class BinaryHeapQueueAgendaGroup
     private boolean           active;
 
     private PropagationContext autoFocusActivator;
+    
+    private long activatedForRecency;
+
+    private long clearedForRecency;
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
      *
@@ -62,19 +66,7 @@ public class BinaryHeapQueueAgendaGroup
                                       final InternalRuleBase ruleBase) {
         this.name = name;
         this.queue = new BinaryHeapQueue( ruleBase.getConfiguration().getConflictResolver() );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        name = (String) in.readObject();
-        queue = (BinaryHeapQueue) in.readObject();
-        active = in.readBoolean();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( name );
-        out.writeObject( queue );
-        out.writeBoolean( active );
+        this.clearedForRecency = -1;
     }
 
     /* (non-Javadoc)
@@ -165,4 +157,20 @@ public class BinaryHeapQueueAgendaGroup
     public void remove(AgendaItem agendaItem) {
         this.queue.dequeue( agendaItem.getIndex() );
     }
+
+    public void setActivatedForRecency(long recency) {
+        this.activatedForRecency = recency;
+    }
+
+    public long getActivatedForRecency() {
+        return this.activatedForRecency;
+    }
+    
+    public void setClearedForRecency(long recency) {
+        this.clearedForRecency = recency;
+    }
+
+    public long getClearedForRecency() {
+        return this.clearedForRecency;
+    }      
 }

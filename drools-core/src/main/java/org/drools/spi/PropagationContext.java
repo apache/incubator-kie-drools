@@ -38,6 +38,8 @@ public interface PropagationContext
     Rule getRuleOrigin();
     
     FactHandle getFactHandleOrigin();
+    
+    void setFactHandle(FactHandle factHandle);
 
     LeftTuple getLeftTupleOrigin();
 
@@ -66,22 +68,11 @@ public interface PropagationContext
 
     EntryPoint getEntryPoint();
     
-    /** When L&R unlinking is active, we need to keep 
-     * track of the OTN that triggered this propagation. */
-    void setCurrentPropagatingOTN(ObjectTypeNode otn);
-
-    boolean isPropagating(ObjectTypeNode otn);
-
-    boolean shouldPropagateAll();
-
-    void setShouldPropagateAll(Object node);
-
-    /** Keeps a list of nodes to which a propagation attempt fail 
-     *  because the node was unlinked. */
-    ObjectHashSet getPropagationAttemptsMemory();
-    
     void addInsertAction(WorkingMemoryAction action);
     void removeInsertAction(WorkingMemoryAction action);
+
+    LinkedList<WorkingMemoryAction> getQueue1();
+
 
     LinkedList<WorkingMemoryAction> getQueue2();
 

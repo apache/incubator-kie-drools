@@ -62,6 +62,16 @@ public interface InternalRuleFlowGroup extends RuleFlowGroup {
 
     void removeNodeInstance(Long processInstanceId, String nodeInstanceId);
     
+    public Activation[] getActivations();
+    
     Map<Long, String> getNodeInstances();
+    
+    public void setActivatedForRecency(long recency);
+    
+    public long getActivatedForRecency();    
+    
+    public void setClearedForRecency(long recency);
+    
+    public long getClearedForRecency();     
     
 }

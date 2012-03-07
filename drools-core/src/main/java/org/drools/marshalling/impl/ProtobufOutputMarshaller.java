@@ -64,7 +64,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.reteoo.RightInputAdapterNode.RIAMemory;
+import org.drools.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -326,11 +326,11 @@ public class ProtobufOutputMarshaller {
     private static ProtobufMessages.NodeMemory writeRIANodeMemory(final int nodeId,
                                                                   final Memory memory) {
         // for RIA nodes, we need to store the ID of the created handles
-        RIAMemory mem = (RIAMemory) memory;
-        if ( !mem.memory.isEmpty() ) {
+        RiaNodeMemory mem = (RiaNodeMemory) memory;
+        if( ! mem.getMap().isEmpty() ) {
             ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
-
-            final org.drools.core.util.Iterator it = mem.memory.iterator();
+            
+            final org.drools.core.util.Iterator it = mem.getMap().iterator();
             // iterates over all propagated handles and assert them to the new sink
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 LeftTuple leftTuple = (LeftTuple) entry.getKey();

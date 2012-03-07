@@ -30,7 +30,6 @@ import org.drools.runtime.rule.Activation;
  */
 public interface AgendaGroup
     extends
-    Externalizable,
     org.drools.runtime.rule.AgendaGroup {
     
     /**
