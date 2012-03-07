@@ -41,7 +41,6 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
         }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 Label l1 = new Label();
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("predicate", PredicateExpression.class);
                 mv.visitJumpInsn(IFNONNULL, l1);
                 mv.visitVarInsn(ALOAD, 0);
@@ -51,7 +50,6 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
                 mv.visitVarInsn(ALOAD, 5);
                 invokeStatic(PredicateGenerator.class, "generate", null, PredicateStub.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
-                mv.visitVarInsn(ALOAD, 0);
                 getFieldFromThis("predicate", PredicateExpression.class);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
@@ -64,9 +62,7 @@ public class ASMPredicateStubBuilder extends AbstractASMPredicateBuilder {
             }
         }).addMethod(ACC_PUBLIC, "setPredicate", generator.methodDescr(null, PredicateExpression.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                putFieldInThis("predicate", PredicateExpression.class);
+                putFieldInThisFromRegistry("predicate", PredicateExpression.class, 1);
                 mv.visitInsn(RETURN);
             }
         });

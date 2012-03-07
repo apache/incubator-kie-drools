@@ -1,7 +1,11 @@
 package org.drools.rule.constraint;
 
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.rule.builder.dialect.asm.GeneratorHelper;
 import org.drools.rule.constraint.ConditionAnalyzer.*;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
@@ -19,53 +23,96 @@ import java.util.Map;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConditionEvaluatorJitter {
 
-    public static ArrayConditionEvaluator jitEvaluator(Condition condition, Declaration[] declarations, ClassLoader classLoader) {
+    public static ConditionEvaluator jitEvaluator(Condition condition, Declaration[] declarations, ClassLoader classLoader, LeftTuple leftTuple) {
         ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
-                .setInterfaces(ArrayConditionEvaluator.class)
-                .addDefaultConstructor();
+                .setInterfaces(ConditionEvaluator.class)
+                .addField(ACC_PRIVATE | ACC_FINAL, "declarations", Declaration[].class)
+                .addDefaultConstructor(new ClassGenerator.MethodBody() {
+                    public void body(MethodVisitor mv) {
+                        putFieldInThisFromRegistry("declarations", Declaration[].class, 1);
+                        mv.visitInsn(RETURN);
+                    }
+                }, Declaration[].class);
 
         generator.addMethod(ACC_PUBLIC,
                             "evaluate",
-                            generator.methodDescr(boolean.class, Object.class, Object[].class),
-                            new ArrayEvaluateMethodGenerator(condition, declarations));
+                            generator.methodDescr(boolean.class, Object.class, InternalWorkingMemory.class, LeftTuple.class),
+                            new EvaluateMethodGenerator(condition, declarations, leftTuple));
 
-        return generator.newInstance();
-    }
-
-    public static MapConditionEvaluator jitMapEvaluator(Condition condition, ClassLoader classLoader) {
-        ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
-                .setInterfaces(MapConditionEvaluator.class)
-                .addDefaultConstructor();
-
-        generator.addMethod(ACC_PUBLIC,
-                            "evaluate",
-                            generator.methodDescr(boolean.class, Object.class, Map.class),
-                            new MapEvaluateMethodGenerator(condition));
-
-        return generator.newInstance();
+        return generator.newInstance(Declaration[].class, declarations);
     }
 
     private static String getUniqueClassName() {
-        return "ArrayConditionEvaluator" + generateUUID();
+        return "ConditionEvaluator" + generateUUID();
     }
 
-    private static abstract class EvaluateMethodGenerator extends ClassGenerator.MethodBody {
-        private static final int LEFT_OPERAND = 3;
-        private static final int RIGHT_OPERAND = 5;
+    private static class EvaluateMethodGenerator extends GeneratorHelper.DeclarationAccessorMethod {
+        private static final int LEFT_OPERAND = 5;
+        private static final int RIGHT_OPERAND = 7;
+        private static final int ARGUMENTS = 9;
 
         private final Condition condition;
+        private final Declaration[] declarations;
+        private final LeftTuple leftTuple;
 
-        public EvaluateMethodGenerator(Condition condition) {
+        private int[] declPositions;
+
+        public EvaluateMethodGenerator(Condition condition, Declaration[] declarations, LeftTuple leftTuple) {
             this.condition = condition;
+            this.declarations = declarations;
+            this.leftTuple = leftTuple;
         }
 
         public void body(MethodVisitor mv) {
+            jitArguments();
             jitCondition(condition);
             mv.visitInsn(IRETURN);
+        }
+
+        private void jitArguments() {
+            if (declarations == null || declarations.length == 0) {
+                return;
+            }
+
+            declPositions = new int[declarations.length];
+            int decPos = ARGUMENTS;
+            List<GeneratorHelper.DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
+
+            LeftTuple currentLeftTuple = leftTuple;
+            mv.visitVarInsn(ALOAD, 3);
+            store(4, LeftTuple.class);
+
+            for (GeneratorHelper.DeclarationMatcher declarationMatcher : declarationMatchers) {
+                int i = declarationMatcher.getOriginalIndex();
+                if (currentLeftTuple == null || declarationMatcher.getRootDistance() > currentLeftTuple.getIndex()) {
+                    getFieldFromThis("declarations", Declaration[].class);
+                    push(i);
+                    mv.visitInsn(AALOAD); // declarations[i]
+                    mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
+                    mv.visitVarInsn(ALOAD, 1); // Object
+                    declPositions[i] = decPos;
+                    decPos += storeObjectFromDeclaration(declarationMatcher.getDeclaration(), decPos);
+                    continue;
+                }
+
+                currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, declarationMatcher.getRootDistance(), 4);
+
+                getFieldFromThis("declarations", Declaration[].class);
+                push(i);
+                mv.visitInsn(AALOAD); // declarations[i]
+                mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
+                load(4);
+                invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
+                invokeInterface(InternalFactHandle.class, "getObject", Object.class); // leftTuple.getHandle().getObject()
+
+                declPositions[i] = decPos;
+                decPos += storeObjectFromDeclaration(declarationMatcher.getDeclaration(), decPos);
+            }
         }
 
         private void jitCondition(Condition condition) {
@@ -164,14 +211,14 @@ public class ASMConditionEvaluatorJitter {
             Class<?> rightType = isDeclarationExpression(right) ? convertFromPrimitiveType(right.getType()) : right.getType();
 
             jitExpression(left, type != null ? type : leftType);
-            if (isDeclarationExpression(left)) {
-                cast(leftType);
+            if (isDeclarationExpression(left) && left.getType().isPrimitive()) {
+                castFromPrimitive(left.getType());
             }
             store(LEFT_OPERAND, leftType);
 
             jitExpression(right, type != null ? type : rightType);
-            if (isDeclarationExpression(right)) {
-                cast(rightType);
+            if (isDeclarationExpression(right) && right.getType().isPrimitive()) {
+                castFromPrimitive(right.getType());
             }
             store(RIGHT_OPERAND, rightType);
 
@@ -374,7 +421,7 @@ public class ASMConditionEvaluatorJitter {
                 if (exp instanceof EvaluatedExpression) {
                     jitEvaluatedExpression((EvaluatedExpression) exp, true);
                 } else if (exp instanceof VariableExpression) {
-                    jitVariableExpression((VariableExpression) exp, requiredClass);
+                    jitVariableExpression((VariableExpression) exp);
                 } else {
                     jitAritmeticExpression((AritmeticExpression)exp);
                 }
@@ -392,16 +439,22 @@ public class ASMConditionEvaluatorJitter {
             }
         }
 
-        private void jitVariableExpression(VariableExpression exp, Class<?> requiredClass) {
+        private void jitVariableExpression(VariableExpression exp) {
             jitReadVariable(exp.variableName);
             if (exp.subsequentInvocations != null) {
                 jitEvaluatedExpression(exp.subsequentInvocations, false);
-            } else if (requiredClass.isPrimitive()) {
-                castToPrimitive(requiredClass);
             }
         }
 
-        protected abstract void jitReadVariable(String variableName);
+        private void jitReadVariable(String variableName) {
+            for (int i = 0; i < declarations.length; i++) {
+                if (declarations[i].getBindingName().equals(variableName)) {
+                    load(declPositions[i]);
+                    return;
+                }
+            }
+            throw new RuntimeException("Unknown variable name: " + variableName);
+        }
 
         private void jitAritmeticExpression(AritmeticExpression aritmeticExpression) {
             if (aritmeticExpression.isStringConcat()) {
@@ -425,7 +478,7 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitExpressionToPrimitiveType(Expression expression, Class<?> primitiveType) {
             jitExpression(expression, primitiveType);
-            if (!isDeclarationExpression(expression) && !expression.isFixed()) {
+            if (!expression.isFixed()) {
                 if (expression.getType().isPrimitive()) {
                     castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), primitiveType);
                 } else {
@@ -897,41 +950,4 @@ public class ASMConditionEvaluatorJitter {
             return null;
         }
     }
-
-    private static class ArrayEvaluateMethodGenerator extends EvaluateMethodGenerator {
-        private final Declaration[] declarations;
-
-        public ArrayEvaluateMethodGenerator(Condition condition, Declaration[] declarations) {
-            super(condition);
-            this.declarations = declarations;
-        }
-
-        protected void jitReadVariable(String variableName) {
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitLdcInsn(getVariableIndex(variableName));
-            mv.visitInsn(AALOAD);
-        }
-
-        private int getVariableIndex(String variableName) {
-            for (int i = 0; i < declarations.length; i++) {
-                if (declarations[i].getBindingName().equals(variableName)) {
-                    return i;
-                }
-            }
-            throw new RuntimeException("Unknown variable name: " + variableName);
-        }
-    }
-
-    private static class MapEvaluateMethodGenerator extends EvaluateMethodGenerator {
-        public MapEvaluateMethodGenerator(Condition condition) {
-            super(condition);
-        }
-
-        protected void jitReadVariable(String variableName) {
-            mv.visitVarInsn(ALOAD, 2);
-            push(variableName, String.class);
-            invokeInterface(Map.class, "get", Object.class, Object.class);
-        }
-    }
-
 }

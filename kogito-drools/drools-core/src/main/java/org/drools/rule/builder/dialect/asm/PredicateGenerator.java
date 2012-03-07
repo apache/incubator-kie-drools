@@ -61,7 +61,7 @@ public class PredicateGenerator {
                     int i = matcher.getOriginalIndex();
                     previousDeclarationsParamsPos[i] = objAstorePos;
 
-                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 3, 7, 8);
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 7);
 
                     mv.visitVarInsn(ALOAD, 3);
                     push(i);

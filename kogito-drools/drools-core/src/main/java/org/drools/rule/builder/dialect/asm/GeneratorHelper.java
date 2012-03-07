@@ -10,6 +10,7 @@ import org.drools.core.util.asm.MethodComparator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.*;
 import org.drools.spi.CompiledInvoker;
+import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Tuple;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.asm.Label;
@@ -193,7 +194,60 @@ public final class GeneratorHelper {
         }
     }
 
-    public static abstract class EvaluateMethod extends ClassGenerator.MethodBody {
+    public static abstract class DeclarationAccessorMethod extends ClassGenerator.MethodBody {
+        protected int storeObjectFromDeclaration(Declaration declaration, int registry) {
+            return storeObjectFromDeclaration(declaration, declaration.getTypeName(), registry);
+        }
+
+        protected int storeObjectFromDeclaration(Declaration declaration, String declarationType, int registry) {
+            String readMethod = declaration.getNativeReadMethodName();
+            boolean isObject = readMethod.equals("getValue");
+            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+            if (isObject) {
+                InternalReadAccessor extractor = declaration.getExtractor();
+                if (extractor != null) {
+                    cast(extractor.getExtractToClass());
+                }
+            }
+            return store(registry, declarationType);
+        }
+
+        protected LeftTuple traverseTuplesUntilDeclaration(LeftTuple currentLeftTuple, int declarOffset, int tupleReg) {
+            while ( currentLeftTuple.getIndex() > declarOffset ) {
+                mv.visitVarInsn(ALOAD, tupleReg);
+                invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
+                mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
+                currentLeftTuple = currentLeftTuple.getParent();
+            }
+            return currentLeftTuple;
+        }
+
+        protected void traverseTuplesUntilDeclarationWithOr(int declarIndex, int declarReg, int tupleReg, int declarOffsetReg) {
+            mv.visitVarInsn(ALOAD, declarReg);
+            push(declarIndex);
+            mv.visitInsn(AALOAD); // declarations[i]
+            invokeVirtual(Declaration.class, "getPattern", Pattern.class);
+            invokeVirtual(Pattern.class, "getOffset", Integer.TYPE); // declarations[i].getPattern().getOffset()
+            mv.visitVarInsn(ISTORE, declarOffsetReg); // declarations[i].getPattern().getOffset()
+
+            // while (tuple.getIndex() > declaration[i].getPattern().getOffset()) tuple = tuple.getParent()
+            Label whileStart = new Label();
+            Label whileExit = new Label();
+            mv.visitLabel(whileStart);
+            mv.visitVarInsn(ALOAD, tupleReg);
+            invokeInterface(LeftTuple.class, "getIndex", Integer.TYPE); // tuple.getIndex()
+            mv.visitVarInsn(ILOAD, declarOffsetReg); // declarations[i].getPattern().getOffset()
+            mv.visitJumpInsn(IF_ICMPLE, whileExit); // if tuple.getIndex() <= declarations[i].getPattern().getOffset() jump to whileExit
+            mv.visitVarInsn(ALOAD, tupleReg);
+            invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
+            mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
+            mv.visitJumpInsn(GOTO, whileStart);
+            mv.visitLabel(whileExit);
+        }
+    }
+
+    public static abstract class EvaluateMethod extends DeclarationAccessorMethod {
         protected int objAstorePos;
 
         protected int[] parseDeclarations(Declaration[] declarations, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
@@ -241,60 +295,8 @@ public final class GeneratorHelper {
             }
         }
 
-        protected LeftTuple traverseTuplesUntilDeclaration(LeftTuple currentLeftTuple,
-                                                           int declarIndex,
-                                                           int declarOffset,
-                                                           int declarReg,
-                                                           int tupleReg, int declarOffsetReg) {
-            mv.visitVarInsn(ALOAD, declarReg); // declarations
-            push(declarIndex);
-            mv.visitInsn(AALOAD); // declarations[i] (i == declarIndex)
-            invokeVirtual(Declaration.class, "getPattern", Pattern.class);
-            invokeVirtual(Pattern.class, "getOffset", Integer.TYPE); // declarations[i].getPattern().getOffset()
-            mv.visitVarInsn(ISTORE, declarOffsetReg); // declarations[i].getPattern().getOffset()
-
-            while( currentLeftTuple.getIndex() > declarOffset ) {
-                mv.visitVarInsn(ALOAD, tupleReg);
-                invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
-                mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
-                currentLeftTuple = currentLeftTuple.getParent();
-            }
-
-            return currentLeftTuple;
-        }
-
-        protected void traverseTuplesUntilDeclarationWithOr(int declarIndex, int declarReg, int tupleReg, int declarOffsetReg) {
-            mv.visitVarInsn(ALOAD, declarReg);
-            push(declarIndex);
-            mv.visitInsn(AALOAD); // declarations[i]
-            invokeVirtual(Declaration.class, "getPattern", Pattern.class);
-            invokeVirtual(Pattern.class, "getOffset", Integer.TYPE); // declarations[i].getPattern().getOffset()
-            mv.visitVarInsn(ISTORE, declarOffsetReg); // declarations[i].getPattern().getOffset()
-
-            // while (tuple.getIndex() > declaration[i].getPattern().getOffset()) tuple = tuple.getParent()
-            Label whileStart = new Label();
-            Label whileExit = new Label();
-            mv.visitLabel(whileStart);
-            mv.visitVarInsn(ALOAD, tupleReg);
-            invokeInterface(LeftTuple.class, "getIndex", Integer.TYPE); // tuple.getIndex()
-            mv.visitVarInsn(ILOAD, declarOffsetReg); // declarations[i].getPattern().getOffset()
-            mv.visitJumpInsn(IF_ICMPLE, whileExit); // if tuple.getIndex() <= declarations[i].getPattern().getOffset() jump to whileExit
-            mv.visitVarInsn(ALOAD, tupleReg);
-            invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
-            mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
-            mv.visitJumpInsn(GOTO, whileStart);
-            mv.visitLabel(whileExit);
-        }
-
         protected void storeObjectFromDeclaration(Declaration declaration, String declarationType) {
-            String readMethod = declaration.getNativeReadMethodName();
-            boolean isObject = readMethod.equals("getValue");
-            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-            if (isObject) {
-                mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
-            }
-            objAstorePos += store(objAstorePos, declarationType); // obj[i]
+            objAstorePos += storeObjectFromDeclaration(declaration, declarationType, objAstorePos);
         }
     }
 }

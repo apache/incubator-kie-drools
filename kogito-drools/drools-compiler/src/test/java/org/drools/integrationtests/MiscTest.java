@@ -4685,7 +4685,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
     public void testMethodCalls() throws Exception {
         final String text = "package org.drools\n" +
                             "rule \"method calls\"\n" +
@@ -4711,7 +4710,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testAlphaExpression() throws Exception {
         final String text = "package org.drools\n" +
                             "rule \"alpha\"\n" +
@@ -7509,7 +7507,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -8572,7 +8569,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("This test requires MVEL to support .class literals, what it doesn't today")
     public void testMVELClassReferences() throws InstantiationException,
                                          IllegalAccessException {
         String str = "package org.drools\n" +

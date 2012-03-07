@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.drools.core.util.ClassUtils.*;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
+import static org.drools.rule.constraint.ASMConditionEvaluatorJitter.jitEvaluator;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
@@ -188,7 +189,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
             }
-            conditionEvaluator = new JittedConditionEvaluator(analyzedCondition, declarations, classLoader);
+            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(analyzedCondition, declarations, classLoader, leftTuple);
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
