@@ -16,6 +16,7 @@ import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.runtime.rule.Variable;
+import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
@@ -34,7 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.drools.core.util.ClassUtils.*;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
-import static org.drools.rule.constraint.ASMConditionEvaluatorJitter.jitEvaluator;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint {
     private static final boolean TEST_JITTING = false;
@@ -51,6 +51,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private InternalReadAccessor extractor;
     private boolean isUnification;
     private boolean isDynamic;
+    private FieldValue fieldValue;
 
     private MVELCompilationUnit compilationUnit;
 
@@ -59,12 +60,14 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public MvelConstraint() {}
 
-    public MvelConstraint(String packageName, String expression, MVELCompilationUnit compilationUnit, boolean isIndexable) {
+    public MvelConstraint(String packageName, String expression, MVELCompilationUnit compilationUnit, boolean isIndexable, FieldValue fieldValue, InternalReadAccessor extractor) {
         this.packageName = packageName;
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.isIndexable = isIndexable;
         this.declarations = new Declaration[0];
+        this.fieldValue = fieldValue;
+        this.extractor = extractor;
     }
 
     public MvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
@@ -105,6 +108,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public boolean isIndexable() {
         return isIndexable;
+    }
+
+    public FieldValue getField() {
+        return fieldValue;
     }
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
@@ -189,7 +196,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
             }
-            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(analyzedCondition, declarations, classLoader, leftTuple);
+            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
@@ -355,6 +362,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         out.writeBoolean(isIndexable);
         out.writeBoolean(isUnification);
         out.writeBoolean(isDynamic);
+        out.writeObject(fieldValue);
         out.writeObject(compilationUnit);
     }
 
@@ -368,6 +376,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         isIndexable = in.readBoolean();
         isUnification = in.readBoolean();
         isDynamic = in.readBoolean();
+        fieldValue = (FieldValue) in.readObject();
         compilationUnit = (MVELCompilationUnit) in.readObject();
     }
 

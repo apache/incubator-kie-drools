@@ -28,6 +28,7 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
+import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Restriction;
 import org.drools.time.Interval;
@@ -164,6 +165,10 @@ public class VariableConstraint extends MutableTypeConstraint
             return (getEvaluator().getOperator() == Operator.EQUAL);
         }
         return false;
+    }
+
+    public FieldValue getField() {
+        return null;
     }
 
     public boolean isUnification() {

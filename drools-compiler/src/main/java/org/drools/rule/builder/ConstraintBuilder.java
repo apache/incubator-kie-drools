@@ -116,7 +116,7 @@ public class ConstraintBuilder {
             String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
             boolean isIndexable = operator.equals("==");
             MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr);
-            return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable);
+            return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, isIndexable, field, extractor);
         } else {
             LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
             return restriction != null ? new LiteralConstraint(extractor, restriction) : null;

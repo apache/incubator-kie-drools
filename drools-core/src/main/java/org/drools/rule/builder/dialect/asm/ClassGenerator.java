@@ -5,6 +5,9 @@ import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -59,6 +62,8 @@ import static org.mvel2.asm.Opcodes.V1_5;
 
 public class ClassGenerator {
 
+    private static final boolean DUMP_GENERATED_CLASSES = false;
+
     private final String className;
     private final TypeResolver typeResolver;
     private final InternalClassLoader classLoader;
@@ -99,6 +104,9 @@ public class ClassGenerator {
             for (ClassPartDescr part : classParts) part.write(this, cw);
             cw.visitEnd();
             bytecode = cw.toByteArray();
+            if (DUMP_GENERATED_CLASSES) {
+                dumpGeneratedClass(bytecode);
+            }
         }
         return bytecode;
     }
@@ -108,6 +116,31 @@ public class ClassGenerator {
             clazz = classLoader.defineClass(className, generateBytecode());
         }
         return clazz;
+    }
+
+    public void dumpGeneratedClass() {
+        if (!DUMP_GENERATED_CLASSES) {
+            dumpGeneratedClass(generateBytecode());
+        }
+    }
+
+    private void dumpGeneratedClass(byte[] bytecode) {
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(className + ".class");
+            fos.write(bytecode);
+            fos.flush();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) { }
+            }
+        }
     }
 
     public <T> T newInstance() {

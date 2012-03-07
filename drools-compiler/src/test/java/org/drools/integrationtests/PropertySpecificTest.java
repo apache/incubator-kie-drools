@@ -30,6 +30,7 @@ import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -1015,90 +1016,6 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         assertEquals(  calculatePositiveMask(list("j"), sp), betaNode2.getLeftDeclaredMask() );
         assertEquals(  calculatePositiveMask(list("b", "j"), sp), betaNode2.getLeftInferredMask() );            
     }    
-
-    @Test(timeout = 5000)
-    public void testPropertySpecific() throws Exception {
-        String rule = "package org.drools\n" +
-                "global java.util.List list;\n" +
-                "declare A\n" +
-                "    a : int\n" +
-                "    b : int\n" +
-                "    s : String\n" +
-                "    i : int\n" +
-                "end\n" +
-                "declare B\n" +
-                "    @propertyReactive\n" +
-                "    s : String\n" +
-                "    i : int\n" +
-                "end\n" +
-                "rule R1\n" +
-                "when\n" +
-                "    $a : A(s == \"start\");\n" +
-                "    $b : B(s == $a.s);\n" +
-                "then\n" +
-                "    modify($a) { setS(\"running\") };\n" +
-                "    list.add(\"R1\");\n" +
-                "end\n" +
-                "rule R2\n" +
-                "when\n" +
-                "    A($s : s);\n" +
-                "    $b : B(s != $s);\n" +
-                "then\n" +
-                "    modify($b) { setS($s) };\n" +
-                "    list.add(\"R2\");\n" +
-                "end\n" +
-                "rule R3\n" +
-                "when\n" +
-                "    $a : A(s != \"end\");\n" +
-                "    $b : B(i > $a.i);\n" +
-                "then\n" +
-                "    modify($a) { setS(\"end\") };\n" +
-                "    list.add(\"R3\");\n" +
-                "end\n" +
-                "rule R4\n" +
-                "when\n" +
-                "    $a : A(s == \"running\");\n" +
-                "    $b : B(s != $a.s);\n" + // Slot specific allows to avoid an infinite loop even without the constraint i!=2
-                // "    $b : B(i != 2, != $a.s);\n" + // add this constraint if you disable slot specific
-                "then\n" +
-                "    modify($b) { setI(2) };\n" +
-                "    list.add(\"R4\");\n" +
-                "end\n" +
-                "rule R5\n" +
-                "when\n" +
-                "    $b : B(i == 2, s == \"running\");\n" +
-                "then\n" +
-                "    modify($b) { setI(4) };\n" +
-                "    list.add(\"R5\");\n" +
-                "end";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
-        Object factA = factTypeA.newInstance();
-        factTypeA.set( factA, "s", "start" );
-        factTypeA.set( factA, "i", 3 );
-        ksession.insert( factA );
-
-        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
-        Object factB = factTypeB.newInstance();
-        factTypeB.set( factB, "s", "start" );
-        factTypeB.set( factB, "i", 1 );
-        ksession.insert( factB );
-
-        List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        int rules = ksession.fireAllRules();
-
-        list = (List)ksession.getGlobal( "list" );
-        System.out.println(list);
-
-        assertEquals(6, rules);
-        assertEquals("end", factTypeB.get(factB, "s"));
-        assertEquals(4, factTypeB.get(factB, "i"));
-        ksession.dispose();
-    }
 
     @Test
     public void testPropertySpecificSimplified() throws Exception {

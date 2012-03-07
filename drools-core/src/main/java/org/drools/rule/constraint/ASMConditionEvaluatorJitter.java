@@ -28,9 +28,10 @@ import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConditionEvaluatorJitter {
 
-    public static ConditionEvaluator jitEvaluator(Condition condition, Declaration[] declarations, ClassLoader classLoader, LeftTuple leftTuple) {
+    public static ConditionEvaluator jitEvaluator(String expression, Condition condition, Declaration[] declarations, ClassLoader classLoader, LeftTuple leftTuple) {
         ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
                 .setInterfaces(ConditionEvaluator.class)
+                .addStaticField(ACC_PRIVATE | ACC_FINAL, "EXPRESSION", String.class, expression)
                 .addField(ACC_PRIVATE | ACC_FINAL, "declarations", Declaration[].class)
                 .addDefaultConstructor(new ClassGenerator.MethodBody() {
                     public void body(MethodVisitor mv) {
