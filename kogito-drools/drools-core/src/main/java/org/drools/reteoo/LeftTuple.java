@@ -3,6 +3,7 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
 public interface LeftTuple extends Entry, Tuple {
@@ -129,5 +130,12 @@ public interface LeftTuple extends Entry, Tuple {
     void setIndex(int index);
 
     void setParent(LeftTuple parent);
+    
+    
+    public PropagationContext getPropagationContext();
+
+    public void setPropagationContext(PropagationContext propagationContext);
+
+    void clear();
 
 }

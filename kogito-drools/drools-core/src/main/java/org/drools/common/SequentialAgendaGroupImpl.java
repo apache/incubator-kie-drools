@@ -38,7 +38,7 @@ import org.drools.spi.PropagationContext;
  */
 public class SequentialAgendaGroupImpl
     implements
-    AgendaGroup {
+    InternalAgendaGroup {
 
     private static final long     serialVersionUID = 510l;
 
@@ -54,6 +54,10 @@ public class SequentialAgendaGroupImpl
     
     private PropagationContext    autoFocusActivator;
 
+    private long activatedForRecency;
+
+    private long clearedForRecency;    
+    
     public SequentialAgendaGroupImpl() {
 
     }
@@ -69,21 +73,9 @@ public class SequentialAgendaGroupImpl
     public SequentialAgendaGroupImpl(final String name, final ConflictResolver conflictResolver) {
         this.name = name;
         this.queue = new PrimitiveLongMap();//new BinaryHeapQueue( conflictResolver );
+        this.clearedForRecency = -1;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name    = (String)in.readObject();
-        queue   = (PrimitiveLongMap)in.readObject();
-        active  = in.readBoolean();
-        index   = in.readLong();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(queue);
-        out.writeBoolean(active);
-        out.writeLong(index);
-    }
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#getName()
      */
@@ -145,6 +137,14 @@ public class SequentialAgendaGroupImpl
         //this.queue.
         //return (Activation[]) this.queue.toArray( new AgendaItem[this.queue.size()] );
     }
+    
+    public Activation[] getAndClear() {
+        return null;
+    }
+
+    public void remove(AgendaItem agendaItem) {
+        
+    }    
 
     public Queueable[] getQueueable() {
         return null;
@@ -182,4 +182,20 @@ public class SequentialAgendaGroupImpl
     public PropagationContext getAutoFocusActivator() {
         return autoFocusActivator;
     }
+    
+    public void setActivatedForRecency(long recency) {
+        this.activatedForRecency = recency;
+    }
+
+    public long getActivatedForRecency() {
+        return this.activatedForRecency;
+    }
+    
+    public void setClearedForRecency(long recency) {
+        this.clearedForRecency = recency;
+    }
+
+    public long getClearedForRecency() {
+        return this.clearedForRecency;
+    }       
 }

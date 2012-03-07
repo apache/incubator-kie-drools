@@ -443,4 +443,8 @@ public class AgendaItem
         this.matched = matched;
     }
     
+    public boolean isRuleNetworkEvaluatorActivation() {
+        return false;
+    }    
+    
 }

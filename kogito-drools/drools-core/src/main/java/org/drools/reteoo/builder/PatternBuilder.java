@@ -326,8 +326,6 @@ public class PatternBuilder
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
 
-        boolean alphaMemory = context.isAlphaMemoryAllowed();
-
         buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
         
         if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
@@ -338,10 +336,6 @@ public class PatternBuilder
             // the entry-point specific network nodes are attached, so, set context to default entry-point 
             context.setCurrentEntryPoint( EntryPoint.DEFAULT );
         }
-
-        // now restore back to original values
-        context.setAlphaNodeMemoryAllowed( alphaMemory );
-
     }
 
     protected void buildAlphaNodeChain( BuildContext context, BuildUtils utils, Pattern pattern, List<AlphaNodeFieldConstraint> alphaConstraints ) {
@@ -366,7 +360,6 @@ public class PatternBuilder
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
-                context.setAlphaNodeMemoryAllowed( false );
             }
         }
 

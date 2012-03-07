@@ -24,6 +24,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.spi.PropagationContext;
 
 public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
@@ -76,6 +77,46 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory) {
         sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+    }
+    
+    public void  doLinkRiaNode(InternalWorkingMemory wm) {
+        staticDoLinkRiaNode( sink, wm );
+    }
+    
+    public static void staticDoLinkRiaNode(ObjectSink sink, InternalWorkingMemory wm) {
+        BetaMemory bm;
+        if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
+            AccumulateNode accnode = ( AccumulateNode ) sink;
+            AccumulateMemory accMem = ( AccumulateMemory ) wm.getNodeMemory( accnode );
+            bm = ( BetaMemory ) accMem.getBetaMemory();            
+        } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
+            BetaNode betaNode = ( BetaNode ) sink;
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);
+        } else {
+            throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
+        }        
+        
+        bm.linkNode( wm );
+
+    }
+    
+    public void  doUnlinkRiaNode( InternalWorkingMemory wm) {
+        staticDoUnlinkRiaNode( sink, wm );
+    }   
+    
+    public static void staticDoUnlinkRiaNode(ObjectSink sink,  InternalWorkingMemory wm) {
+        BetaMemory bm;
+        if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
+            AccumulateNode accnode = ( AccumulateNode ) sink;
+            AccumulateMemory accMem = ( AccumulateMemory ) wm.getNodeMemory( accnode );
+            bm = ( BetaMemory ) accMem.getBetaMemory();            
+        } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
+            BetaNode betaNode = ( BetaNode ) sink;
+            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);                       
+        } else {
+            throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
+        }        
+        bm.unlinkNode( wm );
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {

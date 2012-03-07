@@ -23,6 +23,7 @@ import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
@@ -120,7 +121,7 @@ public class MVELConsequenceBuilderTest {
                                                                             null,
                                                                             tuple,
                                                                             null ),
-                                                new RuleTerminalNode(0, null, context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
+                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile(  (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));

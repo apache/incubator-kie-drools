@@ -28,7 +28,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.definition.rule.Rule;
@@ -52,7 +52,7 @@ import org.drools.spi.RuleComponent;
 public class EvalConditionNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    NodeMemory {
+    MemoryFactory {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -61,9 +61,6 @@ public class EvalConditionNode extends LeftTupleSource
 
     /** The semantic <code>Test</code>. */
     private EvalCondition     condition;
-
-    /** The source of incoming <code>Tuples</code>. */
-    private LeftTupleSource   tupleSource;
 
     protected boolean         tupleMemoryEnabled;
 
@@ -94,7 +91,7 @@ public class EvalConditionNode extends LeftTupleSource
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.condition = eval;
-        this.tupleSource = tupleSource;
+        setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         initMasks(context, tupleSource);
@@ -104,19 +101,17 @@ public class EvalConditionNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         condition = (EvalCondition) in.readObject();
-        tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( condition );
-        out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
     }
 
     public void attach( BuildContext context ) {
-        this.tupleSource.addTupleSink( this, context );
+        this.leftInput.addTupleSink( this, context );
         if (context == null) {
             return;
         }
@@ -127,14 +122,14 @@ public class EvalConditionNode extends LeftTupleSource
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
+            this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        this.leftInput.networkUpdated(updateContext);
     }
 
     // ------------------------------------------------------------
@@ -151,7 +146,7 @@ public class EvalConditionNode extends LeftTupleSource
     }
     
     public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
+        return this.leftInput;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -240,7 +235,7 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     public int hashCode() {
-        return this.tupleSource.hashCode() ^ this.condition.hashCode();
+        return this.leftInput.hashCode() ^ this.condition.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -254,7 +249,7 @@ public class EvalConditionNode extends LeftTupleSource
 
         final EvalConditionNode other = (EvalConditionNode) object;
 
-        return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
+        return this.leftInput.equals( other.leftInput ) && this.condition.equals( other.condition );
     }
 
     public Memory createMemory(final RuleBaseConfiguration config) {
@@ -301,7 +296,7 @@ public class EvalConditionNode extends LeftTupleSource
             this.condition = (EvalCondition) next.getValue();
         }
 
-        this.tupleSource.remove( context,
+        this.leftInput.remove( context,
                                  builder,
                                  this,
                                  workingMemories );
@@ -414,6 +409,6 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        return tupleSource.getObjectTypeNode();
+        return leftInput.getObjectTypeNode();
     }
 }

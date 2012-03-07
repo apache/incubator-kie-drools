@@ -17,8 +17,10 @@
 package org.drools.common;
 
 import java.io.Externalizable;
+import java.util.Map;
 
 import org.drools.definition.rule.Rule;
+import org.drools.spi.RuleComponent;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
@@ -41,5 +43,9 @@ public interface NetworkNode
      * @return
      */
     public RuleBasePartitionId getPartitionId();
+    
+    public short getType();
+    
+    public Map<Rule, RuleComponent> getAssociations();
 
 }

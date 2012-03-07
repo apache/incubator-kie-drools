@@ -23,6 +23,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.rule.Declaration;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
 /**
@@ -56,6 +57,13 @@ public class BaseLeftTuple
     private LeftTuple          lastChild;
 
     private LeftTupleSink      sink;
+    
+    private PropagationContext   propagationContext;    
+    
+    // node memory
+    protected LeftTupleList      memory;
+    protected Entry              next;
+    protected Entry              previous;    
 
     private Object             object;
 
@@ -104,6 +112,7 @@ public class BaseLeftTuple
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
         this.handle = rightTuple.getFactHandle();
+        this.propagationContext = rightTuple.getPropagationContext();
 
         this.leftParent = leftTuple;
         // insert at the end f the list
@@ -148,6 +157,7 @@ public class BaseLeftTuple
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
+        this.propagationContext = rightTuple.getPropagationContext();
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
@@ -460,48 +470,7 @@ public class BaseLeftTuple
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getMemory()
-     */
-    public LeftTupleList getMemory() {
-        throw new UnsupportedOperationException();
-    }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.index.LeftTupleList)
-     */
-    public void setMemory(LeftTupleList memory) {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getPrevious()
-     */
-    public Entry getPrevious() {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
-     */
-    public void setPrevious(Entry previous) {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
-     */
-    public void setNext(final Entry next) {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.LeftTuple#getNext()
-     */
-    public Entry getNext() {
-        throw new UnsupportedOperationException();
-    }
-
-    /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getLastHandle()
      */
     public InternalFactHandle getLastHandle() {
@@ -706,6 +675,49 @@ public class BaseLeftTuple
     public void setParent(LeftTuple parent) {
         this.parent = parent;
     }
+    
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#getMemory()
+     */
+    public LeftTupleList getMemory() {
+        return this.memory;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
+     */
+    public void setMemory(LeftTupleList memory) {
+        this.memory = memory;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#getPrevious()
+     */
+    public Entry getPrevious() {
+        return previous;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
+     */
+    public void setPrevious(Entry previous) {
+        this.previous = previous;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
+     */
+    public void setNext(final Entry next) {
+        this.next = next;
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.LeftTuple#getNext()
+     */
+    public Entry getNext() {
+        return this.next;
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getSubTuple(int)
@@ -796,5 +808,19 @@ public class BaseLeftTuple
                 ((EventFactHandle)entry.getLastHandle()).decreaseActivationsCount();
             }
         }
+    }  
+    
+    public PropagationContext getPropagationContext() {
+        return propagationContext;
+    }
+
+    public void setPropagationContext(PropagationContext propagationContext) {
+        this.propagationContext = propagationContext;
+    }
+
+    public void clear() {
+        this.previous = null;
+        this.next = null;
+        this.memory = null;
     }    
 }

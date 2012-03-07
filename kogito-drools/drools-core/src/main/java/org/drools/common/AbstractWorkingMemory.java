@@ -1014,11 +1014,11 @@ public abstract class AbstractWorkingMemory
      * 
      * @return The node's memory.
      */
-    public Memory getNodeMemory(final NodeMemory node) {
+    public Memory getNodeMemory(final MemoryFactory node) {
         return nodeMemories.getNodeMemory( node );
     }
 
-    public void clearNodeMemory(final NodeMemory node) {
+    public void clearNodeMemory(final MemoryFactory node) {
         if (nodeMemories != null) nodeMemories.clearNodeMemory( node );
     }
     

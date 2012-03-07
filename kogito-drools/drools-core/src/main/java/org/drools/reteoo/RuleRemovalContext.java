@@ -20,10 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
@@ -34,17 +31,19 @@ import org.drools.definition.rule.Rule;
  * network consistency.
  */
 public class RuleRemovalContext
-    implements
-    Externalizable {
+        implements
+        Externalizable {
 
     // the rule being removed
-    private Rule rule;
-    
-    private CleanupAdapter cleanupAdapter;
-    
-    private NodeSet removedNodes = new NodeSet();
+    private Rule           rule;
 
-    public RuleRemovalContext( final Rule rule ) {
+    private CleanupAdapter cleanupAdapter;
+
+    private NodeSet        removedNodes = new NodeSet();
+
+    private boolean        unlinkEnabled;
+
+    public RuleRemovalContext(final Rule rule) {
         this.rule = rule;
     }
 
@@ -53,6 +52,14 @@ public class RuleRemovalContext
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+    }
+
+    public boolean isUnlinkEnabled() {
+        return unlinkEnabled;
+    }
+
+    public void setUnlinkEnabled(boolean unlinkEnabled) {
+        this.unlinkEnabled = unlinkEnabled;
     }
 
     /**
@@ -76,12 +83,12 @@ public class RuleRemovalContext
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory);
     }
-    
+
     public List<BaseNode> getRemovedNodes() {
         return removedNodes.getNodes();
     }
 
     public boolean addRemovedNode(BaseNode node) {
-        return removedNodes.add(node);
+        return removedNodes.add( node );
     }
 }

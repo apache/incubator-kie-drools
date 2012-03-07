@@ -55,9 +55,9 @@ public interface InternalWorkingMemory
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    public Memory getNodeMemory(NodeMemory node);
+    public Memory getNodeMemory(MemoryFactory node);
 
-    public void clearNodeMemory(NodeMemory node);
+    public void clearNodeMemory(MemoryFactory node);
     
     public NodeMemories getNodeMemories();
 

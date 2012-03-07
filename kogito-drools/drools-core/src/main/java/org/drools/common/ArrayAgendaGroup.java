@@ -57,8 +57,12 @@ public class ArrayAgendaGroup
     
     private PropagationContext autoFocusActivator;
 
-    public ArrayAgendaGroup() {
+    private long activatedForRecency;
 
+    private long clearedForRecency;
+    
+    public ArrayAgendaGroup() {
+        clearedForRecency = -1;
     }
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -80,25 +84,6 @@ public class ArrayAgendaGroup
 
         this.index = this.array.length-1;
         this.lastIndex = 0;
-    }
-    
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name    = (String)in.readObject();
-        array   = (LinkedList[])in.readObject();
-        active  = in.readBoolean();
-        size    = in.readInt();
-        index   = in.readInt();
-        lastIndex   = in.readInt();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(array);
-        out.writeBoolean(active);
-        out.writeInt(size);
-        out.writeInt(index);
-        out.writeInt(lastIndex);
     }
 
     /* (non-Javadoc)
@@ -233,4 +218,21 @@ public class ArrayAgendaGroup
     public PropagationContext getAutoFocusActivator() {
         return autoFocusActivator;
     }
+    
+    public void setActivatedForRecency(long recency) {
+        this.activatedForRecency = recency;
+    }
+
+    public long getActivatedForRecency() {
+        return this.activatedForRecency;
+    }
+    public void setClearedForRecency(long recency) {
+        this.clearedForRecency = recency;
+    }
+
+    public long getClearedForRecency() {
+        return this.clearedForRecency;
+    }
+    
+    
 }

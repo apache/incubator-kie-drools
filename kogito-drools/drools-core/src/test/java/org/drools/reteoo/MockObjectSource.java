@@ -95,6 +95,11 @@ public class MockObjectSource extends ObjectSource {
 
     public void attach(BuildContext context) {
     }
+
+   
+    public short getType() {
+        return 0;
+    }
     
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {

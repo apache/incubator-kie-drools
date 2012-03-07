@@ -110,14 +110,22 @@ public final class Scheduler {
 
             LeftTuple postponedTuple;
             if ( item.getTuple().getParent() != null ) {
-                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
-
-                item.getTuple().getLeftParent().setLastChild( postponedTuple );
-                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
+                LeftTuple lt = item.getTuple();
+                if ( lt.getRightParent() != null ) {
+                    postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getLeftParent(), item.getTuple().getRightParent(), null, null, item.getTuple().getSink(), true );                  
+                } else {
+                    // eval nodes have no right parent
+                    postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), true );
+                }
+//              
+//                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
+//
+//                item.getTuple().getLeftParent().setLastChild( postponedTuple );
+//                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
 
             } else {
-                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), false );
-                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
+                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), true );
+//                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
             }
 
             ((DefaultAgenda) agenda).createPostponedActivation( postponedTuple,

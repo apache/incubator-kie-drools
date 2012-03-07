@@ -16,30 +16,33 @@
 
 package org.drools.reteoo;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.common.Memory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.index.RightTupleList;
 import org.drools.rule.ContextEntry;
 
 public class BetaMemory
-    implements
-    Externalizable, Unlinkable, Memory {
+        implements
+        Memory {
 
     private static final long serialVersionUID = 510l;
 
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
+
+    private RightTupleList    stagedAssertRightTupleMemory;
+    private RightTupleList    stagedRetractRightTupleMemory;
+    private RightTupleList    stagedModifyRightTupleMemory;
     private ContextEntry[]    context;
-    
-    /* Let's start with only right unlinked. */
-    private boolean           isLeftUnlinked = false;
-    private boolean           isRightUnlinked = true;
-    
+
     // the node type this memory belongs to
     private short             nodeType;
+
+    private SegmentMemory     segmentMemory;
+
+    private long              nodePosMaskBit;
+
+    private int               counter;
 
     public BetaMemory() {
     }
@@ -47,30 +50,56 @@ public class BetaMemory
     public BetaMemory(final LeftTupleMemory tupleMemory,
                       final RightTupleMemory objectMemory,
                       final ContextEntry[] context,
-                      final short nodeType ) {
+                      final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
+        this.stagedAssertRightTupleMemory = new RightTupleList();
+        this.stagedRetractRightTupleMemory = new RightTupleList();
+        this.stagedModifyRightTupleMemory = new RightTupleList();
         this.context = context;
         this.nodeType = nodeType;
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        leftTupleMemory = (LeftTupleMemory) in.readObject();
-        rightTupleMemory = (RightTupleMemory) in.readObject();
-        context = (ContextEntry[]) in.readObject();
-        isLeftUnlinked = in.readBoolean();
-        isRightUnlinked = in.readBoolean();
-        nodeType = in.readShort();
+    public void addStagedAssertRightTuple(RightTuple rightTuple,
+                                          InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.add( rightTuple );
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( leftTupleMemory );
-        out.writeObject( rightTupleMemory );
-        out.writeObject( context );
-        out.writeBoolean( isLeftUnlinked );
-        out.writeBoolean( isRightUnlinked );
-        out.writeShort( nodeType );
+    public void removeStagedAssertRightTuple(RightTuple rightTuple,
+                                             InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.remove( rightTuple );
+    }
+
+    public RightTupleList getStagedAssertRightTupleList() {
+        return stagedAssertRightTupleMemory;
+    }
+    
+    public void addStagedRetractRightTuple(RightTuple rightTuple,
+                                           InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.add( rightTuple );
+    }
+
+    public void removeStagedRetractRightTuple(RightTuple rightTuple,
+                                              InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.remove( rightTuple );
+    }
+
+    public RightTupleList getStagedRetractRightTupleList() {
+        return stagedAssertRightTupleMemory;
+    }
+    
+    public void addStagedModifyRightTuple(RightTuple rightTuple,
+                                          InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.add( rightTuple );
+    }
+
+    public void removeStagedModifyRightTuple(RightTuple rightTuple,
+                                             InternalWorkingMemory wm) {
+        stagedAssertRightTupleMemory.remove( rightTuple );
+    }
+
+    public RightTupleList getStagedModifyRightTupleList() {
+        return stagedAssertRightTupleMemory;
     }
 
     public RightTupleMemory getRightTupleMemory() {
@@ -88,31 +117,62 @@ public class BetaMemory
         return context;
     }
 
-    public boolean isLeftUnlinked() {
-        return this.isLeftUnlinked;
+    public void linkNode(InternalWorkingMemory wm) {
+        segmentMemory.linkNode( nodePosMaskBit, wm );
     }
 
-    public boolean isRightUnlinked() {
-        return this.isRightUnlinked;
+    public void unlinkNode(InternalWorkingMemory wm) {
+        segmentMemory.unlinkNode( nodePosMaskBit, wm );
     }
 
-    public void linkLeft() {
-        this.isLeftUnlinked = false;
-    }
-
-    public void linkRight() {
-        this.isRightUnlinked = false;
-    }
-
-    public void unlinkLeft() {
-        this.isLeftUnlinked = true;
-    }
-
-    public void unlinkRight() {
-        this.isRightUnlinked = true;
-    }
-    
     public short getNodeType() {
         return this.nodeType;
+    }
+
+    public SegmentMemory getSegmentMemory() {
+        return segmentMemory;
+    }
+
+    public void setSegmentMemory(SegmentMemory segmentMemory) {
+        this.segmentMemory = segmentMemory;
+    }
+
+    public long getNodePosMaskBit() {
+        return nodePosMaskBit;
+    }
+
+    public void setNodePosMaskBit(long segmentPos) {
+        this.nodePosMaskBit = segmentPos;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
+    public int getAndIncCounter() {
+        return counter++;
+    }
+
+    public int getAndDecCounter() {
+        return --counter;
+    }
+
+    public void clearStagingMemory() {
+        stagedAssertRightTupleMemory = null;
+        stagedModifyRightTupleMemory = null;
+        stagedRetractRightTupleMemory = null;
+    }
+    
+    public void createStagingMemory() {
+        stagedAssertRightTupleMemory = new RightTupleList();
+        stagedModifyRightTupleMemory = new RightTupleList();
+        stagedRetractRightTupleMemory = new RightTupleList();
+        stagedAssertRightTupleMemory.setStagingMemory( true );
+        stagedModifyRightTupleMemory.setStagingMemory( true );
+        stagedRetractRightTupleMemory.setStagingMemory( true );
     }
 }

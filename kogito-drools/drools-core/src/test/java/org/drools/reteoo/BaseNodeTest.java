@@ -52,19 +52,14 @@ public class BaseNodeTest {
         }
 
         public void ruleAttached() {
-            // TODO Auto-generated method stub
-
         }
 
         public void attach( BuildContext context ) {
-            // TODO Auto-generated method stub
 
         }
 
         public void updateNewNode(final InternalWorkingMemory workingMemory,
                                   final PropagationContext context) {
-            // TODO Auto-generated method stub
-
         }
 
         protected void doRemove(final RuleRemovalContext context,
@@ -78,9 +73,11 @@ public class BaseNodeTest {
         }
 
         @Override
-        public void networkUpdated(UpdateContext updateContext) {
-            // TODO Auto-generated method stub
-            
+        public void networkUpdated(UpdateContext updateContext) {           
+        }
+
+        public short getType() {
+            return 0;
         }
 
     }

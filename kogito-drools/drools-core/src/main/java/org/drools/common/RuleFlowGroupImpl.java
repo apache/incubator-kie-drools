@@ -58,6 +58,9 @@ public class RuleFlowGroupImpl
     private List<RuleFlowGroupListener> listeners;
     private Map<Long, String>           nodeInstances    = new HashMap<Long, String>();
 
+    private long activatedForRecency;
+    private long clearedForRecency;
+
     public RuleFlowGroupImpl() {
 
     }
@@ -80,27 +83,7 @@ public class RuleFlowGroupImpl
         this.active = active;
         this.autoDeactivate = autoDeactivate;
         this.list = new LinkedList();
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        workingMemory = (InternalWorkingMemory) in.readObject();
-        name = (String) in.readObject();
-        active = in.readBoolean();
-        list = (LinkedList) in.readObject();
-        autoDeactivate = in.readBoolean();
-        listeners = (List<RuleFlowGroupListener>) in.readObject();
-        nodeInstances = (Map<Long, String>) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( workingMemory );
-        out.writeObject( name );
-        out.writeBoolean( active );
-        out.writeObject( list );
-        out.writeBoolean( autoDeactivate );
-        out.writeObject( listeners );
-        out.writeObject( nodeInstances );
+        this.clearedForRecency = -1;
     }
 
     public String getName() {
@@ -121,6 +104,7 @@ public class RuleFlowGroupImpl
         }
         this.active = active;
         if ( active ) {
+            setActivatedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
             ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( this,
                                                                                                             this.workingMemory );
             if ( this.list.isEmpty() ) {
@@ -262,6 +246,38 @@ public class RuleFlowGroupImpl
     public java.util.Iterator iterator() {
         return this.list.javaUtilIterator();
     }
+    
+    public void addNodeInstance(Long processInstanceId,
+                                String nodeInstanceId) {
+        nodeInstances.put( processInstanceId,
+                           nodeInstanceId );
+    }
+
+    public void removeNodeInstance(Long processInstanceId,
+                                   String nodeInstanceId) {
+        nodeInstances.put( processInstanceId,
+                           nodeInstanceId );
+    }
+
+    public Map<Long, String> getNodeInstances() {
+        return nodeInstances;
+    }
+    
+    public void setActivatedForRecency(long recency) {
+        this.activatedForRecency = recency;
+    }
+
+    public long getActivatedForRecency() {
+        return this.activatedForRecency;
+    }       
+    
+    public void setClearedForRecency(long recency) {
+        this.clearedForRecency = recency;
+    }
+
+    public long getClearedForRecency() {
+        return this.clearedForRecency;
+    }       
 
     public String toString() {
         return "RuleFlowGroup '" + this.name + "'";
@@ -338,21 +354,4 @@ public class RuleFlowGroupImpl
             execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
-
-    public void addNodeInstance(Long processInstanceId,
-                                String nodeInstanceId) {
-        nodeInstances.put( processInstanceId,
-                           nodeInstanceId );
-    }
-
-    public void removeNodeInstance(Long processInstanceId,
-                                   String nodeInstanceId) {
-        nodeInstances.put( processInstanceId,
-                           nodeInstanceId );
-    }
-
-    public Map<Long, String> getNodeInstances() {
-        return nodeInstances;
-    }
-
 }

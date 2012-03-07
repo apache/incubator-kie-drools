@@ -17,7 +17,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.junit.Test;
 
-public class LRUnlinkingTest {
+public class UnlinkingTest {
 
     @Test
     public void multipleJoinsUsingSameOTN() throws Exception {
@@ -27,7 +27,7 @@ public class LRUnlinkingTest {
         final Package pkg = builder.getPackage();
 
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setLRUnlinkingEnabled( true );
+        conf.setUnlinkingEnabled( true );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 
         ruleBase.addPackage( pkg );

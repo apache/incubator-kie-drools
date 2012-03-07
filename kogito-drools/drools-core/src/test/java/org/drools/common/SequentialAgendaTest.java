@@ -21,6 +21,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.reteoo.CompositeObjectSinkAdapterTest;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
@@ -59,7 +61,7 @@ public class SequentialAgendaTest {
                                                 null,
                                                 0,
                                                 null,
-                                                new RuleTerminalNode(0, null, rule, new GroupElement(), 0, new BuildContext( new ReteooRuleBase("x"), null )  ) );
+                                                new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), rule, new GroupElement(), 0, new BuildContext( new ReteooRuleBase("x"), null )  ) );
         return item;
     }
 }

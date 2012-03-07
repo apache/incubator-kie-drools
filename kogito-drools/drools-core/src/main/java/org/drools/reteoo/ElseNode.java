@@ -49,20 +49,12 @@ public class ElseNode extends BetaNode {
                binder,
                context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
-        this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
     }
 
     public void assertLeftTuple( final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory ) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( lrUnlinkingEnabled &&
-             leftUnlinked( context,
-                           workingMemory,
-                           memory ) ) {
-            return;
-        }        
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );      
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
@@ -118,14 +110,6 @@ public class ElseNode extends BetaNode {
         
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
-        if ( lrUnlinkingEnabled &&
-             rightUnlinked( context,
-                            workingMemory,
-                            memory ) ) {
-            context.getPropagationAttemptsMemory().add( this );
-            return;
-        }
-
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
                                                   context );
@@ -162,12 +146,7 @@ public class ElseNode extends BetaNode {
                                    final PropagationContext context,
                                    final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( lrUnlinkingEnabled &&
-             memory.isRightUnlinked() ) {
-            return;
-        }
-
+        
         memory.getRightTupleMemory().remove( rightTuple );
 
         if ( rightTuple.firstChild != null ) {
@@ -181,11 +160,6 @@ public class ElseNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( lrUnlinkingEnabled &&
-             memory.isLeftUnlinked() ) {
-            return;
-        }
 
         memory.getLeftTupleMemory().remove( leftTuple );
         if ( leftTuple.getFirstChild() != null ) {
@@ -417,40 +391,6 @@ public class ElseNode extends BetaNode {
         }
     }
 
-    @Override
-    public void modifyLeftTuple( InternalFactHandle factHandle,
-                                 ModifyPreviousTuples modifyPreviousTuples,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory ) {
-
-        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( lrUnlinkingEnabled &&
-             memory.isLeftUnlinked() ) return;
-
-        super.modifyLeftTuple( factHandle,
-                               modifyPreviousTuples,
-                               context,
-                               workingMemory );
-    }
-
-    @Override
-    public void modifyObject( InternalFactHandle factHandle,
-                              ModifyPreviousTuples modifyPreviousTuples,
-                              PropagationContext context,
-                              InternalWorkingMemory workingMemory ) {
-
-        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
-        if ( lrUnlinkingEnabled &&
-             memory.isRightUnlinked() ) return;
-
-        super.modifyObject( factHandle,
-                            modifyPreviousTuples,
-                            context,
-                            workingMemory );
-    }
-
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
@@ -459,7 +399,7 @@ public class ElseNode extends BetaNode {
     
     public String toString() {
         ObjectSource source = this.rightInput;
-        while ( !(source instanceof ObjectTypeNode) ) {
+        while ( source.getType() != NodeTypeEnums.ObjectTypeNode ) {
             source = source.source;
         }
 
@@ -491,5 +431,13 @@ public class ElseNode extends BetaNode {
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }
+
+    @Override
+    public void assertRightTuple(RightTuple rightTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
     }
 }

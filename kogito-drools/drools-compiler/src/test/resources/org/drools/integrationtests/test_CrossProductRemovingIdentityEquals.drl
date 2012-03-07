@@ -5,7 +5,6 @@ import java.util.List
 
 
 global List list1;
-global List list2;
 
 rule "A test"
 
@@ -13,6 +12,5 @@ when
     x : SpecialString()
     y : SpecialString(this!=x)
 then
-    list1.add( x );
-    list2.add( y );
+    list1.add( x.getText()  + ":" + y.getText() );
 end 

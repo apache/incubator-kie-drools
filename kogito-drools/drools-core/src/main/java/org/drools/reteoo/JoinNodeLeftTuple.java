@@ -24,11 +24,6 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
 
     private static final long serialVersionUID = 540l;
 
-    // node memory
-    private LeftTupleList     memory;
-    private Entry             next;
-    private Entry             previous;
-
     public JoinNodeLeftTuple() {
         // constructor needed for serialisation
     }

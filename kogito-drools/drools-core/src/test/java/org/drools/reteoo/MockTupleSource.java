@@ -60,14 +60,14 @@ public class MockTupleSource extends LeftTupleSource {
     }
 
     public void attach( BuildContext context ) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void networkUpdated(UpdateContext updateContext) {
-        // TODO Auto-generated method stub
-        
+    }
+
+    public short getType() {
+        return 0;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

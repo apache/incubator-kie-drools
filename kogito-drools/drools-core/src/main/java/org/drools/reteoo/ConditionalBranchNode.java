@@ -6,7 +6,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
@@ -22,7 +22,7 @@ import java.io.ObjectOutput;
  * Node which allows to follow different paths in the Rete-OO network,
  * based on the result of a boolean <code>Test</code>.
  */
-public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleSinkNode, NodeMemory {
+public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory  {
 
     private LeftTupleSource tupleSource;
 

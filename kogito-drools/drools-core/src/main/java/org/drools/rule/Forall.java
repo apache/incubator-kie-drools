@@ -37,6 +37,8 @@ public class Forall extends ConditionalElement {
     private Pattern            basePattern;
     // foral remaining patterns
     private List              remainingPatterns;
+    
+    private boolean           emptyBetaConstraints;
 
     public Forall() {
         this( null,
@@ -52,16 +54,19 @@ public class Forall extends ConditionalElement {
                   final List remainingPatterns) {
         this.basePattern = basePattern;
         this.remainingPatterns = remainingPatterns;
+        this.emptyBetaConstraints = false;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         basePattern = (Pattern)in.readObject();
         remainingPatterns = (List)in.readObject();
+        emptyBetaConstraints = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(basePattern);
         out.writeObject(remainingPatterns);
+        out.writeBoolean( emptyBetaConstraints );
     }
     /* (non-Javadoc)
      * @see org.drools.rule.ConditionalElement#clone()
@@ -142,8 +147,16 @@ public class Forall extends ConditionalElement {
 
     public boolean isPatternScopeDelimiter() {
         return true;
-    }
+    }    
     
+    public boolean isEmptyBetaConstraints() {
+        return emptyBetaConstraints;
+    }
+
+    public void setEmptyBetaConstraints(boolean emptyBetaConstraints) {
+        this.emptyBetaConstraints = emptyBetaConstraints;
+    }
+
     @Override
     public String toString() {
         return "forall( "+basePattern+" "+remainingPatterns+" )";

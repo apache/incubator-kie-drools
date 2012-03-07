@@ -83,9 +83,9 @@ public class Rete extends ObjectSource
         this.ruleBase = ruleBase;
     }
 
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
+    public short getType() {
+        return NodeTypeEnums.ReteNode;
+    }  
 
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache

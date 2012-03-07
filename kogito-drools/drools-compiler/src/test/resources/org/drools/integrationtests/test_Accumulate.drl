@@ -59,7 +59,7 @@ rule "Accumulate with previous Bindings" salience 60
         $person      : Person( name == "Bob", $likes : likes, $age : age )
         $totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price : price ),
                                                   init( int total = $age * 10; ),
-                                                     action( total += $price; ),
+                                                  action( total += $price; ),
                                                   result( new Integer( total ) ) );
     then
         results.add($totalAmount);

@@ -21,11 +21,14 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.definition.rule.Rule;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleComponent;
 
 public class MockObjectSink
     implements
@@ -157,5 +160,10 @@ public class MockObjectSink
                                        InternalWorkingMemory workingMemory) {
         // TODO Auto-generated method stub
         
+    }
+
+    public Map<Rule, RuleComponent> getAssociations() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

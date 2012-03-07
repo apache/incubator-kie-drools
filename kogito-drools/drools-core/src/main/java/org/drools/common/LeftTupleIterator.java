@@ -76,11 +76,11 @@ public class LeftTupleIterator
             BetaMemory memory;
             FastIterator localIt;
             if ( source instanceof FromNode ) {
-                memory = ((FromMemory) wm.getNodeMemory( (NodeMemory) source )).betaMemory;
+                memory = ((FromMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
             } else if ( source instanceof AccumulateNode ) {
-                memory = ((AccumulateMemory) wm.getNodeMemory( (NodeMemory) source )).betaMemory;
+                memory = ((AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
             } else {
-                memory = (BetaMemory) wm.getNodeMemory( (NodeMemory) source );
+                memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             }
 
             localIt = memory.getLeftTupleMemory().fullFastIterator();
@@ -97,7 +97,7 @@ public class LeftTupleIterator
             }
         }
         if ( source instanceof ExistsNode ) {
-            BetaMemory memory = (BetaMemory) wm.getNodeMemory( (NodeMemory) source );
+            BetaMemory memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             FastIterator localIt = memory.getRightTupleMemory().fullFastIterator();
 
             RightTuple rightTuple = BetaNode.getFirstRightTuple( memory.getRightTupleMemory(),
@@ -238,11 +238,11 @@ public class LeftTupleIterator
             BetaMemory memory;
             FastIterator localIt;
             if ( source instanceof FromNode ) {
-                memory = ((FromMemory) wm.getNodeMemory( (NodeMemory) source )).betaMemory;
+                memory = ((FromMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
             } else if ( source instanceof AccumulateNode ) {
-                memory = ((AccumulateMemory) wm.getNodeMemory( (NodeMemory) source )).betaMemory;
+                memory = ((AccumulateMemory) wm.getNodeMemory( (MemoryFactory) source )).betaMemory;
             } else {
-                memory = (BetaMemory) wm.getNodeMemory( (NodeMemory) source );
+                memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             }
 
             localIt = memory.getLeftTupleMemory().fullFastIterator( leftTuple.getLeftParent() );
@@ -267,7 +267,7 @@ public class LeftTupleIterator
             }
         }
         if ( source instanceof ExistsNode ) {
-            BetaMemory memory = (BetaMemory) wm.getNodeMemory( (NodeMemory) source );
+            BetaMemory memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
 
             RightTuple rightTuple = leftTuple.getLeftParent().getBlocker();
             FastIterator localIt = memory.getRightTupleMemory().fullFastIterator( rightTuple );

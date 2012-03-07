@@ -305,13 +305,11 @@ public class FileManager {
                                              byte[] b2) {
         
         if ( b1.length != b2.length ) {
-            System.out.println( "Different length: b1=" + b1.length + " b2=" + b2.length );
             return false;
         }
         
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
-                System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
                 return false;
             }
         }

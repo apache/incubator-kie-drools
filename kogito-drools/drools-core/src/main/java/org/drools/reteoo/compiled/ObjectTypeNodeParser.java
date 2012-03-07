@@ -143,7 +143,7 @@ public class ObjectTypeNodeParser {
     }
 
     private void traverseSink(ObjectSink sink, NetworkHandler handler) {
-        if (sink instanceof AlphaNode) {
+        if (sink.getType() == NodeTypeEnums.AlphaNode) {
             AlphaNode alphaNode = (AlphaNode) sink;
 
             handler.startNonHashedAlphaNode(alphaNode);
@@ -151,13 +151,13 @@ public class ObjectTypeNodeParser {
             traversePropagator(alphaNode.getSinkPropagator(), handler);
 
             handler.endNonHashedAlphaNode(alphaNode);
-        } else if (sink instanceof BetaNode) {
+        } else if (NodeTypeEnums.isBetaNode( sink ) ) {
             BetaNode betaNode = (BetaNode) sink;
 
             handler.startBetaNode(betaNode);
             // todo traverse beta
             handler.endBetaNode(betaNode);
-        } else if (sink instanceof LeftInputAdapterNode) {
+        } else if (sink.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             LeftInputAdapterNode leftInputAdapterNode = (LeftInputAdapterNode) sink;
 
             handler.startLeftInputAdapterNode(leftInputAdapterNode);

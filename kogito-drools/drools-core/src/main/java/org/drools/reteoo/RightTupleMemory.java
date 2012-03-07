@@ -66,4 +66,8 @@ public interface RightTupleMemory {
     int size();
 
     IndexType getIndexType();
+    
+    public boolean isStagingMemory();
+
+    public void setStagingMemory(boolean stagingMemory);
 }

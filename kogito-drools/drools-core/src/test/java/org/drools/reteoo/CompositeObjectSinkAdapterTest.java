@@ -74,8 +74,9 @@ public class CompositeObjectSinkAdapterTest {
     public void testBeta() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
-                                                    null,
-                                                    null );
+                                                    new MockBetaNode( ),
+                                                    new MockObjectSource(),
+                                                    buildContext );
         ad.addObjectSink( beta );
         assertEquals( 1,
                       ad.getSinks().length );
@@ -194,8 +195,9 @@ public class CompositeObjectSinkAdapterTest {
 
         //add a beta, just for good measure, make sure it leaves others alone
         final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
-                                                    null,
-                                                    null );
+                                                    new MockBetaNode( ),
+                                                    new MockObjectSource(),
+                                                    buildContext );
         ad.addObjectSink( beta );
         assertNotNull( ad.otherSinks );
         assertEquals( 2,
@@ -507,64 +509,53 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public int getIndex() {
-            //  Auto-generated method stub
             return 0;
         }
 
         public boolean getBooleanValue(InternalWorkingMemory workingMemory,
                                        final Object object) {
-            //  Auto-generated method stub
             return false;
         }
 
         public byte getByteValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public char getCharValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public double getDoubleValue(InternalWorkingMemory workingMemory,
                                      final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public Class getExtractToClass() {
-            //  Auto-generated method stub
             return null;
         }
 
         public String getExtractToClassName() {
-            //  Auto-generated method stub
             return null;
         }
 
         public float getFloatValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public int getIntValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public long getLongValue(InternalWorkingMemory workingMemory,
                                  final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public Method getNativeReadMethod() {
-            //  Auto-generated method stub
             return null;
         }
 
@@ -574,13 +565,11 @@ public class CompositeObjectSinkAdapterTest {
 
         public short getShortValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
-            //  Auto-generated method stub
             return 0;
         }
 
         public Object getValue(InternalWorkingMemory workingMemory,
                                final Object object) {
-            //  Auto-generated method stub
             return null;
         }
 
@@ -590,7 +579,6 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public ValueType getValueType() {
-            //  Auto-generated method stub
             return ValueType.STRING_TYPE;
         }
 
@@ -600,68 +588,55 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public boolean isGlobal() {
-            // TODO Auto-generated method stub
             return false;
         }
 
         public boolean isNullValue(InternalWorkingMemory workingMemory,
                                    Object object) {
-            // TODO Auto-generated method stub
             return false;
         }
 
         public boolean getBooleanValue(Object object) {
-            // TODO Auto-generated method stub
             return false;
         }
 
         public byte getByteValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public char getCharValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public double getDoubleValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public float getFloatValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public int getHashCode(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public int getIntValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public long getLongValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public short getShortValue(Object object) {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public Object getValue(Object object) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public boolean isNullValue(Object object) {
-            // TODO Auto-generated method stub
             return false;
         }
 
@@ -671,29 +646,42 @@ public class CompositeObjectSinkAdapterTest {
 
         public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
                                              Object object) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
                                              Object object) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public BigDecimal getBigDecimalValue(Object object) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public BigInteger getBigIntegerValue(Object object) {
-            // TODO Auto-generated method stub
             return null;
         }
 
     }
 
-    static class MockBetaNode extends BetaNode {
+    public static class MockBetaNode extends BetaNode {
+        
+        public MockBetaNode() {
+            
+        }
+        
+        MockBetaNode(final int id,
+                     final LeftTupleSource leftInput,
+                     final ObjectSource rightInput,
+                     BuildContext buildContext) {
+            super( id,
+                   RuleBasePartitionId.MAIN_PARTITION,
+                   false,
+                   leftInput,
+                   rightInput,
+                   EmptyBetaConstraints.getInstance(),
+                   buildContext );
+        }        
 
         MockBetaNode(final int id,
                      final LeftTupleSource leftInput,
@@ -705,60 +693,45 @@ public class CompositeObjectSinkAdapterTest {
                    rightInput,
                    EmptyBetaConstraints.getInstance(),
                    null );
-            //  Auto-generated constructor stub
         }
 
         public void updateSink(final LeftTupleSink sink,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
-            //  Auto-generated method stub
-
         }
 
         public void assertLeftTuple(final LeftTuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory) {
-            //  Auto-generated method stub
-
         }
 
         public void retractLeftTuple(final LeftTuple tuple,
                                      final PropagationContext context,
                                      final InternalWorkingMemory workingMemory) {
-            //  Auto-generated method stub
-
         }
 
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            //  Auto-generated method stub
-
         }
 
         public void retractRightTuple(final RightTuple rightTuple,
                                       final PropagationContext context,
                                       final InternalWorkingMemory workingMemory) {
-            //  Auto-generated method stub
-
         }
 
         public short getType() {
-            return NodeTypeEnums.JoinNode;
+            return 0;
         }
 
         public void modifyLeftTuple(LeftTuple leftTuple,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory) {
-            // TODO Auto-generated method stub
-            
         }
 
         public void modifyRightTuple(RightTuple rightTuple,
                                      PropagationContext context,
                                      InternalWorkingMemory workingMemory) {
-            // TODO Auto-generated method stub
-            
         }
 
         public LeftTuple createLeftTuple(InternalFactHandle factHandle,
@@ -787,5 +760,14 @@ public class CompositeObjectSinkAdapterTest {
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }
+        public Memory createMemory(RuleBaseConfiguration config) {
+            return super.createMemory( config );
+        }
+
+        @Override
+        public void assertRightTuple(RightTuple rightTuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory) {
+        }                
     }
 }

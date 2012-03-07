@@ -83,10 +83,8 @@ public class JoinNodeTest extends DroolsTestCase {
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
-                .newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase
-                .getReteooBuilder().getIdGenerator() );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
         this.node = new JoinNode( 15, this.tupleSource, this.objectSource,
                                   new DefaultBetaConstraints(
@@ -115,13 +113,11 @@ public class JoinNodeTest extends DroolsTestCase {
 
         final Field objectFfield = ObjectSource.class.getDeclaredField( "sink" );
         objectFfield.setAccessible( true );
-        ObjectSinkPropagator objectSink = (ObjectSinkPropagator) objectFfield
-                .get( this.objectSource );
+        ObjectSinkPropagator objectSink = (ObjectSinkPropagator) objectFfield.get( this.objectSource );
 
         final Field tupleField = LeftTupleSource.class.getDeclaredField( "sink" );
         tupleField.setAccessible( true );
-        LeftTupleSinkPropagator tupleSink = (LeftTupleSinkPropagator) tupleField
-                .get( this.tupleSource );
+        LeftTupleSinkPropagator tupleSink = (LeftTupleSinkPropagator) tupleField.get( this.tupleSource );
 
         assertEquals( 15,
                       this.node.getId() );
@@ -157,8 +153,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(
-                                                                           1,
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
@@ -310,8 +305,7 @@ public class JoinNodeTest extends DroolsTestCase {
                       this.memory.getRightTupleMemory().size() );
 
         // check new objects/handles still assert
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory
-                .insert( "test1" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.insert( "test1" );
         this.node.assertObject( f1,
                                 this.context,
                                 this.workingMemory );

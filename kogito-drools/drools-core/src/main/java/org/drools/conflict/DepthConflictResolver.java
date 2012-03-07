@@ -59,8 +59,15 @@ public class DepthConflictResolver
         } else if ( s1 < s2 ) {
             return -1;
         }
+        
+        
+        if ( existing.getRule() == adding.getRule() && existing.isRuleNetworkEvaluatorActivation()) {
+            return -1;
+        }
+        
+        
 
-        // we know that no two activations will have the same number
+        // we know that no two activations will have the same number   
         return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
     }
 

@@ -24,7 +24,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
 import org.drools.common.NodeMemories;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.RuleBasePartitionId;
@@ -102,7 +102,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void clearNodeMemory(NodeMemory node) {
+    public void clearNodeMemory(MemoryFactory node) {
         // TODO Auto-generated method stub
         
     }
@@ -147,7 +147,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return 0;
     }
 
-    public Memory getNodeMemory(NodeMemory node) {
+    public Memory getNodeMemory(MemoryFactory node) {
         // TODO Auto-generated method stub
         return null;
     }

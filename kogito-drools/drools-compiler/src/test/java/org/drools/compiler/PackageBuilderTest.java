@@ -55,6 +55,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
@@ -184,7 +185,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, rule,rule.getLhs(), 0,new BuildContext(ruleBase, null) )  );        
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(ruleBase, null) )  );        
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -268,7 +269,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, newRule,newRule.getLhs(), 0, new BuildContext(ruleBase, null) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(ruleBase, null) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),
@@ -1415,13 +1416,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public ActivationGroupNode getActivationGroupNode() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void setActivationGroupNode( final ActivationGroupNode activationGroupNode ) {
-            // TODO Auto-generated method stub
-
         }
 
         public GroupElement getSubRule() {
@@ -1429,52 +1427,40 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public AgendaGroup getAgendaGroup() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public ActivationNode getActivationNode() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void setActivationNode( final ActivationNode ruleFlowGroupNode ) {
-            // TODO Auto-generated method stub
-
         }
 
         public void setLogicalDependencies( LinkedList<LogicalDependency> justified ) {
-            // TODO Auto-generated method stub
-
         }
 
         public List<FactHandle> getFactHandles() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public List<Object> getObjects() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public Object getDeclarationValue( String variableName ) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public List<String> getDeclarationIDs() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public InternalFactHandle getFactHandle() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public boolean isAdded() {
-            // TODO Auto-generated method stub
             return false;
         }
         
@@ -1483,38 +1469,32 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public void addBlocked(LogicalDependency node) {
-            // TODO Auto-generated method stub
-            
         }
 
         public LinkedList getBlocked() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void setBlocked(LinkedList<LogicalDependency> justified) {
-            // TODO Auto-generated method stub
-            
+
         }
 
         public void addBlocked(LinkedListNode node) {
-            // TODO Auto-generated method stub
-            
         }
 
         public LinkedList getBlockers() {
-            // TODO Auto-generated method stub
             return null;
         }
-
+        
         public boolean isMatched() {
-            // TODO Auto-generated method stub
             return false;
         }
 
         public void setMatched(boolean matched) {
-            // TODO Auto-generated method stub
-            
+        }
+
+        public boolean isRuleNetworkEvaluatorActivation() {
+            return false;
         }            
     }
 
@@ -1547,12 +1527,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public long getRecency() {
-            // TODO Auto-generated method stub
             return 0;
         }
 
         public int size() {
-            // TODO Auto-generated method stub
             return 0;
         }
 

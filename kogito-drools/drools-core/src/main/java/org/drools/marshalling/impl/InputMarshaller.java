@@ -44,7 +44,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NamedEntryPoint;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.ObjectStore;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
@@ -356,6 +356,7 @@ public class InputMarshaller {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(),
                                                                                context.ruleBase );
             group.setActive( stream.readBoolean() );
+            group.setActivatedForRecency( stream.readLong() );
             agenda.getAgendaGroupsMap().put( group.getName(),
                                              group );
         }
@@ -585,7 +586,6 @@ public class InputMarshaller {
                 }
             }
             memory.getRightTupleMemory().add( rightTuple );
-            memory.linkLeft();
         }
     }
 
@@ -760,7 +760,7 @@ public class InputMarshaller {
             }
             case NodeTypeEnums.RightInputAdaterNode: {
                 // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when de-serializing from persistent storage
-                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
+                ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (MemoryFactory) sink );
                 // create fact handle
                 int id = stream.readInt();
                 long recency = stream.readLong();
@@ -781,7 +781,7 @@ public class InputMarshaller {
             case NodeTypeEnums.FromNode: {
                 //              context.out.println( "FromNode" );
                 // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
-                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
+                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (MemoryFactory) sink );
 
                 memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
                 Map<Object, RightTuple> matches = new LinkedHashMap<Object, RightTuple>();
@@ -974,10 +974,8 @@ public class InputMarshaller {
         }
     }
 
-    private static void addToLeftMemory( LeftTuple parentLeftTuple,
-            BetaMemory memory ) {
+    private static void addToLeftMemory( LeftTuple parentLeftTuple, BetaMemory memory ) {
         memory.getLeftTupleMemory().add( parentLeftTuple );
-        memory.linkRight();
     }
 
     public static void readActivations( MarshallerReaderContext context ) throws IOException {

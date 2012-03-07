@@ -23,11 +23,6 @@ import org.drools.core.util.index.LeftTupleList;
 public class FromNodeLeftTuple extends BaseLeftTuple {
     private static final long  serialVersionUID = 540l;
 
-    // node memory
-    private LeftTupleList      memory;
-    private Entry              next;
-    private Entry              previous;
-
     public FromNodeLeftTuple() {
         // constructor needed for serialisation
     }

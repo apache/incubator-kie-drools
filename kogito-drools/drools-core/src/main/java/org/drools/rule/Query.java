@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class Query extends Rule {
+public class Query extends Rule implements org.drools.definition.rule.Query {
 
     private static final long serialVersionUID = 510l;
 
@@ -64,6 +64,10 @@ public class Query extends Rule {
     @Override
     public KnowledgeType getKnowledgeType() {
         return KnowledgeType.QUERY;
+    }
+
+    public boolean isQuery() {
+        return true;
     }
 
 }

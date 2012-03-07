@@ -87,9 +87,6 @@ public class BuildContext {
     private boolean                          tupleMemoryEnabled;
 
     private boolean                          objectTypeNodeMemoryEnabled;
-
-    /** This one is slightly different as alphaMemory can be adaptive, only turning on for new rule attachments */
-    private boolean                          alphaNodeMemoryAllowed;
     
     private boolean                          query;
 
@@ -105,6 +102,11 @@ public class BuildContext {
     private ObjectTypeNode rootObjectTypeNode;
     
     private Pattern[]                        lastBuiltPatterns;
+    
+    // The reason why this is here is because forall can inject a
+    //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
+    // Which we don't want to actually count in the case of forall node linking    
+    private boolean                          emptyForAllBetaConstraints;
 
     private ReteooComponentFactory           componentFactory;
 
@@ -141,6 +143,16 @@ public class BuildContext {
         this.attachPQN = true;
 
         this.componentFactory = rulebase.getConfiguration().getComponentFactory();
+        
+        this.emptyForAllBetaConstraints = false;
+    }
+
+    public boolean isEmptyForAllBetaConstraints() {
+        return emptyForAllBetaConstraints;
+    }
+
+    public void setEmptyForAllBetaConstraints(boolean emptyForAllBetaConstraints) {
+        this.emptyForAllBetaConstraints = emptyForAllBetaConstraints;
     }
 
     /**
@@ -360,16 +372,6 @@ public class BuildContext {
     public void setObjectTypeNodeMemoryEnabled(boolean hasObjectTypeMemory) {
         this.objectTypeNodeMemoryEnabled = hasObjectTypeMemory;
     }
-
-    public void setAlphaNodeMemoryAllowed(boolean alphaMemoryAllowed) {
-        this.alphaNodeMemoryAllowed = alphaMemoryAllowed;
-    }
-
-    public boolean isAlphaMemoryAllowed() {
-        return this.alphaNodeMemoryAllowed;
-    }
-    
-    
 
     public boolean isQuery() {
         return query;

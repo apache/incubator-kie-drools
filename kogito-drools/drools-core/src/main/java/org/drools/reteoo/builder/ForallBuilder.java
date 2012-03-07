@@ -59,6 +59,12 @@ public class ForallBuilder
         final GroupElement not2 = GroupElementFactory.newNotInstance();
         not2.setForallBaseObjectType( forall.getBasePattern().getObjectType() );
         if ( forall.getRemainingPatterns().size() == 1 ) {
+            if ( forall.isEmptyBetaConstraints() ) {
+                // The reason why this is here is because forall can inject a
+                //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
+                // Which we don't want to actually count in the case of forall node linking                
+                context.setEmptyForAllBetaConstraints( true );
+            }
             not2.addChild( (Pattern) forall.getRemainingPatterns().get( 0 ) );
             and.addChild( not2 );
         } else if ( forall.getRemainingPatterns().size() > 1 ) {

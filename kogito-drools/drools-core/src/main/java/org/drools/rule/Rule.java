@@ -54,8 +54,7 @@ public class Rule
     Externalizable,
     Wireable,
     Dialectable,
-    org.drools.definition.rule.Rule,
-    org.drools.definition.rule.Query {
+    org.drools.definition.rule.Rule {
     private static final long        serialVersionUID = 510l;
 
     public static final String DEFAULT_CONSEQUENCE_NAME = "default";
@@ -561,7 +560,7 @@ public class Rule
         return transformer.transform( getExtendedLhs( this,
                                                                        null ) );
     }    
-
+    
     public int getSpecifity() {
         return getSpecifity( this.lhsRoot );
     }
@@ -809,6 +808,10 @@ public class Rule
         classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
         org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
         return trace.getText();
+    }
+    
+    public boolean isQuery() {
+        return false;
     }
 
     public KnowledgeType getKnowledgeType() {

@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.index.RightTupleList;
+import org.drools.spi.PropagationContext;
 
 public class RightTuple
     implements
@@ -39,6 +40,8 @@ public class RightTuple
     private LeftTuple            blocked;
 
     protected RightTupleSink     sink;
+    
+    private PropagationContext   propagationContext;
 
     public RightTuple() {
 
@@ -200,4 +203,20 @@ public class RightTuple
     public boolean equals(Object object) {
         return equals( (RightTuple) object );
     }
+
+    public PropagationContext getPropagationContext() {
+        return propagationContext;
+    }
+
+    public void setPropagationContext(PropagationContext propagationContext) {
+        this.propagationContext = propagationContext;
+    }
+
+    public void clear() {
+        this.previous = null;
+        this.next = null;
+        this.memory = null;
+    }
+    
+    
 }

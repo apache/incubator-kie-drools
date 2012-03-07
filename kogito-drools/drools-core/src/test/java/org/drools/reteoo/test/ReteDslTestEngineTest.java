@@ -803,7 +803,7 @@ public class ReteDslTestEngineTest {
         Map<String, Object> map = result.context;
 
         BuildContext buildCtx = (BuildContext) map.get( ReteDslTestEngine.BUILD_CONTEXT );
-        assertTrue(buildCtx.getRuleBase().getConfiguration().isLRUnlinkingEnabled());
+        assertTrue(buildCtx.getRuleBase().getConfiguration().isUnlinkingEnabled());
     }
 
 

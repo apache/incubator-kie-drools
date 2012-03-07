@@ -27,6 +27,7 @@ import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
@@ -117,7 +118,7 @@ public class GroupElementBuilder
                 if (context.getObjectSource() != null && context.getTupleSource() == null) {
                     // we know this is the root OTN, so record it
                     ObjectSource source = context.getObjectSource();
-                    while ( !(source instanceof ObjectTypeNode) ) {
+                    while ( !(source.getType() ==  NodeTypeEnums.ObjectTypeNode ) ) {
                         source = source.getParentObjectSource();
                     }
                     context.setRootObjectTypeNode( (ObjectTypeNode) source );
@@ -228,6 +229,7 @@ public class GroupElementBuilder
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new RightInputAdapterNode( context.getNextId(),
                                                                                                      context.getTupleSource(),
+                                                                                                     tupleSource,
                                                                                                      context ) ) );
 
                 // restore tuple source from before the start of the sub network
@@ -253,11 +255,15 @@ public class GroupElementBuilder
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
+
             NotNode node = new NotNode( context.getNextId(),
                                         context.getTupleSource(),
                                         context.getObjectSource(),
                                         betaConstraints,
                                         context );
+            
+            node.setEmptyBetaConstraints( context.getBetaconstraints().isEmpty() );
+
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                         node ) );
             context.setBetaconstraints( null );
@@ -313,6 +319,7 @@ public class GroupElementBuilder
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new RightInputAdapterNode( context.getNextId(),
                                                                                                      context.getTupleSource(),
+                                                                                                     tupleSource,
                                                                                                      context ) ) );
 
                 // restore tuple source from before the start of the sub network

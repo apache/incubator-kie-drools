@@ -111,7 +111,7 @@ public class RuleBaseConfigurationTest {
     public void testLRUnlinking() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
         assertEquals( false,
-                      cfg.isLRUnlinkingEnabled() );
+                      cfg.isUnlinkingEnabled() );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.lrUnlinkingEnabled",
@@ -119,7 +119,7 @@ public class RuleBaseConfigurationTest {
         cfg = new RuleBaseConfiguration( properties );
 
         assertEquals( true,
-                      cfg.isLRUnlinkingEnabled() );
+                      cfg.isUnlinkingEnabled() );
     }
 
     

@@ -42,7 +42,9 @@ public class GroupElement extends ConditionalElement
     public static final Type  EXISTS               = Type.EXISTS;
 
     private Type              type                 = null;
+
     private List<RuleConditionElement> children    = new ArrayList<RuleConditionElement>();
+
     private ObjectType        forallBaseObjectType = null;
     
     private boolean           root;
@@ -360,6 +362,24 @@ public class GroupElement extends ConditionalElement
     public void setRoot(boolean root) {
         this.root = root;
     }
+    
+    public boolean containesNode(Type node) {
+        return containesNode( node, this );
+    }
+    
+    private static boolean containesNode(Type node, GroupElement groupElement) {
+        for( RuleConditionElement rce : groupElement.getChildren() ) {
+            if ( rce instanceof GroupElement ) {
+                if ( ((GroupElement) rce).getType() == node) {
+                    return true;
+                } else {
+                    return containesNode(node, (GroupElement) rce);
+                }
+            }
+        }
+        return false;
+    }    
+    
 
     /**
      * A public enum for CE types

@@ -34,7 +34,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.core.util.FastIterator;
@@ -56,11 +56,10 @@ import org.drools.spi.PropagationContext;
 public class FromNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    NodeMemory {
+    MemoryFactory {
     private static final long          serialVersionUID = 510l;
 
-    protected DataProvider               dataProvider;
-    protected LeftTupleSource            tupleSource;
+    protected DataProvider               dataProvider;;
     protected AlphaNodeFieldConstraint[] alphaConstraints;
     protected BetaConstraints            betaConstraints;
 
@@ -87,7 +86,7 @@ public class FromNode extends LeftTupleSource
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.dataProvider = dataProvider;
-        this.tupleSource = tupleSource;
+        setLeftTupleSource(tupleSource);
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
@@ -101,7 +100,6 @@ public class FromNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         dataProvider = (DataProvider) in.readObject();
-        tupleSource = (LeftTupleSource) in.readObject();
         alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         betaConstraints = (BetaConstraints) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
@@ -112,7 +110,6 @@ public class FromNode extends LeftTupleSource
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( dataProvider );
-        out.writeObject( tupleSource );
         out.writeObject( alphaConstraints );
         out.writeObject( betaConstraints );
         out.writeBoolean( tupleMemoryEnabled );
@@ -398,7 +395,7 @@ public class FromNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         betaConstraints.init(context, getType());
-        this.tupleSource.addTupleSink( this, context );
+        this.leftInput.addTupleSink( this, context );
         if (context == null) {
             return;
         }
@@ -409,14 +406,14 @@ public class FromNode extends LeftTupleSource
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
+            this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        this.leftInput.networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -443,7 +440,7 @@ public class FromNode extends LeftTupleSource
             }
         }
 
-        this.tupleSource.remove( context,
+        this.leftInput.remove( context,
                                  builder,
                                  this,
                                  workingMemories );
@@ -611,10 +608,12 @@ public class FromNode extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
+        return this.leftInput;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        return tupleSource.getObjectTypeNode();
+        return leftInput.getObjectTypeNode();
     }
+    
+
 }

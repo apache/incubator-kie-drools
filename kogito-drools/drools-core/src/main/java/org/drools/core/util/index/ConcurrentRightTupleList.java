@@ -224,4 +224,12 @@ public class ConcurrentRightTupleList
     public IndexType getIndexType() {
         return IndexType.NONE;
     }
+    
+    public boolean isStagingMemory() {
+        return false;
+    }
+
+    public void setStagingMemory(boolean stagingMemory) {
+        throw new UnsupportedOperationException();
+    }
 }

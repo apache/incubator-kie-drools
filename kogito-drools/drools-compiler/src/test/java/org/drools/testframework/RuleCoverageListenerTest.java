@@ -154,32 +154,26 @@ class MockActivation
     }
 
     public List<FactHandle> getFactHandles() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public List<Object> getObjects() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object getDeclarationValue(String variableName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public List<String> getDeclarationIDs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public InternalFactHandle getFactHandle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isAdded() {
-        // TODO Auto-generated method stub
         return false;
     }
     
@@ -188,12 +182,9 @@ class MockActivation
     }
 
     public void addBlocked(LogicalDependency node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public LinkedList getBlocked() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -203,12 +194,9 @@ class MockActivation
     }
 
     public void addBlocked(LinkedListNode node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public LinkedList getBlockers() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -219,7 +207,10 @@ class MockActivation
 
     public void setMatched(boolean matched) {
         // TODO Auto-generated method stub
-        
+    }
+
+    public boolean isRuleNetworkEvaluatorActivation() {
+        return false;
     }        
 
 }

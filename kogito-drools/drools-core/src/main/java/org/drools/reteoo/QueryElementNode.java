@@ -31,7 +31,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LeftTupleIterator;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.UpdateContext;
@@ -56,9 +56,7 @@ import org.drools.spi.PropagationContext;
 public class QueryElementNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    NodeMemory {
-
-    private LeftTupleSource   tupleSource;
+    MemoryFactory {
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -82,7 +80,7 @@ public class QueryElementNode extends LeftTupleSource
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
-        this.tupleSource = tupleSource;
+        setLeftTupleSource(tupleSource);
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
@@ -93,7 +91,6 @@ public class QueryElementNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         queryElement = (QueryElement) in.readObject();
-        tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         openQuery = in.readBoolean();
     }
@@ -101,7 +98,6 @@ public class QueryElementNode extends LeftTupleSource
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( queryElement );
-        out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( openQuery );
     }
@@ -135,14 +131,14 @@ public class QueryElementNode extends LeftTupleSource
             removeTupleSink( (LeftTupleSink) node );
         }
 
-        this.tupleSource.remove( context,
+        this.leftInput.remove( context,
                                  builder,
                                  this,
                                  workingMemories );
     }
 
     public void attach( BuildContext context ) {
-        this.tupleSource.addTupleSink( this, context );
+        this.leftInput.addTupleSink( this, context );
         if (context == null) {
             return;
         }
@@ -153,14 +149,14 @@ public class QueryElementNode extends LeftTupleSource
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
+            this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        this.leftInput.networkUpdated(updateContext);
     }
 
     public short getType() {
@@ -409,7 +405,7 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
+        return this.leftInput;
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
@@ -702,7 +698,7 @@ public class QueryElementNode extends LeftTupleSource
         int result = super.hashCode();
         result = prime * result + (openQuery ? 1231 : 1237);
         result = prime * result + ((queryElement == null) ? 0 : queryElement.hashCode());
-        result = prime * result + ((tupleSource == null) ? 0 : tupleSource.hashCode());
+        result = prime * result + ((leftInput == null) ? 0 : leftInput.hashCode());
         return result;
     }
 
@@ -716,9 +712,9 @@ public class QueryElementNode extends LeftTupleSource
         if ( queryElement == null ) {
             if ( other.queryElement != null ) return false;
         } else if ( !queryElement.equals( other.queryElement ) ) return false;
-        if ( tupleSource == null ) {
-            if ( other.tupleSource != null ) return false;
-        } else if ( !tupleSource.equals( other.tupleSource ) ) return false;
+        if ( leftInput == null ) {
+            if ( other.leftInput != null ) return false;
+        } else if ( !leftInput.equals( other.leftInput ) ) return false;
         return true;
     }
 
@@ -737,6 +733,6 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        return tupleSource.getObjectTypeNode();
+        return leftInput.getObjectTypeNode();
     }
 }

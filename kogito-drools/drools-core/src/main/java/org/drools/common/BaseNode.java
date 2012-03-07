@@ -94,6 +94,7 @@ public abstract class BaseNode
      */
     public abstract void attach(BuildContext context);
 
+
     /**
      * A method that is called for all nodes whose network below them
      * changed, after the change is complete, providing them with an oportunity
@@ -122,10 +123,10 @@ public abstract class BaseNode
     }
 
     private void internalCleanUp(ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() && this instanceof NodeMemory ) {
-            if (this instanceof NodeMemory) {
+        if ( !this.isInUse() && this instanceof MemoryFactory ) {
+            if (this instanceof MemoryFactory) {
                 for( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.clearNodeMemory( (NodeMemory) this );
+                    workingMemory.clearNodeMemory( (MemoryFactory) this );
                 }
             }
             if ( !(this instanceof EntryPointNode) ) {

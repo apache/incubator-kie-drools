@@ -26,7 +26,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
 import org.drools.reteoo.builder.BuildContext;
@@ -35,7 +35,7 @@ import org.drools.spi.PropagationContext;
 public class MockLeftTupleSink extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    NodeMemory {
+    MemoryFactory {
     private static final long serialVersionUID = 510l;
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();

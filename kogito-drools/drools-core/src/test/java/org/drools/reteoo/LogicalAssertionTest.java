@@ -138,11 +138,11 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                         null,
                                                         true );
 
-        final PropagationContextImpl context1 = new PropagationContextImpl( 0,
-                                                                            PropagationContext.ASSERTION,
-                                                                            null,
-                                                                            null,
-                                                                            null );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        null,
+                                                                        null,
+                                                                        new DefaultFactHandle()  );
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -273,7 +273,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -385,7 +385,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
@@ -540,7 +540,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null,
-                                                                       null );
+                                                                       new DefaultFactHandle()  );
 
         node.assertLeftTuple( tuple1,
                               context,
@@ -672,7 +672,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
         // get the activation onto the agenda
         node.assertLeftTuple( tuple1,
                               context1,
@@ -698,7 +698,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
 
         // get the activations onto the agenda
         node2.assertLeftTuple( tuple2,
@@ -838,7 +838,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
 
         // Assert multiple stated objects
         node.assertLeftTuple( tuple1,
@@ -962,7 +962,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         null,
                                                                         null,
-                                                                        null );
+                                                                        new DefaultFactHandle()  );
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,

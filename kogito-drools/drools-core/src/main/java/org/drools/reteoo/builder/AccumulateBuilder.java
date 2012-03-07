@@ -74,6 +74,7 @@ public class AccumulateBuilder
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new RightInputAdapterNode( context.getNextId(),
                                                                                                  context.getTupleSource(),
+                                                                                                 tupleSource,
                                                                                                  context ) ) );
                 
 

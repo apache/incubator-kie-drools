@@ -499,4 +499,11 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     public IndexType getIndexType() {
         return IndexType.EQUAL;
     }
+    public boolean isStagingMemory() {
+        return false;
+    }
+
+    public void setStagingMemory(boolean stagingMemory) {
+        throw new UnsupportedOperationException();
+    }
 }

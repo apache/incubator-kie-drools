@@ -20,20 +20,23 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NodeMemory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Pattern;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleComponent;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
 
@@ -47,7 +50,7 @@ import static org.drools.core.util.BitMaskUtil.intersect;
 public class AlphaNode extends ObjectSource
     implements
     ObjectSinkNode,
-    NodeMemory {
+    MemoryFactory {
 
     private static final long        serialVersionUID = 510l;
 
@@ -87,7 +90,6 @@ public class AlphaNode extends ObjectSource
     }
 
 
-
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -110,6 +112,10 @@ public class AlphaNode extends ObjectSource
      */
     public AlphaNodeFieldConstraint getConstraint() {
         return this.constraint;
+    }
+    
+    public short getType() {
+        return NodeTypeEnums.AlphaNode;
     }
 
     public void attach(BuildContext context) {
@@ -359,8 +365,14 @@ public class AlphaNode extends ObjectSource
                                            ModifyPreviousTuples modifyPreviousTuples,
                                            PropagationContext context,
                                            InternalWorkingMemory workingMemory) {
-            // TODO Auto-generated method stub
-            
+        }
+
+        public short getType() {
+            return NodeTypeEnums.AlphaNode;
+        }
+
+        public Map<Rule, RuleComponent> getAssociations() {
+            return sink.getAssociations();
         }
 
     }

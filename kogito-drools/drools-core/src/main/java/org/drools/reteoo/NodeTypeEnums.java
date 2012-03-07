@@ -16,26 +16,81 @@
 
 package org.drools.reteoo;
 
+import org.drools.common.NetworkNode;
+
+/**
+ * 
+ * ObjectSource   : < NodeTypeEnums.ObjectSource * 
+ * LeftTupleSource: > LeftTupleSource
+ * BetaNode       : > BetaNode
+ * 
+ * ObjectSink     : % 2 == 0
+ * LeftSource     : % 2 != 0
+ *
+ */
 public class NodeTypeEnums {
-    public static final short JoinNode                = 0;
-    public static final short NotNode                 = 1;
-    public static final short ExistsNode              = 2;
-    public static final short EvalConditionNode       = 3;
-    public static final short FromNode                = 4;
+    // ObjectSource, ObjectSink
+    public static final short EntryPointNode          = 10;
+    public static final short ReteNode                = 20;
+    public static final short ObjectTypeNode          = 30;
+    public static final short AlphaNode               = 40;
+    public static final short PropagationQueuingNode  = 50;
+    public static final short WindowNode              = 60;
+    public static final short PropagationQueueingNode = 65;
+
+    // ObjectSource, LeftTupleSink
+    public static final short RightInputAdaterNode    = 71; // also ObjectSource %2 != 0
+
+    public static final short ObjectSource            = 80;
+
+    // LefTTupleSink
+    public static final short QueryTerminalNode       = 91;
+    public static final short RuleTerminalNode        = 101;
+
+    // LeftTupleSource, LefTTupleSink
+    public static final short LeftTupleSource         = 111;
+    public static final short LeftInputAdapterNode    = 120; // also ObjectSink %2 == 0
+    public static final short EvalConditionNode       = 131;
+    public static final short QueryRiaFixerNode       = 141;
+    public static final short FromNode                = 151;
+    public static final short UnificationNode         = 161;
+    public static final short QueryElementNode        = 165;
+    public static final short ConditionalBranchNode   = 167;
+
+    // LeftTupleSource, LefTTupleSink, BetaNode
+    public static final short BetaNode                = 171;
+    public static final short JoinNode                = 181;
+    public static final short NotNode                 = 191;
+    public static final short ExistsNode              = 201;
+    public static final short AccumulateNode          = 211;
+    public static final short ForallNotNode           = 221;
+    public static final short ElseNode                = 231;
     //public static final short CollectNode          = 5;   // no longer used, since accumulate nodes execute collect logic now
-    public static final short AccumulateNode          = 6;
-    public static final short RightInputAdaterNode    = 7;
-    public static final short QueryTerminalNode       = 8;
-    public static final short RuleTerminalNode        = 9;
-    public static final short ForallNotNode           = 10;
-    public static final short UnificationNode         = 11;
-    public static final short QueryRiaFixerNode       = 12;
-    public static final short WindowNode              = 13;
-    public static final short ElseNode                = 14;
-    public static final short AlphaNode               = 15;
-    public static final short ObjectTypeNode          = 16;
-    public static final short PropagationQueueingNode = 17;
-    public static final short QueryElementNode        = 18;
+
+    // mdp not sure what number this should be yet
     public static final short OperatorNode            = 19;
-    public static final short ConditionalBranchNode   = 20;
+
+    public static boolean isObjectSource(NetworkNode node) {
+        return node.getType() < NodeTypeEnums.ObjectSource;
+    }
+
+    public static boolean isObjectSink(NetworkNode node) {
+        return node.getType() % 2 == 0;
+    }
+
+    public static boolean isLeftTupleSource(NetworkNode node) {
+        return node.getType() > NodeTypeEnums.LeftTupleSource;
+    }
+
+    public static boolean isBetaNode(NetworkNode node) {
+        return node.getType() > NodeTypeEnums.BetaNode;
+    }
+
+    public static boolean isTerminalNode(NetworkNode node) {
+        return node.getType() == 91 || node.getType() == 101;
+    }
+
+    public static boolean isLeftTupleSink(NetworkNode node) {
+        return node.getType() % 2 != 0;
+    }
 }

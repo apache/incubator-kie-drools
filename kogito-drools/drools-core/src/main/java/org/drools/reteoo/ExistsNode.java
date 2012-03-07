@@ -96,6 +96,11 @@ public class ExistsNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
+            return;
+        }                
+        
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
@@ -155,15 +160,10 @@ public class ExistsNode extends BetaNode {
      * @param workingMemory
      *            The working memory session.
      */
-    public void assertObject(final InternalFactHandle factHandle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-
-        final RightTuple rightTuple = createRightTuple( factHandle,
-                                                        this,
-                                                        context );
-
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+    public void assertRightTuple( final RightTuple rightTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
+        final BetaMemory memory = (BetaMemory)  workingMemory.getNodeMemory( this );
 
         memory.getRightTupleMemory().add( rightTuple );
 
@@ -171,10 +171,11 @@ public class ExistsNode extends BetaNode {
             // do nothing here, as no left memory
             return;
         }
-
+        
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
-                                               factHandle );
+                                               rightTuple.getFactHandle() );
+        
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
         FastIterator it = getLeftIterator( leftMemory );
         for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {        
@@ -221,7 +222,17 @@ public class ExistsNode extends BetaNode {
         FastIterator it = memory.getRightTupleMemory().fastIterator();
         final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
-        memory.getRightTupleMemory().remove( rightTuple );
+        if ( rightTuple.getMemory() == memory.getStagedAssertRightTupleList() ) {
+            memory.getStagedAssertRightTupleList().remove( rightTuple );            
+        } else {
+            memory.getRightTupleMemory().remove( rightTuple );
+        }
+        rightTuple.setMemory( null );
+        
+        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() ) {
+            memory.unlinkNode( workingMemory );            
+        }   
+        
 
         if ( rightTuple.getBlocked() == null ) {
             return;
@@ -279,15 +290,20 @@ public class ExistsNode extends BetaNode {
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
         RightTuple blocker = leftTuple.getBlocker();
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( blocker != null ) {
+        if ( blocker == null ) {
+            final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+            if ( leftTuple.getMemory().isStagingMemory() ) {
+                leftTuple.getMemory().remove( leftTuple );
+            } else {
+                memory.getLeftTupleMemory().remove( leftTuple );
+            }
+            leftTuple.setMemory( null );
+        } else {
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
 
-            blocker.removeBlocked( leftTuple );
-        } else {
-            memory.getLeftTupleMemory().remove( leftTuple );
+            blocker.removeBlocked( leftTuple );            
         }
     }
 
@@ -303,7 +319,12 @@ public class ExistsNode extends BetaNode {
         // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
         RightTuple blocker = leftTuple.getBlocker();
         if ( blocker == null ) {
-            memory.getLeftTupleMemory().remove( leftTuple );
+            if ( leftTuple.getMemory().isStagingMemory() ) {
+                leftTuple.getMemory().remove( leftTuple );
+            } else {
+                memory.getLeftTupleMemory().remove( leftTuple );
+            }
+            leftTuple.setMemory( null );
         } else {
             // check if we changed bucket
             if ( rightMemory.isIndexed()&& !rightIt.isFullIterator()  ) {                
@@ -381,6 +402,10 @@ public class ExistsNode extends BetaNode {
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        if ( isUnlinkingEnabled() && isStagedForModifyRight( rightTuple, memory, context, workingMemory )) {
+            return;
+        }        
 
         if ( memory.getLeftTupleMemory() == null || (memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null) ) {
             // do nothing here, as we know there are no left tuples

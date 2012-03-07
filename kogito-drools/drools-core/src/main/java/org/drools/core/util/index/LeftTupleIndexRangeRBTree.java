@@ -283,4 +283,12 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
             return false;
         }
     }
+    
+    public boolean isStagingMemory() {
+        return false;
+    }
+
+    public void setStagingMemory(boolean liaNodeMemory) {
+        throw new UnsupportedOperationException();
+    }    
 }

@@ -31,4 +31,12 @@ public interface InternalAgendaGroup extends AgendaGroup {
     public Activation[] getAndClear();
 
     public void remove(AgendaItem agendaItem);
+
+    public void setActivatedForRecency(long recency);
+    
+    public long getActivatedForRecency();
+    
+    public void setClearedForRecency(long recency);
+    
+    public long getClearedForRecency();    
 }

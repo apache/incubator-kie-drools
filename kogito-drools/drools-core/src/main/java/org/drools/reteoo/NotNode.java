@@ -16,6 +16,11 @@
 
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -32,6 +37,11 @@ public class NotNode extends BetaNode {
 
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
+    
+    // The reason why this is here is because forall can inject a
+    //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
+    // Which we don't want to actually count in the case of forall node linking
+    private boolean           emptyBetaConstraints;
 
     public NotNode() {
 
@@ -50,12 +60,40 @@ public class NotNode extends BetaNode {
                joinNodeBinder,
                context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        
+        // The reason why this is here is because forall can inject a
+        //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
+        // Which we don't want to actually count in the case of forall node linking
+        emptyBetaConstraints = joinNodeBinder.getConstraints().length == 0 || context.isEmptyForAllBetaConstraints();
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        emptyBetaConstraints = in.readBoolean();
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeBoolean( emptyBetaConstraints );
+    }
+
+    public boolean isEmptyBetaConstraints() {
+        return emptyBetaConstraints;
+    }
+
+    public void setEmptyBetaConstraints(boolean emptyBetaConstraints) {
+        this.emptyBetaConstraints = emptyBetaConstraints;
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        if ( isUnlinkingEnabled() && isStagedForModifyLeft( leftTuple, memory, context, workingMemory )) {
+            return;
+        }  
+        
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
@@ -101,16 +139,34 @@ public class NotNode extends BetaNode {
                                                 useLeftMemory );
         }
     }
+    
+    public void assertObject( final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory ) {
+        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, workingMemory); 
+        
+        // unlink node
+        if ( isUnlinkingEnabled() && memory.getAndIncCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints() ) {            
+            // we can only unlink 'not' nodes when there are no variable constraints. This is not the case for Join/Exists.
+            // unlink node
+            memory.unlinkNode( workingMemory );             
+        }
 
-    public void assertObject(final InternalFactHandle factHandle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        final RightTuple rightTuple = createRightTuple( factHandle,
-                                                        this,
-                                                        context );
+        RightTuple rightTuple = createRightTuple( factHandle,
+                                                  this,
+                                                  context );
+        
+        rightTuple.setPropagationContext( context );
+        
+        // NotNodes must always propagate, they never get staged.
+        assertRightTuple(rightTuple, context, workingMemory );        
+    }      
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-
+    public void assertRightTuple( final RightTuple rightTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this ); 
+        
         memory.getRightTupleMemory().add( rightTuple );
 
         if ( memory.getLeftTupleMemory() == null || memory.getLeftTupleMemory().size() == 0  ) {
@@ -118,9 +174,9 @@ public class NotNode extends BetaNode {
             return;
         }
 
-        this.constraints.updateFromFactHandle(memory.getContext(),
-                workingMemory,
-                factHandle);
+        this.constraints.updateFromFactHandle( memory.getContext(),
+                                               workingMemory,
+                                               rightTuple.getFactHandle() );        
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
         FastIterator it = getLeftIterator( leftMemory );
         for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {      
@@ -159,6 +215,12 @@ public class NotNode extends BetaNode {
         final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
         memory.getRightTupleMemory().remove( rightTuple );
+        
+        if (  isUnlinkingEnabled() && memory.getAndDecCounter() == 0 && !isRightInputIsRiaNode() && isEmptyBetaConstraints()  ) {
+            // NotNodes can only be unlinked, if they have no variable constraints
+            // unlink node. Ignore right input adapters, as these will link the betanode via the RiaRuleSegments
+            memory.linkNode( workingMemory ); 
+        }    
 
         if ( rightTuple.getBlocked() == null ) {
             return;

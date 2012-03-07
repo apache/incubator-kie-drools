@@ -124,6 +124,10 @@ public class EntryPointNode extends ObjectSource
         out.writeObject( objectTypeNodes );
     }
 
+    public short getType() {
+        return NodeTypeEnums.EntryPointNode;
+    }     
+    
     /**
      * @return the entryPoint
      */

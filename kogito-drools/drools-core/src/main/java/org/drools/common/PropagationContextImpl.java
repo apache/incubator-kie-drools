@@ -33,48 +33,42 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 public class PropagationContextImpl
-    implements
-    PropagationContext {
+        implements
+        PropagationContext {
 
-    private static final long  serialVersionUID = 510l;
+    private static final long               serialVersionUID = 510l;
 
-    private int                type;
+    private int                             type;
 
-    private Rule               rule;
+    private Rule                            rule;
 
-    private LeftTuple          leftTuple;
+    private LeftTuple                       leftTuple;
 
-    private InternalFactHandle factHandle;
+    private InternalFactHandle              factHandle;
 
-    private long               propagationNumber;
+    private long                            propagationNumber;
 
-    public int                 activeActivations;
+    public int                              activeActivations;
 
-    public int                 dormantActivations;
+    public int                              dormantActivations;
 
-    private EntryPoint         entryPoint;
+    private EntryPoint                      entryPoint;
     
-    private int                originOffset;
-    
-    private ObjectHashSet      propagationAttempts;
-
-    private ObjectTypeNode     currentPropagatingOTN;
-    
-    private boolean            shouldPropagateAll;
+    private int                             originOffset;    
     
     private final LinkedList<WorkingMemoryAction> queue1 = new LinkedList<WorkingMemoryAction>(); // for inserts
     
     private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
-    private long modificationMask = Long.MAX_VALUE;
+    private long                            modificationMask = Long.MAX_VALUE;
 
-    private WindowTupleList windowTupleList;
+    private WindowTupleList                 windowTupleList;
 
-    private ObjectType objectType;
-    
+    private ObjectType                      objectType;
+
     // this field is only set for propagations happening during 
     // the deserialization of a session
-    private MarshallerReaderContext readerContext;
+    private MarshallerReaderContext         readerContext;
 
     public PropagationContextImpl() {
 
@@ -85,18 +79,17 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle) {
-        this(number, 
-             type, 
-             rule, 
-             leftTuple, 
-             factHandle, 
-             0, 
-             0, 
-             EntryPoint.DEFAULT,
-             Long.MAX_VALUE,
-             null );
+        this( number,
+              type,
+              rule,
+              leftTuple,
+              factHandle,
+              0,
+              0,
+              EntryPoint.DEFAULT,
+              Long.MAX_VALUE,
+              null );
         this.originOffset = -1;
-        this.shouldPropagateAll = true;
     }
 
     public PropagationContextImpl(final long number,
@@ -107,16 +100,16 @@ public class PropagationContextImpl
                                   final int activeActivations,
                                   final int dormantActivations,
                                   final EntryPoint entryPoint) {
-        this(number, 
-             type, 
-             rule, 
-             leftTuple, 
-             factHandle, 
-             activeActivations, 
-             dormantActivations, 
-             entryPoint,
-             Long.MAX_VALUE,
-             null );
+        this( number,
+              type,
+              rule,
+              leftTuple,
+              factHandle,
+              activeActivations,
+              dormantActivations,
+              entryPoint,
+              Long.MAX_VALUE,
+              null );
     }
 
     public PropagationContextImpl(final long number,
@@ -128,16 +121,16 @@ public class PropagationContextImpl
                                   final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final long modificationMask) {
-        this(number, 
-             type, 
-             rule, 
-             leftTuple, 
-             factHandle, 
-             activeActivations, 
-             dormantActivations, 
-             entryPoint,
-             modificationMask,
-             null );
+        this( number,
+              type,
+              rule,
+              leftTuple,
+              factHandle,
+              activeActivations,
+              dormantActivations,
+              entryPoint,
+              modificationMask,
+              null );
     }
 
     public PropagationContextImpl(final long number,
@@ -149,16 +142,16 @@ public class PropagationContextImpl
                                   final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final MarshallerReaderContext readerContext) {
-        this(number, 
-             type, 
-             rule, 
-             leftTuple, 
-             factHandle, 
-             activeActivations, 
-             dormantActivations, 
-             entryPoint,
-             Long.MAX_VALUE,
-             readerContext );
+        this( number,
+              type,
+              rule,
+              leftTuple,
+              factHandle,
+              activeActivations,
+              dormantActivations,
+              entryPoint,
+              Long.MAX_VALUE,
+              readerContext );
     }
 
     public PropagationContextImpl(final long number,
@@ -170,7 +163,7 @@ public class PropagationContextImpl
                                   final int dormantActivations,
                                   final EntryPoint entryPoint,
                                   final long modificationMask,
-                                  final MarshallerReaderContext readerContext ) {
+                                  final MarshallerReaderContext readerContext) {
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;
@@ -194,9 +187,6 @@ public class PropagationContextImpl
         this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPoint) in.readObject();
         this.originOffset = in.readInt();
-        this.propagationAttempts = (ObjectHashSet) in.readObject();
-        this.currentPropagatingOTN = (ObjectTypeNode) in.readObject();
-        this.shouldPropagateAll = in.readBoolean();        
         this.modificationMask = in.readLong();
     }
 
@@ -209,9 +199,6 @@ public class PropagationContextImpl
         out.writeObject( this.leftTuple );
         out.writeObject( this.entryPoint );
         out.writeInt( this.originOffset );
-        out.writeObject( this.propagationAttempts );
-        out.writeObject( this.currentPropagatingOTN );
-        out.writeObject( this.shouldPropagateAll );
         out.writeLong( this.modificationMask );
     }
 
@@ -227,7 +214,7 @@ public class PropagationContextImpl
     public Rule getRuleOrigin() {
         return this.rule;
     }
-    
+
     public org.drools.definition.rule.Rule getRule() {
         return this.rule;
     }
@@ -239,10 +226,14 @@ public class PropagationContextImpl
     public InternalFactHandle getFactHandleOrigin() {
         return this.factHandle;
     }
-    
+
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
+    
+    public void setFactHandle(FactHandle factHandle) {
+        this.factHandle = (InternalFactHandle) factHandle;
+    }    
 
     /*
      * (non-Javadoc)
@@ -283,39 +274,13 @@ public class PropagationContextImpl
     public void setFactHandle(InternalFactHandle factHandle) {
         this.factHandle = factHandle;
     }
-    
+
     public int getOriginOffset() {
         return originOffset;
     }
 
     public void setOriginOffset(int originOffset) {
         this.originOffset = originOffset;
-    }
-    
-    public ObjectHashSet getPropagationAttemptsMemory() {
-        
-        if (this.propagationAttempts == null) {
-            this.propagationAttempts = new ObjectHashSet();
-        }
-        
-        return this.propagationAttempts;
-    }
-    
-    public boolean isPropagating(ObjectTypeNode otn) {
-        return this.currentPropagatingOTN != null
-               && this.currentPropagatingOTN.equals( otn );
-    }
-    
-    public void setCurrentPropagatingOTN(ObjectTypeNode otn) {
-        this.currentPropagatingOTN = otn;
-    }
-
-    public void setShouldPropagateAll(Object node) {
-        this.shouldPropagateAll = getPropagationAttemptsMemory().contains( node );
-    }
-
-    public boolean shouldPropagateAll() {
-        return this.shouldPropagateAll;
     }
 
     public void addInsertAction(WorkingMemoryAction action) {
@@ -329,19 +294,23 @@ public class PropagationContextImpl
             queue1.remove(action);
         }
     }
+    
+    public LinkedList<WorkingMemoryAction> getQueue1() {
+        return this.queue1;
+    }
 
     public LinkedList<WorkingMemoryAction> getQueue2() {
         if ( this.queue2 == null ) {
             this.queue2 = new LinkedList<WorkingMemoryAction>();
         }
-        return this.queue2; 
-    }   
-    
+        return this.queue2;
+    }
+
     public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
         if ( queue1 == null && queue2 == null ) {
             return;
         }
-        
+
         boolean repeat = true;
         while(repeat) {
             synchronized (queue1) {
@@ -350,12 +319,12 @@ public class PropagationContextImpl
                     action.execute( workingMemory );
                 }
             }
-            
+
             repeat = false;
             if ( this.queue2 != null ) {
                 WorkingMemoryAction action = null;
-                
-                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null ) != null ) {
+
+                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null) != null ) {
                     action.execute( workingMemory );
                     if ( this.queue1 != null && !this.queue1.isEmpty() ) {
                         // Queue1 always takes priority and it's contents should be evaluated first
@@ -363,8 +332,8 @@ public class PropagationContextImpl
                         break;
                     }
                 }
-            }     
-                                  
+            }
+
         }
     }
 
@@ -376,7 +345,7 @@ public class PropagationContextImpl
         return windowTupleList;
     }
 
-    public void setActiveWindowTupleList( WindowTupleList list ) {
+    public void setActiveWindowTupleList(WindowTupleList list) {
         this.windowTupleList = list;
     }
 
@@ -387,7 +356,7 @@ public class PropagationContextImpl
     public void setObjectType(ObjectType objectType) {
         this.objectType = objectType;
     }
-    
+
     public MarshallerReaderContext getReaderContext() {
         return this.readerContext;
     }

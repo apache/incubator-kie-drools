@@ -19,17 +19,24 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Memory;
+import org.drools.common.MemoryFactory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.core.util.index.LeftTupleList;
+import org.drools.definition.rule.Rule;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleComponent;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -39,7 +46,8 @@ import org.drools.spi.PropagationContext;
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
-    ObjectSinkNode {
+    ObjectSinkNode,
+    MemoryFactory {
 
     private static final long serialVersionUID = 510l;
     private ObjectSource      objectSource;
@@ -51,8 +59,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
     
     protected boolean         rootQueryNode;
     
+    protected boolean         unlinkingEnabled;
+    private int               unlinkedDisabledCount;    
     
-
     public LeftInputAdapterNode() {
 
     }
@@ -75,11 +84,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
-        while ( !(current instanceof ObjectTypeNode) ) {
+        while ( !(current.getType() == NodeTypeEnums.ObjectTypeNode) ) {
                current = current.getParentObjectSource();
         }
         ObjectTypeNode otn = ( ObjectTypeNode ) current;
         rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( otn.getObjectType() );
+        
+        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isUnlinkingEnabled();      
     }    
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -88,6 +99,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
         rootQueryNode = in.readBoolean();
+        unlinkingEnabled = in.readBoolean();
+        unlinkedDisabledCount = in.readInt();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -95,15 +108,38 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeObject( objectSource );
         out.writeBoolean( leftTupleMemoryEnabled );
         out.writeBoolean(  rootQueryNode );
+        out.writeBoolean( unlinkingEnabled );
+        out.writeInt( unlinkedDisabledCount );        
+    }
+    
+
+    public short getType() {
+        return NodeTypeEnums.LeftInputAdapterNode;
     }
     
     public boolean isRootQueryNode() {
         return this.rootQueryNode;
     }
+    
+    public boolean isUnlinkingEnabled() {
+        return unlinkingEnabled;
+    }
 
+    public void setUnlinkingEnabled(boolean unlinkingEnabled) {
+        this.unlinkingEnabled = unlinkingEnabled;
+    }
+
+    public int getUnlinkedDisabledCount() {
+        return unlinkedDisabledCount;
+    }
+
+    public void setUnlinkedDisabledCount(int unlinkedDisabledCount) {
+        this.unlinkedDisabledCount = unlinkedDisabledCount;
+    }
+    
     public ObjectSource getParentObjectSource() {
         return this.objectSource;
-    }    
+    }       
     
     public void attach( BuildContext context ) {
         this.objectSource.addObjectSink( this );
@@ -162,6 +198,46 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                                                          context ) );
         }
     }
+    
+    public static LeftTuple propagateLeftTuples(LeftInputAdapterNode liaNode, LeftTupleList list, int length, InternalWorkingMemory wm) {
+        LeftTuple leftTuple = list.getFirst();
+        for ( int i = 0; i < length; i++ ) {   
+            LeftTuple next =   ( LeftTuple ) leftTuple.getNext();                    
+            
+            leftTuple.setPrevious( null );
+            leftTuple.setNext( null );
+            leftTuple.setMemory( null );
+            
+            leftTuple.getLeftTupleSink().assertLeftTuple( leftTuple,  leftTuple.getPropagationContext(), wm );
+            leftTuple.getPropagationContext().evaluateActionQueue( wm );
+            leftTuple = next;                      
+        }       
+        return leftTuple;
+    }    
+
+    public void retractLeftTuple(LeftTuple leftTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+        boolean retractFromSinks = true;
+        if ( isUnlinkingEnabled() ) {
+            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+            
+            if ( leftTuple.getMemory() == lm.getStagedLeftTupleList() ) {
+                retractFromSinks = false;
+                lm.removeAssertLeftTuple( leftTuple, workingMemory );
+            }
+            lm.setCounter( lm.getCounter() - 1 ); // we need this to track when we unlink
+            if ( lm.getCounter() == 0 ) {
+                lm.unlinkNode( workingMemory );
+            }            
+        }
+        if ( retractFromSinks ) {
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                           context,
+                                                           workingMemory );
+        }
+        
+    }
 
     public void modifyObject(InternalFactHandle factHandle,
                              final ModifyPreviousTuples modifyPreviousTuples,
@@ -200,11 +276,29 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if ( !node.isInUse() ) {
             removeTupleSink( (LeftTupleSink) node );
         }
+        
+        handleUnlinking(context);
+        
         this.objectSource.remove( context,
                                   builder,
                                   this,
                                   workingMemories );
     }
+    
+    public void handleUnlinking(final RuleRemovalContext context) {
+        if ( !context.isUnlinkEnabled( )  && unlinkedDisabledCount == 0) {
+            // if unlinkedDisabledCount is 0, then we know that unlinking is disabled globally
+            return;
+        }
+        
+        if ( context.isUnlinkEnabled( ) ) {
+            unlinkedDisabledCount--;
+            if ( unlinkedDisabledCount == 0 ) {
+                unlinkingEnabled = true;
+            }
+        }
+        
+    }    
 
     /**
      * Returns the next node
@@ -320,6 +414,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             throw new UnsupportedOperationException();
         }
 
+        public short getType() {
+            return NodeTypeEnums.LeftInputAdapterNode;
+        }
+        
+        public Map<Rule, RuleComponent> getAssociations() {
+            return sink.getAssociations();
+        }        
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
@@ -332,4 +433,80 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
         return null;
     }
+
+    public Memory createMemory(RuleBaseConfiguration config) {
+        return new LiaNodeMemory();
+    }
+    
+    public static class LiaNodeMemory implements Memory { 
+        private int                 counter;
+        
+        private SegmentMemory        segmentMemory;
+
+        private long                nodePosMaskBit;     
+        
+        private LeftTupleList       stagedLeftTupleList;
+        
+        public LiaNodeMemory() {
+            stagedLeftTupleList = new LeftTupleList();
+            stagedLeftTupleList.setStagingMemory( true );
+        }
+        
+        
+        public int getCounter() {
+            return counter;
+        }
+
+        public void setCounter(int counter) {
+            this.counter = counter;
+        }
+
+        public SegmentMemory getSegmentMemory() {
+            return segmentMemory;
+        }
+
+        public void setSegmentMemory(SegmentMemory segmentNodes) {
+            this.segmentMemory = segmentNodes;
+        }
+
+        public long getNodePosMaskBit() {
+            return nodePosMaskBit;
+        }
+
+        public void setNodePosMaskBit(long nodePosMask) {
+            nodePosMaskBit = nodePosMask;
+        }
+        
+        public void linkNode(InternalWorkingMemory wm) {
+            segmentMemory.linkNode( nodePosMaskBit, wm );        
+        }
+        
+        public void unlinkNode(InternalWorkingMemory wm) {
+            segmentMemory.unlinkNode( nodePosMaskBit, wm );        
+        }
+        
+        public void addAssertLeftTuple(LeftTuple leftTuple,
+                                       InternalWorkingMemory wm) {
+            stagedLeftTupleList.add(  leftTuple );
+        }
+        
+        public void removeAssertLeftTuple(LeftTuple leftTuple,
+                                          InternalWorkingMemory wm) {
+            stagedLeftTupleList.remove(  leftTuple );
+        }          
+
+        public LeftTupleList getStagedLeftTupleList() {
+            return stagedLeftTupleList;
+        }
+
+        public void setStagedLeftTupleList(LeftTupleList stagedLeftTupleList) {
+            this.stagedLeftTupleList = stagedLeftTupleList;
+        }
+
+        public short getNodeType() {           
+            return NodeTypeEnums.LeftInputAdapterNode;
+        }  
+
+    }
+
 }

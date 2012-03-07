@@ -21,6 +21,7 @@ import java.io.Externalizable;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.spi.PropagationContext;
 
 public interface LeftTupleSinkPropagator
