@@ -109,10 +109,14 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                                                         oldTrailingEntity, oldTrailingEntityFactHandle,
                                                         newTrailingEntity, newTrailingEntityFactHandle));
                                             }
-                                            moveList.add(new GenericReverseChainedChangePartMove(entitiesSubChain,
-                                                    variableDescriptor, toValue,
-                                                    oldTrailingEntity, oldTrailingEntityFactHandle,
-                                                    newTrailingEntity, newTrailingEntityFactHandle));
+                                            // Reversing an entire chain has no effect
+                                            // TODO in some case it has an effect (when the trucks don't go back to the depot) make this configurable
+                                            if (chainSize != entitiesSubChain.size()) {
+                                                moveList.add(new GenericReverseChainedChangePartMove(entitiesSubChain,
+                                                        variableDescriptor, toValue,
+                                                        oldTrailingEntity, oldTrailingEntityFactHandle,
+                                                        newTrailingEntity, newTrailingEntityFactHandle));
+                                            }
                                         }
                                     }
                                 }

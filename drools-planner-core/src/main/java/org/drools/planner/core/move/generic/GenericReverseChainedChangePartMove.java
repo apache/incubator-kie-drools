@@ -70,6 +70,8 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
     }
 
     public void doMove(WorkingMemory workingMemory) {
+        // TODO these new changes do not cause corruption but do cause inferior results FIXME before CR1
+
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         // Change the entity
         planningVariableDescriptor.setValue(lastEntity, toPlanningValue);
