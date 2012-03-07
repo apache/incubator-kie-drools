@@ -60,7 +60,7 @@ then
     channels["score"].send( $s );
 end
 
-rule "Wumpus Death View" dialect "java"   when
+rule "Wumpus Death View" when
     $g  : GameView()
     $ui : GameUI()    
     $wd : WumpusDeath()       
@@ -71,7 +71,7 @@ then
     insert( new Reset() );
 end
 
-rule "Pit Game View" dialect "java" when
+rule "Pit Game View" when
     $g : GameView()
     $ui : GameUI()    
     $pd : PitDeath()
@@ -82,7 +82,7 @@ then
     insert( new Reset() );
 end
 
-rule "Gold Win View" dialect "java"  when
+rule "Gold Win View" when
     $g : GameView()
     $ui : GameUI()    
     $gw : GoldWin()    
