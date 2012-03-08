@@ -162,7 +162,7 @@ public class PlanningVariableDescriptor {
             case FROM_PLANNING_ENTITY_PROPERTY:
                 return new PlanningEntityPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             case UNDEFINED:
-                valueRangeDescriptor = new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
+                return new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
             default:
                 throw new IllegalStateException("The valueRangeType ("
                         + valueRangeAnnotation.type() + ") is not implemented");
