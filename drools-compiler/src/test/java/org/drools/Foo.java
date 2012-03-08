@@ -4,11 +4,19 @@ public class Foo implements Cloneable {
 	
 	private String id;
 	private Bar bar;
+	private Interval interval;
 
     public Foo(String id, Bar bar) {
         super();
         this.id = id;
         this.bar = bar;
+    }
+
+    public Foo(String id, Bar bar, Interval interval) {
+        super();
+        this.id = id;
+        this.bar = bar;
+        this.interval = interval;
     }
 
     public String getId() {
@@ -27,11 +35,19 @@ public class Foo implements Cloneable {
 		this.bar = bar;
 	}
 
+	public Interval getInterval() {
+		return interval;
+	}
+	
+	public void setInterval(Interval interval) {
+		this.interval = interval;
+	}
+
 	public Foo clone() {
 		return new Foo( id, bar );
 	}
 
 	public String toString(){
-		return "Foo: " + this.id + " (" + this.bar + ")";
+		return "Foo(id:" + this.id + ", bar:" + this.bar + ", int:" + interval + ")";
 	}
 }

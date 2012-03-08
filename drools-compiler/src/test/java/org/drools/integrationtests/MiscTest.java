@@ -16,8 +16,10 @@
 
 package org.drools.integrationtests;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -37,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -70,6 +73,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -9453,7 +9457,7 @@ public class MiscTest extends CommonTestMethodBase {
 
 		//adding rules. it is important to add both since they reciprocate
 		StringBuilder rule = new StringBuilder();
-		rule.append("package de.orbitx.accumulatetesettest;\n");
+		rule.append("package org.drools.integrationtests;\n");
 		rule.append("import java.util.Set;\n");
 		rule.append("import java.util.HashSet;\n");
 		rule.append("import org.drools.Foo;\n");
@@ -10100,6 +10104,103 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.execute(CommandFactory.newModify(fh, setterList));
     }
+    
+	@Test
+	public final void testJBRULES3416() throws DroolsParserException, IOException {
+		// adding rules. it is important to add both
+		StringBuilder rule = new StringBuilder();
+		rule.append("package org.drools.integrationtests;\n");
+		rule.append("import org.drools.DomainObject;\n");
+		rule.append("import org.drools.Foo;\n");
+		rule.append("import org.drools.Bar;\n");
+		rule.append("import org.drools.Counter;\n");
+
+		rule.append("global DomainObject aggregator;\n");
+		rule.append("rule \"reward Bar consolidation\"\n");
+		rule.append("when\n");
+		rule.append("$leftFoo : Foo($leftBar : bar, $leftId : id, $leftInterval : interval)\n");
+		rule.append("$rightFoo : Foo(bar == $leftBar, id != $leftId, interval.getStart() < $leftInterval.getStart())\n");
+		rule.append("eval($leftFoo.getInterval().getStart() - $rightFoo.getInterval().getStart() < 4)\n");
+		rule.append("then\n");
+		rule.append("insertLogical(new Counter(1));\n");
+		rule.append("System.out.println(\"Rewarding leftFoo:\" + $leftFoo + \" rightFoo:\" + $rightFoo);\n");
+		rule.append("end\n");
+		rule.append("rule \"softConstraintsBroken\"\n");
+		rule.append("when\n");
+		rule.append("$softTotal : Number() from accumulate(\n");
+		rule.append("Counter(counterType == 2, $counterType : counterType),\n");
+		rule.append("sum($counterType) //Vote for http://jira.jboss.com/jira/browse/JBRULES-1075\n");
+		rule.append(")\n");
+		rule.append("$positiveSoftTotal : Number() from accumulate(\n");
+		rule.append("Counter(counterType == 1, $counterType : counterType),\n");
+		rule.append("sum($counterType) //Vote for http://jira.jboss.com/jira/browse/JBRULES-1075\n");
+		rule.append(")\n");
+		rule.append("then\n");
+		rule.append("aggregator.setValue($softTotal.intValue() - $positiveSoftTotal.intValue());\n");
+		rule.append("end\n");
+
+		// building stuff
+		final PackageBuilder builder = new PackageBuilder();
+		builder.addPackageFromDrl(new StringReader(rule.toString()));
+		if (builder.hasErrors()) {
+			fail(builder.getErrors().toString());
+		}
+		final org.drools.rule.Package pkg = builder.getPackage();
+
+		RuleBaseConfiguration config = new RuleBaseConfiguration();
+		config.setMultithreadEvaluation(false);
+		final RuleBase ruleBase = RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
+		ruleBase.addPackage(pkg);
+
+		// prepping session
+		StatefulSession session = ruleBase.newStatefulSession();
+
+		session.setGlobal("aggregator", new DomainObject());
+
+		// adding test data
+		List<Bar> barList = new LinkedList<Bar>();
+		for (int i = 0; i < 2; i++) {
+			Bar bar = new Bar("" + i);
+			barList.add(bar);
+			session.insert(bar);
+		}
+
+		List<org.drools.Foo> fooList = new ArrayList<org.drools.Foo>();
+		int[] magicIds = { 3, 1, 4, 2 };
+		for (int i = 0; i < 4; i++) {
+			org.drools.Foo foo = new org.drools.Foo("" + (i + 1), barList.get(i < 2 ? 0 : 1));
+			foo.setInterval(new Interval(magicIds[i], 0));
+			fooList.add(foo);
+			session.insert(foo);
+		}
+
+		// fire!
+		int numberConstraintsBroken = -2;
+		session.fireAllRules();
+		DomainObject aggregator = (DomainObject) session.getGlobal("aggregator");
+		assertEquals(numberConstraintsBroken, aggregator.getValue());
+
+		for(int i = 0; i < 2; i++) {
+			org.drools.Foo fooLeft = fooList.get(i);
+			FactHandle fooLeftFact = session.getFactHandle(fooLeft);
+			org.drools.Foo fooRight = fooList.get(i + 2);
+			FactHandle fooRightFact = session.getFactHandle(fooRight);
+
+			Bar barLeft = fooLeft.getBar();
+			fooLeft.setBar(fooRight.getBar());
+			fooRight.setBar(barLeft);
+
+			session.update(fooLeftFact, fooLeft);
+			session.update(fooRightFact, fooRight);
+
+			session.fireAllRules();
+			/***********************/
+			/* now wm is corrupted */
+			/***********************/
+			aggregator = (DomainObject) session.getGlobal("aggregator");
+			assertEquals(numberConstraintsBroken, aggregator.getValue());			
+		}
+	}
 
     @Test @Ignore
     public void testNumericValueForStringField() throws Exception {
