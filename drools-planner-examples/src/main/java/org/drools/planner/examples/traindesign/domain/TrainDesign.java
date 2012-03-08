@@ -99,6 +99,10 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(trainDesignParametrization);

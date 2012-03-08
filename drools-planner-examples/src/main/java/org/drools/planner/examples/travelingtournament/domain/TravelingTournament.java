@@ -69,6 +69,10 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public int getN() {
         return teamList.size();
     }

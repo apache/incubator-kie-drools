@@ -79,6 +79,10 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(columnList);

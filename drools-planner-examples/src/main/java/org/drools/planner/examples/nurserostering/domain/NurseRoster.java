@@ -205,6 +205,10 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         // TODO add RosterInfo as a property on NurseRoster

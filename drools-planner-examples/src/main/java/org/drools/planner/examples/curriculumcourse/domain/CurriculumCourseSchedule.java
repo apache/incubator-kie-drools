@@ -136,6 +136,10 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(teacherList);

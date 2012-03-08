@@ -152,6 +152,10 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.score = score;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(globalPenaltyInfo);
