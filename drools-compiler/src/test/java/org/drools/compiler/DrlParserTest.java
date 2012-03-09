@@ -1,18 +1,19 @@
 package org.drools.compiler;
 
-import java.io.StringReader;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.io.StringReader;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.Expander;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.lang.dsl.DefaultExpanderResolver;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class DrlParserTest {
 
@@ -47,6 +48,29 @@ public class DrlParserTest {
         DrlParser parser = new DrlParser();
         String result = parser.getExpandedDRL( drl, resolver);
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
+    }
+    
+    @Test
+    @Ignore("Bean2 should have a superTypeName of Bean1. See https://issues.jboss.org/browse/JBRULES-3417")
+    public void testDeclaredSuperType() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "age: int \n"
+                     + "name : String \n"
+                     + "end \n"
+                     + "declare Bean2 extends Bean1\n"
+                     + "cheese : String \n"
+                     + "end";
+
+        DrlParser parser = new DrlParser();
+        PackageDescr pkgDescr = parser.parse( drl );
+        TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
+        assertEquals( "Object",
+                      bean1Type.getSuperTypeName() );
+
+        TypeDeclarationDescr bean2Type = pkgDescr.getTypeDeclarations().get( 1 );
+        assertEquals( "Bean1",
+                      bean2Type.getSuperTypeName() );
     }
 
     private void assertEqualsIgnoreWhitespace(final String expected,

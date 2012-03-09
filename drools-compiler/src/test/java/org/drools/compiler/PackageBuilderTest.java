@@ -36,7 +36,6 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactHandle;
 import org.drools.Primitives;
-import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StockTick;
 import org.drools.WorkingMemory;
@@ -51,7 +50,7 @@ import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
-import org.drools.facttemplates.Fact;
+import org.drools.definition.type.FactField;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -61,9 +60,7 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -86,7 +83,6 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
@@ -1320,6 +1316,51 @@ public class PackageBuilderTest extends DroolsTestCase {
                       window.getType() );
         assertEquals( 60000,
                       ((SlidingTimeWindow) window).getSize() );
+    }
+    
+    @Test
+    @Ignore("RuntimeDroolsException thrown. See JIRA https://issues.jboss.org/browse/JBRULES-3418")
+    public void testDeclaredSuperTypeFields() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "age: int \n"
+                     + "name : String \n"
+                     + "end \n"
+                     + "declare Bean2 extends Bean1\n"
+                     + "cheese : String \n"
+                     + "end";
+
+        PackageBuilder builder = new PackageBuilder();
+
+        builder.addPackageFromDrl( new StringReader( drl ) );
+
+        List<FactField> fieldsBean1 = builder.getPackage().getFactType( "foo.Bean1" ).getFields();
+        assertEquals( 2,
+                      fieldsBean1.size() );
+        assertEquals( "age",
+                      fieldsBean1.get( 0 ).getName() );
+        assertEquals( "int",
+                      fieldsBean1.get( 0 ).getType() );
+        assertEquals( "name",
+                      fieldsBean1.get( 1 ).getName() );
+        assertEquals( "String",
+                      fieldsBean1.get( 1 ).getType() );
+
+        List<FactField> fieldsBean2 = builder.getPackage().getFactType( "foo.Bean2" ).getFields();
+        assertEquals( 3,
+                      fieldsBean2.size() );
+        assertEquals( "age",
+                      fieldsBean2.get( 0 ).getName() );
+        assertEquals( "int",
+                      fieldsBean2.get( 0 ).getType() );
+        assertEquals( "name",
+                      fieldsBean2.get( 1 ).getName() );
+        assertEquals( "String",
+                      fieldsBean2.get( 1 ).getType() );
+        assertEquals( "cheese",
+                      fieldsBean2.get( 2 ).getName() );
+        assertEquals( "String",
+                      fieldsBean2.get( 2 ).getType() );
     }
 
     class MockActivation
