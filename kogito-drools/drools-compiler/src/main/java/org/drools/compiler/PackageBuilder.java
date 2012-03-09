@@ -1120,7 +1120,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 this.results.add( new ParserError( rule.getResource(),
                                                    "Duplicate rule name: " + name,
                                                    rule.getLine(),
-                                                   rule.getColumn() ) );
+                                                   rule.getColumn(),
+                                                   packageDescr.getNamespace() ) );
             }
             if (pkg != null && pkg.getRule( name ) != null) {
                 this.results.add( new DuplicateRule( rule,
