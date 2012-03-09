@@ -49,4 +49,9 @@ public class VrpVehicle extends AbstractPersistable implements VrpAppearance {
         return depot.getLocation();
     }
 
+    @Override
+    public String toString() {
+        return getLocation() + " vehicle-" + id;
+    }
+
 }
