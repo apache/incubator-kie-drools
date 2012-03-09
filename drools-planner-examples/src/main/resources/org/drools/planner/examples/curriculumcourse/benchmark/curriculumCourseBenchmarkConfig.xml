@@ -114,7 +114,7 @@
   </solverBenchmark>
 
   <!--<solverBenchmark>-->
-    <!--<name>propertyTabu10</name>-->
+    <!--<name>entityTabu10</name>-->
     <!--<solver>-->
       <!--<localSearch>-->
         <!--<termination>-->
@@ -133,7 +133,7 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<propertyTabuSize>10</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>10</planningEntityTabuSize>-->
           <!--<solutionTabuSize>1500</solutionTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
@@ -171,7 +171,7 @@
     <!--</solver>-->
   <!--</solverBenchmark>-->
   <!--<solverBenchmark>-->
-    <!--<name>simulatedAnnealing100-propertyTabu10</name>-->
+    <!--<name>simulatedAnnealing100-entityTabu10</name>-->
     <!--<solver>-->
       <!--<localSearch>-->
         <!--<termination>-->
@@ -213,7 +213,7 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<propertyTabuSize>10</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>10</planningEntityTabuSize>-->
           <!--<solutionTabuSize>1500</solutionTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->

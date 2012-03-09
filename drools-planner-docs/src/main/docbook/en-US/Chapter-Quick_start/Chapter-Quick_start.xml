@@ -171,7 +171,7 @@
       &lt;/selector&gt;
     &lt;/selector&gt;
     &lt;acceptor&gt;
-      &lt;propertyTabuSize&gt;7&lt;/propertyTabuSize&gt;
+      &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
       &lt;minimalAcceptedSelection&gt;1000&lt;/minimalAcceptedSelection&gt;

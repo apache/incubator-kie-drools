@@ -106,7 +106,7 @@
         <!--</selector>-->
         <!--<acceptor>-->
           <!--<solutionTabuSize>1000</solutionTabuSize>-->
-          <!--<propertyTabuSize>7</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>7</planningEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
@@ -131,7 +131,7 @@
         <!--</selector>-->
         <!--<acceptor>-->
           <!--<simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>-->
-          <!--<propertyTabuSize>5</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--&lt;!&ndash;<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>&ndash;&gt;-->

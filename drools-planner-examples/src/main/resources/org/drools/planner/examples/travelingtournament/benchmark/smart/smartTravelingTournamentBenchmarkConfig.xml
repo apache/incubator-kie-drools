@@ -49,7 +49,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
-          <!--<propertyTabuSize>5</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -67,7 +67,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<propertyTabuSize>5</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -85,7 +85,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<propertyTabuSize>5</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->

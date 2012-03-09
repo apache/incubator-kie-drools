@@ -72,7 +72,7 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>propertyTabu7</name>
+    <name>entityTabu7</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -92,7 +92,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>7</propertyTabuSize>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>1000</minimalAcceptedSelection>
@@ -118,7 +118,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
-          <propertyTabuSize>5</propertyTabuSize>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>4</minimalAcceptedSelection>

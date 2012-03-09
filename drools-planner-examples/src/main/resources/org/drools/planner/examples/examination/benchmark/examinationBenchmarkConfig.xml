@@ -40,7 +40,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>absolute500_propertyTabu10</name>
+    <name>absolute500_entityTabu10</name>
     <solver>
       <localSearch>
         <selector>
@@ -56,7 +56,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>10</propertyTabuSize>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -92,7 +92,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>absolute500WithCustomSelector_propertyTabu10</name>
+    <name>absolute500WithCustomSelector_entityTabu10</name>
     <solver>
       <localSearch>
         <selector>
@@ -109,7 +109,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>10</propertyTabuSize>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

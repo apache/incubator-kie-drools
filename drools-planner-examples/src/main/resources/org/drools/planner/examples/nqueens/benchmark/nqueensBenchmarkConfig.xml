@@ -62,7 +62,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Property tabu</name>
+    <name>Entity tabu</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -73,7 +73,7 @@
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <propertyTabuSize>5</propertyTabuSize>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

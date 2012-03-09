@@ -40,7 +40,7 @@
     </selector>
     <acceptor>
       <solutionTabuSize>1000</solutionTabuSize>
-      <propertyTabuSize>7</propertyTabuSize>
+      <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>
     <forager>
       <minimalAcceptedSelection>800</minimalAcceptedSelection>

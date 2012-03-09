@@ -25,7 +25,7 @@ import org.drools.planner.core.localsearch.decider.MoveScope;
 /**
  * Combines several acceptors into one.
  * Does a logical AND over the accepted status of its acceptors.
- * For example: combine solution and property tabu to do tabu on both.
+ * For example: combine planning entity and planning value tabu to do tabu on both.
  */
 public class CompositeAcceptor extends AbstractAcceptor {
 

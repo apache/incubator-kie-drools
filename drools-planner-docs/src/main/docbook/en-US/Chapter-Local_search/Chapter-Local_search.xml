@@ -39,7 +39,7 @@
       <title>Algorithm description</title>
 
       <para>Like hill climbing, but maintains a tabu list to avoid getting stuck in local optima. See Tabu Search
-      accepter below.</para>
+      acceptor below.</para>
     </section>
   </section>
 
@@ -49,7 +49,7 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>See Simulated Annealing accepter below.</para>
+      <para>See Simulated Annealing acceptor below.</para>
     </section>
   </section>
 
@@ -191,7 +191,30 @@
       <para>The local search solver can do and undo a move more than once, even on different (successive)
       solutions.</para>
 
-      <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves
+      <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and <literal>getPlanningValues()</literal>
+      methods. They are used by entity tabu and value tabu respectively. When they are called, the
+      <literal>Move</literal> is already been done.</para>
+
+      <programlisting language="java">    public List&lt;? extends Object&gt; getPlanningEntities() {
+        return Collections.singletonList(queen);
+    }
+
+    public Collection&lt;? extends Object&gt; getPlanningValues() {
+        return Collections.singletonList(toRow);
+    }</programlisting>
+
+      <para>If your <literal>Move</literal> changes multiple planning entities, return all them in <literal>getPlanningEntities()</literal>
+      and return all their values (to which they are changing) in <literal>getPlanningValues()</literal>.</para>
+
+      <programlisting language="java">    public Collection&lt;? extends Object&gt; getPlanningEntities() {
+        return Arrays.asList(leftCloudProcess, rightCloudProcess);
+    }
+
+    public Collection&lt;? extends Object&gt; getPlanningValues() {
+        return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+    }</programlisting>
+
+      <para>A <literal>Move</literal> must implement the <literal>equals()</literal> and <literal>hashCode()</literal> methods. 2 moves
       which make the same change on a solution, must be equal.</para>
 
       <programlisting language="java">    public boolean equals(Object o) {
@@ -216,7 +239,7 @@
     }</programlisting>
 
       <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
-      <literal>equal()</literal> and <literal>hashcode()</literal> implementations. Notice that it checks if the other
+      <literal>equal()</literal> and <literal>hashCode()</literal> implementations. Notice that it checks if the other
       move is an instance of the same move type. This is important because a move will be compared to a move with
       another move type if you're using more then 1 move type.</para>
 
@@ -268,14 +291,14 @@
 
       <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
 
-      <programlisting language="java">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
+      <programlisting language="java">public class RowChangeMoveFactory extends CachedMoveListMoveFactory {
 
     public List&lt;Move&gt; createMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
         List&lt;Move&gt; moveList = new ArrayList&lt;Move&gt;();
         for (Queen queen : nQueens.getQueenList()) {
-            for (int y : nQueens.getRowList()) {
-                moveList.add(new YChangeMove(queen, y));
+            for (Row toRow : nQueens.getRowList()) {
+                moveList.add(new RowChangeMove(queen, toRow));
             }
         }
         return moveList;
@@ -403,7 +426,7 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
       <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
       steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions. It solves
       16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions. Note: with
-      construction heurstistics it's even a lot more efficient.</para>
+      construction heuristics it's even a lot more efficient.</para>
     </section>
 
     <section>
@@ -555,40 +578,21 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
           </listitem>
 
           <listitem>
-            <para><emphasis>Property tabu</emphasis> makes a property of recent steps tabu. For example, it can make the
-            queen tabu, so that a recently moved queen can't be moved.</para>
+            <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu.
+            For example, for N queens it makes the recently moved queens tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
+        &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
+          </listitem>
 
-            <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
-            for example:</para>
+          <listitem>
+            <para><emphasis>Planning value tabu</emphasis> makes the planning values of recent steps tabu.
+            For example, for N queens it makes the recently moved to rows tabu.</para>
 
-            <programlisting language="java">public class YChangeMove implements Move, TabuPropertyEnabled {
-
-    private Queen queen;
-    private Row toRow;
-
-    // ...
-
-    public List&lt;? extends Object&gt; getTabuPropertyList() {
-        return Collections.singletonList(queen);
-    }
-
-}</programlisting>
-
-            <para>You can also make multiple properties tabu (with OR or AND semantics):</para>
-
-            <programlisting language="java">    public List&lt;? extends Object&gt; getTabuPropertyList() {
-        // tabu with other moves that contain the same leftExam OR the same rightExam
-        return Arrays.asList(leftExam, rightExam);
-    }</programlisting>
-
-            <programlisting language="java">    public List&lt;? extends Object&gt; getTabuPropertyList() {
-        // tabu with other moves that contain the same exam AND the same toPeriod (but not necessary the same toRoom)
-        return Collections.singletonList(Arrays.asList(exam, toPeriod));
-    }</programlisting>
+            <programlisting language="xml">    &lt;acceptor&gt;
+        &lt;planningValueTabuSize&gt;7&lt;/planningValueTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
           </listitem>
         </itemizedlist>
 
@@ -602,7 +606,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
         with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
         the walls. Use the benchmarker to fine tweak your configuration. Experiments teach us that it is generally best
-        to use a prime number for the move tabu, undo move tabu or property tabu size.</para>
+        to use a prime number for the move tabu, undo move tabu, entity tabu or value tabu size.</para>
 
         <para>A tabu search acceptor should be combined with a high or no subset selection.</para>
       </section>
@@ -637,7 +641,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <programlisting language="xml">    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
+      &lt;planningEntityTabuSize&gt;5&lt;/planningEntityTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;

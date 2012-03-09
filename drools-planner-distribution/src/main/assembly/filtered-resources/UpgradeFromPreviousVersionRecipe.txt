@@ -1651,7 +1651,12 @@ After in *.java:
         }
     }
 
-[MAJOR] propertyTabu has been renamed to planningEntityTabu (or planningValueTabu)
-TODO
-
-TODO adjust docs: getTabuProperties TabuPropertyEnabled PROPERTY_TABU propertyTabu
+[MAJOR] propertyTabu has been renamed to planningEntityTabu (or in some cases planningValueTabu)
+Before in *SolverConfig.xml:
+    <acceptor>
+      <propertyTabuSize>7</propertyTabuSize>
+    </acceptor>
+After in *SolverConfig.xml:
+    <acceptor>
+      <planningEntityTabuSize>7</planningEntityTabuSize>
+    </acceptor>

@@ -29,7 +29,8 @@ import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningValueTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
@@ -46,8 +47,10 @@ public class AcceptorConfig {
     protected Integer partialMoveTabuSize = null;
     protected Integer undoMoveTabuSize = null;
     protected Integer partialUndoMoveTabuSize = null;
-    protected Integer propertyTabuSize = null;
-    protected Integer partialPropertyTabuSize = null;
+    protected Integer planningEntityTabuSize = null;
+    protected Integer partialPlanningEntityTabuSize = null;
+    protected Integer planningValueTabuSize = null;
+    protected Integer partialPlanningValueTabuSize = null;
     protected Integer solutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
 
@@ -104,20 +107,36 @@ public class AcceptorConfig {
         this.partialUndoMoveTabuSize = partialUndoMoveTabuSize;
     }
 
-    public Integer getPropertyTabuSize() {
-        return propertyTabuSize;
+    public Integer getPlanningEntityTabuSize() {
+        return planningEntityTabuSize;
     }
 
-    public void setPropertyTabuSize(Integer propertyTabuSize) {
-        this.propertyTabuSize = propertyTabuSize;
+    public void setPlanningEntityTabuSize(Integer planningEntityTabuSize) {
+        this.planningEntityTabuSize = planningEntityTabuSize;
     }
 
-    public Integer getPartialPropertyTabuSize() {
-        return partialPropertyTabuSize;
+    public Integer getPartialPlanningEntityTabuSize() {
+        return partialPlanningEntityTabuSize;
     }
 
-    public void setPartialPropertyTabuSize(Integer partialPropertyTabuSize) {
-        this.partialPropertyTabuSize = partialPropertyTabuSize;
+    public void setPartialPlanningEntityTabuSize(Integer partialPlanningEntityTabuSize) {
+        this.partialPlanningEntityTabuSize = partialPlanningEntityTabuSize;
+    }
+
+    public Integer getPlanningValueTabuSize() {
+        return planningValueTabuSize;
+    }
+
+    public void setPlanningValueTabuSize(Integer planningValueTabuSize) {
+        this.planningValueTabuSize = planningValueTabuSize;
+    }
+
+    public Integer getPartialPlanningValueTabuSize() {
+        return partialPlanningValueTabuSize;
+    }
+
+    public void setPartialPlanningValueTabuSize(Integer partialPlanningValueTabuSize) {
+        this.partialPlanningValueTabuSize = partialPlanningValueTabuSize;
     }
 
     public Integer getSolutionTabuSize() {
@@ -210,18 +229,32 @@ public class AcceptorConfig {
             acceptorList.add(undoMoveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
-                || propertyTabuSize != null || partialPropertyTabuSize != null) {
-            PropertyTabuAcceptor propertyTabuAcceptor = new PropertyTabuAcceptor();
-            if (propertyTabuSize != null) {
-                propertyTabuAcceptor.setTabuSize(propertyTabuSize);
+                || planningEntityTabuSize != null || partialPlanningEntityTabuSize != null) {
+            PlanningEntityTabuAcceptor planningEntityTabuAcceptor = new PlanningEntityTabuAcceptor();
+            if (planningEntityTabuSize != null) {
+                planningEntityTabuAcceptor.setTabuSize(planningEntityTabuSize);
             }
-            if (partialPropertyTabuSize != null) {
-                propertyTabuAcceptor.setPartialTabuSize(partialPropertyTabuSize);
+            if (partialPlanningEntityTabuSize != null) {
+                planningEntityTabuAcceptor.setPartialTabuSize(partialPlanningEntityTabuSize);
             }
             if (environmentMode == EnvironmentMode.TRACE) {
-                propertyTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+                planningEntityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
-            acceptorList.add(propertyTabuAcceptor);
+            acceptorList.add(planningEntityTabuAcceptor);
+        }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_VALUE_TABU))
+                || planningValueTabuSize != null || partialPlanningValueTabuSize != null) {
+            PlanningValueTabuAcceptor planningValueTabuAcceptor = new PlanningValueTabuAcceptor();
+            if (planningValueTabuSize != null) {
+                planningValueTabuAcceptor.setTabuSize(planningValueTabuSize);
+            }
+            if (partialPlanningValueTabuSize != null) {
+                planningValueTabuAcceptor.setPartialTabuSize(partialPlanningValueTabuSize);
+            }
+            if (environmentMode == EnvironmentMode.TRACE) {
+                planningValueTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
+            acceptorList.add(planningValueTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
                 || solutionTabuSize != null || partialSolutionTabuSize != null) {
@@ -298,11 +331,11 @@ public class AcceptorConfig {
         if (partialUndoMoveTabuSize == null) {
             partialUndoMoveTabuSize = inheritedConfig.getPartialUndoMoveTabuSize();
         }
-        if (propertyTabuSize == null) {
-            propertyTabuSize = inheritedConfig.getPropertyTabuSize();
+        if (planningEntityTabuSize == null) {
+            planningEntityTabuSize = inheritedConfig.getPlanningEntityTabuSize();
         }
-        if (partialPropertyTabuSize == null) {
-            partialPropertyTabuSize = inheritedConfig.getPartialPropertyTabuSize();
+        if (partialPlanningEntityTabuSize == null) {
+            partialPlanningEntityTabuSize = inheritedConfig.getPartialPlanningEntityTabuSize();
         }
         if (solutionTabuSize == null) {
             solutionTabuSize = inheritedConfig.getSolutionTabuSize();

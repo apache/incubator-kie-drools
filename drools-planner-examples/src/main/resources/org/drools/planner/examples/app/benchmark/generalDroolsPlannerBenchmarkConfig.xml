@@ -73,7 +73,7 @@
           </selector>
         </selector>
         <acceptor>
-          <propertyTabuSize>10</propertyTabuSize>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
           <solutionTabuSize>1500</solutionTabuSize>
         </acceptor>
         <forager>
@@ -115,7 +115,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>10</propertyTabuSize>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -193,7 +193,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>11</propertyTabuSize>
+          <planningEntityTabuSize>11</planningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>800</minimalAcceptedSelection>
@@ -234,7 +234,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <propertyTabuSize>5</propertyTabuSize>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->

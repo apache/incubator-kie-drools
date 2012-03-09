@@ -84,22 +84,6 @@
   &lt;/inheritedSolverBenchmark&gt;
 
   &lt;solverBenchmark&gt;
-    &lt;name&gt;Solution tabu&lt;/name&gt;
-    &lt;solver&gt;
-      &lt;localSearch&gt;
-        &lt;selector&gt;
-          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
-        &lt;/selector&gt;
-        &lt;acceptor&gt;
-          &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
-        &lt;/acceptor&gt;
-        &lt;forager&gt;
-          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-        &lt;/forager&gt;
-      &lt;/localSearch&gt;
-    &lt;/solver&gt;
-  &lt;/solverBenchmark&gt;
-  &lt;solverBenchmark&gt;
     &lt;name&gt;Move tabu&lt;/name&gt;
     &lt;solver&gt;
       &lt;localSearch&gt;
@@ -116,14 +100,30 @@
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;Property tabu&lt;/name&gt;
+    &lt;name&gt;Entity tabu&lt;/name&gt;
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;selector&gt;
           &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
-          &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
+          &lt;planningEntityTabuSize&gt;5&lt;/planningEntityTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Value tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;planningValueTabuSize&gt;5&lt;/planningValueTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
@@ -133,7 +133,7 @@
   &lt;/solverBenchmark&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
+      <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 move tabu, 1 entity tabu and 1 value tabu) on 2 data sets
       (32 and 64 queens), so it will run 6 solvers.</para>
 
       <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example with a local

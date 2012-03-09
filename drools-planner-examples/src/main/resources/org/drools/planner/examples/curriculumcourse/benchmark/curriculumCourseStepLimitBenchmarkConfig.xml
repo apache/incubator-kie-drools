@@ -38,7 +38,7 @@
         <acceptor>
           <solutionTabuSize>1500</solutionTabuSize>
           <!--<solutionTabuSize>500</solutionTabuSize>-->
-          <!--<propertyTabuSize>10</propertyTabuSize>-->
+          <!--<planningEntityTabuSize>10</planningEntityTabuSize>-->
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

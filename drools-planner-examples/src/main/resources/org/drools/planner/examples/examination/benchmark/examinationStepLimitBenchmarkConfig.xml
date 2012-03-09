@@ -41,7 +41,7 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>10</propertyTabuSize>
+          <planningEntityTabuSize>10</planningEntityTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

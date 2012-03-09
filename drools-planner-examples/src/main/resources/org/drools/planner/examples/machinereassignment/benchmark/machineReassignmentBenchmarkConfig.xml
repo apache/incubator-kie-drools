@@ -58,7 +58,7 @@
           </selector>
         </selector>
         <acceptor>
-          <propertyTabuSize>5</propertyTabuSize>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>1000</minimalAcceptedSelection>

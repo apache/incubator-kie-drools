@@ -21,9 +21,7 @@ import java.util.Collection;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
-public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
-
-    // TODO rename to PlanningEntityTabuAcceptor and PlanningValueTabuAcceptor
+public class PlanningValueTabuAcceptor extends AbstractTabuAcceptor {
 
     // ************************************************************************
     // Worker methods
@@ -31,12 +29,12 @@ public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
 
     @Override
     protected Collection<? extends Object> findTabu(MoveScope moveScope) {
-        return moveScope.getMove().getPlanningEntities();
+        return moveScope.getMove().getPlanningValues();
     }
 
     @Override
     protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
-        return stepScope.getStep().getPlanningEntities();
+        return stepScope.getStep().getPlanningValues();
     }
 
 }

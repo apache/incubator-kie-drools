@@ -374,7 +374,7 @@
       </listitem>
 
       <listitem>
-        <para>Tabu search (use property tabu or move tabu)</para>
+        <para>Tabu search (use planning entity tabu)</para>
       </listitem>
     </orderedlist>
 
@@ -423,7 +423,7 @@
     <note>
       <para>Some <literal>SolverPhase</literal> implementations can combine techniques from multiple optimization
       algorithms, but they are still just 1 <literal>SolverPhase</literal>. For example: a local search
-      <literal>SolverPhase</literal> can do simulated annealing with property tabu.</para>
+      <literal>SolverPhase</literal> can do simulated annealing with planning entity tabu.</para>
     </note>
 
     <para>Here's a configuration that runs 3 phases in sequence:</para>
