@@ -23,12 +23,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 
-public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
+public class EmployeeChangeMove implements Move {
 
     private ShiftAssignment shiftAssignment;
     private Employee toEmployee;
@@ -50,8 +49,12 @@ public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
         NurseRosteringMoveHelper.moveEmployee(workingMemory, shiftAssignment, toEmployee);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
+    public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(shiftAssignment);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toEmployee);
     }
 
     public boolean equals(Object o) {

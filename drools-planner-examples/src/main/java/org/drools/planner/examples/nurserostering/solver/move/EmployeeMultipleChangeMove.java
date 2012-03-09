@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.nurserostering.solver.move;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,12 +25,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
+public class EmployeeMultipleChangeMove implements Move {
 
     private Employee fromEmployee;
     private List<ShiftAssignment> shiftAssignmentList;
@@ -59,8 +59,12 @@ public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
         }
     }
 
-    public Collection<? extends Object> getTabuProperties() {
+    public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(shiftAssignmentList);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.asList(fromEmployee, toEmployee);
     }
 
     public boolean equals(Object o) {

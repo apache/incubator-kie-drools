@@ -23,13 +23,12 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
 
-public class ExamSwapMove implements Move, TabuPropertyEnabled {
+public class ExamSwapMove implements Move {
 
     private Exam leftExam;
     private Exam rightExam;
@@ -65,8 +64,12 @@ public class ExamSwapMove implements Move, TabuPropertyEnabled {
         }
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<Exam>asList(leftExam, rightExam);
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftExam, rightExam);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.<Object>asList(leftExam.getPeriod(), leftExam.getRoom(), rightExam.getPeriod(), rightExam.getRoom());
     }
 
     public boolean equals(Object o) {

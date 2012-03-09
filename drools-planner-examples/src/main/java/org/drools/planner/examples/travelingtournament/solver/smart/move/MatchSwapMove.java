@@ -23,19 +23,18 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 
-public class MatchSwapMove implements Move, TabuPropertyEnabled {
+public class MatchSwapMove implements Move {
 
-    private Match firstMatch;
-    private Match secondMatch;
+    private Match leftMatch;
+    private Match rightMatch;
 
-    public MatchSwapMove(Match firstMatch, Match secondMatch) {
-        this.firstMatch = firstMatch;
-        this.secondMatch = secondMatch;
+    public MatchSwapMove(Match leftMatch, Match rightMatch) {
+        this.leftMatch = leftMatch;
+        this.rightMatch = rightMatch;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
@@ -47,17 +46,21 @@ public class MatchSwapMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        Day oldFirstMatchDay = firstMatch.getDay();
-        FactHandle firstMatchHandle = workingMemory.getFactHandle(firstMatch);
-        FactHandle secondMatchHandle = workingMemory.getFactHandle(secondMatch);
-        firstMatch.setDay(secondMatch.getDay());
-        secondMatch.setDay(oldFirstMatchDay);
-        workingMemory.update(firstMatchHandle, firstMatch);
-        workingMemory.update(secondMatchHandle, secondMatch);
+        Day oldFirstMatchDay = leftMatch.getDay();
+        FactHandle firstMatchHandle = workingMemory.getFactHandle(leftMatch);
+        FactHandle secondMatchHandle = workingMemory.getFactHandle(rightMatch);
+        leftMatch.setDay(rightMatch.getDay());
+        rightMatch.setDay(oldFirstMatchDay);
+        workingMemory.update(firstMatchHandle, leftMatch);
+        workingMemory.update(secondMatchHandle, rightMatch);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return Arrays.asList(firstMatch, secondMatch);
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftMatch, rightMatch);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.asList(leftMatch.getDay(), rightMatch.getDay());
     }
 
     public boolean equals(Object o) {
@@ -66,8 +69,8 @@ public class MatchSwapMove implements Move, TabuPropertyEnabled {
         } else if (o instanceof MatchSwapMove) {
             MatchSwapMove other = (MatchSwapMove) o;
             return new EqualsBuilder()
-                    .append(firstMatch, other.firstMatch)
-                    .append(secondMatch, other.secondMatch)
+                    .append(leftMatch, other.leftMatch)
+                    .append(rightMatch, other.rightMatch)
                     .isEquals();
         } else {
             return false;
@@ -76,13 +79,13 @@ public class MatchSwapMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(firstMatch)
-                .append(secondMatch)
+                .append(leftMatch)
+                .append(rightMatch)
                 .toHashCode();
     }
 
     public String toString() {
-        return firstMatch + " <=> " + secondMatch;
+        return leftMatch + " <=> " + rightMatch;
     }
 
 }

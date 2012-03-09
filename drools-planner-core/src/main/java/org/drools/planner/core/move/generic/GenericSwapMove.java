@@ -16,8 +16,10 @@
 
 package org.drools.planner.core.move.generic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -25,10 +27,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 
-public class GenericSwapMove implements Move, TabuPropertyEnabled {
+public class GenericSwapMove implements Move {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
@@ -77,9 +78,17 @@ public class GenericSwapMove implements Move, TabuPropertyEnabled {
             }
         }
     }
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftPlanningEntity, rightPlanningEntity);
+    }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<Object>asList(leftPlanningEntity, rightPlanningEntity);
+    public Collection<? extends Object> getPlanningValues() {
+        List<Object> values = new ArrayList<Object>(planningVariableDescriptors.size() * 2);
+        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
+            values.add(planningVariableDescriptor.getValue(leftPlanningEntity));
+            values.add(planningVariableDescriptor.getValue(rightPlanningEntity));
+        }
+        return values;
     }
 
     public boolean equals(Object o) {

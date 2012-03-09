@@ -209,7 +209,7 @@ public class AcceptorConfig {
             }
             acceptorList.add(undoMoveTabuAcceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PROPERTY_TABU))
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
                 || propertyTabuSize != null || partialPropertyTabuSize != null) {
             PropertyTabuAcceptor propertyTabuAcceptor = new PropertyTabuAcceptor();
             if (propertyTabuSize != null) {
@@ -322,9 +322,10 @@ public class AcceptorConfig {
     }
 
     public static enum AcceptorType {
+        PLANNING_ENTITY_TABU,
+        PLANNING_VALUE_TABU,
         MOVE_TABU,
         UNDO_MOVE_TABU,
-        PROPERTY_TABU,
         SOLUTION_TABU,
         SIMULATED_ANNEALING,
         LATE_ACCEPTANCE,

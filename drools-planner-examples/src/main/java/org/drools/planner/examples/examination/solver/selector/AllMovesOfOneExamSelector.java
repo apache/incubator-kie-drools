@@ -26,7 +26,6 @@ import java.util.Map;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.localsearch.decider.selector.AbstractSelector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.examination.domain.Exam;
@@ -86,8 +85,7 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
 
     private void addToCachedExamToMoveMap(int examListSize, List<Move> cachedMoveList) {
         for (Move cachedMove : cachedMoveList) {
-            TabuPropertyEnabled tabuPropertyEnabledMove = (TabuPropertyEnabled) cachedMove;
-            for (Object o : tabuPropertyEnabledMove.getTabuProperties()) {
+            for (Object o : cachedMove.getPlanningEntities()) {
                 Exam exam = (Exam) o;
                 List<Move> moveList = cachedExamToMoveMap.get(exam);
                 if (moveList == null) {

@@ -24,12 +24,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 
-public class DayChangeMove implements Move, TabuPropertyEnabled {
+public class DayChangeMove implements Move {
 
     private Match match;
     private Day toDay;
@@ -53,8 +52,12 @@ public class DayChangeMove implements Move, TabuPropertyEnabled {
         workingMemory.update(matchHandle, match);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
+    public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(match);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toDay);
     }
 
     public boolean equals(Object o) {

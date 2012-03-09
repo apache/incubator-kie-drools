@@ -26,12 +26,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 
-public class MultipleMatchListRotateMove implements Move, TabuPropertyEnabled {
+public class MultipleMatchListRotateMove implements Move {
 
     private List<Match> firstMatchList;
     private List<Match> secondMatchList;
@@ -77,11 +76,22 @@ public class MultipleMatchListRotateMove implements Move, TabuPropertyEnabled {
         workingMemory.update(secondMatchHandle, secondMatch);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        List<Match> tabuPropertyList = new ArrayList<Match>(firstMatchList.size() + secondMatchList.size());
-        tabuPropertyList.addAll(firstMatchList);
-        tabuPropertyList.addAll(secondMatchList);
-        return tabuPropertyList;
+    public Collection<? extends Object> getPlanningEntities() {
+        List<Match> entities = new ArrayList<Match>(firstMatchList.size() + secondMatchList.size());
+        entities.addAll(firstMatchList);
+        entities.addAll(secondMatchList);
+        return entities;
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        List<Day> values = new ArrayList<Day>(firstMatchList.size() + secondMatchList.size());
+        for (Match match : firstMatchList) {
+            values.add(match.getDay());
+        }
+        for (Match match : secondMatchList) {
+            values.add(match.getDay());
+        }
+        return values;
     }
 
     public boolean equals(Object o) {

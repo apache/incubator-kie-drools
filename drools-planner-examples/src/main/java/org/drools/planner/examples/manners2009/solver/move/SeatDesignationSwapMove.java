@@ -24,12 +24,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-public class SeatDesignationSwapMove implements Move, TabuPropertyEnabled {
+public class SeatDesignationSwapMove implements Move {
 
     private SeatDesignation leftSeatDesignation;
     private SeatDesignation rightSeatDesignation;
@@ -61,8 +60,12 @@ public class SeatDesignationSwapMove implements Move, TabuPropertyEnabled {
         workingMemory.update(factHandle, seatDesignation);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<SeatDesignation>asList(leftSeatDesignation, rightSeatDesignation);
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftSeatDesignation, rightSeatDesignation);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.asList(leftSeatDesignation.getSeat(), rightSeatDesignation.getSeat());
     }
 
     public boolean equals(Object o) {

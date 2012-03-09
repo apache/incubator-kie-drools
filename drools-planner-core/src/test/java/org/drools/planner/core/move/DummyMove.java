@@ -16,6 +16,8 @@
 
 package org.drools.planner.core.move;
 
+import java.util.Collection;
+
 import org.drools.WorkingMemory;
 
 public class DummyMove implements Move {
@@ -30,6 +32,14 @@ public class DummyMove implements Move {
 
     public void doMove(WorkingMemory workingMemory) {
         // do nothing
+    }
+
+    public Collection<? extends Object> getPlanningEntities() {
+        return null;
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return null;
     }
 
 }

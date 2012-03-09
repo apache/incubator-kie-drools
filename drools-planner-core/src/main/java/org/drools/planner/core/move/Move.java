@@ -16,8 +16,14 @@
 
 package org.drools.planner.core.move;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.move.factory.MoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -62,5 +68,27 @@ public interface Move {
      * @param workingMemory never null, the {@link WorkingMemory} that needs to get notified of the changes.
      */
     void doMove(WorkingMemory workingMemory);
+
+    /**
+     * Returns all planning entities that are being changed by this move.
+     * Required for {@link AcceptorConfig.AcceptorType#PLANNING_ENTITY_TABU}.
+     * <p/>
+     * Duplicates entries in the returned Collection are best avoided.
+     * The returned Collection is recommended to be in a stable order.
+     * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
+     * @return never null
+     */
+    Collection<? extends Object> getPlanningEntities();
+
+    /**
+     * Returns all planning values that entities are being assigned to by this move.
+     * Required for {@link AcceptorConfig.AcceptorType#PLANNING_VALUE_TABU}.
+     * <p/>
+     * Duplicates entries in the returned Collection are best avoided.
+     * The returned Collection is recommended to be in a stable order.
+     * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
+     * @return never null
+     */
+    Collection<? extends Object> getPlanningValues();
 
 }

@@ -23,12 +23,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 
-public class RoomChangeMove implements Move, TabuPropertyEnabled {
+public class RoomChangeMove implements Move {
 
     private Lecture lecture;
     private Room toRoom;
@@ -50,8 +49,12 @@ public class RoomChangeMove implements Move, TabuPropertyEnabled {
         CurriculumCourseMoveHelper.moveRoom(workingMemory, lecture, toRoom);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
+    public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(lecture);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toRoom);
     }
 
     public boolean equals(Object o) {

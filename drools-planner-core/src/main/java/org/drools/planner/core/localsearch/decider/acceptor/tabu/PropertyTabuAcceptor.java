@@ -23,20 +23,20 @@ import org.drools.planner.core.localsearch.decider.MoveScope;
 
 public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
 
+    // TODO rename to PlanningEntityTabuAcceptor and PlanningValueTabuAcceptor
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     protected Collection<? extends Object> findTabu(MoveScope moveScope) {
-        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) moveScope.getMove();
-        return tabuPropertyEnabled.getTabuProperties();
+        return moveScope.getMove().getPlanningEntities();
     }
 
     @Override
-    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope localSearchStepScope) {
-        TabuPropertyEnabled tabuPropertyEnabled = (TabuPropertyEnabled) localSearchStepScope.getStep();
-        return tabuPropertyEnabled.getTabuProperties();
+    protected Collection<? extends Object> findNewTabu(LocalSearchStepScope stepScope) {
+        return stepScope.getStep().getPlanningEntities();
     }
 
 }

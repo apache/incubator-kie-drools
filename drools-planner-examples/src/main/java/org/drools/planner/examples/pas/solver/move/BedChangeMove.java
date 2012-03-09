@@ -24,12 +24,11 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.FactHandle;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 
-public class BedChangeMove implements Move, TabuPropertyEnabled {
+public class BedChangeMove implements Move {
 
     private BedDesignation bedDesignation;
     private Bed toBed;
@@ -53,8 +52,12 @@ public class BedChangeMove implements Move, TabuPropertyEnabled {
         workingMemory.update(factHandle, bedDesignation);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
+    public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(bedDesignation);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toBed);
     }
 
     public boolean equals(Object o) {

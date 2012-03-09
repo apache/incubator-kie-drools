@@ -1608,3 +1608,50 @@ After in *.java:
         Solution bestSolution = solver.getBestSolution();
         guiSolutionDirector.setWorkingSolution(bestSolution);
     }
+
+[MAJOR] The interface Move has gotten 2 new methods: getPlanningEntities() and getPlanningValues()
+The TabuPropertyEnabled interface has been removed:
+Normally, the method getTabuProperties() is renamed to getPlanningEntities().
+Before in *.java:
+    public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
+
+        public Collection<? extends Object> getTabuProperties() {
+            return Collections.singletonList(cloudProcess);
+        }
+
+    }
+After in *.java:
+    public class CloudComputerChangeMove implements Move {
+
+        public Collection<? extends Object> getPlanningEntities() {
+            return Collections.singletonList(cloudProcess);
+        }
+
+        public Collection<? extends Object> getPlanningValues() {
+            return Collections.singletonList(toCloudComputer);
+        }
+    }
+Before in *.java:
+    public class CloudProcessSwapMove implements Move, TabuPropertyEnabled {
+
+        public Collection<? extends Object> getTabuProperties() {
+            return Arrays.<CloudProcess>asList(leftCloudProcess, rightCloudProcess);
+        }
+
+    }
+After in *.java:
+    public class CloudProcessSwapMove implements Move {
+
+        public Collection<? extends Object> getPlanningEntities() {
+            return Arrays.asList(leftCloudProcess, rightCloudProcess);
+        }
+
+        public Collection<? extends Object> getPlanningValues() {
+            return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+        }
+    }
+
+[MAJOR] propertyTabu has been renamed to planningEntityTabu (or planningValueTabu)
+TODO
+
+TODO adjust docs: getTabuProperties TabuPropertyEnabled PROPERTY_TABU propertyTabu

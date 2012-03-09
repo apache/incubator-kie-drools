@@ -17,23 +17,20 @@
 package org.drools.planner.core.move.generic;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 
 /**
  * Non-cacheable
  */
-public class GenericSwapPillarMove implements Move, TabuPropertyEnabled {
+public class GenericSwapPillarMove implements Move {
 
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
@@ -81,12 +78,21 @@ public class GenericSwapPillarMove implements Move, TabuPropertyEnabled {
         }
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        List<Object> tabuProperties = new ArrayList<Object>(
+    public Collection<? extends Object> getPlanningEntities() {
+        List<Object> entities = new ArrayList<Object>(
                 leftPlanningEntityList.size() + rightPlanningEntityList.size());
-        tabuProperties.addAll(leftPlanningEntityList);
-        tabuProperties.addAll(rightPlanningEntityList);
-        return tabuProperties;
+        entities.addAll(leftPlanningEntityList);
+        entities.addAll(rightPlanningEntityList);
+        return entities;
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        List<Object> values = new ArrayList<Object>(planningVariableDescriptors.size() * 2);
+        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
+            values.add(planningVariableDescriptor.getValue(leftPlanningEntityList.get(0)));
+            values.add(planningVariableDescriptor.getValue(rightPlanningEntityList.get(0)));
+        }
+        return values;
     }
 
     public boolean equals(Object o) {

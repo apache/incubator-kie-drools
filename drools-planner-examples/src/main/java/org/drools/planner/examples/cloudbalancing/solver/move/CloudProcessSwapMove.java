@@ -23,12 +23,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudProcessSwapMove implements Move, TabuPropertyEnabled {
+public class CloudProcessSwapMove implements Move {
 
     private CloudProcess leftCloudProcess;
     private CloudProcess rightCloudProcess;
@@ -53,8 +52,12 @@ public class CloudProcessSwapMove implements Move, TabuPropertyEnabled {
         CloudBalancingMoveHelper.moveCloudComputer(workingMemory, rightCloudProcess, oldLeftCloudComputer);
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<CloudProcess>asList(leftCloudProcess, rightCloudProcess);
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftCloudProcess, rightCloudProcess);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
     public boolean equals(Object o) {

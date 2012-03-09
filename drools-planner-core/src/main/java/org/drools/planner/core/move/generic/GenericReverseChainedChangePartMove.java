@@ -19,7 +19,6 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -28,10 +27,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 
-public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEnabled {
+public class GenericReverseChainedChangePartMove implements Move {
 
     private final List<Object> entitiesSubChain;
     private final Object firstEntity;
@@ -111,8 +109,12 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
         }
     }
 
-    public Collection<? extends Object> getTabuProperties() {
-        return entitiesSubChain;
+    public Collection<? extends Object> getPlanningEntities() {
+        return entitiesSubChain;  // TODO generated
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toPlanningValue);
     }
 
     public boolean equals(Object o) {
