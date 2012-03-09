@@ -25,6 +25,7 @@
       </selector>
     </selector>
     <acceptor>
+      <!-- TODO Because of the bug in AbstractTabuAcceptor with multi tabu properties this is effectively only 2-4 steps -->
       <propertyTabuSize>11</propertyTabuSize>
     </acceptor>
     <forager>
