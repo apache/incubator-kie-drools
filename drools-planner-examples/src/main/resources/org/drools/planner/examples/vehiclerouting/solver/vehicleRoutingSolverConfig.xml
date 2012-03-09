@@ -9,9 +9,9 @@
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
 
-  <termination>
-    <maximumMinutesSpend>2</maximumMinutesSpend>
-  </termination>
+  <!--<termination>-->
+    <!--<maximumMinutesSpend>2</maximumMinutesSpend>-->
+  <!--</termination>-->
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
   </constructionHeuristic>
@@ -25,8 +25,7 @@
       </selector>
     </selector>
     <acceptor>
-      <solutionTabuSize>1000</solutionTabuSize>
-      <propertyTabuSize>7</propertyTabuSize>
+      <propertyTabuSize>11</propertyTabuSize>
     </acceptor>
     <forager>
       <pickEarlyType>NEVER</pickEarlyType>
