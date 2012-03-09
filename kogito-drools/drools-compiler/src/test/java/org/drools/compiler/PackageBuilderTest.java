@@ -1312,7 +1312,6 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
     
     @Test
-    @Ignore("RuntimeDroolsException thrown. See JIRA https://issues.jboss.org/browse/JBRULES-3418")
     public void testDeclaredSuperTypeFields() throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
@@ -1332,11 +1331,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                       fieldsBean1.size() );
         assertEquals( "age",
                       fieldsBean1.get( 0 ).getName() );
-        assertEquals( "int",
+        assertEquals( int.class,
                       fieldsBean1.get( 0 ).getType() );
         assertEquals( "name",
                       fieldsBean1.get( 1 ).getName() );
-        assertEquals( "String",
+        assertEquals( String.class,
                       fieldsBean1.get( 1 ).getType() );
 
         List<FactField> fieldsBean2 = builder.getPackage().getFactType( "foo.Bean2" ).getFields();
@@ -1344,15 +1343,15 @@ public class PackageBuilderTest extends DroolsTestCase {
                       fieldsBean2.size() );
         assertEquals( "age",
                       fieldsBean2.get( 0 ).getName() );
-        assertEquals( "int",
+        assertEquals( int.class,
                       fieldsBean2.get( 0 ).getType() );
         assertEquals( "name",
                       fieldsBean2.get( 1 ).getName() );
-        assertEquals( "String",
+        assertEquals( String.class,
                       fieldsBean2.get( 1 ).getType() );
         assertEquals( "cheese",
                       fieldsBean2.get( 2 ).getName() );
-        assertEquals( "String",
+        assertEquals( String.class,
                       fieldsBean2.get( 2 ).getType() );
     }
 
