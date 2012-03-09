@@ -1,6 +1,7 @@
 package org.drools.compiler;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.StringReader;
 
@@ -65,8 +66,7 @@ public class DrlParserTest {
         DrlParser parser = new DrlParser();
         PackageDescr pkgDescr = parser.parse( drl );
         TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
-        assertEquals( "Object",
-                      bean1Type.getSuperTypeName() );
+        assertNull( bean1Type.getSuperTypeName() );
 
         TypeDeclarationDescr bean2Type = pkgDescr.getTypeDeclarations().get( 1 );
         assertEquals( "Bean1",
