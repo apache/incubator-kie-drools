@@ -84,6 +84,11 @@ public class NurseRosteringPanel extends SolutionPanel {
         shiftAssignmentToPanelMap = new LinkedHashMap<ShiftAssignment, EmployeePanel>();
     }
 
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
+    }
+
     public NurseRoster getNurseRoster() {
         return (NurseRoster) solutionBusiness.getSolution();
     }
