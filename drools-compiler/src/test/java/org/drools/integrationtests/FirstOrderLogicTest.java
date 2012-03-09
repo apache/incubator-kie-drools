@@ -1469,7 +1469,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     }
     
     @Test 
-    @Ignore
     public void testLotsOfOrs() throws Exception {
         // Decomposed this test down to just two rules, while still exhibiting the problem
         // Uncomment rest of rule as those are fixed, to complicate it again.
@@ -1479,34 +1478,32 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 " \n" + 
                 "rule \"test\"\n" + 
                 "    when\n" + 
-//                "        (\n" + 
-//                "            ( \n" + 
-//                "                a : Field( name == \"a\") and\n" + 
-//                "                eval( !a.getValue().equals(\"a\") ) and\n" + 
-//                "                b : Field( name == \"b\" ) and\n" + 
-//                "                eval( b.intValue()>10 )\n" + 
-//                "           )\n" + 
-//                "           /*\n" + 
-//                "           or\n" + 
-//                "           (\n" + 
-//                "                b2 : Field( name == \"b\" ) and\n" + 
-//                "                eval( b2.intValue()<10 )\n" + 
-//                "           )\n" + 
-//                "           */\n" + 
-//                "        )\n" + 
-//                "        and \n" + 
-//                "        (\n" + 
-//                "            t : Field( name == \"t\" ) and\n" + 
-//                "            eval( t.getValue().equals(\"Y\") )\n" + 
-//                "        )\n" + 
-//                "        and (\n" + 
-//                "           (\n" + 
-//                "                c : Field( name == \"c\" ) and\n" + 
-//                "                eval( c.getValue().equals(\"c\") ) and\n" +                 
-//                "                d : Field( name == \"d\" ) and\n" + 
-//                "                eval( d.intValue()<5 )\n" + 
-//                "           ) \n" + 
-//                "           or \n" + 
+                "        (\n" + 
+                "            ( \n" + 
+                "                a : Field( name == \"a\") and\n" + 
+                "                eval( !a.getValue().equals(\"a\") ) and\n" + 
+                "                b : Field( name == \"b\" ) and\n" + 
+                "                eval( b.intValue()>10 )\n" + 
+                "           )\n" +  
+                "           or\n" + 
+                "           (\n" + 
+                "                b2 : Field( name == \"b\" ) and\n" + 
+                "                eval( b2.intValue()<10 )\n" + 
+                "           )\n" + 
+                "        )\n" + 
+                "        and \n" + 
+                "        (\n" + 
+                "            t : Field( name == \"t\" ) and\n" + 
+                "            eval( t.getValue().equals(\"Y\") )\n" + 
+                "        )\n" + 
+                "        and (\n" + 
+                "           (\n" + 
+                "                c : Field( name == \"c\" ) and\n" + 
+                "                eval( c.getValue().equals(\"c\") ) and\n" +                 
+                "                d : Field( name == \"d\" ) and\n" + 
+                "                eval( d.intValue()<5 )\n" + 
+                "           ) \n" + 
+                "           or \n" + 
                 "           (\n" + 
                 "                c : Field( name == \"c\" ) and\n" + 
                 "                eval( c.getValue().equals(\"c\") ) and\n" + 
@@ -1520,7 +1517,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "                d : Field( name == \"d\" ) and\n" + 
                 "                eval( d.intValue()<20 )\n" + 
                 "           )\n" + 
-//                "        )\n" + 
+                "        )\n" + 
                 "    then\n" + 
                 "        System.out.println( \"Worked!\" ); \n" + 
                 "end";
