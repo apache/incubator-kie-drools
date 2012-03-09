@@ -36,4 +36,9 @@ public class Domicile extends AbstractPersistable implements Appearance {
     // Complex methods
     // ************************************************************************
 
+    @Override
+    public String toString() {
+        return city.toString();
+    }
+
 }
