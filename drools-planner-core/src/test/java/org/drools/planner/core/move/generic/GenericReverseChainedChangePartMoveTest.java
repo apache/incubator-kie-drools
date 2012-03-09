@@ -219,14 +219,13 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a3, a2.getChainedObject());
         assertEquals(a2, a5.getChainedObject());
 
-        verify(workingMemory).update(a5FactHandle, a5);
+        verify(workingMemory, atLeast(1)).update(a5FactHandle, a5);
         verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
         verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
         verify(workingMemory).getFactHandle(a2);
         verify(workingMemory).update(a2FactHandle, a2);
-        verify(workingMemory).update(a5FactHandle, a5);
         verifyNoMoreInteractions(workingMemory);
     }
 

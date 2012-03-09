@@ -19,7 +19,9 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -70,49 +72,40 @@ public class GenericReverseChainedChangePartMove implements Move, TabuPropertyEn
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        // TODO these new changes do not cause corruption but do cause inferior results FIXME before CR1
-
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
+        if (firstEntity.equals(newTrailingEntity)) {
+            // Unmoved reverse
+            // Temporary close the old chain
+            if (oldTrailingEntity != null) {
+                planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+            }
+        } else {
+            // Close the old chain
+            if (oldTrailingEntity != null) {
+                planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+            }
+        }
         // Change the entity
-        planningVariableDescriptor.setValue(lastEntity, toPlanningValue);
-        Object previousEntity = firstEntity;
-        for (Object entity : entitiesSubChain.subList(1, entitiesSubChain.size())) {
-            planningVariableDescriptor.setValue(previousEntity, entity);
-            previousEntity = entity;
+        Object nextEntity = toPlanningValue;
+        for (ListIterator<Object> it = entitiesSubChain.listIterator(entitiesSubChain.size()); it.hasPrevious();) {
+            Object entity = it.previous();
+            planningVariableDescriptor.setValue(entity, nextEntity);
+            workingMemory.update(workingMemory.getFactHandle(entity), entity);
+            nextEntity = entity;
         }
         if (firstEntity.equals(newTrailingEntity)) {
             // Unmoved reverse
             // Reroute the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, firstEntity);
+                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
             }
         } else {
-            // Close the old chain
-            if (oldTrailingEntity != null) {
-                planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-            }
             // Reroute the new chain
             if (newTrailingEntity != null) {
                 planningVariableDescriptor.setValue(newTrailingEntity, firstEntity);
-            }
-        }
-
-        // After the model is valid again, notify the SolutionDirector
-        workingMemory.update(workingMemory.getFactHandle(lastEntity), lastEntity);
-        previousEntity = firstEntity;
-        for (Object entity : entitiesSubChain.subList(1, entitiesSubChain.size())) {
-            workingMemory.update(workingMemory.getFactHandle(previousEntity), previousEntity);
-            previousEntity = entity;
-        }
-        if (firstEntity.equals(newTrailingEntity)) {
-            if (oldTrailingEntity != null) {
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
-            }
-        } else {
-            if (oldTrailingEntity != null) {
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
-            }
-            if (newTrailingEntity != null) {
                 workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
             }
         }
