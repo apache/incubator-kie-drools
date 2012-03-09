@@ -178,4 +178,56 @@ public class GenericReverseChainedChangePartMoveTest {
         verifyNoMoreInteractions(workingMemory);
     }
 
+    @Test
+    public void oldAndNewTrailingInPlace() {
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1");
+        a1.setChainedObject(a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2");
+        a2.setChainedObject(a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3");
+        a3.setChainedObject(a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4");
+        a4.setChainedObject(a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5");
+        a5.setChainedObject(a4);
+
+        PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
+        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
+        WorkingMemory workingMemory = mock(WorkingMemory.class);
+        FactHandle a2FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a2)).thenReturn(a2FactHandle);
+        FactHandle a3FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
+        FactHandle a4FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a4)).thenReturn(a4FactHandle);
+        FactHandle a5FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a5)).thenReturn(a5FactHandle);
+
+        List<Object> entitiesSubChain = new ArrayList<Object>();
+        entitiesSubChain.add(a2);
+        entitiesSubChain.add(a3);
+        entitiesSubChain.add(a4);
+
+        GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
+                variableDescriptor, a1, a5, a5FactHandle, a2, a2FactHandle);
+        move.doMove(workingMemory);
+
+        assertEquals(a0, a1.getChainedObject());
+        assertEquals(a1, a4.getChainedObject());
+        assertEquals(a4, a3.getChainedObject());
+        assertEquals(a3, a2.getChainedObject());
+        assertEquals(a2, a5.getChainedObject());
+
+        verify(workingMemory).update(a5FactHandle, a5);
+        verify(workingMemory).getFactHandle(a4);
+        verify(workingMemory).update(a4FactHandle, a4);
+        verify(workingMemory).getFactHandle(a3);
+        verify(workingMemory).update(a3FactHandle, a3);
+        verify(workingMemory).getFactHandle(a2);
+        verify(workingMemory).update(a2FactHandle, a2);
+        verify(workingMemory).update(a5FactHandle, a5);
+        verifyNoMoreInteractions(workingMemory);
+    }
+
 }
