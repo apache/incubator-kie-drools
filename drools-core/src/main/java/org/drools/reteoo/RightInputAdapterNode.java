@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.DroolsQuery;
@@ -363,6 +364,19 @@ public class RightInputAdapterNode extends ObjectSource
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
-    }           
+    }
+
+    public int getLeftInputOtnId() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setLeftInputOtnId(int leftInputOtnId) {
+        throw new UnsupportedOperationException();
+    }      
+    
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
+    }
 
 }

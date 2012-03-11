@@ -93,6 +93,8 @@ public class RuleTerminalNode extends BaseNode
     private long             declaredMask;
     private long             inferredMask;
     private long             negativeMask;
+    
+    private int              leftInputOtnId;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -137,10 +139,13 @@ public class RuleTerminalNode extends BaseNode
         initInferredMask();
     }
 
-    public void initDeclaredMask(BuildContext context) {        
-        if ( !(unwrapTupleSource() instanceof LeftInputAdapterNode)) {
+    public void initDeclaredMask(BuildContext context) {  
+        doInitDeclaredMask(this, context);
+    }
+    public static void doInitDeclaredMask(TerminalNode tn, BuildContext context) {        
+        if ( !(tn.unwrapTupleSource() instanceof LeftInputAdapterNode)) {
             // RTN's not after LIANode are not relevant for property specific, so don't block anything.
-            declaredMask = Long.MAX_VALUE;
+            tn.setDeclaredMask( Long.MAX_VALUE );
             return;            
         }
         
@@ -150,7 +155,7 @@ public class RuleTerminalNode extends BaseNode
         if ( !(objectType instanceof ClassObjectType) ) {
             // InitialFact has no type declaration and cannot be property specific
             // Only ClassObjectType can use property specific
-            declaredMask = Long.MAX_VALUE;
+            tn.setDeclaredMask( Long.MAX_VALUE );
             return;
         }
         
@@ -158,26 +163,31 @@ public class RuleTerminalNode extends BaseNode
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
         if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
-            declaredMask = Long.MAX_VALUE;             
+            tn.setDeclaredMask( Long.MAX_VALUE );            
         } else  {
             List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-            declaredMask = calculatePositiveMask(pattern.getListenedProperties(), settableProperties);
-            negativeMask = calculateNegativeMask(pattern.getListenedProperties(), settableProperties);
+            tn.setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
+            tn.setNegativeMask( calculateNegativeMask(pattern.getListenedProperties(), settableProperties) );
         }
     }
     
     public void initInferredMask() {
-        LeftTupleSource leftTupleSource = unwrapTupleSource();
+        doInitInferredMask(this);
+    }
+    
+    public static void doInitInferredMask(TerminalNode tn) {
+        LeftTupleSource leftTupleSource = tn.unwrapTupleSource();
         if ( leftTupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource() instanceof AlphaNode ) {
             AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource();
-            inferredMask = alphaNode.updateMask( declaredMask );
+            tn.setInferredMask( alphaNode.updateMask( tn.getDeclaredMask() ) );
         } else {
-            inferredMask = declaredMask;
+            tn.setInferredMask(  tn.getDeclaredMask() );
         }
-        inferredMask &= (Long.MAX_VALUE - negativeMask);
+        
+        tn.setInferredMask(   tn.getInferredMask() & (Long.MAX_VALUE - tn.getNegativeMask() ) );
     }
 
-    private LeftTupleSource unwrapTupleSource() {
+    public LeftTupleSource unwrapTupleSource() {
         return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
     }
 
@@ -196,9 +206,11 @@ public class RuleTerminalNode extends BaseNode
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
         fireDirect = rule.getActivationListener().equals( "direct" );
+        
         declaredMask = in.readLong();
         inferredMask = in.readLong();        
         negativeMask = in.readLong();
+        leftInputOtnId = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -214,6 +226,7 @@ public class RuleTerminalNode extends BaseNode
         out.writeLong(declaredMask);
         out.writeLong(inferredMask);        
         out.writeLong(negativeMask);
+        out.writeLong(leftInputOtnId);
     }
 
     /**
@@ -248,10 +261,22 @@ public class RuleTerminalNode extends BaseNode
     public long getInferredMask() {
         return inferredMask;
     }
+    
+    public void setDeclaredMask(long mask) {
+        declaredMask = mask;
+    }
+
+    public void setInferredMask(long mask) {
+        inferredMask = mask;
+    }      
 
     public long getNegativeMask() {
         return negativeMask;
     }
+    
+    public void setNegativeMask(long mask) {
+        negativeMask = mask;
+    }    
 
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
@@ -409,24 +434,27 @@ public class RuleTerminalNode extends BaseNode
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-
-        if ( intersect(context.getModificationMask(), inferredMask)) {
-            if ( leftTuple != null ) {
-                leftTuple.reAdd(); //
-                // LeftTuple previously existed, so continue as modify
-                modifyLeftTuple( leftTuple,
-                                 context,
-                                 workingMemory );
-            } else {
-                // LeftTuple does not exist, so create and continue as assert
-                assertLeftTuple( createLeftTuple( factHandle,
-                                                    this,
-                                                    true ),
-                                 context,
-                                 workingMemory );
-            }
-        }
+        LeftTupleSource.doMdifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory, 
+                                         (LeftTupleSink) this, getLeftInputOtnId(), inferredMask );   
+        
+//        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+//
+//        if ( intersect(context.getModificationMask(), inferredMask)) {
+//            if ( leftTuple != null ) {
+//                leftTuple.reAdd(); //
+//                // LeftTuple previously existed, so continue as modify
+//                modifyLeftTuple( leftTuple,
+//                                 context,
+//                                 workingMemory );
+//            } else {
+//                // LeftTuple does not exist, so create and continue as assert
+//                assertLeftTuple( createLeftTuple( factHandle,
+//                                                    this,
+//                                                    true ),
+//                                 context,
+//                                 workingMemory );
+//            }
+//        }
     }    
     
 
@@ -679,5 +707,13 @@ public class RuleTerminalNode extends BaseNode
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }            
+    }      
+    
+    public int getLeftInputOtnId() {
+        return leftInputOtnId;
+    }
+
+    public void setLeftInputOtnId(int leftInputOtnId) {
+        this.leftInputOtnId = leftInputOtnId;
+    }  
 }

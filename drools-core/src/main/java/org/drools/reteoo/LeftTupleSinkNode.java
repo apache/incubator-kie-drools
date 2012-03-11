@@ -51,6 +51,6 @@ public interface LeftTupleSinkNode
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPreviousLeftTupleSinkNode(LeftTupleSinkNode previous);
+    public void setPreviousLeftTupleSinkNode(LeftTupleSinkNode previous);    
 
 }

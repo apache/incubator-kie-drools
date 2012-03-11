@@ -26,5 +26,19 @@ public interface TerminalNode
     NetworkNode, LeftTupleSinkNode {
     
     LeftTupleSource getLeftTupleSource();
+    
+    LeftTupleSource unwrapTupleSource();
+    
+    void initInferredMask();
+    
+    long getDeclaredMask();
+    void setDeclaredMask(long mask);
 
+    long getInferredMask();
+    void setInferredMask(long mask);
+    
+    public long getNegativeMask();
+    
+    public void setNegativeMask(long mask);
+    
 }

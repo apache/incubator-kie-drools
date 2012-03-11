@@ -16,17 +16,25 @@
 
 package org.drools.reteoo;
 
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Pattern;
+import org.drools.rule.TypeDeclaration;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -53,6 +61,10 @@ public abstract class ObjectSource extends BaseNode
 
     private int                    alphaNodeHashingThreshold;
 
+
+    protected long declaredMask;
+    protected long inferredMask;
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -112,6 +124,51 @@ public abstract class ObjectSource extends BaseNode
     public ObjectSource getParentObjectSource() {
         return this.source;
     }
+    
+    public void initDeclaredMask(BuildContext context) {
+        if ( context == null || context.getLastBuiltPatterns() == null ) {
+            // only happens during unit tests
+            declaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
+        Pattern pattern = context.getLastBuiltPatterns()[0];
+        ObjectType objectType = pattern.getObjectType();
+        
+        if ( !(objectType instanceof ClassObjectType)) {
+            // Only ClassObjectType can use property specific
+            declaredMask = Long.MAX_VALUE;
+            return;
+        }
+        
+        Class objectClass = ((ClassObjectType)objectType).getClassType();        
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
+            // if property specific is not on, then accept all modification propagations
+            declaredMask = Long.MAX_VALUE;             
+        } else {
+            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
+            declaredMask = calculateDeclaredMask(settableProperties);
+        }
+    }
+    
+    public abstract long calculateDeclaredMask(List<String> settableProperties);
+    
+    public void resetInferredMask() {
+        this.inferredMask = 0;
+    }
+    
+    public long updateMask(long mask) {
+        long returnMask;
+        if (!(source instanceof ObjectTypeNode)) {
+            returnMask = source.updateMask( declaredMask | mask );
+        } else { // else ObjectTypeNode
+            returnMask = declaredMask | mask;
+        }
+        inferredMask = inferredMask | returnMask;
+        return returnMask;
+        
+    }         
 
     /**
      * Adds the <code>ObjectSink</code> so that it may receive

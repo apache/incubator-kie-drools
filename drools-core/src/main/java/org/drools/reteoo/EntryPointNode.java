@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -431,6 +432,18 @@ public class EntryPointNode extends ObjectSource
 
     public String toString() {
         return "[EntryPointNode(" + this.id + ") " + this.entryPoint + " ]";
+    }
+
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
     }
 
 }
