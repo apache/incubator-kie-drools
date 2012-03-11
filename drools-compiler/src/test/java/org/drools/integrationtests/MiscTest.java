@@ -3917,37 +3917,6 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testSkipModify() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List results = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 results );
-
-        final Cheese cheese = new Cheese( "brie",
-                                          10 );
-        final FactHandle handle = workingMemory.insert( cheese );
-
-        final Person bob = new Person( "bob",
-                                       "stilton" );
-        workingMemory.insert( bob );
-
-        cheese.setType( "stilton" );
-        workingMemory.update( handle,
-                              cheese );
-        workingMemory.fireAllRules();
-        assertEquals( 2,
-                      results.size() );
-    }
-
-    @Test
     public void testEventModel() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
@@ -8453,6 +8422,40 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+    
+    @Test
+    public void testModifyWithLiaToEval() {
+        String str = "";
+        str += "package org.simple \n";
+        str += "import " + Person.class.getCanonicalName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "when \n";
+        str += "    $p : Person() \n";
+        str += "    eval( $p.getAge() > 30 ) \n";
+        str += "then \n";
+        str += "  list.add($p); \n";
+        str += "end  \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+        
+        Person p1 = new Person("darth", 25);
+        org.drools.runtime.rule.FactHandle fh = ksession.insert( p1 );        
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+        
+        p1.setAge( 35 );
+        ksession.update(  fh, p1 );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        
+        ksession.dispose();
+    }    
 
     @Test
     public void testExistsIterativeModifyBug() {

@@ -2210,12 +2210,12 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
         ksession.fireAllRules();
-
-        fh = getFactHandle( fh,
-                            ksession );
-        ksession.retract( fh );
-        ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          true );
+//
+//        fh = getFactHandle( fh,
+//                            ksession );
+//        ksession.retract( fh );
+//        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+//                                                          true );
         assertEquals( "go7",
                       list.get( 12 ) );
         assertEquals( "exists blah",
