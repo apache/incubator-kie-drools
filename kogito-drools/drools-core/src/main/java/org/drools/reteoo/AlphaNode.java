@@ -60,9 +60,6 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           previousRightTupleSinkNode;
     private ObjectSinkNode           nextRightTupleSinkNode;
 
-    private long declaredMask;
-    private long inferredMask;
-
     public AlphaNode() {
 
     }
@@ -92,48 +89,7 @@ public class AlphaNode extends ObjectSource
         initDeclaredMask(context);
     }
 
-    public void initDeclaredMask(BuildContext context) {
-        if ( context == null || context.getLastBuiltPatterns() == null ) {
-            // only happens during unit tests
-            declaredMask = Long.MAX_VALUE;
-            return;
-        }
-        
-        Pattern pattern = context.getLastBuiltPatterns()[0];
-        ObjectType objectType = pattern.getObjectType();
-        
-        if ( !(objectType instanceof ClassObjectType)) {
-            // Only ClassObjectType can use property specific
-            declaredMask = Long.MAX_VALUE;
-            return;
-        }
-        
-        Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
-            // if property specific is not on, then accept all modification propagations
-            declaredMask = Long.MAX_VALUE;             
-        } else {
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-            declaredMask = calculateDeclaredMask(settableProperties);
-        }
-    }
-    
-    public void resetInferredMask() {
-        this.inferredMask = 0;
-    }
-    
-    public long updateMask(long mask) {
-        long returnMask;
-        if (source instanceof AlphaNode) {
-            returnMask = ((AlphaNode) source).updateMask( declaredMask | mask );
-        } else { // else ObjectTypeNode
-            returnMask = declaredMask | mask;
-        }
-        inferredMask = inferredMask | returnMask;
-        return returnMask;
-        
-    }     
+
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -214,24 +170,36 @@ public class AlphaNode extends ObjectSource
                         workingMemory );
             }
         } else {
-            byPassModifyToBetaNode(modifyPreviousTuples);
+            byPassModifyToBetaNode(factHandle, modifyPreviousTuples,context,workingMemory);
         }
     }
 
-    private void byPassModifyToBetaNode (ModifyPreviousTuples modifyPreviousTuples) {
-        for (ObjectSink objectSink : sink.getSinks()) {            
-            if (objectSink instanceof BetaNode) {
-                RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
-                if ( rightTuple != null ) {
-                    rightTuple.reAdd();
-                }
-            } else if ( objectSink instanceof LeftInputAdapterNode ) {
-                ((LeftInputAdapterNode) objectSink).getSinkPropagator().byPassModifyToLeftTupleSink( modifyPreviousTuples );                
-            } else if (objectSink instanceof AlphaNode) {
-                ((AlphaNode)objectSink).byPassModifyToBetaNode( modifyPreviousTuples );
-            }
-        }
+    public  void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                         final ModifyPreviousTuples modifyPreviousTuples,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
+        sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
     }
+//        
+//        
+////        for (ObjectSink objectSink : sink.getSinks()) {            
+////            if (objectSink instanceof BetaNode) {
+////                
+////                RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
+////                if ( rightTuple != null ) {
+////                    rightTuple.reAdd();
+////                }
+////                
+////            } else if ( objectSink instanceof LeftInputAdapterNode ) {
+////                ((LeftInputAdapterNode) objectSink).getSinkPropagator().byPassModifyToLeftTupleSink( modifyPreviousTuples );                
+////            } else if (objectSink instanceof AlphaNode) {
+////                ((AlphaNode)objectSink).byPassModifyToBetaNode( factHandle,
+////                                                                modifyPreviousTuples,
+////                                                                context,
+////                                                                workingMemory );
+////            }
+////        }
+//    }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
@@ -392,9 +360,17 @@ public class AlphaNode extends ObjectSource
             throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
         }
 
+        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                           ModifyPreviousTuples modifyPreviousTuples,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory) {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
 
-    private long calculateDeclaredMask(List<String> settableProperties) {
+    public long calculateDeclaredMask(List<String> settableProperties) {
         if (settableProperties == null || !(constraint instanceof MvelConstraint)) {
             return Long.MAX_VALUE;
         }

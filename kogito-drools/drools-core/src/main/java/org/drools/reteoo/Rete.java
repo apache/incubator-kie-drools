@@ -252,4 +252,16 @@ public class Rete extends ObjectSource
     public Map<EntryPoint,EntryPointNode> getEntryPointNodes() {
         return this.entryPoints;
     }
+    
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "This should never get called, as the PropertyReactive first happens at the AlphaNode" );
+    }   
+    
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
+    }    
 }

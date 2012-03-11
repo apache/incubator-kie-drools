@@ -140,4 +140,12 @@ public class MockObjectSink
         // TODO Auto-generated method stub
         
     }
+
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+        
+    }
 }

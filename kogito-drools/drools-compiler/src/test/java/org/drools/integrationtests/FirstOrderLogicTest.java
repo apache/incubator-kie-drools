@@ -680,16 +680,14 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
-                      results );
+        wm.setGlobal( "results", results );
 
-        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                         10 ), new Cheese( "stilton",
-                                                                           2 ), new Cheese( "stilton",
-                                                                                            5 ), new Cheese( "brie",
-                                                                                                             15 ), new Cheese( "brie",
-                                                                                                                               16 ), new Cheese( "provolone",
-                                                                                                                                                 8 )};
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton", 10 ), 
+                                             new Cheese( "stilton", 2 ), 
+                                             new Cheese( "stilton", 5 ), 
+                                             new Cheese( "brie", 15 ), 
+                                             new Cheese( "brie", 16 ), 
+                                             new Cheese( "provolone", 8 )};
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
@@ -699,37 +697,27 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         // ---------------- 1st scenario 
         int fireCount = 0;
         wm.fireAllRules();
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount,  results.size() );
+        assertEquals( 3, ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(),  results.get( fireCount - 1 ).getClass().getName() );
 
         // ---------------- 2nd scenario 
         final int index = 1;
         cheese[index].setType( "brie" );
-        wm.update( cheeseHandles[index],
-                   cheese[index] );
+        wm.update( cheeseHandles[index], cheese[index] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 2,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount, results.size() );
+        assertEquals( 2, ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
 
         // ---------------- 3rd scenario 
         wm.retract( cheeseHandles[2] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 1,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount,  results.size() );
+        assertEquals( 1,  ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
 
     }
 
@@ -1469,7 +1457,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     }
     
     @Test 
-    @Ignore
     public void testLotsOfOrs() throws Exception {
         // Decomposed this test down to just two rules, while still exhibiting the problem
         // Uncomment rest of rule as those are fixed, to complicate it again.
@@ -1479,34 +1466,34 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 " \n" + 
                 "rule \"test\"\n" + 
                 "    when\n" + 
-//                "        (\n" + 
-//                "            ( \n" + 
-//                "                a : Field( name == \"a\") and\n" + 
-//                "                eval( !a.getValue().equals(\"a\") ) and\n" + 
-//                "                b : Field( name == \"b\" ) and\n" + 
-//                "                eval( b.intValue()>10 )\n" + 
-//                "           )\n" + 
-//                "           /*\n" + 
-//                "           or\n" + 
-//                "           (\n" + 
-//                "                b2 : Field( name == \"b\" ) and\n" + 
-//                "                eval( b2.intValue()<10 )\n" + 
-//                "           )\n" + 
-//                "           */\n" + 
-//                "        )\n" + 
-//                "        and \n" + 
-//                "        (\n" + 
-//                "            t : Field( name == \"t\" ) and\n" + 
-//                "            eval( t.getValue().equals(\"Y\") )\n" + 
-//                "        )\n" + 
-//                "        and (\n" + 
-//                "           (\n" + 
-//                "                c : Field( name == \"c\" ) and\n" + 
-//                "                eval( c.getValue().equals(\"c\") ) and\n" +                 
-//                "                d : Field( name == \"d\" ) and\n" + 
-//                "                eval( d.intValue()<5 )\n" + 
-//                "           ) \n" + 
-//                "           or \n" + 
+                "        (\n" + 
+                "            ( \n" + 
+                "                a : Field( name == \"a\") and\n" + 
+                "                eval( !a.getValue().equals(\"a\") ) and\n" + 
+                "                b : Field( name == \"b\" ) and\n" + 
+                "                eval( b.intValue()>10 )\n" + 
+                "           )\n" + 
+                "           /*\n" + 
+                "           or\n" + 
+                "           (\n" + 
+                "                b2 : Field( name == \"b\" ) and\n" + 
+                "                eval( b2.intValue()<10 )\n" + 
+                "           )\n" + 
+                "           */\n" + 
+                "        )\n" + 
+                "        and \n" + 
+                "        (\n" + 
+                "            t : Field( name == \"t\" ) and\n" + 
+                "            eval( t.getValue().equals(\"Y\") )\n" + 
+                "        )\n" + 
+                "        and (\n" + 
+                "           (\n" + 
+                "                c : Field( name == \"c\" ) and\n" + 
+                "                eval( c.getValue().equals(\"c\") ) and\n" +                 
+                "                d : Field( name == \"d\" ) and\n" + 
+                "                eval( d.intValue()<5 )\n" + 
+                "           ) \n" + 
+                "           or \n" + 
                 "           (\n" + 
                 "                c : Field( name == \"c\" ) and\n" + 
                 "                eval( c.getValue().equals(\"c\") ) and\n" + 
@@ -1520,7 +1507,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "                d : Field( name == \"d\" ) and\n" + 
                 "                eval( d.intValue()<20 )\n" + 
                 "           )\n" + 
-//                "        )\n" + 
+                "        )\n" + 
                 "    then\n" + 
                 "        System.out.println( \"Worked!\" ); \n" + 
                 "end";

@@ -16,15 +16,20 @@
 
 package org.drools.reteoo;
 
+import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
@@ -34,6 +39,9 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Pattern;
+import org.drools.rule.TypeDeclaration;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -53,7 +61,7 @@ public class PropagationQueuingNode extends ObjectSource
 
     private ObjectSinkNode    previousObjectSinkNode;
     private ObjectSinkNode    nextObjectSinkNode;
-    private PropagateAction   action;
+    private PropagateAction   action; 
 
     public PropagationQueuingNode() {
     }
@@ -76,7 +84,13 @@ public class PropagationQueuingNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );
+        initDeclaredMask(context);
     }
+    
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        return 0;
+    }      
 
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
@@ -187,25 +201,56 @@ public class PropagationQueuingNode extends ObjectSource
         }
     }
 
-    public void modifyObject( InternalFactHandle factHandle,
-                              ModifyPreviousTuples modifyPreviousTuples,
-                              PropagationContext context,
-                              InternalWorkingMemory workingMemory ) {
+    public void modifyObject(InternalFactHandle factHandle,
+                             ModifyPreviousTuples modifyPreviousTuples,
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
         final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
 
+        //        for ( ObjectSink s : this.sink.getSinks() ) {
+        //            RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (RightTupleSink) s );
+        //            if ( rightTuple != null ) {
+        //                rightTuple.reAdd();
+        //                // RightTuple previously existed, so continue as modify
+        //                memory.addAction( new ModifyToSinkAction( rightTuple,
+        //                                                          context,
+        //                                                          (RightTupleSink) s ) );
+        //            } else {
+        //                // RightTuple does not exist, so create and continue as assert
+        //                memory.addAction( new AssertToSinkAction( factHandle,
+        //                                                          context,
+        //                                                          s ) );
+        //            }
+        //        }
+
         for ( ObjectSink s : this.sink.getSinks() ) {
-            RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (RightTupleSink) s );
-            if ( rightTuple != null ) {
+            BetaNode betaNode = (BetaNode) s;
+            RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+            while ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < betaNode.getRightInputOtnId() ) {
+                modifyPreviousTuples.removeRightTuple();
+                // we skipped this node, due to alpha hashing, so retract now
+                rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
+                                                                  context,
+                                                                  workingMemory );
+                rightTuple = modifyPreviousTuples.peekRightTuple();
+            }
+
+            if ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() == betaNode.getRightInputOtnId() ) {
+                modifyPreviousTuples.removeRightTuple();
                 rightTuple.reAdd();
-                // RightTuple previously existed, so continue as modify
-                memory.addAction( new ModifyToSinkAction( rightTuple,
-                                                          context,
-                                                          (RightTupleSink) s ) );
+                if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {
+                    // RightTuple previously existed, so continue as modify
+                    memory.addAction( new ModifyToSinkAction( rightTuple,
+                                                              context,
+                                                              betaNode ) );
+                }
             } else {
-                // RightTuple does not exist, so create and continue as assert
-                memory.addAction( new AssertToSinkAction( factHandle,
-                                                          context,
-                                                          s ) );
+                if ( intersect( context.getModificationMask(), betaNode.getRightInferredMask() ) ) {
+                    // RightTuple does not exist for this node, so create and continue as assert
+                    memory.addAction( new AssertToSinkAction( factHandle,
+                                                              context,
+                                                              betaNode ) );
+                }
             }
         }
 
@@ -216,6 +261,13 @@ public class PropagationQueuingNode extends ObjectSource
         }
     }
 
+    public  void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                         final ModifyPreviousTuples modifyPreviousTuples,
+                                         final PropagationContext context,
+                                         final InternalWorkingMemory workingMemory) {
+        modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+    }    
+    
     /**
      * Propagate all queued actions (asserts and retracts).
      * <p/>

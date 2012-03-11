@@ -373,12 +373,13 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         return childLeftTuple;
     }
 
-    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
-            if ( leftTuple != null ) {
-                leftTuple.reAdd(); //
-            }
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        // only called from lianode 
+        for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {           
+            sink.modifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory );
         }
     }
 

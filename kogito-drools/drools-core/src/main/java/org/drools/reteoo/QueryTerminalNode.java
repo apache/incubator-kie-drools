@@ -61,6 +61,12 @@ public final class QueryTerminalNode extends BaseNode
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+    
+    private long             declaredMask;
+    private long             inferredMask;
+    private long             negativeMask;
+    
+    private int              leftInputOtnId;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -89,7 +95,10 @@ public final class QueryTerminalNode extends BaseNode
         this.query = (Query) rule;
         this.subrule = subrule;
         this.tupleSource = source;
-        this.subruleIndex = subruleIndex;        
+        this.subruleIndex = subruleIndex;   
+        
+        initDeclaredMask(context);        
+        initInferredMask();        
     }
 
     // ------------------------------------------------------------
@@ -102,6 +111,10 @@ public final class QueryTerminalNode extends BaseNode
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();        
         tupleSource = (LeftTupleSource) in.readObject();
+        declaredMask = in.readLong();
+        inferredMask = in.readLong();        
+        negativeMask = in.readLong();
+        leftInputOtnId = in.readInt();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -110,7 +123,28 @@ public final class QueryTerminalNode extends BaseNode
         out.writeObject( subrule );
         out.writeInt(subruleIndex);
         out.writeObject( tupleSource );
+        out.writeLong(declaredMask);
+        out.writeLong(inferredMask);        
+        out.writeLong(negativeMask);
+        out.writeLong(leftInputOtnId);        
     }
+    
+    public void initDeclaredMask(BuildContext context) {  
+        RuleTerminalNode.doInitDeclaredMask(this, context);
+    }
+    
+    public void initInferredMask() {
+        RuleTerminalNode.doInitInferredMask(this);
+    }
+    
+    public long getDeclaredMask() {
+        return declaredMask;
+    }
+
+    public long getInferredMask() {
+        return inferredMask;
+    }
+    
 
     public Rule getRule() {
         return this.query;
@@ -178,21 +212,23 @@ public final class QueryTerminalNode extends BaseNode
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( createLeftTuple( factHandle,
-                                              this,
-                                              true ),
-                             context,
-                             workingMemory );
-        }
+        LeftTupleSource.doMdifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory, 
+                                         (LeftTupleSink) this, getLeftInputOtnId(), inferredMask );        
+//        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+//        if ( leftTuple != null ) {
+//            leftTuple.reAdd(); //
+//            // LeftTuple previously existed, so continue as modify
+//            modifyLeftTuple( leftTuple,
+//                             context,
+//                             workingMemory );
+//        } else {
+//            // LeftTuple does not exist, so create and continue as assert
+//            assertLeftTuple( createLeftTuple( factHandle,
+//                                              this,
+//                                              true ),
+//                             context,
+//                             workingMemory );
+//        }
     }
 
     public void modifyLeftTuple(LeftTuple leftTuple,
@@ -361,6 +397,35 @@ public final class QueryTerminalNode extends BaseNode
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }          
+    }    
+    
+    
+    public int getLeftInputOtnId() {
+        return leftInputOtnId;
+    }
+
+    public void setLeftInputOtnId(int leftInputOtnId) {
+        this.leftInputOtnId = leftInputOtnId;
+    }
+
+    public LeftTupleSource unwrapTupleSource() {
+        return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
+    }
+    
+    public void setDeclaredMask(long mask) {
+        declaredMask = mask;
+    }
+
+    public void setInferredMask(long mask) {
+        inferredMask = mask;
+    }      
+
+    public long getNegativeMask() {
+        return negativeMask;
+    }
+    
+    public void setNegativeMask(long mask) {
+        negativeMask = mask;
+    }           
 
 }
