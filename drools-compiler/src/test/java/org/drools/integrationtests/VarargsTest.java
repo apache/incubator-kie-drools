@@ -8,19 +8,33 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.definition.type.PropertyReactive;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class VarargsTest extends CommonTestMethodBase {
     
     @Test
     public void testStrStartsWith() throws Exception {
-        KnowledgeBase kbase = readKnowledgeBase();
+        KnowledgeBase kbase = loadKnowledgeBase("varargs.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         ksession.setGlobal( "invoker", new Invoker() );
 
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testVarargs() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase("varargs2.drl");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        MySet mySet = new MySet( "one", "two" );
+        ksession.insert(mySet);
         ksession.fireAllRules();
     }
 
@@ -57,19 +71,26 @@ public class VarargsTest extends CommonTestMethodBase {
         public boolean equals(Object other) { return other != null && other instanceof B && value == ((B)other).value; };
     }
 
-    private KnowledgeBase readKnowledgeBase() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("varargs.drl")),
-                ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
-            }
-            throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
+    @PropertyReactive
+    public static class MySet {
+        Set<String> set = new HashSet<String>();
+
+        public MySet( String... strings ){
+            add( strings );
         }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        return kbase;
+
+        public void add( String... strings ){
+            for( String s: strings ){
+                set.add( s );
+            }
+        }
+
+        public boolean contains( String s ){
+            return set.contains( s );
+        }
+
+        public String toString(){
+            return set.toString();
+        }
     }
 }

@@ -1,0 +1,28 @@
+package org.drools.test
+
+import org.drools.integrationtests.VarargsTest.MySet;
+
+rule "showSet"
+salience -1000
+when
+    $ms: MySet()
+then
+    System.out.println( $ms.toString() );
+end
+
+rule "addSet"
+no-loop true
+when
+    $ms: MySet()
+then
+    modify( $ms ){ add( "three", "four" ) }
+    insert( new MySet( "x", "y" ) );
+end
+
+rule "xySet"
+no-loop true
+when
+    $ms: MySet()
+then
+      modify( $ms ){ add( "z" ) }
+end

@@ -369,7 +369,7 @@ public class RuleTerminalNode extends BaseNode
                 }
             }            
             
-            if ( reuseActivation ) {
+            if ( reuseActivation && tuple.getObject() != null ) {
                 item = ( AgendaItem ) tuple.getObject();
                 item.setSalience( rule.getSalience().getValue( tuple,
                                                                this.rule,

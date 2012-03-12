@@ -1472,14 +1472,12 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
                 "                eval( !a.getValue().equals(\"a\") ) and\n" + 
                 "                b : Field( name == \"b\" ) and\n" + 
                 "                eval( b.intValue()>10 )\n" + 
-                "           )\n" + 
-                "           /*\n" + 
+                "           )\n" +  
                 "           or\n" + 
                 "           (\n" + 
                 "                b2 : Field( name == \"b\" ) and\n" + 
                 "                eval( b2.intValue()<10 )\n" + 
                 "           )\n" + 
-                "           */\n" + 
                 "        )\n" + 
                 "        and \n" + 
                 "        (\n" + 

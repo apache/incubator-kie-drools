@@ -1,6 +1,15 @@
 Welcome to Drools
 =================
 
+Third party jars
+----------------
+
+Following third party jars are optional and are not included in Drools distribution:
+
+1.Quartz:  Quartz is an optional jar only needed if you wish to adapt existing quartz calendars. It can be 
+downloaded from http://www.quartz-scheduler.org/. 
+
+
 Run the examples
 ----------------
 
