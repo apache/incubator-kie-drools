@@ -51,6 +51,32 @@
   </section>
 
   <section>
+    <title>KnowledgeBuilder supports building of cross referencing drl files</title>
+
+    <para>KnowledgeBuilder has a new batch mode, with a fluent interface,
+    that allows to build multiple drls at once as in the following example:</para>
+
+    <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+      kbuilder.batch()
+      .add(ResourceFactory.newByteArrayResource(rules1.getBytes()), ResourceType.DRL)
+      .add(ResourceFactory.newByteArrayResource(rules2.getBytes()), ResourceType.DRL)
+      .add(ResourceFactory.newByteArrayResource(declarations.getBytes()), ResourceType.DRL)
+      .build();</programlisting>
+
+    <para>In this way it is no longer necessary to build the drls files in the right order
+    (e.g. first the drls containing the type declarations and then the ones with the rules using them)
+    and it will also be possible to have circular references among them.</para>
+
+    <para>Moreover the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
+    what has been added with the last drl(s) building. This can be useful to recover from wrong drl as it follows</para>
+
+    <programlisting>kbuilder.add(ResourceFactory.newByteArrayResource(wrongDrl.getBytes()), ResourceType.DRL);
+      if ( kbuilder.hasErrors() ) {
+      kbuilder.undo();
+      }</programlisting>
+  </section>
+
+  <section>
     <title>Guvnor</title>
 
     <section>
