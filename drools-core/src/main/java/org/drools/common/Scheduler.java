@@ -79,8 +79,8 @@ public final class Scheduler {
         public void execute(JobContext ctx) {
             InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
             ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
-            
-            agenda.fireActivation( item );
+
+            boolean wasFired = agenda.fireTimedActivation( item, false );
             if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
                 agenda.getScheduledActivationsLinkedList().remove( item );
                 item.setEnqueued( false );
@@ -89,7 +89,10 @@ public final class Scheduler {
                 // so reset the activated to true here
                 item.setActivated( true );
             }
-            agenda.getWorkingMemory().fireAllRules();
+
+            if ( wasFired ) {
+                agenda.getWorkingMemory().fireAllRules();
+            }
         }
     }
     
