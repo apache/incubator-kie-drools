@@ -22,11 +22,18 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
 
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.definition.rule.Global;
+import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
+import org.drools.definition.type.FactType;
+import org.drools.definitions.rule.impl.GlobalImpl;
 import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
@@ -55,7 +62,7 @@ public class KnowledgePackageImp
         for ( org.drools.rule.Rule rule : rules ) {
             list.add( new RuleImpl( rule ) );
         }
-        return list;
+        return Collections.unmodifiableCollection( list );
     }
 
     /**
@@ -85,7 +92,7 @@ public class KnowledgePackageImp
      * @see org.drools.rule.Package#getFunctions()
      */
     public Function getFunction(String name) {
-        return this.pkg.getFunctions().containsKey(name)?this.pkg.getFunctions().get(name):null;
+        return this.pkg.getFunctions().containsKey(name) ? this.pkg.getFunctions().get(name) : null;
     }
 
     /**
@@ -101,12 +108,47 @@ public class KnowledgePackageImp
     
 
     public Collection<Process> getProcesses() {
-        Collection<org.drools.definition.process.Process> processes = (Collection<org.drools.definition.process.Process>) pkg.getRuleFlows().values();
+        Collection<org.drools.definition.process.Process> processes = pkg.getRuleFlows().values();
         List<Process> list = new ArrayList<Process>( processes.size() );
         for ( org.drools.definition.process.Process process : processes ) {
             list.add( process );
         }
-        return list;
+        return Collections.unmodifiableCollection( list );
+    }
+
+    
+    public Collection<FactType> getFactTypes() {
+        List<FactType> list = new ArrayList<FactType>( pkg.getFactTypes().size() );
+        for ( Map.Entry<String, FactType> entry : pkg.getFactTypes().entrySet() ) {
+            // avoid native class definitions
+            if ( entry.getValue().getName() != null ) {
+                list.add( entry.getValue() );
+            }
+        }
+        return Collections.unmodifiableCollection( list );
+    }
+
+    public Collection<Query> getQueries() {
+        org.drools.rule.Rule[] rules = pkg.getRules();
+        List<Query> list = new ArrayList<Query>( rules.length );
+        for ( org.drools.rule.Rule rule : rules ) {
+            if ( rule instanceof org.drools.rule.Query ) {
+                list.add( new RuleImpl( rule ) );
+            }
+        }
+        return Collections.unmodifiableCollection( list );
+    }
+
+    public Collection<String> getFunctionNames() {
+        return Collections.unmodifiableCollection( pkg.getFunctions().keySet() );
+    }
+
+    public Collection<Global> getGlobalVariables() {
+        List<Global> list = new ArrayList<Global>( pkg.getGlobals().size() );
+        for ( Map.Entry<String, String> global : pkg.getGlobals().entrySet() ) {
+            list.add( new GlobalImpl( global.getKey(), global.getValue() ) );
+        }
+        return Collections.unmodifiableCollection( list );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
