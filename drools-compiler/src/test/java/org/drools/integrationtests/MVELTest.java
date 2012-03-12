@@ -317,7 +317,7 @@ public class MVELTest extends CommonTestMethodBase {
         assertEquals(3, insertedObjects.size());
     }
     
-    @Test @Ignore // MVEL bug
+    @Test
     public void testSizeCheckInObject() {
         String str = ""+
         "package org.test \n" +
