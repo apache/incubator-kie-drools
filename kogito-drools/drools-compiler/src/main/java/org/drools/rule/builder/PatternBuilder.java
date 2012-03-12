@@ -967,8 +967,14 @@ public class PatternBuilder
         MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
         MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
         MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
-        MVEL.analysisCompile( expr,
-                              pctx );
+
+        try {
+            MVEL.analysisCompile( expr, pctx );
+        } catch (Exception e) {
+            // There is a problem in setting the inputs for this expression, but it will be
+            // reported during expression analysis, so swallow it at the moment
+            return;
+        }
 
         if ( !pctx.getInputs().isEmpty() ) {
             for ( String v : pctx.getInputs().keySet() ) {

@@ -28,6 +28,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.WithNode;
+import org.mvel2.compiler.AccessorNode;
 import org.mvel2.compiler.CompiledAccExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.integration.Interceptor;
@@ -124,8 +125,8 @@ public class ModifyInterceptor
             return setterAccessor.getMethod();
         } else {
             ExecutableAccessor accessor = (ExecutableAccessor)parmValuePair.getStatement();
-            IndexedVariableAccessor variableAccessor = (IndexedVariableAccessor)accessor.getNode().getAccessor();
-            MethodAccessor methodAccessor = (MethodAccessor)variableAccessor.getNextNode();
+            AccessorNode accessorNode = (AccessorNode)accessor.getNode().getAccessor();
+            MethodAccessor methodAccessor = (MethodAccessor)accessorNode.getNextNode();
             return methodAccessor.getMethod();
         }
     }

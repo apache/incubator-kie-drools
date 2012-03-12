@@ -9615,11 +9615,11 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test @Ignore
+    @Test
     public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation() {
 
         String rule = "package test; \n" +
-                "\n" +
+                "dialect \"mvel\"\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Bean \n" +
@@ -9634,7 +9634,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "\n" +
                 "rule \"Check\" \n" +
                 "when \n" +
-                "\t Bean( field > 1.0E-1 ) \n" +
+                "\t Bean( field < 1.0E-1 ) \n" +
                 "then \n" +
                 "\t list.add( \"OK\" ); \n" +
                 "end";
@@ -10163,5 +10163,34 @@ public class MiscTest extends CommonTestMethodBase {
         assertTrue( list.contains( "OK" ) );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testPatternOnClass() throws Exception {
+        String rule = "import org.drools.reteoo.InitialFactImpl\n" +
+                "import org.drools.FactB\n" +
+                "rule \"Clear\" when\n" +
+                "   $f: Object(class != FactB.class)\n" +
+                "then\n" +
+                "   if( ! ($f instanceof InitialFactImpl) ){\n" +
+                "     retract( $f );\n" +
+                "   }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new FactA());
+        ksession.insert(new FactA());
+        ksession.insert(new FactB());
+        ksession.insert(new FactB());
+        ksession.insert(new FactC());
+        ksession.insert(new FactC());
+        ksession.fireAllRules();
+
+        for (org.drools.runtime.rule.FactHandle fact : ksession.getFactHandles()) {
+            InternalFactHandle internalFact = (InternalFactHandle)fact;
+            assertTrue(internalFact.getObject() instanceof FactB);
+        }
     }
 }

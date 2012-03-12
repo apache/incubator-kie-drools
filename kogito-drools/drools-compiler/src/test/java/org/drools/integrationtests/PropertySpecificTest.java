@@ -30,7 +30,6 @@ import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;

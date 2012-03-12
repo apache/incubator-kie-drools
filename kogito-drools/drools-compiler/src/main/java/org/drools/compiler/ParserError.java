@@ -19,9 +19,10 @@ package org.drools.compiler;
 import org.drools.io.Resource;
 
 public class ParserError extends DroolsError {
-    private int    row;
-    private int    col;
-    private String message;
+    private final int    row;
+    private final int    col;
+    private final String message;
+    private final String namespace;
 
     public ParserError(final String message,
                        final int row,
@@ -33,16 +34,30 @@ public class ParserError extends DroolsError {
                        final String message,
                        final int row,
                        final int col) {
+        this(resource, message, row, col, "");
+    }
+
+    public ParserError(final Resource resource,
+                       final String message,
+                       final int row,
+                       final int col,
+                       final String namespace) {
         super(resource);
         this.message = message;
         this.row = row;
         this.col = col;
+        this.namespace = namespace;
     }
 
     public String getMessage() {
         return this.message;
     }
-    
+
+    @Override
+    public String getNamespace() {
+        return namespace;
+    }
+
     public int[] getLines() {
         return new int[] { this.row };
     }
