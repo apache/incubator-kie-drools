@@ -515,6 +515,14 @@ public class Package
         return decl != null ? decl.getTypeClassDef() : null;
     }
 
+    public Map<String, FactType> getFactTypes() {
+        Map<String, FactType> types = new HashMap<String, FactType>();
+        for ( String typeName : typeDeclarations.keySet() ) {
+            types.put( typeName, typeDeclarations.get( typeName ).getTypeClassDef() );
+        }
+        return types;
+    }
+
     public ClassFieldAccessorStore getClassFieldAccessorStore() {
         return classFieldAccessorStore;
     }
