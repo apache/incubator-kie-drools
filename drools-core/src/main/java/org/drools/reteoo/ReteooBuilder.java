@@ -298,7 +298,7 @@ public class ReteooBuilder
         
         for ( BaseNode node : leafSet ) {
             if ( node instanceof RuleTerminalNode ) {
-                ((RuleTerminalNode)node).initInferredMask();
+                ((TerminalNode)node).initInferredMask();
             } else { // else node instanceof BetaNode
                 ((BetaNode)node).initInferredMask();
             }

@@ -83,6 +83,7 @@ public class WindowNode extends ObjectSource
         this.constraints = constraints;
         this.behavior = new BehaviorManager( behaviors );
         this.entryPoint = context.getCurrentEntryPoint();
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -247,6 +248,13 @@ public class WindowNode extends ObjectSource
         // as noted in the javadoc, this node will not propagate retracts, relying
         // on the standard algorithm to do it instead.
     }
+    
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+    }    
 
     public void updateSink( final ObjectSink sink,
             final PropagationContext context,
@@ -363,4 +371,10 @@ public class WindowNode extends ObjectSource
             out.writeObject( events );
         }
     }
+    
+    
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
+    }     
 }

@@ -95,7 +95,6 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
     
     // related to true modify
-
     public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
                                                    RightTuple parentRightTuple,
                                                    PropagationContext context,
@@ -141,36 +140,32 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void createChildLeftTuplesforQuery(LeftTuple leftTuple,
                                               RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void doPropagateAssertLeftTuple(PropagationContext context,
                                            InternalWorkingMemory workingMemory,
                                            LeftTuple leftTuple,
                                            LeftTupleSink sink) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void createChildLeftTuplesforQuery(LeftTuple leftTuple,
                                               RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled,
                                               boolean linkRightTuple) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void modifyChildLeftTuplesforQuery(RightTuple rightTuple,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
-        // TODO Auto-generated method stub
-        
+    }
+
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {        
     }
 
 }
