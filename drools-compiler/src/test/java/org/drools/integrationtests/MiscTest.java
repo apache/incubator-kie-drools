@@ -9612,11 +9612,11 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test @Ignore
+    @Test
     public void testMVELConstraintsWithFloatingPointNumbersInScientificNotation() {
 
         String rule = "package test; \n" +
-                "\n" +
+                "dialect \"mvel\"\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "declare Bean \n" +
@@ -9631,7 +9631,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "\n" +
                 "rule \"Check\" \n" +
                 "when \n" +
-                "\t Bean( field > 1.0E-1 ) \n" +
+                "\t Bean( field < 1.0E-1 ) \n" +
                 "then \n" +
                 "\t list.add( \"OK\" ); \n" +
                 "end";
