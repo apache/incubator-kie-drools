@@ -49,12 +49,12 @@ import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
  * @see LeftTuple
  */
 public abstract class LeftTupleSource extends BaseNode
-    implements
-    Externalizable {
+        implements
+        Externalizable {
 
-    private long leftDeclaredMask;
-    private long leftInferredMask;
-    private long leftNegativeMask;
+    private long                      leftDeclaredMask;
+    private long                      leftInferredMask;
+    private long                      leftNegativeMask;
 
     // ------------------------------------------------------------
     // Instance members
@@ -62,6 +62,9 @@ public abstract class LeftTupleSource extends BaseNode
 
     /** The destination for <code>Tuples</code>. */
     protected LeftTupleSinkPropagator sink;
+
+    
+    private transient int              leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors
@@ -75,7 +78,9 @@ public abstract class LeftTupleSource extends BaseNode
      *
      * @param id
      */
-    LeftTupleSource(final int id, final RuleBasePartitionId partitionId, final boolean partitionsEnabled ) {
+    LeftTupleSource(final int id,
+                    final RuleBasePartitionId partitionId,
+                    final boolean partitionsEnabled) {
         super( id, partitionId, partitionsEnabled );
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
     }
@@ -95,9 +100,9 @@ public abstract class LeftTupleSource extends BaseNode
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( sink );
-        out.writeLong(leftDeclaredMask);
-        out.writeLong(leftInferredMask);
-        out.writeLong(leftNegativeMask);
+        out.writeLong( leftDeclaredMask );
+        out.writeLong( leftInferredMask );
+        out.writeLong( leftNegativeMask );
     }
 
     /**
@@ -110,7 +115,7 @@ public abstract class LeftTupleSource extends BaseNode
      */
     public void addTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
-            if( this.partitionsEnabled && ! this.partitionId.equals( tupleSink.getPartitionId() ) ) {
+            if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
                 // if partitions are enabled and the next node belongs to a different partition,
                 // we need to use the asynchronous propagator
                 this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), tupleSink );
@@ -120,7 +125,7 @@ public abstract class LeftTupleSource extends BaseNode
             }
         } else if ( this.sink instanceof SingleLeftTupleSinkAdapter ) {
             final CompositeLeftTupleSinkAdapter sinkAdapter;
-            if( this.partitionsEnabled ) {
+            if ( this.partitionsEnabled ) {
                 // a composite propagator may propagate to both nodes in the same partition
                 // as well as in a different partition, so, if partitions are enabled, we
                 // must use the asynchronous version
@@ -154,7 +159,7 @@ public abstract class LeftTupleSource extends BaseNode
             final CompositeLeftTupleSinkAdapter sinkAdapter = (CompositeLeftTupleSinkAdapter) this.sink;
             sinkAdapter.removeTupleSink( tupleSink );
             if ( sinkAdapter.size() == 1 ) {
-                if( this.partitionsEnabled && ! this.partitionId.equals( tupleSink.getPartitionId() ) ) {
+                if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
                     // if partitions are enabled and the next node belongs to a different partition,
                     // we need to use the asynchronous propagator
                     this.sink = new AsyncSingleLeftTupleSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
@@ -178,19 +183,21 @@ public abstract class LeftTupleSource extends BaseNode
         return this.sink.size() > 0;
     }
 
-    protected final void initMasks(BuildContext context, LeftTupleSource leftInput) {
-        initDeclaredMask(context, leftInput);
-        initInferredMask(leftInput);
+    protected final void initMasks(BuildContext context,
+                                   LeftTupleSource leftInput) {
+        initDeclaredMask( context, leftInput );
+        initInferredMask( leftInput );
     }
 
-    protected void initDeclaredMask(BuildContext context, LeftTupleSource leftInput) {
+    protected void initDeclaredMask(BuildContext context,
+                                    LeftTupleSource leftInput) {
         if ( context == null || context.getLastBuiltPatterns() == null ) {
             // only happens during unit tests
             leftDeclaredMask = Long.MAX_VALUE;
             return;
         }
 
-        if ( !(leftInput instanceof LeftInputAdapterNode)) {
+        if ( !(leftInput instanceof LeftInputAdapterNode) ) {
             // BetaNode's not after LIANode are not relevant for left mask property specific, so don't block anything.
             leftDeclaredMask = Long.MAX_VALUE;
             return;
@@ -199,13 +206,13 @@ public abstract class LeftTupleSource extends BaseNode
         Pattern pattern = context.getLastBuiltPatterns()[1]; // left input pattern
 
         ObjectType objectType;
-        if (pattern == null || this instanceof AccumulateNode) {
-            ObjectSource objectSource = ((LeftInputAdapterNode)leftInput).getParentObjectSource();
-            if ( !(objectSource instanceof ObjectTypeNode)) {
+        if ( pattern == null || this instanceof AccumulateNode ) {
+            ObjectSource objectSource = ((LeftInputAdapterNode) leftInput).getParentObjectSource();
+            if ( !(objectSource instanceof ObjectTypeNode) ) {
                 leftDeclaredMask = Long.MAX_VALUE;
                 return;
             }
-            objectType = ((ObjectTypeNode)objectSource).getObjectType();
+            objectType = ((ObjectTypeNode) objectSource).getObjectType();
         } else {
             objectType = pattern.getObjectType();
         }
@@ -216,25 +223,25 @@ public abstract class LeftTupleSource extends BaseNode
             return;
         }
 
-        Class objectClass = ((ClassObjectType)objectType).getClassType();
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
+        Class objectClass = ((ClassObjectType) objectType).getClassType();
+        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
         if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
             // if property specific is not on, then accept all modification propagations
             leftDeclaredMask = Long.MAX_VALUE;
         } else {
             // TODO: at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
-            if (pattern != null) {
-                List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-                leftDeclaredMask = calculatePositiveMask(pattern.getListenedProperties(), settableProperties);
-                leftNegativeMask = calculateNegativeMask(pattern.getListenedProperties(), settableProperties);
+            if ( pattern != null ) {
+                List<String> settableProperties = getSettableProperties( context.getRuleBase(), objectClass );
+                leftDeclaredMask = calculatePositiveMask( pattern.getListenedProperties(), settableProperties );
+                leftNegativeMask = calculateNegativeMask( pattern.getListenedProperties(), settableProperties );
             }
         }
     }
 
     protected void initInferredMask(LeftTupleSource leftInput) {
-        LeftTupleSource unwrappedLeft = unwrapLeftInput(leftInput);
-        if ( unwrappedLeft instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource() instanceof AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)unwrappedLeft).getParentObjectSource();
+        LeftTupleSource unwrappedLeft = unwrapLeftInput( leftInput );
+        if ( unwrappedLeft instanceof LeftInputAdapterNode && ((LeftInputAdapterNode) unwrappedLeft).getParentObjectSource() instanceof AlphaNode ) {
+            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode) unwrappedLeft).getParentObjectSource();
             leftInferredMask = alphaNode.updateMask( leftDeclaredMask );
         } else {
             leftInferredMask = leftDeclaredMask;
@@ -243,31 +250,48 @@ public abstract class LeftTupleSource extends BaseNode
     }
 
     private LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
-        if (leftInput instanceof FromNode) {
-            return ((FromNode)leftInput).getLeftTupleSource();
+        if ( leftInput instanceof FromNode ) {
+            return ((FromNode) leftInput).getLeftTupleSource();
         }
         return leftInput;
     }
-
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        // cast is safe, as LIANode never has this method called
-        LeftTupleSink sink = (LeftTupleSink)this;
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(sink);
-        if ( leftTuple != null ) {
-            leftTuple.reAdd();
+        doMdifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
+                          (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask() );
+    }
+
+    public static void doMdifyLeftTuple(InternalFactHandle factHandle,
+                                        ModifyPreviousTuples modifyPreviousTuples,
+                                        PropagationContext context,
+                                        InternalWorkingMemory workingMemory,
+                                        LeftTupleSink sink,
+                                        int leftInputOtnId,
+                                        long leftInferredMask) {
+        LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
+        while ( leftTuple != null && ((LeftTupleSink) leftTuple.getLeftTupleSink()).getLeftInputOtnId() < leftInputOtnId ) {
+            modifyPreviousTuples.removeLeftTuple();
+            // we skipped this node, due to alpha hashing, so retract now
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+                                                           context,
+                                                           workingMemory );
+            leftTuple = modifyPreviousTuples.peekLeftTuple();
         }
 
-        if ( intersect(context.getModificationMask(), leftInferredMask) ) {
-            if ( leftTuple != null ) {
+        if ( leftTuple != null && ((LeftTupleSink) leftTuple.getLeftTupleSink()).getLeftInputOtnId() == leftInputOtnId ) {
+            modifyPreviousTuples.removeLeftTuple();
+            leftTuple.reAdd();
+            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
                 // LeftTuple previously existed, so continue as modify
                 sink.modifyLeftTuple( leftTuple,
-                        context,
-                        workingMemory );
-            } else {
+                                      context,
+                                      workingMemory );
+            }
+        } else {
+            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
                 // LeftTuple does not exist, so create and continue as assert
                 sink.assertLeftTuple( sink.createLeftTuple( factHandle,
                                                             sink,
@@ -276,6 +300,29 @@ public abstract class LeftTupleSource extends BaseNode
                                       workingMemory );
             }
         }
+
+        //        // cast is safe, as LIANode never has this method called
+        //        LeftTupleSink sink = (LeftTupleSink)this;
+        //        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(sink);
+        //        if ( leftTuple != null ) {
+        //            leftTuple.reAdd();
+        //        }
+        //
+        //        if ( intersect(context.getModificationMask(), leftInferredMask) ) {
+        //            if ( leftTuple != null ) {
+        //                // LeftTuple previously existed, so continue as modify
+        //                sink.modifyLeftTuple( leftTuple,
+        //                        context,
+        //                        workingMemory );
+        //            } else {
+        //                // LeftTuple does not exist, so create and continue as assert
+        //                sink.assertLeftTuple( sink.createLeftTuple( factHandle,
+        //                                                            sink,
+        //                                                            true ),
+        //                                      context,
+        //                                      workingMemory );
+        //            }
+        //        }
     }
 
     public long getLeftDeclaredMask() {
@@ -288,5 +335,13 @@ public abstract class LeftTupleSource extends BaseNode
 
     public long getLeftNegativeMask() {
         return leftNegativeMask;
+    }
+
+    public int getLeftInputOtnId() {
+        return leftInputOtnId;
+    }
+
+    public void setLeftInputOtnId(int leftInputOtnId) {
+        this.leftInputOtnId = leftInputOtnId;
     }
 }

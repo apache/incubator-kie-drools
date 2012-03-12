@@ -303,10 +303,11 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         return temp;
     }
     
-    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple(  (LeftTupleSink) sink );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-        }
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        // only called from lianode
+        sink.modifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory );
     }
 }

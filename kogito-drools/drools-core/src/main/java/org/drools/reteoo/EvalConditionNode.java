@@ -68,6 +68,8 @@ public class EvalConditionNode extends LeftTupleSource
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+    
+    private int leftInputOtnId;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -384,7 +386,15 @@ public class EvalConditionNode extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }            
+    }        
+    
+    public int getLeftInputOtnId() {
+        return leftInputOtnId;
+    }
+
+    public void setLeftInputOtnId(int leftInputOtnId) {
+        this.leftInputOtnId = leftInputOtnId;
+    }    
 
     public static class EvalMemory
         implements

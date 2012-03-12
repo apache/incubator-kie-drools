@@ -680,16 +680,14 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
 
-        wm.setGlobal( "results",
-                      results );
+        wm.setGlobal( "results", results );
 
-        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                         10 ), new Cheese( "stilton",
-                                                                           2 ), new Cheese( "stilton",
-                                                                                            5 ), new Cheese( "brie",
-                                                                                                             15 ), new Cheese( "brie",
-                                                                                                                               16 ), new Cheese( "provolone",
-                                                                                                                                                 8 )};
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton", 10 ), 
+                                             new Cheese( "stilton", 2 ), 
+                                             new Cheese( "stilton", 5 ), 
+                                             new Cheese( "brie", 15 ), 
+                                             new Cheese( "brie", 16 ), 
+                                             new Cheese( "provolone", 8 )};
 
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
         for ( int i = 0; i < cheese.length; i++ ) {
@@ -699,37 +697,27 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         // ---------------- 1st scenario 
         int fireCount = 0;
         wm.fireAllRules();
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 3,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount,  results.size() );
+        assertEquals( 3, ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(),  results.get( fireCount - 1 ).getClass().getName() );
 
         // ---------------- 2nd scenario 
         final int index = 1;
         cheese[index].setType( "brie" );
-        wm.update( cheeseHandles[index],
-                   cheese[index] );
+        wm.update( cheeseHandles[index], cheese[index] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 2,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount, results.size() );
+        assertEquals( 2, ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
 
         // ---------------- 3rd scenario 
         wm.retract( cheeseHandles[2] );
         wm.fireAllRules();
 
-        assertEquals( ++fireCount,
-                             results.size() );
-        assertEquals( 1,
-                             ((Collection) results.get( fireCount - 1 )).size() );
-        assertEquals( ArrayList.class.getName(),
-                             results.get( fireCount - 1 ).getClass().getName() );
+        assertEquals( ++fireCount,  results.size() );
+        assertEquals( 1,  ((Collection) results.get( fireCount - 1 )).size() );
+        assertEquals( ArrayList.class.getName(), results.get( fireCount - 1 ).getClass().getName() );
 
     }
 
