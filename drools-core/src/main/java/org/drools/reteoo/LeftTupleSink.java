@@ -87,4 +87,7 @@ public interface LeftTupleSink
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled);   
     
+    int getLeftInputOtnId();
+
+    void setLeftInputOtnId(int leftInputOtnId);    
 }

@@ -176,28 +176,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                  final InternalWorkingMemory workingMemory) {
         context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, true, betaNode)  );
     }
-
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-        if ( leftTuple != null ) {
-            leftTuple.reAdd(); //
-            // LeftTuple previously existed, so continue as modify
-            modifyLeftTuple( leftTuple,
-                             context,
-                             workingMemory );
-        } else {
-            // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTupleImpl( factHandle,
-                                                this,
-                                                true ),
-                             context,
-                             workingMemory );
-        }
-    }
-
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {        

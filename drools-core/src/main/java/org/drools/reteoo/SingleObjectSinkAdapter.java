@@ -70,6 +70,13 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                        context,
                                        workingMemory );
     }
+    
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+    }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         if ( candidate.equals( sink ) ) {

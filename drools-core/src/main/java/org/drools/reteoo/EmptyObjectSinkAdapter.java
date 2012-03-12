@@ -77,6 +77,13 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                       InternalWorkingMemory workingMemory) {
 
     }
+    
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        
+    }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         return null;

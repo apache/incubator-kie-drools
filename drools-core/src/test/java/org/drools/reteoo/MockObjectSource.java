@@ -93,8 +93,11 @@ public class MockObjectSource extends ObjectSource {
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
-        // TODO Auto-generated method stub
-
     }
+    
+    @Override
+    public long calculateDeclaredMask(List<String> settableProperties) {
+        throw new UnsupportedOperationException();
+    }    
 
 }

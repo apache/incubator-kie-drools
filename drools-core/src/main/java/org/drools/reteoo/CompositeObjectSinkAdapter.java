@@ -437,6 +437,49 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             }
         }
     }
+    
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        final Object object = factHandle.getObject();
+
+        // We need to iterate in the same order as the assert
+        if ( this.hashedFieldIndexes != null ) {
+            // Iterate the FieldIndexes to see if any are hashed
+            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+                if ( !fieldIndex.isHashed() ) {
+                    continue;
+                }
+                // this field is hashed so set the existing hashKey and see if there is a sink for it
+                final int index = fieldIndex.getIndex();
+                final HashKey hashKey = new HashKey( index,
+                                                     object,
+                                                     fieldIndex.getFieldExtractor() );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                if ( sink != null ) {
+                    // only alpha nodes are hashable
+                    sink.getSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                }
+            }
+        }
+
+        // propagate unhashed
+        if ( this.hashableSinks != null ) {
+            for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                // only alpha nodes are hashable
+                ((AlphaNode)sink).getSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+            }
+        }
+
+        if ( this.otherSinks != null ) {
+            // propagate others
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {                
+                // compound alpha, lianode or betanode
+                sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+            }
+        }        
+    }
 
     /**
      * This is a Hook method for subclasses to override. Please keep it protected unless you know
@@ -498,11 +541,12 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     public ObjectSink[] getSinks() {
         ObjectSink[] sinks = new ObjectSink[size()];
-        int at = 0;
+        int at = 0;        
 
-        if ( this.otherSinks != null ) {
-            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                sinks[at++] = sink;
+        if ( this.hashedSinkMap != null ) {
+            final Iterator it = this.hashedSinkMap.newIterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                sinks[at++] = (ObjectSink) entry.getValue();
             }
         }
 
@@ -511,11 +555,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 sinks[at++] = sink;
             }
         }
-
-        if ( this.hashedSinkMap != null ) {
-            final Iterator it = this.hashedSinkMap.newIterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                sinks[at++] = (ObjectSink) entry.getValue();
+        
+        if ( this.otherSinks != null ) {
+            for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
+                sinks[at++] = sink;
             }
         }
         return sinks;

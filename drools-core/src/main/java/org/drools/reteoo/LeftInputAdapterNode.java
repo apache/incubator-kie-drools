@@ -176,7 +176,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                          modifyPreviousTuples,
                                          context,
                                          workingMemory );
-
+    }
+    
+    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                       ModifyPreviousTuples modifyPreviousTuples,
+                                       PropagationContext context,
+                                       InternalWorkingMemory workingMemory) {
+        this.sink.byPassModifyToBetaNode( factHandle,
+                                          modifyPreviousTuples,
+                                          context,
+                                          workingMemory );        
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -307,6 +316,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                                 ClassNotFoundException {
             // this is a short living adapter class used only during an update operation, and
             // as so, no need for serialization code
+        }
+
+        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                           ModifyPreviousTuples modifyPreviousTuples,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException();
         }
 
     }
