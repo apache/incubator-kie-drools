@@ -1211,6 +1211,17 @@ public class DefaultAgenda
         }
     }
 
+
+    public synchronized boolean fireTimedActivation( final Activation activation, boolean saveForLater ) throws ConsequenceException {
+        //TODO : "save for later" : put activation in queue if halted, then dispatch again on next fire
+        if ( ! this.halt.get() ) {
+            fireActivation( activation );
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void increaseActiveActivations() {
         this.activeActivations++;
     }
