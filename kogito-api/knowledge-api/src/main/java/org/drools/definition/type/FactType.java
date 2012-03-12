@@ -43,6 +43,13 @@ public interface FactType
     public String getName();
 
     /**
+     * Returns the name of the FactType's super type
+     *
+     * @return the name of the fact type's super type.
+     */
+    public String getSuperClass();
+
+    /**
      * Returns the list of FactField in this FactType
      *  
      * @return the list of the fields in this FactType
@@ -97,7 +104,7 @@ public interface FactType
     /**
      * Get a map of the fields and their values for the bean.
      * 
-     * @param the bean to read the fields from.
+     * @param bean the bean to read the fields from.
      * 
      * @return a map of field names and corresponding values on the bean.
      */
