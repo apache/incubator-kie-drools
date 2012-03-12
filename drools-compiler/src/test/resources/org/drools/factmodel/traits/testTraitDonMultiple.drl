@@ -1,0 +1,48 @@
+package org.drools.test;
+
+import java.util.List;
+
+global List list;
+
+declare trait SeniorStudent
+    grad  : boolean
+    year  : int
+end
+
+declare Student
+    grad  : boolean    = false
+    year  : int        = 0
+end
+
+
+rule "Init"
+when
+then
+    insert( new Student() );
+end
+
+rule "React"
+when
+    $x : SeniorStudent( $y : year )
+then
+    list.add( $y );
+end
+
+
+rule "Don"
+salience 1
+when
+    $s : Student( grad == false )
+then
+    SeniorStudent sen = don( $s, SeniorStudent.class );
+end
+
+
+rule "monkey_wanders"
+when
+    $s : Student( grad == false, $y : year < 4 )
+then
+	modify( $s ) { setYear( $y + 1 ); }
+end
+
+
