@@ -10161,4 +10161,33 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testPatternOnClass() throws Exception {
+        String rule = "import org.drools.reteoo.InitialFactImpl\n" +
+                "import org.drools.FactB\n" +
+                "rule \"Clear\" when\n" +
+                "   $f: Object(class != FactB.class)\n" +
+                "then\n" +
+                "   if( ! ($f instanceof InitialFactImpl) ){\n" +
+                "     retract( $f );\n" +
+                "   }\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new FactA());
+        ksession.insert(new FactA());
+        ksession.insert(new FactB());
+        ksession.insert(new FactB());
+        ksession.insert(new FactC());
+        ksession.insert(new FactC());
+        ksession.fireAllRules();
+
+        for (org.drools.runtime.rule.FactHandle fact : ksession.getFactHandles()) {
+            InternalFactHandle internalFact = (InternalFactHandle)fact;
+            assertTrue(internalFact.getObject() instanceof FactB);
+        }
+    }
 }
