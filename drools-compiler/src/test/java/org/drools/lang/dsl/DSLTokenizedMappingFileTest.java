@@ -5,7 +5,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.junit.*;
+import org.junit.Test;
+import org.junit.Ignore;
 
 import static org.junit.Assert.*;
 
