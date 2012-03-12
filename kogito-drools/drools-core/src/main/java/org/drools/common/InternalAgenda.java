@@ -33,6 +33,8 @@ public interface InternalAgenda
 
     public void fireActivation(final Activation activation) throws ConsequenceException;
 
+    public boolean fireTimedActivation(final Activation activation, boolean saveForLater ) throws ConsequenceException;
+
     public void removeScheduleItem(final ScheduledAgendaItem item);
     
     public org.drools.core.util.LinkedList getScheduledActivationsLinkedList();
@@ -146,7 +148,7 @@ public interface InternalAgenda
      * execution though.
      */
     public void halt();
-    
+
     public void notifyHalt();
 
     /**

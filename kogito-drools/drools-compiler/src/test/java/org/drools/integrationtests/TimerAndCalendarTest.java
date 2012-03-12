@@ -1002,7 +1002,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testHaltWithTimer() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
@@ -1223,11 +1222,10 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
 
     @Test
-    @Ignore
-    public void testHaltAfterSomeTime() throws Exception {
+    public void testHaltAfterSomeTimeThenRestart() throws Exception {
         String drl = "package org.drools.test;\n" +
                 "\n" +
-                "rule fireAtWill\n" +
+                "rule FireAtWill\n" +
                 "timer(int:0 1000)\n" +
                 "when  \n" +
                 "then\n" +
@@ -1256,11 +1254,17 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             public void run(){ workingMemory.fireUntilHalt(); }
         } ).start();
         Thread.sleep( 2500 );
+
         workingMemory.insert( "halt" );
+        Thread.sleep( 3000 );
+
+        new Thread( new Runnable(){
+            public void run(){ workingMemory.fireUntilHalt(); }
+        } ).start();
         Thread.sleep( 2000 );
 
-        // now check that rule "fireAtWill" fired just 3 times
-        assertEquals( 4, workingMemory.getFactCount() );
+        // now check that rule "fireAtWill" fired just 3+2 times
+        assertEquals(6, workingMemory.getFactCount());
     }
 
 
