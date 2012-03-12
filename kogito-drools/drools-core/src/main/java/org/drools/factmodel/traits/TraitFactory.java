@@ -55,6 +55,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private static Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 
+    private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache;
+
     private AbstractRuleBase ruleBase;
 
 
@@ -312,17 +314,16 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    private Map<Class, Class<? extends CoreWrapper<K>>> wrapperCache;
 
 
 
     public CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz ) {
         if ( wrapperCache == null ) {
-            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<K>>>();
+            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
         }
         Class<? extends CoreWrapper<K>> wrapperClass = null;
         if ( wrapperCache.containsKey( coreKlazz ) ) {
-            wrapperClass = wrapperCache.get( coreKlazz );
+            wrapperClass = (Class<? extends CoreWrapper<K>>) wrapperCache.get( coreKlazz );
         } else {
             try {
                 wrapperClass = buildCoreWrapper( coreKlazz );

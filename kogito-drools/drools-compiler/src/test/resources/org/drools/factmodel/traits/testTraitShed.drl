@@ -33,6 +33,7 @@ end
 
 
 rule "Trait1"
+no-loop
 when
     $core: Imp()
 then

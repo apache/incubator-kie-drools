@@ -496,10 +496,17 @@ public class DefaultKnowledgeHelper
             }
             wrapper.init( core );
             inner = wrapper;
+
+            this.update( getFactHandle( core ), inner );
         }
 
 
-        T thing = (T) builder.getProxy( inner, trait );
+        T thing;
+        if ( inner.hasTrait( trait.getName() ) ) {
+            return (T) inner.getTrait( trait.getName() );
+        } else {
+            thing = (T) builder.getProxy( inner, trait );
+        }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
             insert( don( inner, Thing.class, false ) );
