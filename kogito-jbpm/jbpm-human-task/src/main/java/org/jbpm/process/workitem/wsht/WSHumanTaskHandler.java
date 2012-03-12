@@ -248,7 +248,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			}
 		}
 
-		client.addTask(task, content, new TaskAddedHandler(manager, workItem.getId()));
+		task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+		
+        client.addTask(task, content, new TaskAddedHandler(manager, workItem.getId()));
 
 	}
 	

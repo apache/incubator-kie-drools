@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="1.0"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
+                                 http://java.sun.com/xml/ns/persistence/orm 
+                                 http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://java.sun.com/xml/ns/persistence">
+
+  <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/ProcessEngineDS</jta-data-source>       
+    <mapping-file>META-INF/jbpm-orm.xml</mapping-file>
+    <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+    <class>org.drools.persistence.info.SessionInfo</class>
+    <class>org.drools.persistence.info.WorkItemInfo</class>
+    
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.show_sql" value="false" />	
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+    </properties>        
+  </persistence-unit>
+  
+  <persistence-unit name="org.jbpm.task">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <class>org.jbpm.task.Attachment</class>
+    <class>org.jbpm.task.Content</class>
+    <class>org.jbpm.task.BooleanExpression</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Delegation</class>
+    <class>org.jbpm.task.Escalation</class>
+    <class>org.jbpm.task.Group</class>
+    <class>org.jbpm.task.I18NText</class>
+    <class>org.jbpm.task.Notification</class>
+    <class>org.jbpm.task.EmailNotification</class>
+    <class>org.jbpm.task.EmailNotificationHeader</class>
+    <class>org.jbpm.task.PeopleAssignments</class>
+    <class>org.jbpm.task.Reassignment</class>
+    <class>org.jbpm.task.Status</class>
+    <class>org.jbpm.task.Task</class>
+    <class>org.jbpm.task.TaskData</class>
+    <class>org.jbpm.task.SubTasksStrategy</class>
+    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
+    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
+    <class>org.jbpm.task.User</class>
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sasa"/>
+      <property name="hibernate.connection.autocommit" value="false" />
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.show_sql" value="false" />
+    </properties>
+  </persistence-unit>
+   
+    
+</persistence>

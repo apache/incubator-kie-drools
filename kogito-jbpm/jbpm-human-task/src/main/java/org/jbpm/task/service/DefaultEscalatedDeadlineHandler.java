@@ -18,6 +18,7 @@ package org.jbpm.task.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -67,12 +68,14 @@ public class DefaultEscalatedDeadlineHandler
         handler = new EmailWorkItemHandler();
         
         String host = properties.getProperty( "mail.smtp.host", "localhost" );
-        String port = properties.getProperty( "mail.smtp.port", "25" );     
+        String port = properties.getProperty( "mail.smtp.port", "25" );    
+        String user = properties.getProperty( "mail.smtp.user" );
+        String password = properties.getProperty( "mail.smtp.password" ); 
         
         from = properties.getProperty( "from", null );
         replyTo = properties.getProperty( "replyTo", null );
         
-        handler.setConnection( host, port, null, null );
+        handler.setConnection( host, port, user, password );
     }
     
     public DefaultEscalatedDeadlineHandler() {
@@ -81,11 +84,13 @@ public class DefaultEscalatedDeadlineHandler
         ChainedProperties conf = new ChainedProperties("drools.email.conf",  ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
         String host = conf.getProperty( "host", null );
         String port = conf.getProperty( "port", "25" );
+        String user = conf.getProperty( "user", null );
+        String password = conf.getProperty( "password", null ); 
         
         from = conf.getProperty( "from", null );
         replyTo = conf.getProperty( "replyTo", null );
         
-        handler.setConnection( host, port, null, null );
+        handler.setConnection( host, port, user, password );
  
     }
     
@@ -130,15 +135,11 @@ public class DefaultEscalatedDeadlineHandler
         }
 
         for ( Escalation escalation : deadline.getEscalations() ) {
-            // TODO: we won't impl constraints for now
-            // escalation.getConstraints()
-            
-            for ( Notification notification : escalation.getNotifications() ) {
-                if ( notification.getNotificationType() == NotificationType.Email) {
-                    executeEmailNotification( (EmailNotification) notification, task, content );
-                }        
-            }
 
+            // we won't impl constraints for now
+            //escalation.getConstraints()
+
+            // run reassignment first to allow notification to be send to new potential owners
             if ( !escalation.getReassignments().isEmpty()) {
                 // get first and ignore the rest.
                 Reassignment reassignment = escalation.getReassignments().get( 0 );
@@ -146,7 +147,14 @@ public class DefaultEscalatedDeadlineHandler
                 task.getTaskData().setStatus( Status.Ready );
                 List potentialOwners = new ArrayList( reassignment.getPotentialOwners() );
                 task.getPeopleAssignments().setPotentialOwners( potentialOwners );
-            }            
+                task.getTaskData().setActualOwner(null);
+
+            }       
+            for ( Notification notification : escalation.getNotifications() ) {
+                if ( notification.getNotificationType() == NotificationType.Email) {
+                    executeEmailNotification( (EmailNotification) notification, task, content );
+                }        
+            }
         }
         
         deadline.setEscalated( true );
@@ -179,8 +187,18 @@ public class DefaultEscalatedDeadlineHandler
         }
 
         Map<String, Object> doc = null;
+
         if ( content != null ) {
-            doc = (Map<String, Object>) TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
+            ByteArrayInputStream bs = new ByteArrayInputStream(content.getContent());
+            try {
+                ObjectInputStream oIn = new ObjectInputStream(bs);
+                doc = (Map<String, Object>)oIn.readObject();
+
+                oIn.close();
+                bs.close();
+            } catch (Exception e) {
+                throw new RuntimeException("Error when accessing task content, e");
+            }
         } else {
             doc = Collections.emptyMap();
         }
@@ -224,6 +242,14 @@ public class DefaultEscalatedDeadlineHandler
             Map<String, Object> vars = new HashMap<String, Object>();
             vars.put( "doc",
                       doc );
+            // add internal items to be able to reference them in templates
+            vars.put("processInstanceId", task.getTaskData().getProcessInstanceId());
+            vars.put("processSessionId", task.getTaskData().getProcessSessionId());
+            vars.put("workItemId", task.getTaskData().getWorkItemId());            
+            vars.put("expirationTime", task.getTaskData().getExpirationTime());
+            vars.put("taskId", task.getId());
+            vars.put("owners", task.getPeopleAssignments().getPotentialOwners());
+            
             String subject = (String) TemplateRuntime.eval( header.getSubject(),
                                                             vars );
             String body = (String) TemplateRuntime.eval( header.getBody(),

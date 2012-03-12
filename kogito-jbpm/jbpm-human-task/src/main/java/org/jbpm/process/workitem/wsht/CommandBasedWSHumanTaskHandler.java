@@ -227,6 +227,7 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
                 logger.error(e.getMessage(), e);
 			}
 		}
+
 		// If the content is not set we will automatically copy all the input objects into 
 		// the task content
 		else {
@@ -245,7 +246,8 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 		        logger.error(e.getMessage(), e);
 		    }
 		}
-
+		task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+		
 		client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
 
 	}

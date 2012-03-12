@@ -262,7 +262,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
                 logger.error(e.getMessage(), e);
             }
         }
-
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
         try {
         	client.addTask(task, content);
         	
@@ -285,7 +285,6 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
                 logger.error(logMsg.toString(), e);
 			}
 		}
-
     }
 
     public void dispose() throws Exception {

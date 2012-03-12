@@ -66,7 +66,11 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 	
 		Email email = createEmail(workItem, connection);
 		SendHtml.sendHtml(email);
-		manager.completeWorkItem(workItem.getId(), null);
+		// avoid null pointer when used from deadline escalation handler
+	    if (manager != null) {
+	 	  manager.completeWorkItem(workItem.getId(), null);
+	 	
+	    }
 	}
 
 	protected static Email createEmail(WorkItem workItem, Connection connection) { 

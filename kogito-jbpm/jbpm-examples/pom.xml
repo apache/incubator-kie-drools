@@ -83,5 +83,14 @@
       <artifactId>jbpm-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+    	<groupId>org.subethamail</groupId>
+    	<artifactId>subethasmtp-wiser</artifactId>
+    	<scope>provided</scope>
+    </dependency>
+    <dependency>
+    	<groupId>com.h2database</groupId>
+    	<artifactId>h2</artifactId>
+    </dependency>
   </dependencies>
 </project>
