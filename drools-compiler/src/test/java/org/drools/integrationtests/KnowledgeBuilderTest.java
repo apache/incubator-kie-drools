@@ -21,7 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class KnwoledgeBuilderTest {
+public class KnowledgeBuilderTest {
 
     @Test
     public void testCompositeKnowledgeBuilder() throws Exception {
