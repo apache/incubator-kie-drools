@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class DataProviderCompilerIntegrationTest {
+public class DataProviderCompilerTest {
 
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
 
