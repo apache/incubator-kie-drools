@@ -16,21 +16,36 @@
 
 package org.drools.decisiontable;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.acme.insurance.Driver;
+import org.acme.insurance.Policy;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.WorkingMemory;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.PackageBuilder;
+import org.drools.rule.*;
+import org.drools.rule.Package;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.TemplateDataListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
- *         basic unit tests for converter utility. Note that some of this may
+ *         basic tests for converter utility. Note that some of this may
  *         still use the drools 2.x syntax, as it is not compiled, only tested
  *         that it generates DRL in the correct structure (not that the DRL
  *         itself is correct).
  */
-public class ExternalSpreadsheetCompilerUnitTest {
+public class ExternalSpreadsheetCompilerTest {
     @Test
     public void testLoadFromClassPath() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
@@ -130,6 +145,90 @@ public class ExternalSpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 9)" ) > -1 );
 
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) );
+    }
+
+
+    @Test
+    public void testIntegration() throws Exception
+    {
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        final String drl = converter.compile("/data/IntegrationExampleTest.xls", "/templates/test_integration.drl", 18, 3);
+        //COMPILE
+        System.out.println( drl );
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( drl ) );
+
+        final org.drools.rule.Package pkg = builder.getPackage();
+        assertNotNull( pkg );
+        assertEquals( 0,
+                builder.getErrors().getErrors().length );
+
+        //BUILD RULEBASE
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( pkg );
+
+        //NEW WORKING MEMORY
+        final WorkingMemory wm = rb.newStatefulSession();
+
+        //ASSERT AND FIRE
+        wm.insert( new Cheese( "stilton",
+                42 ) );
+        wm.insert( new Person( "michael",
+                "stilton",
+                42 ) );
+        final List<String> list = new ArrayList<String>();
+        wm.setGlobal( "list",
+                list );
+        wm.fireAllRules();
+        assertEquals( 1,
+                list.size() );
+    }
+
+    @Test
+    public void testPricing() throws Exception
+    {
+        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        TemplateDataListener l1 = new TemplateDataListener(10, 3, "/templates/test_pricing1.drl");
+        listeners.add(l1);
+        TemplateDataListener l2 = new TemplateDataListener(30, 3, "/templates/test_pricing2.drl");
+        listeners.add(l2);
+        converter.compile("/data/ExamplePolicyPricing.xls", InputType.XLS, listeners);
+        //COMPILE
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( l1.renderDRL() ) );
+        builder.addPackageFromDrl( new StringReader( l2.renderDRL() ) );
+
+        final Package pkg = builder.getPackage();
+        assertNotNull( pkg );
+        DroolsError[] errors = builder.getErrors().getErrors();
+//        for (int i = 0; i < errors.length; i++) {
+//            DroolsError error = errors[i];
+//            System.out.println(error.getMessage());
+//        }
+        assertEquals( 0,
+                errors.length );
+
+        //BUILD RULEBASE
+        final RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( pkg );
+
+        WorkingMemory wm = rb.newStatefulSession();
+
+        //now create some test data
+        Driver driver = new Driver();
+        Policy policy = new Policy();
+
+        wm.insert(driver);
+        wm.insert(policy);
+
+        wm.fireAllRules();
+
+        System.out.println("BASE PRICE IS: " + policy.getBasePrice());
+        System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
+
+        int basePrice = policy.getBasePrice();
+        assertEquals(120, basePrice);
     }
 
 }
