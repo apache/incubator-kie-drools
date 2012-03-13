@@ -6,6 +6,7 @@ import java.util.Map;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.io.Resource;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
@@ -101,4 +102,7 @@ public class PackageRegistry {
         this.dialectCompiletimeRegistry.compileAll();
     }
 
+    public void removeObjectsGeneratedFromResource(Resource resource) {
+        pkg.removeObjectsGeneratedFromResource(resource);
+    }
 }

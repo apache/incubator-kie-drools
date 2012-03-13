@@ -30,6 +30,8 @@ import java.util.Set;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.AccessorKey.AccessorType;
 import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.definition.type.FactField;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
@@ -124,7 +126,7 @@ public class ClassFieldAccessorStore
             entry.addAccessorTarget( target );
         }
         
-        if( exists == false ) {
+        if ( !exists ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
                              entry );
@@ -175,7 +177,7 @@ public class ClassFieldAccessorStore
             entry.addAccessorTarget( target );
         }
 
-        if( exists == false ) {
+        if ( !exists ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
                              entry );
@@ -293,6 +295,13 @@ public class ClassFieldAccessorStore
         }
 
         return entry.getClassObjectType();
+    }
+
+    public void removeType(TypeDeclaration type) {
+        lookup.remove(new AccessorKey( type.getTypeClassName(), null, AccessorKey.AccessorType.ClassObjectType ));
+        for (FactField field : type.getTypeClassDef().getFields()) {
+            lookup.remove(new AccessorKey( type.getTypeClassName(), field.getName(), AccessorKey.AccessorType.FieldAccessor ));
+        }
     }
 
     public void merge(ClassFieldAccessorStore other) {

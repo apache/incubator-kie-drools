@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -216,6 +217,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     private final Map<String, List<PackageDescr>>    packages          = new HashMap<String, List<PackageDescr>>();
 
     private final Set<String>                        generatedTypes    = new HashSet<String>();
+
+    private final Stack<List<Resource>>              buildResources    = new Stack<List<Resource>>();
 
     /**
      * Use this when package is starting from scratch.
@@ -725,13 +728,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     void addPackageFromXSD(Resource resource, JaxbConfigurationImpl configuration) throws IOException {
-        JaxbConfigurationImpl confImpl = configuration;
         String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
                 this,
-                confImpl.getXjcOpts(),
-                confImpl.getSystemId());
+                configuration.getXjcOpts(),
+                configuration.getSystemId());
         for (String cls : classes) {
-            confImpl.getClasses().add( cls );
+            configuration.getClasses().add( cls );
         }
     }
 
@@ -2143,9 +2145,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if (reg != null) {
-                //                String availableName = typeDescr.getNamespace() != null
-                //                                       ? typeDescr.getNamespace() + "." + typeDescr.getTypeName()
-                //                                       : typeDescr.getTypeName();
                 String availableName = typeDescr.getType().getFullName();
                 Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
                 if (resolvedType != null && typeDescr.getFields().size() > 1) {
@@ -2581,9 +2580,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             fields.add(fieldTemplate);
         }
 
-        new FactTemplateImpl(pkgRegistry.getPackage(),
-                             factTemplateDescr.getName(),
-                             (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
+        new FactTemplateImpl( pkgRegistry.getPackage(),
+                              factTemplateDescr.getName(),
+                              fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
     private void addRule( final RuleDescr ruleDescr ) {
@@ -3161,4 +3160,57 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             this.typeDescr = typeDescr;
         }
     }
+
+    public void registerBuildResource(final Resource resource) {
+        buildResources.push( new ArrayList<Resource>() {{ add(resource); }} );
+    }
+
+    public void registerBuildResources(List<Resource> resources) {
+        buildResources.push(resources);
+    }
+
+    public void undo() {
+        if (buildResources.isEmpty()) {
+            return;
+        }
+        for (Resource resource : buildResources.pop()) {
+            removeObjectsGeneratedFromResource(resource);
+        }
+    }
+
+    private void removeObjectsGeneratedFromResource(Resource resource) {
+        if (pkgRegistryMap != null) {
+            for (PackageRegistry packageRegistry : pkgRegistryMap.values()) {
+                packageRegistry.removeObjectsGeneratedFromResource(resource);
+            }
+        }
+
+        if (results != null) {
+            Iterator<KnowledgeBuilderResult> i = results.iterator();
+            while (i.hasNext()) {
+                if (resource.equals(i.next().getResource())) {
+                    i.remove();
+                }
+            }
+        }
+
+        if (cacheTypes != null) {
+            List<String> typesToBeRemoved = new ArrayList<String>();
+            for (Map.Entry<String, TypeDeclaration> type : cacheTypes.entrySet()) {
+                if (resource.equals(type.getValue().getResource())) {
+                    typesToBeRemoved.add(type.getKey());
+                }
+            }
+            for (String type : typesToBeRemoved) {
+                cacheTypes.remove(type);
+            }
+        }
+
+        for (List<PackageDescr> pkgDescrs : packages.values()) {
+            for (PackageDescr pkgDescr : pkgDescrs) {
+                pkgDescr.removeObjectsGeneratedFromResource(resource);
+            }
+        }
+    }
+
 }

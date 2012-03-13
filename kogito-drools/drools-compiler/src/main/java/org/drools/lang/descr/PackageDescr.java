@@ -23,10 +23,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.drools.definition.KnowledgeDescr;
+import org.drools.io.Resource;
 import org.drools.rule.Namespaceable;
 
 public class PackageDescr extends BaseDescr
@@ -83,7 +85,7 @@ public class PackageDescr extends BaseDescr
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeUTF( documentation );
-        out.writeObject( imports );
+        out.writeObject(imports);
         out.writeObject( functionImports );
         out.writeObject( attributes );
         out.writeObject( globals );
@@ -247,5 +249,27 @@ public class PackageDescr extends BaseDescr
         List<AbstractClassTypeDeclarationDescr> list = new ArrayList<AbstractClassTypeDeclarationDescr>( getEnumDeclarations() );
         list.addAll( getTypeDeclarations() );
         return Collections.unmodifiableList( list );
-    } 
+    }
+
+    public void removeObjectsGeneratedFromResource(Resource resource) {
+        removeObjectsGeneratedFromResource(resource, imports);
+        removeObjectsGeneratedFromResource(resource, functionImports);
+        removeObjectsGeneratedFromResource(resource, attributes);
+        removeObjectsGeneratedFromResource(resource, globals);
+        removeObjectsGeneratedFromResource(resource, functions);
+        removeObjectsGeneratedFromResource(resource, rules);
+        removeObjectsGeneratedFromResource(resource, typeDeclarations);
+        removeObjectsGeneratedFromResource(resource, entryPointDeclarations);
+        removeObjectsGeneratedFromResource(resource, windowDeclarations);
+        removeObjectsGeneratedFromResource(resource, enumDeclarations);
+    }
+
+    private <T extends BaseDescr> void removeObjectsGeneratedFromResource(Resource resource, Collection<T> descrs) {
+        Iterator<T> i = descrs.iterator();
+        while (i.hasNext()) {
+            if (resource.equals(i.next().getResource())) {
+                i.remove();
+            }
+        }
+    }
 }

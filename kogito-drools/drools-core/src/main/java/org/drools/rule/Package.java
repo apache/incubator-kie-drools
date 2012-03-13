@@ -22,10 +22,12 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +37,7 @@ import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.util.*;
+import org.drools.io.Resource;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -352,9 +354,7 @@ public class Package
      *             If the <code>Rule</code> is not valid.
      */
     public void addRule( final Rule rule ) {
-        final String name = rule.getName();
-
-        this.rules.put( name,
+        this.rules.put( rule.getName(),
                         rule );
         rule.setLoadOrder( this.rules.size() );
     }
@@ -364,7 +364,7 @@ public class Package
      */
     public void addProcess( Process process ) {
         if (this.ruleFlows == Collections.EMPTY_MAP) {
-            this.ruleFlows = new HashMap();
+            this.ruleFlows = new HashMap<String, Process>();
         }
         this.ruleFlows.put( process.getId(),
                             process );
@@ -392,54 +392,7 @@ public class Package
         this.rules.remove( rule.getName() );
         this.dialectRuntimeRegistry.removeRule( this,
                                                 rule );
-        // final String consequenceName =
-        // rule.getConsequence().getClass().getName();
-        //
-        // Object object = this.dialectData.getDialectData( rule.getDialect() );
-        //
-        // // check for compiled code and remove if present.
-        // if ( this.packageCompilationData.remove( consequenceName ) ) {
-        // removeClasses( rule.getLhs() );
-        //
-        // // Now remove the rule class - the name is a subset of the
-        // consequence name
-        // this.packageCompilationData.remove( consequenceName.substring( 0,
-        // consequenceName.indexOf( "ConsequenceInvoker" ) ) );
-        // }
-        // return this.packageCompilationData;
     }
-
-    // private void removeClasses(final ConditionalElement ce) {
-    // if ( ce instanceof GroupElement ) {
-    // final GroupElement group = (GroupElement) ce;
-    // for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); )
-    // {
-    // final Object object = it.next();
-    // if ( object instanceof ConditionalElement ) {
-    // removeClasses( (ConditionalElement) object );
-    // } else if ( object instanceof Pattern ) {
-    // removeClasses( (Pattern) object );
-    // }
-    // }
-    // } else if ( ce instanceof EvalCondition ) {
-    // this.packageCompilationData.remove( ((EvalCondition)
-    // ce).getEvalExpression().getClass().getName() );
-    // }
-    // }
-    //
-    // private void removeClasses(final Pattern pattern) {
-    // for ( final Iterator it = pattern.getConstraints().iterator();
-    // it.hasNext(); ) {
-    // final Object object = it.next();
-    // if ( object instanceof PredicateConstraint ) {
-    // this.packageCompilationData.remove( ((PredicateConstraint)
-    // object).getPredicateExpression().getClass().getName() );
-    // } else if ( object instanceof ReturnValueConstraint ) {
-    // this.packageCompilationData.remove( ((ReturnValueConstraint)
-    // object).getExpression().getClass().getName() );
-    // }
-    // }
-    // }
 
     /**
      * Retrieve a <code>Rule</code> by name.
@@ -452,7 +405,7 @@ public class Package
      *         <code>Package</code>.
      */
     public Rule getRule( final String name ) {
-        return (Rule) this.rules.get( name );
+        return this.rules.get( name );
     }
 
     /**
@@ -461,7 +414,7 @@ public class Package
      * @return An array of all <code>Rules</code> in this <code>Package</code>.
      */
     public Rule[] getRules() {
-        return (Rule[]) this.rules.values().toArray( new Rule[this.rules.size()] );
+        return this.rules.values().toArray( new Rule[this.rules.size()] );
     }
 
     // public JavaDialectData getPackageCompilationData() {
@@ -602,5 +555,43 @@ public class Package
     
     public void setWindowDeclarations( Map<String, WindowDeclaration> windowDeclarations ) {
         this.windowDeclarations = windowDeclarations;
+    }
+
+    public void removeObjectsGeneratedFromResource(Resource resource) {
+        List<Rule> rulesToBeRemoved = new ArrayList<Rule>();
+        for (Rule rule : rules.values()) {
+            if (resource.equals(rule.getResource())) {
+                rulesToBeRemoved.add(rule);
+            }
+        }
+        for (Rule rule : rulesToBeRemoved) {
+            removeRule(rule);
+        }
+
+        List<TypeDeclaration> typesToBeRemoved = new ArrayList<TypeDeclaration>();
+        for (TypeDeclaration type : typeDeclarations.values()) {
+            if (resource.equals(type.getResource())) {
+                typesToBeRemoved.add(type);
+            }
+        }
+        if (!typesToBeRemoved.isEmpty()) {
+            JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) getDialectRuntimeRegistry().getDialectData( "java" );
+            for (TypeDeclaration type : typesToBeRemoved) {
+                classFieldAccessorStore.removeType(type);
+                dialect.remove(type.getTypeClassName());
+                removeTypeDeclaration(type.getTypeName());
+            }
+            dialect.reload();
+        }
+
+        List<Function> functionsToBeRemoved = new ArrayList<Function>();
+        for (Function function : functions.values()) {
+            if (resource.equals(function.getResource())) {
+                functionsToBeRemoved.add(function);
+            }
+        }
+        for (Function function : functionsToBeRemoved) {
+            removeFunction(function.getName());
+        }
     }
 }
