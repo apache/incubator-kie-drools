@@ -125,8 +125,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 return true;
             }
         }
-        int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex - 1;
-        if (tabuStepCount < tabuSize) {
+        int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
+        if (tabuStepCount <= tabuSize) {
             logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
             return false;
         }
@@ -142,29 +142,40 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         return accepted;
     }
 
-    protected double calculatePartialTabuAcceptChance(int partialTabuTime) {
+    /**
+     * @param partialTabuStepCount 0 < partialTabuStepCount <= partialTabuSize
+     * @return 0.0 < acceptChance < 1.0
+     */
+    protected double calculatePartialTabuAcceptChance(int partialTabuStepCount) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0
-        // when (partialTabuTime == 0) or (partialTabuTime + 1 == partialTabuSize)
-        return ((double) (partialTabuTime + 1)) / ((double) (partialTabuSize + 1));
+        // when (partialTabuStepCount == 0) or (partialTabuStepCount + 1 == partialTabuSize)
+        return ((double) (partialTabuSize - partialTabuStepCount)) / ((double) (partialTabuSize + 1));
     }
 
     @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+        int maximumTabuListSize = tabuSize + partialTabuSize; // is at least 1
+        int tabuStepIndex = localSearchStepScope.getStepIndex();
+        // Remove the oldest tabu(s)
+        for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
+            Object oldTabu = it.next();
+            Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
+            int oldTabuStepCount = tabuStepIndex - oldTabuStepIndexInteger; // at least 1
+            if (oldTabuStepCount < maximumTabuListSize) {
+                break;
+            }
+            it.remove();
+            tabuToStepIndexMap.remove(oldTabu);
+        }
+        // Add the new tabu(s)
         Collection<? extends Object> tabus = findNewTabu(localSearchStepScope);
         for (Object tabu : tabus) {
-            // required to push tabu to the end of the line
+            // Push tabu to the end of the line
             if (tabuToStepIndexMap.containsKey(tabu)) {
                 tabuToStepIndexMap.remove(tabu);
                 tabuSequenceList.remove(tabu);
             }
-            int maximumTabuListSize = tabuSize + partialTabuSize; // is at least 1
-            while (tabuSequenceList.size() >= maximumTabuListSize) { // TODO FIXME JBRULES-3007
-                Iterator<Object> it = tabuSequenceList.iterator();
-                Object removeTabu = it.next();
-                it.remove();
-                tabuToStepIndexMap.remove(removeTabu);
-            }
-            tabuToStepIndexMap.put(tabu, localSearchStepScope.getStepIndex());
+            tabuToStepIndexMap.put(tabu, tabuStepIndex);
             tabuSequenceList.add(tabu);
         }
     }

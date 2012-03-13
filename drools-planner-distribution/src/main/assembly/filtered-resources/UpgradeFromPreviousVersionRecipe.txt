@@ -1660,3 +1660,15 @@ After in *SolverConfig.xml:
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize>
     </acceptor>
+
+[MINOR] If you use planningEntityTabuSize and in the method getPlanningEntities() return a collection with a size >= 2,
+then you might need to retweak your planningEntityTabuSize to a lower number.
+More info in https://issues.jboss.org/browse/JBRULES-3007
+Before in *SolverConfig.xml:
+    <acceptor>
+      <planningEntityTabuSize>9</planningEntityTabuSize>
+    </acceptor>
+After in *SolverConfig.xml:
+    <acceptor>
+      <planningEntityTabuSize>7</planningEntityTabuSize><!-- Check with the Benchmarker if 7 isn't better than 9 now -->
+    </acceptor>

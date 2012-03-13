@@ -78,7 +78,7 @@ public class PlanningEntityTabuAcceptorTest {
         tabuAcceptor.stepTaken(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(solverPhaseScope);
-        stepScope3.setStepIndex(2);
+        stepScope3.setStepIndex(3);
         MoveScope moveScope3 = buildMoveScope(stepScope1, e3);
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1)));
@@ -90,7 +90,7 @@ public class PlanningEntityTabuAcceptorTest {
         tabuAcceptor.stepTaken(stepScope3);
 
         LocalSearchStepScope stepScope4 = new LocalSearchStepScope(solverPhaseScope);
-        stepScope4.setStepIndex(2);
+        stepScope4.setStepIndex(4);
         MoveScope moveScope1Again = buildMoveScope(stepScope1, e1);
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope4, e0)));
         assertEquals(true, tabuAcceptor.isAccepted(moveScope1Again));
@@ -104,7 +104,7 @@ public class PlanningEntityTabuAcceptorTest {
         tabuAcceptor.phaseEnded(solverPhaseScope);
     }
 
-    @Test @Ignore("FIXME JBRULES-3007")
+    @Test
     public void tabuSizeMultipleEntitiesPerStep() {
         PlanningEntityTabuAcceptor tabuAcceptor = new PlanningEntityTabuAcceptor();
         tabuAcceptor.setTabuSize(2);
@@ -183,7 +183,7 @@ public class PlanningEntityTabuAcceptorTest {
         tabuAcceptor.stepTaken(stepScope2);
 
         LocalSearchStepScope stepScope3 = new LocalSearchStepScope(solverPhaseScope);
-        stepScope3.setStepIndex(2);
+        stepScope3.setStepIndex(3);
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e0)));
         assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e1)));
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope3, e2)));
