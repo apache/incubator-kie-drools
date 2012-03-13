@@ -29,8 +29,6 @@ import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -38,7 +36,7 @@ import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.ExampleRuleEngineFacade;
 import org.drools.jsr94.rules.RuleServiceProviderImpl;
 
-public class SpreadsheetIntegrationTest {
+public class SpreadsheetIntegrationExampleTest {
 
     @Test
     public void testExecute() throws Exception {
@@ -53,7 +51,7 @@ public class SpreadsheetIntegrationTest {
         RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
         LocalRuleExecutionSetProvider ruleSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
 
-        RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( SpreadsheetIntegrationTest.class.getResourceAsStream( "IntegrationExampleTest.xls" ),
+        RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( SpreadsheetIntegrationExampleTest.class.getResourceAsStream( "IntegrationExampleTest.xls" ),
                                                                                     properties );
 
         ruleAdministrator.registerRuleExecutionSet( "IntegrationExampleTest.xls",
