@@ -61,8 +61,6 @@ import org.drools.time.TimerService;
 import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.PointInTimeTrigger;
 
-import com.sun.xml.internal.ws.api.pipe.NextAction;
-
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
  * fact assertions propagated from the <code>Rete</code> node using <code>ObjectType</code> interface.
