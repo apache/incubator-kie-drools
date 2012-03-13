@@ -5,11 +5,9 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -146,6 +144,159 @@ public class KnowledgeBuilderTest {
         aType.set( a, "fieldB", b );
         aType.set( a, "bigint", new BigInteger("1"));
         bType.set( b, "fieldA", a );
+        ksession.insert( a );
+        ksession.insert( b );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertEquals("OK", list.get(0));
+    }
+
+    @Test
+    public void testUndoTypeDeclaration() throws Exception {
+        String rule = "package org.drools.test\n" +
+                "import org.drools.test.FactA\n" +
+                "import org.drools.test.FactB\n" +
+                "rule R1 when\n" +
+                "   FactA( i == 1 )\n" +
+                "   FactB( i == 1 )\n" +
+                "then\n" +
+                "   list.add(\"OK\");"+
+                "end\n";
+
+        String declarationA = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "declare FactA\n" +
+                "    j : int\n" +
+                "end\n";
+
+        String declarationB = "package org.drools.test\n" +
+                "declare FactB\n" +
+                "    i : int\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(declarationB.getBytes()), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
+
+        kbuilder.batch()
+                .type(ResourceType.DRL)
+                .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()))
+                .build();
+
+        assertTrue(kbuilder.hasErrors());
+        kbuilder.undo();
+        assertFalse(kbuilder.hasErrors());
+
+        declarationA = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "declare FactA\n" +
+                "    i : int\n" +
+                "end\n";
+
+        kbuilder.batch()
+                .type(ResourceType.DRL)
+                .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()))
+                .build();
+
+        assertFalse(kbuilder.hasErrors());
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        Object a = aType.newInstance();
+        aType.set( a, "i", 1 );
+
+        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        Object b = bType.newInstance();
+        bType.set( b, "i", 1 );
+
+        ksession.insert( a );
+        ksession.insert( b );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+        assertEquals("OK", list.get(0));
+    }
+
+    @Test
+    public void testUndoRule() throws Exception {
+        String rule = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "import org.drools.test.FactA\n" +
+                "import org.drools.test.FactB\n" +
+                "rule R1 when\n" +
+                "   FactA( j == 1 )\n" +
+                "   FactB( i == 1 )\n" +
+                "then\n" +
+                "   list.add(\"OK\");"+
+                "end\n";
+
+        String declarationA = "package org.drools.test\n" +
+                "declare FactA\n" +
+                "    i : int\n" +
+                "end\n";
+
+        String declarationB = "package org.drools.test\n" +
+                "declare FactB\n" +
+                "    i : int\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource(declarationB.getBytes()), ResourceType.DRL);
+        assertFalse(kbuilder.hasErrors());
+
+        kbuilder.batch()
+                .type(ResourceType.DRL)
+                .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()))
+                .build();
+
+        assertTrue(kbuilder.hasErrors());
+        kbuilder.undo();
+        assertFalse(kbuilder.hasErrors());
+
+        rule = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "import org.drools.test.FactA\n" +
+                "import org.drools.test.FactB\n" +
+                "rule R1 when\n" +
+                "   FactA( i == 1 )\n" +
+                "   FactB( i == 1 )\n" +
+                "then\n" +
+                "   list.add(\"OK\");"+
+                "end\n";
+
+        kbuilder.batch()
+                .type(ResourceType.DRL)
+                .add(ResourceFactory.newByteArrayResource(rule.getBytes()))
+                .add(ResourceFactory.newByteArrayResource(declarationA.getBytes()))
+                .build();
+
+        assertFalse(kbuilder.hasErrors());
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactType aType = kbase.getFactType( "org.drools.test", "FactA" );
+        Object a = aType.newInstance();
+        aType.set( a, "i", 1 );
+
+        FactType bType = kbase.getFactType( "org.drools.test", "FactB" );
+        Object b = bType.newInstance();
+        bType.set( b, "i", 1 );
+
         ksession.insert( a );
         ksession.insert( b );
 

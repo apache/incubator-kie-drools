@@ -62,7 +62,7 @@ public class JavaDialectRuntimeData
 
     private Map                            invokerLookups;
 
-    private Map                            store;
+    private Map<String, byte[]>            store;
 
     private DialectRuntimeRegistry         registry;
 
@@ -175,8 +175,8 @@ public class JavaDialectRuntimeData
 
         ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
         for (int i = 0, length = in.readInt(); i < length; i++) {
-            this.store.put( in.readObject(),
-                            in.readObject() );
+            this.store.put( (String) in.readObject(),
+                            (byte[]) in.readObject() );
         }
         in.close();
 
@@ -298,9 +298,9 @@ public class JavaDialectRuntimeData
         this.dirty = dirty;
     }
 
-    protected Map getStore() {
+    protected Map<String, byte[]> getStore() {
         if (store == null) {
-            store = new HashMap();
+            store = new HashMap<String, byte[]>();
         }
         return store;
     }
@@ -364,7 +364,7 @@ public class JavaDialectRuntimeData
         byte[] bytes = null;
 
         if (!getStore().isEmpty()) {
-            bytes = (byte[]) getStore().get( resourceName );
+            bytes = getStore().get( resourceName );
         }
         return bytes;
     }
@@ -451,8 +451,8 @@ public class JavaDialectRuntimeData
         String[] names = new String[getStore().size()];
         int i = 0;
 
-        for (Object object : getStore().keySet()) {
-            names[i++] = (String) object;
+        for (String string : getStore().keySet()) {
+            names[i++] = string;
         }
         return names;
     }

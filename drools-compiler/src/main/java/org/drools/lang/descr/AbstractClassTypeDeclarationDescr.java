@@ -132,8 +132,18 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
         if ( this.fields == null ) {
             this.fields = new LinkedHashMap<String, TypeFieldDescr>();
         }
-        this.fields.put( field.getFieldName(),
-                field );
+        field.setResource(getResource());
+        this.fields.put( field.getFieldName(), field );
+    }
+
+    @Override
+    public void setResource(Resource resource) {
+        super.setResource(resource);
+        if (fields != null) {
+            for (TypeFieldDescr field : fields.values()) {
+                field.setResource(resource);
+            }
+        }
     }
 
     public boolean equals(Object o) {
@@ -142,9 +152,7 @@ public abstract class AbstractClassTypeDeclarationDescr extends AnnotatedBaseDes
 
         AbstractClassTypeDeclarationDescr that = (AbstractClassTypeDeclarationDescr) o;
 
-        if (getType() != null ? !getType() .equals(that.getType() ) : that.getType()  != null) return false;
-
-        return true;
+        return !(getType() != null ? !getType().equals(that.getType()) : that.getType() != null);
     }
 
     public int hashCode() {

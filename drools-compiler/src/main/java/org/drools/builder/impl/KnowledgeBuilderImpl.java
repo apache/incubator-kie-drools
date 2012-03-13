@@ -16,7 +16,6 @@ import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.PackageBuilder;
-import org.drools.core.util.Memento;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
@@ -24,10 +23,10 @@ import org.drools.io.impl.BaseResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
-    private Memento<PackageBuilder> pkgBuilder;
+    private PackageBuilder pkgBuilder;
 
     public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
-        this.pkgBuilder = new Memento<PackageBuilder>(pkgBuilder);
+        this.pkgBuilder = pkgBuilder;
     }
 
     public void add(Resource resource, ResourceType type) {
@@ -42,10 +41,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void add(Resource resource,
                             ResourceType type,
                             ResourceConfiguration configuration) {
-        if (!pkgBuilder.initFirstRecord()) {
-            pkgBuilder.record();
-        }
-        getPackageBuilder().addKnowledgeResource( resource, type, configuration );
+        pkgBuilder.registerBuildResource(resource);
+        pkgBuilder.addKnowledgeResource( resource, type, configuration );
     }
 
     public void undo() {
@@ -53,11 +50,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public Collection<KnowledgePackage> getKnowledgePackages() {
-        if ( getPackageBuilder().hasErrors() ) {
+        if ( pkgBuilder.hasErrors() ) {
             return new ArrayList<KnowledgePackage>( 0 );
         }
 
-        Package[] pkgs = getPackageBuilder().getPackages();
+        Package[] pkgs = pkgBuilder.getPackages();
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
 
         for ( Package pkg : pkgs ) {
@@ -81,22 +78,22 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public boolean hasErrors() {
-        return getPackageBuilder().hasErrors();
+        return pkgBuilder.hasErrors();
     }
 
     public KnowledgeBuilderErrors getErrors() {
-        return getPackageBuilder().getErrors();
+        return pkgBuilder.getErrors();
     }
     
     public PackageBuilder getPackageBuilder() {
-        return pkgBuilder.get();
+        return pkgBuilder;
     }
 
     public KnowledgeBuilderResults getResults(ResultSeverity... severities) {
-        return getPackageBuilder().getProblems(severities);
+        return pkgBuilder.getProblems(severities);
     }
 
     public boolean hasResults(ResultSeverity... severities) {
-        return getPackageBuilder().hasProblems(severities);
+        return pkgBuilder.hasProblems(severities);
     }
 }

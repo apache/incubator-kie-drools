@@ -4,7 +4,6 @@ import org.drools.builder.CompositeKnowledgeBuilder;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
-import org.drools.core.util.Memento;
 import org.drools.io.Resource;
 import org.drools.io.impl.BaseResource;
 import org.drools.lang.descr.CompositePackageDescr;
@@ -20,13 +19,13 @@ import java.util.Map;
 
 public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder {
 
-    private Memento<PackageBuilder> pkgBuilder;
+    private PackageBuilder pkgBuilder;
 
-    private Map<ResourceType, List<ResourceDescr>> resources = new HashMap<ResourceType, List<ResourceDescr>>();
+    private Map<ResourceType, List<ResourceDescr>> resourcesByType = new HashMap<ResourceType, List<ResourceDescr>>();
 
     public ResourceType currentType = null;
 
-    public CompositeKnowledgeBuilderImpl(Memento<PackageBuilder> pkgBuilder) {
+    public CompositeKnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
     }
 
@@ -49,49 +48,56 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     public CompositeKnowledgeBuilder add(Resource resource, ResourceType type, ResourceConfiguration configuration) {
         ResourceDescr resourceDescr = new ResourceDescr(configuration, resource);
-        List<ResourceDescr> resourcesByType = resources.get(type);
-        if (resourcesByType == null) {
-            resourcesByType = new ArrayList<ResourceDescr>();
-            resources.put(type, resourcesByType);
+        List<ResourceDescr> resourceDescrs = this.resourcesByType.get(type);
+        if (resourceDescrs == null) {
+            resourceDescrs = new ArrayList<ResourceDescr>();
+            resourcesByType.put(type, resourceDescrs);
         }
-        resourcesByType.add(resourceDescr);
+        resourceDescrs.add(resourceDescr);
         return this;
     }
 
-    public void build() {
-        if (!pkgBuilder.initFirstRecord()) {
-            pkgBuilder.record();
+    private List<Resource> getResources() {
+        List<Resource> resources = new ArrayList<Resource>();
+        for (List<ResourceDescr> resourceDescrs : resourcesByType.values()) {
+            for (ResourceDescr resourceDescr : resourceDescrs) {
+                resources.add(resourceDescr.resource);
+            }
         }
-        PackageBuilder currentBuilder = pkgBuilder.get();
-        buildPackages(currentBuilder);
-        buildResources(currentBuilder);
-        buildOthers(currentBuilder);
-        resources.clear();
+        return resources;
     }
 
-    private void buildPackages(PackageBuilder pkgBuilder) {
-        Collection<CompositePackageDescr> packages = buildPackageDescr(pkgBuilder);
-        buildTypeDeclarations(pkgBuilder, packages);
-        buildRules(pkgBuilder, packages);
+    public void build() {
+        pkgBuilder.registerBuildResources(getResources());
+        buildPackages();
+        buildResources();
+        buildOthers();
+        resourcesByType.clear();
     }
 
-    private void buildResources(PackageBuilder pkgBuilder) {
+    private void buildPackages() {
+        Collection<CompositePackageDescr> packages = buildPackageDescr();
+        buildTypeDeclarations(packages);
+        buildRules(packages);
+    }
+
+    private void buildResources() {
         try {
-            List<ResourceDescr> resourcesByType = resources.remove(ResourceType.DSL);
+            List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DSL);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addDsl(resourceDescr.resource);
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.DRF);
+            resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addProcessFromXml(resourceDescr.resource);
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.BPMN2);
+            resourcesByType = this.resourcesByType.remove(ResourceType.BPMN2);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     BPMN2ProcessFactory.configurePackageBuilder( pkgBuilder );
@@ -99,28 +105,28 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.PKG);
+            resourcesByType = this.resourcesByType.remove(ResourceType.PKG);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addPackageFromInputStream(resourceDescr.resource);
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.CHANGE_SET);
+            resourcesByType = this.resourcesByType.remove(ResourceType.CHANGE_SET);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addPackageFromChangeSet(resourceDescr.resource);
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.XSD);
+            resourcesByType = this.resourcesByType.remove(ResourceType.XSD);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addPackageFromXSD(resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration);
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.PMML);
+            resourcesByType = this.resourcesByType.remove(ResourceType.PMML);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     pkgBuilder.addPackageFromPMML(resourceDescr.resource, ResourceType.PMML, resourceDescr.configuration);
@@ -133,9 +139,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildOthers(PackageBuilder pkgBuilder) {
+    private void buildOthers() {
         try {
-            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resources.entrySet()) {
+            for (Map.Entry<ResourceType, List<ResourceDescr>> entry : resourcesByType.entrySet()) {
                 for (ResourceDescr resourceDescr : entry.getValue()) {
                     pkgBuilder.addPackageForExternalType(resourceDescr.resource, entry.getKey(), resourceDescr.configuration);
                 }
@@ -147,7 +153,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildRules(PackageBuilder pkgBuilder, Collection<CompositePackageDescr> packages) {
+    private void buildRules(Collection<CompositePackageDescr> packages) {
         for (PackageDescr packageDescr : packages) {
             PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry(packageDescr.getNamespace());
             pkgBuilder.processOtherDeclarations(pkgRegistry, packageDescr);
@@ -155,7 +161,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildTypeDeclarations(PackageBuilder pkgBuilder, Collection<CompositePackageDescr> packages) {
+    private void buildTypeDeclarations(Collection<CompositePackageDescr> packages) {
         for (PackageDescr packageDescr : packages) {
             for (TypeDeclarationDescr typeDeclarationDescr : packageDescr.getTypeDeclarations()) {
                 if (pkgBuilder.isEmpty( typeDeclarationDescr.getNamespace() )) {
@@ -167,7 +173,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
         Map<String, List<PackageBuilder.TypeDefinition>> unresolvedTypes = new HashMap<String, List<PackageBuilder.TypeDefinition>>();
         for (PackageDescr packageDescr : packages) {
-            List<PackageBuilder.TypeDefinition> unresolvedTypesForPkg = buildTypeDeclarations(pkgBuilder, packageDescr);
+            List<PackageBuilder.TypeDefinition> unresolvedTypesForPkg = buildTypeDeclarations(packageDescr);
             if (unresolvedTypesForPkg != null) {
                 unresolvedTypes.put(packageDescr.getNamespace(), unresolvedTypesForPkg);
             }
@@ -184,7 +190,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageBuilder pkgBuilder, PackageDescr packageDescr) {
+    private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(PackageDescr packageDescr) {
         PackageRegistry pkgRegistry = pkgBuilder.initPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return null;
@@ -194,45 +200,45 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         return pkgBuilder.processTypeDeclarations(pkgRegistry, packageDescr);
     }
 
-    private Collection<CompositePackageDescr> buildPackageDescr(PackageBuilder pkgBuilder) {
+    private Collection<CompositePackageDescr> buildPackageDescr() {
         Map<String, CompositePackageDescr> packages = new HashMap<String, CompositePackageDescr>();
         try {
-            List<ResourceDescr> resourcesByType = resources.remove(ResourceType.DRL);
+            List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DRL);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.DESCR);
+            resourcesByType = this.resourcesByType.remove(ResourceType.DESCR);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.drlToPackageDescr(resourceDescr.resource));
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.DSLR);
+            resourcesByType = this.resourcesByType.remove(ResourceType.DSLR);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.dslrToPackageDescr(resourceDescr.resource));
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.XDRL);
+            resourcesByType = this.resourcesByType.remove(ResourceType.XDRL);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.xmlToPackageDescr(resourceDescr.resource));
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.BRL);
+            resourcesByType = this.resourcesByType.remove(ResourceType.BRL);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.brlToPackageDescr(resourceDescr.resource));
                 }
             }
 
-            resourcesByType = resources.remove(ResourceType.DTABLE);
+            resourcesByType = this.resourcesByType.remove(ResourceType.DTABLE);
             if (resourcesByType != null) {
                 for (ResourceDescr resourceDescr : resourcesByType) {
                     registerPackageDescr(packages, resourceDescr.resource, pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration));
