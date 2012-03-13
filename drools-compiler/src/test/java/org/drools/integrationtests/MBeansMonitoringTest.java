@@ -58,15 +58,15 @@ public class MBeansMonitoringTest {
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
 
-        KnowledgeBase kbase = loadKnowledgeBase( "kb1",
+        KnowledgeBase kbase = loadKnowledgeBase( "monitoredKbase",
                                                  drl,
                                                  conf );
 
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName("org.drools.kbases:type=kb1");
+        ObjectName kbOn = new ObjectName("org.drools.kbases:type=monitoredKbase");
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
         
-        Object expOffset = mbserver.getAttribute( new ObjectName( "org.drools.kbases:type=kb1,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.StockTick"), "ExpirationOffset" );
+        Object expOffset = mbserver.getAttribute( new ObjectName( "org.drools.kbases:type=monitoredKbase,group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.StockTick"), "ExpirationOffset" );
         Assert.assertEquals( 10001, ((Number)expOffset).longValue() );
     }
 
