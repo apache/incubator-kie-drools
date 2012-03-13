@@ -58,7 +58,6 @@ package org.drools.jsr94.rules;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,11 +73,8 @@ import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.decisiontable.Cheese;
-import org.drools.decisiontable.Person;
-import org.drools.decisiontable.SpreadsheetIntegrationTest;
+import org.drools.decisiontable.SpreadsheetIntegrationExampleTest;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -223,7 +219,7 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
         LocalRuleExecutionSetProvider ruleSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
 
         try {
-            RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( SpreadsheetIntegrationTest.class.getResourceAsStream( "IntegrationExampleTest.xls" ),
+            RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( SpreadsheetIntegrationExampleTest.class.getResourceAsStream( "IntegrationExampleTest.xls" ),
                                                                                         properties );
         } catch (Exception e) {
             // fail should not throw an Excetpion

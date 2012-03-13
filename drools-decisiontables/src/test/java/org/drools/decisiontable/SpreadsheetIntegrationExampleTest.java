@@ -36,7 +36,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class SpreadsheetIntegrationTest {
+public class SpreadsheetIntegrationExampleTest {
 
     @Test
     public void testExecute() throws Exception {
