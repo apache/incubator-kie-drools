@@ -126,7 +126,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_editor.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_editor_general.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
 
@@ -179,6 +179,162 @@
       that is part of the group can claim and execute the task.  For more information on
       how user and group management is handled in the default human task service, check
       out the user and group assignment.</para>
+      
+    </section>
+    
+    <section>
+      <title>Task escalation and notification</title>
+      
+      <para>There are number of situations that can raise a need for escalation of a task,
+      for instance - user assigned to a task can be on vacation or too busy with other 
+      work. In such cases task should be automatically reassigned to another actor or group.
+      Escalation can be defined for tasks that are in following statuses:
+      <itemizedlist>
+        <listitem>
+        	not started (READY or RESERVED)
+        </listitem>
+        <listitem>
+        	not completed (IN_PROGRESS)
+        </listitem>
+      </itemizedlist>
+      
+      Whenever an escalation is reached users/groups defined in it will be assigned to the
+      task as potential owners, replacing those that were previously set. If actual owner
+      was already assigned it will be reset and task will be put in READY state.
+      </para>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_editor_reassignment.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+      <para>
+      Following is a list of attributes that can be specified:
+      <itemizedlist>
+        <listitem>
+			<para><emphasis>Users</emphasis>: comma spearated list of user ids that should be assigned to the task on escalation.
+			Acceptable are String values and expressions #{user-id}</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Groups</emphasis>: comma spearated list of group ids that should be assigned to the task on escalation.
+			Acceptable are String values and expressions #{group-id}</para>
+		</listitem>
+        <listitem>
+			<para><emphasis>Expires At</emphasis>: time definition about when escalation should take place. It should be defined as
+			time defintion (2m, 4h, 6d, etc.), in same way as for timers. Acceptable are String values and expressions #{expiresAt}</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Type</emphasis>: identifies type of task state on which escalation should take place (not-started | not-completed)</para>
+		</listitem>
+      </itemizedlist>
+      </para>
+      <para>In addition to escalation, email notifications can be sent out as well. It is
+      very similar to escalation in terms of definition, allows notification to be sent for tasks that are in following statuses:
+      <itemizedlist>
+        <listitem>
+        	not started (READY or RESERVED)
+        </listitem>
+        <listitem>
+        	not completed (IN_PROGRESS)
+        </listitem>
+      </itemizedlist>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-HumanTasks/human_task_editor_notification.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject> 
+      
+      Email notification has following properties:
+      <itemizedlist>
+       <listitem>
+			<para><emphasis>Type</emphasis>: identifies type of task state on which escalation should take place (not-started | not-completed)</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Expires At</emphasis>: time definition about when escalation should take place. It should be defined as
+			time defintion (2m, 4h, 6d, etc.), in same way as for timers. Acceptable are String values and expressions #{expiresAt}</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>From</emphasis>: (Optional) user or group id that will be used as From field for email message - accepts String and expression</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>To Users</emphasis>: comman separated list of user ids that will become reciepients of the notification</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>To Groups</emphasis>: comman separated list of group ids that will become reciepients of the notification</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Reply To</emphasis>: (Optional) user or group id that should receive replies to the notification</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Subject</emphasis>: Subject of the notification - accepts String and expression</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>Body</emphasis>: Body of the notification - accepts String and expression</para>
+		</listitem>
+      </itemizedlist>
+      </para>
+      <para>
+      Notification can reference process variables by <emphasis>#{processVariable}</emphasis> and task variables 
+      <emphasis>${taskVariable}</emphasis>. Main difference between those two is that process variables will be 
+      resolved at task creation time and task variables will be resolved at notification time.
+      
+      There are several task variables (besides regular ones) that can be used while working with notifications:
+      <itemizedlist>
+       <listitem>
+			<para><emphasis>taskId</emphasis>: internal id of a task instance</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>processInstanceId</emphasis>: internal id of a process instance that the task belongs to</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>workItemId</emphasis>: internal id of a work item that created this task</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>processSessionId</emphasis>: session internal id of a runtime engine</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>owners</emphasis>: list of users/groups that are potential owners of the task</para>
+		</listitem>
+		<listitem>
+			<para><emphasis>doc</emphasis>: map that contains regular task variables</para>
+		</listitem>
+	  </itemizedlist>
+      </para>
+     
+     <para>
+     An example that illustrates a simple notification message (its body) that shows how different variables can be accessed:
+     <programlisting>
+&lt;html&gt;
+	&lt;body&gt;
+		&lt;b&gt;${owners[0].id} you have been assigned to a task (task-id ${taskId})&lt;/b&gt;&lt;br&gt;
+		You can access it in your task 
+		&lt;a href="http://localhost:8080/jbpm-console/app.html#errai_ToolSet_Tasks;Group_Tasks.3"&gt;inbox&lt;/a&gt;&lt;br/&gt;
+		Important technical information that can be of use when working on it&lt;br/&gt;
+		- process instance id - ${processInstanceId}&lt;br/&gt;
+		- work item id - ${workItemId}&lt;br/&gt;
+		
+		&lt;hr/&gt;
+		
+		Here are some task variables available
+		&lt;ul&gt;
+			&lt;li&gt;ActorId = ${doc['ActorId']}&lt;/li&gt;
+			&lt;li&gt;GroupId = ${doc['GroupId']}&lt;/li&gt;
+			&lt;li&gt;Comment = ${doc['Comment']}&lt;/li&gt;
+		&lt;/ul&gt;
+		&lt;hr/&gt;
+		Here are all potential owners for this task
+		&lt;ul&gt;
+		$foreach{orgEntity : owners}
+			&lt;li&gt;Potential owner = ${orgEntity.id}&lt;/li&gt;
+		$end{}
+		&lt;/ul&gt;
+		
+		&lt;i&gt;Regards from jBPM team&lt;/i&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+	 </programlisting>
+     </para>
       
     </section>
 
@@ -707,6 +863,70 @@ thread.start();</programlisting>
       in the task-service directory in the jbpm-installer folder.  You can register
       new users and task by modifying the LoadUsers.mvel and LoadGroups.mvel scripts
       in the resources directory.</para>
+      
+    
+    <section>
+      <title>Configure escalation and notifications</title>
+      <para>
+      To allow Task Server to perform escalations and notification a bit of configuration is required.
+      Most of the configuration is for notification support as it relies on external system (mail server)
+      but as they are handled by EscalatedDeadlineHandler implementation so configuration apply to both.
+      </para>
+      <programlisting language="java">
+// configure email service
+Properties emailProperties = new Properties();
+emailProperties.setProperty("from", "jbpm@domain.com");
+emailProperties.setProperty("replyTo", "jbpm@domain.com");
+emailProperties.setProperty("mail.smtp.host", "localhost");
+emailProperties.setProperty("mail.smtp.port", "2345");
+
+// configure default UserInfo
+Properties userInfoProperties = new Properties();
+// : separated values for each org entity email:locale:display-name
+userInfoProperties.setProperty("john", "john@domain.com:en-UK:John");
+userInfoProperties.setProperty("mike", "mike@domain.com:en-UK:Mike");
+userInfoProperties.setProperty("Administrator", "admin@domain.com:en-UK:Admin");
+
+// build escalation handler    
+DefaultEscalatedDeadlineHandler handler = new DefaultEscalatedDeadlineHandler(emailProperties);
+// set user info on the escalation handler
+handler.setUserInfo(new DefaultUserInfo(userInfoProperties));
+
+EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+// when building TaskService provide escalation handler as argument
+TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);
+MinaTaskServer server = new MinaTaskServer( taskService );
+Thread thread = new Thread( server );
+thread.start();
+</programlisting>
+
+	  <para>
+	  Note that default implementation of UserInfo is just for demo purposes to have a fully operational
+	  task server. Custom user info classes can be provided that implement following interface:
+	  </para>
+	  <programlisting language="java">
+public interface UserInfo {
+    String getDisplayName(OrganizationalEntity entity);
+    
+    Iterator&lt;OrganizationalEntity&gt; getMembersForGroup(Group group);
+    
+    boolean hasEmail(Group group);
+    
+    String getEmailForEntity(OrganizationalEntity entity);
+    
+    String getLanguageForEntity(OrganizationalEntity entity);
+}
+	  </programlisting>
+	  
+	  
+	  <para>
+	  If you are using the jBPM installer, just drop your property files into
+      <code>$jbpm-installer-dir$/task-service/resources/org/jbpm/</code>, make sure that they are named email.properties
+      and userinfo.properties.
+      </para>
+    </section>
+
+    
     </section>
     
     <section>
