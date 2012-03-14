@@ -320,13 +320,13 @@ public interface DocumentRoot extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Version</em>' attribute.
-	 * @see #setVersion(BigInteger)
+	 * @see #setVersion(String)
 	 * @see org.jboss.drools.DroolsPackage#getDocumentRoot_Version()
 	 * @model dataType="org.jboss.drools.VersionType"
 	 *        extendedMetaData="kind='attribute' name='version' namespace='##targetNamespace'"
 	 * @generated
 	 */
-	BigInteger getVersion();
+	String getVersion();
 
 	/**
 	 * Sets the value of the '{@link org.jboss.drools.DocumentRoot#getVersion <em>Version</em>}' attribute.
@@ -336,6 +336,6 @@ public interface DocumentRoot extends EObject {
 	 * @see #getVersion()
 	 * @generated
 	 */
-	void setVersion(BigInteger value);
+	void setVersion(String value);
 
 } // DocumentRoot

@@ -177,7 +177,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final BigInteger VERSION_EDEFAULT = null;
+	protected static final String VERSION_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
@@ -187,7 +187,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * @generated
 	 * @ordered
 	 */
-	protected BigInteger version = VERSION_EDEFAULT;
+	protected String version = VERSION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -441,7 +441,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BigInteger getVersion() {
+	public String getVersion() {
 		return version;
 	}
 
@@ -450,8 +450,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setVersion(BigInteger newVersion) {
-		BigInteger oldVersion = version;
+	public void setVersion(String newVersion) {
+		String oldVersion = version;
 		version = newVersion;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, DroolsPackage.DOCUMENT_ROOT__VERSION, oldVersion, version));
@@ -564,7 +564,7 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
 				setTaskName((String)newValue);
 				return;
 			case DroolsPackage.DOCUMENT_ROOT__VERSION:
-				setVersion((BigInteger)newValue);
+				setVersion((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

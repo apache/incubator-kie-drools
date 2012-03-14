@@ -249,8 +249,8 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BigInteger createVersionTypeFromString(EDataType eDataType, String initialValue) {
-		return (BigInteger)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.INTEGER, initialValue);
+	public String createVersionTypeFromString(EDataType eDataType, String initialValue) {
+		return (String)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.STRING, initialValue);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * @generated
 	 */
 	public String convertVersionTypeToString(EDataType eDataType, Object instanceValue) {
-		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.INTEGER, instanceValue);
+		return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
 	}
 
 	/**

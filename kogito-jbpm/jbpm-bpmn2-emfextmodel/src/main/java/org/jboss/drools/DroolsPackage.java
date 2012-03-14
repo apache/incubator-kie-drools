@@ -370,7 +370,7 @@ public interface DroolsPackage extends EPackage {
 	 * The meta object id for the '<em>Version Type</em>' data type.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see java.math.BigInteger
+	 * @see java.lang.String
 	 * @see org.jboss.drools.impl.DroolsPackageImpl#getVersionType()
 	 * @generated
 	 */
@@ -685,13 +685,13 @@ public interface DroolsPackage extends EPackage {
 	EDataType getTaskNameType();
 
 	/**
-	 * Returns the meta object for data type '{@link java.math.BigInteger <em>Version Type</em>}'.
+	 * Returns the meta object for data type '{@link java.lang.String <em>Version Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for data type '<em>Version Type</em>'.
-	 * @see java.math.BigInteger
-	 * @model instanceClass="java.math.BigInteger"
-	 *        extendedMetaData="name='version_._type' baseType='http://www.eclipse.org/emf/2003/XMLType#integer' minInclusive='0'"
+	 * @see java.lang.String
+	 * @model instanceClass="java.lang.String"
+	 *        extendedMetaData="name='version_._type' baseType='http://www.eclipse.org/emf/2003/XMLType#string'"
 	 * @generated
 	 */
 	EDataType getVersionType();
@@ -964,7 +964,7 @@ public interface DroolsPackage extends EPackage {
 		 * The meta object literal for the '<em>Version Type</em>' data type.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see java.math.BigInteger
+		 * @see java.lang.String
 		 * @see org.jboss.drools.impl.DroolsPackageImpl#getVersionType()
 		 * @generated
 		 */

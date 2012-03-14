@@ -201,11 +201,10 @@
       <details key="baseType" value="http://www.eclipse.org/emf/2003/XMLType#string"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="VersionType" instanceClassName="java.math.BigInteger">
+  <eClassifiers xsi:type="ecore:EDataType" name="VersionType" instanceClassName="java.lang.String">
     <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
       <details key="name" value="version_._type"/>
-      <details key="baseType" value="http://www.eclipse.org/emf/2003/XMLType#integer"/>
-      <details key="minInclusive" value="0"/>
+      <details key="baseType" value="http://www.eclipse.org/emf/2003/XMLType#string"/>
     </eAnnotations>
   </eClassifiers>
 </ecore:EPackage>

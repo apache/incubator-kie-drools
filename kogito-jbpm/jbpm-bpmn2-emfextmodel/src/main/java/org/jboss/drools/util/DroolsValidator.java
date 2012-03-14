@@ -121,7 +121,7 @@ public class DroolsValidator extends EObjectValidator {
 			case DroolsPackage.TASK_NAME_TYPE:
 				return validateTaskNameType((String)value, diagnostics, context);
 			case DroolsPackage.VERSION_TYPE:
-				return validateVersionType((BigInteger)value, diagnostics, context);
+				return validateVersionType((String)value, diagnostics, context);
 			default:
 				return true;
 		}
@@ -235,30 +235,8 @@ public class DroolsValidator extends EObjectValidator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean validateVersionType(BigInteger versionType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		boolean result = validateVersionType_Min(versionType, diagnostics, context);
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @see #validateVersionType_Min
-	 */
-	public static final BigInteger VERSION_TYPE__MIN__VALUE = new BigInteger("0");
-
-	/**
-	 * Validates the Min constraint of '<em>Version Type</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public boolean validateVersionType_Min(BigInteger versionType, DiagnosticChain diagnostics, Map<Object, Object> context) {
-		boolean result = versionType.compareTo(VERSION_TYPE__MIN__VALUE) >= 0;
-		if (!result && diagnostics != null)
-			reportMinViolation(DroolsPackage.Literals.VERSION_TYPE, versionType, VERSION_TYPE__MIN__VALUE, true, diagnostics, context);
-		return result;
+	public boolean validateVersionType(String versionType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+		return true;
 	}
 
 	/**

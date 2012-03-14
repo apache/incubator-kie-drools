@@ -11,9 +11,7 @@
 
   <attribute name="version">
     <simpleType>
-      <restriction base="integer">
-        <minInclusive value="0" />
-      </restriction>
+      <restriction base="string"/>
     </simpleType>
   </attribute>
 
