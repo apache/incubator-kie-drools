@@ -75,6 +75,94 @@
       kbuilder.undo();
       }</programlisting>
     </section>
+
+    <section>
+      <title>Fluent simulation testing</title>
+
+      <para>Using the new fluent simulation testing, you can test your rules in unit tests more easily:</para>
+
+      <programlisting language="java">    @Test
+    public void rejectMinors() {
+        SimulationFluent simulationFluent = new DefaultSimulationFluent();
+
+        Driver john = new Driver("John", "Smith", new LocalDate().minusYears(10));
+        Car mini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest johnMiniPolicyRequest = new PolicyRequest(john, mini);
+        johnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        johnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+
+
+        simulationFluent
+        .newKnowledgeBuilder()
+            .add(ResourceFactory.newClassPathResource("org/drools/examples/carinsurance/rule/policyRequestApprovalRules.drl"),
+                    ResourceType.DRL)
+            .end()
+        .newKnowledgeBase()
+            .addKnowledgePackages()
+            .end()
+        .newStatefulKnowledgeSession()
+            .insert(john).set("john")
+            .insert(mini).set("mini")
+            .insert(johnMiniPolicyRequest).set("johnMiniPolicyRequest")
+            .fireAllRules()
+            .test("johnMiniPolicyRequest.automaticallyRejected == true")
+            .test("johnMiniPolicyRequest.rejectedMessageList.size() == 1")
+            .end()
+        .runSimulation();
+    }</programlisting>
+
+      <para>You can even test your CEP rules in unit tests without suffering from slow tests:</para>
+
+      <programlisting language="java">    @Test
+    public void lyingAboutAge() {
+        SimulationFluent simulationFluent = new DefaultSimulationFluent();
+
+        Driver realJohn = new Driver("John", "Smith", new LocalDate().minusYears(10));
+        Car realMini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest realJohnMiniPolicyRequest = new PolicyRequest(realJohn, realMini);
+        realJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        realJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+        realJohnMiniPolicyRequest.setAutomaticallyRejected(true);
+        realJohnMiniPolicyRequest.addRejectedMessage("Too young.");
+
+        Driver fakeJohn = new Driver("John", "Smith", new LocalDate().minusYears(30));
+        Car fakeMini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest fakeJohnMiniPolicyRequest = new PolicyRequest(fakeJohn, fakeMini);
+        fakeJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        fakeJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+        fakeJohnMiniPolicyRequest.setAutomaticallyRejected(false);
+
+
+        simulationFluent
+        .newStep(0)
+        .newKnowledgeBuilder()
+            .add(ResourceFactory.newClassPathResource("org/drools/examples/carinsurance/cep/policyRequestFraudDetectionRules.drl"),
+                    ResourceType.DRL)
+            .end()
+        .newKnowledgeBase()
+            .addKnowledgePackages()
+            .end(World.ROOT, KnowledgeBase.class.getName())
+        .newStatefulKnowledgeSession()
+            .end()
+        .newStep(1000)
+        .getStatefulKnowledgeSession()
+            .insert(realJohn).set("realJohn")
+            .insert(realMini).set("realMini")
+            .insert(realJohnMiniPolicyRequest).set("realJohnMiniPolicyRequest")
+            .fireAllRules()
+            .test("realJohnMiniPolicyRequest.requiresManualApproval == false")
+            .end()
+        .newStep(5000)
+        .getStatefulKnowledgeSession()
+            .insert(fakeJohn).set("fakeJohn")
+            .insert(fakeMini).set("fakeMini")
+            .insert(fakeJohnMiniPolicyRequest).set("fakeJohnMiniPolicyRequest")
+            .fireAllRules()
+            .test("fakeJohnMiniPolicyRequest.requiresManualApproval == true")
+            .end()
+        .runSimulation();
+    }</programlisting>
+    </section>
   </section>
 
   <section>
@@ -168,6 +256,131 @@
           </imageobject>
         </mediaobject>
       </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Planner</title>
+
+    <section>
+      <title>New example selection screen</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/plannerExamplesAppScreenshot.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>New example: TSP</title>
+
+      <para>This is an implementation of the classic <emphasis>Traveling Salesman Problem</emphasis>: given a list of
+      cities, find the shortest tour for a salesman that visits each city exactly once.</para>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=T5D3hTjZlRc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>New example: Vehicle Routing</title>
+
+      <para>This is an implementation of capacitated vehicle routing: Using a fleet of vehicles, transport items from
+      the depot(s) to customers at different locations. Each vehicle can service multiple locations, but it has a
+      limited capacity for items.</para>
+
+      <para>In the screenshot below, there are 6 vehicles (the lines in different colors) that drop off 541 items at 33
+      customer locations. Each vehicle can carry 100 items.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/vehicleRoutingScreenshot.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=GybpV0uLrxc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>Employee rostering example: better GUI</title>
+
+      <para>The employee rostering example's GUI has been reworked to show shift assignment more clearly.</para>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=Gxd-DqtK5Xc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>Chaining support makes it easy to implement TSP and Vehicle Routing</title>
+
+      <para>Untill now, implementing TSP or Vehicle Routing like problems in Planner was hard. The new chaining support
+      makes it easy.</para>
+
+      <para>You simply declare that a planning variable (<literal>previousAppearance</literal>) of this planning entity
+      (<literal>VrpCustomer</literal>) is chained and therefor possibly referencing another planning entity
+      (<literal>VrpCustomer</literal>) itself, creating a chain with that entity.</para>
+
+      <programlisting language="java">public class VrpCustomer implements VrpAppearance {
+
+    ...
+
+    @PlanningVariable(chained = true)
+    @ValueRanges({
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
+            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
+                    excludeUninitializedPlanningEntity = true)})
+    public VrpAppearance getPreviousAppearance() {
+        return previousAppearance;
+    }
+
+    ...
+}</programlisting>
+
+      <para>This triggers automatic chain correction:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/chainCorrection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Without any extra boilerplate code, this is compatible with:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Every optimization algorithm: including construction heuristics (first fit, first fit decreasing, ...),
+          local search (tabu search, simmulated annealing), ...</para>
+        </listitem>
+
+        <listitem>
+          <para>The generic build-in move factories. Note: currently there are chained alternatives for each move
+          factory, but those will be unified with the originals soon.</para>
+        </listitem>
+
+        <listitem>
+          <para>Repeated planning, including real-time planning</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For more information, <link xlink:href="http://www.jboss.org/drools/documentation">read the Planner
+      reference manual</link>.</para>
+    </section>
+
+    <section>
+      <title>New Tabu Search implementation: planning value tabu</title>
+
+      <para>Property tabu has been renamed to planning entity tabu. Planning value tabu has been added. The generic
+      moves support this out-of-the-box.</para>
+
+      <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;planningValueTabuSize&gt;5&lt;/planningValueTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+    </section>
+
+    <section>
+      <title>Quick start tutorial</title>
+
+      <para>The documentation now has a new chapter <emphasis>Quick start tutorial</emphasis>. It explains how to write
+      the CloudBalance example from scratch. <link xlink:href="http://www.jboss.org/drools/documentation">Read the
+      Planner reference manual</link>.</para>
     </section>
   </section>
 </section>
