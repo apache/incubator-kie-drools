@@ -531,10 +531,6 @@ public class DroolsPackageImpl extends EPackageImpl implements DroolsPackage {
 		// Obtain other dependent packages
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
-		// Create type parameters
-
-		// Set bounds for type parameters
-
 		// Add supertypes to classes
 
 		// Initialize classes and features; add operations and parameters

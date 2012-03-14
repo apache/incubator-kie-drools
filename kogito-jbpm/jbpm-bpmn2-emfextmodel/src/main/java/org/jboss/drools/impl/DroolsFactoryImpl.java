@@ -63,7 +63,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case DroolsPackage.DOCUMENT_ROOT: return createDocumentRoot();
@@ -81,7 +80,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
 			case DroolsPackage.PACKAGE_NAME_TYPE:
@@ -104,7 +102,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
 			case DroolsPackage.PACKAGE_NAME_TYPE:
@@ -277,7 +274,6 @@ public class DroolsFactoryImpl extends EFactoryImpl implements DroolsFactory {
 	 * @deprecated
 	 * @generated
 	 */
-	@Deprecated
 	public static DroolsPackage getPackage() {
 		return DroolsPackage.eINSTANCE;
 	}

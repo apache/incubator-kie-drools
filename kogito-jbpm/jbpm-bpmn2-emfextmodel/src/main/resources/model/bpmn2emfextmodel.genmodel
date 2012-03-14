@@ -4,7 +4,7 @@
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
     editDirectory="/jbpm-bpmn2-emfextmodel/src/main/java" editorDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
     modelPluginID="jbpm-bpmn2-emfextmodel" modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel/src/test/java"
-    importerID="org.eclipse.xsd.ecore.importer" complianceLevel="5.0" copyrightFields="false">
+    importerID="org.eclipse.xsd.ecore.importer" copyrightFields="false">
   <foreignModel>bpmn2emfextmodel.xsd</foreignModel>
   <genPackages prefix="Drools" basePackage="org.jboss" resource="XML" disposableProviderFactory="true"
       ecorePackage="drools.ecore#/">

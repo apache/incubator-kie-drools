@@ -10,8 +10,6 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EPackage;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
 import org.eclipse.emf.ecore.xmi.util.XMLProcessor;
 
 import org.jboss.drools.DroolsPackage;
@@ -41,8 +39,7 @@ public class DroolsXMLProcessor extends XMLProcessor {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected Map<String, Resource.Factory> getRegistrations() {
+	protected Map getRegistrations() {
 		if (registrations == null) {
 			super.getRegistrations();
 			registrations.put(XML_EXTENSION, new DroolsResourceFactoryImpl());

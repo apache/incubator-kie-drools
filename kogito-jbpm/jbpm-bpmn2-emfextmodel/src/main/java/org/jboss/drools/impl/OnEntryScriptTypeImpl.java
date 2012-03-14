@@ -85,7 +85,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	protected EClass eStaticClass() {
 		return DroolsPackage.Literals.ON_ENTRY_SCRIPT_TYPE;
 	}
@@ -137,7 +136,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE__SCRIPT:
@@ -153,7 +151,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE__SCRIPT:
@@ -171,7 +168,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE__SCRIPT:
@@ -189,7 +185,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.ON_ENTRY_SCRIPT_TYPE__SCRIPT:
@@ -205,7 +200,6 @@ public class OnEntryScriptTypeImpl extends EObjectImpl implements OnEntryScriptT
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 

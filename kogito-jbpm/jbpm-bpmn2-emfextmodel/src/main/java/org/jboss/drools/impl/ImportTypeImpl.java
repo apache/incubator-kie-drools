@@ -64,7 +64,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	protected EClass eStaticClass() {
 		return DroolsPackage.Literals.IMPORT_TYPE;
 	}
@@ -95,7 +94,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DroolsPackage.IMPORT_TYPE__NAME:
@@ -109,7 +107,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DroolsPackage.IMPORT_TYPE__NAME:
@@ -124,7 +121,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.IMPORT_TYPE__NAME:
@@ -139,7 +135,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DroolsPackage.IMPORT_TYPE__NAME:
@@ -153,7 +148,6 @@ public class ImportTypeImpl extends EObjectImpl implements ImportType {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 

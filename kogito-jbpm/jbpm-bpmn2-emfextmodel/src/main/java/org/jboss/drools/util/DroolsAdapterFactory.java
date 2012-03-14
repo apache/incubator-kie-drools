@@ -52,7 +52,6 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @return whether this factory is applicable for the type of the object.
 	 * @generated
 	 */
-	@Override
 	public boolean isFactoryForType(Object object) {
 		if (object == modelPackage) {
 			return true;
@@ -69,30 +68,24 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DroolsSwitch<Adapter> modelSwitch =
-		new DroolsSwitch<Adapter>() {
-			@Override
-			public Adapter caseDocumentRoot(DocumentRoot object) {
+	protected DroolsSwitch modelSwitch =
+		new DroolsSwitch() {
+			public Object caseDocumentRoot(DocumentRoot object) {
 				return createDocumentRootAdapter();
 			}
-			@Override
-			public Adapter caseGlobalType(GlobalType object) {
+			public Object caseGlobalType(GlobalType object) {
 				return createGlobalTypeAdapter();
 			}
-			@Override
-			public Adapter caseImportType(ImportType object) {
+			public Object caseImportType(ImportType object) {
 				return createImportTypeAdapter();
 			}
-			@Override
-			public Adapter caseOnEntryScriptType(OnEntryScriptType object) {
+			public Object caseOnEntryScriptType(OnEntryScriptType object) {
 				return createOnEntryScriptTypeAdapter();
 			}
-			@Override
-			public Adapter caseOnExitScriptType(OnExitScriptType object) {
+			public Object caseOnExitScriptType(OnExitScriptType object) {
 				return createOnExitScriptTypeAdapter();
 			}
-			@Override
-			public Adapter defaultCase(EObject object) {
+			public Object defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
 		};
@@ -105,9 +98,8 @@ public class DroolsAdapterFactory extends AdapterFactoryImpl {
 	 * @return the adapter for the <code>target</code>.
 	 * @generated
 	 */
-	@Override
 	public Adapter createAdapter(Notifier target) {
-		return modelSwitch.doSwitch((EObject)target);
+		return (Adapter)modelSwitch.doSwitch((EObject)target);
 	}
 
 
