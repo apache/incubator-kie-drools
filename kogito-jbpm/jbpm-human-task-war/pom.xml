@@ -31,5 +31,22 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
+    <dependency>
+    	<groupId>com.h2database</groupId>
+    	<artifactId>h2</artifactId>
+    	<version>1.3.164</version>
+    	<scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.hornetq</groupId>
+    	<artifactId>hornetq-core</artifactId>
+    	<version>2.2.2.Final</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.jboss.netty</groupId>
+    	<artifactId>netty</artifactId>
+    	<version>3.2.0.Final</version>
+    	<scope>runtime</scope>
+    </dependency>
   </dependencies>
 </project>

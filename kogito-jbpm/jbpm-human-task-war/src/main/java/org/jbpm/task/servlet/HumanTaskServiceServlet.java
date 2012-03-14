@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
@@ -33,8 +36,18 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
+import org.jbpm.task.UserInfo;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
+import org.jbpm.task.service.DefaultUserGroupCallbackImpl;
+import org.jbpm.task.service.EscalatedDeadlineHandler;
+import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.UserGroupCallback;
+import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
+import org.jbpm.task.service.jms.JMSTaskServer;
+import org.jbpm.task.service.jms.TaskServiceConstants;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
@@ -44,10 +57,73 @@ import org.mvel2.compiler.ExpressionCompiler;
 public class HumanTaskServiceServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5L;
+	
+	private TaskServer server = null;
+    private Thread thread = null;
 
+    /**
+     * Responsible for configuring entire task server based in init parameters.
+     * There are two sections of the configuration:
+     * <ul>
+     * 	<li>transport related - to configure transport of choice (hornetq, jms,mina)</li>
+     * 	<li>general - configures internal components of task server (escalation, user group callback)</li>
+     * </ul>
+     * 
+     * Main parameter that controls what trasport will be configured is <code>active.config</code>. It has three acceptable values:
+     * <ul>
+     * 	<li>hornetq</li>
+     * 	<li>jms</li>
+     * 	<li>mina</li>
+     * </ul>
+     * be default it uses hornetq as transport.
+     * 
+     * Dedicated parameters for transport configuration:
+     * <b>HornetQ</b>
+     * <ul>
+     * 	<li>hornetq.port</li>
+     * </ul>
+     * <br/>
+     * <b>JMS</b>
+     * <ul>
+     * 	<li>JMSTaskServer.connectionFactory</li>
+     * 	<li>JMSTaskServer.transacted</li>
+     * 	<li>JMSTaskServer.acknowledgeMode</li>
+     * 	<li>JMSTaskServer.queueName</li>
+     * 	<li>JMSTaskServer.responseQueueName</li>
+     * </ul>
+     * 
+     * <b>Mina</b>
+     * <ul>
+	 *  <li>mina.host</li>
+     * 	<li>mina.port</li>
+     * </ul>
+     */
 	public void init() throws ServletException {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(getConfigParameter("task.persistence.unit", "org.jbpm.task"));
+        
+        String escalationHandlerClass = getConfigParameter("escalated.deadline.handler.class", DefaultEscalatedDeadlineHandler.class.getName());
+        TaskService taskService = null;
+        try {
+        	EscalatedDeadlineHandler handler = getInstance(escalationHandlerClass);
+        	if (handler instanceof DefaultEscalatedDeadlineHandler) {
+        		UserInfo userInfo = null;
+        		try {
+	        		String userInfoClass = getConfigParameter("user.info.class", null);
+		        	userInfo = getInstance(userInfoClass);
+        		} catch (IllegalArgumentException e) {
+        			Properties registryProps = new Properties();
+        			registryProps.load(this.getClass().getResourceAsStream("/userinfo.properties"));
+//					userInfo = new DefaultUserInfo(registryProps);
+				}
+	        	
+	        	((DefaultEscalatedDeadlineHandler)handler).setUserInfo(userInfo);
+        	}
+        	
+        	taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);
+        } catch (Exception e) {
+        	taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+		}
+        
         TaskServiceSession taskSession = taskService.createSession();
         // Add users
         Map vars = new HashMap();
@@ -61,16 +137,82 @@ public class HumanTaskServiceServlet extends HttpServlet {
         for ( Group group : groups.values() ) {
             taskSession.addGroup( group );
         }
-        // start server
-        MinaTaskServer server = new MinaTaskServer(taskService);
-        Thread thread = new Thread(server);
-        thread.start();
+        String activeConfig = getConfigParameter("active.config", "hornetq");
+        
+        
+        if ("mina".equalsIgnoreCase(activeConfig)) {
+	        int port = Integer.parseInt(getConfigParameter("mina.port", "9123"));
+        	String host = getConfigParameter("mina.host", "localhost");
+        	// start server
+	        server = new MinaTaskServer(taskService, port, host);
+	        thread = new Thread(server);
+	        thread.start();
+	        System.out.println("Apache Mina Task service started correctly !");
+	        System.out.println("Apache Mina Task service running ...");
+	        
+        } else if ("hornetq".equalsIgnoreCase(activeConfig)) {
+        	int port = Integer.parseInt(getConfigParameter("hornetq.port", "5446"));
+        	
+        	server = new HornetQTaskServer(taskService, port);
+    		thread = new Thread(server);
+    		thread.start();
+    		System.out.println("HornetQ Task service started correctly !");
+	        System.out.println("HornetQ Task service running ...");
+	        
+        } else if ("jms".equalsIgnoreCase(activeConfig)) {
+        	Properties connProperties = new Properties();
+        	connProperties.setProperty(TaskServiceConstants.TASK_SERVER_CONNECTION_FACTORY_NAME, getConfigParameter(TaskServiceConstants.TASK_SERVER_CONNECTION_FACTORY_NAME, null));
+        	connProperties.setProperty(TaskServiceConstants.TASK_SERVER_TRANSACTED_NAME, getConfigParameter(TaskServiceConstants.TASK_SERVER_TRANSACTED_NAME, null));
+        	connProperties.setProperty(TaskServiceConstants.TASK_SERVER_ACKNOWLEDGE_MODE_NAME, getConfigParameter(TaskServiceConstants.TASK_SERVER_ACKNOWLEDGE_MODE_NAME, ""));
+        	connProperties.setProperty(TaskServiceConstants.TASK_SERVER_QUEUE_NAME_NAME, getConfigParameter(TaskServiceConstants.TASK_SERVER_QUEUE_NAME_NAME, null));
+        	connProperties.setProperty(TaskServiceConstants.TASK_SERVER_RESPONSE_QUEUE_NAME_NAME, getConfigParameter(TaskServiceConstants.TASK_SERVER_RESPONSE_QUEUE_NAME_NAME, null));
+        	try {
+	        	server = new JMSTaskServer(taskService, connProperties, new InitialContext());
+	        	thread = new Thread(server);
+	    		thread.start();
+	    		System.out.println("JMS Task service started correctly !");
+		        System.out.println("JMS Task service running ...");
+			} catch (NamingException e) {
+				throw new ServletException("Error while starting JMS Task Service", e);
+			}
+        }
+        String callbackClass = getConfigParameter("user.group.callback.class", DefaultUserGroupCallbackImpl.class.getName());
+        
+		UserGroupCallback userGroupCallback = getInstance(callbackClass);
+		
+		UserGroupCallbackManager.getInstance().setCallback(userGroupCallback);
+		
         taskSession.dispose();
-        System.out.println("Task service started correctly !");
-        System.out.println("Task service running ...");
+        System.out.println("Task service startup completed successfully !");
+        
     }
+	
+	
 
-    public static Object eval(Reader reader, Map vars) {
+    @Override
+	public void destroy() {
+
+		try {
+			this.server.stop();
+		} catch (Exception e) {
+			System.out.println("Exception while stopping task server " + e.getMessage());
+		}
+		try {
+			 this.thread.interrupt();
+		} catch (Exception e) {
+			System.out.println("Exception while stopping task server thread " + e.getMessage());
+		}
+	}
+
+
+
+	protected TaskServer getServer() {
+		return server;
+	}
+
+
+
+	public static Object eval(Reader reader, Map vars) {
         try {
             return eval( readerToString( reader ), vars );
         } catch ( IOException e ) {
@@ -117,6 +259,29 @@ public class HumanTaskServiceServlet extends HttpServlet {
         context.addImport( "User", User.class );
 
         return MVEL.executeExpression( compiler.compile( context ), vars );
+    }
+    
+    protected String getConfigParameter(String name, String defaultValue) {
+    	String paramValue = getInitParameter(name);
+    	
+    	if (paramValue != null && paramValue.length() > 0) {
+    		return paramValue;
+    	}
+    	if (defaultValue == null) {
+    		throw new IllegalArgumentException("Missing configuration property name: " + name);
+    	}
+    	return defaultValue;
+    }
+    
+    protected <T> T getInstance(String className) {
+    	Object instance;
+		try {
+			instance = Class.forName(className).newInstance();
+		
+			return (T) instance;
+		} catch (Exception e) {
+			throw new RuntimeException("Error while creating instance of configurable class, class name: " + className, e);
+		}
     }
 
     protected void doGet(HttpServletRequest request,
