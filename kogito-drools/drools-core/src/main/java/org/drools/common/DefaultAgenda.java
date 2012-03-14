@@ -1227,7 +1227,7 @@ public class DefaultAgenda
         //TODO : "save for later" : put activation in queue if halted, then dispatch again on next fire
         if ( ! this.halt.get() ) {
             fireActivation( activation );
-            return true;
+            return ! this.halt.get();
         } else {
             return false;
         }
