@@ -24,10 +24,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
 
 import org.drools.ChangeSet;
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerFactory;
+import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
@@ -38,10 +40,13 @@ public class ResourceChangeScannerImpl
     implements
     ResourceChangeScanner {
 
-    private Map<Resource, Set<ResourceChangeNotifier>> resources;
-    private Set<Resource>                              directories;
-    private SystemEventListener                        listener;
-    private int                                        interval;
+    private final Map<Resource, Set<ResourceChangeNotifier>> resources;
+    private final Set<Resource>                              directories;
+    private SystemEventListener                              listener;
+    private int                                              interval;
+
+    private Future<Boolean>                                  scannerSchedulerExecutor;
+    private ProcessChangeSet                                 scannerScheduler;
 
     public ResourceChangeScannerImpl() {
         this.listener = SystemEventListenerFactory.getSystemEventListener();
@@ -244,14 +249,15 @@ public class ResourceChangeScannerImpl
                                                       this,
                                                       this.listener,
                                                       this.interval );
-        thread = new Thread( this.scannerScheduler );
-        thread.start();
+        this.scannerSchedulerExecutor =
+                ExecutorProviderFactory.getExecutorProvider().<Boolean>getCompletionService()
+                        .submit(this.scannerScheduler, true);
     }
 
     public void stop() {
         if ( this.scannerScheduler != null && this.scannerScheduler.isRunning() ) {
             this.scannerScheduler.stop();
-            this.thread.interrupt();
+            this.scannerSchedulerExecutor.cancel(true);
             this.scannerScheduler = null;
         }
     }
@@ -261,17 +267,14 @@ public class ResourceChangeScannerImpl
         this.directories.clear();
     }
 
-    private Thread           thread;
-    private ProcessChangeSet scannerScheduler;
-
     public static class ProcessChangeSet
         implements
         Runnable {
-        private volatile boolean                           scan;
-        private ResourceChangeScannerImpl                  scanner;
-        private long                                       interval;
-        private Map<Resource, Set<ResourceChangeNotifier>> resources;
-        private SystemEventListener                        listener;
+        private volatile boolean                                 scan;
+        private final ResourceChangeScannerImpl                  scanner;
+        private final long                                       interval;
+        private final Map<Resource, Set<ResourceChangeNotifier>> resources;
+        private final SystemEventListener                        listener;
 
         ProcessChangeSet(Map<Resource, Set<ResourceChangeNotifier>> resources,
                          ResourceChangeScannerImpl scanner,

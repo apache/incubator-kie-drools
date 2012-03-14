@@ -6,6 +6,7 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.BitMaskUtil;
 import org.drools.reteoo.LeftTuple;
@@ -16,7 +17,6 @@ import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.runtime.rule.Variable;
-import org.drools.spi.ExecutorFactory;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
@@ -31,6 +31,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.core.util.ClassUtils.*;
@@ -196,7 +197,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             if (TEST_JITTING) {
                 executeJitting(object, workingMemory, leftTuple);
             } else {
-                ExecutorFactory.getExecutor().execute(new Runnable() {
+                ExecutorHolder.executor.execute(new Runnable() {
                     public void run() {
                         executeJitting(object, workingMemory, leftTuple);
                     }
@@ -205,6 +206,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
+    }
+
+    private static class ExecutorHolder {
+        private static final Executor executor = ExecutorProviderFactory.getExecutorProvider().getExecutor();
     }
 
     private void executeJitting(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {

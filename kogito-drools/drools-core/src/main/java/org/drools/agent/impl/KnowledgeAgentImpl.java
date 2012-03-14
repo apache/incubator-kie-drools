@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.ChangeSet;
@@ -46,6 +47,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
+import org.drools.concurrent.ExecutorProviderFactory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
@@ -95,7 +97,7 @@ public class KnowledgeAgentImpl
     private boolean                        scanDirectories;
     private boolean                        useKBaseClassLoaderForCompiling;
     private LinkedBlockingQueue<ChangeSet> queue;
-    private Thread                         thread;
+    private Future<Boolean>                notificationDetectorExecutor;
     private ChangeSetNotificationDetector  changeSetNotificationDetector;
     private SemanticModules                semanticModules;
     private final RegisteredResourceMap    registeredResources = new RegisteredResourceMap();
@@ -133,11 +135,11 @@ public class KnowledgeAgentImpl
                 monitor = true;
             }
 
-            if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanDirectories() ) {
+            if ( configuration.isScanDirectories() ) {
                 this.scanDirectories = true;
             }
 
-            scanResources = ((KnowledgeAgentConfigurationImpl) configuration).isScanResources();
+            scanResources = configuration.isScanResources();
             if ( scanResources ) {
                 this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
                 monitor = true; // if scanning, monitor must be true;
@@ -1077,15 +1079,15 @@ public class KnowledgeAgentImpl
             // we are running, but it wants to stop
             // this will stop the thread
             this.changeSetNotificationDetector.stop();
-            this.thread.interrupt();
+            this.notificationDetectorExecutor.cancel(true);
             this.changeSetNotificationDetector = null;
         } else if ( monitor && this.changeSetNotificationDetector == null ) {
-            this.changeSetNotificationDetector = new ChangeSetNotificationDetector(
-                                                                                    this,
+            this.changeSetNotificationDetector = new ChangeSetNotificationDetector( this,
                                                                                     this.queue,
                                                                                     this.listener );
-            this.thread = new Thread( this.changeSetNotificationDetector );
-            this.thread.start();
+            this.notificationDetectorExecutor =
+                    ExecutorProviderFactory.getExecutorProvider().<Boolean>getCompletionService()
+                            .submit(this.changeSetNotificationDetector, true);
         }
     }
 
@@ -1256,12 +1258,7 @@ public class KnowledgeAgentImpl
             }
 
             //support for lazy loading
-            if ( definition != null ) {
-                boolean isNew = defList.add( definition );
-                return isNew;
-            }
-
-            return false;
+            return definition != null && defList.add( definition );
         }
 
         public Set<KnowledgeDefinition> removeDefinitions(Resource resource) {
@@ -1317,7 +1314,7 @@ public class KnowledgeAgentImpl
             return null;
         }
 
-        KnowledgeBuilder kbuilder = null;
+        KnowledgeBuilder kbuilder;
         if ( this.builderConfiguration != null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
         } else if ( this.isUseKBaseClassLoaderForCompiling() ) {
@@ -1338,7 +1335,7 @@ public class KnowledgeAgentImpl
 
     private void retrieveDSLResource(Resource resource) throws IOException {
         BufferedReader bufferedReader = new BufferedReader( resource.getReader() );
-        String line = null;
+        String line;
         StringBuilder content = new StringBuilder();
         while ( (line = bufferedReader.readLine()) != null ) {
             content.append( line );
