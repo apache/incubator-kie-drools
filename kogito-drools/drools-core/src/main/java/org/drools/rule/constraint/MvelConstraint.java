@@ -16,6 +16,7 @@ import org.drools.rule.IndexableConstraint;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.runtime.rule.Variable;
+import org.drools.spi.ExecutorFactory;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.CompositeClassLoader;
@@ -55,8 +56,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private MVELCompilationUnit compilationUnit;
 
-    private transient ConditionEvaluator conditionEvaluator;
-    private transient Condition analyzedCondition;
+    private transient volatile ConditionEvaluator conditionEvaluator;
+    private transient volatile Condition analyzedCondition;
 
     public MvelConstraint() {}
 
@@ -189,17 +190,29 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return mvelValue;
     }
 
-    private void jitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+    private void jitEvaluator(final Object object, final InternalWorkingMemory workingMemory, final LeftTuple leftTuple) {
         jitted = true;
         try {
-            CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-            if (analyzedCondition == null) {
-                analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
+            if (TEST_JITTING) {
+                executeJitting(object, workingMemory, leftTuple);
+            } else {
+                ExecutorFactory.getExecutor().execute(new Runnable() {
+                    public void run() {
+                        executeJitting(object, workingMemory, leftTuple);
+                    }
+                });
             }
-            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
         } catch (Throwable t) {
             throw new RuntimeException("Exception jitting: " + expression, t);
         }
+    }
+
+    private void executeJitting(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+        CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+        if (analyzedCondition == null) {
+            analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
+        }
+        conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
     }
 
     public ContextEntry createContextEntry() {
