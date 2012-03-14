@@ -22,10 +22,12 @@ import java.util.Map;
 import org.jbpm.formapi.shared.api.Mappable;
 import org.jbpm.formapi.shared.form.AbstractFormRepresentationEncoder;
 
-public class FormRepresentationEncoderImpl extends AbstractFormRepresentationEncoder {
+public class FormRepresentationEncoderImpl extends
+        AbstractFormRepresentationEncoder {
 
-    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(getDateFormatString());
-    
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat(
+            getDateFormatString());
+
     @Override
     public Object fromMap(Map<String, Object> map) {
         if (map == null) {
@@ -48,7 +50,7 @@ public class FormRepresentationEncoderImpl extends AbstractFormRepresentationEnc
             return null;
         }
     }
-    
+
     @Override
     public String formatDate(Date date) {
         return FORMAT.format(date);

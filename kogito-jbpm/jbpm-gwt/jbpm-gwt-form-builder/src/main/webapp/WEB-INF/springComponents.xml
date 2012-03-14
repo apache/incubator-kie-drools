@@ -8,28 +8,28 @@
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
           http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
-	<!-- Select configuration strategy -->
-	<bean id="strategy" class="java.lang.String">
-	  <constructor-arg type="java.lang.String" value="guvnor"/>
-	</bean>
+    <!-- Select configuration strategy -->
+    <bean id="strategy" class="java.lang.String">
+      <constructor-arg type="java.lang.String" value="guvnor"/>
+    </bean>
 
-	<!-- Guvnor configuration -->
-	
+    <!-- Guvnor configuration -->
+    
     <bean id="guvnorUrl" class="java.lang.String">
       <constructor-arg type="java.lang.String" value="http://localhost:8080/drools-guvnor"/>
     </bean>
 
-	<bean id="guvnorUser" class="java.lang.String">
-	  <constructor-arg type="java.lang.String" value="admin"/>
-	</bean>
+    <bean id="guvnorUser" class="java.lang.String">
+      <constructor-arg type="java.lang.String" value="admin"/>
+    </bean>
 
-	<bean id="guvnorPass" class="java.lang.String">
-	  <constructor-arg type="java.lang.String" value="admin"/>
-	</bean>
+    <bean id="guvnorPass" class="java.lang.String">
+      <constructor-arg type="java.lang.String" value="admin"/>
+    </bean>
 
-	<bean id="serviceFactory" class="org.jbpm.formbuilder.server.ServiceFactory" factory-method="getInstance"/>
+    <bean id="serviceFactory" class="org.jbpm.formbuilder.server.ServiceFactory" factory-method="getInstance"/>
 
-	<!-- Guvnor services -->
+    <!-- Guvnor services -->
 
     <bean id="guvnorFileService" class="org.jbpm.formbuilder.server.file.GuvnorFileService">
       <property name="baseUrl" ref="guvnorUrl"/>
@@ -43,13 +43,13 @@
       <property name="password" ref="guvnorPass"/>
     </bean>
 
-	<bean id="guvnorTaskService" class="org.jbpm.formbuilder.server.task.GuvnorTaskDefinitionService">
+    <bean id="guvnorTaskService" class="org.jbpm.formbuilder.server.task.GuvnorTaskDefinitionService">
       <property name="baseUrl" ref="guvnorUrl"/>
       <property name="user" ref="guvnorUser"/>
       <property name="password" ref="guvnorPass"/>
-	</bean>
-	
-	<bean id="guvnorMenuService" class="org.jbpm.formbuilder.server.menu.GuvnorMenuService">
-	</bean>
-	
+    </bean>
+    
+    <bean id="guvnorMenuService" class="org.jbpm.formbuilder.server.menu.GuvnorMenuService">
+    </bean>
+    
 </beans>

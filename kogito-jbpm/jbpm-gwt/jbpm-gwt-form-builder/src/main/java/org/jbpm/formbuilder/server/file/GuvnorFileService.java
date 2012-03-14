@@ -44,32 +44,32 @@ public class GuvnorFileService implements FileService, InitializingBean {
     }
 
     public String getBaseUrl() {
-		return baseUrl;
-	}
+        return baseUrl;
+    }
 
-	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	@Override
+    @Override
     public void afterPropertiesSet() throws Exception {
-    	this.helper = new GuvnorHelper(baseUrl, user, password);
+        this.helper = new GuvnorHelper(baseUrl, user, password);
     }
     
     public void setHelper(GuvnorHelper helper) {
@@ -106,8 +106,8 @@ public class GuvnorFileService implements FileService, InitializingBean {
 
             HttpClient client = helper.getHttpClient();
             String createUrl = helper.getRestBaseUrl() + 
-            		URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/";
-			PostMethod create = helper.createPostMethod(createUrl);
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/";
+            PostMethod create = helper.createPostMethod(createUrl);
             try {
                 helper.setAuth(client, create);
                 create.addRequestHeader("Content-Type", "application/octet-stream");
@@ -119,9 +119,9 @@ public class GuvnorFileService implements FileService, InitializingBean {
                 create.releaseConnection();
             }
             return (this.baseUrl + "/org.drools.guvnor.Guvnor/api/packages/" + 
-            		URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/" + 
-            		URLEncoder.encode(assetName, GuvnorHelper.ENCODING) + 
-            		"." + assetExt);
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/" + 
+                    URLEncoder.encode(assetName, GuvnorHelper.ENCODING) + 
+                    "." + assetExt);
         } catch (Exception e) {
             throw new FileException("Problem storing file", e);
         }
@@ -132,10 +132,10 @@ public class GuvnorFileService implements FileService, InitializingBean {
         String assetName = stripFileExtension(fileName);
         GetMethod check = null;
         try {
-        	String deleteUrl = helper.getRestBaseUrl() + 
-        			URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
-        			URLEncoder.encode(assetName, GuvnorHelper.ENCODING);
-        	check = helper.createGetMethod(deleteUrl);
+            String deleteUrl = helper.getRestBaseUrl() + 
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
+                    URLEncoder.encode(assetName, GuvnorHelper.ENCODING);
+            check = helper.createGetMethod(deleteUrl);
             helper.setAuth(client, check);
             check.addRequestHeader("Accept", "application/xml");
             client.executeMethod(check);
@@ -145,9 +145,9 @@ public class GuvnorFileService implements FileService, InitializingBean {
         } catch (IOException e) {
             throw new FileException("Problem getting old version of asset " + fileName + " in package " + packageName, e);
         } finally {
-        	if (check != null) {
-        		check.releaseConnection();
-        	}
+            if (check != null) {
+                check.releaseConnection();
+            }
         } 
     }
 
@@ -158,10 +158,10 @@ public class GuvnorFileService implements FileService, InitializingBean {
         //String assetType = extractFileExtension(fileName);
         DeleteMethod deleteAsset = null;
         try {
-        	String deleteUrl = helper.getRestBaseUrl() + 
-        			URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
-        			URLEncoder.encode(assetName, GuvnorHelper.ENCODING);
-        	deleteAsset = helper.createDeleteMethod(deleteUrl);
+            String deleteUrl = helper.getRestBaseUrl() + 
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
+                    URLEncoder.encode(assetName, GuvnorHelper.ENCODING);
+            deleteAsset = helper.createDeleteMethod(deleteUrl);
             helper.setAuth(client, deleteAsset);
             client.executeMethod(deleteAsset);
         } catch (IOException e) {
@@ -169,9 +169,9 @@ public class GuvnorFileService implements FileService, InitializingBean {
         } catch (Exception e) {
             throw new FileException("Unexpected error", e);
         } finally {
-        	if (deleteAsset != null) {
-        		deleteAsset.releaseConnection();
-        	}
+            if (deleteAsset != null) {
+                deleteAsset.releaseConnection();
+            }
         }
     }
 
@@ -180,15 +180,15 @@ public class GuvnorFileService implements FileService, InitializingBean {
         HttpClient client = helper.getHttpClient();
         GetMethod load = null;
         try {
-        	String loadUrl = helper.getRestBaseUrl() + 
-        			URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/";
-        	load = helper.createGetMethod(loadUrl);
-        	load.addRequestHeader("Accept", "application/xml");
+            String loadUrl = helper.getRestBaseUrl() + 
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/";
+            load = helper.createGetMethod(loadUrl);
+            load.addRequestHeader("Accept", "application/xml");
             helper.setAuth(client, load);
             client.executeMethod(load);
             PackageAssetsDTO dto = helper.jaxbTransformation(PackageAssetsDTO.class, 
-            		load.getResponseBodyAsStream(), 
-            		PackageAssetsDTO.class, PackageAssetDTO.class, MetaDataDTO.class);
+                    load.getResponseBodyAsStream(), 
+                    PackageAssetsDTO.class, PackageAssetDTO.class, MetaDataDTO.class);
             List<PackageAssetDTO> validAssets = new ArrayList<PackageAssetDTO>();
             if (fileType != null && !"".equals(fileType)) {
                 for (PackageAssetDTO asset : dto.getAsset()) {
@@ -224,10 +224,10 @@ public class GuvnorFileService implements FileService, InitializingBean {
         String assetName = stripFileExtension(fileName);
         GetMethod get = null;
         try {
-        	String getUrl = helper.getRestBaseUrl() + 
-        			URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
-        			URLEncoder.encode(assetName, GuvnorHelper.ENCODING) + "/source";
-        	get = helper.createGetMethod(getUrl);
+            String getUrl = helper.getRestBaseUrl() + 
+                    URLEncoder.encode(packageName, GuvnorHelper.ENCODING) + "/assets/" + 
+                    URLEncoder.encode(assetName, GuvnorHelper.ENCODING) + "/source";
+            get = helper.createGetMethod(getUrl);
             helper.setAuth(client, get);
             client.executeMethod(get);
             return get.getResponseBody();
@@ -236,9 +236,9 @@ public class GuvnorFileService implements FileService, InitializingBean {
         } catch (Exception e) {
             throw new FileException("Unexpected error reading file " + fileName, e);
         } finally {
-        	if (get != null) {
-        		get.releaseConnection();
-        	}
+            if (get != null) {
+                get.releaseConnection();
+            }
         }
     }
     

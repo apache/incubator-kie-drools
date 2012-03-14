@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 /**
  * 
  */
-public abstract class RenderTranslatorAbstractTest extends TestCase {
+public class RenderTranslatorAbstractTest extends TestCase {
 
     protected FormRepresentation createBasicForm() {
         FormRepresentation form = new FormRepresentation();

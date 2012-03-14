@@ -21,5 +21,5 @@ public interface Formatter {
 
     Object format(Object object);
 
-	Map<String, Object> getDataMap();
+    Map<String, Object> getDataMap();
 }

@@ -135,38 +135,38 @@ public class RestyFormBuilderModel implements FormBuilderService {
     }
 
     public void getCurrentRoles(final FormBuilderService.RolesResponseHandler handler) {
-    	Resource resource = new Resource(URLBuilder.getCurrentRolesURL(this.contextPath));
-    	resource.get().send(new TextCallback() {
-			@Override
-			public void onSuccess(Method method, String response) {
-				if (method.getResponse().getStatusCode() == Response.SC_OK) {
-					List<String> roles = helper.readRoles(response);
-					handler.onResponse(roles);
-				} else {
-					bus.fireEvent(new UserIsLoggedOutEvent());
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Method method, Throwable exception) {
-				bus.fireEvent(new UserIsLoggedOutEvent());
-			}
-		});
+        Resource resource = new Resource(URLBuilder.getCurrentRolesURL(this.contextPath));
+        resource.get().send(new TextCallback() {
+            @Override
+            public void onSuccess(Method method, String response) {
+                if (method.getResponse().getStatusCode() == Response.SC_OK) {
+                    List<String> roles = helper.readRoles(response);
+                    handler.onResponse(roles);
+                } else {
+                    bus.fireEvent(new UserIsLoggedOutEvent());
+                }
+                
+            }
+            
+            @Override
+            public void onFailure(Method method, Throwable exception) {
+                bus.fireEvent(new UserIsLoggedOutEvent());
+            }
+        });
     }
     
     public void logout() {
-    	Resource resource = new Resource(URLBuilder.getLogoutURL(this.contextPath));
-    	resource.post().send(new TextCallback() {
-			@Override
-			public void onSuccess(Method method, String response) {
-				Window.Location.reload();
-			}
-			@Override
-			public void onFailure(Method method, Throwable exception) {
-				Window.Location.reload();
-			}
-		});
+        Resource resource = new Resource(URLBuilder.getLogoutURL(this.contextPath));
+        resource.post().send(new TextCallback() {
+            @Override
+            public void onSuccess(Method method, String response) {
+                Window.Location.reload();
+            }
+            @Override
+            public void onFailure(Method method, Throwable exception) {
+                Window.Location.reload();
+            }
+        });
     }
     
     @Override
@@ -282,8 +282,8 @@ public class RestyFormBuilderModel implements FormBuilderService {
         }
     }
     
-	@Override
-	public void getFiles(List<String> types, final FilesLoadedHandler handler) {
+    @Override
+    public void getFiles(List<String> types, final FilesLoadedHandler handler) {
         String url = URLBuilder.getFilesURL(this.contextPath, this.packageName, types);
         Resource resource = new Resource(url);
         resource.get().send(new SimpleTextCallback(i18n.CouldntFindFiles("")) {
@@ -294,11 +294,11 @@ public class RestyFormBuilderModel implements FormBuilderService {
                     handler.onFilesLoaded(list);
                 } else {
                     bus.fireEvent(new NotificationEvent(Level.ERROR, i18n.CouldntFindFiles(
-                    		String.valueOf(method.getResponse().getStatusCode()))));
+                            String.valueOf(method.getResponse().getStatusCode()))));
                 }
             }
         });
-	}
+    }
 
 
     @Override

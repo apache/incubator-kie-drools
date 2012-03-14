@@ -16,7 +16,7 @@
     data.addRows([
       #set ($dataLineIter = $item.dataTable.iterator())
       #foreach ($dataLine in $item.dataTable)
-		#set ($indexLine = $item.dataTable.indexOf($dataLine))
+        #set ($indexLine = $item.dataTable.indexOf($dataLine))
         #set ($lastindexLine = $item.dataTable.size() - 1)
         [
         #foreach ($d in $dataLine)
@@ -31,7 +31,7 @@
         ]
       #end
     ]);
-	
+    
     var options = {
       width: $width, height: $height,
       title: $title

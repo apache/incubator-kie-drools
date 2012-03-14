@@ -28,29 +28,29 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class ToggleScriptHelper extends AbstractScriptHelper {
 
-	public static final String TOGGLE = "toggle";
-	public static final String SHOW = "show";
-	public static final String HIDE = "hide";
-	public static final String HIDING_STRATEGY_COLLAPSE = "collapse";
-	public static final String HIDING_STRATEGY_HIDDEN = "hidden";
-	
+    public static final String TOGGLE = "toggle";
+    public static final String SHOW = "show";
+    public static final String HIDE = "hide";
+    public static final String HIDING_STRATEGY_COLLAPSE = "collapse";
+    public static final String HIDING_STRATEGY_HIDDEN = "hidden";
+    
     private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
 
-	private String idField = "";
-	private String actionOnEvent = TOGGLE;
-	private String hidingStrategy = HIDING_STRATEGY_HIDDEN;
-	
-	private ToggleScriptHelperView view;
-	
-	public ToggleScriptHelper() {
-		super();
-	}
-	
-	@Override
-	public Map<String, Object> getDataMap() {
-		if (view != null) {
-			view.writeDataTo(this);
-		}
+    private String idField = "";
+    private String actionOnEvent = TOGGLE;
+    private String hidingStrategy = HIDING_STRATEGY_HIDDEN;
+    
+    private ToggleScriptHelperView view;
+    
+    public ToggleScriptHelper() {
+        super();
+    }
+    
+    @Override
+    public Map<String, Object> getDataMap() {
+        if (view != null) {
+            view.writeDataTo(this);
+        }
         String idFieldValue = this.idField;
         String actionOnEventValue = this.actionOnEvent;
         String hidingStrategyValue = this.hidingStrategy;
@@ -61,89 +61,89 @@ public class ToggleScriptHelper extends AbstractScriptHelper {
         map.put("actionOnEvent", actionOnEventValue);
         map.put("hidingStrategy", hidingStrategyValue);
         return map;
-	}
+    }
 
-	@Override
-	public void setDataMap(Map<String, Object> dataMap) {
-		String idFieldValue = (String) dataMap.get("idField");
-		String actionOnEventValue = (String) dataMap.get("actionOnEvent");
-		String hidingStrategyValue = (String) dataMap.get("hidingStrategy");
-		
-		this.idField = idFieldValue;
-		this.actionOnEvent = actionOnEventValue;
-		this.hidingStrategy = hidingStrategyValue;
-		
-		if (this.view != null) {
-			this.view.readDataFrom(this);
-		}
-	}
+    @Override
+    public void setDataMap(Map<String, Object> dataMap) {
+        String idFieldValue = (String) dataMap.get("idField");
+        String actionOnEventValue = (String) dataMap.get("actionOnEvent");
+        String hidingStrategyValue = (String) dataMap.get("hidingStrategy");
+        
+        this.idField = idFieldValue;
+        this.actionOnEvent = actionOnEventValue;
+        this.hidingStrategy = hidingStrategyValue;
+        
+        if (this.view != null) {
+            this.view.readDataFrom(this);
+        }
+    }
 
-	@Override
-	public String asScriptContent() {
-		if (view != null) {
-			view.writeDataTo(this);
-		}
-		long id = System.currentTimeMillis();
+    @Override
+    public String asScriptContent() {
+        if (view != null) {
+            view.writeDataTo(this);
+        }
+        long id = System.currentTimeMillis();
         StringBuilder sb = new StringBuilder();
         String actionValue = actionOnEvent;
         String strategy = hidingStrategy;
         sb.append("var elementToggle" + id + " = document.getElementById('" + idField + "');");
         sb.append("if (elementToggle" + id + " != null) {");
         if (actionValue.equals(HIDE)) {
-        	//hide script
-        	sb.append("   elementToggle" + id + ".style.visibility = '" + strategy + "';");
+            //hide script
+            sb.append("   elementToggle" + id + ".style.visibility = '" + strategy + "';");
         }
         if (actionValue.equals(SHOW)) {
-        	//show script
-        	sb.append("   elementToggle" + id + ".style.visibility = 'visible';");
+            //show script
+            sb.append("   elementToggle" + id + ".style.visibility = 'visible';");
         }
         if (actionValue.equals(TOGGLE)) {
-        	//show if not visible, hide if visible script
+            //show if not visible, hide if visible script
             sb.append("   if (elementToggle" + id + ".style.visibility == 'visible') {");
-        	sb.append("      elementToggle" + id + ".style.visibility = '" + strategy + "';");
+            sb.append("      elementToggle" + id + ".style.visibility = '" + strategy + "';");
             sb.append("   } else {");
             sb.append("      elementToggle" + id + ".style.visibility = 'visible';");
             sb.append("   }");
         }
         sb.append("}");
         return sb.toString();
-	}
+    }
 
-	@Override
-	public Widget draw() {
-		if (view == null) {
-			view = new ToggleScriptHelperView(this);
-			view.readDataFrom(this);
-		}
-		return view;
-	}
+    @Override
+    public Widget draw() {
+        if (view == null) {
+            view = new ToggleScriptHelperView(this);
+            view.readDataFrom(this);
+        }
+        return view;
+    }
 
-	@Override
-	public String getName() {
-		return i18n.ToggleScriptHelperName();
-	}
+    @Override
+    public String getName() {
+        return i18n.ToggleScriptHelperName();
+    }
 
-	public String getIdField() {
-		return idField;
-	}
+    public String getIdField() {
+        return idField;
+    }
 
-	public void setIdField(String idField) {
-		this.idField = idField;
-	}
+    public void setIdField(String idField) {
+        this.idField = idField;
+    }
 
-	public String getActionOnEvent() {
-		return actionOnEvent;
-	}
+    public String getActionOnEvent() {
+        return actionOnEvent;
+    }
 
-	public void setActionOnEvent(String actionOnEvent) {
-		this.actionOnEvent = actionOnEvent;
-	}
+    public void setActionOnEvent(String actionOnEvent) {
+        this.actionOnEvent = actionOnEvent;
+    }
 
-	public String getHidingStrategy() {
-		return hidingStrategy;
-	}
+    public String getHidingStrategy() {
+        return hidingStrategy;
+    }
 
-	public void setHidingStrategy(String hidingStrategy) {
-		this.hidingStrategy = hidingStrategy;
-	}
+    public void setHidingStrategy(String hidingStrategy) {
+        this.hidingStrategy = hidingStrategy;
+    }
 }

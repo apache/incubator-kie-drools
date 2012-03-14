@@ -51,7 +51,7 @@ public class RESTFileService extends RESTBaseService {
     
     protected void setContext(ServletContext context) {
         if (fileService == null) {
-        	this.fileService = ServiceFactory.getInstance().getFileService();
+            this.fileService = ServiceFactory.getInstance().getFileService();
         }
     }
     
@@ -121,11 +121,11 @@ public class RESTFileService extends RESTBaseService {
     public Response getFiles(@Context HttpServletRequest request, @PathParam("pkgName") String packageName, @QueryParam("type") String[] fileTypes) {
         setContext(request.getSession().getServletContext());
         try {
-        	List<String> allFiles = new ArrayList<String>();
-        	for (String fileType : fileTypes) {
-        		allFiles.addAll(fileService.loadFilesByType(packageName, fileType));
-        	}
-        	Collections.sort(allFiles);
+            List<String> allFiles = new ArrayList<String>();
+            for (String fileType : fileTypes) {
+                allFiles.addAll(fileService.loadFilesByType(packageName, fileType));
+            }
+            Collections.sort(allFiles);
             FileListDTO dto = new FileListDTO(allFiles);
             return Response.ok(dto, MediaType.APPLICATION_XML).build();
         } catch (FileException e) {

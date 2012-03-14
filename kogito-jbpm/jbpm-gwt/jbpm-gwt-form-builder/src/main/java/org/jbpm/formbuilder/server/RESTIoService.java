@@ -40,7 +40,7 @@ public class RESTIoService extends RESTBaseService {
     
     public void setContext(@Context ServletContext context) {
         if (taskService == null) {
-        	taskService = ServiceFactory.getInstance().getTaskDefinitionService();
+            taskService = ServiceFactory.getInstance().getTaskDefinitionService();
         }
     }
     

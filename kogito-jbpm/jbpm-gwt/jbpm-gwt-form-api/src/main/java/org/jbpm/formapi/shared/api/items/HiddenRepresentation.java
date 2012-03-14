@@ -28,11 +28,11 @@ public class HiddenRepresentation extends FormItemRepresentation {
     private String id;
     private String name;
     private String value;
-    
+
     public HiddenRepresentation() {
         super("hidden");
     }
-    
+
     public String getId() {
         return id;
     }
@@ -56,38 +56,46 @@ public class HiddenRepresentation extends FormItemRepresentation {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
-    	Map<String, Object> data = super.getDataMap();
-    	data.put("id", this.id);
+        Map<String, Object> data = super.getDataMap();
+        data.put("id", this.id);
         data.put("name", this.name);
         data.put("value", this.value);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
         this.id = (String) data.get("id");
         this.name = (String) data.get("name");
         this.value = (String) data.get("value");
-        
+
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof HiddenRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof HiddenRepresentation))
+            return false;
         HiddenRepresentation other = (HiddenRepresentation) obj;
-        boolean equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
-        equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.value == null && other.value == null) || (this.value != null && this.value.equals(other.value));
+        boolean equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
+        equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.value == null && other.value == null)
+                || (this.value != null && this.value.equals(other.value));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

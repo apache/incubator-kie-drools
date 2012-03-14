@@ -9,23 +9,16 @@
   <artifactId>jbpm-gwt-form-builder</artifactId>
   <packaging>war</packaging>
   <name>jBPM :: GWT Form Builder</name>
+  <description>jBPM Form Builder</description>
   
   <properties>
-    <gwt.version>2.3.0</gwt.version>
+    <gwt.version>2.4.0</gwt.version>
+    <spring.version>3.0.6.RELEASE</spring.version>
   </properties>
   
   <build>
     <finalName>jbpm-form-builder-${project.version}</finalName>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -39,26 +32,27 @@
         <!-- use -Dgwt.compiler.skip=true to skip GWT compiler -->
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>2.4.0</version>
         <configuration>
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <logLevel>INFO</logLevel>
           <gwtVersion>${gwt.version}</gwtVersion>
           <style>DETAILED</style>
           <noServer>false</noServer>
-          <inplace>true</inplace>
+          <!-- inplace>true</inplace -->
           <modules>
             <module>org.jbpm.formbuilder.FormBuilder</module>
             <module>org.jbpm.formdisplay.FormDisplay</module>
           </modules>
-          <runTarget>FormBuilder.html</runTarget>
+          <!-- runTarget>FormBuilder.html</runTarget>
           <compileTargets>
             <value>org.jbpm.formbuilder.FormBuilder</value>
             <value>org.jbpm.formdisplay.FormDisplay</value>
           </compileTargets>
-          <hostedWebapp>${basedir}/src/main/webapp/</hostedWebapp>
+          <hostedWebapp>${basedir}/src/main/webapp/</hostedWebapp -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath><!-- The GWT compiler must the correct JDT version -->
           <localWorkers>2</localWorkers><!-- Using all workers can temporarily hang the mouse and isn't much faster -->
-          <extraJvmArgs>-Xmx512m</extraJvmArgs>
+          <extraJvmArgs>-Xmx1024m</extraJvmArgs>
         </configuration>
         <executions>
           <execution>
@@ -230,7 +224,6 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.2.2</version>
     </dependency>
     <dependency>
       <groupId>commons-vfs</groupId>
@@ -254,7 +247,6 @@
     <dependency>
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam</artifactId>
-      <version>2.1.0.GA</version>
     </dependency>
     <dependency>
       <groupId>org.apache.velocity</groupId>
@@ -269,22 +261,18 @@
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
-      <version>2.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.15</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>
@@ -301,7 +289,6 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>2.2.1</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -311,12 +298,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>3.0.6.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>3.0.6.RELEASE</version>
+      <version>${spring.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -331,12 +318,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>3.0.6.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>3.0.6.RELEASE</version>
+      <version>${spring.version}</version>
     </dependency>
   </dependencies>
   

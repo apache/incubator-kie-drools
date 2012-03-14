@@ -86,8 +86,8 @@ public class ToolBarViewImpl extends AbsolutePanel implements ToolBarView {
     }
 
     public void showDialog(String confirmText, ClickHandler okButtonHandler) {
-    	ConfirmDialog dialog = new ConfirmDialog(confirmText);
-    	dialog.addOkButtonHandler(okButtonHandler);
-    	dialog.show();
+        ConfirmDialog dialog = new ConfirmDialog(confirmText);
+        dialog.addOkButtonHandler(okButtonHandler);
+        dialog.show();
     }
 }

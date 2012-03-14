@@ -28,9 +28,9 @@ import org.jbpm.formbuilder.shared.task.TaskServiceException;
 
 public class GuvnorTaskDefinitionServiceTest extends TestCase {
 
-	private String baseUrl = "http://www.redhat.com";
-	private GuvnorHelper helper = new GuvnorHelper(baseUrl, "", "");
-	
+    private String baseUrl = "http://www.redhat.com";
+    private GuvnorHelper helper = new GuvnorHelper(baseUrl, "", "");
+    
     public void testGetProcessTasks() throws Exception {
         GuvnorTaskDefinitionService service = createService(baseUrl, "", "");
         String bpmn2Content = IOUtils.toString(getClass().getResourceAsStream("GuvnorGetProcessTasksTest.bpmn2"));
@@ -177,14 +177,14 @@ public class GuvnorTaskDefinitionServiceTest extends TestCase {
         HttpClient client = EasyMock.createMock(HttpClient.class);
         Map<String, String> responses = new HashMap<String, String>();
         String xml1 = "<packages><package><title>somePackage</title>" +
-        		"<assets>" + helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1</assets>" +
-        		"<assets>" + helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2</assets>" +
-        		"</package></packages>";
+                "<assets>" + helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1</assets>" +
+                "<assets>" + helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2</assets>" +
+                "</package></packages>";
         String xml2 = "<asset><sourceLink>" +
-        		helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1/source" +
-        		"</sourceLink><metadata><format>bpmn2</format></metadata></asset>";
+                helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1/source" +
+                "</sourceLink><metadata><format>bpmn2</format></metadata></asset>";
         String xml3 = "<asset><sourceLink>" +
-        		helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2/source" +
+                helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2/source" +
                 "</sourceLink><metadata><format>bpmn2</format></metadata></asset>";
         String process1Content = IOUtils.toString(getClass().getResourceAsStream("GuvnorGetProcessTasksTest.bpmn2"));
         String process2Content = IOUtils.toString(getClass().getResourceAsStream("GuvnorGetProcessTasksTest2.bpmn2"));
@@ -295,10 +295,10 @@ public class GuvnorTaskDefinitionServiceTest extends TestCase {
                 "<metadata><uuid>" + uuid1 + "</uuid></metadata>" +
                 "</package></packages>";
         String xml2 = "<asset><sourceLink>" +
-        		helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1/source" +
+                helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1/source" +
                 "</sourceLink><metadata><format>bpmn2</format><uuid>somethingelse</uuid></metadata></asset>";
         String xml3 = "<asset><sourceLink>" +
-        		helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2/source" +
+                helper.getRestBaseUrl() + "somePackage/assets/sampleProcess2/source" +
                 "</sourceLink><metadata><format>bpmn2</format><uuid>" + uuid2 + "</uuid></metadata></asset>";
         responses.put("GET " + helper.getRestBaseUrl(), xml1);
         responses.put("GET " + helper.getRestBaseUrl() + "somePackage/assets/sampleProcess1", xml2);

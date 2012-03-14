@@ -34,25 +34,25 @@ public class RestServiceScriptHelper extends AbstractScriptHelper {
 
     private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
     
-	private RestServiceScriptHelperView view;
+    private RestServiceScriptHelperView view;
 
-	private String method = "";
-	private String url = "";
-	private String resultStatus = "";
-	private String resultXPath = "";
-	private String exportVariableName = "";
-	private String responseLanguage = "";
-	private Map<String, String> headers = new HashMap<String, String>();
-	
+    private String method = "";
+    private String url = "";
+    private String resultStatus = "";
+    private String resultXPath = "";
+    private String exportVariableName = "";
+    private String responseLanguage = "";
+    private Map<String, String> headers = new HashMap<String, String>();
+    
     public RestServiceScriptHelper() {
         super();
     }
     
     @Override
     public Map<String, Object> getDataMap() {
-    	if (view != null) {
-    		view.writeDataTo(this);
-    	}
+        if (view != null) {
+            view.writeDataTo(this);
+        }
         String urlValue = this.url;
         String methodValue = this.method;
         String resultStatusValue = this.resultStatus;
@@ -106,7 +106,7 @@ public class RestServiceScriptHelper extends AbstractScriptHelper {
             }
         }
         if (view != null) {
-        	view.readDataFrom(this);
+            view.readDataFrom(this);
         }
     }
 
@@ -115,7 +115,7 @@ public class RestServiceScriptHelper extends AbstractScriptHelper {
         long id = System.currentTimeMillis();
         StringBuilder sb = new StringBuilder();
         if (view != null) {
-        	view.writeDataTo(this);
+            view.writeDataTo(this);
         }
         sb.append("var " + exportVariableName + " = null;");
         sb.append("var url" + id + " = \"" + url + "\";");
@@ -155,9 +155,9 @@ public class RestServiceScriptHelper extends AbstractScriptHelper {
 
     @Override
     public Widget draw() {
-    	if (view == null) {
-    		view = new RestServiceScriptHelperView(this);
-    	}
+        if (view == null) {
+            view = new RestServiceScriptHelperView(this);
+        }
         return view;
     }
 
@@ -166,59 +166,59 @@ public class RestServiceScriptHelper extends AbstractScriptHelper {
         return i18n.RestServiceScriptHelperName();
     }
 
-	public String getMethod() {
-		return method;
-	}
+    public String getMethod() {
+        return method;
+    }
 
-	public void setMethod(String method) {
-		this.method = method;
-	}
+    public void setMethod(String method) {
+        this.method = method;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public String getResultStatus() {
-		return resultStatus;
-	}
+    public String getResultStatus() {
+        return resultStatus;
+    }
 
-	public void setResultStatus(String resultStatus) {
-		this.resultStatus = resultStatus;
-	}
+    public void setResultStatus(String resultStatus) {
+        this.resultStatus = resultStatus;
+    }
 
-	public String getResultXPath() {
-		return resultXPath;
-	}
+    public String getResultXPath() {
+        return resultXPath;
+    }
 
-	public void setResultXPath(String resultXPath) {
-		this.resultXPath = resultXPath;
-	}
+    public void setResultXPath(String resultXPath) {
+        this.resultXPath = resultXPath;
+    }
 
-	public String getExportVariableName() {
-		return exportVariableName;
-	}
+    public String getExportVariableName() {
+        return exportVariableName;
+    }
 
-	public void setExportVariableName(String exportVariableName) {
-		this.exportVariableName = exportVariableName;
-	}
+    public void setExportVariableName(String exportVariableName) {
+        this.exportVariableName = exportVariableName;
+    }
 
-	public String getResponseLanguage() {
-		return responseLanguage;
-	}
+    public String getResponseLanguage() {
+        return responseLanguage;
+    }
 
-	public void setResponseLanguage(String responseLanguage) {
-		this.responseLanguage = responseLanguage;
-	}
+    public void setResponseLanguage(String responseLanguage) {
+        this.responseLanguage = responseLanguage;
+    }
 
-	public Map<String, String> getHeaders() {
-		return headers;
-	}
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 
-	public void setHeaders(Map<String, String> headers) {
-		this.headers = headers;
-	}
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
 }

@@ -19,8 +19,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class MockHandlerRegistration implements HandlerRegistration {
 
-	@Override
-	public void removeHandler() {
-	}
+    @Override
+    public void removeHandler() {
+    }
 
 }

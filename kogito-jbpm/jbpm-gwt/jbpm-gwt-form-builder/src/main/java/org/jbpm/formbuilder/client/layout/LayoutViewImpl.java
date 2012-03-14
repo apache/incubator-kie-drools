@@ -43,7 +43,7 @@ public class LayoutViewImpl extends ScrollPanel implements LayoutView {
 
     @Override
     public void startDropController(PickupDragController controller, IsWidget layout) {
-    	controller.registerDropController(new DropFormItemController(layout.asWidget(), this));
+        controller.registerDropController(new DropFormItemController(layout.asWidget(), this));
     }
     
     @Override

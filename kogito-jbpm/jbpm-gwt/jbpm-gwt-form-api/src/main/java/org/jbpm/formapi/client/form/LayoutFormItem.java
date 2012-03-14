@@ -32,27 +32,28 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * base UI form item. Represents a composite of {@link FBFormItem} instances
  */
-public abstract class LayoutFormItem extends FBFormItem implements FBCompositeItem {
+public abstract class LayoutFormItem extends FBFormItem implements
+        FBCompositeItem {
 
     private List<FBFormItem> items = new ArrayList<FBFormItem>();
-    
+
     public LayoutFormItem() {
         this(new ArrayList<FBFormEffect>());
     }
-    
+
     public LayoutFormItem(List<FBFormEffect> formEffects) {
         super(formEffects);
     }
-    
+
     @Override
     public List<FBFormItem> getItems() {
         return items;
     }
-    
+
     public boolean removeItem(FBFormItem item) {
-    	return this.items.remove(item);
+        return this.items.remove(item);
     }
-    
+
     @Override
     public void setItems(List<FBFormItem> items) {
         this.items = items;
@@ -74,7 +75,7 @@ public abstract class LayoutFormItem extends FBFormItem implements FBCompositeIt
         }
         return super.remove(w);
     }
-    
+
     public boolean remove(Object o) {
         return items.remove(o);
     }
@@ -86,7 +87,7 @@ public abstract class LayoutFormItem extends FBFormItem implements FBCompositeIt
     public FBFormItem remove(int index) {
         return items.remove(index);
     }
-    
+
     public ListIterator<FBFormItem> formItemListIterator() {
         return items.listIterator();
     }
@@ -108,7 +109,7 @@ public abstract class LayoutFormItem extends FBFormItem implements FBCompositeIt
                 item = items.set(index, newItem);
             } else {
                 item = newItem;
-                for (; index < items.size() ; index++) {
+                for (; index < items.size(); index++) {
                     item = items.set(index, item);
                 }
                 items.add(item);
@@ -123,22 +124,25 @@ public abstract class LayoutFormItem extends FBFormItem implements FBCompositeIt
     }
 
     protected boolean isWhiteSpace(Widget widget) {
-        return widget.getElement().getParentElement().getInnerHTML().equals("&nbsp;");
+        return widget.getElement().getParentElement().getInnerHTML()
+                .equals("&nbsp;");
     }
-    
+
     public abstract HasWidgets getPanel();
-    
+
     public HasWidgets getUnderlyingLayout(int x, int y) {
         for (FBFormItem item : items) {
             if (item instanceof LayoutFormItem) {
-                HasWidgets newLayout = ((LayoutFormItem) item).getUnderlyingLayout(x, y);
+                HasWidgets newLayout = ((LayoutFormItem) item)
+                        .getUnderlyingLayout(x, y);
                 if (newLayout != null) {
                     return newLayout;
                 }
             }
         }
-        if (x > getAbsoluteLeft() && x < getAbsoluteLeft() + getOffsetWidth() &&
-            y > getAbsoluteTop() && y < getAbsoluteTop() + getOffsetHeight()) {
+        if (x > getAbsoluteLeft() && x < getAbsoluteLeft() + getOffsetWidth()
+                && y > getAbsoluteTop()
+                && y < getAbsoluteTop() + getOffsetHeight()) {
             return getPanel();
         }
         return null;

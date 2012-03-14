@@ -31,32 +31,32 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class SummaryMenuItem extends FBMenuItem {
 
-	public SummaryMenuItem() {
-		super();
-	}
-	
+    public SummaryMenuItem() {
+        super();
+    }
+    
     public SummaryMenuItem(List<FBFormEffect> formEffects) {
         super(formEffects);
     }
-	
-	@Override
-	public Label getDescription() {
-		return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemSummary());
-	}
+    
+    @Override
+    public Label getDescription() {
+        return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemSummary());
+    }
 
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.summary();
-	}
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.summary();
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new SummaryMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new SummaryMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new SummaryFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new SummaryFormItem());
+    }
 
 }

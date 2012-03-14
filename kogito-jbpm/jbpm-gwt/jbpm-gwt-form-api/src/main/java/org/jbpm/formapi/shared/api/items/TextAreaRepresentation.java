@@ -34,7 +34,7 @@ public class TextAreaRepresentation extends FormItemRepresentation {
     public TextAreaRepresentation() {
         super("textArea");
     }
-    
+
     public String getName() {
         return name;
     }
@@ -74,7 +74,7 @@ public class TextAreaRepresentation extends FormItemRepresentation {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -85,32 +85,43 @@ public class TextAreaRepresentation extends FormItemRepresentation {
         data.put("id", this.id);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);
-    	this.name = (String) data.get("name");
-    	this.rows = (data.get("rows") == null ? 0 : ((Number) data.get("rows")).intValue());
-    	this.cols = (data.get("cols") == null ? 0 : ((Number) data.get("cols")).intValue());
-    	this.value = (String) data.get("value");
-    	this.id = (String) data.get("id");
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.name = (String) data.get("name");
+        this.rows = (data.get("rows") == null ? 0 : ((Number) data.get("rows"))
+                .intValue());
+        this.cols = (data.get("cols") == null ? 0 : ((Number) data.get("cols"))
+                .intValue());
+        this.value = (String) data.get("value");
+        this.id = (String) data.get("id");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof TextAreaRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof TextAreaRepresentation))
+            return false;
         TextAreaRepresentation other = (TextAreaRepresentation) obj;
-        boolean equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.value == null && other.value == null) || (this.value != null && this.value.equals(other.value));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
+        boolean equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.value == null && other.value == null)
+                || (this.value != null && this.value.equals(other.value));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
         equals = (this.rows != other.rows && this.cols != other.cols);
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

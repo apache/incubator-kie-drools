@@ -62,23 +62,24 @@ public class ImageRepresentation extends FormItemRepresentation {
     public Map<String, String> getI18n() {
         return i18n;
     }
-    
+
     public void setI18n(Map<String, String> i18n) {
         this.i18n = i18n;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
-    	Map<String, Object> data = super.getDataMap();
-    	data.put("altText", this.altText);
+        Map<String, Object> data = super.getDataMap();
+        data.put("altText", this.altText);
         data.put("url", this.url);
         data.put("id", this.id);
         data.put("i18n", this.i18n);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
         super.setDataMap(data);
         this.altText = (String) data.get("altText");
         this.url = (String) data.get("url");
@@ -90,22 +91,32 @@ public class ImageRepresentation extends FormItemRepresentation {
             this.i18n.putAll(i18nMap);
         }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof ImageRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof ImageRepresentation))
+            return false;
         ImageRepresentation other = (ImageRepresentation) obj;
-        boolean equals = (this.altText == null && other.altText == null) || (this.altText != null && this.altText.equals(other.altText));
-        if (!equals) return equals;
-        equals = (this.url == null && other.url == null) || (this.url != null && this.url.equals(other.url));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
-        equals = (this.i18n == null && other.i18n == null) || (this.i18n != null && this.i18n.entrySet().equals(other.i18n.entrySet()));
+        boolean equals = (this.altText == null && other.altText == null)
+                || (this.altText != null && this.altText.equals(other.altText));
+        if (!equals)
+            return equals;
+        equals = (this.url == null && other.url == null)
+                || (this.url != null && this.url.equals(other.url));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
+        equals = (this.i18n == null && other.i18n == null)
+                || (this.i18n != null && this.i18n.entrySet().equals(
+                        other.i18n.entrySet()));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

@@ -154,71 +154,71 @@ public class LineGraphFormItem extends FBFormItem {
         LineChart chart = new LineChart();
         populate(chart);
         if (getInput() != null && getInput().getName() != null) {
-        	DataTable dataTable = DataTable.create();
-        	Object myData = data.get(getInput().getName());
-        	populateInput(dataTable, myData);
-        	chart.draw(dataTable);
+            DataTable dataTable = DataTable.create();
+            Object myData = data.get(getInput().getName());
+            populateInput(dataTable, myData);
+            chart.draw(dataTable);
         }
         super.populateActions(chart.getElement());
         return chart;
     }
 
-	private void populateInput(DataTable dataTable, Object myData) {
-		if (myData.getClass().isArray()) {
-    		Object[] myDataArray = (Object[]) myData;
-    		int index = 0;
-    		for (Object item : myDataArray) {
-    			setRowDataFromInput(dataTable, index, item);
-    			index++;
-    		}
-    	} else if (myData instanceof Collection) {
-    		Collection<?> myDataCol = (Collection<?>) myData;
-    		int index = 0;
-    		for (Object item : myDataCol) {
-    			setRowDataFromInput(dataTable, index, item);
-    			index++;
-    		}
-    	} else if (myData instanceof Map) {
-    		Map<?, ?> myDataMap = (Map<?, ?>) myData;
-    		int index = 0;
-    		for (Object item : myDataMap.values()) {
-    			setRowDataFromInput(dataTable, index, item);
-    			index++;
-    		}
-    	}
-		
-	}
+    private void populateInput(DataTable dataTable, Object myData) {
+        if (myData.getClass().isArray()) {
+            Object[] myDataArray = (Object[]) myData;
+            int index = 0;
+            for (Object item : myDataArray) {
+                setRowDataFromInput(dataTable, index, item);
+                index++;
+            }
+        } else if (myData instanceof Collection) {
+            Collection<?> myDataCol = (Collection<?>) myData;
+            int index = 0;
+            for (Object item : myDataCol) {
+                setRowDataFromInput(dataTable, index, item);
+                index++;
+            }
+        } else if (myData instanceof Map) {
+            Map<?, ?> myDataMap = (Map<?, ?>) myData;
+            int index = 0;
+            for (Object item : myDataMap.values()) {
+                setRowDataFromInput(dataTable, index, item);
+                index++;
+            }
+        }
+        
+    }
 
-	private void setRowDataFromInput(DataTable dataTable, int index, Object item) {
-		if (item.getClass().isArray()) {
-			Object[] subObjArray = (Object[]) item;
-			int columnIndex = 0;
-			for (Object subObj : subObjArray) {
-				String value = subObj.toString();
-				dataTable.setCell(index, columnIndex, value, value, null);
-				columnIndex++;
-			}
-		} else if (item instanceof Collection) {
-			Collection<?> subObjCol = (Collection<?>) item;
-			int columnIndex = 0;
-			for (Object subObj : subObjCol) {
-				String value = subObj.toString();
-				dataTable.setCell(index, columnIndex, value, value, null);
-				columnIndex++;
-			}
-		} else if (item instanceof Map) {
-			Map<?, ?> subObjMap = (Map<?, ?>) item;
-			int columnIndex = 0;
-			for (Object subObj : subObjMap.values()) {
-				String value = subObj.toString();
-				dataTable.setCell(index, columnIndex, value, value, null);
-				columnIndex++;
-			}
+    private void setRowDataFromInput(DataTable dataTable, int index, Object item) {
+        if (item.getClass().isArray()) {
+            Object[] subObjArray = (Object[]) item;
+            int columnIndex = 0;
+            for (Object subObj : subObjArray) {
+                String value = subObj.toString();
+                dataTable.setCell(index, columnIndex, value, value, null);
+                columnIndex++;
+            }
+        } else if (item instanceof Collection) {
+            Collection<?> subObjCol = (Collection<?>) item;
+            int columnIndex = 0;
+            for (Object subObj : subObjCol) {
+                String value = subObj.toString();
+                dataTable.setCell(index, columnIndex, value, value, null);
+                columnIndex++;
+            }
+        } else if (item instanceof Map) {
+            Map<?, ?> subObjMap = (Map<?, ?>) item;
+            int columnIndex = 0;
+            for (Object subObj : subObjMap.values()) {
+                String value = subObj.toString();
+                dataTable.setCell(index, columnIndex, value, value, null);
+                columnIndex++;
+            }
 
-		} else {
-			String value = item.toString();
-			dataTable.setCell(index, 0, value, value, null);
-		}
-	}
+        } else {
+            String value = item.toString();
+            dataTable.setCell(index, 0, value, value, null);
+        }
+    }
 
 }

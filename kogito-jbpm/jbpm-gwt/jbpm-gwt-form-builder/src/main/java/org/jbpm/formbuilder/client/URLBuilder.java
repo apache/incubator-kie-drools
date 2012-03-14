@@ -88,7 +88,7 @@ public class URLBuilder {
 
     public static String uploadFileURL(String contextPath, String packageName) {
         return new StringBuilder(getBaseUrl()).
-        	append("uploadFile?packageName=").
+            append("uploadFile?packageName=").
             append(packageName).toString();
     }
 
@@ -104,33 +104,33 @@ public class URLBuilder {
         return GWT.getModuleBaseURL().replace("/" + GWT.getModuleName(), "");
     }
 
-	public static String getCurrentRolesURL(String contextPath) {
-		return new StringBuilder(getBaseUrl()).append(contextPath).
-			append("/user/current/roles").toString();
-	}
+    public static String getCurrentRolesURL(String contextPath) {
+        return new StringBuilder(getBaseUrl()).append(contextPath).
+            append("/user/current/roles").toString();
+    }
 
-	public static String getLogoutURL(String contextPath) {
-		return new StringBuilder(getBaseUrl()).append(contextPath).
-			append("/user/current/logout").toString();
-	}
+    public static String getLogoutURL(String contextPath) {
+        return new StringBuilder(getBaseUrl()).append(contextPath).
+            append("/user/current/logout").toString();
+    }
 
-	public static String deleteFileURL(String contextPath, String packageName, String url) {
-		return new StringBuilder(getBaseUrl()).append(contextPath).append("/files/package/").
-			append(encode(packageName)).append(url).toString();
-	}
+    public static String deleteFileURL(String contextPath, String packageName, String url) {
+        return new StringBuilder(getBaseUrl()).append(contextPath).append("/files/package/").
+            append(encode(packageName)).append(url).toString();
+    }
 
-	public static String getFilesURL(String contextPath, String packageName, List<String> types) {
-		StringBuilder params = new StringBuilder();
-		if (types != null) {
-			for (Iterator<String> iter = types.iterator(); iter.hasNext();) {
-				params.append("type=").append(iter.next());
-				if (iter.hasNext()) {
-					params.append("&");
-				}
-			}
-		}
-		return new StringBuilder(getBaseUrl()).append(contextPath).
-			append("/files/package/").append(encode(packageName)).append("?").
-			append(params.toString()).toString();
-	}
+    public static String getFilesURL(String contextPath, String packageName, List<String> types) {
+        StringBuilder params = new StringBuilder();
+        if (types != null) {
+            for (Iterator<String> iter = types.iterator(); iter.hasNext();) {
+                params.append("type=").append(iter.next());
+                if (iter.hasNext()) {
+                    params.append("&");
+                }
+            }
+        }
+        return new StringBuilder(getBaseUrl()).append(contextPath).
+            append("/files/package/").append(encode(packageName)).append("?").
+            append(params.toString()).toString();
+    }
 }

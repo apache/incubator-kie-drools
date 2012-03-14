@@ -1,6 +1,6 @@
 #if ($item.output)
     #set ($name = $item.output.name)
-	#set ($input_name = ${language.getParam("name", $name)})
+    #set ($input_name = ${language.getParam("name", $name)})
 #end
 #set ($value = $item.html)
 #if($item.input)

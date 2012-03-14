@@ -67,7 +67,7 @@ public interface FormBuilderService {
      */
     void deleteForm(FormRepresentation form) throws FormBuilderException;
     
-	void deleteFile(String url) throws FormBuilderException;
+    void deleteFile(String url) throws FormBuilderException;
     
     /**
      * Deletes a UI component from the server
@@ -158,7 +158,7 @@ public interface FormBuilderService {
     void loadFormTemplate(FormRepresentation form, String language) throws FormBuilderException;
     
     interface RolesResponseHandler {
-    	void onResponse(List<String> roles);
+        void onResponse(List<String> roles);
     }
     
     void getCurrentRoles(RolesResponseHandler handler) throws FormBuilderException;
@@ -182,7 +182,7 @@ public interface FormBuilderService {
     
     void setPackageName(String packageName);
 
-	void logout();
+    void logout();
 
-	void getFiles(List<String> types, FilesLoadedHandler handler);
+    void getFiles(List<String> types, FilesLoadedHandler handler);
 }

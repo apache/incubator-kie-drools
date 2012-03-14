@@ -33,7 +33,7 @@ public class CheckBoxRepresentation extends FormItemRepresentation {
     public CheckBoxRepresentation() {
         super("checkBox");
     }
-    
+
     public String getFormValue() {
         return formValue;
     }
@@ -65,7 +65,7 @@ public class CheckBoxRepresentation extends FormItemRepresentation {
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -75,35 +75,46 @@ public class CheckBoxRepresentation extends FormItemRepresentation {
         data.put("id", this.id);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
         super.setDataMap(data);
         this.formValue = (String) data.get("formValue");
         Object objChecked = (Object) data.get("checked");
-        if (objChecked instanceof Boolean) 
-        	this.checked = (Boolean) objChecked;
-        else if (objChecked instanceof String) 
-        	this.checked = Boolean.valueOf(objChecked.toString());
+        if (objChecked instanceof Boolean)
+            this.checked = (Boolean) objChecked;
+        else if (objChecked instanceof String)
+            this.checked = Boolean.valueOf(objChecked.toString());
         this.name = (String) data.get("name");
         this.id = (String) data.get("id");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof CheckBoxRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof CheckBoxRepresentation))
+            return false;
         CheckBoxRepresentation other = (CheckBoxRepresentation) obj;
-        boolean equals = (this.formValue == null && other.formValue == null) || (this.formValue != null && this.formValue.equals(other.formValue));
-        if (!equals) return equals;
-        equals = (this.checked == null && other.checked == null) || (this.checked != null && this.checked.equals(other.checked));
-        if (!equals) return equals;
-        equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
+        boolean equals = (this.formValue == null && other.formValue == null)
+                || (this.formValue != null && this.formValue
+                        .equals(other.formValue));
+        if (!equals)
+            return equals;
+        equals = (this.checked == null && other.checked == null)
+                || (this.checked != null && this.checked.equals(other.checked));
+        if (!equals)
+            return equals;
+        equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

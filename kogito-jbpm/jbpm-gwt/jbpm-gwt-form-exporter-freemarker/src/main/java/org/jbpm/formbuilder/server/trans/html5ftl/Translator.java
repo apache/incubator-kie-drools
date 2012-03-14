@@ -37,7 +37,7 @@ public class Translator extends ScriptingTranslator  {
 
     private boolean isValidScript(FBScript script) {
         return script != null && script.getType() != null && 
-        	(script.getType().contains("ftl") || script.getType().contains("freemarker"));
+            (script.getType().contains("ftl") || script.getType().contains("freemarker"));
     }
     
     public boolean isClientScript(FBScript script) {
