@@ -10119,7 +10119,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertTrue( kbuilder.hasErrors() );
     }
 
-    @Test @Ignore // TODO: uncomment the @Ignore after mvel 2.1.0.drools9
+    @Test
     public void testMVELTypeCoercion() {
         String str = "package org.drools.test; \n" +
                 "\n" +
