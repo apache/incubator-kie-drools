@@ -6,6 +6,11 @@ import static org.junit.Assert.assertNull;
 import java.io.StringReader;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.Expander;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -70,6 +75,128 @@ public class DrlParserTest {
         TypeDeclarationDescr bean2Type = pkgDescr.getTypeDeclarations().get( 1 );
         assertEquals( "Bean1",
                       bean2Type.getSuperTypeName() );
+    }
+    
+    @Test
+    @Ignore("See JBRULES-3425: KnowledgeBuilder fails to build rules with BigDecimal\\BigInteger constraints comparing to zero")
+    public void testBigDecimalWithZeroValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigDecimal \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 0B ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
+    }
+
+    @Test
+    public void testBigDecimalWithZeroDecimalPointValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigDecimal \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 0.0B ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
+    }
+
+    @Test
+    public void testBigDecimalWithNonZeroValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigDecimal \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 1B ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
+    }
+
+    @Test
+    public void testBigDecimalWithNonZeroDecimalPointValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigDecimal \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 1.0B ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
+    }
+
+    @Test
+    @Ignore("See JBRULES-3425: KnowledgeBuilder fails to build rules with BigDecimal\\BigInteger constraints comparing to zero")
+    public void testBigIntegerWithZeroValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigInteger \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 0I ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
+    }
+
+    @Test
+    public void testBigIntegerWithNonZeroValue() throws Exception {
+        String drl = "package foo \n"
+                     + "declare Bean1 \n"
+                     + "field1: java.math.BigInteger \n"
+                     + "end \n"
+                     + "rule \"bigdecimal\" \n"
+                     + "when \n"
+                     + "Bean1( field1 == 1I ) \n"
+                     + "then \n"
+                     + "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        assertEquals( 0,
+                      errors.size() );
     }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
