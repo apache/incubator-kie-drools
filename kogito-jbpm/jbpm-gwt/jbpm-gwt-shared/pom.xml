@@ -14,35 +14,35 @@
 
   <name>jBPM GWT Console Shared</name>
 
-    <dependencies>
-        <dependency>
-          <groupId>org.antlr</groupId>
-          <artifactId>stringtemplate</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>antlr</groupId>
-          <artifactId>antlr</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.sun.xml.stream</groupId>
-          <artifactId>sjsxp</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>javax.xml</groupId>
-          <artifactId>jsr173</artifactId>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>stringtemplate</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.stream</groupId>
+      <artifactId>sjsxp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml</groupId>
+      <artifactId>jsr173</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>
