@@ -50,7 +50,7 @@ public class GuvnorMenuService extends AbstractBaseMenuService {
 
     @Override
     public List<MenuOptionDescription> listOptions() throws MenuServiceException {
-    	Gson gson = new Gson();
+        Gson gson = new Gson();
         List<MenuOptionDescription> retval = null;
         try {
             URL url = asURL("/menuOptions.json");
@@ -69,10 +69,10 @@ public class GuvnorMenuService extends AbstractBaseMenuService {
     public Map<String, List<MenuItemDescription>> listMenuItems() throws MenuServiceException {
         Map<String, List<MenuItemDescription>> retval = null;
         try {
-        	FormRepresentationDecoder decoder = FormEncodingFactory.getDecoder();
-        	URL url = asURL("/menuItems.json");
-        	String json = readURL(url);
-        	retval = decoder.decodeMenuItemsMap(json);
+            FormRepresentationDecoder decoder = FormEncodingFactory.getDecoder();
+            URL url = asURL("/menuItems.json");
+            String json = readURL(url);
+            retval = decoder.decodeMenuItemsMap(json);
         } catch (FormEncodingException e) {
             throw new MenuServiceException("Problem parsing menu items json file", e);
         } catch (URISyntaxException e) {
@@ -154,16 +154,16 @@ public class GuvnorMenuService extends AbstractBaseMenuService {
     }
 
     protected void writeToURL(URL url, String json) throws FileNotFoundException, IOException {
-    	if (url.toExternalForm().startsWith("vfs")) {
-    		FileObject to = VFS.getManager().resolveFile(url.toExternalForm());
-    		File tmpFile = File.createTempFile("xxFilexx", ".json");
-    		FileUtils.writeStringToFile(tmpFile, json);
-    		FileObject from = VFS.getManager().toFileObject(tmpFile);
-    		to.copyFrom(from, new AllFileSelector());
-    		FileUtils.deleteQuietly(tmpFile);
-    	} else {
-    		FileUtils.writeStringToFile(FileUtils.toFile(url), json);
-    	}
+        if (url.toExternalForm().startsWith("vfs")) {
+            FileObject to = VFS.getManager().resolveFile(url.toExternalForm());
+            File tmpFile = File.createTempFile("xxFilexx", ".json");
+            FileUtils.writeStringToFile(tmpFile, json);
+            FileObject from = VFS.getManager().toFileObject(tmpFile);
+            to.copyFrom(from, new AllFileSelector());
+            FileUtils.deleteQuietly(tmpFile);
+        } else {
+            FileUtils.writeStringToFile(FileUtils.toFile(url), json);
+        }
     }
     
     protected URL asURL(String path) throws URISyntaxException {
@@ -175,11 +175,11 @@ public class GuvnorMenuService extends AbstractBaseMenuService {
     }
 
     protected String readURL(URL url) throws FileNotFoundException, IOException {
-    	if (url.toExternalForm().startsWith("vfs")) {
-    		FileObject from = VFS.getManager().resolveFile(url.toExternalForm());
-    		return IOUtils.toString(from.getContent().getInputStream());
-    	} else {
-    		return FileUtils.readFileToString(FileUtils.toFile(url));
-    	}
+        if (url.toExternalForm().startsWith("vfs")) {
+            FileObject from = VFS.getManager().resolveFile(url.toExternalForm());
+            return IOUtils.toString(from.getContent().getInputStream());
+        } else {
+            return FileUtils.readFileToString(FileUtils.toFile(url));
+        }
     }
 }

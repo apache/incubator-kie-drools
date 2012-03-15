@@ -44,7 +44,7 @@ public class PopulateComboBoxScriptHelper extends AbstractScriptHelper {
     
     private Map<String, String> headers = new HashMap<String, String>();
 
-	private PopulateComboBoxScriptHelperView view;
+    private PopulateComboBoxScriptHelperView view;
 
     public PopulateComboBoxScriptHelper() {
         super();
@@ -52,9 +52,9 @@ public class PopulateComboBoxScriptHelper extends AbstractScriptHelper {
     
     @Override
     public Map<String, Object> getDataMap() {
-    	if (this.view != null) {
-    		this.view.writeDataTo(this);
-    	}
+        if (this.view != null) {
+            this.view.writeDataTo(this);
+        }
         String urlValue = this.url;
         String methodValue = this.method;
         String resultStatusValue = this.resultStatus;
@@ -118,7 +118,7 @@ public class PopulateComboBoxScriptHelper extends AbstractScriptHelper {
         this.subPathForValues = subPathForValuesValue;
         this.checkBoxId = checkBoxIdValue;
         if (view != null) {
-        	view.readDataFrom(this);
+            view.readDataFrom(this);
         }
     }
 
@@ -167,9 +167,9 @@ public class PopulateComboBoxScriptHelper extends AbstractScriptHelper {
 
     @Override
     public Widget draw() {
-    	if (view == null) {
-    		view = new PopulateComboBoxScriptHelperView(this);
-    	}
+        if (view == null) {
+            view = new PopulateComboBoxScriptHelperView(this);
+        }
         return view;
     }
     
@@ -178,75 +178,75 @@ public class PopulateComboBoxScriptHelper extends AbstractScriptHelper {
         return i18n.PopulateComboBoxScriptHelperName();
     }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public String getMethod() {
-		return method;
-	}
+    public String getMethod() {
+        return method;
+    }
 
-	public void setMethod(String method) {
-		this.method = method;
-	}
+    public void setMethod(String method) {
+        this.method = method;
+    }
 
-	public String getResultStatus() {
-		return resultStatus;
-	}
+    public String getResultStatus() {
+        return resultStatus;
+    }
 
-	public void setResultStatus(String resultStatus) {
-		this.resultStatus = resultStatus;
-	}
+    public void setResultStatus(String resultStatus) {
+        this.resultStatus = resultStatus;
+    }
 
-	public String getResponseLanguage() {
-		return responseLanguage;
-	}
+    public String getResponseLanguage() {
+        return responseLanguage;
+    }
 
-	public void setResponseLanguage(String responseLanguage) {
-		this.responseLanguage = responseLanguage;
-	}
+    public void setResponseLanguage(String responseLanguage) {
+        this.responseLanguage = responseLanguage;
+    }
 
-	public String getResultXPath() {
-		return resultXPath;
-	}
+    public String getResultXPath() {
+        return resultXPath;
+    }
 
-	public void setResultXPath(String resultXPath) {
-		this.resultXPath = resultXPath;
-	}
+    public void setResultXPath(String resultXPath) {
+        this.resultXPath = resultXPath;
+    }
 
-	public String getSubPathForKeys() {
-		return subPathForKeys;
-	}
+    public String getSubPathForKeys() {
+        return subPathForKeys;
+    }
 
-	public void setSubPathForKeys(String subPathForKeys) {
-		this.subPathForKeys = subPathForKeys;
-	}
+    public void setSubPathForKeys(String subPathForKeys) {
+        this.subPathForKeys = subPathForKeys;
+    }
 
-	public String getSubPathForValues() {
-		return subPathForValues;
-	}
+    public String getSubPathForValues() {
+        return subPathForValues;
+    }
 
-	public void setSubPathForValues(String subPathForValues) {
-		this.subPathForValues = subPathForValues;
-	}
+    public void setSubPathForValues(String subPathForValues) {
+        this.subPathForValues = subPathForValues;
+    }
 
-	public String getCheckBoxId() {
-		return checkBoxId;
-	}
+    public String getCheckBoxId() {
+        return checkBoxId;
+    }
 
-	public void setCheckBoxId(String checkBoxId) {
-		this.checkBoxId = checkBoxId;
-	}
+    public void setCheckBoxId(String checkBoxId) {
+        this.checkBoxId = checkBoxId;
+    }
 
-	public Map<String, String> getHeaders() {
-		return headers;
-	}
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 
-	public void setHeaders(Map<String, String> headers) {
-		this.headers = headers;
-	}
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
 }

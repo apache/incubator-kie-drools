@@ -1,5 +1,4 @@
 /*
- * Copyright 2011 JBoss Inc 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +28,7 @@ public class TextFieldRepresentation extends FormItemRepresentation {
     private String name;
     private String id;
     private Integer maxLength;
-    
+
     public TextFieldRepresentation() {
         super("textField");
     }
@@ -57,15 +56,15 @@ public class TextFieldRepresentation extends FormItemRepresentation {
     public void setMaxLength(Integer maxLength) {
         this.maxLength = maxLength;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -75,35 +74,46 @@ public class TextFieldRepresentation extends FormItemRepresentation {
         data.put("maxLength", this.maxLength);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);    
-    	this.defaultValue = (String) data.get("defaultValue");
-    	this.name = (String) data.get("name");
-    	this.id = (String) data.get("id");
-    	Object obj = data.get("maxLength");
-    	if (obj != null) {
-    		this.maxLength = ((Number) obj).intValue();
-    	}
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.defaultValue = (String) data.get("defaultValue");
+        this.name = (String) data.get("name");
+        this.id = (String) data.get("id");
+        Object obj = data.get("maxLength");
+        if (obj != null) {
+            this.maxLength = ((Number) obj).intValue();
+        }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof TextFieldRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof TextFieldRepresentation))
+            return false;
         TextFieldRepresentation other = (TextFieldRepresentation) obj;
-        boolean equals = (this.defaultValue == null && other.defaultValue == null) || 
-            (this.defaultValue != null && this.defaultValue.equals(other.defaultValue));
-        if (!equals) return equals;
-        equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
-        equals = (this.maxLength == null && other.maxLength == null) || (this.maxLength != null && this.maxLength.equals(other.maxLength));
+        boolean equals = (this.defaultValue == null && other.defaultValue == null)
+                || (this.defaultValue != null && this.defaultValue
+                        .equals(other.defaultValue));
+        if (!equals)
+            return equals;
+        equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
+        equals = (this.maxLength == null && other.maxLength == null)
+                || (this.maxLength != null && this.maxLength
+                        .equals(other.maxLength));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

@@ -11,69 +11,69 @@ import org.slf4j.LoggerFactory;
 
 public class GuvnorFormUtils {
 
-	public static final String GUVNOR_FORM_LANGUAGE = "guvnor.form.language";
-	
-	private static final Logger logger = LoggerFactory.getLogger(GuvnorFormUtils.class);
-	
-	private final GuvnorConnectionUtils utils = new GuvnorConnectionUtils();
-	
-	public String getFormFromGuvnor(String name) {
-		if (utils.guvnorExists()) {
-	    	 try {
-	    		 String templateName;
-	    		 if(utils.templateExistsInRepo(name)) {
-	    			 templateName = name;
-	    		 } else {
-	    			 return null;
-	    		 }
-	    		 return getFormDefinitionFromGuvnor(templateName);
-	    	 } catch (Throwable t) {
-	    		 logger.error("Could not load process template from Guvnor: " + t.getMessage());
-	    		 return null;
-	    	 }
-	     } else {
-	         logger.warn("Could not connect to Guvnor.");
-	     }
-		return null;
-	}
-	
+    public static final String GUVNOR_FORM_LANGUAGE = "guvnor.form.language";
+    
+    private static final Logger logger = LoggerFactory.getLogger(GuvnorFormUtils.class);
+    
+    private final GuvnorConnectionUtils utils = new GuvnorConnectionUtils();
+    
+    public String getFormFromGuvnor(String name) {
+        if (utils.guvnorExists()) {
+             try {
+                 String templateName;
+                 if(utils.templateExistsInRepo(name)) {
+                     templateName = name;
+                 } else {
+                     return null;
+                 }
+                 return getFormDefinitionFromGuvnor(templateName);
+             } catch (Throwable t) {
+                 logger.error("Could not load process template from Guvnor: " + t.getMessage());
+                 return null;
+             }
+         } else {
+             logger.warn("Could not connect to Guvnor.");
+         }
+        return null;
+    }
+    
     public String getFormDefinitionURLFromGuvnor(String templateName) {
-    	return utils.getFormTemplateURLFromGuvnor(templateName, "drl");
+        return utils.getFormTemplateURLFromGuvnor(templateName, "drl");
     }
 
-	
-	public String getFormDefinitionFromGuvnor(String name) {
-		if (utils.guvnorExists()) {
-			try {
-				String templateName;
-				if (utils.templateExistsInRepo(name)) {
-					templateName = name;
-				} else {
-					return null;
-				}
-				String formTemplateURL = getFormDefinitionURLFromGuvnor(templateName);
-				if (formTemplateURL != null) {
-					try {
-						return getStringForURL(formTemplateURL, "GET");
-					} catch (Exception e) {
-						logger.error("Exception getting input stream for form template url: " + formTemplateURL);
-						return null;
-					}
-				} else {
-					logger.info("Could not get the form template from guvnor");
-					return null;
-				}
-			} catch (Throwable t) {
-				logger.error("Could not load process template from Guvnor: "
-						+ t.getMessage());
-				return null;
-			}
-		} else {
-			logger.warn("Could not connect to Guvnor.");
-		}
-		return null;
-	}
-	
+    
+    public String getFormDefinitionFromGuvnor(String name) {
+        if (utils.guvnorExists()) {
+            try {
+                String templateName;
+                if (utils.templateExistsInRepo(name)) {
+                    templateName = name;
+                } else {
+                    return null;
+                }
+                String formTemplateURL = getFormDefinitionURLFromGuvnor(templateName);
+                if (formTemplateURL != null) {
+                    try {
+                        return getStringForURL(formTemplateURL, "GET");
+                    } catch (Exception e) {
+                        logger.error("Exception getting input stream for form template url: " + formTemplateURL);
+                        return null;
+                    }
+                } else {
+                    logger.info("Could not get the form template from guvnor");
+                    return null;
+                }
+            } catch (Throwable t) {
+                logger.error("Could not load process template from Guvnor: "
+                        + t.getMessage());
+                return null;
+            }
+        } else {
+            logger.warn("Could not connect to Guvnor.");
+        }
+        return null;
+    }
+    
     private String getStringForURL(String urlLocation, String requestMethod) throws Exception {
         URL url = new URL(urlLocation);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -101,9 +101,9 @@ public class GuvnorFormUtils {
         return stringBuilder.toString();
     }
 
-	
-	public String getFormDefaultLanguage() {
-		Properties props = utils.getGuvnorProperties();
-		return utils.isEmpty(props.getProperty(GUVNOR_FORM_LANGUAGE)) ? "ftl" : props.getProperty(GUVNOR_FORM_LANGUAGE);
-	}
+    
+    public String getFormDefaultLanguage() {
+        Properties props = utils.getGuvnorProperties();
+        return utils.isEmpty(props.getProperty(GUVNOR_FORM_LANGUAGE)) ? "ftl" : props.getProperty(GUVNOR_FORM_LANGUAGE);
+    }
 }

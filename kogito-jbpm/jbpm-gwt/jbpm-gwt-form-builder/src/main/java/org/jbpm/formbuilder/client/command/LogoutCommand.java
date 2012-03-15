@@ -9,25 +9,25 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class LogoutCommand implements BaseCommand {
 
-	private final FormBuilderService server = FormBuilderGlobals.getInstance().getService();
-	
-	public LogoutCommand() {
-		super();
-	}
-	
-	@Override
-	public void execute() {
-		server.logout();
-	}
+    private final FormBuilderService server = FormBuilderGlobals.getInstance().getService();
+    
+    public LogoutCommand() {
+        super();
+    }
+    
+    @Override
+    public void execute() {
+        server.logout();
+    }
 
-	@Override
-	public void setItem(MenuItem item) {
-		//do nothing
-	}
+    @Override
+    public void setItem(MenuItem item) {
+        //do nothing
+    }
 
-	@Override
-	public void setEmbeded(String profile) {
-		//do nothing
-	}
+    @Override
+    public void setEmbeded(String profile) {
+        //do nothing
+    }
 
 }

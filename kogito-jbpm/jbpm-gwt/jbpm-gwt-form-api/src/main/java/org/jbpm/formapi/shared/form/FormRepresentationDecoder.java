@@ -25,11 +25,12 @@ import org.jbpm.formapi.shared.menu.MenuItemDescription;
 public interface FormRepresentationDecoder {
 
     FormRepresentation decode(String json) throws FormEncodingException;
-    
+
     FormItemRepresentation decodeItem(String json) throws FormEncodingException;
-    
+
     Object decode(Map<String, Object> data) throws FormEncodingException;
 
-	Map<String, List<MenuItemDescription>> decodeMenuItemsMap(String json) throws FormEncodingException;
-    
+    Map<String, List<MenuItemDescription>> decodeMenuItemsMap(String json)
+            throws FormEncodingException;
+
 }

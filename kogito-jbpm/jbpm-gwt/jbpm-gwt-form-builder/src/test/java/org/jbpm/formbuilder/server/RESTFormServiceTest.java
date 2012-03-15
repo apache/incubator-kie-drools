@@ -59,12 +59,12 @@ public class RESTFormServiceTest extends RESTAbstractTest {
     public void testSetContextOK() throws Exception {
         RESTFormService restService = new RESTFormService();
         URL pathToClasses = getClass().getResource("/FormBuilder.properties");
-		String filePath = pathToClasses.toExternalForm();
-		//assumes compilation is in target/classes
-		filePath = filePath.replace("target/classes/FormBuilder.properties", "src/main/webapp");
-		filePath = filePath + "/WEB-INF/springComponents.xml";
-		FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(filePath);
-		ServiceFactory.getInstance().setBeanFactory(ctx);
+        String filePath = pathToClasses.toExternalForm();
+        //assumes compilation is in target/classes
+        filePath = filePath.replace("target/classes/FormBuilder.properties", "src/main/webapp");
+        filePath = filePath + "/WEB-INF/springComponents.xml";
+        FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(filePath);
+        ServiceFactory.getInstance().setBeanFactory(ctx);
         ServletContext context = EasyMock.createMock(ServletContext.class);
 
         EasyMock.replay(context);

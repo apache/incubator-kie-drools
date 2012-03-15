@@ -37,7 +37,7 @@ public class PlainTextScriptHelper extends AbstractScriptHelper {
     private PlainTextScriptHelperView view;
     
     public PlainTextScriptHelper() {
-    	super();
+        super();
     }
     
     @Override
@@ -66,24 +66,24 @@ public class PlainTextScriptHelper extends AbstractScriptHelper {
             this.scriptPanel = value;
         }
         if (view != null) {
-        	view.readDataFrom(this);
+            view.readDataFrom(this);
         }
     }
 
     @Override
     public String asScriptContent() {
-    	if (view != null) {
-    		view.writeDataTo(this);
-    	}
+        if (view != null) {
+            view.writeDataTo(this);
+        }
         return this.scriptPanel;
     }
 
     @Override
     public Widget draw() {
-    	if (view == null) {
-    		view = new PlainTextScriptHelperView(this);
-    	}
-    	return view;
+        if (view == null) {
+            view = new PlainTextScriptHelperView(this);
+        }
+        return view;
     }
 
     @Override
@@ -92,10 +92,10 @@ public class PlainTextScriptHelper extends AbstractScriptHelper {
     }
     
     public void setScriptPanel(String scriptPanel) {
-		this.scriptPanel = scriptPanel;
-	}
+        this.scriptPanel = scriptPanel;
+    }
     
     public String getScriptPanel() {
-		return scriptPanel;
-	}
+        return scriptPanel;
+    }
 }

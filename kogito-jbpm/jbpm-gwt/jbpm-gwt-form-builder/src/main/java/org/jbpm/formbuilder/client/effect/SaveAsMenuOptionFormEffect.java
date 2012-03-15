@@ -62,8 +62,8 @@ public class SaveAsMenuOptionFormEffect extends FBFormEffect {
     }
     
     public void setGroupName(String groupName) {
-		this.groupName = groupName;
-	}
+        this.groupName = groupName;
+    }
     
     @Override
     protected void createStyles() {
@@ -133,6 +133,6 @@ public class SaveAsMenuOptionFormEffect extends FBFormEffect {
 
     @Override
     public boolean isValidForItem(FBFormItem item) {
-    	return super.isValidForItem(item) && RoleUtils.getInstance().hasDesignPrivileges();
+        return super.isValidForItem(item) && RoleUtils.getInstance().hasDesignPrivileges();
     }
 }

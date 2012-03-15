@@ -24,16 +24,16 @@ import com.gwtent.reflection.client.Reflectable;
 
 @Reflectable
 public class NumberFieldRepresentation extends FormItemRepresentation {
-	
+
     private Double defaultValue;
     private String name;
     private String id;
     private Integer maxLength;
-    
-	public NumberFieldRepresentation() {
-		super("numberField");
-	}
-	
+
+    public NumberFieldRepresentation() {
+        super("numberField");
+    }
+
     public Double getDefaultValue() {
         return defaultValue;
     }
@@ -57,15 +57,15 @@ public class NumberFieldRepresentation extends FormItemRepresentation {
     public void setMaxLength(Integer maxLength) {
         this.maxLength = maxLength;
     }
-    
+
     public String getId() {
         return id;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -75,38 +75,49 @@ public class NumberFieldRepresentation extends FormItemRepresentation {
         data.put("maxLength", this.maxLength);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);    
-    	this.name = (String) data.get("name");
-    	this.id = (String) data.get("id");
-    	Object obj = data.get("maxLength");
-    	if (obj != null) {
-    		this.maxLength = ((Number) obj).intValue();
-    	}
-    	obj = data.get("defaultValue");
-    	if (obj != null) {
-    		this.defaultValue = ((Number) obj).doubleValue(); 
-    	}
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.name = (String) data.get("name");
+        this.id = (String) data.get("id");
+        Object obj = data.get("maxLength");
+        if (obj != null) {
+            this.maxLength = ((Number) obj).intValue();
+        }
+        obj = data.get("defaultValue");
+        if (obj != null) {
+            this.defaultValue = ((Number) obj).doubleValue();
+        }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof NumberFieldRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof NumberFieldRepresentation))
+            return false;
         NumberFieldRepresentation other = (NumberFieldRepresentation) obj;
-        boolean equals = (this.defaultValue == null && other.defaultValue == null) || 
-            (this.defaultValue != null && this.defaultValue.equals(other.defaultValue));
-        if (!equals) return equals;
-        equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
-        equals = (this.maxLength == null && other.maxLength == null) || (this.maxLength != null && this.maxLength.equals(other.maxLength));
+        boolean equals = (this.defaultValue == null && other.defaultValue == null)
+                || (this.defaultValue != null && this.defaultValue
+                        .equals(other.defaultValue));
+        if (!equals)
+            return equals;
+        equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
+        equals = (this.maxLength == null && other.maxLength == null)
+                || (this.maxLength != null && this.maxLength
+                        .equals(other.maxLength));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

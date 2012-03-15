@@ -28,54 +28,54 @@ import com.google.gwt.user.client.ui.FlowPanel;
  */
 public class FieldSetPanel extends FlowPanel {
 
-	private HeadingElement legend = Document.get().createHElement(1);
-	
-	public FieldSetPanel() {
-		super();
-		Style divStyle = getElement().getStyle();
-		Style lgndStyle = legend.getStyle();
-		
-		divStyle.setBorderWidth(2, Unit.PX);
-		divStyle.setBorderStyle(BorderStyle.SOLID);
-		divStyle.setMarginTop(0.5, Unit.EM);
-		divStyle.setMarginBottom(0.5, Unit.EM);
-		divStyle.setMarginRight(0, Unit.PX);
-		divStyle.setMarginLeft(0, Unit.PX);
-		divStyle.setPaddingTop(0, Unit.PX);
-		divStyle.setPaddingBottom(0, Unit.PX);
-		divStyle.setPaddingRight(0.5, Unit.EM);
-		divStyle.setPaddingLeft(0.5, Unit.EM);
+    private HeadingElement legend = Document.get().createHElement(1);
 
-		lgndStyle.setFontSize(100.0, Unit.PCT);
-		lgndStyle.setFontWeight(FontWeight.NORMAL);
-		lgndStyle.setMarginTop(-0.5, Unit.EM);
-		lgndStyle.setMarginRight(0, Unit.PX);
-		lgndStyle.setMarginLeft(0, Unit.PX);
-		lgndStyle.setMarginBottom(0, Unit.PX);
-		lgndStyle.setBackgroundColor("white");
-		lgndStyle.setColor("black");
-		lgndStyle.setFloat(Style.Float.LEFT);
-		lgndStyle.setPaddingTop(0, Unit.PX);
-		lgndStyle.setPaddingBottom(0, Unit.PX);
-		lgndStyle.setPaddingRight(2, Unit.PX);
-		lgndStyle.setPaddingLeft(2, Unit.PX);
-		
-		getElement().appendChild(legend);
-	}
-	
-	public void setLegend(String legend) {
-		this.legend.setInnerHTML(legend);
-	}
-	
-	public String getLegend() {
-		return this.legend.getInnerHTML();
-	}
-	
-	public void setId(String id) {
-		getElement().setId(id);
-	}
-	
-	public String getId() {
-		return getElement().getId();
-	}
+    public FieldSetPanel() {
+        super();
+        Style divStyle = getElement().getStyle();
+        Style lgndStyle = legend.getStyle();
+
+        divStyle.setBorderWidth(2, Unit.PX);
+        divStyle.setBorderStyle(BorderStyle.SOLID);
+        divStyle.setMarginTop(0.5, Unit.EM);
+        divStyle.setMarginBottom(0.5, Unit.EM);
+        divStyle.setMarginRight(0, Unit.PX);
+        divStyle.setMarginLeft(0, Unit.PX);
+        divStyle.setPaddingTop(0, Unit.PX);
+        divStyle.setPaddingBottom(0, Unit.PX);
+        divStyle.setPaddingRight(0.5, Unit.EM);
+        divStyle.setPaddingLeft(0.5, Unit.EM);
+
+        lgndStyle.setFontSize(100.0, Unit.PCT);
+        lgndStyle.setFontWeight(FontWeight.NORMAL);
+        lgndStyle.setMarginTop(-0.5, Unit.EM);
+        lgndStyle.setMarginRight(0, Unit.PX);
+        lgndStyle.setMarginLeft(0, Unit.PX);
+        lgndStyle.setMarginBottom(0, Unit.PX);
+        lgndStyle.setBackgroundColor("white");
+        lgndStyle.setColor("black");
+        lgndStyle.setFloat(Style.Float.LEFT);
+        lgndStyle.setPaddingTop(0, Unit.PX);
+        lgndStyle.setPaddingBottom(0, Unit.PX);
+        lgndStyle.setPaddingRight(2, Unit.PX);
+        lgndStyle.setPaddingLeft(2, Unit.PX);
+
+        getElement().appendChild(legend);
+    }
+
+    public void setLegend(String legend) {
+        this.legend.setInnerHTML(legend);
+    }
+
+    public String getLegend() {
+        return this.legend.getInnerHTML();
+    }
+
+    public void setId(String id) {
+        getElement().setId(id);
+    }
+
+    public String getId() {
+        return getElement().getId();
+    }
 }

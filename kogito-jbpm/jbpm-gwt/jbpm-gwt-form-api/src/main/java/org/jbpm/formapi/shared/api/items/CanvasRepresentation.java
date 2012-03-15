@@ -25,47 +25,47 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class CanvasRepresentation extends FormItemRepresentation {
 
-	private String cssClassName;
-	private String dataType;
-	private String id;
-	private String fallbackUrl;
-	
-	public CanvasRepresentation() {
-		super("canvas");
-	}
+    private String cssClassName;
+    private String dataType;
+    private String id;
+    private String fallbackUrl;
 
-	public String getCssClassName() {
-		return cssClassName;
-	}
-	
-	public void setCssClassName(String cssClassName) {
-		this.cssClassName = cssClassName;
-	}
-	
-	public String getDataType() {
-		return dataType;
-	}
+    public CanvasRepresentation() {
+        super("canvas");
+    }
 
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
+    public String getCssClassName() {
+        return cssClassName;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setCssClassName(String cssClassName) {
+        this.cssClassName = cssClassName;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getDataType() {
+        return dataType;
+    }
 
-	public String getFallbackUrl() {
-		return fallbackUrl;
-	}
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 
-	public void setFallbackUrl(String fallbackUrl) {
-		this.fallbackUrl = fallbackUrl;
-	}
-	
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFallbackUrl() {
+        return fallbackUrl;
+    }
+
+    public void setFallbackUrl(String fallbackUrl) {
+        this.fallbackUrl = fallbackUrl;
+    }
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -75,33 +75,44 @@ public class CanvasRepresentation extends FormItemRepresentation {
         data.put("fallbackUrl", this.fallbackUrl);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);    
-    	this.fallbackUrl = (String) data.get("fallbackUrl");
-    	this.cssClassName = (String) data.get("cssClassName");
-    	this.dataType = (String) data.get("dataType");
-    	this.id = (String) data.get("id");
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.fallbackUrl = (String) data.get("fallbackUrl");
+        this.cssClassName = (String) data.get("cssClassName");
+        this.dataType = (String) data.get("dataType");
+        this.id = (String) data.get("id");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof CanvasRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof CanvasRepresentation))
+            return false;
         CanvasRepresentation other = (CanvasRepresentation) obj;
-        boolean equals = (this.fallbackUrl == null && other.fallbackUrl == null) || 
-            (this.fallbackUrl != null && this.fallbackUrl.equals(other.fallbackUrl));
-        if (!equals) return equals;
-        equals = (this.cssClassName == null && other.cssClassName == null) || 
-        	(this.cssClassName != null && this.cssClassName.equals(other.cssClassName));
-        if (!equals) return equals;
-        equals = (this.dataType == null && other.dataType == null) || (this.dataType != null && this.dataType.equals(other.dataType));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
+        boolean equals = (this.fallbackUrl == null && other.fallbackUrl == null)
+                || (this.fallbackUrl != null && this.fallbackUrl
+                        .equals(other.fallbackUrl));
+        if (!equals)
+            return equals;
+        equals = (this.cssClassName == null && other.cssClassName == null)
+                || (this.cssClassName != null && this.cssClassName
+                        .equals(other.cssClassName));
+        if (!equals)
+            return equals;
+        equals = (this.dataType == null && other.dataType == null)
+                || (this.dataType != null && this.dataType
+                        .equals(other.dataType));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

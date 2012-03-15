@@ -63,7 +63,7 @@ public class IoAssociationPresenter implements IoAssociationView.Presenter {
             }
         });
         ExistingTasksResponseHandler handler = new ExistingTasksResponseHandler() {
-        	@Override
+            @Override
             public void onEvent(ExistingTasksResponseEvent event) {
                 view.setTasks(event.getTasks());
             }

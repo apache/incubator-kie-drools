@@ -26,11 +26,11 @@ import com.gwtent.reflection.client.Reflectable;
 public class HTMLRepresentation extends FormItemRepresentation {
 
     private String content;
-    
+
     public HTMLRepresentation() {
         super("html");
     }
-    
+
     public String getContent() {
         return content;
     }
@@ -38,28 +38,32 @@ public class HTMLRepresentation extends FormItemRepresentation {
     public void setContent(String content) {
         this.content = content;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
         data.put("content", this.content);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
         super.setDataMap(data);
-    	this.content = (String) data.get("content");
+        this.content = (String) data.get("content");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof HTMLRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof HTMLRepresentation))
+            return false;
         HTMLRepresentation other = (HTMLRepresentation) obj;
-        return (this.content == null && other.content == null) || (this.content != null && this.content.equals(other.content));
+        return (this.content == null && other.content == null)
+                || (this.content != null && this.content.equals(other.content));
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

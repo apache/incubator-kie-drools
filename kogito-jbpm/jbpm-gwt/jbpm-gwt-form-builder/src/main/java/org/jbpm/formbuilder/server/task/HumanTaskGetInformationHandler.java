@@ -48,8 +48,8 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     @Override
     protected void readIoSpecification(org.w3c.dom.Node xmlNode,
             Map<String, String> dataInputs, Map<String, String> dataOutputs) {
-    	dataInputs.clear();
-    	dataOutputs.clear();
+        dataInputs.clear();
+        dataOutputs.clear();
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         while (subNode instanceof Element) {
             String subNodeName = subNode.getNodeName();

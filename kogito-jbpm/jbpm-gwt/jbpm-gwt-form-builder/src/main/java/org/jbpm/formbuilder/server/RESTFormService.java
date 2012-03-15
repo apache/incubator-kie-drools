@@ -67,7 +67,7 @@ public class RESTFormService extends RESTBaseService {
     
     public void setContext(@Context ServletContext context) {
         if (formService == null) {
-        	this.formService = ServiceFactory.getInstance().getFormDefinitionService();
+            this.formService = ServiceFactory.getInstance().getFormDefinitionService();
         }
     }
     

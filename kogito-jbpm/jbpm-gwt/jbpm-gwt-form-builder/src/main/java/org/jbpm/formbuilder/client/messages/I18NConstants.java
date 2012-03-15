@@ -304,17 +304,17 @@ public interface I18NConstants extends Messages {
     String ToggleScriptHelperName();
     String NoHeadersLoadedLabel();
     String ScriptHelperNullEditor();
-	String RolesNotRead();
-	
-	String WarningDeleteFile();
-	String NoFilesFound();
-	String FileDeleted();
+    String RolesNotRead();
+    
+    String WarningDeleteFile();
+    String NoFilesFound();
+    String FileDeleted();
     String ErrorDeletingFile(String statusCode);
-	String CouldntFindFiles(String string);
-	String YouMustSelectAnItem(String toButton, String elseButton);
-	
-	String AudioNotSupported();
-	String VideoNotSupported();
-	String CanvasNotSupported();
-	
+    String CouldntFindFiles(String string);
+    String YouMustSelectAnItem(String toButton, String elseButton);
+    
+    String AudioNotSupported();
+    String VideoNotSupported();
+    String CanvasNotSupported();
+    
 }

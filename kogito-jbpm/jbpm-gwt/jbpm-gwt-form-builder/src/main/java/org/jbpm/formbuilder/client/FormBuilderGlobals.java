@@ -56,10 +56,10 @@ public class FormBuilderGlobals {
     }
 
     public void registerResources(FormBuilderResources resources) {
-    	this.resources = resources;
+        this.resources = resources;
     }
     
-	public FormBuilderResources getResources() {
-		return resources;
-	}
+    public FormBuilderResources getResources() {
+        return resources;
+    }
 }

@@ -31,31 +31,31 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class FieldSetLayoutMenuItem extends FBMenuItem {
 
-	public FieldSetLayoutMenuItem() {
-		super();
-	}
-	
-	public FieldSetLayoutMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
-	
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.fieldSet();
-	}
+    public FieldSetLayoutMenuItem() {
+        super();
+    }
+    
+    public FieldSetLayoutMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
+    
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.fieldSet();
+    }
 
-	@Override
-	public Label getDescription() {
-		return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemFieldSet());
-	}
+    @Override
+    public Label getDescription() {
+        return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemFieldSet());
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new FieldSetLayoutMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new FieldSetLayoutMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new FieldSetLayoutFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new FieldSetLayoutFormItem());
+    }
 }

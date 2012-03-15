@@ -35,7 +35,7 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class NumberFieldFormItem extends FBFormItem {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
     private final DoubleBox doubleBox = new DoubleBox();
     
     private Double defaultContent = null;
@@ -43,23 +43,23 @@ public class NumberFieldFormItem extends FBFormItem {
     private String id = null;
     private String title = null;
     private Integer maxlength = null;
-	
-	public NumberFieldFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public NumberFieldFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		add(doubleBox);
+    
+    public NumberFieldFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public NumberFieldFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        add(doubleBox);
         setWidth("150px");
         setHeight("25px");
         doubleBox.setWidth(getWidth());
         doubleBox.setHeight(getHeight());
-	}
-	
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
-		Map<String, Object> map = new HashMap<String, Object>();
+    }
+    
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("inputDefaultContent", this.defaultContent);
         map.put("name", this.name);
         map.put("height", getHeight());
@@ -68,11 +68,11 @@ public class NumberFieldFormItem extends FBFormItem {
         map.put("title", this.title);
         map.put("id", this.id);
         return map;
-	}
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
-		this.defaultContent = extractDouble(asPropertiesMap.get("inputDefaultContent"));
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
+        this.defaultContent = extractDouble(asPropertiesMap.get("inputDefaultContent"));
         this.name = extractString(asPropertiesMap.get("name"));
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
@@ -81,9 +81,9 @@ public class NumberFieldFormItem extends FBFormItem {
         this.id = extractString(asPropertiesMap.get("id"));
         
         populate(this.doubleBox);
-	}
+    }
 
-	private void populate(DoubleBox doubleBox) {
+    private void populate(DoubleBox doubleBox) {
         if (this.defaultContent != null) {
             doubleBox.setValue(this.defaultContent);
         }
@@ -103,8 +103,8 @@ public class NumberFieldFormItem extends FBFormItem {
             doubleBox.setMaxLength(this.maxlength);
         }
     }
-	
-	@Override
+    
+    @Override
     public FormItemRepresentation getRepresentation() {
         NumberFieldRepresentation rep = super.getRepresentation(new NumberFieldRepresentation());
         rep.setDefaultValue(this.defaultContent);
@@ -114,7 +114,7 @@ public class NumberFieldFormItem extends FBFormItem {
         return rep;
     }
 
-	@Override
+    @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof NumberFieldRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "TextFieldRepresentation"));
@@ -133,11 +133,11 @@ public class NumberFieldFormItem extends FBFormItem {
         }
         populate(this.doubleBox);
     }
-	
-	@Override
-	public FBFormItem cloneItem() {
-		NumberFieldFormItem clone = super.cloneItem(new NumberFieldFormItem());
-		clone.defaultContent = this.defaultContent;
+    
+    @Override
+    public FBFormItem cloneItem() {
+        NumberFieldFormItem clone = super.cloneItem(new NumberFieldFormItem());
+        clone.defaultContent = this.defaultContent;
         clone.setHeight(this.getHeight());
         clone.id = this.id;
         clone.maxlength = this.maxlength;
@@ -146,15 +146,15 @@ public class NumberFieldFormItem extends FBFormItem {
         clone.setWidth(this.getWidth());
         clone.populate(clone.doubleBox);
         return clone;
-	}
+    }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		DoubleBox tb = new DoubleBox();
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        DoubleBox tb = new DoubleBox();
         populate(tb);
         Object input = getInputValue(formData);
         if (input != null) {
-        	String s = input.toString();
+            String s = input.toString();
             tb.setValue(s.equals("") ? null : Double.valueOf(s));
         }
         if (getOutput() != null && getOutput().getName() != null) {
@@ -162,6 +162,6 @@ public class NumberFieldFormItem extends FBFormItem {
         }
         super.populateActions(tb.getElement());
         return tb;
-	}
+    }
 
 }

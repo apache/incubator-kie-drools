@@ -58,9 +58,9 @@ public class GuvnorConnectionUtils {
     private static Properties properties = new Properties();
     
     static {
-    	try {
-    		properties.load(GuvnorConnectionUtils.class.getResourceAsStream("/jbpm.console.properties"));
-    	} catch (IOException e) {
+        try {
+            properties.load(GuvnorConnectionUtils.class.getResourceAsStream("/jbpm.console.properties"));
+        } catch (IOException e) {
             throw new RuntimeException("Could not load jbpm.console.properties", e);
         }
     }
@@ -101,7 +101,7 @@ public class GuvnorConnectionUtils {
     }
     
     public String getFormTemplateURLFromGuvnor(String templateName) {
-    	return getFormTemplateURLFromGuvnor(templateName, "drl");
+        return getFormTemplateURLFromGuvnor(templateName, "drl");
     }
     
     public String getFormTemplateURLFromGuvnor(String templateName, String format) {
@@ -318,15 +318,15 @@ public class GuvnorConnectionUtils {
     }
     
     public String getGuvnorConnectTimeout() {
-    	return isEmpty(properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY).trim();
+        return isEmpty(properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY).trim();
     }
     
     public String getGuvnorReadTimeout() {
-    	return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_READTIMEOUT_KEY).trim();
+        return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_READTIMEOUT_KEY).trim();
     }
     
     protected Properties getGuvnorProperties() {
-    	return properties;
+        return properties;
     }
     
     private List<String> getPackageNamesFromGuvnor() {
@@ -344,10 +344,10 @@ public class GuvnorConnectionUtils {
             while (reader.hasNext()) {
                 if (reader.next() == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getLocalName())) {
-                    	String pname = reader.getElementText();
-                    	if(!pname.equalsIgnoreCase("Packages")) {
-                    		 packages.add(pname);
-                    	}
+                        String pname = reader.getElementText();
+                        if(!pname.equalsIgnoreCase("Packages")) {
+                             packages.add(pname);
+                        }
                     }
                 }
             }
@@ -393,8 +393,8 @@ public class GuvnorConnectionUtils {
     }
     
     protected void applyAuth(HttpURLConnection connection) {
-		String auth = getGuvnorUsr() + ":" + getGuvnorPwd();
-		connection.setRequestProperty("Authorization", "Basic "
+        String auth = getGuvnorUsr() + ":" + getGuvnorPwd();
+        connection.setRequestProperty("Authorization", "Basic "
                 + Base64.encodeBase64String(auth.getBytes()));
     }
 
@@ -474,26 +474,26 @@ public class GuvnorConnectionUtils {
     }
     
     public boolean guvnorExists() {
-    	String checkURLStr = getGuvnorProtocol()
+        String checkURLStr = getGuvnorProtocol()
                 + "://"
                 + getGuvnorHost()
                 + "/"
                 + getGuvnorSubdomain()
                 + "/rest/packages/";
-    	
-    	try {
-			URL checkURL = new URL(checkURLStr);
-			HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
-			checkConnection.setRequestMethod("GET");
-			checkConnection.setRequestProperty("Accept", "application/atom+xml");
-			checkConnection.setConnectTimeout(4000);
-			applyAuth(checkConnection);
-			checkConnection.connect();
-			return (checkConnection.getResponseCode() == 200);
-		} catch (Exception e) {
-			logger.error("Error checking guvnor existence: " + e.getMessage());
-			return false;
-		} 
+        
+        try {
+            URL checkURL = new URL(checkURLStr);
+            HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
+            checkConnection.setRequestMethod("GET");
+            checkConnection.setRequestProperty("Accept", "application/atom+xml");
+            checkConnection.setConnectTimeout(4000);
+            applyAuth(checkConnection);
+            checkConnection.connect();
+            return (checkConnection.getResponseCode() == 200);
+        } catch (Exception e) {
+            logger.error("Error checking guvnor existence: " + e.getMessage());
+            return false;
+        } 
     }
     
     private class TemplateInfo {

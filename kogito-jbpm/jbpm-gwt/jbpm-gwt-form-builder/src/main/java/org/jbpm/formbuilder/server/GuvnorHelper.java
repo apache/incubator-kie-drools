@@ -42,8 +42,8 @@ import org.jbpm.formbuilder.server.xml.PackageListDTO;
 
 public class GuvnorHelper {
 
-	public static final String ENCODING = "UTF-8"; 
-	
+    public static final String ENCODING = "UTF-8"; 
+    
     private final String baseUrl;
     private final String user;
     private final String password;
@@ -57,17 +57,17 @@ public class GuvnorHelper {
         int beginIndex = this.baseUrl.indexOf("://") + 3;
         int endIndex = this.baseUrl.indexOf("/", beginIndex);
         if (endIndex < 0) {
-        	endIndex = this.baseUrl.length();
+            endIndex = this.baseUrl.length();
         }
-		String aux = this.baseUrl.substring(beginIndex, endIndex);
-		if (aux.contains(":")) {
-			String[] parts = aux.split(":");
-			this.domainName = parts[0];
-			this.portNumber = Integer.valueOf(parts[1]);
-		} else {
-			this.domainName = aux;
-			this.portNumber = 80;
-		}
+        String aux = this.baseUrl.substring(beginIndex, endIndex);
+        if (aux.contains(":")) {
+            String[] parts = aux.split(":");
+            this.domainName = parts[0];
+            this.portNumber = Integer.valueOf(parts[1]);
+        } else {
+            this.domainName = aux;
+            this.portNumber = 80;
+        }
         
     }
 
@@ -153,17 +153,17 @@ public class GuvnorHelper {
     }
     
     public void setAuth(HttpClient client, HttpMethod method) {
-    	if (notEmpty(this.user) && notEmpty(this.password)) {
-    		client.getParams().setAuthenticationPreemptive(true);
-    		UsernamePasswordCredentials defaultcreds = 
-    				new UsernamePasswordCredentials(this.user, this.password);
-    		AuthScope authScope = new AuthScope(this.domainName, this.portNumber, AuthScope.ANY_REALM);
-			client.getState().setCredentials(authScope, defaultcreds);
-    	}
+        if (notEmpty(this.user) && notEmpty(this.password)) {
+            client.getParams().setAuthenticationPreemptive(true);
+            UsernamePasswordCredentials defaultcreds = 
+                    new UsernamePasswordCredentials(this.user, this.password);
+            AuthScope authScope = new AuthScope(this.domainName, this.portNumber, AuthScope.ANY_REALM);
+            client.getState().setCredentials(authScope, defaultcreds);
+        }
     }
     
     private boolean notEmpty(String s) {
-    	return s != null && !"".equals(s);
+        return s != null && !"".equals(s);
     }
     
     public String getApiSearchUrl(String pkgName) throws UnsupportedEncodingException {

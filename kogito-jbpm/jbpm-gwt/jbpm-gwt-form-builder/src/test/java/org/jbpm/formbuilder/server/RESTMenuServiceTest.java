@@ -287,7 +287,7 @@ public class RESTMenuServiceTest extends RESTAbstractTest {
     
     //test what happens when a functionalanalyst tries to save a menu item
     public void testSaveMenuItemPermissionProblem() throws Exception {
-    	RESTMenuService restService = new RESTMenuService();
+        RESTMenuService restService = new RESTMenuService();
         HttpServletRequest mockRequest = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mockRequest.isUserInRole(EasyMock.anyObject(String.class))).andReturn(false).times(3);
         SaveMenuItemDTO dto = new SaveMenuItemDTO();

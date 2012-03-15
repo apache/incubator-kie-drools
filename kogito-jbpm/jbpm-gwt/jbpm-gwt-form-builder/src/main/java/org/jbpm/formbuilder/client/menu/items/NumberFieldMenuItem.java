@@ -31,14 +31,14 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class NumberFieldMenuItem extends FBMenuItem {
 
-	public NumberFieldMenuItem() {
-		super();
-	}
-	
-	public NumberFieldMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
-	
+    public NumberFieldMenuItem() {
+        super();
+    }
+    
+    public NumberFieldMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
+    
     @Override
     public Label getDescription() {
         return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemNumberField());
@@ -49,14 +49,14 @@ public class NumberFieldMenuItem extends FBMenuItem {
         return FormBuilderResources.INSTANCE.numberField();
     }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new NumberFieldMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new NumberFieldMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new NumberFieldFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new NumberFieldFormItem());
+    }
 
 }

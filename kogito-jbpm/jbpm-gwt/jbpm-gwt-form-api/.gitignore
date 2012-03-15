@@ -8,8 +8,3 @@
 /*.ipr
 /*.iws
 /*.iml
-
-# TODO this stuff should be in target!!!
-/src/main/webapp/WEB-INF/deploy
-/src/main/webapp/org.jbpm.formapi.Commons
-/src/main/webapp/org.jbpm.formbuilder.Commons

@@ -25,47 +25,47 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class AudioRepresentation extends FormItemRepresentation {
 
-	private String cssClassName;
-	private String id;
-	private String dataType;
-	private String audioUrl;
-	
-	public AudioRepresentation() {
-		super("audio");
-	}
+    private String cssClassName;
+    private String id;
+    private String dataType;
+    private String audioUrl;
 
-	public String getCssClassName() {
-		return cssClassName;
-	}
+    public AudioRepresentation() {
+        super("audio");
+    }
 
-	public void setCssClassName(String cssClassName) {
-		this.cssClassName = cssClassName;
-	}
+    public String getCssClassName() {
+        return cssClassName;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setCssClassName(String cssClassName) {
+        this.cssClassName = cssClassName;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public String getDataType() {
-		return dataType;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
+    public String getDataType() {
+        return dataType;
+    }
 
-	public String getAudioUrl() {
-		return audioUrl;
-	}
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 
-	public void setAudioUrl(String audioUrl) {
-		this.audioUrl = audioUrl;
-	}
-	
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
+    }
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -75,33 +75,44 @@ public class AudioRepresentation extends FormItemRepresentation {
         data.put("id", this.id);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);    
-    	this.audioUrl = (String) data.get("audioUrl");
-    	this.cssClassName = (String) data.get("cssClassName");
-    	this.dataType = (String) data.get("dataType");
-    	this.id = (String) data.get("id");
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.audioUrl = (String) data.get("audioUrl");
+        this.cssClassName = (String) data.get("cssClassName");
+        this.dataType = (String) data.get("dataType");
+        this.id = (String) data.get("id");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof AudioRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof AudioRepresentation))
+            return false;
         AudioRepresentation other = (AudioRepresentation) obj;
-        boolean equals = (this.audioUrl == null && other.audioUrl == null) || 
-            (this.audioUrl != null && this.audioUrl.equals(other.audioUrl));
-        if (!equals) return equals;
-        equals = (this.cssClassName == null && other.cssClassName == null) || 
-        	(this.cssClassName != null && this.cssClassName.equals(other.cssClassName));
-        if (!equals) return equals;
-        equals = (this.dataType == null && other.dataType == null) || (this.dataType != null && this.dataType.equals(other.dataType));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
+        boolean equals = (this.audioUrl == null && other.audioUrl == null)
+                || (this.audioUrl != null && this.audioUrl
+                        .equals(other.audioUrl));
+        if (!equals)
+            return equals;
+        equals = (this.cssClassName == null && other.cssClassName == null)
+                || (this.cssClassName != null && this.cssClassName
+                        .equals(other.cssClassName));
+        if (!equals)
+            return equals;
+        equals = (this.dataType == null && other.dataType == null)
+                || (this.dataType != null && this.dataType
+                        .equals(other.dataType));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

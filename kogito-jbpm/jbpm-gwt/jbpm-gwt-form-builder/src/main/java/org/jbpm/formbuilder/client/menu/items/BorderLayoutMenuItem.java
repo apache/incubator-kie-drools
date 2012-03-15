@@ -31,15 +31,15 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class BorderLayoutMenuItem extends FBMenuItem {
 
-	public BorderLayoutMenuItem() {
-		super();
-	}
-	
+    public BorderLayoutMenuItem() {
+        super();
+    }
+    
     public BorderLayoutMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
+        super(formEffects);
+    }
 
-	@Override
+    @Override
     protected ImageResource getIconUrl() {
         return FormBuilderResources.INSTANCE.borderLayoutIcon();
     }

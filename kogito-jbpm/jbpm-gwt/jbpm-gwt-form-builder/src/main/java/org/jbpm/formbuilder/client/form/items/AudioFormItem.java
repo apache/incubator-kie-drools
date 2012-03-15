@@ -37,34 +37,34 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class AudioFormItem extends FBFormItem implements HasSourceReference {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
-	
-	private final Audio audio = Audio.createIfSupported();
-	private final Label notSupported = new Label(i18n.AudioNotSupported());
-	
-	private String cssClassName;
-	private String id;
-	private String dataType;
-	private String audioUrl;
-	
-	public AudioFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public AudioFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		if (audio == null) {
-			add(notSupported);
-		} else {
-			audio.setControls(true);
-			add(audio);
-		}
-		setWidth("300px");
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    
+    private final Audio audio = Audio.createIfSupported();
+    private final Label notSupported = new Label(i18n.AudioNotSupported());
+    
+    private String cssClassName;
+    private String id;
+    private String dataType;
+    private String audioUrl;
+    
+    public AudioFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public AudioFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        if (audio == null) {
+            add(notSupported);
+        } else {
+            audio.setControls(true);
+            add(audio);
+        }
+        setWidth("300px");
         setHeight("50px");
-	}
+    }
 
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("cssClassName", this.cssClassName);
         map.put("dataType", this.dataType);
@@ -72,11 +72,11 @@ public class AudioFormItem extends FBFormItem implements HasSourceReference {
         map.put("width", this.getWidth());
         map.put("audioUrl", this.audioUrl);
         map.put("id", this.id);
-		return map;
-	}
+        return map;
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
         this.cssClassName = extractString(asPropertiesMap.get("cssClassName"));
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
@@ -84,40 +84,40 @@ public class AudioFormItem extends FBFormItem implements HasSourceReference {
         this.id = extractString(asPropertiesMap.get("id"));
         this.dataType = extractString(asPropertiesMap.get("dataType"));
         populate(this.audio);
-	}
-	
-	private void populate(Audio audio) {
-		if (audio != null) {
-	        if (this.cssClassName != null) {
-	            audio.setStyleName(this.cssClassName);
-	        }
-	        if (this.getHeight() != null) {
-	            audio.setHeight(this.getHeight());
-	        }
-	        if (this.getWidth() != null) {
-	            audio.setWidth(this.getWidth());
-	        }
-	        if (this.audioUrl != null && !"".equals(this.audioUrl)) {
-	            audio.setSrc(this.audioUrl);
-	        }
-	        if (this.dataType != null) {
-	        	audio.getElement().setPropertyObject("type", this.dataType);
-	        }
-	        audio.setControls(true);
-		}
+    }
+    
+    private void populate(Audio audio) {
+        if (audio != null) {
+            if (this.cssClassName != null) {
+                audio.setStyleName(this.cssClassName);
+            }
+            if (this.getHeight() != null) {
+                audio.setHeight(this.getHeight());
+            }
+            if (this.getWidth() != null) {
+                audio.setWidth(this.getWidth());
+            }
+            if (this.audioUrl != null && !"".equals(this.audioUrl)) {
+                audio.setSrc(this.audioUrl);
+            }
+            if (this.dataType != null) {
+                audio.getElement().setPropertyObject("type", this.dataType);
+            }
+            audio.setControls(true);
+        }
     }
 
-	@Override
-	public FormItemRepresentation getRepresentation() {
-		AudioRepresentation rep = super.getRepresentation(new AudioRepresentation());
-		rep.setAudioUrl(this.audioUrl);
-		rep.setCssClassName(this.cssClassName);
-		rep.setDataType(this.dataType);
-		rep.setId(this.id);
-		return rep;
-	}
-	
-	@Override
+    @Override
+    public FormItemRepresentation getRepresentation() {
+        AudioRepresentation rep = super.getRepresentation(new AudioRepresentation());
+        rep.setAudioUrl(this.audioUrl);
+        rep.setCssClassName(this.cssClassName);
+        rep.setDataType(this.dataType);
+        rep.setId(this.id);
+        return rep;
+    }
+    
+    @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof AudioRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "AudioRepresentation"));
@@ -132,9 +132,9 @@ public class AudioFormItem extends FBFormItem implements HasSourceReference {
         populate(this.audio);
     }
 
-	@Override
-	public FBFormItem cloneItem() {
-		AudioFormItem clone = super.cloneItem(new AudioFormItem());
+    @Override
+    public FBFormItem cloneItem() {
+        AudioFormItem clone = super.cloneItem(new AudioFormItem());
         clone.setHeight(this.getHeight());
         clone.setWidth(this.getWidth());
         clone.audioUrl = this.audioUrl;
@@ -142,51 +142,51 @@ public class AudioFormItem extends FBFormItem implements HasSourceReference {
         clone.dataType = this.dataType;
         clone.id = this.id;
         clone.populate(clone.audio);
-		return clone;
-	}
+        return clone;
+    }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		Audio au = Audio.createIfSupported();
-		if (au == null) {
-			return new Label(notSupported.getText());
-		}
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        Audio au = Audio.createIfSupported();
+        if (au == null) {
+            return new Label(notSupported.getText());
+        }
         populate(au);
         Object input = getInputValue(formData);
         if (au != null && input != null) {
-        	String url = input.toString();
-			au.setSrc(url);
-        	if (url.endsWith(".mp3")) {
-        		au.getElement().setPropertyString("type", "application/mp3");
-        	} else if (url.endsWith(".ogg")) {
-        		au.getElement().setPropertyString("type", "application/ogg");
-        	} else if (url.endsWith(".mid")) {
-        		au.getElement().setPropertyString("type", "application/midi");
-        	}
+            String url = input.toString();
+            au.setSrc(url);
+            if (url.endsWith(".mp3")) {
+                au.getElement().setPropertyString("type", "application/mp3");
+            } else if (url.endsWith(".ogg")) {
+                au.getElement().setPropertyString("type", "application/ogg");
+            } else if (url.endsWith(".mid")) {
+                au.getElement().setPropertyString("type", "application/midi");
+            }
         }
         super.populateActions(au.getElement());
         return au;
-	}
+    }
 
-	@Override
-	public void setSourceReference(String sourceReference) {
-		this.audioUrl = sourceReference;
-		if (audio != null) {
-			this.audio.setSrc(sourceReference);
-		}
-	}
+    @Override
+    public void setSourceReference(String sourceReference) {
+        this.audioUrl = sourceReference;
+        if (audio != null) {
+            this.audio.setSrc(sourceReference);
+        }
+    }
 
-	@Override
-	public String getSourceReference() {
-		return this.audioUrl;
-	}
+    @Override
+    public String getSourceReference() {
+        return this.audioUrl;
+    }
 
-	@Override
-	public List<String> getAllowedTypes() {
-		ArrayList<String> retval = new ArrayList<String>();
+    @Override
+    public List<String> getAllowedTypes() {
+        ArrayList<String> retval = new ArrayList<String>();
         retval.add("ogg");
         retval.add("mp3");
         retval.add("mid");
         return retval;
-	}
+    }
 }

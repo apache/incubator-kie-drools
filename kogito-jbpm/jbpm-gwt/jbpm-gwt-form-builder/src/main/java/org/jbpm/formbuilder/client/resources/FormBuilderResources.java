@@ -53,7 +53,7 @@ public interface FormBuilderResources extends ClientBundle {
     ImageResource tableLayoutIcon();
 
     @Source("images/border_layout_icon.png")
-	ImageResource borderLayoutIcon();
+    ImageResource borderLayoutIcon();
 
     @Source("images/header.png")
     ImageResource header();
@@ -107,7 +107,7 @@ public interface FormBuilderResources extends ClientBundle {
     ImageResource refreshButton();
 
     @Source("images/flow_layout_icon.png")
-	ImageResource flowLayoutIcon();
+    ImageResource flowLayoutIcon();
 
     @Source("images/lineGraph.png")
     ImageResource lineGraph();
@@ -167,16 +167,16 @@ public interface FormBuilderResources extends ClientBundle {
     ImageResource summary();
     
     @Source("images/fieldSet.png")
-	ImageResource fieldSet();
+    ImageResource fieldSet();
     
     @Source("images/menu_layout_icon.png")
-	ImageResource menuLayout();
+    ImageResource menuLayout();
     
     @Source("images/rangeField.png")
     ImageResource rangeField();
 
     @Source("images/numberField.png")
-	ImageResource numberField();
+    ImageResource numberField();
     
     @Source("images/audio.png")
     ImageResource audio();
@@ -187,7 +187,7 @@ public interface FormBuilderResources extends ClientBundle {
     @Source("images/canvas.png")
     ImageResource canvas();
 
-	@Source("images/file_input_with_progress_bar.png")
+    @Source("images/file_input_with_progress_bar.png")
     ImageResource fileInputWithProgressBar();
 
     @Source("images/flexible_table_icon.png")

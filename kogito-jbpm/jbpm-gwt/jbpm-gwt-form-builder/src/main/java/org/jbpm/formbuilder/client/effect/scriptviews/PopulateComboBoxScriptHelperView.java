@@ -31,10 +31,10 @@ public class PopulateComboBoxScriptHelperView extends FlexTable {
 
     private final HeaderViewPanel headerViewPanel = new HeaderViewPanel();
     
-	public PopulateComboBoxScriptHelperView(PopulateComboBoxScriptHelper helper) {
-		populateMethodList();
-		populateResultStatusList();
-		populateResponseLanguageList();
+    public PopulateComboBoxScriptHelperView(PopulateComboBoxScriptHelper helper) {
+        populateMethodList();
+        populateResultStatusList();
+        populateResponseLanguageList();
         setWidget(0, 0, new Label(i18n.PopulateComboBoxScriptHelperUrl()));
         setWidget(0, 1, url);
         setWidget(1, 0, new Label(i18n.PopulateComboBoxScriptHelperMethod()));
@@ -60,7 +60,7 @@ public class PopulateComboBoxScriptHelperView extends FlexTable {
         getFlexCellFormatter().setColSpan(8, 0, 2);
         setWidget(9, 0, new Label(i18n.PopulateComboBoxScriptHelperCheckBoxId()));
         setWidget(9, 1, checkBoxId);
-	}
+    }
 
     private void populateResponseLanguageList() {
         responseLanguage.addItem("xml");
@@ -113,19 +113,19 @@ public class PopulateComboBoxScriptHelperView extends FlexTable {
         this.checkBoxId.setValue(helper.getCheckBoxId());
     }
 
-	public void writeDataTo(PopulateComboBoxScriptHelper helper) {
-		helper.setUrl(this.url.getValue());
-		helper.setMethod(this.method.getValue(this.method.getSelectedIndex()));
-		helper.setResultStatus(this.resultStatus.getValue(this.resultStatus.getSelectedIndex()));
-		helper.setResultXPath(this.resultXPath.getValue());
-		helper.setResponseLanguage(this.responseLanguage.getValue(this.responseLanguage.getSelectedIndex()));
-		Map<String, String> headersMap = new HashMap<String, String>();
-		for (Map.Entry<String, String> header : this.headerViewPanel.getHeaders()) {
-			headersMap.put(header.getKey(), header.getValue());
-		}
-		helper.setHeaders(headersMap);
-		helper.setSubPathForKeys(this.subPathForKeys.getValue());
-		helper.setSubPathForValues(this.subPathForValues.getValue());
-		helper.setCheckBoxId(this.checkBoxId.getValue());
-	}
+    public void writeDataTo(PopulateComboBoxScriptHelper helper) {
+        helper.setUrl(this.url.getValue());
+        helper.setMethod(this.method.getValue(this.method.getSelectedIndex()));
+        helper.setResultStatus(this.resultStatus.getValue(this.resultStatus.getSelectedIndex()));
+        helper.setResultXPath(this.resultXPath.getValue());
+        helper.setResponseLanguage(this.responseLanguage.getValue(this.responseLanguage.getSelectedIndex()));
+        Map<String, String> headersMap = new HashMap<String, String>();
+        for (Map.Entry<String, String> header : this.headerViewPanel.getHeaders()) {
+            headersMap.put(header.getKey(), header.getValue());
+        }
+        helper.setHeaders(headersMap);
+        helper.setSubPathForKeys(this.subPathForKeys.getValue());
+        helper.setSubPathForValues(this.subPathForValues.getValue());
+        helper.setCheckBoxId(this.checkBoxId.getValue());
+    }
 }

@@ -24,122 +24,122 @@ import java.lang.reflect.Constructor;
  */
 public class GWT {
 
-	public interface UncaughtExceptionHandler {
-		void onUncaughtException(Throwable e);
-	}
-
-	private static final class DefaultUncaughtExceptionHandler implements UncaughtExceptionHandler {
-		public void onUncaughtException(Throwable e) {
-			log("Uncaught exception escaped", e);
-		}
-	}
-
-	public static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
-
-	private static UncaughtExceptionHandler sUncaughtExceptionHandler = new DefaultUncaughtExceptionHandler();
-
-	/**
-	 * Returns null always
-	 * @param <T>
-	 * @param classLiteral
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T create(Class<?> classLiteral) {
-		Constructor<?>[] constructors = classLiteral.getConstructors();
-		if (constructors != null) {
-			for (Constructor<?> constructor : constructors) {
-				if (constructor.getParameterTypes().length == 0) {
-					try {
-						return (T) classLiteral.newInstance();
-					} catch (Exception e) {
-						return null;
-					}
-				}
-			}
-		}
-		return null;
+    public interface UncaughtExceptionHandler {
+        void onUncaughtException(Throwable e);
     }
 
-	public static String getHostPageBaseURL() {
-		return "/test";
-	}
-
-	public static String getModuleBaseURL() {
-		return "mock";
-	}
-
-	public static String getModuleName() {
-		return "mock";
-	}
-
-	public static String getPermutationStrongName() {
-		return HOSTED_MODE_PERMUTATION_STRONG_NAME;
+    private static final class DefaultUncaughtExceptionHandler implements UncaughtExceptionHandler {
+        public void onUncaughtException(Throwable e) {
+            log("Uncaught exception escaped", e);
+        }
     }
 
-	@Deprecated
-	public static String getTypeName(Object o) {
-		return (o == null) ? null : o.getClass().getName();
-	}
+    public static final String HOSTED_MODE_PERMUTATION_STRONG_NAME = "HostedMode";
 
-	public static UncaughtExceptionHandler getUncaughtExceptionHandler() {
-		return sUncaughtExceptionHandler;
-	}
+    private static UncaughtExceptionHandler sUncaughtExceptionHandler = new DefaultUncaughtExceptionHandler();
 
-	public static String getUniqueThreadId() {
-		return "";
-	}
+    /**
+     * Returns null always
+     * @param <T>
+     * @param classLiteral
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T create(Class<?> classLiteral) {
+        Constructor<?>[] constructors = classLiteral.getConstructors();
+        if (constructors != null) {
+            for (Constructor<?> constructor : constructors) {
+                if (constructor.getParameterTypes().length == 0) {
+                    try {
+                        return (T) classLiteral.newInstance();
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	public static String getVersion() {
-		return "2.3.0";
-	}
+    public static String getHostPageBaseURL() {
+        return "/test";
+    }
 
-	public static boolean isClient() {
-		return true;
-	}
+    public static String getModuleBaseURL() {
+        return "mock";
+    }
 
-	public static boolean isProdMode() {
-		return false;
-	}
+    public static String getModuleName() {
+        return "mock";
+    }
 
-	public static boolean isScript() {
-		return false;
-	}
+    public static String getPermutationStrongName() {
+        return HOSTED_MODE_PERMUTATION_STRONG_NAME;
+    }
 
-	public static void log(String message) {
-		log(message, null);
-	}
+    @Deprecated
+    public static String getTypeName(Object o) {
+        return (o == null) ? null : o.getClass().getName();
+    }
 
-	public static void log(String message, Throwable e) {
-		System.out.println(message);
-		e.printStackTrace(System.out);
-	}
+    public static UncaughtExceptionHandler getUncaughtExceptionHandler() {
+        return sUncaughtExceptionHandler;
+    }
 
-	public static void runAsync(Class<?> name, RunAsyncCallback callback) {
-		runAsyncWithoutCodeSplitting(callback);
-	}
+    public static String getUniqueThreadId() {
+        return "";
+    }
 
-	public static void runAsync(RunAsyncCallback callback) {
-		runAsyncWithoutCodeSplitting(callback);
-	}
+    public static String getVersion() {
+        return "2.3.0";
+    }
 
-	public static void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
-		sUncaughtExceptionHandler = handler;
-	}
+    public static boolean isClient() {
+        return true;
+    }
 
-	static void setBridge(GWTBridge bridge) {
-	}
+    public static boolean isProdMode() {
+        return false;
+    }
 
-	private static void runAsyncWithoutCodeSplitting(RunAsyncCallback callback) {
-		UncaughtExceptionHandler handler = sUncaughtExceptionHandler;
-		if (handler == null) {
-			callback.onSuccess();
-		} else {
-			try {
-				callback.onSuccess();
-			} catch (Throwable e) {
-				handler.onUncaughtException(e);
-			}
-		}
-	}
+    public static boolean isScript() {
+        return false;
+    }
+
+    public static void log(String message) {
+        log(message, null);
+    }
+
+    public static void log(String message, Throwable e) {
+        System.out.println(message);
+        e.printStackTrace(System.out);
+    }
+
+    public static void runAsync(Class<?> name, RunAsyncCallback callback) {
+        runAsyncWithoutCodeSplitting(callback);
+    }
+
+    public static void runAsync(RunAsyncCallback callback) {
+        runAsyncWithoutCodeSplitting(callback);
+    }
+
+    public static void setUncaughtExceptionHandler(UncaughtExceptionHandler handler) {
+        sUncaughtExceptionHandler = handler;
+    }
+
+    static void setBridge(GWTBridge bridge) {
+    }
+
+    private static void runAsyncWithoutCodeSplitting(RunAsyncCallback callback) {
+        UncaughtExceptionHandler handler = sUncaughtExceptionHandler;
+        if (handler == null) {
+            callback.onSuccess();
+        } else {
+            try {
+                callback.onSuccess();
+            } catch (Throwable e) {
+                handler.onUncaughtException(e);
+            }
+        }
+    }
 }

@@ -31,17 +31,17 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class FlowLayoutMenuItem extends FBMenuItem {
 
-	public FlowLayoutMenuItem() {
-		super();
-	}
-	
-	public FlowLayoutMenuItem(List<FBFormEffect> effects) {
-		super(effects);
-	}
-	
+    public FlowLayoutMenuItem() {
+        super();
+    }
+    
+    public FlowLayoutMenuItem(List<FBFormEffect> effects) {
+        super(effects);
+    }
+    
     @Override
     protected ImageResource getIconUrl() {
-    	return FormBuilderResources.INSTANCE.flowLayoutIcon();
+        return FormBuilderResources.INSTANCE.flowLayoutIcon();
     }
 
     @Override
