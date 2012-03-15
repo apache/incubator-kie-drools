@@ -366,7 +366,7 @@ public class Declaration
         return internalFact;
     }
 
-    public Object clone() {
+    public Declaration clone() {
         return new Declaration( this.identifier,
                                 this.readAccessor,
                                 this.pattern );

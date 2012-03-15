@@ -147,7 +147,7 @@ public class Pattern
         return decl.toArray( new Declaration[decl.size()] );
     }
     
-    public Object clone() {
+    public Pattern clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
         final Pattern clone = new Pattern( this.index,
                                            this.offset,
