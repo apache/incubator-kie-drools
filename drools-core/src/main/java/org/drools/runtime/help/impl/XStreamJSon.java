@@ -1064,7 +1064,6 @@ public class XStreamJSon {
                 } else if ( "name".equals( nodeName ) ) {
                     name = reader.getValue();
                 } else if ( "args".equals( nodeName ) ) {
-                    reader.moveDown();
                     args = new ArrayList<Object>();
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
@@ -1074,7 +1073,6 @@ public class XStreamJSon {
                         args.add( arg );
                         reader.moveUp();
                     }
-                    reader.moveUp();
                 }
                 reader.moveUp();
             }
