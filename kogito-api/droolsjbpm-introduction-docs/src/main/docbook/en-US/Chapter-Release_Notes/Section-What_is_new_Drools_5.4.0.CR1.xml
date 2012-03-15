@@ -244,7 +244,10 @@
 
       <para>Numerical "value editors" (i.e. the text boxes for numerical values) in the BRL, Rule Template, Test
       Scenarios and Decision Table editors now support the types Byte, Short, Integer, Long, Double, Float, BigDecimal
-      and BigInteger (and their primitive counterparts) correctly.</para>
+      and BigInteger (and their primitive counterparts) correctly. The generated DRL is automatically appended with "B"
+      or "I" type classifiers for BigDecimal and BigInteger values respectively, as provided for by Drools Expert. The
+      Right-hand Side generates applicable DRL for BigDecimal and BigInteger values according to the rule's
+      dialect.</para>
 
       <figure>
         <title>Example of using a BigDecimal</title>
@@ -253,6 +256,24 @@
           <imageobject>
             <imagedata align="center" fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
                        format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Improved dependent enumerations support</title>
+
+      <para>Dependent enumerations can now be used in both the Web Guided Decision Table editor and the Rule Template
+      Data grid. Furthermore improvements were made to the operation of dependent enumerations in the BRL Guided Rule
+      editor for sub-fields and expressions.</para>
+
+      <figure>
+        <title>Dependent enumerations in the Web Guided Decision Table editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-dependent-enums.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
