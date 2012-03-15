@@ -919,7 +919,15 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
             else if( !operationSuccessful ) { message = "Operation failed"; }
             else { message = "Could not commit transaction"; }
             
-            throw new RuntimeException(message, e);
+            
+            if (e instanceof TaskException) {
+                throw (TaskException) e;
+            } else {
+                long timestamp = System.currentTimeMillis();
+                String errorCode = "WS-HTError-" + timestamp;
+                throw new RuntimeException(errorCode + " : " + message, e);
+            }
+            
         }
         
     }
@@ -991,75 +999,131 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         }
     }
     
-    private void doCallbackUserOperation(String userId) {
+    private boolean doCallbackUserOperation(String userId) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             if(userId != null && UserGroupCallbackManager.getInstance().getCallback().existsUser(userId)) {
                 addUserFromCallbackOperation(userId);
+                return true;
             }
+            return false;
         } else {
             logger.debug("UserGroupCallback has not been registered.");
+            // returns true for backward compatibility
+            return true;
         }
     }
     
-    private void doCallbackGroupOperation(String groupId) {
+    private boolean doCallbackGroupOperation(String groupId) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             if(groupId != null && UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId)) {
                 addGroupFromCallbackOperation(groupId);
+                return true;
             }
+            return false;
         } else {
             logger.debug("UserGroupCallback has not been registered.");
+            // returns true for backward compatibility
+            return true;
         }
     }
     
     private void doCallbackOperationForTaskData(TaskData data) {
         if(UserGroupCallbackManager.getInstance().existsCallback() && data != null) {
             if(data.getActualOwner() != null) {
-                doCallbackUserOperation(data.getActualOwner().getId());
+                boolean userExists = doCallbackUserOperation(data.getActualOwner().getId());
+                if (!userExists) {
+                	// remove it from the task to avoid foreign key constraint exception
+                	data.setActualOwner(null);
+                	data.setStatus(Status.Ready);
+                }
             }
             
             if(data.getCreatedBy() != null) {
-                doCallbackUserOperation(data.getCreatedBy().getId());
+            	boolean userExists = doCallbackUserOperation(data.getCreatedBy().getId());
+            	if (!userExists) {
+                	// remove it from the task to avoid foreign key constraint exception
+                	data.setCreatedBy(null);
+                }
             }
         }
     }
     
     private void doCallbackOperationForPotentialOwners(List<OrganizationalEntity> potentialOwners) {
         if(UserGroupCallbackManager.getInstance().existsCallback() && potentialOwners != null) { 
-            for(OrganizationalEntity orgEntity : potentialOwners) {
+        	List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
+        	
+        	for(OrganizationalEntity orgEntity : potentialOwners) {
                 if(orgEntity instanceof User) {
-                    doCallbackUserOperation(orgEntity.getId());
+                    boolean userExists = doCallbackUserOperation(orgEntity.getId());
+                    if (!userExists) {
+                    	nonExistingEntities.add(orgEntity);
+                    }
                 }
                 if(orgEntity instanceof Group) {
-                    doCallbackGroupOperation(orgEntity.getId());
+                	boolean groupExists = doCallbackGroupOperation(orgEntity.getId());
+                    if (!groupExists) {
+                    	nonExistingEntities.add(orgEntity);
+                    }
                 }
+            }
+            if (!nonExistingEntities.isEmpty()) {
+            	potentialOwners.removeAll(nonExistingEntities);
             }
         }
     }
     
     private void doCallbackOperationForPeopleAssignments(PeopleAssignments assignments) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
+        	List<OrganizationalEntity> nonExistingEntities = new ArrayList<OrganizationalEntity>();
+        	
             if(assignments != null) {
                 List<OrganizationalEntity> businessAdmins = assignments.getBusinessAdministrators();
                 if(businessAdmins != null) {
                     for(OrganizationalEntity admin : businessAdmins) {
                         if(admin instanceof User) {
-                            doCallbackUserOperation(admin.getId());
+                        	boolean userExists = doCallbackUserOperation(admin.getId());
+                            if (!userExists) {
+                            	nonExistingEntities.add(admin);
+                            }
                         }
                         if(admin instanceof Group) {
-                            doCallbackGroupOperation(admin.getId());
+                        	boolean groupExists = doCallbackGroupOperation(admin.getId());
+                            if (!groupExists) {
+                            	nonExistingEntities.add(admin);
+                            }
                         }
                     }
+                    
+                    if (!nonExistingEntities.isEmpty()) {
+                    	businessAdmins.removeAll(nonExistingEntities);
+                    	nonExistingEntities.clear();
+                    }
+                } 
+
+                if (businessAdmins == null || businessAdmins.isEmpty()){
+                	// throw an exception as it should not be allowed to create task without administrator
+                	throw new CannotAddTaskException("There are no known Business Administrators, task cannot be created according to WS-HT specification");
                 }
                 
                 List<OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
                 if(potentialOwners != null) {
                     for(OrganizationalEntity powner : potentialOwners) {
                         if(powner instanceof User) {
-                            doCallbackUserOperation(powner.getId());
+                        	boolean userExists = doCallbackUserOperation(powner.getId());
+                            if (!userExists) {
+                            	nonExistingEntities.add(powner);
+                            }
                         }
                         if(powner instanceof Group) {
-                            doCallbackGroupOperation(powner.getId());
+                        	boolean groupExists = doCallbackGroupOperation(powner.getId());
+                            if (!groupExists) {
+                            	nonExistingEntities.add(powner);
+                            }
                         }
+                    }
+                    if (!nonExistingEntities.isEmpty()) {
+                    	potentialOwners.removeAll(nonExistingEntities);
+                    	nonExistingEntities.clear();
                     }
                 }
                 
@@ -1071,11 +1135,21 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
                 if(excludedOwners != null) {
                     for(OrganizationalEntity exowner : excludedOwners) {
                         if(exowner instanceof User) {
-                            doCallbackUserOperation(exowner.getId());
+                        	boolean userExists = doCallbackUserOperation(exowner.getId());
+                            if (!userExists) {
+                            	nonExistingEntities.add(exowner);
+                            }
                         }
                         if(exowner instanceof Group) {
-                            doCallbackGroupOperation(exowner.getId());
+                        	boolean groupExists = doCallbackGroupOperation(exowner.getId());
+                            if (!groupExists) {
+                            	nonExistingEntities.add(exowner);
+                            }
                         }
+                    }
+                    if (!nonExistingEntities.isEmpty()) {
+                    	excludedOwners.removeAll(nonExistingEntities);
+                    	nonExistingEntities.clear();
                     }
                 }
                 
@@ -1083,11 +1157,21 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
                 if(recipients != null) {
                     for(OrganizationalEntity recipient : recipients) {
                         if(recipient instanceof User) {
-                            doCallbackUserOperation(recipient.getId());
+                        	boolean userExists = doCallbackUserOperation(recipient.getId());
+                            if (!userExists) {
+                            	nonExistingEntities.add(recipient);
+                            }
                         }
                         if(recipient instanceof Group) {
-                            doCallbackGroupOperation(recipient.getId());
+                        	boolean groupExists = doCallbackGroupOperation(recipient.getId());
+                            if (!groupExists) {
+                            	nonExistingEntities.add(recipient);
+                            }
                         }
+                    }
+                    if (!nonExistingEntities.isEmpty()) {
+                    	recipients.removeAll(nonExistingEntities);
+                    	nonExistingEntities.clear();
                     }
                 }
                 
@@ -1095,11 +1179,21 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
                 if(stakeholders != null) {
                     for(OrganizationalEntity stakeholder : stakeholders) {
                         if(stakeholder instanceof User) {
-                            doCallbackUserOperation(stakeholder.getId());
+                        	boolean userExists = doCallbackUserOperation(stakeholder.getId());
+                            if (!userExists) {
+                            	nonExistingEntities.add(stakeholder);
+                            }
                         }
                         if(stakeholder instanceof Group) {
-                            doCallbackGroupOperation(stakeholder.getId());
+                        	boolean groupExists = doCallbackGroupOperation(stakeholder.getId());
+                            if (!groupExists) {
+                            	nonExistingEntities.add(stakeholder);
+                            }
                         }
+                    }
+                    if (!nonExistingEntities.isEmpty()) {
+                    	stakeholders.removeAll(nonExistingEntities);
+                    	nonExistingEntities.clear();
                     }
                 }
             }

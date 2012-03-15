@@ -18,6 +18,7 @@ package org.jbpm.task;
 
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
+import org.jbpm.task.service.IllegalTaskStateException;
 import org.jbpm.task.utils.CollectionUtils;
 
 import javax.persistence.*;
@@ -392,7 +393,7 @@ public class TaskData
      */
     public Status assignOwnerAndStatus(List<OrganizationalEntity> potentialOwners) {
         if (getStatus() != Status.Created) {
-            throw new IllegalStateException("Can only assign task owner if status is Created!");
+            throw new IllegalTaskStateException("Can only assign task owner if status is Created!");
         }
 
         Status assignedStatus = null;

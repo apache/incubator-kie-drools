@@ -15,26 +15,48 @@
  */
 package org.jbpm.process.workitem.wsht;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.*;
-import org.jbpm.task.event.*;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.Content;
+import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Status;
+import org.jbpm.task.SubTasksStrategy;
+import org.jbpm.task.SubTasksStrategyFactory;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
+import org.jbpm.task.event.TaskCompletedEvent;
+import org.jbpm.task.event.TaskEvent;
+import org.jbpm.task.event.TaskEventKey;
+import org.jbpm.task.event.TaskFailedEvent;
+import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.jbpm.task.utils.OnErrorAction;
 
 public class AsyncWSHumanTaskHandler implements WorkItemHandler {
 
@@ -43,17 +65,32 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     private AsyncTaskService client;
     private WorkItemManager manager = null;
     private KnowledgeRuntime session;
+    private OnErrorAction action;
 
     public AsyncWSHumanTaskHandler() {
+    	this.action = OnErrorAction.LOG;
     }
 
     public AsyncWSHumanTaskHandler(AsyncTaskService client) {
         this.client = client;
+        this.action = OnErrorAction.LOG;
     }
     
     public AsyncWSHumanTaskHandler(AsyncTaskService client, KnowledgeRuntime session) {
         this.client = client;
         this.session = session;
+        this.action = OnErrorAction.LOG;
+    }
+    
+    public AsyncWSHumanTaskHandler(AsyncTaskService client, OnErrorAction action) {
+        this.client = client;
+        this.action = action;
+    }
+    
+    public AsyncWSHumanTaskHandler(AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        this.client = client;
+        this.session = session;
+        this.action = action;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -64,6 +101,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     public void setClient(AsyncTaskService client) {
         this.client = client;
     }
+    
+    public void setAction(OnErrorAction action) {
+		this.action = action;
+	}
 
     public void connect() {
         if (client == null) {
@@ -203,7 +244,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             }
         }
 
-        client.addTask(task, content, null);
+        client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
     }
 
     public void dispose() throws Exception {
@@ -216,6 +257,39 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         GetTaskResponseHandler abortTaskResponseHandler =
                 new AbortTaskResponseHandler(client);
         client.getTaskByWorkItemId(workItem.getId(), abortTaskResponseHandler);
+    }
+    
+    private class TaskAddedHandler extends AbstractBaseResponseHandler implements AddTaskResponseHandler {
+
+		private long workItemId;
+		
+		public TaskAddedHandler(long workItemId) {
+			this.workItemId = workItemId;
+		}
+		public void execute(long taskId) {
+			
+		}
+
+		@Override
+		public synchronized void setError(RuntimeException error) {		
+			super.setError(error);
+			
+			if (action.equals(OnErrorAction.ABORT)) {
+				session.getWorkItemManager().abortWorkItem(workItemId);
+				
+			} else if (action.equals(OnErrorAction.RETHROW)) {
+				throw getError();
+				
+			} else if (action.equals(OnErrorAction.LOG)) {
+				StringBuffer log = new StringBuffer();
+				log.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
+				log.append(". Error reported by task server: " + getError().getMessage() + ". ");
+				log.append("Stack trace:\n");
+				System.err.println(log);
+				getError().printStackTrace(System.err);
+			}
+		}
+	
     }
 
     private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {

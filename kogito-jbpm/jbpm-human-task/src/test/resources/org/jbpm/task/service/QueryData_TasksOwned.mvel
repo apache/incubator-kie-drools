@@ -12,6 +12,7 @@ tasks = [
 	    peopleAssignments = (with ( new PeopleAssignments() ) {        
 	        taskInitiator = users['darth' ],
 	        potentialOwners = [users['bobba' ], users['jabba' ]],
+	        businessAdministrators = [ users['steve' ]],
 	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]]
 	    }),	    
         names = [ new I18NText( "en-UK", "This is my task name Jan" ),
@@ -27,7 +28,7 @@ tasks = [
 	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]],
 	        potentialOwners = [users['bobba' ], users['jabba' ]], 
 	        taskStakeholders = [users['liz' ], users['stuart' ], users['jane' ]],
-	        businessAdministrators = [users['peter' ], users['steve' ]],
+	        businessAdministrators = [users['steve' ]],
 	        recipients = [users['sly' ], users['bobba' ], users['liz' ]]
 	    }),	 	    
 	    taskData = (with ( new TaskData() ) {

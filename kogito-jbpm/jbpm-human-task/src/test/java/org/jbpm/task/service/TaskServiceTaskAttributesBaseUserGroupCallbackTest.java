@@ -39,7 +39,7 @@ public abstract class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends
         str += "actualOwner = new User('Darth Vader')}),";
         str += "deadlines = new Deadlines(),";
         str += "delegation = new Delegation(),";
-        str += "peopleAssignments = new PeopleAssignments(),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ]}),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
@@ -102,7 +102,7 @@ public abstract class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends
         str += "actualOwner = new User('Darth Vader')}),";
         str += "deadlines = new Deadlines(),";
         str += "delegation = new Delegation(),";
-        str += "peopleAssignments = new PeopleAssignments(),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ]}),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();

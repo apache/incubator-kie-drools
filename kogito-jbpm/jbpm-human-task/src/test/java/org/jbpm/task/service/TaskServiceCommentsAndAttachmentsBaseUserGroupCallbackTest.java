@@ -62,7 +62,7 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "deadlines = new Deadlines(),";
         str += "delegation = new Delegation(),";
-        str += "peopleAssignments = new PeopleAssignments(),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ]}),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
@@ -143,7 +143,7 @@ public abstract class TaskServiceCommentsAndAttachmentsBaseUserGroupCallbackTest
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { createdOn = now, activationTime = now}), ";
         str += "deadlines = new Deadlines(),";
         str += "delegation = new Delegation(),";
-        str += "peopleAssignments = new PeopleAssignments(),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ]}),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,7 @@ import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,20 +66,35 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private WorkItemManager manager = null;
     private KnowledgeRuntime session;
     private boolean local = false;
+    private OnErrorAction action;
     
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
 	private boolean initialized = false;
     
     public SyncWSHumanTaskHandler() {
+    	this.action = OnErrorAction.LOG;
     }
 
     public SyncWSHumanTaskHandler(TaskService client) {
         this.client = client;
+        this.action = OnErrorAction.LOG;
     }
     
     public SyncWSHumanTaskHandler(TaskService client, KnowledgeRuntime session) {
         this.client = client;
         this.session = session;
+        this.action = OnErrorAction.LOG;
+    }
+    
+    public SyncWSHumanTaskHandler(TaskService client, OnErrorAction action) {
+        this.client = client;
+        this.action = action;
+    }
+    
+    public SyncWSHumanTaskHandler(TaskService client, KnowledgeRuntime session, OnErrorAction action) {
+        this.client = client;
+        this.session = session;
+        this.action = action;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -88,6 +105,10 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     public void setClient(TaskService client) {
         this.client = client;
     }
+    
+    public void setAction(OnErrorAction action) {
+		this.action = action;
+	}
 
     public void connect() {
     	if (!initialized) {
@@ -240,7 +261,31 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
             }
         }
 
-        client.addTask(task, content);
+        try {
+        	client.addTask(task, content);
+        	
+        } catch (Exception e) {
+        	
+        	if (action.equals(OnErrorAction.ABORT)) {
+				session.getWorkItemManager().abortWorkItem(workItem.getId());
+				
+			} else if (action.equals(OnErrorAction.RETHROW)) {
+				if (e instanceof RuntimeException) {
+					throw (RuntimeException) e;
+				} else {
+					throw new RuntimeException(e);
+				}
+				
+			} else if (action.equals(OnErrorAction.LOG)) {
+				StringBuffer log = new StringBuffer();
+				log.append(new Date() + ": Error when creating task on task server for work item id " + workItem.getId());
+				log.append(". Error reported by task server: " + e.getMessage() + ". ");
+				log.append("Stack trace:\n");
+				System.err.println(log);
+				e.printStackTrace(System.err);
+			}
+		}
+
     }
 
     public void dispose() throws Exception {

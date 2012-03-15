@@ -98,14 +98,13 @@ public class TaskPersistenceManager {
             } catch(RuntimeException re) { 
                 String action = rollbackAttempted ? "rollback" : "commit";
                 logger.error("Unable to " + action + ".", re);
-                // DBG
-                re.printStackTrace();
+
                 if( ! rollbackAttempted ) { 
                     this.ttxm.rollback(em, txOwner);
                 }
-                else { 
-                    throw re;
-                }
+                
+                throw re;
+                
             }
         }
     }
@@ -117,8 +116,7 @@ public class TaskPersistenceManager {
             }
         } catch(RuntimeException e) { 
             logger.error("Unable to (mark as or) rollback transaction!", e.getCause());
-            //DBG
-            e.printStackTrace();
+       
         }
         
     }

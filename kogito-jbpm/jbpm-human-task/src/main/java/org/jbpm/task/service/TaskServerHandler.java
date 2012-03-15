@@ -578,7 +578,13 @@ public class TaskServerHandler {
             systemEventListener.exception(e.getMessage(),e);
             e.printStackTrace(System.err);
             List<Object> list = new ArrayList<Object>(1);
-            list.add(e);
+            
+            String errorMessage = "Command " + cmd.getName() + " faild due to " + e.getMessage() + ". Please contact task server administrator.";
+            if (e instanceof TaskException) {
+                list.add(e);
+            } else {
+                list.add(new RuntimeException(errorMessage));
+            }
             Command resultsCmnd = new Command(cmd.getId(), response, list);
             session.write(resultsCmnd);
         } finally {

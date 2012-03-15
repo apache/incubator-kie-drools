@@ -46,7 +46,7 @@ public abstract class TaskServiceEventMessagingBaseUserGroupCallbackTest extends
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], businessAdministrators = [ users['darth'] ] }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();

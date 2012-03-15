@@ -108,8 +108,10 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 		try {
 			if (this.producer != null) 
 				this.producer.close();
-			if(this.producerSession != null)
+			if(this.producerSession != null) {
 				this.producerSession.close();
+			    this.producerSession = null;
+			}
 			if(this.consumerSession != null)
 				this.consumerSession.close();
 			if (this.connection != null)
