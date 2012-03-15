@@ -60,7 +60,8 @@ public class InsertObjectInEntryPointCommand
         WorkingMemoryEntryPoint ep = ((KnowledgeCommandContext) context).getWorkingMemoryEntryPoint();
         FactHandle factHandle = ep.insert(object);
 
-        DefaultFactHandle disconectedHandle = new DefaultFactHandle(factHandle.toExternalForm());
+        DefaultFactHandle disconnectedHandle = ((DefaultFactHandle) factHandle).clone();
+        disconnectedHandle.disconnect();
 
         if (outIdentifier != null) {
             if (this.returnObject) {
@@ -68,10 +69,10 @@ public class InsertObjectInEntryPointCommand
                         object);
             }
             ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getFactHandles().put(this.outIdentifier,
-                    disconectedHandle.toExternalForm());
+                    disconnectedHandle);
         }
 
-        return disconectedHandle;
+        return disconnectedHandle;
     }
 
     public void setObject(Object object) {

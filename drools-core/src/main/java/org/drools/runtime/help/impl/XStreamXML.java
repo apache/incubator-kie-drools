@@ -880,7 +880,7 @@ public static class BatchExecutionResultConverter extends AbstractCollectionConv
                          new DefaultFactHandle( reader.getAttribute( "external-form" ) ) );
           } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
               String identifier = reader.getAttribute( "identifier" );
-              List<FactHandle> list = new ArrayList();
+              List<FactHandle> list = new ArrayList<FactHandle>();
               while ( reader.hasMoreChildren() ) {
                   reader.moveDown();
                   list.add( new DefaultFactHandle( reader.getAttribute( "external-form" ) ) );
