@@ -377,6 +377,10 @@ public class ClassGenerator {
             this.mv = mv;
         }
 
+        protected final int getCodeForType(Class<?> typeClass, int opcode) {
+            return Type.getType(typeClass).getOpcode(opcode);
+        }
+
         protected final int store(int registry, Class<?> typeClass) {
             return store(registry, Type.getType(typeClass));
         }

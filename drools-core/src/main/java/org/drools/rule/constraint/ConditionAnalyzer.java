@@ -336,13 +336,15 @@ public class ConditionAnalyzer {
 
         if (accessorNode instanceof ArrayAccessor) {
             ArrayAccessor arrayAccessor = (ArrayAccessor)accessorNode;
-            return new ArrayAccessInvocation(new FixedExpression(int.class, arrayAccessor.getIndex()));
+            return new ArrayAccessInvocation( formerInvocation != null ? formerInvocation.getReturnType() : Object[].class,
+                                              new FixedExpression(int.class, arrayAccessor.getIndex()) );
         }
 
         if (accessorNode instanceof ArrayAccessorNest) {
             ArrayAccessorNest arrayAccessorNest = (ArrayAccessorNest)accessorNode;
             ExecutableAccessor index = (ExecutableAccessor)arrayAccessorNest.getIndex();
-            return new ArrayAccessInvocation(analyzeNode(index.getNode()));
+            return new ArrayAccessInvocation( formerInvocation != null ? formerInvocation.getReturnType() : Object[].class,
+                                              analyzeNode(index.getNode()) );
         }
 
         if (accessorNode instanceof ArrayLength) {
@@ -861,9 +863,11 @@ public class ConditionAnalyzer {
     }
 
     public static class ArrayAccessInvocation extends Invocation {
+        private final Class<?> arrayType;
         private final Expression index;
 
-        public ArrayAccessInvocation(Expression index) {
+        public ArrayAccessInvocation(Class arrayType, Expression index) {
+            this.arrayType = arrayType;
             this.index = index;
         }
 
@@ -875,8 +879,12 @@ public class ConditionAnalyzer {
             return "[" + index + "]";
         }
 
+        public Class<?> getArrayType() {
+            return arrayType;
+        }
+
         public Class<?> getReturnType() {
-            return Object.class;
+            return arrayType.getComponentType();
         }
     }
 

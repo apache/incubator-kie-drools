@@ -637,9 +637,9 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitArrayAccessInvocation(ArrayAccessInvocation invocation) {
-            cast(Object[].class);
+            cast(invocation.getArrayType());
             jitExpression(invocation.getIndex(), int.class);
-            mv.visitInsn(AALOAD);
+            mv.visitInsn(getCodeForType(invocation.getReturnType(), IALOAD));
         }
 
         private void jitArrayLenghtInvocation() {
