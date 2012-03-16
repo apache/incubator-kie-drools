@@ -23,6 +23,7 @@
       <selector>
         <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
       </selector>
+      <!-- TODO needs a GenericChainedSwapMoveFactory and probably even a GenericChainedSwapPartMoveFactory -->
     </selector>
     <acceptor>
       <planningEntityTabuSize>9</planningEntityTabuSize>
