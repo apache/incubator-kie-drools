@@ -117,13 +117,6 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        periodChangeMoveFactory.stepDecided(localSearchStepScope);
-        roomChangeMoveFactory.stepDecided(localSearchStepScope);
-        examSwapMoveFactory.stepDecided(localSearchStepScope);
-    }
-
-    @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         periodChangeMoveFactory.stepTaken(localSearchStepScope);
         roomChangeMoveFactory.stepTaken(localSearchStepScope);

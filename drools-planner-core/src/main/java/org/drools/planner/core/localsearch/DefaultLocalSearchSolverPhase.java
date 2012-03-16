@@ -62,7 +62,6 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
                         solverPhaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
-            stepDecided(stepScope);
             nextStep.doMove(stepScope.getWorkingMemory());
             // there is no need to recalculate the score, but we still need to set it
             solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
@@ -101,11 +100,6 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         super.beforeDeciding(localSearchStepScope);
         decider.beforeDeciding(localSearchStepScope);
-    }
-
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        super.stepDecided(localSearchStepScope);
-        decider.stepDecided(localSearchStepScope);
     }
 
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {

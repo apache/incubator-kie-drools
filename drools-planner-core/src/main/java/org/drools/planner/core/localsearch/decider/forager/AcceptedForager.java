@@ -162,11 +162,6 @@ public class AcceptedForager extends AbstractForager {
     }
 
     @Override
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
-    }
-
-    @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         deciderScoreComparatorFactory.stepTaken(localSearchStepScope);
     }

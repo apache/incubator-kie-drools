@@ -68,7 +68,6 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                         solverPhaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
-            stepDecided(stepScope);
             nextStep.doMove(stepScope.getWorkingMemory());
             // there is no need to recalculate the score, but we still need to set it
             solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
@@ -107,12 +106,6 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         super.beforeDeciding(greedyFitStepScope);
         greedyPlanningEntitySelector.beforeDeciding(greedyFitStepScope);
         greedyDecider.beforeDeciding(greedyFitStepScope);
-    }
-
-    public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
-        super.stepDecided(greedyFitStepScope);
-        greedyPlanningEntitySelector.stepDecided(greedyFitStepScope);
-        greedyDecider.stepDecided(greedyFitStepScope);
     }
 
     public void stepTaken(GreedyFitStepScope greedyFitStepScope) {

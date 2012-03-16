@@ -65,11 +65,6 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         solverPhaseLifecycleSupport.fireBeforeDeciding(stepScope);
     }
 
-    public void stepDecided(AbstractStepScope stepScope) {
-        termination.stepDecided(stepScope);
-        solverPhaseLifecycleSupport.fireStepDecided(stepScope);
-    }
-
     public void stepTaken(AbstractStepScope stepScope) {
         bestSolutionRecaller.extractBestSolution(stepScope);
         termination.stepTaken(stepScope);

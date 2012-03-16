@@ -41,13 +41,6 @@ public class SolverPhaseLifecycleSupport extends AbstractEventSupport<SolverPhas
         }
     }
 
-    public void fireStepDecided(AbstractStepScope stepScope) {
-        final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
-        while (iter.hasNext()) {
-            iter.next().stepDecided(stepScope);
-        }
-    }
-
     public void fireStepTaken(AbstractStepScope stepScope) {
         final Iterator<SolverPhaseLifecycleListener> iter = getEventListenersIterator();
         while (iter.hasNext()) {

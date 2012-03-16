@@ -27,8 +27,6 @@ public interface SolverPhaseLifecycleListener extends EventListener {
 
     void beforeDeciding(AbstractStepScope stepScope);
 
-    void stepDecided(AbstractStepScope stepScope);
-
     void stepTaken(AbstractStepScope stepScope);
 
     void phaseEnded(AbstractSolverPhaseScope solverPhaseScope);

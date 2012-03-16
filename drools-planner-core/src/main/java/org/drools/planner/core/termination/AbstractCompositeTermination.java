@@ -67,13 +67,6 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     }
 
     @Override
-    public void stepDecided(AbstractStepScope stepScope) {
-        for (Termination termination : terminationList) {
-            termination.stepDecided(stepScope);
-        }
-    }
-
-    @Override
     public void stepTaken(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
             termination.stepTaken(stepScope);

@@ -41,10 +41,6 @@ public abstract class AbstractDeciderScoreComparatorFactory implements DeciderSc
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }

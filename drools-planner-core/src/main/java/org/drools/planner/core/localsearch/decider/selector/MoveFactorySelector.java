@@ -73,11 +73,6 @@ public class MoveFactorySelector extends AbstractSelector {
     }
 
     @Override
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        moveFactory.stepDecided(localSearchStepScope);
-    }
-
-    @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         moveFactory.stepTaken(localSearchStepScope);
     }

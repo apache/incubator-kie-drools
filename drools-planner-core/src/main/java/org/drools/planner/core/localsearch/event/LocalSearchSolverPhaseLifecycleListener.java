@@ -27,8 +27,6 @@ public interface LocalSearchSolverPhaseLifecycleListener extends EventListener {
 
     void beforeDeciding(LocalSearchStepScope localSearchStepScope);
 
-    void stepDecided(LocalSearchStepScope localSearchStepScope);
-
     void stepTaken(LocalSearchStepScope localSearchStepScope);
 
     void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);

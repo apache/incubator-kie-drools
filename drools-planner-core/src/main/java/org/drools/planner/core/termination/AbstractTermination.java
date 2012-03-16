@@ -45,10 +45,6 @@ public abstract class AbstractTermination implements Termination {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepDecided(AbstractStepScope stepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
     public void stepTaken(AbstractStepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }

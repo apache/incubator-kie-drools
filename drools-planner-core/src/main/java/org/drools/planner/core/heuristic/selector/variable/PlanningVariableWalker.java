@@ -75,12 +75,6 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
         }
     }
 
-    public void stepDecided(AbstractStepScope stepScope) {
-        for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-            planningValueWalker.stepDecided(stepScope);
-        }
-    }
-
     public void stepTaken(AbstractStepScope stepScope) {
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
             planningValueWalker.stepTaken(stepScope);

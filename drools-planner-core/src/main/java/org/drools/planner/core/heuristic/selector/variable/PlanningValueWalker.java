@@ -69,10 +69,6 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningValueSelector.beforeDeciding(stepScope);
     }
 
-    public void stepDecided(AbstractStepScope stepScope) {
-        planningValueSelector.stepDecided(stepScope);
-    }
-
     public void stepTaken(AbstractStepScope stepScope) {
         planningValueSelector.stepTaken(stepScope);
     }

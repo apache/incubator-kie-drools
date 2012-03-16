@@ -29,10 +29,6 @@ public abstract class LocalSearchSolverPhaseLifecycleListenerAdapter implements 
         // Hook method
     }
 
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        // Hook method
-    }
-
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         // Hook method
     }

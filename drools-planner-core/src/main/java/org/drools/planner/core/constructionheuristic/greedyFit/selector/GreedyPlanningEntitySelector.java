@@ -48,12 +48,6 @@ public class GreedyPlanningEntitySelector implements Iterable<Object>, GreedySol
         }
     }
 
-    public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
-        for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
-            planningEntitySelector.stepDecided(greedyFitStepScope);
-        }
-    }
-
     public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
         for (PlanningEntitySelector planningEntitySelector : planningEntitySelectorList) {
             planningEntitySelector.stepTaken(greedyFitStepScope);

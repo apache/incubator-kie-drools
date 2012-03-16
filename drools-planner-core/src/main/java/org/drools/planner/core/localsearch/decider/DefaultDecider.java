@@ -162,12 +162,6 @@ public class DefaultDecider implements Decider {
         forager.addMove(moveScope);
     }
 
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        selector.stepDecided(localSearchStepScope);
-        acceptor.stepDecided(localSearchStepScope);
-        forager.stepDecided(localSearchStepScope);
-    }
-
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         selector.stepTaken(localSearchStepScope);
         acceptor.stepTaken(localSearchStepScope);

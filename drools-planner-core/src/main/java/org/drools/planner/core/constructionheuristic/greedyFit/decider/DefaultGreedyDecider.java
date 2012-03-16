@@ -135,11 +135,6 @@ public class DefaultGreedyDecider implements GreedyDecider {
         forager.addMove(moveScope);
     }
 
-    public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
-        planningVariableWalker.stepDecided(greedyFitStepScope);
-        forager.stepDecided(greedyFitStepScope);
-    }
-
     public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
         planningVariableWalker.stepTaken(greedyFitStepScope);
         forager.stepTaken(greedyFitStepScope);

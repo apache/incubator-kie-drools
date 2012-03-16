@@ -1679,3 +1679,9 @@ After in *HardAndSoftScore.java:
     public boolean isFeasible() {
         return getHardScore() >= 0;
     }
+
+[MINOR] SolverPhaseLifecycleListener.stepDecided() has been completely removed. Use stepTaken(...) instead.
+Before in *.java:
+    public void stepDecided(...) {
+        ...
+    }
