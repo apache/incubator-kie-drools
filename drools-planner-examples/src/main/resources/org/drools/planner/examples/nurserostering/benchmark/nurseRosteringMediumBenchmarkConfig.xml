@@ -9,18 +9,20 @@
       <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>-->
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/medium02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium04.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium05.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium05.xml</inputSolutionFile>-->
       <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/medium_hint02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inputSolutionFile>
-      <inputSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_hint03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late01.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late02.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late03.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late04.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late05.xml</inputSolutionFile>-->
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+      <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
     </problemBenchmarks>
 
     <solver>
@@ -38,106 +40,86 @@
         <maximumSecondsSpend>700</maximumSecondsSpend>
         <!--<scoreAttained>0hard/-999999999soft</scoreAttained>-->
       </termination>
-      <!--<constructionHeuristic>-->
-        <!--<constructionHeuristicType>BEST_FIT</constructionHeuristicType>-->
-      <!--</constructionHeuristic>-->
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FIRST_FIT</name>
+    <name>tabuSearch-moveTabu</name>
     <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <moveTabuSize>7</moveTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>BEST_FIT_DECREASING</name>
+    <name>tabuSearch-entityTabu</name>
     <solver>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
       </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
-
-  <!--<solverBenchmark>-->
-    <!--<name>tabuSearch-moveTabu</name>-->
-    <!--<solver>-->
-      <!--<localSearch>-->
-        <!--<selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-        <!--</selector>-->
-        <!--<acceptor>-->
-          <!--<solutionTabuSize>1000</solutionTabuSize>-->
-          <!--<moveTabuSize>7</moveTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
-  <!--<solverBenchmark>-->
-    <!--<name>Planner</name>-->
-    <!--<solver>-->
-      <!--<constructionHeuristic>-->
-        <!--<constructionHeuristicType>BEST_FIT</constructionHeuristicType>-->
-      <!--</constructionHeuristic>-->
-      <!--<localSearch>-->
-        <!--<selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-        <!--</selector>-->
-        <!--<acceptor>-->
-          <!--<solutionTabuSize>1000</solutionTabuSize>-->
-          <!--<planningEntityTabuSize>7</planningEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
-  <!--<solverBenchmark>-->
-    <!--<name>simulatedAnnealing</name>-->
-    <!--<solver>-->
-      <!--<localSearch>-->
-        <!--<selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-          <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactorymoveFactoryClass>-->
-          <!--</selector>-->
-        <!--</selector>-->
-        <!--<acceptor>-->
-          <!--<simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>-->
-          <!--<planningEntityTabuSize>5</planningEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--&lt;!&ndash;<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>&ndash;&gt;-->
-          <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
+  <solverBenchmark>
+    <name>simulatedAnnealing</name>
+    <solver>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwapMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </plannerBenchmark>
