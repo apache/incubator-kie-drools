@@ -40,7 +40,7 @@ import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
  */
 public class VehicleRoutingWorldPanel extends JPanel {
 
-    private static final int TEXT_SIZE = 8;
+    private static final int TEXT_SIZE = 12;
 
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
@@ -155,11 +155,11 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
         // Legend
         g.setColor(TangoColors.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 30, 5, 5);
-        g.drawString("Depot", 15, (int) height - 25);
+        g.fillRect(5, (int) height - 17 - (2 * TEXT_SIZE) - (TEXT_SIZE / 2), 5, 5);
+        g.drawString("Depot", 15, (int) height - 15 - (2 * TEXT_SIZE));
         g.setColor(TangoColors.ORANGE_2);
-        g.fillRect(6, (int) height - 19, 3, 3);
-        g.drawString("Customer demand", 15, (int) height - 15);
+        g.fillRect(6, (int) height - 11 - TEXT_SIZE - (TEXT_SIZE / 2), 3, 3);
+        g.drawString("Customer demand", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColors.SCARLET_2);
         g.drawString(schedule.getVehicleList().size() + " vehicles: load / capacity", 15, (int) height - 5);
         repaint();
