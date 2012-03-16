@@ -40,13 +40,13 @@ public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 180000)
+    @Test(timeout = 600000)
     public void solveModel_a2_1() {
         File unsolvedDataFile = new File("data/machinereassignment/unsolved/model_a2_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-117351236soft");
     }
 
-    @Test(timeout = 180000)
+    @Test(timeout = 600000)
     public void solveModel_a2_1Debug() {
         File unsolvedDataFile = new File("data/machinereassignment/unsolved/model_a2_1.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-272621414soft", EnvironmentMode.DEBUG);

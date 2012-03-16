@@ -41,13 +41,13 @@ public class CloudBalancingPerformanceTest extends SolverPerformanceTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 180000)
+    @Test(timeout = 600000)
     public void solveModel_a2_1() {
         File unsolvedDataFile = new File("data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-218850soft");
     }
 
-    @Test(timeout = 180000)
+    @Test(timeout = 600000)
     public void solveModel_a2_1Debug() {
         File unsolvedDataFile = new File("data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-223260soft", EnvironmentMode.DEBUG);

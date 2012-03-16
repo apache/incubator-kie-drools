@@ -33,7 +33,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 60000)
+    @Test(timeout = 600000)
     public void benchmark64Queens() {
         runBenchmarkTest(new File("data/nqueens/unsolved/unsolvedNQueens64.xml"));
     }
