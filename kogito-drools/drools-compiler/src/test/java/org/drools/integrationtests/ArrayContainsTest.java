@@ -16,7 +16,39 @@ import org.drools.runtime.rule.FactHandle;
 import org.junit.Test;
 
 public class ArrayContainsTest extends CommonTestMethodBase {
-    
+
+    @Test
+    public void testEqualsOnIntArray() throws Exception {
+        String str = "";
+        str += "package org.drools;\n";
+        str += "global java.util.List list;\n";
+        str += "rule \"contains in array\"\n";
+        str += "     salience 10\n";
+        str += "     when\n";
+        str += "         Primitives( primitiveIntArray[0] == 1 )\n";
+        str += "     then\n";
+        str += "        list.add( \"ok1\" );\n";
+        str += "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+        final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal( "list",
+                list );
+
+        final Primitives p1 = new Primitives();
+        p1.setPrimitiveIntArray( new int[] { 1, 2 } );
+        FactHandle p1h = ksession.insert( p1 );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1,
+                list.size() );
+    }
+
     @Test
     public void testContainsBooleanArray() throws Exception {
         String str = "";
@@ -35,16 +67,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -100,16 +124,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -166,16 +182,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -231,16 +239,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -296,16 +296,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -361,16 +353,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -426,16 +410,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -491,16 +467,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -556,16 +524,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -622,16 +582,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -688,16 +640,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -754,16 +698,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -820,16 +756,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -886,16 +814,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -953,16 +873,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -1020,16 +932,8 @@ public class ArrayContainsTest extends CommonTestMethodBase {
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
         str += "end\n";
-        
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( "kbuilder has errors\n:" + kbuilder.getErrors() );
-        }
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
