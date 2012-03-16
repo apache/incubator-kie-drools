@@ -20,7 +20,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * A HardAndSoftScore is a Score based on hard constraints and soft int constraints.
+ * A HardAndSoftScore is a Score based on hard and soft int constraints.
  * Hard constraints have priority over soft constraints.
  * <p/>
  * Implementations must be immutable.
