@@ -92,13 +92,13 @@
       <plugin>
         <!--  ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
         <configuration>
          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
                 <include>btm*</include>
+                <include>JPADroolsFlow.h2.db</include>
               </includes>
             </fileset>
          </filesets>
