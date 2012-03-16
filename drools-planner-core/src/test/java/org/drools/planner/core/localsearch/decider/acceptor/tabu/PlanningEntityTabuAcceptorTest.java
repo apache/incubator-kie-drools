@@ -40,7 +40,6 @@ public class PlanningEntityTabuAcceptorTest {
         LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
         tabuAcceptor.phaseStarted(solverPhaseScope);
 
-        // Nothing tabu
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
         stepScope0.setStepIndex(0);
         MoveScope moveScope1 = buildMoveScope(stepScope0, e1);
@@ -121,7 +120,6 @@ public class PlanningEntityTabuAcceptorTest {
         LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
         tabuAcceptor.phaseStarted(solverPhaseScope);
 
-        // Nothing tabu
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
         stepScope0.setStepIndex(0);
         assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope0, e0)));
@@ -205,6 +203,39 @@ public class PlanningEntityTabuAcceptorTest {
         tabuAcceptor.phaseEnded(solverPhaseScope);
     }
 
+    @Test
+    public void aspiration() {
+        PlanningEntityTabuAcceptor tabuAcceptor = new PlanningEntityTabuAcceptor();
+        tabuAcceptor.setTabuSize(2);
+        tabuAcceptor.setAspirationEnabled(true);
+
+        TestdataEntity e0 = new TestdataEntity("e0");
+        TestdataEntity e1 = new TestdataEntity("e1");
+
+        DefaultSolverScope solverScope = new DefaultSolverScope();
+        solverScope.setBestScore(new DefaultSimpleScore(-100));
+        LocalSearchSolverPhaseScope solverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        tabuAcceptor.phaseStarted(solverPhaseScope);
+
+        LocalSearchStepScope stepScope0 = new LocalSearchStepScope(solverPhaseScope);
+        stepScope0.setStepIndex(0);
+        stepScope0.setStep(buildMoveScope(stepScope0, e1).getMove());
+        tabuAcceptor.stepTaken(stepScope0);
+
+        LocalSearchStepScope stepScope1 = new LocalSearchStepScope(solverPhaseScope);
+        stepScope1.setStepIndex(1);
+        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e0)));
+        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e0)));
+        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e1)));
+        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e1)));
+        assertEquals(false, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -120, e0, e1)));
+        assertEquals(true, tabuAcceptor.isAccepted(buildMoveScope(stepScope1, -20, e0, e1)));
+        stepScope1.setStep(buildMoveScope(stepScope1, -20, e1).getMove());
+        tabuAcceptor.stepTaken(stepScope1);
+
+        tabuAcceptor.phaseEnded(solverPhaseScope);
+    }
+
     private MoveScope buildMoveScope(LocalSearchStepScope stepScope, TestdataEntity... entities) {
         return buildMoveScope(stepScope, 0, entities);
     }
@@ -217,20 +248,5 @@ public class PlanningEntityTabuAcceptorTest {
         moveScope.setScore(new DefaultSimpleScore(score));
         return moveScope;
     }
-
-//    TestdataValue v0 = new TestdataValue("v0");
-//    TestdataValue v1 = new TestdataValue("v1");
-//    TestdataValue v2 = new TestdataValue("v2");
-//
-//    TestdataEntity e0 = new TestdataEntity("e0");
-//    e0.setValue(v0);
-//    TestdataEntity e1 = new TestdataEntity("e1");
-//    e1.setValue(v0);
-//    TestdataEntity e2 = new TestdataEntity("e2");
-//    e2.setValue(v1);
-//    TestdataEntity e3 = new TestdataEntity("e3");
-//    e3.setValue(v1);
-//    TestdataEntity e4 = new TestdataEntity("e4");
-//    e4.setValue(v2);
 
 }
