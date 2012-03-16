@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n80-k10.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>DEBUG</environmentMode>-->
+      <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+
+      <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>entityTabu9</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
+          </selector>
+          <!-- TODO needs a GenericChainedSwapMoveFactory and probably even a GenericChainedSwapPartMoveFactory -->
+        </selector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>20000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

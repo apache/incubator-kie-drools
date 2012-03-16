@@ -43,7 +43,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>PTS5</name>
+    <name>entityTabu5</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
