@@ -69,12 +69,21 @@ public class PersistenceUtil {
     public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
     /**
-     * @see #setupWithPoolingDataSource(String, boolean)
+     * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
      * @return test context
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName) {
         return setupWithPoolingDataSource(persistenceUnitName, true);
+    }
+    
+    /**
+     * @see #setupWithPoolingDataSource(String, String, boolean)
+     * @param persistenceUnitName The name of the persistence unit to be used.
+     * @return test context
+     */
+    public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
+        return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", true);
     }
     
     /**
@@ -86,7 +95,7 @@ public class PersistenceUtil {
      * @return HashMap<String Object> with persistence objects, such as the
      *         EntityManagerFactory and DataSource
      */
-    public static HashMap<String, Object> setupWithPoolingDataSource(final String persistenceUnitName, final boolean testMarshalling) {
+    public static HashMap<String, Object> setupWithPoolingDataSource(final String persistenceUnitName, String dataSourceName, final boolean testMarshalling) {
         HashMap<String, Object> context = new HashMap<String, Object>();
 
         // set the right jdbc url
@@ -126,7 +135,7 @@ public class PersistenceUtil {
         }
 
         // Setup the datasource
-        PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
+        PoolingDataSource ds1 = setupPoolingDataSource(dsProps, dataSourceName);
         if( driverClass.startsWith("org.h2") ) { 
             if( ! TEST_MARSHALLING ) { 
                 jdbcUrl += "tcp://localhost/JPADroolsFlow";
@@ -206,15 +215,24 @@ public class PersistenceUtil {
     }
     
     /**
+     * This method uses the "jdbc/testDS1" datasource, which is the default.
+     * @param dsProps The properties used to setup the data source. 
+     * @return a PoolingDataSource
+     */
+    public static PoolingDataSource setupPoolingDataSource(Properties dsProps) { 
+       return setupPoolingDataSource(dsProps, "jdbc/testDS1");
+    }
+    
+    /**
      * This sets up a Bitronix PoolingDataSource.
      * 
      * @return PoolingDataSource that has been set up but _not_ initialized.
      */
-    public static PoolingDataSource setupPoolingDataSource(Properties dsProps) {
+    public static PoolingDataSource setupPoolingDataSource(Properties dsProps, String datasourceName) {
         PoolingDataSource pds = new PoolingDataSource();
 
         // The name must match what's in the persistence.xml!
-        pds.setUniqueName("jdbc/testDS1");
+        pds.setUniqueName(datasourceName);
 
         pds.setClassName(dsProps.getProperty("className"));
 
