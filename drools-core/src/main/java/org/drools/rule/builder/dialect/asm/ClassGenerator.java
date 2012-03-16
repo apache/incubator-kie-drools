@@ -481,8 +481,7 @@ public class ClassGenerator {
         }
 
         protected final <T> void returnAsArray(T[] array) {
-            push(array.length);
-            mv.visitTypeInsn(ANEWARRAY, internalName(array.getClass().getComponentType()));
+            createArray(array.getClass().getComponentType(), array.length);
             for (int i = 0; i < array.length; i++) {
                 mv.visitInsn(DUP);
                 push(i);
@@ -493,8 +492,7 @@ public class ClassGenerator {
         }
 
         protected final <T> void returnAsArray(Collection<T> collection, Class<T> clazz) {
-            push(collection.size());
-            mv.visitTypeInsn(ANEWARRAY, internalName(clazz));
+            createArray(clazz, collection.size());
             int i = 0;
             for (T item : collection) {
                 mv.visitInsn(DUP);
@@ -505,7 +503,12 @@ public class ClassGenerator {
             mv.visitInsn(ARETURN);
         }
 
-        protected final void push(Object obj) {
+        protected final void createArray(Class<?> componentType, int size) {
+            mv.visitLdcInsn(size);
+            mv.visitTypeInsn(ANEWARRAY, internalName(componentType));
+        }
+
+       protected final void push(Object obj) {
             if (obj instanceof Boolean) {
                 mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", (Boolean)obj ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
             } else {

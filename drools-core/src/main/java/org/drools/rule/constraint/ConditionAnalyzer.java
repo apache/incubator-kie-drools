@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.drools.rule.Declaration;
@@ -18,6 +19,8 @@ import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.optimizers.dynamic.DynamicGetAccessor;
+import org.mvel2.optimizers.impl.refl.collection.ExprValueAccessor;
+import org.mvel2.optimizers.impl.refl.collection.ListCreator;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayAccessorNest;
 import org.mvel2.optimizers.impl.refl.nodes.ArrayLength;
@@ -115,9 +118,9 @@ public class ConditionAnalyzer {
             condition.operation = BooleanOperator.CONTAINS;
             condition.right = analyzeNode(((Contains)node).getSecondStatement());
         } else if (node instanceof Soundslike) {
-            condition.left = analyzeNode((ASTNode)getFieldValue(Soundslike.class, "stmt", (Soundslike)node));
+            condition.left = analyzeNode(((Soundslike) node).getStatement());
             condition.operation = BooleanOperator.SOUNDSLIKE;
-            condition.right = analyzeNode((ASTNode)getFieldValue(Soundslike.class, "soundslike", (Soundslike)node));
+            condition.right = analyzeNode(((Soundslike)node).getSoundslike());
         } else {
             condition.left = analyzeNode(node);
         }
@@ -228,6 +231,8 @@ public class ConditionAnalyzer {
             accessorNode = (AccessorNode)accessor;
         } else if (accessor instanceof CompiledExpression) {
             return analyzeNode(((CompiledExpression)accessor).getFirstNode());
+        } else if (accessor instanceof ListCreator) {
+            return analyzeListCreation(((ListCreator) accessor));
         } else {
             throw new RuntimeException("Unknown accessor type: " + accessor);
         }
@@ -266,6 +271,24 @@ public class ConditionAnalyzer {
             accessorNode = accessorNode.getNextNode();
         }
         return false;
+    }
+
+    private EvaluatedExpression analyzeListCreation(ListCreator listCreator) {
+        Method listCreationMethod = null;
+        try {
+            listCreationMethod = Arrays.class.getMethod("asList", Object[].class);
+        } catch (NoSuchMethodException e) { }
+        Invocation invocation = new MethodInvocation(listCreationMethod);
+
+        ArrayCreationExpression arrayExpression = new ArrayCreationExpression(Object[].class);
+        Accessor[] accessors = getFieldValue(ListCreator.class, "values", listCreator);
+        for (Accessor accessor : accessors) {
+            ExecutableStatement statement = ((ExprValueAccessor)accessor).getStmt();
+            arrayExpression.addItem(statementToExpression(statement, Object.class));
+        }
+        invocation.addArgument(arrayExpression);
+
+        return new EvaluatedExpression(invocation);
     }
 
     private EvaluatedExpression analyzeExpressionNode(AccessorNode accessorNode) {
@@ -390,13 +413,18 @@ public class ConditionAnalyzer {
     private void readInvocationParams(Invocation invocation, ExecutableStatement[] params, Class[] paramTypes) {
         if (params != null) {
             for (int i = 0; i < params.length; i++) {
-                ExecutableStatement param = params[i];
-                if (param instanceof ExecutableLiteral) {
-                    invocation.addArgument(new FixedExpression(paramTypes[i], ((ExecutableLiteral)param).getLiteral()));
-                } else if (param instanceof ExecutableAccessor) {
-                    invocation.addArgument(analyzeNode(((ExecutableAccessor)param).getNode()));
-                }
+                invocation.addArgument(statementToExpression(params[i], paramTypes[i]));
             }
+        }
+    }
+
+    private Expression statementToExpression(ExecutableStatement param, Class paramType) {
+        if (param instanceof ExecutableLiteral) {
+            return new FixedExpression(paramType, ((ExecutableLiteral)param).getLiteral());
+        } else if (param instanceof ExecutableAccessor) {
+            return analyzeNode(((ExecutableAccessor)param).getNode());
+        } else {
+            throw new RuntimeException("Unknown ExecutableStatement type: " + param);
         }
     }
 
@@ -682,6 +710,48 @@ public class ConditionAnalyzer {
             Class<?> primitiveLeft = convertToPrimitiveType(left.getType());
             Class<?> primitiveRight = convertToPrimitiveType(right.getType());
             return primitiveLeft == primitiveRight ? primitiveLeft : double.class;
+        }
+    }
+
+    public static class ArrayCreationExpression implements Expression {
+        private final Class<?> arrayType;
+        final List<Expression> items = new ArrayList<Expression>();
+
+        public ArrayCreationExpression(Class<?> arrayType) {
+            this.arrayType = arrayType;
+        }
+
+        public boolean isFixed() {
+            return false;
+        }
+
+        public boolean canBeNull() {
+            return false;
+        }
+
+        public Class<?> getType() {
+            return arrayType;
+        }
+
+        public Class<?> getComponentType() {
+            return arrayType.getComponentType();
+        }
+
+        public void addItem(Expression argument) {
+            items.add(argument);
+        }
+
+        public String toString() {
+            StringBuilder sb = new StringBuilder(100);
+            sb.append("[ ");
+            for (Iterator<Expression> i = items.iterator(); i.hasNext();) {
+                sb.append(i.next());
+                if (i.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+            sb.append(" ]");
+            return sb.toString();
         }
     }
 

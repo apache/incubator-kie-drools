@@ -423,9 +423,23 @@ public class ASMConditionEvaluatorJitter {
                     jitEvaluatedExpression((EvaluatedExpression) exp, true);
                 } else if (exp instanceof VariableExpression) {
                     jitVariableExpression((VariableExpression) exp);
-                } else {
+                } else if (exp instanceof AritmeticExpression) {
                     jitAritmeticExpression((AritmeticExpression)exp);
+                } else if (exp instanceof ArrayCreationExpression) {
+                    jitArrayCreationExpression((ArrayCreationExpression) exp);
+                } else {
+                    throw new RuntimeException("Unknown expression: " + exp);
                 }
+            }
+        }
+
+        private void jitArrayCreationExpression(ArrayCreationExpression exp) {
+            createArray(exp.getComponentType(), exp.items.size());
+            for (int i = 0; i < exp.items.size(); i++) {
+                mv.visitInsn(DUP);
+                mv.visitLdcInsn(i);
+                jitExpression(exp.items.get(i));
+                mv.visitInsn(AASTORE);
             }
         }
 
