@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.0 r9654"
+   width="40"
+   height="20"
+   sodipodi:docname="vehicle.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="vehiclePlum.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   version="1.1">
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Geoffrey De Smet</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5" />
+  <sodipodi:namedview
+     inkscape:window-height="1000"
+     inkscape:window-width="1680"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="11.46875"
+     inkscape:cx="32.934329"
+     inkscape:cy="18.241354"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg2"
+     inkscape:grid-points="true"
+     inkscape:object-nodes="true"
+     inkscape:guide-points="true"
+     inkscape:object-points="true"
+     inkscape:object-bbox="true"
+     showgrid="true"
+     inkscape:window-maximized="1" />
+  <path
+     style="fill:#ad7fa8;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-opacity:1"
+     d="m 28.433959,5.8615219 c 1.023097,0.4433204 3.463077,5.2442661 3.463077,5.2442661 0,0 5.018603,0.01211 5.018603,0.257412 0,0.267381 0.469867,4.987012 -0.182246,5.09585 -0.613511,0.102395 -33.3807238,0.342636 -33.3807238,-0.102699 0,-0.96602 -0.036095,-13.2150342 -0.036095,-14.6392947 0,-0.5100278 18.5057308,-0.258127 18.5057308,0.2427018 0,1.2618599 0.01406,8.3665679 0.01406,11.7561059 0.646069,0 0.344514,-0.0055 0.72139,-0.0055 0,-0.775832 -0.06906,-8.6489514 0.143288,-8.6463067 3.275307,0.040791 4.828256,0.4054379 5.732917,0.7974346 z"
+     id="rect3019"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="scsssssccss" />
+  <path
+     sodipodi:type="arc"
+     style="fill:#babdb6;fill-opacity:1;stroke:#000000;stroke-width:1.14191163000000007;stroke-opacity:1"
+     id="path3017"
+     sodipodi:cx="13.427793"
+     sodipodi:cy="35.138966"
+     sodipodi:rx="2.6158037"
+     sodipodi:ry="2.6158037"
+     d="m 16.043596,35.138966 a 2.6158037,2.6158037 0 1 1 -5.231607,0 2.6158037,2.6158037 0 1 1 5.231607,0 z"
+     transform="matrix(0.85457477,0,0,0.89739765,-2.5748752,-15.028161)" />
+  <path
+     transform="matrix(0.85457477,0,0,0.89739765,20.03979,-15.028161)"
+     d="m 16.043596,35.138966 a 2.6158037,2.6158037 0 1 1 -5.231607,0 2.6158037,2.6158037 0 1 1 5.231607,0 z"
+     sodipodi:ry="2.6158037"
+     sodipodi:rx="2.6158037"
+     sodipodi:cy="35.138966"
+     sodipodi:cx="13.427793"
+     id="path3033"
+     style="fill:#babdb6;fill-opacity:1;stroke:#000000;stroke-width:1.14191163000000007;stroke-opacity:1"
+     sodipodi:type="arc" />
+  <path
+     sodipodi:nodetypes="ccscsc"
+     inkscape:connector-curvature="0"
+     id="path3035"
+     d="m 23.71935,11.034257 c 0,0 0.04205,-3.716428 0.04205,-4.5889309 2.272909,-0.037684 2.986584,0.1333308 3.905558,0.5671492 1.047976,0.494715 2.598642,4.0597717 2.598642,4.0597717 -1.800026,0 -5.249365,-0.03799 -6.546257,-0.03799 z"
+     style="fill:#d3d7cf;fill-opacity:1;stroke:#000000;stroke-width:0.99999994000000003;stroke-opacity:1" />
+</svg>
