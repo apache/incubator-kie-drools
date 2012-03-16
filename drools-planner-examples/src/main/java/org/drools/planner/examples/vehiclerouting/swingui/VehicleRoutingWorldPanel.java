@@ -42,8 +42,9 @@ import org.drools.planner.examples.vehiclerouting.domain.VrpVehicle;
 public class VehicleRoutingWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 12;
-    private static final String VEHICLE_IMAGE_PATH_PREFIX = "/org/drools/planner/examples/vehiclerouting/swingui/";
+    private static final String IMAGE_PATH_PREFIX = "/org/drools/planner/examples/vehiclerouting/swingui/";
 
+    private ImageIcon depotImageIcon;
     private ImageIcon[] vehicleImageIcons;
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
@@ -52,12 +53,13 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
     public VehicleRoutingWorldPanel(VehicleRoutingPanel vehicleRoutingPanel) {
         this.vehicleRoutingPanel = vehicleRoutingPanel;
+        depotImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "depot.png"));
         vehicleImageIcons = new ImageIcon[] {
-                new ImageIcon(getClass().getResource(VEHICLE_IMAGE_PATH_PREFIX + "vehicleChameleon.png")),
-                new ImageIcon(getClass().getResource(VEHICLE_IMAGE_PATH_PREFIX + "vehicleButter.png")),
-                new ImageIcon(getClass().getResource(VEHICLE_IMAGE_PATH_PREFIX + "vehicleSkyBlue.png")),
-                new ImageIcon(getClass().getResource(VEHICLE_IMAGE_PATH_PREFIX + "vehicleChocolate.png")),
-                new ImageIcon(getClass().getResource(VEHICLE_IMAGE_PATH_PREFIX + "vehiclePlum.png")),
+                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleChameleon.png")),
+                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleButter.png")),
+                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleSkyBlue.png")),
+                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehicleChocolate.png")),
+                new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "vehiclePlum.png")),
         };
         if (vehicleImageIcons.length != TangoColors.SEQUENCE_1.length) {
             throw new IllegalStateException("The vehicleImageIcons length (" + vehicleImageIcons.length
@@ -111,6 +113,8 @@ public class VehicleRoutingWorldPanel extends JPanel {
             int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
+            g.drawImage(depotImageIcon.getImage(),
+                    x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), this);
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
@@ -170,9 +174,9 @@ public class VehicleRoutingWorldPanel extends JPanel {
                 boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
                         ^ (previousLocation.getLatitude() < location.getLatitude());
 
-                Image vehicleImage = vehicleImageIcons[colorIndex].getImage();
-                int vehicleInfoHeight = vehicleImage.getHeight(this) + 2 + TEXT_SIZE;
-                g.drawImage(vehicleImage, x, (ascending ? y - vehicleInfoHeight : y), this);
+                ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
+                int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
+                g.drawImage(vehicleImageIcon.getImage(), x, (ascending ? y - vehicleInfoHeight : y), this);
                 g.drawString(load + " / " + vehicle.getCapacity(), x, (ascending ? y : y + vehicleInfoHeight));
             }
             colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_2.length;
@@ -180,13 +184,11 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
         // Legend
         g.setColor(TangoColors.ALUMINIUM_4);
-        g.fillRect(5, (int) height - 17 - (2 * TEXT_SIZE) - (TEXT_SIZE / 2), 5, 5);
-        g.drawString("Depot", 15, (int) height - 15 - (2 * TEXT_SIZE));
+        g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
+        g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColors.ORANGE_2);
-        g.fillRect(6, (int) height - 11 - TEXT_SIZE - (TEXT_SIZE / 2), 3, 3);
-        g.drawString("Customer demand", 15, (int) height - 10 - TEXT_SIZE);
-        g.setColor(TangoColors.SCARLET_2);
-        g.drawString(schedule.getVehicleList().size() + " vehicles: load / capacity", 15, (int) height - 5);
+        g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
+        g.drawString("Customer demand", 15, (int) height - 5);
         repaint();
     }
 
