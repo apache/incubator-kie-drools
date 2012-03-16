@@ -1,22 +1,21 @@
 package org.jbpm.task.service;
 
-import javax.persistence.EntityManagerFactory;
-
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
+import org.jbpm.task.service.persistence.TaskPersistenceManagerFactory;
 
 public abstract class TaskPersistenceManagerAccessor {
 
-    private static volatile TaskPersistenceManagerAccessor factory;
+    private static volatile TaskPersistenceManagerFactory factory;
     
-    public static TaskPersistenceManagerAccessor getFactory() { 
-        TaskPersistenceManagerAccessor accessorImpl = factory;
+    protected TaskPersistenceManagerFactory getTaskPersistenceManagerFactory() { 
+        TaskPersistenceManagerFactory factoryInstance = factory;
         
-        if( accessorImpl != null ) { 
-            return accessorImpl;
+        if( factoryInstance != null ) { 
+            return factoryInstance;
         }
         
         try { 
-            Class.forName(TaskPersistenceManager.class.getName());
+            Class.forName(TaskPersistenceManager.class.getName(), true, TaskPersistenceManager.class.getClassLoader());
         }
         catch( Exception e ) { 
             // do nothing.
@@ -25,13 +24,11 @@ public abstract class TaskPersistenceManagerAccessor {
         return factory;
     }
     
-    public static void setFactory(TaskPersistenceManagerAccessor tpma) { 
-        if( factory != null) { 
-            throw new IllegalStateException();
+    public static void setTaskPersistenceManagerFactory(TaskPersistenceManagerFactory tpmf) { 
+        // Only setting when not null prevents abuse or resetting later..
+        if( factory == null) { 
+            factory = tpmf;
         }
-        factory = tpma;
     }
-    
-    protected abstract TaskPersistenceManager newTaskPersistenceManager(EntityManagerFactory emf);
     
 }

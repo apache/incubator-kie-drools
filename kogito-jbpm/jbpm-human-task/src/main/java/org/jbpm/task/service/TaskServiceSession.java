@@ -51,7 +51,7 @@ import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskServiceSession {
+public class TaskServiceSession extends TaskPersistenceManagerAccessor {
 
     private final TaskPersistenceManager tpm;
     
@@ -64,7 +64,7 @@ public class TaskServiceSession {
 
     public TaskServiceSession(final TaskService service, final EntityManagerFactory emf) {
         this.service = service;
-        this.tpm = TaskPersistenceManagerAccessor.getFactory().newTaskPersistenceManager(emf);
+        this.tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
     }
     
     public void dispose() {
@@ -413,9 +413,6 @@ public class TaskServiceSession {
             tpm.endTransaction(transactionOwner);
             
         } catch (RuntimeException re) {
-            
-            // DBG
-            re.printStackTrace();
             
             // We may not be the tx owner -- but something has gone wrong.
             // ..which is why we make ourselves owner, and roll the tx back. 
@@ -895,9 +892,6 @@ public class TaskServiceSession {
             
             tpm.endTransaction(txOwner);
         } catch(Exception e) {
-            // DBG
-            e.printStackTrace();
-            
             tpm.rollBackTransaction(txOwner);
             
             String message; 

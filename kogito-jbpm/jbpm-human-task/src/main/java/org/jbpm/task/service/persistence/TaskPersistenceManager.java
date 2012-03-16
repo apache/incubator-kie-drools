@@ -11,7 +11,8 @@ import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskPersistenceManagerAccessor;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.persistence.TaskTransactionManager.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,8 @@ public class TaskPersistenceManager {
     private final EntityManagerFactory emf;
 
     static { 
-        TaskPersistenceManagerAccessor.setFactory(new TaskPersistenceManagerFactory());
+        TaskServiceSession.setTaskPersistenceManagerFactory(new TaskPersistenceManagerFactory());
+        TaskService.setTaskPersistenceManagerFactory(new TaskPersistenceManagerFactory());
     }
     
     TaskPersistenceManager(EntityManagerFactory entityManagerFactory) { 
