@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import org.drools.rule.Declaration;
 import org.mvel2.Operator;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.*;
 import org.mvel2.compiler.Accessor;
@@ -210,6 +211,14 @@ public class ConditionAnalyzer {
                     try {
                         return new EvaluatedExpression(new MethodInvocation(thisClass.getMethod(variableName)));
                     } catch (NoSuchMethodException e) {
+                        if (node.getEgressType() == Class.class) {
+                            // there's no method on this with the given name, check if it is a class literal
+                            ParserConfiguration conf = parserContext.getParserConfiguration();
+                            Class<?> classLiteral = conf.getImport(variableName);
+                            if (classLiteral != null) {
+                                return new FixedExpression(Class.class, classLiteral);
+                            }
+                        }
                         throw new RuntimeException(e);
                     }
                 }
