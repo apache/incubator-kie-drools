@@ -74,6 +74,10 @@ public final class DefaultHardAndSoftLongScore extends AbstractScore<HardAndSoft
     // Worker methods
     // ************************************************************************
 
+    public boolean isFeasible() {
+        return getHardScore() >= 0L;
+    }
+
     public HardAndSoftLongScore add(HardAndSoftLongScore augment) {
         return new DefaultHardAndSoftLongScore(hardScore + augment.getHardScore(),
                 this.softScore + augment.getSoftScore());

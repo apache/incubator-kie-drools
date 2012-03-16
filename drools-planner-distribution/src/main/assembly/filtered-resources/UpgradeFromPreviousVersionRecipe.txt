@@ -1672,3 +1672,10 @@ After in *SolverConfig.xml:
     <acceptor>
       <planningEntityTabuSize>7</planningEntityTabuSize><!-- Check with the Benchmarker if 7 isn't better than 9 now -->
     </acceptor>
+
+[MINOR] The interface HardAndSoftScore and HardAndSoftLongScore have a new method isFeasible().
+If you use a custom score implementation that implements either interface, implement it:
+After in *HardAndSoftScore.java:
+    public boolean isFeasible() {
+        return getHardScore() >= 0;
+    }

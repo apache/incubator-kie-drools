@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.buildin.hardandsoft;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * A HardAndSoftScore is a Score based on hard constraints and soft int constraints.
@@ -45,5 +46,11 @@ public interface HardAndSoftScore extends Score<HardAndSoftScore> {
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
     int getSoftScore();
+
+    /**
+     * A {@link Solution} is feasible if it has no broken hard constraints.
+     * @return true if the {@link #getHardScore()} is 0 or higher
+     */
+    boolean isFeasible();
 
 }

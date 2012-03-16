@@ -46,4 +46,9 @@ public interface HardAndSoftLongScore extends Score<HardAndSoftLongScore> {
      */
     long getSoftScore();
 
+    /**
+     * @return true if the {@link #getHardScore()} is 0L or higher
+     */
+    boolean isFeasible();
+
 }

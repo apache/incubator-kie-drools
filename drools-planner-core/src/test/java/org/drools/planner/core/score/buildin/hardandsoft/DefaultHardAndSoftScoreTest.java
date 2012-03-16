@@ -25,7 +25,7 @@ import static org.junit.Assert.*;
 public class DefaultHardAndSoftScoreTest {
 
     @Test
-    public void testCompareTo() {
+    public void compareTo() {
         Score a = new DefaultHardAndSoftScore(-1, -300);
         Score b = new DefaultHardAndSoftScore(-20, -20);
         Score c = new DefaultHardAndSoftScore(-20);
@@ -33,6 +33,13 @@ public class DefaultHardAndSoftScoreTest {
         assertTrue(b.compareTo(a) < 0);
         assertTrue(b.compareTo(c) > 0);
         assertTrue(c.compareTo(b) < 0);
+    }
+
+    @Test
+    public void feasible() {
+        assertEquals(true, new DefaultHardAndSoftScore(0, -300).isFeasible());
+        assertEquals(false, new DefaultHardAndSoftScore(-5, -300).isFeasible());
+        assertEquals(true, new DefaultHardAndSoftScore(2, -300).isFeasible());
     }
 
 }
