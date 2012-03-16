@@ -44,13 +44,6 @@ public class GenericSwapMoveFactory extends CachedMoveFactory {
     }
 
     @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
-        solutionDescriptor = null;
-        solutionDirector = null;
-    }
-
-    @Override
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         List<Object> entityList = solutionDescriptor.getPlanningEntityList(solution);
@@ -84,6 +77,13 @@ public class GenericSwapMoveFactory extends CachedMoveFactory {
             }
         }
         return moveList;
+    }
+
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseEnded(localSearchSolverPhaseScope);
+        solutionDescriptor = null;
+        solutionDirector = null;
     }
 
 }

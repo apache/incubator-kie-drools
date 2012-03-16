@@ -49,13 +49,6 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
         super.phaseStarted(localSearchSolverPhaseScope);
     }
 
-    @Override
-    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
-        super.phaseEnded(localSearchSolverPhaseScope);
-        solutionDescriptor = null;
-        solutionDirector = null;
-    }
-
     public List<Move> createMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         List<Object> globalEntityList = solutionDescriptor.getPlanningEntityList(solution);
@@ -106,6 +99,13 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
             }
         }
         return new ArrayList<List<Object>>(valueStateToSwapEntityListMap.values());
+    }
+
+    @Override
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseEnded(localSearchSolverPhaseScope);
+        solutionDescriptor = null;
+        solutionDirector = null;
     }
 
 }

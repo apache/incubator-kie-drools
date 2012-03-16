@@ -43,6 +43,7 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        super.phaseStarted(localSearchSolverPhaseScope);
         solutionDescriptor = localSearchSolverPhaseScope.getSolutionDescriptor();
         solutionDirector = localSearchSolverPhaseScope.getSolutionDirector();
     }
