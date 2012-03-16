@@ -18,6 +18,7 @@ package org.drools.planner.examples.vehiclerouting.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentAdapter;
@@ -25,9 +26,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.text.NumberFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.examples.common.swingui.TangoColors;
 import org.drools.planner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
@@ -46,6 +49,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
     private ImageIcon depotImageIcon;
     private ImageIcon[] vehicleImageIcons;
+    private NumberFormat numberFormat = NumberFormat.getInstance();
     private final VehicleRoutingPanel vehicleRoutingPanel;
 
     private BufferedImage canvas = null;
@@ -176,8 +180,8 @@ public class VehicleRoutingWorldPanel extends JPanel {
 
                 ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
                 int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
-                g.drawImage(vehicleImageIcon.getImage(), x, (ascending ? y - vehicleInfoHeight : y), this);
-                g.drawString(load + " / " + vehicle.getCapacity(), x, (ascending ? y : y + vehicleInfoHeight));
+                g.drawImage(vehicleImageIcon.getImage(), x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), this);
+                g.drawString(load + " / " + vehicle.getCapacity(), x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
             }
             colorIndex = (colorIndex + 1) % TangoColors.SEQUENCE_2.length;
         }
@@ -189,6 +193,20 @@ public class VehicleRoutingWorldPanel extends JPanel {
         g.setColor(TangoColors.ORANGE_2);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString("Customer demand", 15, (int) height - 5);
+        // Show soft score
+        g.setColor(TangoColors.SCARLET_2);
+        HardAndSoftScore score = schedule.getScore();
+        if (score != null) {
+            String totalDistanceString;
+            if (!score.isFeasible()) {
+                totalDistanceString = "Not feasible";
+            } else {
+                totalDistanceString = numberFormat.format(- score.getSoftScore()) + " fuel";
+            }
+            g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
+            g.drawString(totalDistanceString,
+                    (int) width - g.getFontMetrics().stringWidth(totalDistanceString) - 10, (int) height - 10);
+        }
         repaint();
     }
 
