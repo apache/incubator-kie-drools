@@ -261,7 +261,7 @@ public class Accumulate extends ConditionalElement
         return supports;
     }
 
-    public Object clone() {
+    public Accumulate clone() {
         Accumulate clone = new Accumulate( (RuleConditionElement) this.source.clone(),
                                            this.requiredDeclarations,
                                            this.innerDeclarations,

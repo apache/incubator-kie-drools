@@ -527,7 +527,7 @@ public class Rule
     private GroupElement getExtendedLhs(Rule rule,
                                         GroupElement fromChild) {
         //combine rules LHS with Parent "Extends"
-        final GroupElement lhs = (GroupElement) rule.lhsRoot.clone();
+        final GroupElement lhs = rule.lhsRoot.cloneOnlyGroup();
         //use the children passed from prior child rules, and combine with current LHS (at the end)
         if ( null != fromChild ) {
             //Have GroupElement from a child rule, so combine it

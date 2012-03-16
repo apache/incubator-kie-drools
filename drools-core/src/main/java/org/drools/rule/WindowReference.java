@@ -57,7 +57,7 @@ public class WindowReference extends ConditionalElement
      * @see org.drools.rule.ConditionalElement#clone()
      */
     @Override
-    public Object clone() {
+    public WindowReference clone() {
         return this;
     }
 

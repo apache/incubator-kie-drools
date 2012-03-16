@@ -20,6 +20,6 @@ public abstract class ConditionalElement
     implements
     RuleConditionElement {
 
-    public abstract Object clone();
+    public abstract ConditionalElement clone();
 
 }

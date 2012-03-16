@@ -42,7 +42,7 @@ public class GroupElement extends ConditionalElement
     public static final Type  EXISTS               = Type.EXISTS;
 
     private Type              type                 = null;
-    private List              children             = new ArrayList();
+    private List<RuleConditionElement> children    = new ArrayList<RuleConditionElement>();
     private ObjectType        forallBaseObjectType = null;
     
     private boolean           root;
@@ -122,7 +122,7 @@ public class GroupElement extends ConditionalElement
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.type.getInnerDeclarations( this.children ).get( identifier );
+        return this.type.getInnerDeclarations( this.children ).get( identifier );
     }
 
     public void setForallBaseObjectType(ObjectType objectType) {
@@ -143,12 +143,12 @@ public class GroupElement extends ConditionalElement
     public void pack() {
         // we must clone, since we want to iterate only over the original list
         final Object[] clone = this.children.toArray();
-        for ( int i = 0; i < clone.length; i++ ) {
+        for (Object aClone : clone) {
             // if child is also a group element, there may be
             // some possible clean up / optimizations to be done
-            if ( clone[i] instanceof GroupElement ) {
-                final GroupElement childGroup = (GroupElement) clone[i];
-                childGroup.pack( this );
+            if (aClone instanceof GroupElement) {
+                final GroupElement childGroup = (GroupElement) aClone;
+                childGroup.pack(this);
             }
         }
 
@@ -206,8 +206,7 @@ public class GroupElement extends ConditionalElement
                 int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
                 // for each child, pack it and add it to parent
-                for ( final Iterator childIt = this.children.iterator(); childIt.hasNext(); ) {
-                    final Object child = childIt.next();
+                for ( RuleConditionElement child : children ) {
                     // we must keep the order, so add in the same place were parent was before
                     parent.getChildren().add( index++,
                                               child );
@@ -299,27 +298,20 @@ public class GroupElement extends ConditionalElement
      * @param e2
      * @return
      */
-    public Object clone() {
-        GroupElement cloned = null;
+    public GroupElement clone() {
+        return clone(true);
+    }
 
-        try {
-            cloned = (GroupElement) this.getClass().newInstance();
-        } catch ( final InstantiationException e ) {
-            throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
-        } catch ( final IllegalAccessException e ) {
-            throw new RuntimeException( "Could not clone '" + this.getClass().getName() + "'" );
-        }
+    public GroupElement cloneOnlyGroup() {
+        return clone(false);
+    }
 
+    private GroupElement clone(boolean deepClone) {
+        GroupElement cloned = new GroupElement();
         cloned.setType( this.getType() );
-
-        for ( final Iterator it = this.children.iterator(); it.hasNext(); ) {
-            RuleConditionElement re = (RuleConditionElement) it.next();
-            if ( re instanceof GroupElement ) {
-                re = (RuleConditionElement) ((GroupElement) re).clone();
-            }
-            cloned.addChild( re );
+        for ( RuleConditionElement re : children ) {
+            cloned.addChild( deepClone && ( re instanceof GroupElement || re instanceof Pattern ) ? re.clone() : re );
         }
-
         return cloned;
     }
 
@@ -387,18 +379,17 @@ public class GroupElement extends ConditionalElement
          * Returns a map of declarations that are
          * visible inside of an element of this type
          */
-        public Map getInnerDeclarations(List children) {
-            Map declarations = null;
+        public Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children) {
+            Map<String, Declaration> declarations;
 
             if ( children.isEmpty() ) {
                 declarations = Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
-                declarations = re.getOuterDeclarations();
+                declarations = children.get(0).getOuterDeclarations();
             } else {
-                declarations = new HashMap();
-                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
-                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                declarations = new HashMap<String, Declaration>();
+                for ( RuleConditionElement re : children ) {
+                    declarations.putAll( re.getOuterDeclarations() );
                 }
             }
             return declarations;
@@ -408,18 +399,17 @@ public class GroupElement extends ConditionalElement
          * Returns a map of declarations that are
          * visible outside of an element of this type
          */
-        public Map getOuterDeclarations(List children) {
-            Map declarations = null;
+        public Map<String, Declaration> getOuterDeclarations(List<RuleConditionElement> children) {
+            Map<String, Declaration> declarations;
 
             if ( this.scopeDelimiter || children.isEmpty() ) {
                 declarations = Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                final RuleConditionElement re = (RuleConditionElement) children.get( 0 );
-                declarations = re.getOuterDeclarations();
+                declarations = children.get(0).getOuterDeclarations();
             } else {
-                declarations = new HashMap();
-                for ( final Iterator it = children.iterator(); it.hasNext(); ) {
-                    declarations.putAll( ((RuleConditionElement) it.next()).getOuterDeclarations() );
+                declarations = new HashMap<String, Declaration>();
+                for ( RuleConditionElement re : children ) {
+                    declarations.putAll( re.getOuterDeclarations() );
                 }
             }
             return declarations;

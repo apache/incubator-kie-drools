@@ -58,7 +58,7 @@ public interface RuleConditionElement
      * Returns a clone from itself
      * @return
      */
-    public Object clone();
+    public RuleConditionElement clone();
     
     /**
      * Returs a list of RuleConditionElement's that are nested
