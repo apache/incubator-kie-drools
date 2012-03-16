@@ -64,7 +64,7 @@ public class Collect extends ConditionalElement
         out.writeObject( resultPattern );
     }
 
-    public Object clone() {
+    public Collect clone() {
         PatternSource source = this.resultPattern.getSource();
         if ( source == this ) {
             this.resultPattern.setSource( null );

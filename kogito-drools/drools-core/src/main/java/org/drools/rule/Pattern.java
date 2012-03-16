@@ -153,7 +153,7 @@ public class Pattern
                                            this.offset,
                                            this.objectType,
                                            identifier,
-                                           this.declaration != null ? this.declaration.isInternalFact() : false );
+                                           this.declaration != null && this.declaration.isInternalFact());
         clone.setListenedProperties( getListenedProperties() );
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
@@ -174,7 +174,7 @@ public class Pattern
             Constraint constraint = (Constraint) ((Constraint) constr).clone();
 
             // we must update pattern references in cloned declarations
-            Declaration[] oldDecl = ((Constraint) constr).getRequiredDeclarations();
+            Declaration[] oldDecl = constr.getRequiredDeclarations();
             Declaration[] newDecl = constraint.getRequiredDeclarations();
             for ( int i = 0; i < newDecl.length; i++ ) {
                 if ( newDecl[i].getPattern() == this ) {
@@ -244,7 +244,7 @@ public class Pattern
     }
 
     public Declaration addDeclaration(final String identifier) {
-        Declaration declaration = this.declarations != null ? (Declaration) this.declarations.get( identifier ) : null;
+        Declaration declaration = this.declarations != null ? this.declarations.get( identifier ) : null;
         if ( declaration == null ) {
             declaration = new Declaration( identifier,
                                            null,

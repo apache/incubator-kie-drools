@@ -64,7 +64,7 @@ public class From extends ConditionalElement
         return this.dataProvider;
     }
 
-    public Object clone() {
+    public From clone() {
         return new From( this.dataProvider.clone() );
     }
 

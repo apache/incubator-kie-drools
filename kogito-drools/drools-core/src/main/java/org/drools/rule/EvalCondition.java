@@ -121,7 +121,7 @@ public class EvalCondition extends ConditionalElement
         }
     }
 
-    public Object clone() {
+    public EvalCondition clone() {
         final EvalCondition clone = new EvalCondition( this.expression.clone(),
                                                        (Declaration[]) this.requiredDeclarations.clone() );
 

@@ -66,7 +66,7 @@ public class Forall extends ConditionalElement {
     /* (non-Javadoc)
      * @see org.drools.rule.ConditionalElement#clone()
      */
-    public Object clone() {
+    public Forall clone() {
         return new Forall( this.basePattern,
                            new ArrayList( this.remainingPatterns ) );
     }

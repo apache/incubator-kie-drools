@@ -10193,4 +10193,47 @@ public class MiscTest extends CommonTestMethodBase {
             assertTrue(internalFact.getObject() instanceof FactB);
         }
     }
+
+    @Test
+    public void testPatternOffset() throws Exception {
+        // JBRULES-3427
+        String str = "package org.drools.test; \n" +
+                "declare A\n" +
+                "end\n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   A( ) or ( A( ) and B( ) ) " +
+                ") and (\n" +
+                "   A( ) or ( B( $bField : field ) and C( field != $bField ) )\n" +
+                ")\n" +
+                "then\n" +
+                "    System.out.println(\"rule fired\");\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
+        FactType typeB = kbase.getFactType( "org.drools.test", "B" );
+        FactType typeC = kbase.getFactType( "org.drools.test", "C" );
+
+        Object a = typeA.newInstance();
+        ksession.insert( a );
+
+        Object b = typeB.newInstance();
+        typeB.set( b, "field", 1 );
+        ksession.insert( b );
+
+        Object c = typeC.newInstance();
+        typeC.set( c, "field", 1 );
+        ksession.insert( c );
+
+        ksession.fireAllRules();
+    }
 }

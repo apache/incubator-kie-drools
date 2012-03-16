@@ -69,7 +69,7 @@ public class EntryPoint extends ConditionalElement
      * @see org.drools.rule.ConditionalElement#clone()
      */
     @Override
-    public Object clone() {
+    public EntryPoint clone() {
         return this;
     }
 
