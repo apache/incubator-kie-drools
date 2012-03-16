@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>DEBUG</environmentMode>-->
+      <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+
+      <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <termination>
+          <maximumStepCount>100</maximumStepCount>
+        </termination>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
+          </selector>
+          <!-- TODO needs a GenericChainedSwapMoveFactory and probably even a GenericChainedSwapPartMoveFactory -->
+        </selector>
+        <acceptor>
+          <planningEntityTabuSize>9</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>20000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

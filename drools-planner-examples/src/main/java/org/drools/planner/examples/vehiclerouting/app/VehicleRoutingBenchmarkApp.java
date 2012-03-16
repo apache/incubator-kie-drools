@@ -22,12 +22,16 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfig.xml";
+    public static final String STEP_LIMIT_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/vehiclerouting/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
         String benchmarkConfig;
         if (args.length > 0) {
             if (args[0].equals("default")) {
                 benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
+            } else if (args[0].equals("stepLimit")) {
+                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
