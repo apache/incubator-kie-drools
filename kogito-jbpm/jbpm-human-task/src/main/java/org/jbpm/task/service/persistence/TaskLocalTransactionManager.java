@@ -7,7 +7,7 @@ import javax.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskLocalTransactionManager extends TaskTransactionManager {
+class TaskLocalTransactionManager extends TaskTransactionManager {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     

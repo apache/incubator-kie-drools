@@ -18,7 +18,7 @@ package org.jbpm.task.event;
 
 
 import org.jbpm.task.Status;
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 
 public class InternalTaskEventListener extends DefaultTaskEventListener{
     

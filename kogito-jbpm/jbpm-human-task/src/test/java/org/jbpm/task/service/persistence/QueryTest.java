@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task;
+package org.jbpm.task.service.persistence;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -23,8 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.task.BaseTest;
+import org.jbpm.task.Task;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
+import org.jbpm.task.service.MvelFilePath;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
 
@@ -41,7 +44,7 @@ public class QueryTest extends BaseTest {
 
 
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "QueryData_UnescalatedDeadlines.mvel" ) );
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.UnescalatedDeadlines ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {

@@ -23,7 +23,7 @@ import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 
 /**

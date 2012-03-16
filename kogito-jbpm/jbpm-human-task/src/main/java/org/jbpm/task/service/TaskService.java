@@ -39,7 +39,6 @@ import org.jbpm.task.event.TaskEventSupport;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
-import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -84,7 +83,7 @@ public class TaskService {
         scheduler = new ScheduledThreadPoolExecutor(3);
 
         long now = System.currentTimeMillis();
-        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        TaskPersistenceManager tpm = TaskPersistenceManagerAccessor.getFactory().newTaskPersistenceManager(emf);
         for (DeadlineSummary summary : tpm.getUnescalatedDeadlines() ) { 
             schedule(new ScheduledTaskDeadline(summary.getTaskId(),
                     summary.getDeadlineId(),

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 
 public class ModelPersistenceTest extends BaseTest {
     

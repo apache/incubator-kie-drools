@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.persistence;
+package org.jbpm.task.service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,20 +46,8 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.Allowed;
-import org.jbpm.task.service.CannotAddTaskException;
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.EscalatedDeadlineHandler;
-import org.jbpm.task.service.FaultData;
-import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.OperationCommand;
-import org.jbpm.task.service.PermissionDeniedException;
-import org.jbpm.task.service.SendIcal;
-import org.jbpm.task.service.TaskException;
-import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
-import org.jbpm.task.service.TaskServiceRequest;
-import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +64,7 @@ public class TaskServiceSession {
 
     public TaskServiceSession(final TaskService service, final EntityManagerFactory emf) {
         this.service = service;
-        this.tpm = new TaskPersistenceManager(emf);
+        this.tpm = TaskPersistenceManagerAccessor.getFactory().newTaskPersistenceManager(emf);
     }
     
     public void dispose() {

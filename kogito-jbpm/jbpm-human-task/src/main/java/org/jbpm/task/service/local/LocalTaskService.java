@@ -35,7 +35,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 
 /**
  *
