@@ -66,7 +66,7 @@ public class DialectRuntimeRegistry
             data.onAdd(this, rootClassLoader);
         }
     }
-    
+
     public void onRemove() {
         for (DialectRuntimeData data : this.dialects.values()) {
             data.onRemove();
@@ -99,19 +99,28 @@ public class DialectRuntimeRegistry
         return dialect;
     }
 
-    public void merge(DialectRuntimeRegistry newDatas,
-                      CompositeClassLoader rootClassLoader) {
+    public void merge( DialectRuntimeRegistry newDatas,
+                       CompositeClassLoader rootClassLoader ) {
+        // false to preserve backward compatibility, should proabably be true
+        merge( newDatas, rootClassLoader, false );
+    }
+
+    public void merge( DialectRuntimeRegistry newDatas,
+                       CompositeClassLoader rootClassLoader,
+                       boolean excludeClasses ) {
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );
             if ( data == null ) {
                 DialectRuntimeData dialectData = entry.getValue().clone( this,
-                                                                         rootClassLoader );
+                                                                         rootClassLoader,
+                                                                         excludeClasses );
                 //dialectData.setDialectRuntimeRegistry( this );
                 this.dialects.put( entry.getKey(),
                                    dialectData );
             } else {
                 data.merge( this,
-                            entry.getValue() );
+                            entry.getValue(),
+                            excludeClasses );
             }
         }
 
@@ -128,7 +137,7 @@ public class DialectRuntimeRegistry
         if( data != null ) {
             data.onBeforeExecute();
         }
-        
+
         // then, all others
         for ( Map.Entry<String, DialectRuntimeData> entry : this.dialects.entrySet() ) {
             if( ! "java".equals( entry.getKey() ) ) {

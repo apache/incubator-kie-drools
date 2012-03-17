@@ -53,8 +53,8 @@ public class TripleBasedTraitsTest {
         TraitFactory.reset();
     }
 
-    @Test @Ignore
-    public void testRdfsTypes() {
+    @Test
+    public void testHasTypes() {
 
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 

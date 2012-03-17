@@ -166,6 +166,8 @@ public class JavaDialect
                                                                  data );
             data.onAdd( this.pkg.getDialectRuntimeRegistry(),
                         this.packageBuilder.getRootClassLoader() );
+        } else {
+            data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
         }
 
         this.packageStoreWrapper = new PackageStore( data,
@@ -218,7 +220,7 @@ public class JavaDialect
 
         builders.put( EntryPointDescr.class,
                       ENTRY_POINT_BUILDER );
-        
+
         builders.put( WindowReferenceDescr.class,
                       WINDOW_REFERENCE_BUILDER );
     }
@@ -621,7 +623,7 @@ public class JavaDialect
     public String getId() {
         return ID;
     }
-    
+
     public PackageRegistry getPackageRegistry() {
         return this.packageRegistry;
     }

@@ -36,6 +36,7 @@ import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AcceptsWriteAccessor;
+import org.drools.spi.ClassWireable;
 import org.drools.spi.InternalReadAccessor;
 
 public class ClassFieldAccessorStore
@@ -43,7 +44,7 @@ public class ClassFieldAccessorStore
     Externalizable {
 
     private static final long serialVersionUID = 510l;
-    
+
     private Map<AccessorKey, BaseLookupEntry> lookup;
 
     private ClassFieldAccessorCache           cache;
@@ -103,12 +104,12 @@ public class ClassFieldAccessorStore
     public synchronized ClassFieldReader getReader(final String className,
                                                    String fieldName,
                                                    final AcceptsReadAccessor target,
-                                                   final AccessorKey.AccessorType accessorType) {                
+                                                   final AccessorKey.AccessorType accessorType) {
         AccessorKey key = new AccessorKey( className,
                                            fieldName,
                                            accessorType );
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
-        
+
         boolean exists = true;
         if ( entry == null ) {
             exists = false;
@@ -119,13 +120,13 @@ public class ClassFieldAccessorStore
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
         }
-        
+
 
         if ( target != null ) {
             target.setReadAccessor( entry.getClassFieldReader() );
             entry.addAccessorTarget( target );
         }
-        
+
         if ( !exists ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
@@ -134,8 +135,8 @@ public class ClassFieldAccessorStore
 
         return ( ClassFieldReader ) entry.getClassFieldReader();
     }
-    
-    
+
+
     public MVELClassFieldReader getMVELReader(final String pkgName,
                                               final String className,
                                               final String expr,
@@ -143,16 +144,16 @@ public class ClassFieldAccessorStore
         AccessorKey key = new AccessorKey( pkgName + className,
                                            expr,
                                            AccessorKey.AccessorType.FieldAccessor );
-        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );    
+        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
         if ( entry == null ) {
-            MVELClassFieldReader reader  = new MVELClassFieldReader( className, expr, typesafe );            
-            entry = new FieldLookupEntry( reader );  
+            MVELClassFieldReader reader  = new MVELClassFieldReader( className, expr, typesafe );
+            entry = new FieldLookupEntry( reader );
             this.lookup.put( key,
-                             entry );            
+                             entry );
         }
 
         return ( MVELClassFieldReader ) entry.getClassFieldReader();
-    }    
+    }
 
     public synchronized ClassFieldWriter getWriter(final String className,
                                                    final String fieldName,
@@ -182,7 +183,7 @@ public class ClassFieldAccessorStore
             this.lookup.put( key,
                              entry );
         }
-        
+
         return entry.getClassFieldWriter();
     }
 
@@ -238,8 +239,8 @@ public class ClassFieldAccessorStore
     //
     //        entry.addAccessorTarget( declaration );
     //
-    //        // there is no wiring here as the GlobalExtractor already references the class, 
-    //        // although we will need to re-wire on serialisation 
+    //        // there is no wiring here as the GlobalExtractor already references the class,
+    //        // although we will need to re-wire on serialisation
     //
     //        return entry.getObjectExtractor();
     //    }
@@ -262,8 +263,8 @@ public class ClassFieldAccessorStore
     //        entry.addAccessorTarget( declaration );
     //        declaration.setReadAccessor( entry.getGlobalExtractor() );
     //
-    //        // there is no wiring here as the GlobalExtractor already references the class, 
-    //        // although we will need to re-wire on serialisation 
+    //        // there is no wiring here as the GlobalExtractor already references the class,
+    //        // although we will need to re-wire on serialisation
     //
     //        return entry.getGlobalExtractor();
     //    }
@@ -314,6 +315,11 @@ public class ClassFieldAccessorStore
                         lookupEntry = (FieldLookupEntry) entry.getValue();
                         this.lookup.put( entry.getKey(),
                                          lookupEntry );
+                        for ( Acceptor target : lookupEntry.getAccessorTargets() ) {
+                            if ( target instanceof ClassWireable ) {
+                                wire( (ClassWireable) target );
+                            }
+                        }
                     } else {
                         // iterate through new targets adding them and wiring them up
                         // to the existing ClassFieldReader, no need to wire generated accessor
@@ -327,13 +333,13 @@ public class ClassFieldAccessorStore
                             lookupEntry.addAccessorTarget( target );
                         }
                     }
-                    // wire up ClassFieldReaders                    
+                    // wire up ClassFieldReaders
                     if (lookupEntry.getClassFieldReader() != null ) {
                         wire(((FieldLookupEntry)entry.getValue()).getClassFieldReader());
                     }
                     if (lookupEntry.getClassFieldWriter() != null) {
                         wire(((FieldLookupEntry)entry.getValue()).getClassFieldWriter());
-                    }                    
+                    }
                     break;
                 }
 
@@ -342,12 +348,12 @@ public class ClassFieldAccessorStore
                     if ( lookupEntry == null ) {
                                                 // Create new entry with correct ClassObjectType and targets
                         lookupEntry = new ClassObjectTypeLookupEntry(  cache.getClassObjectType( ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType() ) );
-                        
+
                         this.lookup.put( entry.getKey(),
                                          lookupEntry );
-                                               
+
                     }
-                    
+
                     for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
                         ((AcceptsClassObjectType) target).setClassObjectType( lookupEntry.getClassObjectType() );
                         lookupEntry.addAccessorTarget( target );
@@ -447,12 +453,23 @@ public class ClassFieldAccessorStore
     //        }
     //    }
 
-    public void wire(ClassObjectType objectType) {
+//    public void wire(ClassObjectType objectType) {
+//        try {
+//            Class cls = this.cache.getClassLoader().loadClass( objectType.getClassName() );
+//            objectType.setClassType( cls );
+//        } catch ( ClassNotFoundException e ) {
+//            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + objectType.getClassName() + "'" );
+//        }
+//    }
+
+    public void wire( ClassWireable wireable ) {
         try {
-            Class cls = this.cache.getClassLoader().loadClass( objectType.getClassName() );
-            objectType.setClassType( cls );
+            if ( wireable.getClassType() == null || ! wireable.getClassType().isPrimitive() ) {
+                Class cls = this.cache.getClassLoader().loadClass( wireable.getClassName() );
+                wireable.wire( cls );
+            }
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + objectType.getClassName() + "'" );
+            throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + wireable.getClassName() + "'" );
         }
     }
 
@@ -487,12 +504,12 @@ public class ClassFieldAccessorStore
 
             this.accessorTargets.put( target, null );
         }
-        
+
         public void addAccessorTargets(Set<Acceptor> targets) {
             if ( this.accessorTargets == Collections.EMPTY_MAP ) {
                 this.accessorTargets = new IdentityHashMap<Acceptor, Object>( );
             }
-            
+
             for ( Acceptor target : targets ) {
                 this.accessorTargets.put( target, null );
             }
@@ -532,7 +549,7 @@ public class ClassFieldAccessorStore
         public ClassObjectType getClassObjectType() {
             return classObjectType;
         }
-        
+
         public void setClassObjectType(ClassObjectType classObjectType) {
             this.classObjectType = classObjectType;
         }

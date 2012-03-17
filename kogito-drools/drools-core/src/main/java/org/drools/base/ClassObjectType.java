@@ -27,6 +27,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.AgendaItem;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.runtime.rule.Activation;
+import org.drools.spi.ClassWireable;
 import org.drools.spi.ObjectType;
 
 /**
@@ -38,6 +39,7 @@ import org.drools.spi.ObjectType;
 public class ClassObjectType
     implements
     ObjectType,
+    ClassWireable,
     Externalizable {
     
     public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFactImpl.class );
@@ -218,6 +220,10 @@ public class ClassObjectType
 
     public int hashCode() {
         return this.clsName.hashCode();
+    }
+
+    public void wire( Class<?> klass ) {
+        this.cls = klass;
     }
 
 }
