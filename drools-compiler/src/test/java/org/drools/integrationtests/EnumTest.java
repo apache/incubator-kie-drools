@@ -92,10 +92,75 @@ public class EnumTest extends CommonTestMethodBase {
     }
 
 
-    public void x()   {
-        ParserConfiguration pc = null;
-        MVEL.executeExpression( MVEL.compileExpression( "xx", new ParserContext( pc ) ) );
+    @Test
+    public void testQueryEnum() {
+        String str = "package org.drools.test;\n" +
+                "\n" +
+                "declare enum Ennumm\n" +
+                "  ONE, TWO;\n" +
+                "end\n" +
+                "\n" +
+                "declare Bean\n" +
+                "  fld : Ennumm\n" +
+                "end\n" +
+                "\n" +
+                "query seeWhat( Ennumm $e, Bean $b )\n" +
+                "  $b := Bean( $e == Ennumm.ONE )\n" +
+                "end\n" +
+                "\n" +
+                "rule rool\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Bean( Ennumm.ONE ) );\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule rool2\n" +
+                "when\n" +
+                "  seeWhat( $ex, $bx ; )\n" +
+                "then\n" +
+                "  System.out.println( $bx );\n" +
+                "end";
+
+        String str2 = "package org.test2; \n" +
+                        "" +
+                        "declare Naeb \n" +
+                        "   fld : String \n" +
+                        "end \n";
+
+
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+
+
+        KnowledgeBuilder kbuilder2 =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder2.hasErrors() ) {
+            fail( kbuilder2.getErrors().toString() );
+        }
+        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ), ResourceType.DRL );
+
+
+        ksession.fireAllRules();
+
+        ksession.dispose();
     }
+
+
 
 
 }

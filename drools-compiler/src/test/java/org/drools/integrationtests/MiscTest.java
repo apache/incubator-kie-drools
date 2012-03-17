@@ -191,7 +191,7 @@ import org.slf4j.LoggerFactory;
 public class MiscTest extends CommonTestMethodBase {
 
     private static Logger logger = LoggerFactory.getLogger(MiscTest.class);
-    
+
     @Test
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -1258,41 +1258,41 @@ public class MiscTest extends CommonTestMethodBase {
     public void testTypeDeclarationOnSeparateResource() throws Exception {
         System.setProperty( "drools.dump.dir", "target" );
         String file1 = "package a.b.c\n" +
-        		"declare SomePerson\n" + 
-        		"    weight : double\n" + 
-        		"    height : double\n" + 
+        		"declare SomePerson\n" +
+        		"    weight : double\n" +
+        		"    height : double\n" +
         		"end\n";
-        String file2 = "package a.b.c\n" + 
+        String file2 = "package a.b.c\n" +
                 "import org.drools.*\n" +
-        		"declare Holder\n" + 
-        		"    person : Person\n" + 
-        		"end\n" + 
-        		"rule \"create holder\"\n" + 
-        		"    when\n" + 
-        		"        person : Person( )\n" + 
-        		"        not (\n" + 
-        		"            Holder( person; )\n" + 
-        		"        )\n" + 
-        		"    then\n" + 
-        		"        insert(new Holder(person));\n" + 
+        		"declare Holder\n" +
+        		"    person : Person\n" +
+        		"end\n" +
+        		"rule \"create holder\"\n" +
+        		"    when\n" +
+        		"        person : Person( )\n" +
+        		"        not (\n" +
+        		"            Holder( person; )\n" +
+        		"        )\n" +
+        		"    then\n" +
+        		"        insert(new Holder(person));\n" +
         		"end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( file1 , file2 );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals( 0, 
+        assertEquals( 0,
                       ksession.fireAllRules() );
         ksession.insert( new org.drools.Person("Bob") );
-        assertEquals( 1, 
+        assertEquals( 1,
                       ksession.fireAllRules() );
-        assertEquals( 0, 
+        assertEquals( 0,
                       ksession.fireAllRules() );
 
     }
-    
+
     @Test
     public void testUppercaseField() throws Exception {
-        String rule = "package org.drools;\n";
+        String rule = "package org.drools.test;\n";
         rule += "global java.util.List list\n";
         rule += "declare Address\n";
         rule += "    Street: String\n";
@@ -1316,7 +1316,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.setGlobal( "list",
                             new ArrayList<String>() );
 
-        FactType addressType = kbase.getFactType( "org.drools",
+        FactType addressType = kbase.getFactType( "org.drools.test",
                                                   "Address" );
         Object address = addressType.newInstance();
         addressType.set( address,
@@ -1918,11 +1918,11 @@ public class MiscTest extends CommonTestMethodBase {
         ksesion.fireAllRules();
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
-        
+
         session.dispose();
-        
+
         // checks that the session removed itself from the bean listeners list
-        assertEquals( 0, 
+        assertEquals( 0,
                       state.getPropertyChangeListeners().length );
 
     }
@@ -1968,7 +1968,7 @@ public class MiscTest extends CommonTestMethodBase {
         session.dispose();
 
         // checks that the session removed itself from the bean listeners list
-        assertEquals( 0, 
+        assertEquals( 0,
                       state.getPropertyChangeListeners().length );
     }
 
@@ -2795,7 +2795,7 @@ public class MiscTest extends CommonTestMethodBase {
         workingMemory.fireAllRules();
 
         List<String> results = (List<String>) workingMemory.getGlobal( "list" );
-        for( String result : results ) { 
+        for( String result : results ) {
             logger.info( result );
         }
         assertEquals( 5,
@@ -4945,7 +4945,7 @@ public class MiscTest extends CommonTestMethodBase {
         executeTypeSafeDeclarations( str,
                                      true );
 
-        // this should fail as it's not declared non typesafe 
+        // this should fail as it's not declared non typesafe
         str = "package org.drools.test\n" +
                 "global java.util.List list\n" +
                 "declare org.drools.Person\n" +
@@ -5028,20 +5028,20 @@ public class MiscTest extends CommonTestMethodBase {
     // Drools does not support variables inside bindings yet... but we should...
     @Test
     public void testMapAccessWithVariable2() {
-        String str = "package org.drools;\n" + 
-        		"import java.util.Map;\n" + 
-        		"rule \"map access with variable\"\n" + 
-        		"    when\n" + 
-        		"        $key : String( )\n" + 
-                "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" + 
-                "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" + 
-        		"    then\n" + 
+        String str = "package org.drools;\n" +
+        		"import java.util.Map;\n" +
+        		"rule \"map access with variable\"\n" +
+        		"    when\n" +
+        		"        $key : String( )\n" +
+                "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" +
+                "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" +
+        		"    then\n" +
         		"end\n";
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
-        
+
         Assert.assertTrue( kbuilder.hasErrors() );
     }
 
@@ -8533,7 +8533,7 @@ public class MiscTest extends CommonTestMethodBase {
         FactHandle fa2 = (FactHandle) ksession.insert( a2 );
         FactHandle fa3 = (FactHandle) ksession.insert( a3 );
 
-        // a2, a3 are blocked by a1        
+        // a2, a3 are blocked by a1
         // modify a1, so that a1,a3 are now blocked by a2
         a1.setField2( "1" ); // Do
         ksession.update( fa1,
@@ -8542,7 +8542,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.update( fa1,
                          a1 );
 
-        // modify a2, so that a1,a2 are now blocked by a3        
+        // modify a2, so that a1,a2 are now blocked by a3
         a2.setField2( "1" ); // Do
         ksession.update( fa2,
                          a2 );
@@ -9483,7 +9483,7 @@ public class MiscTest extends CommonTestMethodBase {
         assertFalse( builder.hasErrors() );
 
     }
-    
+
     @Test
     public void testJBRULES3323() throws Exception {
 
@@ -9560,7 +9560,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test 
+    @Test
     public void testDispose() throws Exception {
         StringBuilder rule = new StringBuilder();
         rule.append("package org.drools\n");
@@ -9577,9 +9577,9 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert(new Message("test"));
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
-        
+
         ksession.dispose();
-        
+
         try {
             // the following should raise an IllegalStateException as the session was already disposed
             ksession.fireAllRules();
@@ -9589,7 +9589,7 @@ public class MiscTest extends CommonTestMethodBase {
         }
     }
 
-    @Test 
+    @Test
     public void testInnerEnum() throws Exception {
         StringBuilder rule = new StringBuilder();
         rule.append("package org.drools\n");
@@ -9609,19 +9609,19 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test 
+    @Test
     public void testNestedAccessors2() throws Exception {
         String rule = "package org.drools\n" +
         		"rule 'rule1'" +
-        		"    salience 10\n" + 
-        		"when\n" + 
-        		"    Cheesery( typedCheeses[0].type == 'stilton' );\n" + 
-        		"then\n" + 
-        		"end\n" + 
-        		"rule 'rule2'\n" + 
-        		"when\n" + 
-        		"    Cheesery( typedCheeses[0].price == 10 );\n" + 
-        		"then\n" + 
+        		"    salience 10\n" +
+        		"when\n" +
+        		"    Cheesery( typedCheeses[0].type == 'stilton' );\n" +
+        		"then\n" +
+        		"end\n" +
+        		"rule 'rule2'\n" +
+        		"when\n" +
+        		"    Cheesery( typedCheeses[0].price == 10 );\n" +
+        		"then\n" +
         		"end";
 
         //building stuff
@@ -9629,7 +9629,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
-        
+
         Cheesery c1 = new Cheesery();
         c1.addCheese( new Cheese("stilton", 20) );
         Cheesery c2 = new Cheesery();
@@ -9641,14 +9641,14 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( c2 );
         ksession.insert( c3 );
         ksession.fireAllRules();
-        
+
         ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
         verify( ael, times(2) ).afterActivationFired( captor.capture() );
-        
+
         List<org.drools.event.rule.AfterActivationFiredEvent> values = captor.getAllValues();
         assertThat( (Cheesery) values.get( 0 ).getActivation().getObjects().get( 0 ), is( c1 ) );
         assertThat( (Cheesery) values.get( 1 ).getActivation().getObjects().get( 0 ), is( c2 ) );
-        
+
         ksession.dispose();
     }
 
@@ -10523,7 +10523,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        
+
         ksession.fireAllRules();
 
         assertTrue( list.contains( "hash" ) );

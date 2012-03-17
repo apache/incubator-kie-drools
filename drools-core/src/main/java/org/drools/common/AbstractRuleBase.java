@@ -43,6 +43,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
@@ -50,11 +51,11 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
-import org.drools.reteoo.builder.EntryPointBuilder;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -116,7 +117,10 @@ abstract public class AbstractRuleBase
     private int                                           additionsSinceLock;
     private int                                           removalsSinceLock;
 
-    private transient Map<Class<?>, TypeDeclaration>      classTypeDeclaration;
+    private transient Map<String, TypeDeclaration>        classTypeDeclaration;
+
+    private transient JavaDialectRuntimeData.TypeDeclarationClassLoader
+                                                          declarationClassLoader;
 
     private List<RuleBasePartitionId>                     partitionIDs;
 
@@ -159,12 +163,20 @@ abstract public class AbstractRuleBase
         this.rootClassLoader = this.config.getClassLoader();
         this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
 
+        this.declarationClassLoader = new JavaDialectRuntimeData.TypeDeclarationClassLoader(
+                new JavaDialectRuntimeData(),
+                this.rootClassLoader
+        );
+        this.rootClassLoader.addClassLoader( this.declarationClassLoader );
+
+
+
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
         this.globals = new HashMap<String, Class<?>>();
         this.statefulSessions = new ObjectHashSet();
 
-        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        this.classTypeDeclaration = new HashMap<String, TypeDeclaration>();
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
@@ -206,6 +218,9 @@ abstract public class AbstractRuleBase
 
         // must write this option first in order to properly deserialize later
         droolsStream.writeBoolean( this.config.isClassLoaderCacheEnabled() );
+
+        droolsStream.writeObject( this.declarationClassLoader.getStore() );
+
 
         droolsStream.writeObject( this.config );
         droolsStream.writeObject( this.pkgs );
@@ -259,12 +274,20 @@ abstract public class AbstractRuleBase
         }
 
         boolean classLoaderCacheEnabled = droolsStream.readBoolean();
+
         this.rootClassLoader = ClassLoaderUtil.getClassLoader( new ClassLoader[]{droolsStream.getParentClassLoader()},
                                                                getClass(),
                                                                classLoaderCacheEnabled );
 
         droolsStream.setClassLoader( this.rootClassLoader );
         droolsStream.setRuleBase( this );
+
+        JavaDialectRuntimeData typeStore = (JavaDialectRuntimeData) droolsStream.readObject();
+        this.declarationClassLoader = new JavaDialectRuntimeData.TypeDeclarationClassLoader(
+                        typeStore,
+                        this.rootClassLoader
+        );
+        this.rootClassLoader.addClassLoader( this.declarationClassLoader );
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache( this.rootClassLoader );
 
@@ -339,11 +362,11 @@ abstract public class AbstractRuleBase
      */
     private void populateTypeDeclarationMaps() throws ClassNotFoundException {
         // FIXME: readLock
-        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        this.classTypeDeclaration = new HashMap<String, TypeDeclaration>();
         for (Package pkg : this.pkgs.values()) {
             for (TypeDeclaration type : pkg.getTypeDeclarations().values()) {
                 type.setTypeClass( this.rootClassLoader.loadClass( type.getTypeClassName() ) );
-                this.classTypeDeclaration.put( type.getTypeClass(),
+                this.classTypeDeclaration.put( type.getTypeClassName(),
                                                type );
             }
         }
@@ -478,7 +501,7 @@ abstract public class AbstractRuleBase
      * network. Before update network each referenced <code>WorkingMemory</code>
      * is locked.
      *
-     * @param newPkg The package to add.
+     * @param newPkgs The package to add.
      */
     public void addPackages( final Collection<Package> newPkgs ) {
         lock();
@@ -501,10 +524,67 @@ abstract public class AbstractRuleBase
 
                 // first merge anything related to classloader re-wiring
                 pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
-                                                       this.rootClassLoader );
+                                                       this.rootClassLoader,
+                                                       true );
             }
 
-            // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
+
+            // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
+            for ( Package newPkg : newPkgs ) {
+                // we have to do this before the merging, as it does some classloader resolving
+                String lastType = null;
+                try {
+                    // Add the type declarations to the RuleBase
+                    if ( newPkg.getTypeDeclarations() != null ) {
+                        // add type declarations
+                        for ( TypeDeclaration newDecl : newPkg.getTypeDeclarations().values() ) {
+                            lastType = newDecl.getTypeClassName();
+
+
+                            TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClassName() );
+                            if ( typeDeclaration == null ) {
+                                String className = newDecl.getTypeClassName();
+
+                                byte [] def = ((JavaDialectRuntimeData) newPkg.getDialectRuntimeRegistry().getDialectData( "java" )).getClassDefinition(
+                                        JavaDialectRuntimeData.convertClassToResourcePath( className )
+                                );
+
+                                Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
+
+                                if ( definedKlass == null && typeDeclaration.isNovel() ) {
+                                    throw new RuntimeException( "Registering nyll bytes for class " + className );
+                                }
+
+
+                                newDecl.getTypeClassDef().setDefinedClass( definedKlass );
+                                newDecl.setTypeClass( definedKlass );
+
+                                this.classTypeDeclaration.put( className, newDecl );
+                                typeDeclaration = newDecl;
+                            } else {
+                                Class<?> definedKlass = typeDeclaration.getTypeClass();
+
+                                newDecl.getTypeClassDef().setDefinedClass( definedKlass );
+                                newDecl.setTypeClass( definedKlass );
+
+                                mergeTypeDeclarations( typeDeclaration,
+                                                       newDecl );
+                            }
+
+                            // update existing OTNs
+                            updateDependentTypes( newPkg,
+                                                  typeDeclaration );
+                        }
+                    }
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                    throw new RuntimeDroolsException(
+                                                      "unable to resolve Type Declaration class '" + lastType +
+                                                              "'" );
+                }
+            }
+
+             // now iterate again, this time onBeforeExecute will handle any wiring or cloader re-creating that needs to be done as part of the merge
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
 
@@ -516,46 +596,11 @@ abstract public class AbstractRuleBase
                 }
 
                 pkg.getDialectRuntimeRegistry().onBeforeExecute();
+
                 // with the classloader recreated for all byte[] classes, we should now merge and wire any new accessors
                 pkg.getClassFieldAccessorStore().merge( newPkg.getClassFieldAccessorStore() );
             }
-            
-            // Add all Type Declarations, this has to be done first incase packages cross reference each other during build process.
-            for (Package newPkg : newPkgs) {
-                Package pkg = this.pkgs.get( newPkg.getName() );
 
-                // we have to do this before the merging, as it does some classloader resolving
-                TypeDeclaration lastType = null;
-                try {
-                    // Add the type declarations to the RuleBase
-                    if (newPkg.getTypeDeclarations() != null) {
-                        // add type declarations
-                        for (TypeDeclaration newDecl : newPkg.getTypeDeclarations().values()) {
-                            lastType = newDecl;
-                            newDecl.setTypeClass( this.rootClassLoader.loadClass( newDecl.getTypeClassName() ) );
-                            // @TODO should we allow overrides? only if the class is not in use.
-                            TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( newDecl.getTypeClass() );
-                            if (typeDeclaration == null) {
-                                // add to rulebase list of type declarations                        
-                                this.classTypeDeclaration.put( newDecl.getTypeClass(),
-                                                               newDecl );
-                                typeDeclaration = newDecl;
-                            } else {
-                                // needs to merge 
-                                mergeTypeDeclarations( typeDeclaration,
-                                                       newDecl );
-                            }
-                            // update existing OTNs
-                            updateDependentTypes( newPkg,
-                                                  typeDeclaration );
-                        }
-                    }
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeDroolsException(
-                                                      "unable to resolve Type Declaration class '" + lastType.getTypeName() +
-                                                              "'" );
-                }
-            }
 
             for (Package newPkg : newPkgs) {
                 Package pkg = this.pkgs.get( newPkg.getName() );
@@ -563,10 +608,10 @@ abstract public class AbstractRuleBase
                 // now merge the new package into the existing one
                 mergePackage( pkg,
                               newPkg );
-                
+
                 // add the window declarations to the kbase
                 for( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
-                    addWindowDeclaration( newPkg, 
+                    addWindowDeclaration( newPkg,
                                           window );
                 }
 
@@ -583,12 +628,11 @@ abstract public class AbstractRuleBase
                 }
 
                 // add the flows to the RuleBase
-                if (newPkg.getRuleFlows() != null) {
+                if ( newPkg.getRuleFlows() != null ) {
                     final Map<String, org.drools.definition.process.Process> flows = newPkg.getRuleFlows();
-                    for (org.drools.definition.process.Process process : flows.values()) {
-                        // XXX: is this cast safe?
+                    for ( org.drools.definition.process.Process process : flows.values() ) {
                         // XXX: we could take the lock inside addProcess() out, but OTOH: this is what the VM is supposed to do ...
-                        addProcess( (Process) process );
+                        addProcess( process );
                     }
                 }
 
@@ -599,82 +643,116 @@ abstract public class AbstractRuleBase
         }
     }
 
+    public Class<?> registerAndLoadTypeDefinition( String className, byte[] def ) throws ClassNotFoundException {
+        this.declarationClassLoader.addClassDefinition( className, def );
+        return this.rootClassLoader.loadClass( className, true );
+    }
+
+
     protected abstract void updateDependentTypes( Package newPkg,
             TypeDeclaration typeDeclaration );
 
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
             TypeDeclaration newDecl ) {
-        if (!nullSafeEquals( existingDecl.getFormat(),
-                             newDecl.getFormat() ) ||
-            !nullSafeEquals( existingDecl.getObjectType(),
-                             newDecl.getObjectType() ) ||
-            !nullSafeEquals( existingDecl.getTypeClassName(),
-                             newDecl.getTypeClassName() ) ||
-            !nullSafeEquals( existingDecl.getTypeName(),
-                             newDecl.getTypeName() )) {
-            throw new RuntimeDroolsException(
-                                              "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() +
-                                                      "'" );
+
+        existingDecl.addRedeclaration( newDecl );
+
+        if ( ! nullSafeEquals( existingDecl.getFormat(),
+                               newDecl.getFormat() ) ||
+            ! nullSafeEquals( existingDecl.getObjectType(),
+                              newDecl.getObjectType() ) ||
+            ! nullSafeEquals( existingDecl.getTypeClassName(),
+                              newDecl.getTypeClassName() ) ||
+            ! nullSafeEquals( existingDecl.getTypeName(),
+                              newDecl.getTypeName() ) ) {
+
+            throw new RuntimeDroolsException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() +
+                                              "'" );
+
         }
+
         existingDecl.setDurationAttribute( mergeLeft( existingDecl.getTypeName(),
                                                       "Unable to merge @duration attribute for type declaration of class:",
                                                       existingDecl.getDurationAttribute(),
                                                       newDecl.getDurationAttribute(),
-                                                      true ) );
+                                                      true,
+                                                      false ) );
+
         existingDecl.setDynamic( mergeLeft( existingDecl.getTypeName(),
                                             "Unable to merge @propertyChangeSupport  (a.k.a. dynamic) attribute for type declaration of class:",
                                             existingDecl.isDynamic(),
                                             newDecl.isDynamic(),
-                                            true ) );
-        existingDecl.setPropertySpecific(mergeLeft(existingDecl.getTypeName(),
-                "Unable to merge @propertyReactive attribute for type declaration of class:",
-                existingDecl.isPropertySpecific(),
-                newDecl.isPropertySpecific(),
-                true));
+                                            true,
+                                            false ) );
+
+        existingDecl.setPropertySpecific( mergeLeft(existingDecl.getTypeName(),
+                                          "Unable to merge @propertyReactive attribute for type declaration of class:",
+                                          existingDecl.isPropertySpecific(),
+                                          newDecl.isPropertySpecific(),
+                                          true,
+                                          false ) );
+
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
+
         existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
                                           "Unable to merge @novel attribute for type declaration of class:",
                                           existingDecl.isNovel(),
                                           newDecl.isNovel(),
-                                          true ) );
-        existingDecl.setResource( mergeLeft( existingDecl.getTypeName(),
-                                             "Unable to merge resource attribute for type declaration of class:",
-                                             existingDecl.getResource(),
-                                             newDecl.getResource(),
-                                             true ) );
+                                          true,
+                                          false ) );
+
+        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) || existingDecl.getResource() == null ) {
+            existingDecl.setResource( mergeLeft( existingDecl.getTypeName(),
+                                                 "Unable to merge resource attribute for type declaration of class:",
+                                                 existingDecl.getResource(),
+                                                 newDecl.getResource(),
+                                                 true,
+                                                 true ) );
+        }
+
         existingDecl.setRole( mergeLeft( existingDecl.getTypeName(),
                                          "Unable to merge @role attribute for type declaration of class:",
                                          isSet(existingDecl.getSetMask(), TypeDeclaration.ROLE_BIT) ? existingDecl.getRole() : null,
                                          newDecl.getRole(),
-                                         true ) );
+                                         true,
+                                         false ) );
+
         existingDecl.setTimestampAttribute( mergeLeft( existingDecl.getTypeName(),
                                                        "Unable to merge @timestamp attribute for type declaration of class:",
                                                        existingDecl.getTimestampAttribute(),
                                                        newDecl.getTimestampAttribute(),
-                                                       true ) );
-        existingDecl.setTypesafe(mergeLeft(existingDecl.getTypeName(),
-                "Unable to merge @typesafe attribute for type declaration of class:",
-                existingDecl.isTypesafe(),
-                newDecl.isTypesafe(),
-                true));
+                                                       true,
+                                                       false ) );
+
+        existingDecl.setTypesafe( mergeLeft(existingDecl.getTypeName(),
+                                  "Unable to merge @typesafe attribute for type declaration of class:",
+                                  existingDecl.isTypesafe(),
+                                  newDecl.isTypesafe(),
+                                  true,
+                                  false ) );
     }
 
     private <T> T mergeLeft( String typeClass,
             String errorMsg,
             T leftVal,
             T rightVal,
-            boolean errorOnDiff ) {
+            boolean errorOnDiff,
+            boolean override ) {
         T newValue = leftVal;
-        if (!nullSafeEquals( leftVal,
-                             rightVal )) {
-            if (leftVal == null && rightVal != null) {
+        if ( ! nullSafeEquals( leftVal,
+                               rightVal ) ) {
+            if ( leftVal == null && rightVal != null ) {
                 newValue = rightVal;
-            } else if (leftVal != null && rightVal != null) {
-                if (errorOnDiff) {
-                    throw new RuntimeDroolsException( errorMsg + " '" + typeClass + "'" );
+            } else if ( leftVal != null && rightVal != null ) {
+                if ( override ) {
+                    newValue = rightVal;
                 } else {
-                    // do nothing, just use the left value
+                    if ( errorOnDiff ) {
+                        throw new RuntimeDroolsException( errorMsg + " '" + typeClass + "'" );
+                    } else {
+                        // do nothing, just use the left value
+                    }
                 }
             }
         }
@@ -745,12 +823,12 @@ abstract public class AbstractRuleBase
                 }
             }
         }
-        
+
         // merge window declarations
         if ( newPkg.getWindowDeclarations() != null ) {
             // add window declarations
             for ( WindowDeclaration window : newPkg.getWindowDeclarations().values() ) {
-                if ( !pkg.getWindowDeclarations().containsKey( window.getName() ) || 
+                if ( !pkg.getWindowDeclarations().containsKey( window.getName() ) ||
                       pkg.getWindowDeclarations().get( window.getName() ).equals( window ) ) {
                     pkg.addWindowDeclaration( window );
                 } else {
@@ -784,6 +862,11 @@ abstract public class AbstractRuleBase
         }
     }
 
+    public ClassLoader getTypeDeclarationClassLoader() {
+        return this.declarationClassLoader;
+    }
+
+
     private static class TypeDeclarationCandidate {
 
         public TypeDeclaration candidate = null;
@@ -791,7 +874,7 @@ abstract public class AbstractRuleBase
     }
 
     public TypeDeclaration getTypeDeclaration( Class<?> clazz ) {
-        TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( clazz );
+        TypeDeclaration typeDeclaration = this.classTypeDeclaration.get( clazz.getName() );
         if (typeDeclaration == null) {
             // check super classes and keep a score of how up in the hierarchy is there a declaration
             TypeDeclarationCandidate candidate = checkSuperClasses( clazz );
@@ -807,16 +890,17 @@ abstract public class AbstractRuleBase
     }
 
     private TypeDeclarationCandidate checkSuperClasses( Class<?> clazz ) {
+
         TypeDeclarationCandidate candidate = null;
         TypeDeclaration typeDeclaration = null;
         Class<?> current = clazz.getSuperclass();
         int score = 0;
-        while (typeDeclaration == null && current != null) {
+        while ( typeDeclaration == null && current != null ) {
             score++;
-            typeDeclaration = this.classTypeDeclaration.get( current );
+            typeDeclaration = this.classTypeDeclaration.get( current.getName() );
             current = current.getSuperclass();
         }
-        if (typeDeclaration == null) {
+        if ( typeDeclaration == null ) {
             // no type declaration found for superclasses
             score = Integer.MAX_VALUE;
         } else {
@@ -835,7 +919,7 @@ abstract public class AbstractRuleBase
         if (baseline == null || level < baseline.score) {
             // search
             for (Class<?> ifc : clazz.getInterfaces()) {
-                typeDeclaration = this.classTypeDeclaration.get( ifc );
+                typeDeclaration = this.classTypeDeclaration.get( ifc.getName() );
                 if (typeDeclaration != null) {
                     candidate = new TypeDeclarationCandidate();
                     candidate.candidate = typeDeclaration;
@@ -1028,7 +1112,7 @@ abstract public class AbstractRuleBase
     /**
      * Handle rule removal.
      *
-     * This method is intended for sub-classes, and called after the 
+     * This method is intended for sub-classes, and called after the
      * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.event.BeforeRuleRemovedEvent) before-rule-removed}
      * event is fired, and before the rule is physically removed from the package.
      *
@@ -1067,12 +1151,12 @@ abstract public class AbstractRuleBase
     /**
      * Handle function removal.
      *
-     * This method is intended for sub-classes, and called after the 
+     * This method is intended for sub-classes, and called after the
      * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.event.BeforeFunctionRemovedEvent) before-function-removed}
      * event is fired, and before the function is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
-     * @param rule
+     * @param functionName
      */
     protected/* abstract */void removeFunction( String functionName ) {
         // Nothing in default.
@@ -1083,7 +1167,7 @@ abstract public class AbstractRuleBase
      *
      * This method is called with the rulebase lock held.
      * @param pkg
-     * @param rule
+     * @param functionName
      */
     private void removeFunction( final Package pkg,
             final String functionName ) {

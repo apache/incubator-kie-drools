@@ -1345,10 +1345,6 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                      "\n" +
                      "declare TastesYucky\n" +
                      "   thing : String\n" +
-                     "end" +
-                     "\n" +
-                     "declare TastesYucky\n" +
-                     "   thing : String\n" +
                      "end\n" +
                      "\n" +
                      "declare Here\n" +

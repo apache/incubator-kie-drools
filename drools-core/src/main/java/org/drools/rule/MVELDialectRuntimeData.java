@@ -23,20 +23,16 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.mvel.MVELCompileable;
-import static org.drools.base.mvel.MVELCompilationUnit.loadClass;
 import org.drools.spi.Wireable;
 import org.drools.util.CompositeClassLoader;
 import org.mvel2.ParserConfiguration;
@@ -50,7 +46,7 @@ public class MVELDialectRuntimeData
     private MapFunctionResolverFactory     functionFactory;
 
     private Map<Wireable, MVELCompileable> invokerLookups;
-    private List<MVELCompileable>          mvelReaders;
+    private Set<MVELCompileable>           mvelReaders;
 
     private CompositeClassLoader           rootClassLoader;
 
@@ -63,9 +59,9 @@ public class MVELDialectRuntimeData
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
         this.invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
-        this.mvelReaders = new ArrayList<MVELCompileable> ();
+        this.mvelReaders = new HashSet<MVELCompileable> ();
         this.imports = new HashMap();
-        this.packageImports = new HashSet();        
+        this.packageImports = new HashSet();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -79,7 +75,7 @@ public class MVELDialectRuntimeData
         }
         out.writeObject( imports );
         out.writeObject( packageImports );
-        
+
         out.writeObject( invokerLookups );
         out.writeObject( this.mvelReaders );
     }
@@ -88,31 +84,38 @@ public class MVELDialectRuntimeData
                                             ClassNotFoundException {
         imports = (Map) in.readObject();
         packageImports = (HashSet) in.readObject();
-        
+
         invokerLookups = (Map<Wireable, MVELCompileable>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
             // we need a wireList for serialisation
             wireList = new ArrayList<Wireable>( invokerLookups.keySet() );
         }
-        
-        mvelReaders = ( List<MVELCompileable> ) in.readObject();
+
+        mvelReaders = ( Set<MVELCompileable> ) in.readObject();
     }
 
-    public void merge(DialectRuntimeRegistry registry,
-                      DialectRuntimeData newData) {
+
+    public void merge( DialectRuntimeRegistry registry,
+                           DialectRuntimeData newData ) {
+        merge( registry, newData, false );
+    }
+
+    public void merge( DialectRuntimeRegistry registry,
+                       DialectRuntimeData newData,
+                       boolean excludeClasses ) {
         MVELDialectRuntimeData other = (MVELDialectRuntimeData) newData;
-        
+
         for ( Entry<String, Object> entry : other.imports.entrySet() ) {
             if ( entry.getValue() instanceof Class ) {
                 if ( !this.imports.containsKey( entry.getKey() ) ) {
                  // store it as a String, we'll re-resolve this later, against the correct ClassLoader
-                    this.imports.put(  entry.getKey(), ((Class) entry.getValue()).getName() ); 
+                    this.imports.put(  entry.getKey(), ((Class) entry.getValue()).getName() );
                 }
             } else {
-                this.imports.put( entry.getKey(), entry.getValue() );  
+                this.imports.put( entry.getKey(), entry.getValue() );
             }
         }
-                
+
         this.packageImports.addAll( other.packageImports );
         for ( Entry<Wireable, MVELCompileable> entry : other.invokerLookups.entrySet() ) {
             invokerLookups.put( entry.getKey(),
@@ -122,16 +125,24 @@ public class MVELDialectRuntimeData
             }
             wireList.add( entry.getKey() );
         }
-        this.mvelReaders = new ArrayList<MVELCompileable>();
+        this.mvelReaders = new HashSet<MVELCompileable>();
         this.mvelReaders.addAll( other.mvelReaders );
     }
 
+    public DialectRuntimeData clone( DialectRuntimeRegistry registry,
+                                     CompositeClassLoader rootClassLoader ) {
+        return clone( registry, rootClassLoader, false );
+    }
+
+
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    CompositeClassLoader rootClassLoader) {
+                                    CompositeClassLoader rootClassLoader,
+                                    boolean excludeClasses ) {
         MVELDialectRuntimeData clone = new MVELDialectRuntimeData();
-        clone.rootClassLoader = rootClassLoader;        
+        clone.rootClassLoader = rootClassLoader;
         clone.merge( registry,
-                     this );
+                     this,
+                     excludeClasses );
         clone.onAdd( registry,
                      rootClassLoader );
         return clone;
@@ -142,10 +153,10 @@ public class MVELDialectRuntimeData
         this.rootClassLoader = rootClassLoader;
 
         //        for (Entry<Wireable, MVELCompilable> entry : this.invokerLookups.entrySet() ) {
-        //            // first make sure the MVELCompilationUnit is compiled            
+        //            // first make sure the MVELCompilationUnit is compiled
         //            MVELCompilable component = entry.getValue();
         //            component.compile( rootClassLoader );
-        //            
+        //
         //            // now wire up the target
         //            Wireable target = entry.getKey();
         //            target.wire( component );
@@ -165,7 +176,7 @@ public class MVELDialectRuntimeData
             target.wire( compileable );
         }
         wireList.clear();
-        
+
         for ( MVELCompileable compileable : mvelReaders ) {
             compileable.compile( this );
         }
@@ -239,11 +250,11 @@ public class MVELDialectRuntimeData
             throw new RuntimeException( "variable is a read-only function pointer" );
         }
     }
-    
+
     public ParserConfiguration getParserConfiguration() {
         if ( parserConfiguration == null ) {
             ClassLoader classLoader = rootClassLoader;
-            
+
             {
                 String  key = null;
                 Object value = null;
@@ -272,14 +283,14 @@ public class MVELDialectRuntimeData
                     }
                 } catch ( ClassNotFoundException e ) {
                     throw new IllegalArgumentException( "Unable to resolve method of field: " + key + " - " + value, e );
-                
+
                 }
             }
-    
+
             this.parserConfiguration = new ParserConfiguration();
             this.parserConfiguration.setImports( this.imports );
             this.parserConfiguration.setPackageImports( this.packageImports );
-            this.parserConfiguration.setClassLoader( classLoader );  
+            this.parserConfiguration.setClassLoader( classLoader );
         }
         return this.parserConfiguration;
     }
@@ -290,32 +301,32 @@ public class MVELDialectRuntimeData
             this.parserConfiguration.addImport( str,  cls );
         }
     }
-    
+
     public void addImport(String str, Method method) {
         this.imports.put( str, method );
         if ( this.parserConfiguration != null ) {
             this.parserConfiguration.addImport( str,  method );
-        }        
+        }
     }
-    
+
     public void addImport(String str, Field field) {
 //        this.imports.put( str, field );
 //        if ( this.parserConfiguration != null ) {
 //            this.parserConfiguration.addImport( str,  field );
 //        }
     }
-    
+
     public void addPackageImport(String str) {
         this.packageImports.add( str );
         if ( this.parserConfiguration != null ) {
             this.parserConfiguration.addPackageImport( str );
         }
     }
-    
+
     public void addCompileable(MVELCompileable compilable) {
         this.mvelReaders.add( compilable );
     }
-    
+
     public void addCompileable(Wireable wireable,
                                MVELCompileable compilable) {
         invokerLookups.put( wireable,
@@ -329,6 +340,6 @@ public class MVELDialectRuntimeData
     public CompositeClassLoader getRootClassLoader() {
         return rootClassLoader;
     }
-    
-    
+
+
 }
