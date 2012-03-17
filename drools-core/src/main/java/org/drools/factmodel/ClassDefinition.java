@@ -45,6 +45,7 @@ public class ClassDefinition
     private String[]                     interfaces;
     private transient Class< ? >         definedClass;
     private boolean                      traitable;
+    private boolean                      abstrakt       = false;
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -89,6 +90,7 @@ public class ClassDefinition
         this.annotations = (List<AnnotationDefinition>) in.readObject();
         this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
         this.traitable = in.readBoolean();
+        this.abstrakt = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -99,6 +101,7 @@ public class ClassDefinition
         out.writeObject( this.annotations );
         out.writeObject( this.modifiedPropsByMethod);
         out.writeBoolean( this.traitable );
+        out.writeBoolean( this.abstrakt );
     }
 
     /**
@@ -287,6 +290,14 @@ public class ClassDefinition
         this.traitable = traitable;
     }
 
+    public boolean isAbstrakt() {
+        return abstrakt;
+    }
+
+    public void setAbstrakt(boolean abstrakt) {
+        this.abstrakt = abstrakt;
+    }
+
     public String toString() {
         return "ClassDefinition{" +
                 "className='" + className + '\'' +
@@ -294,6 +305,7 @@ public class ClassDefinition
                 ", interfaces=" + (interfaces == null ? null : Arrays.asList(interfaces)) +
                 ", definedClass=" + definedClass +
                 ", traitable=" + traitable +
+                ", abstract=" + abstrakt +
                 ", fields=" + fields +
                 ", annotations=" + annotations +
                 '}';

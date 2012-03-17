@@ -359,9 +359,14 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         for ( int i = 0; i < original.length; i++ ) {
             interfaces[i] = BuildUtils.getInternalType( original[i] );
         }
+
+        int classModifiers = Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER;
+            if ( classDef.isAbstrakt() ) {
+                classModifiers += Opcodes.ACC_ABSTRACT;
+            }
         // Building class header
         cw.visit( Opcodes.V1_5,
-                Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+                classModifiers,
                 BuildUtils.getInternalType( classDef.getClassName() ),
                 null,
                 BuildUtils.getInternalType( classDef.getSuperClass() ),
@@ -481,7 +486,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         // get simple init expression value
         Object val = BuildUtils.getDefaultValue(field);
         boolean hasObjects = false;
-        
+
         if (val != null) {
             // there's a simple init expression
             mv.visitVarInsn(Opcodes.ALOAD, 0);
@@ -536,7 +541,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             }
 
         }
-        
+
         return hasObjects;
     }
 
