@@ -17,7 +17,6 @@ import org.drools.time.Interval;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 
 public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
 
@@ -102,9 +101,13 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
     }
 
     public Object clone() {
-        return isLiteral() ?
-                new EvaluatorConstraint(field, evaluator, extractor) :
-                new EvaluatorConstraint(Arrays.copyOf(declarations, declarations.length), evaluator, extractor);
+        if (isLiteral()) {
+            return new EvaluatorConstraint(field, evaluator, extractor);
+        }
+
+        Declaration[] clonedDeclarations = new Declaration[declarations.length];
+        System.arraycopy(declarations, 0, clonedDeclarations, 0, declarations.length);
+        return new EvaluatorConstraint(clonedDeclarations, evaluator, extractor);
     }
 
     public ContextEntry createContextEntry() {
