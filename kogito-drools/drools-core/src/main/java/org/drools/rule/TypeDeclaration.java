@@ -562,5 +562,13 @@ public class TypeDeclaration
         }
     }
 
-
+    public String toString() {
+        return "TypeDeclaration{" +
+                "typeName='" + typeName + '\'' +
+                ", role=" + role +
+                ", format=" + format +
+                ", kind=" + kind +
+                ", nature=" + nature +
+                '}';
+    }
 }
