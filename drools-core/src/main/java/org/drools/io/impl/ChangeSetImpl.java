@@ -73,4 +73,13 @@ public class ChangeSetImpl implements ChangeSet {
                 this.resourcesRemoved.isEmpty() && 
                 this.knowledgeDefinitionsRemoved.isEmpty();
     }
+
+    public String toString() {
+        return "ChangeSetImpl{" +
+                "resourcesRemoved=" + resourcesRemoved +
+                ", resourcesAdded=" + resourcesAdded +
+                ", resourcesModified=" + resourcesModified +
+                ", knowledgeDefinitionsRemoved=" + knowledgeDefinitionsRemoved +
+                '}';
+    }
 }
