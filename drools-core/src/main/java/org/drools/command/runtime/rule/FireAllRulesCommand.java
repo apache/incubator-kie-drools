@@ -25,6 +25,7 @@ import org.drools.command.IdentifiableResult;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.AgendaFilter;
@@ -107,8 +108,8 @@ public class FireAllRulesCommand
         }
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier,
-                                                                                                                fired );
+            ExecutionResults results = ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult();
+            ((ExecutionResultImpl)results).getResults().put(this.outIdentifier, fired);
         }
         return fired;
     }
