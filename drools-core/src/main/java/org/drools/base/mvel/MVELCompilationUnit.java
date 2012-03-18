@@ -21,7 +21,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
@@ -430,12 +439,23 @@ public class MVELCompilationUnit
 
     @Override
     public MVELCompilationUnit clone() {
+        Declaration[] clonedPreviousDeclarations = null;
+        if (previousDeclarations != null) {
+            clonedPreviousDeclarations = new Declaration[previousDeclarations.length];
+            System.arraycopy(previousDeclarations, 0, clonedPreviousDeclarations, 0, previousDeclarations.length);
+        }
+        Declaration[] clonedLocalDeclarations = null;
+        if (localDeclarations != null) {
+            clonedLocalDeclarations = new Declaration[localDeclarations.length];
+            System.arraycopy(localDeclarations, 0, clonedLocalDeclarations, 0, localDeclarations.length);
+        }
+
         MVELCompilationUnit unit = new MVELCompilationUnit( name,
                                                             expression,
                                                             globalIdentifiers,
                                                             operators,
-                                                            previousDeclarations != null ? Arrays.copyOf(previousDeclarations, previousDeclarations.length) : null,
-                                                            localDeclarations != null ? Arrays.copyOf(localDeclarations, localDeclarations.length) : null,
+                                                            clonedPreviousDeclarations,
+                                                            clonedLocalDeclarations,
                                                             otherIdentifiers,
                                                             inputIdentifiers,
                                                             inputTypes,

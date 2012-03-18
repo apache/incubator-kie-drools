@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -404,12 +403,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public Object clone() {
+        Declaration[] clonedDeclarations = new Declaration[declarations.length];
+        System.arraycopy(declarations, 0, clonedDeclarations, 0, declarations.length);
+
         MvelConstraint clone = new MvelConstraint();
         clone.setType(getType());
         clone.packageName = packageName;
         clone.expression = expression;
         clone.isIndexable = isIndexable;
-        clone.declarations = Arrays.copyOf(declarations, declarations.length);
+        clone.declarations = clonedDeclarations;
         clone.indexingDeclaration = indexingDeclaration;
         clone.extractor = extractor;
         clone.isUnification = isUnification;
