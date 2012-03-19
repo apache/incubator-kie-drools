@@ -107,8 +107,8 @@ public class FireAllRulesCommand
         }
 
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier,
-                                                                                                                fired );
+            ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult();
+            results.getResults().put(this.outIdentifier, fired);
         }
         return fired;
     }
