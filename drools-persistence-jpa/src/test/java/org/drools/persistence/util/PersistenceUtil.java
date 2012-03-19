@@ -83,7 +83,7 @@ public class PersistenceUtil {
      * @return test context
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
-        return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", true);
+        return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", testMarshalling);
     }
     
     /**
