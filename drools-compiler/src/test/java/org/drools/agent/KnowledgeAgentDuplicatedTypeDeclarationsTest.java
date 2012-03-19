@@ -214,8 +214,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
 
     @Test
-    @Ignore
-    public void testLaterRedeclarationAsEvent() throws Exception {
+    public void testLaterDeclarationAsEvent() throws Exception {
         //create a basic drl file with a type declaration
         String drl1 = "package org.drools.test1; \n" +
                 "\n" +
@@ -258,11 +257,12 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
         //create a second drl also containing a declaration of ClassA
         String drl2 = "package org.drools.test2;\n" +
                 "\n" +
-                "import org.drools.test1.Bean;\n" +
+//                "import org.drools.test1.Bean;\n" +
+                "import org.drools.Person;\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
-                "declare Bean\n" +
+                "declare Person\n" +
                 "@role(event)\n" +
                 "end\n" +
                 "\n" +
@@ -272,16 +272,16 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
                 "\n" +
                 "rule \"Data\"\n" +
                 "when\n" +
-                "  $b : Bean()\n" +
-                "  not Bean2( this before $b )\n" +
+                "  $b : Person()\n" +
+                "  not  Bean2( this before $b )\n" +
                 "then\n" +
-                "  list.add(\"OK\");\n" +
+                "  list.add(\"foo\");\n" +
                 "end\n" +
                 "\n" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
-                "  insert( new Bean( \"x\" ) );\n" +
+                "  insert( new Person( \"x\" ) );\n" +
                 "end";
 
         this.fileManager.write("rules2.drl", drl2);
@@ -314,4 +314,111 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
         ksession.dispose();
         kagent.dispose();
     }
+
+
+
+
+
+    @Test
+    public void testLaterRedeclarationAsEvent() throws Exception {
+        //create a basic drl file with a type declaration
+        String drl1 = "package org.drools.test1; \n" +
+                "\n" +
+                "declare Bean \n" +
+                "  id : String \n" +
+                "end";
+
+        this.fileManager.write("rules1.drl", drl1);
+
+        //Add the 2 resources into a change-set
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules1.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+
+        //Create a new Agent with newInstace=false
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent( kbase, false, true );
+
+        List<String> list = new ArrayList<String>();
+
+        kagent.setSystemEventListener( new PrintStreamSystemEventListener( System.out ) );
+
+        //Agent: take care of them!
+        this.applyChangeSet( kagent, ResourceFactory.newByteArrayResource( xml.getBytes() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+
+
+        ksession.fireAllRules();
+
+
+
+
+
+        //create a second drl also containing a declaration of ClassA
+        String drl2 = "package org.drools.test2;\n" +
+                "\n" +
+                "import org.drools.test1.Bean;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "@role(event)\n" +
+                "end\n" +
+                "\n" +
+                "declare Bean2\n" +
+                "  id : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Data\"\n" +
+                "when\n" +
+                "  $b : Bean()\n" +
+                "  not  Bean2( this before $b )\n" +
+                "then\n" +
+                "  list.add(\"foo\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Bean( \"x\" ) );\n" +
+                "end";
+
+        this.fileManager.write("rules2.drl", drl2);
+
+        System.out.println("\n\n\n----------------\n\n\n");
+        //
+        xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules2.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+
+        //Agent: take care of them!
+        this.applyChangeSet(kagent, ResourceFactory.newByteArrayResource(xml.getBytes()));
+
+        Rule[] rules = ( (KnowledgeBaseImpl) kagent.getKnowledgeBase() ).getRuleBase().getPackages()[0].getRules();
+        for ( Rule rule : rules ) {
+            System.out.println("\t"+rule.getName());
+        }
+        ksession.setGlobal( "list", list);
+
+        ksession.fireAllRules();
+
+        Assert.assertEquals( 1, list.size() );
+        Assert.assertEquals( "foo", list.get( 0 ) );
+
+        ksession.dispose();
+        kagent.dispose();
+    }
+
+
 }
