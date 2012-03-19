@@ -53,6 +53,7 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
@@ -88,71 +89,41 @@ import com.google.protobuf.ByteString;
  */
 public class ProtobufOutputMarshaller {
     
+    private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+
+    private static ProcessMarshaller createProcessMarshaller() {
+        try {
+            return ProcessMarshallerFactory.newProcessMarshaller();
+        } catch ( IllegalArgumentException e ) {
+            return null;
+        }
+    }
+
     public static void writeSession(MarshallerWriteContext context) throws IOException {
-        ProtobufMessages.Header.Builder _header = ProtobufMessages.Header.newBuilder();
-        // need to automate this version numbering somehow
-        _header.setVersionMajor( 5 );
-        _header.setVersionMinor( 4 );
-        _header.setVersionRevision( 0 );
         
         ProtobufMessages.KnowledgeSession _session = serializeSession( context );
         
-        writeStrategiesIndex( context, _header );
-        
-        byte[] buff = _session.toByteArray();
-        sign( _header, buff );
-        _header.setKsession( ByteString.copyFrom( buff ) );
-
-//        System.out.println("=============================================================================================================");
-//        System.out.println(_session);
-        context.stream.write( _header.build().toByteArray() );
+        PersisterHelper.writeToStreamWithHeader( context, 
+                                                 _session );
     }
-
-    private static void writeStrategiesIndex(MarshallerWriteContext context,
-                                             org.drools.marshalling.impl.ProtobufMessages.Header.Builder _header) {
-        for( Entry<String,Integer> entry : context.usedStrategies.entrySet() ) {
-            _header.addStrategy( ProtobufMessages.Header.StrategyIndex.newBuilder()
-                                     .setId( entry.getValue().intValue() )
-                                     .setName( entry.getKey() )
-                                 .build() );
-        }
-    }
-
-    private static void sign(org.drools.marshalling.impl.ProtobufMessages.Header.Builder _header,
-                             byte[] buff ) {
-        KeyStoreHelper helper = new KeyStoreHelper();
-        if (helper.isSigned()) {
-            _header.setKeyAlias( helper.getPvtKeyAlias() );
-            try {
-                _header.setSignature( ByteString.copyFrom( helper.signDataWithPrivateKey( buff ) ) );
-            } catch (Exception e) {
-                throw new RuntimeDroolsException( "Error signing session: " + e.getMessage(),
-                                                  e );
-            }
-        }
-    }
-    
 
     private static ProtobufMessages.KnowledgeSession serializeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         wm.getAgenda().unstageActivations();
-
-        ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder();
+        
+        ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
 
         final boolean multithread = wm.isPartitionManagersActive();
         if ( multithread ) {
             wm.stopPartitionManagers();
         }
-        _session.setMultithread( multithread );
 
         long time = 0;
         if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
             time = context.clockTime;
         }
-        _session.setTime( time );
-        _session.setLastId( wm.getFactHandleFactory().getId() );
-        _session.setLastRecency( wm.getFactHandleFactory().getRecency() );
-        //_ksb.setPropagationIdCounter( wm.getPropagationIdCounter() );
+        _ruleData.setLastId( wm.getFactHandleFactory().getId() );
+        _ruleData.setLastRecency( wm.getFactHandleFactory().getRecency() );
 
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
@@ -160,11 +131,11 @@ public class ProtobufOutputMarshaller {
                 .setId( handle.getId() )
                 .setRecency( handle.getRecency() )
                 .build();
-        _session.setInitialFact( _ifh );
+        _ruleData.setInitialFact( _ifh );
 
-        writeAgenda( context, _session );
+        writeAgenda( context, _ruleData );
         
-        writeNodeMemories( context, _session );
+        writeNodeMemories( context, _ruleData );
 
         for ( WorkingMemoryEntryPoint wmep : wm.getEntryPoints().values() ) {
             org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
@@ -172,44 +143,45 @@ public class ProtobufOutputMarshaller {
             writeFactHandles( context,
                               _epb,
                               ((NamedEntryPoint) wmep).getObjectStore() );
-            _session.addEntryPoint( _epb.build() );
+            _ruleData.addEntryPoint( _epb.build() );
         }
 
 
         writeActionQueue( context,
-                          _session );
+                          _ruleData );
 
         writeTruthMaintenanceSystem( context,
-                                     _session );
+                                     _ruleData );
 
-        //        if ( context.marshalProcessInstances && processMarshaller != null ) {
-        //            processMarshaller.writeProcessInstances( context );
-        //        }
-        //        else { 
-        //            context.stream.writeShort( PersisterEnums.END );
-        //        }
-        //
-        //        if ( context.marshalWorkItems && processMarshaller != null ) {
-        //            processMarshaller.writeWorkItems( context );
-        //        }     
-        //        else { 
-        //            context.stream.writeShort( PersisterEnums.END );
-        //        }
-        //        
-        //        if ( processMarshaller != null ) {
-        //            // this now just assigns the writer, it will not write out any timer information
-        //            processMarshaller.writeProcessTimers( context );
-        //        }                
-        //        else { 
-        //            context.stream.writeShort( PersisterEnums.END );
-        //        }
+        ProtobufMessages.KnowledgeSession.Builder _session = ProtobufMessages.KnowledgeSession.newBuilder()
+                .setMultithread( multithread )
+                .setTime( time )
+                .setRuleData( _ruleData.build() );
+        
+        if( processMarshaller != null ) {
+            Builder _pdata = ProtobufMessages.ProcessData.newBuilder();
+            if ( context.marshalProcessInstances ) {
+                context.parameterObject = _pdata;
+                processMarshaller.writeProcessInstances( context );
+            }
 
+            if ( context.marshalWorkItems ) {
+                context.parameterObject = _pdata;
+                processMarshaller.writeWorkItems( context );
+            }     
+
+            // this now just assigns the writer, it will not write out any timer information
+            context.parameterObject = _pdata;
+            processMarshaller.writeProcessTimers( context );
+            
+            _session.setProcessData( _pdata.build() );
+        }
+        
         Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances(), 
                                       context );
         if( _timers != null ) {
             _session.setTimers( _timers );
         }
-
 
         if ( multithread ) {
             wm.startPartitionManagers();
@@ -219,14 +191,11 @@ public class ProtobufOutputMarshaller {
     }
 
     private static void writeAgenda(MarshallerWriteContext context,
-                                    ProtobufMessages.KnowledgeSession.Builder _ksb) throws IOException {
+                                    ProtobufMessages.RuleData.Builder _ksb) throws IOException {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
 
         org.drools.marshalling.impl.ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
-
-//        _ab.setDormantActivations( agenda.getDormantActivations() );
-//        _ab.setActiveActivations( agenda.getActiveActivations() );
 
         AgendaGroup[] agendaGroups = (AgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
@@ -281,7 +250,7 @@ public class ProtobufOutputMarshaller {
     }
 
     private static void writeNodeMemories(MarshallerWriteContext context,
-                                          ProtobufMessages.KnowledgeSession.Builder _ksb) throws IOException {
+                                          ProtobufMessages.RuleData.Builder _ksb) throws IOException {
         InternalWorkingMemory wm = context.wm;
         NodeMemories memories = wm.getNodeMemories();
         // only some of the node memories require special serialization handling
@@ -477,7 +446,7 @@ public class ProtobufOutputMarshaller {
     }
 
     public static void writeActionQueue(MarshallerWriteContext context, 
-                                        ProtobufMessages.KnowledgeSession.Builder _session) throws IOException {
+                                        ProtobufMessages.RuleData.Builder _session) throws IOException {
         
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         if( ! wm.getActionQueue().isEmpty() ) {
@@ -493,7 +462,7 @@ public class ProtobufOutputMarshaller {
     
 
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context, 
-                                                   ProtobufMessages.KnowledgeSession.Builder _session) throws IOException {
+                                                   ProtobufMessages.RuleData.Builder _session) throws IOException {
         ObjectHashMap assertMap = context.wm.getTruthMaintenanceSystem().getAssertMap();
         ObjectHashMap justifiedMap = context.wm.getTruthMaintenanceSystem().getJustifiedMap();
         
@@ -560,7 +529,6 @@ public class ProtobufOutputMarshaller {
     private static void writeFactHandles(MarshallerWriteContext context,
                                          org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb,
                                          ObjectStore objectStore) throws IOException {
-        //        InternalWorkingMemory wm = context.wm;
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
         // Write out FactHandles
@@ -603,7 +571,8 @@ public class ProtobufOutputMarshaller {
                 context.usedStrategies.put( strategyClassName, index );
             }
             _handle.setStrategyIndex( index.intValue() );
-            _handle.setObject( ByteString.copyFrom( strategy.marshal( object ) ) );
+            _handle.setObject( ByteString.copyFrom( strategy.marshal( context,
+                                                                      object ) ) );
         }
 
         return _handle.build();

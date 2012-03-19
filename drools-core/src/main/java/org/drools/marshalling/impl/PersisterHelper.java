@@ -17,15 +17,28 @@
 package org.drools.marshalling.impl;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.util.Map.Entry;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.core.util.KeyStoreHelper;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ProtobufMessages.Header;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.rule.SlidingTimeWindow.BehaviorExpireWMAction;
+
+import com.google.protobuf.ByteString;
+import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.Message;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
@@ -157,5 +170,125 @@ public class PersisterHelper {
                         .setTuple( createTuple( tuple ) )
                         .build();
     }
+    
+    public static void writeToStreamWithHeader( MarshallerWriteContext context,
+                                                Message payload ) throws IOException {
+        ProtobufMessages.Header.Builder _header = ProtobufMessages.Header.newBuilder();
+        // need to automate this version numbering somehow
+        _header.setVersion( ProtobufMessages.Version.newBuilder()
+                            .setVersionMajor( 5 )
+                            .setVersionMinor( 4 )
+                            .setVersionRevision( 0 )
+                            .build() );
+        
+        writeStrategiesIndex( context, _header );
+        
+        byte[] buff = payload.toByteArray();
+        sign( _header, buff );
+        _header.setPayload( ByteString.copyFrom( buff ) );
+
+//        System.out.println("=============================================================================================================");
+//        System.out.println(_session);
+        context.stream.write( _header.build().toByteArray() );
+    }
+    
+    private static void writeStrategiesIndex(MarshallerWriteContext context,
+                                             ProtobufMessages.Header.Builder _header) {
+        for( Entry<String,Integer> entry : context.usedStrategies.entrySet() ) {
+            _header.addStrategy( ProtobufMessages.Header.StrategyIndex.newBuilder()
+                                     .setId( entry.getValue().intValue() )
+                                     .setName( entry.getKey() )
+                                 .build() );
+        }
+    }
+
+    private static void sign(ProtobufMessages.Header.Builder _header,
+                             byte[] buff ) {
+        KeyStoreHelper helper = new KeyStoreHelper();
+        if (helper.isSigned()) {
+            try {
+                _header.setSignature( ProtobufMessages.Signature.newBuilder()
+                                      .setKeyAlias( helper.getPvtKeyAlias() )
+                                      .setSignature( ByteString.copyFrom( helper.signDataWithPrivateKey( buff ) ) )
+                                      .build() );
+            } catch (Exception e) {
+                throw new RuntimeDroolsException( "Error signing session: " + e.getMessage(),
+                                                  e );
+            }
+        }
+    }
+    
+    public static ProtobufMessages.Header readFromStreamWithHeader( MarshallerReaderContext context, ExtensionRegistry registry ) throws IOException {
+        ProtobufMessages.Header _header = ProtobufMessages.Header.parseFrom( context.stream, registry );
+
+        loadStrategiesIndex( context, _header );
+
+        byte[] sessionbuff = _header.getPayload().toByteArray();
+
+        // should we check version as well here?
+        checkSignature( _header, sessionbuff );
+        
+        return _header;
+
+    }
+    
+    private static void loadStrategiesIndex(MarshallerReaderContext context,
+                                            ProtobufMessages.Header _header) {
+        for ( ProtobufMessages.Header.StrategyIndex _entry : _header.getStrategyList() ) {
+            ObjectMarshallingStrategy strategyObject = context.resolverStrategyFactory.getStrategyObject( _entry.getName() );
+            if ( strategyObject == null ) {
+                throw new IllegalStateException( "No strategy of type " + _entry.getName() + " available." );
+            }
+            context.usedStrategies.put( _entry.getId(), strategyObject );
+        }
+    }
+
+    private static void checkSignature(Header _header,
+                                       byte[] sessionbuff) {
+        KeyStoreHelper helper = new KeyStoreHelper();
+        boolean signed = _header.hasSignature();
+        if ( helper.isSigned() != signed ) {
+            throw new RuntimeDroolsException( "This environment is configured to work with " +
+                                              (helper.isSigned() ? "signed" : "unsigned") +
+                                              " serialized objects, but the given object is " +
+                                              (signed ? "signed" : "unsigned") + ". Deserialization aborted." );
+        }
+        if ( signed ) {
+            if ( helper.getPubKeyStore() == null ) {
+                throw new RuntimeDroolsException( "The session was serialized with a signature. Please configure a public keystore with the public key to check the signature. Deserialization aborted." );
+            }
+            try {
+                if ( !helper.checkDataWithPublicKey( _header.getSignature().getKeyAlias(),
+                                                     sessionbuff,
+                                                     _header.getSignature().getSignature().toByteArray() ) ) {
+                    throw new RuntimeDroolsException(
+                                                      "Signature does not match serialized package. This is a security violation. Deserialisation aborted." );
+                }
+            } catch ( InvalidKeyException e ) {
+                throw new RuntimeDroolsException( "Invalid key checking signature: " + e.getMessage(),
+                                                  e );
+            } catch ( KeyStoreException e ) {
+                throw new RuntimeDroolsException( "Error accessing Key Store: " + e.getMessage(),
+                                                  e );
+            } catch ( NoSuchAlgorithmException e ) {
+                throw new RuntimeDroolsException( "No algorithm available: " + e.getMessage(),
+                                                  e );
+            } catch ( SignatureException e ) {
+                throw new RuntimeDroolsException( "Signature Exception: " + e.getMessage(),
+                                                  e );
+            }
+        }
+    }
+    
+    public static ExtensionRegistry buildRegistry(MarshallerReaderContext context, ProcessMarshaller processMarshaller ) {
+        ExtensionRegistry registry = ExtensionRegistry.newInstance();
+        if( processMarshaller != null ) {
+            context.parameterObject = registry;
+            processMarshaller.init( context );
+        }
+        return registry;
+    }
+
+    
     
 }
