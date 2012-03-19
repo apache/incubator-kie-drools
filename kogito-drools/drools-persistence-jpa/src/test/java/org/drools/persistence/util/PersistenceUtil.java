@@ -54,8 +54,6 @@ public class PersistenceUtil {
 
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
-    // There are still bugs with marshalling, so do not test it yet!
-    // Drools: JBRULES-3237, (same as JBPM-3383)
     private static boolean TEST_MARSHALLING = true;
     
     // Persistence and data source constants
@@ -85,7 +83,7 @@ public class PersistenceUtil {
      * @return test context
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
-        return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", true);
+        return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", testMarshalling);
     }
     
     /**
