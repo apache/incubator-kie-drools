@@ -1,6 +1,7 @@
 package org.jbpm.integrationtests.marshalling;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,8 +26,8 @@ import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.MarshallingConfiguration;
 import org.drools.marshalling.impl.MarshallingConfigurationImpl;
+import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
@@ -78,7 +79,7 @@ public class ProcessInstanceResolverStrategyTest {
 
         
         // Test strategy.write
-        MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
+        org.drools.marshalling.MarshallingConfiguration marshallingConfig = new MarshallingConfigurationImpl(strategies, true, true);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         MarshallerWriteContext writerContext = new MarshallerWriteContext(baos,
                                                                     (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
@@ -113,6 +114,7 @@ public class ProcessInstanceResolverStrategyTest {
                                                                             (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                             RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
                                                                             marshallingConfig.getObjectMarshallingStrategyStore(),
+                                                                            ProtobufMarshaller.TIMER_READERS,
                                                                             marshallingConfig.isMarshallProcessInstances(),
                                                                             marshallingConfig.isMarshallWorkItems() ,
                                                                             EnvironmentFactory.newEnvironment());

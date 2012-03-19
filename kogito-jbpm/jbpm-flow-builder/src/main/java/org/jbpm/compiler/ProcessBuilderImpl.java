@@ -253,13 +253,13 @@ public class ProcessBuilderImpl implements ProcessBuilder {
                 }
             } else {
                 // @TODO could we maybe add something a bit more informative about what is wrong with the XML ?
-                this.errors.add( new ProcessLoadError( "unable to parse xml", null ) );
+                this.errors.add( new ProcessLoadError( resource, "unable to parse xml", null ) );
             }
         } catch ( FactoryConfigurationError e1 ) {
-            this.errors.add( new ProcessLoadError( "FactoryConfigurationError ", e1.getException()) );
+            this.errors.add( new ProcessLoadError( resource, "FactoryConfigurationError ", e1.getException()) );
         } catch ( Exception e2 ) {
         	e2.printStackTrace();
-            this.errors.add( new ProcessLoadError( "unable to parse xml", e2 ) );
+            this.errors.add( new ProcessLoadError( resource, "unable to parse xml", e2 ) );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }

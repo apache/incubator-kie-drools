@@ -70,7 +70,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
         ProcessInstanceMarshaller {
 
     // Output methods
-    public void writeProcessInstance(MarshallerWriteContext context,
+    public Object writeProcessInstance(MarshallerWriteContext context,
             ProcessInstance processInstance) throws IOException {        
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         ObjectOutputStream stream = context.stream;
@@ -164,15 +164,17 @@ public abstract class AbstractProcessInstanceMarshaller implements
             }
             
         }    
+        return null;
 
     }
 
-    public void writeNodeInstance(MarshallerWriteContext context,
+    public Object writeNodeInstance(MarshallerWriteContext context,
             NodeInstance nodeInstance) throws IOException {
         ObjectOutputStream stream = context.stream;
         stream.writeLong(nodeInstance.getId());
         stream.writeLong(nodeInstance.getNodeId());
         writeNodeInstanceContent(stream, nodeInstance, context);
+        return null;
     }
 
     protected void writeNodeInstanceContent(ObjectOutputStream stream,

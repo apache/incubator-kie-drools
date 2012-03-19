@@ -10,11 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.io.ResourceFactory;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -44,9 +50,6 @@ public class ProcessMarshallingTest extends JbpmTestCase {
         rule += "    list.add( $p );\n";
         rule += "end";
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ));
-        
         String process = 
     		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
     		"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
@@ -65,31 +68,33 @@ public class ProcessMarshallingTest extends JbpmTestCase {
 			"    <connection from=\"2\" to=\"3\"/>\n" +
 			"  </connections>\n" +
 			"</process>";
-        builder.addProcessFromXml( new StringReader( process ));
-        final Package pkg = builder.getPackage();
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( process ) ), ResourceType.DRF );
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(pkg);
-
-        StatefulSession session = ruleBase.newStatefulSession();
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Object> list = new ArrayList<Object>();
-        session.setGlobal( "list", list );
+        ksession.setGlobal( "list", list );
 
         Person p = new Person( "bobba fet", 32);
-        session.insert( p );
-        session.startProcess("org.test.ruleflow");
+        ksession.insert( p );
+        ksession.startProcess("org.test.ruleflow");
         
-        assertEquals(1, session.getProcessInstances().size());
+        assertEquals(1, ksession.getProcessInstances().size());
         
-        session = getSerialisedStatefulSession( session );
-        assertEquals(1, session.getProcessInstances().size());
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        assertEquals(1, ksession.getProcessInstances().size());
         
-        session.fireAllRules();
+        ksession.fireAllRules();
 
-        assertEquals( 1, ((List<Object>) session.getGlobal("list")).size());
-        assertEquals( p, ((List<Object>) session.getGlobal("list")).get(0));
-        assertEquals(0, session.getProcessInstances().size());
+        assertEquals( 1, ((List<Object>) ksession.getGlobal("list")).size());
+        assertEquals( p, ((List<Object>) ksession.getGlobal("list")).get(0));
+        assertEquals(0, ksession.getProcessInstances().size());
     }
     
     public void test2() throws Exception {

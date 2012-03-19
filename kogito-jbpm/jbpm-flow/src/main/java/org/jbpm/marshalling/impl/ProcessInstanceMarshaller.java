@@ -41,16 +41,15 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 
 public interface ProcessInstanceMarshaller {
 
-	public void writeProcessInstance(MarshallerWriteContext context,
-			ProcessInstance processInstance) throws IOException;
+	public Object writeProcessInstance(MarshallerWriteContext context,
+	                                   ProcessInstance processInstance) throws IOException;
 
-	public void writeNodeInstance(MarshallerWriteContext context,
-			NodeInstance nodeInstance) throws IOException;
+	public Object writeNodeInstance(MarshallerWriteContext context,
+	                                NodeInstance nodeInstance) throws IOException;
 
-	public ProcessInstance readProcessInstance(MarshallerReaderContext context)
-			throws IOException;
+	public ProcessInstance readProcessInstance(MarshallerReaderContext context) throws IOException;
 
 	public NodeInstance readNodeInstance(MarshallerReaderContext context,
-			NodeInstanceContainer nodeInstanceContainer,
-			WorkflowProcessInstance processInstance) throws IOException;
+	                                     NodeInstanceContainer nodeInstanceContainer,
+	                                     WorkflowProcessInstance processInstance) throws IOException;
 }

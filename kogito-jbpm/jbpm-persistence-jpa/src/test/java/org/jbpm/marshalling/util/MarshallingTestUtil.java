@@ -6,6 +6,7 @@ import java.util.List;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.ProcessMarshaller;
+import org.drools.marshalling.impl.ProtobufMarshaller;
 import org.drools.runtime.Environment;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
@@ -16,7 +17,7 @@ public class MarshallingTestUtil {
         // Setup env/context/stream
         Environment env = EnvironmentFactory.newEnvironment();
         ByteArrayInputStream bais = new ByteArrayInputStream(marshalledSessionByteArray);
-        MarshallerReaderContext context = new MarshallerReaderContext(bais, null, null, null, env);
+        MarshallerReaderContext context = new MarshallerReaderContext(bais, null, null, null, ProtobufMarshaller.TIMER_READERS, env);
 
         // Unmarshall
         ProcessMarshaller processMarshaller = new ProcessMarshallerImpl();

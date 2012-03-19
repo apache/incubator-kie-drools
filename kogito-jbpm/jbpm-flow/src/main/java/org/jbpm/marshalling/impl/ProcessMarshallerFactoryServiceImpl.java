@@ -6,7 +6,7 @@ import org.drools.marshalling.impl.ProcessMarshallerFactoryService;
 public class ProcessMarshallerFactoryServiceImpl implements ProcessMarshallerFactoryService {
 
 	public ProcessMarshaller newProcessMarshaller() {
-		return new ProcessMarshallerImpl();
+		return new ProtobufProcessMarshaller();
 	}
 	
 }

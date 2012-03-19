@@ -29,6 +29,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -151,6 +152,11 @@ public class DefaultSignalManager implements SignalManager {
 				out.writeObject(event);
 			}
 		}
+
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            // TODO Auto-generated method stub
+            return null;
+        }
 		
 	}
 	
@@ -201,6 +207,11 @@ public class DefaultSignalManager implements SignalManager {
 				out.writeObject(event);
 			}
 		}
+
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            // TODO Auto-generated method stub
+            return null;
+        }
 		
 	}
 	

@@ -18,7 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -30,11 +29,17 @@ import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterHelper;
+import org.drools.marshalling.impl.ProtobufMarshaller;
+import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.runtime.Environment;
 import org.drools.runtime.process.ProcessInstance;
 import org.hibernate.annotations.CollectionOfElements;
+import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
+import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
+import org.jbpm.marshalling.impl.ProtobufRuleFlowProcessInstanceMarshaller;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 
@@ -129,6 +134,7 @@ public class ProcessInstanceInfo{
                                                                                (InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase(),
                                                                                null,
                                                                                null,
+                                                                               ProtobufMarshaller.TIMER_READERS,
                                                                                this.env
                                                                               );
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext( context );
@@ -192,8 +198,13 @@ public class ProcessInstanceInfo{
                                      processType );
             ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller( processType );
             
-                        marshaller.writeProcessInstance( context,
-                                                processInstance);
+            Object result = marshaller.writeProcessInstance( context,
+                                                             processInstance);
+            if( marshaller instanceof ProtobufRuleFlowProcessInstanceMarshaller && result != null ) {
+                JBPMMessages.ProcessInstance _instance = (JBPMMessages.ProcessInstance)result;
+                PersisterHelper.writeToStreamWithHeader( context, 
+                                                         _instance );
+            }
             context.close();
         } catch ( IOException e ) {
             throw new IllegalArgumentException( "IOException while storing process instance " + processInstance.getId() + ": " + e.getMessage() );
