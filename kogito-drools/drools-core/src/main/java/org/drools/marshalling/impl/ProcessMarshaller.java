@@ -19,4 +19,6 @@ public interface ProcessMarshaller {
 
     void readWorkItems( MarshallerReaderContext context ) throws IOException;
 
+    void init(MarshallerReaderContext context);
+
 }

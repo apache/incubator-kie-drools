@@ -17,10 +17,6 @@
 package org.drools.marshalling.impl;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +26,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.common.ActivationsFilter;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
@@ -49,14 +44,12 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
-import org.drools.core.util.KeyStoreHelper;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
-import org.drools.marshalling.impl.ProtobufMessages.Header;
-import org.drools.marshalling.impl.ProtobufMessages.KnowledgeSession;
+import org.drools.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
@@ -79,6 +72,8 @@ import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 
+import com.google.protobuf.ExtensionRegistry;
+
 /**
  * An input marshaller that uses protobuf. 
  * 
@@ -87,15 +82,15 @@ import org.drools.time.impl.PseudoClockScheduler;
 public class ProtobufInputMarshaller {
     // NOTE: all variables prefixed with _ (underscore) are protobuf structs
 
-    //    private static ProcessMarshaller processMarshaller = createProcessMarshaller();
-    //
-    //    private static ProcessMarshaller createProcessMarshaller() {
-    //        try {
-    //            return ProcessMarshallerFactory.newProcessMarshaller();
-    //        } catch (IllegalArgumentException e) {
-    //            return null;
-    //        }
-    //    }
+    private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+
+    private static ProcessMarshaller createProcessMarshaller() {
+        try {
+            return ProcessMarshallerFactory.newProcessMarshaller();
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
 
     /**
      * Stream the data into an existing session
@@ -172,13 +167,13 @@ public class ProtobufInputMarshaller {
     private static DefaultAgenda resetSession(ReteooStatefulSession session,
                                               MarshallerReaderContext context,
                                               ProtobufMessages.KnowledgeSession _session) {
-        session.reset( _session.getLastId(),
-                       _session.getLastRecency(),
+        session.reset( _session.getRuleData().getLastId(),
+                       _session.getRuleData().getLastRecency(),
                        0 );
         DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
 
         readAgenda( context,
-                    _session,
+                    _session.getRuleData(),
                     agenda );
         return agenda;
     }
@@ -189,12 +184,12 @@ public class ProtobufInputMarshaller {
                                                                     Environment environment,
                                                                     SessionConfiguration config,
                                                                     ProtobufMessages.KnowledgeSession _session) throws IOException {
-        FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( _session.getLastId(),
-                                                                                 _session.getLastRecency() );
+        FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( _session.getRuleData().getLastId(),
+                                                                                 _session.getRuleData().getLastRecency() );
 
-        InternalFactHandle initialFactHandle = new DefaultFactHandle( _session.getInitialFact().getId(),
+        InternalFactHandle initialFactHandle = new DefaultFactHandle( _session.getRuleData().getInitialFact().getId(),
                                                                       InitialFactImpl.getInstance(),
-                                                                      _session.getInitialFact().getRecency(),
+                                                                      _session.getRuleData().getInitialFact().getRecency(),
                                                                       null );
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
@@ -202,7 +197,7 @@ public class ProtobufInputMarshaller {
         DefaultAgenda agenda = new DefaultAgenda( context.ruleBase,
                                                   false );
         readAgenda( context,
-                    _session,
+                    _session.getRuleData(),
                     agenda );
 
         ReteooStatefulSession session = new ReteooStatefulSession( id,
@@ -221,64 +216,11 @@ public class ProtobufInputMarshaller {
     }
 
     private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException {
-        ProtobufMessages.Header _header = ProtobufMessages.Header.parseFrom( context.stream );
+        ExtensionRegistry registry = PersisterHelper.buildRegistry( context, processMarshaller );
 
-        loadStrategiesIndex( context, _header );
-
-        byte[] sessionbuff = _header.getKsession().toByteArray();
-
-        // should we check version as well here?
-        checkSignature( _header, sessionbuff );
-
-        return ProtobufMessages.KnowledgeSession.parseFrom( sessionbuff );
-    }
-
-    private static void loadStrategiesIndex(MarshallerReaderContext context,
-                                            ProtobufMessages.Header _header) {
-        for ( ProtobufMessages.Header.StrategyIndex _entry : _header.getStrategyList() ) {
-            ObjectMarshallingStrategy strategyObject = context.resolverStrategyFactory.getStrategyObject( _entry.getName() );
-            if ( strategyObject == null ) {
-                throw new IllegalStateException( "No strategy of type " + _entry.getName() + " available." );
-            }
-            context.usedStrategies.put( _entry.getId(), strategyObject );
-        }
-    }
-
-    private static void checkSignature(Header _header,
-                                       byte[] sessionbuff) {
-        KeyStoreHelper helper = new KeyStoreHelper();
-        boolean signed = _header.hasSignature();
-        if ( helper.isSigned() != signed ) {
-            throw new RuntimeDroolsException( "This environment is configured to work with " +
-                                              (helper.isSigned() ? "signed" : "unsigned") +
-                                              " serialized objects, but the given object is " +
-                                              (signed ? "signed" : "unsigned") + ". Deserialization aborted." );
-        }
-        if ( signed ) {
-            if ( helper.getPubKeyStore() == null ) {
-                throw new RuntimeDroolsException( "The session was serialized with a signature. Please configure a public keystore with the public key to check the signature. Deserialization aborted." );
-            }
-            try {
-                if ( !helper.checkDataWithPublicKey( _header.getKeyAlias(),
-                                                     sessionbuff,
-                                                     _header.getSignature().toByteArray() ) ) {
-                    throw new RuntimeDroolsException(
-                                                      "Signature does not match serialized package. This is a security violation. Deserialisation aborted." );
-                }
-            } catch ( InvalidKeyException e ) {
-                throw new RuntimeDroolsException( "Invalid key checking signature: " + e.getMessage(),
-                                                  e );
-            } catch ( KeyStoreException e ) {
-                throw new RuntimeDroolsException( "Error accessing Key Store: " + e.getMessage(),
-                                                  e );
-            } catch ( NoSuchAlgorithmException e ) {
-                throw new RuntimeDroolsException( "No algorithm available: " + e.getMessage(),
-                                                  e );
-            } catch ( SignatureException e ) {
-                throw new RuntimeDroolsException( "Signature Exception: " + e.getMessage(),
-                                                  e );
-            }
-        }
+        ProtobufMessages.Header _header = PersisterHelper.readFromStreamWithHeader( context, registry );
+        
+        return ProtobufMessages.KnowledgeSession.parseFrom( _header.getPayload(), registry );
     }
 
     public static ReteooStatefulSession readSession(ProtobufMessages.KnowledgeSession _session,
@@ -307,12 +249,12 @@ public class ProtobufInputMarshaller {
         // need to read node memories before reading the fact handles
         // because this data is required during fact propagation 
         readNodeMemories( context,
-                          _session );
+                          _session.getRuleData() );
 
         readInitialFactHandle( context, 
-                               _session );
+                               _session.getRuleData() );
         
-        for ( ProtobufMessages.EntryPoint _ep : _session.getEntryPointList() ) {
+        for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
             WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
             readFactHandles( context,
                              _ep,
@@ -320,56 +262,31 @@ public class ProtobufInputMarshaller {
         }
 
         readActionQueue( context,
-                         _session );
+                         _session.getRuleData() );
 
-        //        InternalFactHandle handle = context.wm.getInitialFactHandle();
-        //        while (context.stream.readShort() == PersisterEnums.LEFT_TUPLE) {
-        //            LeftTupleSink sink = (LeftTupleSink) context.sinks.get( context.stream.readInt() );
-        //            LeftTuple leftTuple = sink.createLeftTuple( handle,
-        //                                                        sink,
-        //                                                        true );
-        //            readLeftTuple( leftTuple,
-        //                           context );
-        //        }
-        //
-        //        readPropagationContexts( context );
-        //
-        //
         readTruthMaintenanceSystem( context,
-                                    _session );
+                                    _session.getRuleData() );
         
-        //
-        //        if (processMarshaller != null) {
-        //            processMarshaller.readProcessInstances( context );
-        //        }
-        //        else {
-        //            short type = context.stream.readShort();
-        //            if (PersisterEnums.END != type) {
-        //                throw new IllegalStateException( "No process marshaller, unable to unmarshall type: " + type );
-        //            }
-        //        }
-        //
-        //        if (processMarshaller != null) {
-        //            processMarshaller.readWorkItems( context );
-        //        }
-        //        else {
-        //            short type = context.stream.readShort();
-        //            if (PersisterEnums.END != type) {
-        //                throw new IllegalStateException( "No process marshaller, unable to unmarshall type: " + type );
-        //            }
-        //        }
-        //
-        //        if (processMarshaller != null) {
-        //            // This actually does ALL timers, due to backwards compatability issues
-        //            // It will read in old JBPM binaries, but always write to the new binary format.
-        //            processMarshaller.readProcessTimers( context );
-        //        } else {
-        //            short type = context.stream.readShort();
-        //            if (PersisterEnums.END != type) {
-        //                throw new IllegalStateException( "No process marshaller, unable to unmarshall type: " + type );
-        //            }
-        //        }
-        //
+
+        if (processMarshaller != null) {
+            if( _session.hasProcessData() ) {
+                context.parameterObject = _session.getProcessData();
+                processMarshaller.readProcessInstances( context );
+                
+                context.parameterObject = _session.getProcessData();
+                processMarshaller.readWorkItems( context );
+                
+                // This actually does ALL timers, due to backwards compatability issues
+                // It will read in old JBPM binaries, but always write to the new binary format.
+                context.parameterObject = _session.getProcessData();
+                processMarshaller.readProcessTimers( context );
+            }
+        } else {
+            if ( _session.hasProcessData() ) {
+                throw new IllegalStateException( "No process marshaller, unable to unmarshall process data." );
+            }
+        }
+
         if( _session.hasTimers() ) { 
             for( ProtobufMessages.Timers.Timer _timer : _session.getTimers().getTimerList() ) {
                 readTimer( context,
@@ -388,7 +305,7 @@ public class ProtobufInputMarshaller {
     }
     
     private static void readNodeMemories(MarshallerReaderContext context,
-                                         KnowledgeSession _session) {
+                                         RuleData _session) {
         for( ProtobufMessages.NodeMemory _node : _session.getNodeMemoryList() ) {
             Object memory = null;
             switch( _node.getNodeType() ) {
@@ -446,7 +363,7 @@ public class ProtobufInputMarshaller {
     }
 
     private static void readInitialFactHandle(MarshallerReaderContext context,
-                                              KnowledgeSession _session ) {
+                                              RuleData _session ) {
         int ifhId = context.wm.getInitialFactHandle().getId();
         context.handles.put( ifhId,
                              context.wm.getInitialFactHandle() );
@@ -469,11 +386,9 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readAgenda(MarshallerReaderContext context,
-                                  KnowledgeSession _session,
+                                  RuleData _ruleData,
                                   DefaultAgenda agenda) {
-        org.drools.marshalling.impl.ProtobufMessages.Agenda _agenda = _session.getAgenda();
-        //agenda.setDormantActivations( _agenda.getDormantActivations() );
-        //agenda.setActiveActivations( _agenda.getActiveActivations() );
+        ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( org.drools.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( _agendaGroup.getName(),
@@ -509,7 +424,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readActionQueue(MarshallerReaderContext context,
-                                       KnowledgeSession _session) throws IOException,
+                                       RuleData _session) throws IOException,
                                                                  ClassNotFoundException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         Queue<WorkingMemoryAction> actionQueue = wm.getActionQueue();
@@ -612,8 +527,9 @@ public class ProtobufInputMarshaller {
         ObjectMarshallingStrategy strategy = null;
         if ( _handle.hasStrategyIndex() ) {
             strategy = context.usedStrategies.get( _handle.getStrategyIndex() );
-            // we probably need to use the proper classloader for the following
-            object = strategy.unmarshal( _handle.getObject().toByteArray(), (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
+            object = strategy.unmarshal( context,
+                                         _handle.getObject().toByteArray(), 
+                                         (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
         }
 
         InternalFactHandle handle = null;
@@ -651,7 +567,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readTruthMaintenanceSystem( MarshallerReaderContext context, 
-                                                   KnowledgeSession _session ) throws IOException {
+                                                   RuleData _session ) throws IOException {
 
         TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
         ProtobufMessages.TruthMaintenanceSystem _tms = _session.getTms();

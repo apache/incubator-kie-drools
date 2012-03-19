@@ -27,20 +27,18 @@ import java.util.Map;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Scheduler.ActivationTimerJobContext;
+import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyStore;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-
-import org.drools.common.Scheduler.ActivationTimerJobContext;
-import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerOutputMarshaller;
-import org.drools.time.JobContext;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext              stream;
@@ -50,7 +48,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     
     public long clockTime;
 
-    public final Map<Class, TimersOutputMarshaller>   writersByClass;
+    public final Map<Class<?>, TimersOutputMarshaller>   writersByClass;
 
     public final PrintStream                         out = System.out;
 
@@ -62,7 +60,9 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     public final boolean                             marshalProcessInstances;
     public final boolean                             marshalWorkItems;
     public final Environment                         env;
-
+    
+    public Object parameterObject;
+    
     public MarshallerWriteContext(OutputStream stream,
                                   InternalRuleBase ruleBase,
                                   InternalWorkingMemory wm,
@@ -92,7 +92,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.ruleBase = ruleBase;
         this.wm = wm;
         this.sinks = sinks;
-        this.writersByClass = new HashMap<Class, TimersOutputMarshaller>();
+        this.writersByClass = new HashMap<Class<?>, TimersOutputMarshaller>();
         
         this.writersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerOutputMarshaller() );
         
@@ -117,6 +117,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
+        
     }
 
 }

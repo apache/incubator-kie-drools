@@ -68,6 +68,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
     
     // this is a map to store node memory data indexed by node ID
     public final Map<Integer, Object>                    nodeMemories;
+    
+    public Object parameterObject;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
@@ -123,6 +125,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.env = env;
         
         this.nodeMemories = new HashMap<Integer, Object>();
+        
+        this.parameterObject = null;
     }
     
     @Override

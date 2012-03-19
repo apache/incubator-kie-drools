@@ -61,7 +61,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return em.find(Class.forName(canonicalName), id);
     }
 
-    public byte[] marshal(Object object) throws IOException {
+    public byte[] marshal(ObjectOutputStream os,
+                          Object object) throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
         oos.writeUTF(object.getClass().getCanonicalName());
@@ -70,7 +71,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return buff.toByteArray();
     }
 
-    public Object unmarshal(byte[] object,
+    public Object unmarshal(ObjectInputStream os,
+                            byte[] object,
                             ClassLoader classloader) throws IOException,
                                                     ClassNotFoundException {
         DroolsObjectInputStream is = new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader );

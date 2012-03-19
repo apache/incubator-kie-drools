@@ -23,41 +23,61 @@ option java_outer_classname = "ProtobufMessages";
 //   this protocol buffer, not even by deleted fields).
 
 message Header {
-    message StrategyIndex {
-        optional int32 id = 1;
-        optional string name = 2;
-    }
+    extensions 100 to 199;
 
     // Drools version for which this message was created
-    optional int32 version_major = 1;
-    optional int32 version_minor = 2;
-    optional int32 version_revision = 3;
+    optional Version version = 1;
 
     // Signature to prevent security concerns
-    optional string key_alias = 4;
-    optional bytes signature = 5;
+    optional Signature signature = 4;
 
     // The list of strategy classes used for this serialization
     repeated StrategyIndex strategy = 9;
 
     // byte blobs
-    optional bytes kbase = 10;
-    optional bytes ksession = 11;
+    optional bytes payload = 10;
+
+    message StrategyIndex {
+        optional int32 id = 1;
+        optional string name = 2;
+    }
+}
+
+message Version {
+    optional int32 version_major = 1;
+    optional int32 version_minor = 2;
+    optional int32 version_revision = 3;
+}
+
+message Signature {
+    optional string key_alias = 1;
+    optional bytes signature = 2;
 }
 
 message KnowledgeBase {
+    extensions 100 to 199;
+
     optional bytes signature = 1;
     optional string id = 2;
     // we should probably add the list of packages/rules/resources on the knowledge base
 }
 
-// the Knowledge Session serialization format
 message KnowledgeSession {
+    extensions 100 to 199;
+
     optional bool multithread = 1;
     optional int64 time = 2;
+
+    optional RuleData rule_data = 3;
+    optional ProcessData process_data = 4;
+
+    optional Timers timers = 5;
+}
+
+// the Rule Data serialization format
+message RuleData {
     optional int32 last_id = 3;
     optional int64 last_recency = 4;
-    //optional int64 propagation_id_counter = 5;
 
     optional FactHandle initial_fact = 6;
 
@@ -65,16 +85,12 @@ message KnowledgeSession {
     repeated NodeMemory node_memory = 9;
     repeated EntryPoint entry_point = 10;
 
-    // repeated PropagationContext propagation_context = 10;
-
     optional ActionQueue action_queue = 11;
     optional TruthMaintenanceSystem tms = 12;
+}
 
-    optional Timers timers = 13;
-
-    // write process instances
-    // write work items
-    // write process timers
+message ProcessData {
+    extensions 10 to 199;
 }
 
 // the agenda message
@@ -295,16 +311,20 @@ message Timers {
     repeated Timer timer = 1;
 
     message Timer {
+        extensions 100 to 199;
+
         optional TimerType type = 1;
 
         optional ExpireTimer expire = 2;
         optional ActivationTimer activation = 3;
+        optional BehaviorTimer behavior = 4;
     }
 
     enum TimerType {
         EXPIRE = 1;
         ACTIVATION = 2;
         BEHAVIOR = 3;
+        PROCESS = 4;
     }
 
     message ExpireTimer {
@@ -316,6 +336,8 @@ message Timers {
     message ActivationTimer {
         optional Activation activation = 1;
         optional Trigger trigger = 2;
+    }
+    message BehaviorTimer {
 
     }
 }
@@ -355,3 +377,4 @@ message Trigger {
         optional int64 next_fire_time = 1;
     }
 }
+

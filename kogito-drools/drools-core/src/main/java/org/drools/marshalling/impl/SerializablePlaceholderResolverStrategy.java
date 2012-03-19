@@ -60,7 +60,8 @@ public class SerializablePlaceholderResolverStrategy
         return acceptor.accept( object );
     }
 
-    public byte[] marshal(Object object) throws IOException {
+    public byte[] marshal(ObjectOutputStream os,
+                          Object object) throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
         oos.writeObject( object );
@@ -68,7 +69,9 @@ public class SerializablePlaceholderResolverStrategy
         return buff.toByteArray();
     }
 
-    public Object unmarshal(byte[] object, ClassLoader classloader) throws IOException, ClassNotFoundException {
+    public Object unmarshal(ObjectInputStream is,
+                            byte[] object, 
+                            ClassLoader classloader) throws IOException, ClassNotFoundException {
         return new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader ).readObject();
     }
 

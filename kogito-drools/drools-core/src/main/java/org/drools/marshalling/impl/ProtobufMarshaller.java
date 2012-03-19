@@ -58,12 +58,20 @@ import org.drools.time.SessionClock;
 public class ProtobufMarshaller
         implements
         Marshaller {
+    
+    public static final Map<Integer, TimersInputMarshaller> TIMER_READERS = new HashMap<Integer, TimersInputMarshaller>();
+    static {
+        TIMER_READERS.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
+        TIMER_READERS.put( ProtobufMessages.Timers.TimerType.ACTIVATION_VALUE, new ActivationTimerInputMarshaller() );
+        TIMER_READERS.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
+    }
+    
     KnowledgeBase                       kbase;
     GlobalResolver                      globalResolver;
     RuleBaseConfiguration               ruleBaseConfig;
     MarshallingConfiguration            marshallingConfig;
     ObjectMarshallingStrategyStore      strategyStore;
-    Map<Integer, TimersInputMarshaller> timerReaders;
+    ;
 
     public ProtobufMarshaller(KnowledgeBase kbase,
                               MarshallingConfiguration marshallingConfig) {
@@ -71,11 +79,6 @@ public class ProtobufMarshaller
         this.ruleBaseConfig = (ruleBaseConfig != null) ? ruleBaseConfig : RuleBaseConfiguration.getDefaultInstance();
         this.marshallingConfig = marshallingConfig;
         this.strategyStore = this.marshallingConfig.getObjectMarshallingStrategyStore();
-
-        this.timerReaders = new HashMap<Integer, TimersInputMarshaller>();
-        this.timerReaders.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
-        this.timerReaders.put( ProtobufMessages.Timers.TimerType.ACTIVATION_VALUE, new ActivationTimerInputMarshaller() );
-        this.timerReaders.put( ProtobufMessages.Timers.TimerType.EXPIRE_VALUE, new ExpireJobContextTimerInputMarshaller() );
     }
 
     public StatefulKnowledgeSession unmarshall(final InputStream stream) throws IOException,
@@ -102,7 +105,7 @@ public class ProtobufMarshaller
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
                                                                        this.strategyStore,
-                                                                       this.timerReaders,
+                                                                       TIMER_READERS,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
                                                                        this.marshallingConfig.isMarshallWorkItems(),
                                                                        environment );
@@ -132,7 +135,7 @@ public class ProtobufMarshaller
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
                                                                        this.strategyStore,
-                                                                       this.timerReaders,
+                                                                       TIMER_READERS,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
                                                                        marshallingConfig.isMarshallWorkItems(),
                                                                        ksession.getEnvironment() );
