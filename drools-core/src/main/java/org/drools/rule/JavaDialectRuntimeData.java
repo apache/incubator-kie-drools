@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -62,7 +63,7 @@ public class JavaDialectRuntimeData
 
     private Map<String, Object>            invokerLookups;
 
-    private Map                            classLookups;
+    private Map<String,byte[]>             classLookups;
 
     private Map<String, byte[]>            store;
 
@@ -132,7 +133,7 @@ public class JavaDialectRuntimeData
 
         stream.writeInt( this.classLookups.size() );
         for (Iterator it = this.classLookups.entrySet().iterator(); it.hasNext();) {
-            Entry entry = (Entry) it.next();
+            Entry<String, byte[]> entry = (Entry<String,byte[]>) it.next();
             stream.writeObject( entry.getKey() );
             stream.writeObject( entry.getValue() );
         }
@@ -196,8 +197,8 @@ public class JavaDialectRuntimeData
         }
 
         for (int i = 0, length = stream.readInt(); i < length; i++) {
-            this.classLookups.put( stream.readObject(),
-                                   stream.readObject() );
+            this.classLookups.put( (String) stream.readObject(),
+                                   (byte[]) stream.readObject() );
         }
 
         // mark it as dirty, so that it reloads everything.
