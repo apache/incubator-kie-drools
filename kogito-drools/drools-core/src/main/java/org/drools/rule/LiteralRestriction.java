@@ -151,7 +151,7 @@ public class LiteralRestriction
         return new LiteralContextEntry( this.readAccessor );
     }
 
-    public Object clone() {
+    public LiteralRestriction clone() {
         return new LiteralRestriction( this.field,
                                        this.evaluator,
                                        this.readAccessor );

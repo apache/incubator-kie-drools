@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -94,14 +93,14 @@ public class GroupElement extends ConditionalElement
                            rce );
     }
 
-    public List getChildren() {
+    public List<RuleConditionElement> getChildren() {
         return this.children;
     }
 
     /**
      * @inheritDoc
      */
-    public Map getInnerDeclarations() {
+    public Map<String,Declaration> getInnerDeclarations() {
         return this.type.getInnerDeclarations( this.children );
     }
 
@@ -225,7 +224,7 @@ public class GroupElement extends ConditionalElement
                 final int index = parent.getChildren().indexOf( this );
                 parent.getChildren().remove( this );
 
-                final Object child = this.children.get( 0 );
+                final RuleConditionElement child = this.children.get( 0 );
                 parent.getChildren().add( index,
                                           child );
 
@@ -343,7 +342,7 @@ public class GroupElement extends ConditionalElement
         return this.type.toString() + this.children.toString();
     }
 
-    public List getNestedElements() {
+    public List<RuleConditionElement> getNestedElements() {
         return this.children;
     }
 

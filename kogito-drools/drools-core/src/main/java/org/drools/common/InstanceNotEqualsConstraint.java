@@ -111,7 +111,7 @@ public class InstanceNotEqualsConstraint
         return this.otherPattern.equals( other.otherPattern );
     }
 
-    public Object clone() {
+    public InstanceNotEqualsConstraint clone() {
         return new InstanceNotEqualsConstraint( this.otherPattern );
     }
 

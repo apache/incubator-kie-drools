@@ -21,7 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
@@ -114,7 +113,7 @@ public class TupleStartEqualsConstraint
         return false;
     }
 
-    public Object clone() {
+    public TupleStartEqualsConstraint clone() {
         return INSTANCE;
     }
 

@@ -25,7 +25,6 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
@@ -195,9 +194,9 @@ public class VariableRestriction
         return createContextEntry(readAccessor, declaration, evaluator);
     }
 
-    public Object clone() {
+    public VariableRestriction clone() {
         return new VariableRestriction( this.readAccessor,
-                                        (Declaration) this.declaration.clone(),
+                                        this.declaration.clone(),
                                         this.evaluator );
     }
 

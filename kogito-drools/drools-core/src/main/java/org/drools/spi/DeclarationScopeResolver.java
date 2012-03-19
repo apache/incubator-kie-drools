@@ -28,14 +28,12 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 
-import org.drools.spi.InternalReadAccessor;
-
 /**
  * A class capable of resolving a declaration in the current build context
  */
 public class DeclarationScopeResolver {
     private static final Stack<RuleConditionElement> EMPTY_STACK = new Stack<RuleConditionElement>();
-    private Map<String, Class<?>>                  map;
+    private Map<String, Class<?>>                    map;
     private Stack<RuleConditionElement>              buildStack;
     private Package                                  pkg;
 
@@ -85,7 +83,7 @@ public class DeclarationScopeResolver {
                                       final String identifier) {
         // it may be a local bound variable
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( identifier );
+            final Declaration declaration = buildStack.get( i ).getInnerDeclarations().get( identifier );
             if ( declaration != null ) {
                 return declaration;
             }
@@ -104,10 +102,10 @@ public class DeclarationScopeResolver {
         // it may be a global or something
         if ( this.map.containsKey( (identifier) ) ) {
             if ( pkg != null ) {
-                Class<?> cls = (Class<?>) this.map.get( identifier );
+                Class<?> cls = this.map.get( identifier );
                 ClassObjectType classObjectType = new ClassObjectType( cls );
 
-                Declaration declaration = null;
+                Declaration declaration;
                 final Pattern dummy = new Pattern( 0,
                                                    classObjectType );
 
@@ -135,7 +133,7 @@ public class DeclarationScopeResolver {
     public boolean available(Rule rule,
                              final String name) {
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final Declaration declaration = (Declaration) ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations().get( name );
+            final Declaration declaration = buildStack.get( i ).getInnerDeclarations().get( name );
             if ( declaration != null ) {
                 return true;
             }
@@ -164,15 +162,12 @@ public class DeclarationScopeResolver {
         }
         
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
-            final RuleConditionElement rce = (RuleConditionElement) this.buildStack.get( i );
-            final Declaration declaration = (Declaration) rce.getInnerDeclarations().get( name );
+            final RuleConditionElement rce = buildStack.get( i );
+            final Declaration declaration = rce.getInnerDeclarations().get( name );
             if ( declaration != null ) {
-                if ( (rce instanceof GroupElement) && ((GroupElement) rce).isOr() ) {
-                    // if it is an OR and it is duplicated, we can stop looking for duplication now
-                    // as it is a separate logical branch
-                    return false;
-                }
-                return true;
+                // if it is an OR and it is duplicated, we can stop looking for duplication now
+                // as it is a separate logical branch
+                return !((rce instanceof GroupElement) && ((GroupElement) rce).isOr());
             }
         }
         // look at parent rules
@@ -196,10 +191,10 @@ public class DeclarationScopeResolver {
      */
     public Map<String, Declaration> getDeclarations(Rule rule) {
         final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
-        for ( int i = 0; i < this.buildStack.size(); i++ ) {
-            // this may be optimized in the future to only re-add elements at 
+        for (RuleConditionElement aBuildStack : this.buildStack) {
+            // this may be optimized in the future to only re-add elements at
             // scope breaks, like "NOT" and "EXISTS"
-            declarations.putAll( ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations() );
+            declarations.putAll(aBuildStack.getInnerDeclarations());
         }
         if ( null != rule.getParent() ) {
             return getAllExtendedDeclaration( rule.getParent(),
@@ -227,8 +222,7 @@ public class DeclarationScopeResolver {
 
     public Pattern findPatternByIndex(int index) {
         if ( !this.buildStack.isEmpty() ) {
-            return findPatternInNestedElements( index,
-                                                (RuleConditionElement) this.buildStack.get( 0 ) );
+            return findPatternInNestedElements( index, buildStack.get( 0 ) );
         }
         return null;
     }

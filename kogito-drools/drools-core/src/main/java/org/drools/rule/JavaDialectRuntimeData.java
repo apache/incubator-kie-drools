@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,6 +46,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
+import org.drools.spi.Constraint;
 import org.drools.spi.Wireable;
 import org.drools.util.CompositeClassLoader;
 import org.drools.util.FastClassLoader;
@@ -60,7 +60,7 @@ public class JavaDialectRuntimeData
 
     private static final ProtectionDomain  PROTECTION_DOMAIN;
 
-    private Map                            invokerLookups;
+    private Map<String, Object>            invokerLookups;
 
     private Map<String, byte[]>            store;
 
@@ -84,8 +84,8 @@ public class JavaDialectRuntimeData
     }
 
     public JavaDialectRuntimeData() {
-        this.invokerLookups = new HashMap();
-        this.store = new HashMap();
+        this.invokerLookups = new HashMap<String, Object>();
+        this.store = new HashMap<String, byte[]>();
         this.dirty = false;
     }
 
@@ -105,10 +105,10 @@ public class JavaDialectRuntimeData
         ObjectOutput out = new ObjectOutputStream( bos );
 
         out.writeInt( this.store.size() );
-        for (Iterator it = this.store.entrySet().iterator(); it.hasNext();) {
-            Entry entry = (Entry) it.next();
-            out.writeObject( entry.getKey() );
-            out.writeObject( entry.getValue() );
+        for (Entry<String, byte[]> stringEntry : this.store.entrySet()) {
+            Entry entry = (Entry) stringEntry;
+            out.writeObject(entry.getKey());
+            out.writeObject(entry.getValue());
         }
         out.flush();
         out.close();
@@ -121,10 +121,10 @@ public class JavaDialectRuntimeData
         }
 
         stream.writeInt( this.invokerLookups.size() );
-        for (Iterator it = this.invokerLookups.entrySet().iterator(); it.hasNext();) {
-            Entry entry = (Entry) it.next();
-            stream.writeObject( entry.getKey() );
-            stream.writeObject( entry.getValue() );
+        for (Entry<String, Object> stringObjectEntry : this.invokerLookups.entrySet()) {
+            Entry entry = (Entry) stringObjectEntry;
+            stream.writeObject(entry.getKey());
+            stream.writeObject(entry.getValue());
         }
 
     }
@@ -181,7 +181,7 @@ public class JavaDialectRuntimeData
         in.close();
 
         for (int i = 0, length = stream.readInt(); i < length; i++) {
-            this.invokerLookups.put( stream.readObject(),
+            this.invokerLookups.put( (String) stream.readObject(),
                                      stream.readObject() );
         }
 
@@ -336,12 +336,11 @@ public class JavaDialectRuntimeData
     private void removeClasses( final ConditionalElement ce ) {
         if (ce instanceof GroupElement) {
             final GroupElement group = (GroupElement) ce;
-            for (final Iterator it = group.getChildren().iterator(); it.hasNext();) {
-                final Object object = it.next();
+            for (final Object object : group.getChildren()) {
                 if (object instanceof ConditionalElement) {
-                    removeClasses( (ConditionalElement) object );
+                    removeClasses((ConditionalElement) object);
                 } else if (object instanceof Pattern) {
-                    removeClasses( (Pattern) object );
+                    removeClasses((Pattern) object);
                 }
             }
         } else if (ce instanceof EvalCondition) {
@@ -350,12 +349,11 @@ public class JavaDialectRuntimeData
     }
 
     private void removeClasses( final Pattern pattern ) {
-        for (final Iterator it = pattern.getConstraints().iterator(); it.hasNext();) {
-            final Object object = it.next();
+        for (final Constraint object : pattern.getConstraints()) {
             if (object instanceof PredicateConstraint) {
-                remove( ( (PredicateConstraint) object ).getPredicateExpression().getClass().getName() );
+                remove(((PredicateConstraint) object).getPredicateExpression().getClass().getName());
             } else if (object instanceof ReturnValueConstraint) {
-                remove( ( (ReturnValueConstraint) object ).getExpression().getClass().getName() );
+                remove(((ReturnValueConstraint) object).getExpression().getClass().getName());
             }
         }
     }
@@ -391,45 +389,20 @@ public class JavaDialectRuntimeData
         }
     }
 
-    public void wire( final String className ) throws ClassNotFoundException,
-            InstantiationException,
-            IllegalAccessException {
+    public void wire( final String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Object invoker = getInvokers().get( className );
         if (invoker != null) {
-            wire( className,
-                  invoker );
+            wire( className, invoker );
         }
     }
 
-    public void wire( final String className,
-            final Object invoker ) throws ClassNotFoundException,
-            InstantiationException,
-            IllegalAccessException {
+    public void wire( final String className, final Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class clazz = this.rootClassLoader.loadClass( className );
 
         if (clazz != null) {
             if (invoker instanceof Wireable) {
                 ( (Wireable) invoker ).wire( clazz.newInstance() );
             }
-            //
-            //if ( invoker instanceof ReturnValueRestriction ) {
-            //((ReturnValueRestriction) invoker).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
-            //} else if ( invoker instanceof PredicateConstraint ) {
-            //((PredicateConstraint) invoker).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
-            //} else if ( invoker instanceof EvalCondition ) {
-            //((EvalCondition) invoker).setEvalExpression( (EvalExpression) clazz.newInstance() );
-            //} else if ( invoker instanceof Accumulate ) {
-            //((Accumulate) invoker).setAccumulator( (Accumulator) clazz.newInstance() );
-            //} else if ( invoker instanceof Rule ) {
-            //((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
-            //} else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
-            //((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
-            //} else if ( invoker instanceof DroolsAction ) {
-            //((DroolsAction) invoker).setMetaData( "Action",
-            //              clazz.newInstance() );
-            //} else if ( invoker instanceof ReturnValueConstraintEvaluator ) {
-            //((ReturnValueConstraintEvaluator) invoker).setEvaluator( (ReturnValueEvaluator) clazz.newInstance() );
-            //}
         } else {
             throw new ClassNotFoundException( className );
         }
@@ -504,14 +477,14 @@ public class JavaDialectRuntimeData
                            invoker );
     }
 
-    public void putAllInvokers( final Map invokers ) {
+    public void putAllInvokers( final Map<String, Object> invokers ) {
         getInvokers().putAll( invokers );
 
     }
 
-    public Map getInvokers() {
+    public Map<String, Object> getInvokers() {
         if (this.invokerLookups == null) {
-            this.invokerLookups = new HashMap();
+            this.invokerLookups = new HashMap<String, Object>();
         }
         return this.invokerLookups;
     }
@@ -638,9 +611,7 @@ public class JavaDialectRuntimeData
      */
     public static String stripExtension( final String pResourceName ) {
         final int i = pResourceName.lastIndexOf( '.' );
-        final String withoutExtension = pResourceName.substring( 0,
-                                                                 i );
-        return withoutExtension;
+        return pResourceName.substring( 0, i );
     }
 
 }

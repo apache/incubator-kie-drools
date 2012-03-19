@@ -62,6 +62,6 @@ public interface Restriction
      */
     public boolean isTemporal();
 
-    public Object clone();
+    public Restriction clone();
 
 }

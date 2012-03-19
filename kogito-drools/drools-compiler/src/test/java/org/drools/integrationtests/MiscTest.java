@@ -10287,4 +10287,29 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert(new ClassB());
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test @Ignore
+    public void testVariableBindingWithOR() throws Exception {
+        // JBRULES-3390
+        String str = "package org.drools.test; \n" +
+                "declare A\n" +
+                "end\n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   A( ) and ( B( $bField : field ) or C( $cField : field ) ) " +
+                ")\n" +
+                "then\n" +
+                "    System.out.println($bField);\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+    }
 }

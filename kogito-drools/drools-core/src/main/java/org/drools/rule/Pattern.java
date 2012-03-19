@@ -171,7 +171,7 @@ public class Pattern
         }
 
         for ( Constraint constr : this.constraints ) {
-            Constraint constraint = (Constraint) ((Constraint) constr).clone();
+            Constraint constraint = constr.clone();
 
             // we must update pattern references in cloned declarations
             Declaration[] oldDecl = constr.getRequiredDeclarations();
@@ -218,7 +218,7 @@ public class Pattern
 
     public void addConstraint(Constraint constraint) {
         if ( this.constraints == Collections.EMPTY_LIST ) {
-            this.constraints = new ArrayList( 1 );
+            this.constraints = new ArrayList<Constraint>( 1 );
         }
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );

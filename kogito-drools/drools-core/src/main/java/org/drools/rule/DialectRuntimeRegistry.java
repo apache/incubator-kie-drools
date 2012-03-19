@@ -34,7 +34,7 @@ public class DialectRuntimeRegistry
 
     private static final long serialVersionUID = 510l;
 
-    private Map                             lineMappings;
+    private Map<String, LineMappings>            lineMappings;
 
     public DialectRuntimeRegistry() {
         this.dialects = new HashMap<String, DialectRuntimeData>();
@@ -57,22 +57,19 @@ public class DialectRuntimeRegistry
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
         this.dialects = (Map<String, DialectRuntimeData>) stream.readObject();
-        this.lineMappings = (Map) stream.readObject();
+        this.lineMappings = (Map<String, LineMappings>) stream.readObject();
     }
 
     public void onAdd(CompositeClassLoader rootClassLoader) {
         //this.classLoader = rootClassLoader;
-        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-            DialectRuntimeData data = (DialectRuntimeData) it.next();
-            data.onAdd( this,
-                        rootClassLoader );
+        for (DialectRuntimeData data : this.dialects.values()) {
+            data.onAdd(this, rootClassLoader);
         }
     }
     
     public void onRemove() {
-        for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
-            DialectRuntimeData data = (DialectRuntimeData) it.next();
-            data.onRemove( );
+        for (DialectRuntimeData data : this.dialects.values()) {
+            data.onRemove();
         }
     }
 
@@ -145,12 +142,12 @@ public class DialectRuntimeRegistry
     }
 
     public LineMappings getLineMappings(final String className) {
-        return (LineMappings) getLineMappings().get( className );
+        return getLineMappings().get( className );
     }
 
-    public Map getLineMappings() {
+    public Map<String, LineMappings> getLineMappings() {
         if ( this.lineMappings == null ) {
-            this.lineMappings = new HashMap();
+            this.lineMappings = new HashMap<String, LineMappings>();
         }
         return this.lineMappings;
     }

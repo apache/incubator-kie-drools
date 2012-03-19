@@ -342,12 +342,9 @@ public class ReturnValueRestriction
             return false;
         }
 
-        if ( !Arrays.equals( this.requiredGlobals,
-                             other.requiredGlobals ) ) {
-            return false;
-        }
-
-        return this.evaluator.equals( other.evaluator ) && this.expression.equals( other.expression );
+        return Arrays.equals(this.requiredGlobals, other.requiredGlobals) &&
+                this.evaluator.equals(other.evaluator) &&
+                this.expression.equals(other.expression);
     }
 
     private static int hashCode(final Object[] array) {
@@ -356,8 +353,8 @@ public class ReturnValueRestriction
             return 0;
         }
         int result = 1;
-        for ( int index = 0; index < array.length; index++ ) {
-            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+        for (Object anArray : array) {
+            result = PRIME * result + (anArray == null ? 0 : anArray.hashCode());
         }
         return result;
     }
@@ -370,15 +367,15 @@ public class ReturnValueRestriction
         return ctx;
     }
 
-    public Object clone() {
+    public ReturnValueRestriction clone() {
         Declaration[] previous = new Declaration[this.previousDeclarations.length];
         for ( int i = 0; i < previous.length; i++ ) {
-            previous[i] = (Declaration) this.previousDeclarations[i].clone();
+            previous[i] = this.previousDeclarations[i].clone();
         }
 
         Declaration[] local = new Declaration[this.localDeclarations.length];
         for ( int i = 0; i < local.length; i++ ) {
-            local[i] = (Declaration) this.localDeclarations[i].clone();
+            local[i] = this.localDeclarations[i].clone();
         }
 
         ReturnValueRestriction clone = new ReturnValueRestriction( this.readAccessor,

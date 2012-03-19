@@ -174,7 +174,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
         }
     }
 
-    public Object clone() {
+    public ReturnValueConstraint clone() {
         return new ReturnValueConstraint( this.readAccessor,
                                           (ReturnValueRestriction) this.restriction.clone() );
     }

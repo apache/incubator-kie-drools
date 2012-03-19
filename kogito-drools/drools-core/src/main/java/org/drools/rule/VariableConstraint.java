@@ -197,9 +197,9 @@ public class VariableConstraint extends MutableTypeConstraint
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 
-    public Object clone() {
+    public VariableConstraint clone() {
         return new VariableConstraint( this.fieldExtractor,
-                                       (Restriction) this.restriction.clone() );
+                                       this.restriction.clone() );
     }
 
     public static class WrapperIndexEvaluator implements IndexEvaluator {
