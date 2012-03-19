@@ -406,21 +406,21 @@ public class StatefulKnowledgeSessionImpl
                         boolean updateEqualsMap,
                         Rule rule,
                         Activation activation) throws FactException {
-        ((AbstractWorkingMemory) this.session).retract( factHandle,
-                                                        removeLogical,
-                                                        updateEqualsMap,
-                                                        rule,
-                                                        activation );
+        this.session.retract( factHandle,
+                              removeLogical,
+                              updateEqualsMap,
+                              rule,
+                              activation );
     }
 
     public void update(FactHandle factHandle,
                        Object object,
                        long mask,
                        Activation activation) throws FactException {
-        ((AbstractWorkingMemory) this.session).update( (org.drools.FactHandle) factHandle,
-                                                       object,
-                                                       mask,
-                                                       activation );
+        this.session.update( (org.drools.FactHandle) factHandle,
+                             object,
+                             mask,
+                             activation );
     }
 
     public EntryPoint getEntryPoint() {

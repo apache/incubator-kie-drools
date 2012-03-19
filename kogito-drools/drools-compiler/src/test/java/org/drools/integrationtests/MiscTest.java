@@ -10236,4 +10236,16 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testCommentDelimiterInString() throws Exception {
+        String str = "rule x\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "System.out.println( \"/*\" );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+    }
 }
