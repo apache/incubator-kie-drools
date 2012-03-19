@@ -1,7 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +15,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
@@ -114,7 +114,7 @@ public class MVELConsequenceBuilder
                                                             context.getRuleDescr(),
                                                             dialect.getInterceptors(),
                                                             text,
-                                                            new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                            new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(decls),
                                                                                  context.getPackageBuilder().getGlobals(),
                                                                                  null,
                                                                                  KnowledgeHelper.class),
@@ -193,12 +193,18 @@ public class MVELConsequenceBuilder
         int brace = 0;
         int sqre = 0;
         int crly = 0;
+        boolean inString = false;
         char lastNonWhite = ';';
         for ( int i = 0; i < cs.length; i++ ) {
             char c = cs[i];
             switch ( c ) {
+                case '\"' :
+                    if ( i == 0 || cs[i-1] != '\\' ) {
+                        inString = !inString;
+                    }
+                    break;
                 case '/' :
-                    if( i < cs.length-1 && cs[i+1] == '*' ) {
+                    if( i < cs.length-1 && cs[i+1] == '*' && !inString ) {
                         // multi-line comment
                         int start = i;
                         i+=2; // skip the /*
