@@ -51,5 +51,5 @@ public abstract class MutableTypeConstraint
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(type);
     }
-    public abstract Object clone();
+    public abstract MutableTypeConstraint clone();
 }

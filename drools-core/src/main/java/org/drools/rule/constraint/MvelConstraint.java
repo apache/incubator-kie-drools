@@ -402,7 +402,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return false;
     }
 
-    public Object clone() {
+    public MvelConstraint clone() {
         Declaration[] clonedDeclarations = new Declaration[declarations.length];
         System.arraycopy(declarations, 0, clonedDeclarations, 0, declarations.length);
 

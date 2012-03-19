@@ -25,7 +25,6 @@ import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
-import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
@@ -67,21 +66,16 @@ public class UnificationRestriction
 
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        InternalFactHandle handle) {
-        if ( ((UnificationContextEntry)context).getVariable() == null ) {
-            return this.vr.isAllowedCachedLeft( ((UnificationContextEntry)context).getContextEntry(), handle );
-        }
-        return true;
+        return ((UnificationContextEntry) context).getVariable() != null ||
+                this.vr.isAllowedCachedLeft(((UnificationContextEntry) context).getContextEntry(), handle);
     }
 
     public boolean isAllowedCachedRight(LeftTuple tuple,
                                         ContextEntry context) {
         DroolsQuery query = ( DroolsQuery ) tuple.get( 0 ).getObject(); 
-        Variable v = query.getVariables()[ ((UnificationContextEntry)context).getReader().getIndex() ];     
-        
-        if ( v == null ) {
-            return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
-        }
-        return true;
+        Variable v = query.getVariables()[ ((UnificationContextEntry)context).getReader().getIndex() ];
+
+        return v != null || this.vr.isAllowedCachedRight(tuple, ((UnificationContextEntry) context).getContextEntry());
     }
     
     public VariableRestriction getVariableRestriction() {
@@ -122,8 +116,8 @@ public class UnificationRestriction
         out.writeObject( this.vr );
     }
 
-    public Object clone() {
-        return new UnificationRestriction( (VariableRestriction) this.vr.clone() );
+    public UnificationRestriction clone() {
+        return new UnificationRestriction( this.vr.clone() );
     }
     
     public void setReadAccessor(InternalReadAccessor readAccessor) {

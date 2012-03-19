@@ -35,15 +35,14 @@ public class DialectCompiletimeRegistry {
      * @return
      */
     public Dialect getDialect(final String name) {
-        return (Dialect) this.map.get( name );
+        return this.map.get( name );
     }
 
     /**
      * Instruct all registered dialects to compile what ever they have attempted to build.
      */
     public void compileAll() {
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
+        for (Dialect dialect : this.map.values()) {
             dialect.compileAll();
         }
     }

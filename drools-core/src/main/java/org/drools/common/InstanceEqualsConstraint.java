@@ -99,7 +99,7 @@ public class InstanceEqualsConstraint
         return this.otherPattern.hashCode();
     }
 
-    public Object clone() {
+    public InstanceEqualsConstraint clone() {
         // don't clone pattern
         return new InstanceEqualsConstraint( this.otherPattern );
     }

@@ -18,7 +18,6 @@ import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
@@ -47,7 +46,6 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.WindowReferenceDescr;
-import org.drools.reteoo.builder.*;
 import org.drools.rule.Function;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.LineMappings;
@@ -57,6 +55,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
+import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
@@ -120,7 +119,7 @@ public class JavaDialect
     private static final GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
 
     // a map of registered builders
-    private static Map                               builders;
+    private static Map<Class<?>, EngineElementBuilder> builders;
 
     static {
         initBuilder();
@@ -133,10 +132,10 @@ public class JavaDialect
 
     private Package                                  pkg;
     private JavaCompiler                             compiler;
-    private List                                     generatedClassList;
+    private List<String>                             generatedClassList;
     private MemoryResourceReader                     src;
     private PackageStore                             packageStoreWrapper;
-    private Map                                      errorHandlers;
+    private Map<String, ErrorHandler>                errorHandlers;
     private List<KnowledgeBuilderResult>             results;
     private PackageBuilder                           packageBuilder;
 
@@ -151,12 +150,12 @@ public class JavaDialect
 
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
 
-        this.errorHandlers = new HashMap();
+        this.errorHandlers = new HashMap<String, ErrorHandler>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.src = new MemoryResourceReader();
 
-        this.generatedClassList = new ArrayList();
+        this.generatedClassList = new ArrayList<String>();
 
         JavaDialectRuntimeData data = null;
 
@@ -182,7 +181,7 @@ public class JavaDialect
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
-        builders = new HashMap();
+        builders = new HashMap<Class<?>, EngineElementBuilder>();
 
         builders.put( CollectDescr.class,
                       COLLECT_BUIDER );
@@ -224,8 +223,8 @@ public class JavaDialect
                       WINDOW_REFERENCE_BUILDER );
     }
 
-    public Map getBuilders() {
-        return this.builders;
+    public Map<Class<?>, EngineElementBuilder> getBuilders() {
+        return builders;
     }
 
     public void init(final RuleDescr ruleDescr) {
@@ -256,13 +255,13 @@ public class JavaDialect
                                             final BoundIdentifiers availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( (String) content,
-                                                      availableIdentifiers );
+            result = analyzer.analyzeExpression((String) content,
+                    availableIdentifiers);
         } catch ( final Exception e ) {
-            context.addError( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          e,
-                                                          "Unable to determine the used declarations.\n" + e ) );
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                    descr,
+                    e,
+                    "Unable to determine the used declarations.\n" + e));
         }
         return result;
     }
@@ -273,8 +272,8 @@ public class JavaDialect
                                        final BoundIdentifiers availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeBlock( text,
-                                                 availableIdentifiers );
+            result = analyzer.analyzeBlock( text,
+                                            availableIdentifiers );
         } catch ( final Exception e ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
@@ -294,7 +293,7 @@ public class JavaDialect
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {
-        return (RuleConditionBuilder) this.builders.get( clazz );
+        return (RuleConditionBuilder) builders.get( clazz );
     }
 
     public PatternBuilder getPatternBuilder() {
@@ -376,18 +375,15 @@ public class JavaDialect
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 final CompilationProblem err = result.getErrors()[i];
-                final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
-                if ( handler instanceof RuleErrorHandler ) {
-                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
-                }
+                final ErrorHandler handler = this.errorHandlers.get( err.getFileName() );
                 handler.addError( err );
             }
 
             final Collection errors = this.errorHandlers.values();
-            for ( final Iterator iter = errors.iterator(); iter.hasNext(); ) {
-                final ErrorHandler handler = (ErrorHandler) iter.next();
-                if ( handler.isInError() ) {
-                    this.results.add( handler.getError() );
+            for (Object error : errors) {
+                final ErrorHandler handler = (ErrorHandler) error;
+                if (handler.isInError()) {
+                    this.results.add(handler.getError());
                 }
             }
         }
@@ -404,26 +400,26 @@ public class JavaDialect
      */
     private void dumpResources(final String[] classes,
                                File dumpDir) {
-        for ( int i = 0; i < classes.length; i++ ) {
-            File target = new File( dumpDir,
-                                    classes[i] );
+        for (String aClass : classes) {
+            File target = new File(dumpDir,
+                    aClass);
             FileOutputStream out = null;
             try {
                 File parent = target.getParentFile();
-                if ( parent != null && !parent.exists() ) {
+                if (parent != null && !parent.exists()) {
                     parent.mkdirs();
                 }
                 target.createNewFile();
-                out = new FileOutputStream( target );
-                out.write( this.src.getBytes( classes[i] ) );
-            } catch ( FileNotFoundException e ) {
+                out = new FileOutputStream(target);
+                out.write(this.src.getBytes(aClass));
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            } catch ( IOException e ) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if ( out != null ) try {
+                if (out != null) try {
                     out.close();
-                } catch ( Exception e ) {
+                } catch (Exception e) {
                 }
             }
         }
@@ -454,7 +450,7 @@ public class JavaDialect
                                                    rule,
                                                    "Rule Compilation error" ) );
 
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( this.ID );
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( ID );
 
         for ( Map.Entry<String, String> invokers : context.getInvokers().entrySet() ) {
             final String className = invokers.getKey();
@@ -494,7 +490,7 @@ public class JavaDialect
                             final TypeResolver typeResolver,
                             final Resource resource) {
 
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( this.ID );
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( ID );
         //System.out.println( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         functionDescr.setClassName( functionClassName );

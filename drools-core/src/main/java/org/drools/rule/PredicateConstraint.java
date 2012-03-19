@@ -347,15 +347,15 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
     }
 
-    public Object clone() {
+    public PredicateConstraint clone() {
         Declaration[] previous = new Declaration[this.previousDeclarations.length];
         for ( int i = 0; i < previous.length; i++ ) {
-            previous[i] = (Declaration) this.previousDeclarations[i].clone();
+            previous[i] = this.previousDeclarations[i].clone();
         }
 
         Declaration[] local = new Declaration[this.localDeclarations.length];
         for ( int i = 0; i < local.length; i++ ) {
-            local[i] = (Declaration) this.localDeclarations[i].clone();
+            local[i] = this.localDeclarations[i].clone();
         }
 
         PredicateConstraint clone = new PredicateConstraint( this.expression,

@@ -140,23 +140,23 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     protected void updateRequiredDeclarations(Constraint constraint) {
         Declaration[] decs = constraint.getRequiredDeclarations();
         if ( decs != null && decs.length > 0 ) {
-            for ( int i = 0; i < decs.length; i++ ) {
-                Declaration dec = decs[i];
+            for (Declaration dec1 : decs) {
+                Declaration dec = dec1;
                 // check for duplications
-                for ( int j = 0; j < this.requiredDeclarations.length; j++ ) {
-                    if ( dec.equals( this.requiredDeclarations[j] ) ) {
+                for (Declaration requiredDeclaration : this.requiredDeclarations) {
+                    if (dec.equals(requiredDeclaration)) {
                         dec = null;
                         break;
                     }
                 }
-                if ( dec != null ) {
+                if (dec != null) {
                     Declaration[] tmp = this.requiredDeclarations;
                     this.requiredDeclarations = new Declaration[tmp.length + 1];
-                    System.arraycopy( tmp,
-                                      0,
-                                      this.requiredDeclarations,
-                                      0,
-                                      tmp.length );
+                    System.arraycopy(tmp,
+                            0,
+                            this.requiredDeclarations,
+                            0,
+                            tmp.length);
                     this.requiredDeclarations[this.requiredDeclarations.length - 1] = dec;
                 }
             }
@@ -175,13 +175,11 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
      */
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
-        for ( int i = 0; i < this.alphaConstraints.length; i++ ) {
-            this.alphaConstraints[i].replaceDeclaration( oldDecl,
-                                                         newDecl );
+        for (AlphaNodeFieldConstraint alphaConstraint : this.alphaConstraints) {
+            alphaConstraint.replaceDeclaration(oldDecl, newDecl);
         }
-        for ( int i = 0; i < this.betaConstraints.length; i++ ) {
-            this.betaConstraints[i].replaceDeclaration( oldDecl,
-                                                        newDecl );
+        for (BetaNodeFieldConstraint betaConstraint : this.betaConstraints) {
+            betaConstraint.replaceDeclaration(oldDecl, newDecl);
         }
         for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
             if ( this.requiredDeclarations[i] == oldDecl ) {
@@ -222,7 +220,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
                                                                                                                    other.requiredDeclarations );
     }
 
-    public abstract Object clone();
+    public abstract AbstractCompositeConstraint clone();
 
     /**
      * A context entry for composite restrictions
@@ -282,30 +280,26 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
                                          InternalFactHandle handle) {
             this.workingMemory = workingMemory;
             this.handle = handle;
-            for ( int i = 0; i < alphas.length; i++ ) {
-                if ( alphas[i] != null ) {
-                    alphas[i].updateFromFactHandle( workingMemory,
-                                                    handle );
+            for (ContextEntry alpha : alphas) {
+                if (alpha != null) {
+                    alpha.updateFromFactHandle(workingMemory, handle);
                 }
             }
-            for ( int i = 0; i < betas.length; i++ ) {
-                betas[i].updateFromFactHandle( workingMemory,
-                                               handle );
+            for (ContextEntry beta : betas) {
+                beta.updateFromFactHandle(workingMemory, handle);
             }
         }
 
         public void updateFromTuple(InternalWorkingMemory workingMemory,
                                     LeftTuple tuple) {
             this.workingMemory = workingMemory;
-            for ( int i = 0; i < alphas.length; i++ ) {
-                if ( alphas[i] != null ) {
-                    alphas[i].updateFromTuple( workingMemory,
-                                               tuple );
+            for (ContextEntry alpha : alphas) {
+                if (alpha != null) {
+                    alpha.updateFromTuple(workingMemory, tuple);
                 }
             }
-            for ( int i = 0; i < betas.length; i++ ) {
-                betas[i].updateFromTuple( workingMemory,
-                                          tuple );
+            for (ContextEntry beta : betas) {
+                beta.updateFromTuple(workingMemory, tuple);
             }
         }
 

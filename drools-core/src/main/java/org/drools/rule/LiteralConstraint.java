@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -140,7 +139,7 @@ public class LiteralConstraint
         return this.readAccesor.equals( other.readAccesor ) && this.restriction.equals( other.restriction );
     }
 
-    public Object clone() {
+    public LiteralConstraint clone() {
         return new LiteralConstraint( this.readAccesor,
                                       this.getEvaluator(),
                                       this.getField() );

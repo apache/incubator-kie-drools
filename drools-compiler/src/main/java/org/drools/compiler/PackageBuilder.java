@@ -2424,11 +2424,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             switch ( type.getKind() ) {
                 case TRAIT :
                     try {
-                        ClassBuilder tb = ClassBuilderFactory.getTraitBuilderService();
-                        byte[] d = tb.buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
-                                       d );
-
+                        byte[] d = ClassBuilderFactory.getTraitBuilderService().buildClass( def );
+                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
                     } catch (Exception e) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to compile declared trait " + fullName +
@@ -2437,12 +2434,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     break;
                 case ENUM :
                     try {
-                        ClassBuilder eb = ClassBuilderFactory.getEnumClassBuilderService();
-
-                        byte[] d = eb.buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
-                                d );
-
+                        byte[] d = ClassBuilderFactory.getEnumClassBuilderService().buildClass( def );
+                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         this.results.add( new TypeDeclarationError( typeDescr, "Unable to compile declared enum " + fullName + ": " + e.getMessage() + ";" ) );
@@ -2451,17 +2444,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 case CLASS :
                 default :
                     try {
-                        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
-                        byte[] d = cb.buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
-                                       d );
-
+                        byte[] d = ClassBuilderFactory.getBeanClassBuilderService().buildClass( def );
+                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
                     } catch (Exception e) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
                                                                             ": " + e.getMessage() + ";" ) );
                     }
-
                     break;
             }
 

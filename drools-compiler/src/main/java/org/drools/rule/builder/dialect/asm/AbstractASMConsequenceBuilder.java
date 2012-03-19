@@ -20,7 +20,9 @@ public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilde
         context.getBuildStack().push( context.getRule().getLhs() );
 
         Map<String, Object> vars = consequenceContext(context, consequenceName);
-        if (vars == null) return;
+        if (vars == null) {
+            return;
+        }
         generateMethodTemplate("consequenceMethod", context, vars);
 
         byte[] bytecode = createConsequenceBytecode(context, vars);

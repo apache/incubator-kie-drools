@@ -100,7 +100,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return evaluator == null ? null : evaluator.getInterval();
     }
 
-    public Object clone() {
+    public EvaluatorConstraint clone() {
         if (isLiteral()) {
             return new EvaluatorConstraint(field, evaluator, extractor);
         }

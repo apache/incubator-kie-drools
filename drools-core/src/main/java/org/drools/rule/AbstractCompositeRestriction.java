@@ -64,14 +64,13 @@ public abstract class AbstractCompositeRestriction
             }
         }
 
-        return (Declaration[]) set.toArray( new Declaration[set.size()] );
+        return set.toArray( new Declaration[set.size()] );
     }
 
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
-        for ( int i = 0; i < this.restrictions.length; i++ ) {
-            this.restrictions[i].replaceDeclaration( oldDecl,
-                                                     newDecl );
+        for (Restriction restriction : this.restrictions) {
+            restriction.replaceDeclaration(oldDecl, newDecl);
         }
     }
     
@@ -92,8 +91,8 @@ public abstract class AbstractCompositeRestriction
             return 0;
         }
         int result = 1;
-        for ( int index = 0; index < array.length; index++ ) {
-            result = PRIME * result + (array[index] == null ? 0 : array[index].hashCode());
+        for (Object anArray : array) {
+            result = PRIME * result + (anArray == null ? 0 : anArray.hashCode());
         }
         return result;
     }
@@ -115,18 +114,14 @@ public abstract class AbstractCompositeRestriction
         }
 
         final AbstractCompositeRestriction other = (AbstractCompositeRestriction) obj;
-        if ( !Arrays.equals( this.restrictions,
-                             other.restrictions ) ) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.restrictions, other.restrictions);
     }
 
     public ContextEntry createContextEntry() {
         return new CompositeContextEntry( this.restrictions );
     }
 
-    public abstract Object clone();
+    public abstract AbstractCompositeRestriction clone();
 
     public static class CompositeContextEntry
         implements
