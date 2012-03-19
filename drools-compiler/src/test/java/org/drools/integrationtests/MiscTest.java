@@ -10239,6 +10239,7 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testCommentDelimiterInString() throws Exception {
+        // JBRULES-3401
         String str = "rule x\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -10247,5 +10248,43 @@ public class MiscTest extends CommonTestMethodBase {
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+    }
+
+    public interface InterfaceA {
+        InterfaceB getB();
+    }
+
+    public interface InterfaceB { }
+
+    public static class ClassA implements InterfaceA {
+        public ClassB getB() {
+            return new ClassB();
+        }
+    }
+
+    public static class ClassB implements InterfaceB {
+        public String getId() {
+            return "123";
+        }
+    }
+
+    @Test
+    public void testCovariance() throws Exception {
+        // JBRULES-3392
+        String str =
+                "import org.drools.integrationtests.MiscTest.*\n" +
+                "rule x\n" +
+                "when\n" +
+                "   $b : ClassB( )\n" +
+                "   $a : ClassA( b.id == $b.id )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new ClassA());
+        ksession.insert(new ClassB());
+        assertEquals(1, ksession.fireAllRules());
     }
 }
