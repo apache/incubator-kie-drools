@@ -3242,11 +3242,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     +" != "+oldDeclaration.getDurationAttribute());
         }
 
-        //different masks -> incompatible
-        if (oldDeclaration.getSetMask() != newDeclaration.getSetMask() ){
-            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" is incompatible with"
-                    + " the previous definition: "+newDeclaration
-                    +" != "+oldDeclaration);
+//        //different masks -> incompatible
+        if ( newDeclaration.getNature().equals( TypeDeclaration.Nature.DEFINITION ) ) {
+            if (oldDeclaration.getSetMask() != newDeclaration.getSetMask() ){
+                throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" is incompatible with"
+                        + " the previous definition: "+newDeclaration
+                        +" != "+oldDeclaration);
+            }
         }
 
         //TODO: further comparison?

@@ -513,7 +513,7 @@ abstract public class AbstractRuleBase
                 this.eventSupport.fireBeforePackageAdded( newPkg );
 
                 Package pkg = this.pkgs.get( newPkg.getName() );
-                if (pkg == null) {
+                if ( pkg == null ) {
                     pkg = new Package( newPkg.getName() );
 
                     // @TODO we really should have a single root cache
@@ -695,12 +695,14 @@ abstract public class AbstractRuleBase
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );
 
-        existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
-                                          "Unable to merge @novel attribute for type declaration of class:",
-                                          existingDecl.isNovel(),
-                                          newDecl.isNovel(),
-                                          true,
-                                          false ) );
+        if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) ) {
+            existingDecl.setNovel( mergeLeft( existingDecl.getTypeName(),
+                                              "Unable to merge @novel attribute for type declaration of class:",
+                                              existingDecl.isNovel(),
+                                              newDecl.isNovel(),
+                                              true,
+                                              false ) );
+        }
 
         if ( newDecl.getNature().equals( TypeDeclaration.Nature.DEFINITION ) || existingDecl.getResource() == null ) {
             existingDecl.setResource( mergeLeft( existingDecl.getTypeName(),
