@@ -408,18 +408,14 @@ public class ObjectTypeNode extends ObjectSource
         this.dirty = true;
     }
 
-    public static void updateTupleSinkId(ObjectTypeNode otn,
-                                         ObjectSource source) {
+    private static void updateTupleSinkId( ObjectTypeNode otn,
+                                           ObjectSource source ) {
         for ( ObjectSink sink : source.sink.getSinks() ) {
             if ( sink instanceof BetaNode ) {
                 ((BetaNode) sink).setRightInputOtnId( otn.nextOtnId() );
             } else if ( sink instanceof LeftInputAdapterNode ) {
                 for ( LeftTupleSink liaChildSink : ((LeftInputAdapterNode) sink).getSinkPropagator().getSinks() ) {
-                    if ( liaChildSink instanceof LeftTupleSource ) {
-                        ((LeftTupleSource) liaChildSink).setLeftInputOtnId( otn.nextOtnId() );
-                    } else { // else TerminalNode
-                        ((TerminalNode) liaChildSink).setLeftInputOtnId( otn.nextOtnId() );
-                    }
+                    liaChildSink.setLeftInputOtnId( otn.nextOtnId() );
                 }
             } else if ( sink instanceof AlphaNode ) {
                 updateTupleSinkId( otn, (AlphaNode) sink );

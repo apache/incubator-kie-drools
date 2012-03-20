@@ -265,6 +265,16 @@ public class EntryPointNode extends ObjectSource
             cachedNodes[i].modifyObject( handle,
                                          modifyPreviousTuples,
                                          context, workingMemory );
+
+            // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
+            if (i < cachedNodes.length - 1) {
+                RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+                while ( rightTuple != null && rightTuple.getRightTupleSink() instanceof BetaNode &&
+                        ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
+                    modifyPreviousTuples.removeRightTuple();
+                    rightTuple = modifyPreviousTuples.peekRightTuple();
+                }
+            }
         }
         modifyPreviousTuples.retractTuples( context, workingMemory );
         

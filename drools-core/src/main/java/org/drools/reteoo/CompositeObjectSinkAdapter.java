@@ -541,12 +541,23 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     public ObjectSink[] getSinks() {
         ObjectSink[] sinks = new ObjectSink[size()];
-        int at = 0;        
+        int at = 0;
 
-        if ( this.hashedSinkMap != null ) {
-            final Iterator it = this.hashedSinkMap.newIterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                sinks[at++] = (ObjectSink) entry.getValue();
+        if ( this.hashedFieldIndexes != null ) {
+            // Iterate the FieldIndexes to see if any are hashed
+            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
+                if ( !fieldIndex.isHashed() ) {
+                    continue;
+                }
+                // this field is hashed so set the existing hashKey and see if there is a sink for it
+                final int index = fieldIndex.getIndex();
+                final Iterator it = this.hashedSinkMap.newIterator();
+                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                    HashKey hashKey = (HashKey) entry.getKey();
+                    if (hashKey.getIndex() == index) {
+                        sinks[at++] = (ObjectSink) entry.getValue();
+                    }
+                }
             }
         }
 

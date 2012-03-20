@@ -18,7 +18,6 @@ package org.drools.core.util;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.core.util.LinkedList.LinkedListFastIterator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -35,8 +34,8 @@ public class RightTupleList
     public RightTuple              first;
     public RightTuple              last;
 
-    private int                    hashCode;
-    private Index                  index;
+    private final int              hashCode;
+    private final Index            index;
 
     private TupleHashTableIterator iterator;
 
@@ -92,7 +91,7 @@ public class RightTupleList
             this.last = rightTuple;
         } else {
             this.first = rightTuple;
-            this.last = rightTuple;;
+            this.last = rightTuple;
         }
         rightTuple.setMemory( this );
     }
@@ -277,7 +276,7 @@ public class RightTupleList
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for ( RightTuple rightTuple = (RightTuple) this.first; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = this.first; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             builder.append( rightTuple );
         }
 

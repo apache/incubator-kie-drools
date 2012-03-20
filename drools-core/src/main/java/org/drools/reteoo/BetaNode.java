@@ -109,6 +109,8 @@ public abstract class BetaNode extends LeftTupleSource
 
     private transient int     rightInputOtnId;
 
+    private transient ObjectTypeNode objectTypeNode;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -374,12 +376,17 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        ObjectSource source = this.rightInput;
-        while ( source != null ) {
-            if ( source instanceof ObjectTypeNode ) return (ObjectTypeNode) source;
-            source = source.source;
+        if (objectTypeNode == null) {
+            ObjectSource source = this.rightInput;
+            while ( source != null ) {
+                if ( source instanceof ObjectTypeNode ) {
+                    objectTypeNode = (ObjectTypeNode) source;
+                    break;
+                }
+                source = source.source;
+            }
         }
-        return null;
+        return objectTypeNode;
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -500,7 +507,11 @@ public abstract class BetaNode extends LeftTupleSource
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
-        while ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() ) {
+
+        // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
+        while ( rightTuple != null &&
+                ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() &&
+                ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == getObjectTypeNode() ) {
             modifyPreviousTuples.removeRightTuple();
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -526,28 +537,6 @@ public abstract class BetaNode extends LeftTupleSource
                               workingMemory );
             }
         }
-        //        //RightTuple rightTuple = modifyPreviousTuples.removeRightTuple(this);
-        //        
-        //        
-        //        if ( rightTuple != null ) {
-        //            rightTuple.reAdd();
-        //        }
-        //
-        //        if ( intersect(context.getModificationMask(), rightInferredMask) ) {
-        //
-        //            // Propagate only if listened property mask intersects the modification one (slot specific)
-        //            if ( rightTuple != null ) {
-        //                // RightTuple previously existed, so continue as modify
-        //                modifyRightTuple( rightTuple,
-        //                        context,
-        //                        workingMemory );
-        //            } else {
-        //                // RightTuple does not exist, so create and continue as assert
-        //                assertObject( factHandle,
-        //                        context,
-        //                        workingMemory );
-        //            }
-        //        }
     }
     
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
