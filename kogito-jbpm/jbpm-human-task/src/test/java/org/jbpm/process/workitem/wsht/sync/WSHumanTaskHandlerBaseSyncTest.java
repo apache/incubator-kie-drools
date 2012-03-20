@@ -235,6 +235,61 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         
         assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
     }
+    
+    public void testTaskExit() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        getHandler().executeWorkItem(workItem, manager);
+        
+        Task task = getClient().getTaskByWorkItemId(workItem.getId());
+
+        getClient().exit(task.getId(), "Administrator");
+        
+        task = getClient().getTaskByWorkItemId(workItem.getId());
+        assertEquals("TaskName", task.getNames().get(0).getText());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescriptions().get(0).getText());
+        assertEquals(Status.Exited, task.getTaskData().getStatus());
+        
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(0, tasks.size());
+    }
+    
+    public void testTaskExitNonAdministrator() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        getHandler().executeWorkItem(workItem, manager);
+        
+        Task task = getClient().getTaskByWorkItemId(workItem.getId());
+
+        try {
+            getClient().exit(task.getId(), "Darth Vader");
+            fail("Should not allow to exit task for non administrators");
+        } catch (PermissionDeniedException e) {
+            
+        }
+        
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+    }
 
     public void testTaskAbortSkippable() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
@@ -273,9 +328,9 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
         getHandler().abortWorkItem(workItem, manager);
 
-        
+        // aborting work item will exit task and not skip it
         tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
-        assertEquals(1, tasks.size());
+        assertEquals(0, tasks.size());
     }
 
     public void testTaskData() throws Exception {

@@ -37,6 +37,7 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
@@ -267,6 +268,41 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 
 		assertTrue(manager.waitTillAborted(MANAGER_ABORT_WAIT_TIME));
 	}
+	
+	public void testTaskExit() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        getHandler().executeWorkItem(workItem, manager);
+
+        Thread.sleep(500);
+
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+        List<TaskSummary> tasks = responseHandler.getResults();
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+
+        BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+        getClient().exit(task.getId(), "Administrator", operationResponseHandler);
+        operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        getClient().getTask(task.getId(), getTaskResponseHandler);
+        Task taskInstance = getTaskResponseHandler.getTask();
+        assertEquals("TaskName", taskInstance.getNames().get(0).getText());
+        assertEquals(Status.Exited, taskInstance.getTaskData().getStatus());
+
+    }
 
 	public void testTaskAbortSkippable() throws Exception {
 		TestWorkItemManager manager = new TestWorkItemManager();
@@ -311,11 +347,11 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		getHandler().abortWorkItem(workItem, manager);
 
 		Thread.sleep(500);
-
+		// aborting work item will exit task and not skip it
 		responseHandler = new BlockingTaskSummaryResponseHandler();
 		getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
 		tasks = responseHandler.getResults();
-		assertEquals(1, tasks.size());
+		assertEquals(0, tasks.size());
 	}
 
 	public void testTaskData() throws Exception {

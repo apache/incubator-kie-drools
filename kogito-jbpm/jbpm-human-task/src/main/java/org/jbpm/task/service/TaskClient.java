@@ -660,6 +660,24 @@ public class TaskClient implements AsyncTaskService{
     	connector.write( cmd );
     }
     
+    public void exit(long taskId, 
+            String userId,
+            TaskOperationResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object> ( 3 );
+        
+        args.add( Operation.Exit );
+        args.add( taskId );
+        args.add( userId );
+        Command cmd = new Command( counter.getAndIncrement(), 
+                                   CommandName.OperationRequest,
+                                   args );
+        
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        
+        connector.write( cmd );
+    }
+    
     public void setOutput(long taskId,
     		String userId, 
     		ContentData outputContentData, 

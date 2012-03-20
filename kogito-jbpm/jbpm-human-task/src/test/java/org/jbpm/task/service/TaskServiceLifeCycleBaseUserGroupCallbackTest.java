@@ -2079,4 +2079,191 @@ public abstract class TaskServiceLifeCycleBaseUserGroupCallbackTest extends Base
             assertTrue(activateResponseHandler.getError().getMessage().contains(users.get("darth").getId()));
         }
     }
+    
+    public void testExitFromReady() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        long taskId = addTaskResponseHandler.getTaskId();   
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Ready, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.exit( taskId, users.get( "admin" ).getId(), activateResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Exited, task.getTaskData().getStatus() );               
+    }  
+    
+    public void testExitFromReserved() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Reserved, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.exit( taskId, users.get( "admin" ).getId(), activateResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Exited, task.getTaskData().getStatus() );                
+    }  
+    
+    public void testExitFromInProgress() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Reserved, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler startResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.start(taskId, users.get("bobba").getId(), startResponseHandler);
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.InProgress, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.exit( taskId, users.get( "admin" ).getId(), activateResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Exited, task.getTaskData().getStatus() );                
+    }  
+
+    public void testExitFromSuspended() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'] ], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();   
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Reserved, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler suspendResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.suspend(taskId, users.get("bobba").getId(), suspendResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Suspended, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.exit( taskId, users.get( "admin" ).getId(), activateResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Exited, task.getTaskData().getStatus() );                
+    }
+    
+    public void testExitPermissionDenied() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();    
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Ready, task.getTaskData().getStatus());
+        
+        try {
+            BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+            client.exit( taskId, users.get( "darth" ).getId(), activateResponseHandler);
+            activateResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+            fail("Non admin user can't exit a task");
+        } catch (PermissionDeniedException e) {
+           
+        }
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Ready, task.getTaskData().getStatus() );               
+    } 
+    
+    public void testExitNotAvailableToUsers() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba']], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+        
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();     
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(Status.Reserved, task.getTaskData().getStatus());
+        
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.exit( taskId, users.get( "admin" ).getId(), activateResponseHandler);
+        
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, taskResponseHandler);
+        task = taskResponseHandler.getTask();
+        assertEquals(  Status.Exited, task.getTaskData().getStatus() );  
+        
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", responseHandler);
+        List<TaskSummary> exitedTasks = responseHandler.getResults();
+        assertEquals(0, exitedTasks.size());
+        
+    } 
 }
