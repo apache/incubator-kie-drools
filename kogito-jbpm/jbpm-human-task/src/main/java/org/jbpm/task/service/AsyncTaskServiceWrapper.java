@@ -270,6 +270,21 @@ public class AsyncTaskServiceWrapper implements TaskService {
     public void disconnect() throws Exception {
         taskService.disconnect();
     }
+    
+    public void exit(long taskId, String userId) {
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        taskService.exit(taskId, userId, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        if (!responseHandler.isDone()) {
+            throw new RuntimeException("Task operation request timed out");
+        }
+    }
 
     public void fail(long taskId, String userId, FaultData faultData) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
@@ -693,4 +708,6 @@ public class AsyncTaskServiceWrapper implements TaskService {
         	throw new RuntimeException("Task operation request timed out");
         }
     }
+
+    
 }

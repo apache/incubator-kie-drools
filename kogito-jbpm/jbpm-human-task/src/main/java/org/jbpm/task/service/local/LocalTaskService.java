@@ -131,6 +131,10 @@ public class LocalTaskService implements TaskService {
     public void disconnect() throws Exception {
         // do nothing 
     }
+    
+    public void exit(long taskId, String userId) {
+        session.taskOperation(Operation.Exit, taskId, userId, null, null, null);
+    }
 
     public void fail(long taskId, String userId, FaultData faultData) {
         session.taskOperation(Operation.Fail, taskId, userId, null, faultData, null);

@@ -132,6 +132,12 @@
     			status = [ Status.Created ],
     			allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
     			newStatus = Status.Ready
-    		} ]
+    		} ],
+    Operation.Exit
+        : [ new OperationCommand().{
+                status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
+                allowed = [ Allowed.BusinessAdministrator ],
+                newStatus = Status.Exited
+            } ]
 ]          
   

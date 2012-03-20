@@ -71,6 +71,8 @@ public interface AsyncTaskService {
     void deleteOutput(long taskId, String userId, TaskOperationResponseHandler responseHandler);
 
     void disconnect() throws Exception;
+    
+    void exit(long taskId, String userId, TaskOperationResponseHandler responseHandler);
 
     void fail(long taskId, String userId, FaultData faultData, TaskOperationResponseHandler responseHandler);
 

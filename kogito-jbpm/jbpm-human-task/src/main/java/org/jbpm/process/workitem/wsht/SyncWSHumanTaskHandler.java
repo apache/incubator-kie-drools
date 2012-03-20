@@ -253,7 +253,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         Task task = client.getTaskByWorkItemId(workItem.getId());
         if (task != null) {
             try {
-                client.skip(task.getId(), "Administrator");
+                client.exit(task.getId(), "Administrator");
             } catch (PermissionDeniedException e) {
                 logger.info(e.getMessage());
             }
