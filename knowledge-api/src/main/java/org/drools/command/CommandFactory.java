@@ -265,7 +265,8 @@ public class CommandFactory {
      */
     public static Command newStartProcess(String processId,
                                           Map<String, Object> parameters) {
-        return getCommandFactoryProvider().newStartProcess( processId );
+        return getCommandFactoryProvider().newStartProcess( processId,
+                                                            parameters );
     }
 
     public static Command newSignalEvent(String type,
