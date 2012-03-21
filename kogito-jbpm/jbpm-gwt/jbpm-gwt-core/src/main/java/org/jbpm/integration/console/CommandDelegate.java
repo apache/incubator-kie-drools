@@ -39,6 +39,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 
 /**
  * This class encapsulates the logic for executing operations via the Drools/jBPM api and retrieving information 
@@ -207,12 +208,28 @@ public class CommandDelegate {
         ProcessInstance processInstance = getSession().getProcessInstance(processInstanceId);
         if (processInstance != null){
             Collection<NodeInstance> activeNodes = ((WorkflowProcessInstance)processInstance).getNodeInstances();
-    
+            
+            activeNodes.addAll(collectActiveNodeInstances(activeNodes));
             
             return activeNodes;
         }
         
         return null;
+    }
+    
+    protected static Collection<NodeInstance> collectActiveNodeInstances(Collection<NodeInstance> activeNodes) {
+        Collection<NodeInstance> activeNodesComposite = new ArrayList<NodeInstance>();
+        for (NodeInstance nodeInstance : activeNodes) {
+            if (nodeInstance instanceof CompositeNodeInstance) {
+                Collection<NodeInstance> currentNodeInstances = ((CompositeNodeInstance) nodeInstance).getNodeInstances();
+                activeNodesComposite.addAll(currentNodeInstances);
+                
+                // recursively check current nodes
+                activeNodesComposite.addAll(collectActiveNodeInstances(currentNodeInstances));
+            }
+        }
+        
+        return activeNodesComposite;
     }
 
 }
