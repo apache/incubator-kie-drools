@@ -68,7 +68,7 @@ public class JpaPersistenceContextManager
     }
 
     public void beginCommandScopedEntityManager() {
-        EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        this.cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         if ( cmdScopedEntityManager == null || 
            ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
             internalCmdScopedEntityManager = true;
