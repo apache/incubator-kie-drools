@@ -118,8 +118,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -142,18 +142,12 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-commons-annotations</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- test -->
@@ -237,6 +231,85 @@
         </dependency>  
       </dependencies>
     </profile>
- </profiles>
+
+    <profile>
+      <id>hibernate-4</id>
+      
+       <dependencies>
+         <dependency> 
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-entitymanager</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-core</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+      </dependencies>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>maven-replacer-plugin</artifactId>
+            <version>1.4.1</version>
+            <executions>
+              <execution>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>                    
+              </execution>
+            </executions>
+            <configuration>
+              <includes>
+                <include>target/*classes/META-INF/JBPMorm.xml</include>
+                <include>target/*classes/META-INF/persistence.xml</include>
+              </includes>
+              <replacements>
+                <!-- persistence.xml: version -->
+                <replacement>
+                  <token>(persistence version)="1.0"</token>
+                  <value>$1="2.0"</value>
+                </replacement>
+                    <!-- persistence.xml: schemaLocation's -->
+                <replacement>
+                  <token>(http://java.sun.com/xml/ns/persistence/persistence)_1(_0.xsd)</token>
+                  <value>$1_2$2</value>
+                </replacement>
+                <replacement>
+                  <token>(http://java.sun.com/xml/ns/persistence/orm)_1(_0.xsd)</token>
+                  <value>$1_2$2</value>
+                </replacement>
+                <!-- persistence.xml: BTM tx lookup --> 
+                <replacement>
+                  <token>(&lt;property name=)"hibernate.transaction.manager_lookup_class"( value=)"org.hibernate.transaction.BTMTransactionManagerLookup"( */&gt;)</token>
+                  <value>$1"hibernate.transaction.jta.platform"$2"org.hibernate.service.jta.platform.internal.BitronixJtaPlatform"$3</value>
+                </replacement>
+                <!-- JBPMorm.xml: for the ProcessInstanceInfo.hbm.xml -->
+                <replacement>
+                  <token>(mapping-file&gt;META-INF/ProcessInstanceInfo.hbm.xml&lt;/mapping-file)</token>
+                  <value>!-- $1 --</value>
+                </replacement>
+                <!-- JBPMorm.xml: schema's, version -->
+                <replacement>
+                  <token>(xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm) orm_1_0.(xsd"\n *version=)"1.0"</token>
+                  <value>$1 orm_2_0.$2"2.0"</value>
+                </replacement>
+                <!-- JBPMorm.xml: mapping -->
+                <replacement>
+                  <token>(&lt;!--|):JPA2 REMOVE ME:(--&gt;|)</token>
+                  <value></value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
     
 </project>
