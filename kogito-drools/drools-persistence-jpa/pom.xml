@@ -118,8 +118,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
@@ -142,18 +142,12 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-commons-annotations</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- test -->
@@ -237,6 +231,69 @@
         </dependency>  
       </dependencies>
     </profile>
+
+    <profile>
+      <id>hibernate-4</id>
+      
+       <dependencies>
+         <dependency> 
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-entitymanager</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-core</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+      </dependencies>
+      
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>maven-replacer-plugin</artifactId>
+            <version>1.4.1</version>
+            <executions>
+              <execution>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>                    
+              </execution>
+            </executions>
+            <configuration>
+              <includes>
+                  <include>target/test-classes/META-INF/*.xml</include>
+              </includes>
+              <replacements>
+                <replacement>
+                  <token>persistence version="1.0"</token>
+                  <value>persistence version="2.0"</value>
+                </replacement>
+                <!-- for the schemaLocation's in persistence.xml -->
+                <replacement>
+                  <token>(http://java.sun.com/xml/ns/persistence/persistence)_1(_0.xsd)</token>
+                  <value>$1_2$2</value>
+                </replacement>
+                <replacement>
+                  <token>(http://java.sun.com/xml/ns/persistence/orm)_1(_0.xsd)</token>
+                  <value>$1_2$2</value>
+                </replacement>
+                <!-- for the orm.xml -->
+                <replacement>
+                  <token>(xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm) orm_1_0.(xsd"\n *version=)"1.0"</token>
+                  <value>$1 orm_2_0.$2"2.0"</value>
+                </replacement>
+              </replacements>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
  </profiles>
     
 </project>
