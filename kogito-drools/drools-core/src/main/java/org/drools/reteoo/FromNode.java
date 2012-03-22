@@ -601,5 +601,9 @@ public class FromNode extends LeftTupleSource
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
-    }      
+    }
+
+    protected ObjectTypeNode getObjectTypeNode() {
+        return tupleSource.getObjectTypeNode();
+    }
 }

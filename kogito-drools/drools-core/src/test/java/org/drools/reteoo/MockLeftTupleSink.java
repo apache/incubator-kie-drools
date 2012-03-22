@@ -214,6 +214,11 @@ public class MockLeftTupleSink extends LeftTupleSource
     public LeftTupleSource getLeftTupleSource() {
         // TODO Auto-generated method stub
         return null;
-    }            
+    }
+
+    @Override
+    protected ObjectTypeNode getObjectTypeNode() {
+        return null;
+    }
 
 }

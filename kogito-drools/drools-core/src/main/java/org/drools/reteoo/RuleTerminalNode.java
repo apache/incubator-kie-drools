@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
@@ -331,8 +330,8 @@ public class RuleTerminalNode extends BaseNode
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTupleSource.doMdifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory, 
-                                         (LeftTupleSink) this, getLeftInputOtnId(), inferredMask );   
+        LeftTupleSource.doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
+                                           this, getLeftInputOtnId(), inferredMask);
         
 //        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
 //
@@ -399,7 +398,7 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated( updateContext );
+        this.tupleSource.networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -415,7 +414,7 @@ public class RuleTerminalNode extends BaseNode
         for ( InternalWorkingMemory workingMemory : workingMemories ) {
             workingMemory.executeQueuedActions();
         }
-        context.setCleanupAdapter( adapter );
+        context.setCleanupAdapter(adapter);
     }
 
     public boolean isInUse() {
@@ -495,7 +494,7 @@ public class RuleTerminalNode extends BaseNode
         }
 
         final RuleTerminalNode other = (RuleTerminalNode) object;
-        return this.rule.equals( other.rule );
+        return this.rule.equals(other.rule);
     }
 
     public short getType() {
@@ -587,5 +586,9 @@ public class RuleTerminalNode extends BaseNode
 
     public void setFireDirect(boolean fireDirect) {
         this.fireDirect = fireDirect;
+    }
+
+    protected ObjectTypeNode getObjectTypeNode() {
+        return tupleSource.getObjectTypeNode();
     }
 }

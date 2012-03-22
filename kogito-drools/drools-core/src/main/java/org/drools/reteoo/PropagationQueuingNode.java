@@ -17,7 +17,6 @@
 package org.drools.reteoo;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -29,7 +28,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
@@ -43,7 +41,6 @@ import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Pattern;
 import org.drools.rule.TypeDeclaration;
-import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -228,7 +225,8 @@ public class PropagationQueuingNode extends ObjectSource
         for ( ObjectSink s : this.sink.getSinks() ) {
             BetaNode betaNode = (BetaNode) s;
             RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
-            while ( rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < betaNode.getRightInputOtnId() ) {
+            while ( rightTuple != null &&
+                    ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < betaNode.getRightInputOtnId() ) {
                 modifyPreviousTuples.removeRightTuple();
                 // we skipped this node, due to alpha hashing, so retract now
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -464,14 +462,14 @@ public class PropagationQueuingNode extends ObjectSource
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
 
-            for ( RightTuple rightTuple = this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+            for ( RightTuple rightTuple = this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
                 rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                                   context,
                                                                   workingMemory );
             }
             this.handle.clearRightTuples();
 
-            for ( LeftTuple leftTuple = this.handle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+            for ( LeftTuple leftTuple = this.handle.getLastLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
                 leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                                context,
                                                                workingMemory );

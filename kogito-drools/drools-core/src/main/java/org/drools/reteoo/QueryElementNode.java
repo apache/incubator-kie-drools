@@ -729,4 +729,7 @@ public class QueryElementNode extends LeftTupleSource
         }
     }
 
+    protected ObjectTypeNode getObjectTypeNode() {
+        return tupleSource.getObjectTypeNode();
+    }
 }

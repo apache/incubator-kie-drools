@@ -69,4 +69,8 @@ public class MockTupleSource extends LeftTupleSource {
         
     }
 
+    protected ObjectTypeNode getObjectTypeNode() {
+        return null;
+    }
+
 }

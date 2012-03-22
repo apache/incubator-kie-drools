@@ -260,17 +260,17 @@ public abstract class LeftTupleSource extends BaseNode
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        doMdifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
-                          (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask() );
+        doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
+                           (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
-    public static void doMdifyLeftTuple(InternalFactHandle factHandle,
-                                        ModifyPreviousTuples modifyPreviousTuples,
-                                        PropagationContext context,
-                                        InternalWorkingMemory workingMemory,
-                                        LeftTupleSink sink,
-                                        int leftInputOtnId,
-                                        long leftInferredMask) {
+    public static void doModifyLeftTuple(InternalFactHandle factHandle,
+                                         ModifyPreviousTuples modifyPreviousTuples,
+                                         PropagationContext context,
+                                         InternalWorkingMemory workingMemory,
+                                         LeftTupleSink sink,
+                                         int leftInputOtnId,
+                                         long leftInferredMask) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
         while ( leftTuple != null && ((LeftTupleSink) leftTuple.getLeftTupleSink()).getLeftInputOtnId() < leftInputOtnId ) {
             modifyPreviousTuples.removeLeftTuple();
@@ -344,4 +344,6 @@ public abstract class LeftTupleSource extends BaseNode
     public void setLeftInputOtnId(int leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
+
+    protected abstract ObjectTypeNode getObjectTypeNode();
 }

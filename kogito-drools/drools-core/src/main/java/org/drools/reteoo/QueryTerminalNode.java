@@ -212,8 +212,8 @@ public final class QueryTerminalNode extends BaseNode
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTupleSource.doMdifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory, 
-                                         (LeftTupleSink) this, getLeftInputOtnId(), inferredMask );        
+        LeftTupleSource.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
+                (LeftTupleSink) this, getLeftInputOtnId(), inferredMask);
 //        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
 //        if ( leftTuple != null ) {
 //            leftTuple.reAdd(); //

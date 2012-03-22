@@ -510,8 +510,7 @@ public abstract class BetaNode extends LeftTupleSource
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null &&
-                ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() &&
-                ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == getObjectTypeNode() ) {
+                ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId() < getRightInputOtnId() ) {
             modifyPreviousTuples.removeRightTuple();
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
