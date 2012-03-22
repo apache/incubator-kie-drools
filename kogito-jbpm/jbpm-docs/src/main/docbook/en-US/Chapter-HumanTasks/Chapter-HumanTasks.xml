@@ -708,6 +708,52 @@ thread.start();</programlisting>
       new users and task by modifying the LoadUsers.mvel and LoadGroups.mvel scripts
       in the resources directory.</para>
     </section>
+    
+    <section>
+      <title>Starting the human task service as web application</title>
+      <para>Human task service can be started as web application to simplify deployment.
+      As part of application configuration user can select number of settings to be applied
+      on startup. Configuration is done via web.xml of jbpm-human-task-war application by
+      setting init parameters of the HumanTaskServiceServlet.Following is a complete list of
+       supported parameters and their meaning:</para>
+      
+      <para>
+      General settings
+      <itemizedlist>
+        <listitem>task.persistence.unit : name of persistence unit that will be used to build 
+        EntityManagerFactory (default org.jbpm.task)</listitem>
+        <listitem>user.group.callback.class : implementation of UserGroupCallback interface to 
+        be used to resolve users and groups (default DefaultUserGroupCallbackImpl)</listitem>
+        <listitem>escalated.deadline.handler.class : implementation of EscalatedDeadlineHandler 
+        interface to be used to hadnle escalations and notifications 
+        (default DefaultEscalatedDeadlineHandler)</listitem>
+        <listitem>user.info.class : implementation of UserInfo interface to be used to resolve 
+        user/group information such as email address, prefered language</listitem>
+      </itemizedlist>
+    Transport settings
+      <itemizedlist>
+       <listitem>active.config : main parameter that controls what transport is configured for
+       Task Server, by default set to HornetQ and accepts Mina, HornetQ, JMS</listitem>
+      </itemizedlist>
+      Apache Mina
+      <itemizedlist>
+        <listitem>mina.host : host/ip address used to bind Apache Mina server (localhost)</listitem>
+        <listitem>mina.port : port used to bind Apache Mina server (default 9123)</listitem>
+      </itemizedlist>
+      HornetQ
+      <itemizedlist>
+        <listitem>hornetq.port : port used to bind HornetQ server (default 5446)</listitem>
+      </itemizedlist>
+      JMS
+      <itemizedlist>
+        <listitem>JMSTaskServer.connectionFactory : JNDI name of QueueConnectionFactory to look up (no default)</listitem>
+        <listitem>JMSTaskServer.transacted : boolean flag that indicates if jms session will be transacted or not (no default)</listitem>
+        <listitem>JMSTaskServer.acknowledgeMode : acknowledgment mode (default DUPS_OK_ACKNOWLEDGE)</listitem>
+        <listitem>JMSTaskServer.queueName : name of JMS queue (no default)</listitem>
+        <listitem>JMSTaskServer.responseQueueName : name of JMS response queue (no default)</listitem>
+      </itemizedlist>
+      </para>
+    </section>
 
   </section>
 

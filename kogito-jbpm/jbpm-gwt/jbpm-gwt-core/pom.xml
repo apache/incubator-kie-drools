@@ -122,6 +122,18 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.hornetq</groupId>
+      <artifactId>hornetq-core</artifactId>
+      <version>2.2.2.Final</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.netty</groupId>
+      <artifactId>netty</artifactId>
+      <version>3.2.0.CR1</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
 </project>

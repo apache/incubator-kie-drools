@@ -53,5 +53,9 @@
        <artifactId>jbpm-gwt-form-exporter-freemarker</artifactId>
        <version>${parent.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-core</artifactId>
+    </dependency>
   </dependencies>
 </project>

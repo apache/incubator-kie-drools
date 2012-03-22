@@ -27,14 +27,15 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 
-import org.drools.SystemEventListenerFactory;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
+import org.jbpm.integration.console.HumanTaskService;
+import org.jbpm.integration.console.TaskClientFactory;
 import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 
@@ -43,41 +44,58 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
  */
 public class TaskFormDispatcher extends AbstractFormDispatcher {
 
+    private static int clientCounter = 0;
+    
     private TaskClient client;
+    private TaskService service;
+    private boolean local = false;
 
     public void connect() {
         if (client == null) {
-            String ipAddress;
-            int port;
+
             Properties properties = new Properties();
             try {
                 properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
-                ipAddress = properties.getProperty("jbpm.console.task.service.host");
-                port = new Integer(properties.getProperty("jbpm.console.task.service.port"));
             } catch (IOException e) {
                 throw new RuntimeException("Could not load jbpm.console.properties", e);
             }
-            client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
-                    new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-            boolean connected = client.connect(ipAddress, port);
-            if (!connected) {
-                throw new IllegalArgumentException(
-                "Could not connect task client");
+            if ("Local".equalsIgnoreCase(properties.getProperty("jbpm.console.task.service.strategy", TaskClientFactory.DEFAULT_TASK_SERVICE_STRATEGY))) {
+                if (service == null) {
+                    org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
+                    service = new LocalTaskService(taskService);
+                }
+                local = true;
+                
+            } else  {
+                client = TaskClientFactory.newInstance(properties, "org.jbpm.integration.console.forms.TaskFormDispatcher"+clientCounter);
+                local = false;
+                clientCounter++;
             }
         }
     }
 
     public DataHandler provideForm(FormAuthorityRef ref) {
         connect();
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-        client.getTask(new Long(ref.getReferenceId()), getTaskResponseHandler);
-        Task task = getTaskResponseHandler.getTask();
+        Task task = null;
+        if (local) {
+            task = service.getTask(new Long(ref.getReferenceId()));
+        } else {
+            BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+            client.getTask(new Long(ref.getReferenceId()), getTaskResponseHandler);
+            task = getTaskResponseHandler.getTask();
+        }
         Object input = null;
         long contentId = task.getTaskData().getDocumentContentId();
         if (contentId != -1) {
-            BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
-            client.getContent(contentId, getContentResponseHandler);
-            Content content = getContentResponseHandler.getContent();
+            Content content = null;
+            
+            if (local) {
+                content = service.getContent(contentId);
+            } else {
+                BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+                client.getContent(contentId, getContentResponseHandler);
+                content = getContentResponseHandler.getContent();
+            }
             ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
             ObjectInputStream in;
             try {
@@ -116,6 +134,7 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
                 }
             }
         }
+     
         return processTemplate(name, template, renderContext);
     }
 
