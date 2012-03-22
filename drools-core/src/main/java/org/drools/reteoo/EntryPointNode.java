@@ -269,16 +269,36 @@ public class EntryPointNode extends ObjectSource
             // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
             if (i < cachedNodes.length - 1) {
                 RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
-                while ( rightTuple != null && rightTuple.getRightTupleSink() instanceof BetaNode &&
+                while ( rightTuple != null &&
                         ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
+                    rightTuple.getRightTupleSink().retractRightTuple( rightTuple, context, workingMemory );
                     rightTuple = modifyPreviousTuples.peekRightTuple();
+                }
+
+
+                LeftTuple leftTuple;
+                ObjectTypeNode otn;
+                while ( true ) {
+                    leftTuple = modifyPreviousTuples.peekLeftTuple();
+                    otn = null;
+                    if (leftTuple != null) {
+                        LeftTupleSink leftTupleSink = leftTuple.getLeftTupleSink();
+                        if (leftTupleSink instanceof LeftTupleSource) {
+                            otn = ((LeftTupleSource)leftTupleSink).getObjectTypeNode();
+                        } else if (leftTupleSink instanceof RuleTerminalNode) {
+                            otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
+                        }
+                    }
+
+                    if ( otn == null || otn == cachedNodes[i+1] ) break;
+
+                    modifyPreviousTuples.removeLeftTuple();
+                    leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, context, workingMemory );
                 }
             }
         }
         modifyPreviousTuples.retractTuples( context, workingMemory );
-        
-      
     }
     
     public void modifyObject(InternalFactHandle factHandle,

@@ -428,4 +428,7 @@ public class EvalConditionNode extends LeftTupleSource
         }
     }
 
+    protected ObjectTypeNode getObjectTypeNode() {
+        return tupleSource.getObjectTypeNode();
+    }
 }

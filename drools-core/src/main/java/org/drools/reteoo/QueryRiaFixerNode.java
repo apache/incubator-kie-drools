@@ -319,4 +319,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
         return this.tupleSource;
     }
 
+    protected ObjectTypeNode getObjectTypeNode() {
+        return tupleSource.getObjectTypeNode();
+    }
 }

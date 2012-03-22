@@ -6691,8 +6691,17 @@ public class MiscTest extends CommonTestMethodBase {
 
     @Test
     public void testModifyBlock() throws Exception {
+        doModifyTest( "test_ModifyBlock.drl" );
+    }
+
+    @Test
+    public void testModifyBlockWithPolymorphism() throws Exception {
+        doModifyTest( "test_ModifyBlockWithPolymorphism.drl" );
+    }
+
+    private void doModifyTest(String drlResource) throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drlResource ) ) );
 
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
@@ -6705,7 +6714,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
-                                 list );
+                list );
 
         Person bob = new Person( "Bob" );
         bob.setStatus( "hungry" );
@@ -6718,9 +6727,9 @@ public class MiscTest extends CommonTestMethodBase {
         workingMemory.fireAllRules();
 
         assertEquals( 10,
-                      c.getPrice() );
+                c.getPrice() );
         assertEquals( "fine",
-                      bob.getStatus() );
+                bob.getStatus() );
     }
 
     @Test
@@ -10284,14 +10293,22 @@ public class MiscTest extends CommonTestMethodBase {
     public interface InterfaceB { }
 
     public static class ClassA implements InterfaceA {
+        private ClassB b = null;
         public ClassB getB() {
-            return new ClassB();
+            return b;
+        }
+        public void setB(InterfaceB b) {
+            this.b = (ClassB)b;
         }
     }
 
     public static class ClassB implements InterfaceB {
+        private String id = "123";
         public String getId() {
-            return "123";
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
         }
     }
 
@@ -10310,9 +10327,48 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
+        ClassA a = new ClassA();
+        ClassB b = new ClassB();
+        a.setB(b);
+
+        ksession.insert(a);
+        ksession.insert(b);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testRetractLeftTuple() throws Exception {
+        // JBRULES-3420
+        String str = "import org.drools.integrationtests.MiscTest.*\n" +
+                "rule R1 salience 3\n" +
+                "when\n" +
+                "   $b : InterfaceB( )\n" +
+                "   $a : ClassA( b == null )\n" +
+                "then\n" +
+                "   $a.setB( $b );\n" +
+                "   update( $a );\n" +
+                "end\n" +
+                "rule R2 salience 2\n" +
+                "when\n" +
+                "   $b : ClassB( id == \"123\" )\n" +
+                "   $a : ClassA( b != null && b.id == $b.id )\n" +
+                "then\n" +
+                "   $b.setId( \"456\" );\n" +
+                "   update( $b );\n" +
+                "end\n" +
+                "rule R3 salience 1\n" +
+                "when\n" +
+                "   InterfaceA( $b : b )\n" +
+                "then\n" +
+                "   retract( $b );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         ksession.insert(new ClassA());
         ksession.insert(new ClassB());
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals(3, ksession.fireAllRules());
     }
 
     @Test @Ignore
@@ -10339,4 +10395,35 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
     }
+
+    @Test
+    public void testModifySimple() {
+        String str ="package org.drools;\n" +
+                "\n" +
+                "rule \"test modify block\"\n" +
+                "when\n" +
+                "    $p: Person( name == \"hungry\" )\n" +
+                "then\n" +
+                "    modify( $p ) { setName(\"fine\") }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Log\"\n" +
+                "when\n" +
+                "    $o: Object()\n" +
+                "then\n" +
+                "    System.out.println( $o );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person();
+        p.setName( "hungry" );
+        ksession.insert( p );
+
+        ksession.fireAllRules();
+
+        ksession.dispose();
+    }
+
 }

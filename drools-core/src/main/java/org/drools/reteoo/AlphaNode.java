@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -32,14 +31,11 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Pattern;
-import org.drools.rule.TypeDeclaration;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used

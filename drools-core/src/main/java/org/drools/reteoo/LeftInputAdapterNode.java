@@ -327,4 +327,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     }
 
+    protected ObjectTypeNode getObjectTypeNode() {
+        ObjectSource source = this.objectSource;
+        while ( source != null ) {
+            if ( source instanceof ObjectTypeNode ) {
+                return (ObjectTypeNode) source;
+            }
+            source = source.source;
+        }
+        return null;
+    }
 }

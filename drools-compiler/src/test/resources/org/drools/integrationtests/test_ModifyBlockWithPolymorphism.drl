@@ -10,3 +10,8 @@ then
     modify( $c ) {setPrice (10) }
     modify( $p ) {setStatus("fine") }
 end
+
+rule R2 when
+    Object()
+then
+end
