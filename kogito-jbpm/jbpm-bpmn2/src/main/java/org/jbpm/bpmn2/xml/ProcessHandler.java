@@ -398,8 +398,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                 "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", null);"));
                         }
                     } else if (type.startsWith("Compensate-")) {
-                    	String uniqueId = (String) node.getMetaData().get("UniqueId");
-            	        String eventType = "Compensate-" + uniqueId;
+                    	String activityRef = (String) node.getMetaData().get("ActivityRef");
+                    	if (activityRef == null) {
+                    	    activityRef = attachedTo;
+                    	}
+            	        String eventType = "Compensate-" + activityRef;
             	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
                     }
                 }

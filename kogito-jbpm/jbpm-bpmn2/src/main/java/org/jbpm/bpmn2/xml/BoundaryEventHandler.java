@@ -30,6 +30,7 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventNode;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -204,6 +205,18 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
+        NodeList childs = element.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            if (childs.item(i) instanceof Element) {
+                Element el = (Element) childs.item(i);
+                if ("compensateEventDefinition".equalsIgnoreCase(el.getNodeName())) {
+                    String activityRef = el.getAttribute("activityRef");
+                    if (activityRef != null && activityRef.length() > 0) {
+                        eventNode.setMetaData("ActivityRef", activityRef);
+                    }
+                }
+            }
+        }
         eventNode.setMetaData("AttachedTo", attachedTo);
         List<EventFilter> eventFilters = new ArrayList<EventFilter>();
         EventTypeFilter eventFilter = new EventTypeFilter();
