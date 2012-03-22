@@ -17,14 +17,19 @@
 package org.jbpm.integration.console;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.definition.process.Process;
+import org.drools.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 
 public class ProcessManagement implements org.jboss.bpm.console.server.integration.ProcessManagement {
@@ -57,26 +62,31 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
     
     public ProcessInstanceRef getProcessInstance(String instanceId) {
         ProcessInstanceLog processInstance = CommandDelegate.getProcessInstanceLog(instanceId);
-        return Transform.processInstance(processInstance);
+        Collection<NodeInstance> activeNodes = CommandDelegate.getActiveNodeInstances(processInstance.getId());
+        return Transform.processInstance(processInstance, activeNodes);
     }
 
     public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
         List<ProcessInstanceLog> processInstances = CommandDelegate.getActiveProcessInstanceLogsByProcessId(definitionId);
         List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
         for (ProcessInstanceLog processInstance: processInstances) {
-            result.add(Transform.processInstance(processInstance));
+            
+            Collection<NodeInstance> activeNodes = CommandDelegate.getActiveNodeInstances(processInstance.getId());
+            result.add(Transform.processInstance(processInstance, activeNodes));
         }
         return result;
     }
 
     public ProcessInstanceRef newInstance(String definitionId) {
         ProcessInstanceLog processInstance = CommandDelegate.startProcess(definitionId, null);
-        return Transform.processInstance(processInstance);
+        Collection<NodeInstance> activeNodes = CommandDelegate.getActiveNodeInstances(processInstance.getId());
+        return Transform.processInstance(processInstance, activeNodes);
     }
     
     public ProcessInstanceRef newInstance(String definitionId, Map<String, Object> processVars) {
         ProcessInstanceLog processInstance = CommandDelegate.startProcess(definitionId, processVars);
-        return Transform.processInstance(processInstance);
+        Collection<NodeInstance> activeNodes = CommandDelegate.getActiveNodeInstances(processInstance.getId());
+        return Transform.processInstance(processInstance, activeNodes);
     }
 
     public void setProcessState(String instanceId, STATE nextState) {
@@ -97,7 +107,13 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 
     
     public void signalExecution(String executionId, String signal) {
-        CommandDelegate.signalExecution(executionId, signal);
+        if (signal.indexOf("^") != -1) {
+            String[] signalData = signal.split("\\^");
+            CommandDelegate.signalExecution(executionId, signalData[0], signalData[1]);
+        } else {
+            CommandDelegate.signalExecution(executionId, signal, null);
+        }
+        
     }
 
     public void deleteInstance(String instanceId) {

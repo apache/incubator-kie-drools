@@ -17,6 +17,7 @@
 package org.jbpm.integration.console;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +30,16 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 
 /**
  * This class encapsulates the logic for executing operations via the Drools/jBPM api and retrieving information 
@@ -194,8 +199,37 @@ public class CommandDelegate {
             .execute(setProcInstVariablesCommand);
     }   
     
-    public static void signalExecution(String executionId, String signal) {
-        getSession().getProcessInstance(new Long(executionId)).signalEvent("signal", signal);
+    public static void signalExecution(String executionId, String signalRef,  String signal) {
+        getSession().getProcessInstance(new Long(executionId)).signalEvent(signalRef, signal);
+    }
+    
+    public static Collection<NodeInstance> getActiveNodeInstances(long processInstanceId) {
+        
+        ProcessInstance processInstance = getSession().getProcessInstance(processInstanceId);
+        if (processInstance != null){
+            Collection<NodeInstance> activeNodes = ((WorkflowProcessInstance)processInstance).getNodeInstances();
+            
+            activeNodes.addAll(collectActiveNodeInstances(activeNodes));
+            
+            return activeNodes;
+        }
+        
+        return null;
+    }
+    
+    protected static Collection<NodeInstance> collectActiveNodeInstances(Collection<NodeInstance> activeNodes) {
+        Collection<NodeInstance> activeNodesComposite = new ArrayList<NodeInstance>();
+        for (NodeInstance nodeInstance : activeNodes) {
+            if (nodeInstance instanceof CompositeNodeInstance) {
+                Collection<NodeInstance> currentNodeInstances = ((CompositeNodeInstance) nodeInstance).getNodeInstances();
+                activeNodesComposite.addAll(currentNodeInstances);
+                
+                // recursively check current nodes
+                activeNodesComposite.addAll(collectActiveNodeInstances(currentNodeInstances));
+            }
+        }
+        
+        return activeNodesComposite;
     }
 
 }

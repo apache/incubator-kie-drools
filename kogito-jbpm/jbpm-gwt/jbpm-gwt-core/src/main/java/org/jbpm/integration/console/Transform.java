@@ -16,7 +16,13 @@
 
 package org.jbpm.integration.console;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.definition.process.Process;
+import org.drools.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.TaskRef;
@@ -25,6 +31,7 @@ import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.workflow.instance.node.EventNodeInstance;
 
 public class Transform {
 	
@@ -42,7 +49,7 @@ public class Transform {
 		return result;
 	}
 	
-	public static ProcessInstanceRef processInstance(ProcessInstanceLog processInstance) {
+	public static ProcessInstanceRef processInstance(ProcessInstanceLog processInstance, Collection<NodeInstance> activeNodes) {
 		ProcessInstanceRef result = new ProcessInstanceRef(
 			processInstance.getProcessInstanceId() + "",
 			processInstance.getProcessId(),
@@ -52,6 +59,33 @@ public class Transform {
 		TokenReference token = new TokenReference(
 			processInstance.getProcessInstanceId() + "", null, "");
 		result.setRootToken(token);
+		
+		if (activeNodes != null && !activeNodes.isEmpty()) {
+		    Iterator<NodeInstance> it = activeNodes.iterator();
+		    List<TokenReference> children = new ArrayList<TokenReference>();
+		    TokenReference childToken = null;
+		    StringBuffer nodeNames = new StringBuffer();
+		    while (it.hasNext()) {
+		        NodeInstance nodeInstance = (NodeInstance) it.next();
+		        childToken = new TokenReference(processInstance.getProcessInstanceId() +"", null, nodeInstance.getNodeName());
+		        if (nodeNames.length() > 0){
+		            nodeNames.append(", ");
+		        }
+		        nodeNames.append(nodeInstance.getNodeName());
+                if (nodeInstance instanceof EventNodeInstance) {
+                    String type = ((EventNodeInstance)nodeInstance).getEventNode().getType();
+                    if (type != null && !type.startsWith("Message-")) {
+                        childToken.setName(type);
+                        childToken.setCanBeSignaled(true);
+                    }
+                    
+                }
+                
+                children.add(childToken);
+            }
+		    token.setChildren(children);
+		    token.setCurrentNodeName(nodeNames.toString());
+		}
 		return result;
 	}
 	
