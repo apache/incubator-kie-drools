@@ -34,20 +34,25 @@ public interface ObjectMarshallingStrategy {
      * of writing the object into an output stream, it returns
      * the marshalled object as a byte[].
      * 
+     * @param os the context for the marshalling
      * @param object the object to be marshalled
      * 
      * @return the marshalled byte[] of the input object
      */
-    public byte[] marshal( Object object ) throws IOException;
+    public byte[] marshal( ObjectOutputStream os,
+                           Object object ) throws IOException;
     
     /**
      * This method is analogous to the read method, but instead of reading it from an 
      * input stream, it reads it from a byte[]
      * 
+     * @param os the context for the unmarshalling
      * @param object the marshalled object in a byte[]
      * 
      * @return the unmarshalled Object
      */
-    public Object unmarshal( byte[] object, ClassLoader classloader ) throws IOException, ClassNotFoundException;
+    public Object unmarshal( ObjectInputStream os,
+                             byte[] object,
+                             ClassLoader classloader ) throws IOException, ClassNotFoundException;
 
 }
