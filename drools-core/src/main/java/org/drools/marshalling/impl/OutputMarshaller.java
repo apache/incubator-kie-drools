@@ -1163,14 +1163,6 @@ public class OutputMarshaller {
             
             outCtx.writeLong( pinTrigger.hasNextFireTime().getTime() );
         }
-        
-//        else if ( trigger instanceof DelayedTrigger ) {
-//            
-//        } else if ( trigger instanceof PointInTimeTrigger ) {
-//            
-//        } else if ( trigger instanceof CompositeMaxDurationTimer ) {
-//            
-//        }        
     }
 
 }
