@@ -27,6 +27,12 @@ import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
 import org.hibernate.Session;
 
+/**
+ * This class has been deprecated in favor of {@link JPAWorkingMemoryDbLogger}. 
+ * 
+ * Please, please use that class instead of this. 
+ */
+@Deprecated
 public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
     
     public WorkingMemoryDbLogger(WorkingMemory workingMemory) {

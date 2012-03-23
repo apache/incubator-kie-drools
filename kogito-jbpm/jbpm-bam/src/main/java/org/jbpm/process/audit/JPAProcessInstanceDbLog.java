@@ -76,7 +76,7 @@ public class JPAProcessInstanceDbLog {
     
     @Deprecated
     public JPAProcessInstanceDbLog(Environment env){
-        this.env = env;
+        JPAProcessInstanceDbLog.env = env;
     }
 
     public static void setEnvironment(Environment newEnv) { 

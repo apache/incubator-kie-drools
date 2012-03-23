@@ -36,9 +36,6 @@ import org.drools.runtime.KnowledgeRuntime;
 /**
  * Enables history log via JPA.
  * 
- * @author jserdaru
- * @author krisv
- * 
  */
 public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
 

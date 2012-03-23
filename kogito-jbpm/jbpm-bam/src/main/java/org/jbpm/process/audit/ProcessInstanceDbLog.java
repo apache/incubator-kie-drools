@@ -20,6 +20,12 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+/**
+ * This class has been deprecated in favor of {@link JPAProcessInstanceDbLog}.
+ * 
+ *Please, please use that class instead of this. 
+ */
+@Deprecated
 public class ProcessInstanceDbLog {
     
     @SuppressWarnings("unchecked")
