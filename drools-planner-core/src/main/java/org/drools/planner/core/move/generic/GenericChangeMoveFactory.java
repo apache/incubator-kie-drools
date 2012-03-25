@@ -19,7 +19,6 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.FactHandle;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -45,7 +44,6 @@ public class GenericChangeMoveFactory extends CachedMoveFactory {
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         for (Object entity : solutionDescriptor.getPlanningEntityList(solution)) {
-            FactHandle planningEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(entity);
             PlanningEntityDescriptor entityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
                     entity.getClass());
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
@@ -57,8 +55,7 @@ public class GenericChangeMoveFactory extends CachedMoveFactory {
                 }
                 for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                         solutionDirector.getWorkingSolution(), entity)) {
-                    moveList.add(new GenericChangeMove(entity, planningEntityFactHandle,
-                            variableDescriptor, toPlanningValue));
+                    moveList.add(new GenericChangeMove(entity, variableDescriptor, toPlanningValue));
                 }
             }
         }

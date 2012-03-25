@@ -17,7 +17,6 @@
 package org.drools.planner.core.move.generic;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -25,19 +24,13 @@ import org.drools.planner.core.move.Move;
 public class GenericChainedChangeMove extends GenericChangeMove {
 
     private final Object oldTrailingEntity;
-    private final FactHandle oldTrailingEntityFactHandle;
     private final Object newTrailingEntity;
-    private final FactHandle newTrailingEntityFactHandle;
 
-    public GenericChainedChangeMove(Object planningEntity, FactHandle planningEntityFactHandle,
-            PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue,
-            Object oldTrailingEntity, FactHandle oldTrailingEntityFactHandle,
-            Object newTrailingEntity, FactHandle newTrailingEntityFactHandle) {
-        super(planningEntity, planningEntityFactHandle, planningVariableDescriptor, toPlanningValue);
+    public GenericChainedChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
+            Object toPlanningValue, Object oldTrailingEntity, Object newTrailingEntity) {
+        super(planningEntity, planningVariableDescriptor, toPlanningValue);
         this.oldTrailingEntity = oldTrailingEntity;
-        this.oldTrailingEntityFactHandle = oldTrailingEntityFactHandle;
         this.newTrailingEntity = newTrailingEntity;
-        this.newTrailingEntityFactHandle = newTrailingEntityFactHandle;
     }
 
     @Override
@@ -48,9 +41,8 @@ public class GenericChainedChangeMove extends GenericChangeMove {
     @Override
     public Move createUndoMove(WorkingMemory workingMemory) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChainedChangeMove(planningEntity, planningEntityFactHandle,
-                planningVariableDescriptor, oldPlanningValue,
-                newTrailingEntity, newTrailingEntityFactHandle, oldTrailingEntity, oldTrailingEntityFactHandle);
+        return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue,
+                newTrailingEntity, oldTrailingEntity);
     }
 
     @Override
@@ -60,15 +52,15 @@ public class GenericChainedChangeMove extends GenericChangeMove {
         // Close the old chain
         if (oldTrailingEntity != null) {
             planningVariableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
-            workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+            workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
         }
         // Change the entity
         planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        workingMemory.update(planningEntityFactHandle, planningEntity);
+        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
         // Reroute the new chain
         if (newTrailingEntity != null) {
             planningVariableDescriptor.setValue(newTrailingEntity, planningEntity);
-            workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
+            workingMemory.update(workingMemory.getFactHandle(newTrailingEntity), newTrailingEntity);
         }
     }
 

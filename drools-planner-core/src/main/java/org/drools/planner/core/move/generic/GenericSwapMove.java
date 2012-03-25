@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -34,19 +33,14 @@ public class GenericSwapMove implements Move {
     private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
     private final Object leftPlanningEntity;
-    private final FactHandle leftPlanningEntityFactHandle;
 
     private final Object rightPlanningEntity;
-    private final FactHandle rightPlanningEntityFactHandle;
 
     public GenericSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
-            Object leftPlanningEntity, FactHandle leftPlanningEntityFactHandle,
-            Object rightPlanningEntity, FactHandle rightPlanningEntityFactHandle) {
+            Object leftPlanningEntity, Object rightPlanningEntity) {
         this.planningVariableDescriptors = planningVariableDescriptors;
         this.leftPlanningEntity = leftPlanningEntity;
-        this.leftPlanningEntityFactHandle = leftPlanningEntityFactHandle;
         this.rightPlanningEntity = rightPlanningEntity;
-        this.rightPlanningEntityFactHandle = rightPlanningEntityFactHandle;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
@@ -62,8 +56,7 @@ public class GenericSwapMove implements Move {
 
     public Move createUndoMove(WorkingMemory workingMemory) {
         return new GenericSwapMove(planningVariableDescriptors,
-                rightPlanningEntity, rightPlanningEntityFactHandle,
-                leftPlanningEntity, leftPlanningEntityFactHandle);
+                rightPlanningEntity, leftPlanningEntity);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -72,9 +65,9 @@ public class GenericSwapMove implements Move {
             Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 planningVariableDescriptor.setValue(leftPlanningEntity, rightValue);
-                workingMemory.update(leftPlanningEntityFactHandle, leftPlanningEntity);
+                workingMemory.update(workingMemory.getFactHandle(leftPlanningEntity), leftPlanningEntity);
                 planningVariableDescriptor.setValue(rightPlanningEntity, leftValue);
-                workingMemory.update(rightPlanningEntityFactHandle, rightPlanningEntity);
+                workingMemory.update(workingMemory.getFactHandle(rightPlanningEntity), rightPlanningEntity);
             }
         }
     }

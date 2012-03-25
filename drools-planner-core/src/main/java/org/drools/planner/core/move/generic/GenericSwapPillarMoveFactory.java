@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;

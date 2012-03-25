@@ -39,7 +39,6 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private Solution workingSolution;
 
     private Object planningEntity;
-    private FactHandle planningEntityFactHandle;
     private Iterator<?> planningValueIterator;
 
     private boolean isFirstValue; // TODO remove and require partially initialized entity's support in score rules
@@ -96,10 +95,6 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         workingValue = value;
     }
 
-    public void initPlanningEntityFactHandle(FactHandle planningEntityFactHandle) {
-        this.planningEntityFactHandle = planningEntityFactHandle;
-    }
-
     public boolean hasWalk() {
         if (isFirstValue) {
             return true;
@@ -125,7 +120,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     private void changeWorkingValue(Object value) {
         planningVariableDescriptor.setValue(planningEntity, value);
-        workingMemory.update(planningEntityFactHandle, planningEntity);
+        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
         workingValue = value;
     }
 
@@ -136,10 +131,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
             return new ChangeMoveIterator(planningValueIterator, planningEntity);
         } else {
             Object oldTrailingEntity = findTrailingEntity(planningEntity);
-            FactHandle oldTrailingEntityFactHandle = oldTrailingEntity == null
-                    ? null : workingMemory.getFactHandle(oldTrailingEntity);
-            return new ChainedChangeMoveIterator(planningValueIterator, planningEntity,
-                    oldTrailingEntity, oldTrailingEntityFactHandle);
+            return new ChainedChangeMoveIterator(planningValueIterator, planningEntity, oldTrailingEntity);
         }
     }
 
@@ -159,8 +151,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            return new GenericChangeMove(planningEntity, planningEntityFactHandle,
-                    planningVariableDescriptor, toPlanningValue);
+            return new GenericChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
         }
 
         public void remove() {
@@ -189,25 +180,19 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private class ChainedChangeMoveIterator extends ChangeMoveIterator {
 
         private final Object oldTrailingEntity;
-        private final FactHandle oldTrailingEntityFactHandle;
 
         public ChainedChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity,
-                Object oldTrailingEntity, FactHandle oldTrailingEntityFactHandle) {
+                Object oldTrailingEntity) {
             super(planningValueIterator, planningEntity);
             this.oldTrailingEntity = oldTrailingEntity;
-            this.oldTrailingEntityFactHandle = oldTrailingEntityFactHandle;
         }
 
         @Override
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
             Object newTrailingEntity = findTrailingEntity(toPlanningValue);
-            FactHandle newTrailingEntityFactHandle = newTrailingEntity == null
-                    ? null : workingMemory.getFactHandle(newTrailingEntity);
-
-            return new GenericChainedChangeMove(planningEntity, planningEntityFactHandle,
-                    planningVariableDescriptor, toPlanningValue,
-                    oldTrailingEntity, oldTrailingEntityFactHandle, newTrailingEntity, newTrailingEntityFactHandle);
+            return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue,
+                    oldTrailingEntity, newTrailingEntity);
         }
 
     }

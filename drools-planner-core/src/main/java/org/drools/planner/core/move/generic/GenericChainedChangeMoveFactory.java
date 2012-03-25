@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -55,27 +54,19 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
                 // TODO this fetches the list twice
                 List<Object> entityList =  entityDescriptor.extractEntities(workingSolution);
                 for (Object entity : entityList) {
-                    FactHandle entityFactHandle = workingMemory.getFactHandle(entity);
                     if (!variableDescriptor.isChained()) {
                         for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                                 workingSolution, entity)) {
-                            moveList.add(new GenericChangeMove(entity, entityFactHandle,
-                                    variableDescriptor, toPlanningValue));
+                            moveList.add(new GenericChangeMove(entity, variableDescriptor, toPlanningValue));
                         }
                     } else {
                         Object oldTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor, entity);
-                        FactHandle oldTrailingEntityFactHandle = oldTrailingEntity == null
-                                ? null : workingMemory.getFactHandle(oldTrailingEntity);
                         for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                                 workingSolution, entity)) {
                             Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor,
                                     toPlanningValue);
-                            FactHandle newTrailingEntityFactHandle = newTrailingEntity == null
-                                    ? null : workingMemory.getFactHandle(newTrailingEntity);
-                            moveList.add(new GenericChainedChangeMove(entity, entityFactHandle,
-                                    variableDescriptor, toPlanningValue,
-                                    oldTrailingEntity, oldTrailingEntityFactHandle,
-                                    newTrailingEntity, newTrailingEntityFactHandle));
+                            moveList.add(new GenericChainedChangeMove(entity, variableDescriptor, toPlanningValue,
+                                    oldTrailingEntity, newTrailingEntity));
                         }
                     }
                 }

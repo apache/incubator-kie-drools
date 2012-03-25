@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.drools.FactHandle;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -49,8 +48,6 @@ public class GenericSwapMoveFactory extends CachedMoveFactory {
         List<Object> entityList = solutionDescriptor.getPlanningEntityList(solution);
         for (ListIterator<Object> leftIt = entityList.listIterator(); leftIt.hasNext();) {
             Object leftEntity = leftIt.next();
-            FactHandle leftEntityFactHandle = solutionDirector.getWorkingMemory()
-                    .getFactHandle(leftEntity);
             PlanningEntityDescriptor leftEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
                     leftEntity.getClass());
             Collection<PlanningVariableDescriptor> variableDescriptors
@@ -69,10 +66,7 @@ public class GenericSwapMoveFactory extends CachedMoveFactory {
                         leftEntity.getClass());
                 if (leftEntityDescriptor.getPlanningEntityClass().equals(
                         rightEntityDescriptor.getPlanningEntityClass())) {
-                    FactHandle rightEntityFactHandle = solutionDirector.getWorkingMemory().getFactHandle(rightEntity);
-                    moveList.add(new GenericSwapMove(variableDescriptors,
-                            leftEntity, leftEntityFactHandle,
-                            rightEntity, rightEntityFactHandle));
+                    moveList.add(new GenericSwapMove(variableDescriptors, leftEntity, rightEntity));
                 }
             }
         }

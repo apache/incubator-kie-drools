@@ -32,9 +32,9 @@ public class GenericChainedChangeMoveTest {
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         WorkingMemory workingMemory = mock(WorkingMemory.class);
         FactHandle a3FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a3, a3FactHandle,
-                variableDescriptor, b1, null, null, null, null);
+        GenericChainedChangeMove move = new GenericChainedChangeMove(a3, variableDescriptor, b1, null, null);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -44,6 +44,7 @@ public class GenericChainedChangeMoveTest {
         assertEquals(b1, a3.getChainedObject());
 
         verify(workingMemory).update(a3FactHandle, a3);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 
@@ -65,11 +66,13 @@ public class GenericChainedChangeMoveTest {
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         WorkingMemory workingMemory = mock(WorkingMemory.class);
         FactHandle a2FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a2)).thenReturn(a2FactHandle);
         FactHandle a3FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
         FactHandle b1FactHandle = mock(FactHandle.class);
+        when(workingMemory.getFactHandle(b1)).thenReturn(b1FactHandle);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a2, a2FactHandle,
-                variableDescriptor, b0, a3, a3FactHandle, b1, b1FactHandle);
+        GenericChainedChangeMove move = new GenericChainedChangeMove(a2, variableDescriptor, b0, a3, b1);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -81,6 +84,7 @@ public class GenericChainedChangeMoveTest {
         verify(workingMemory).update(a2FactHandle, a2);
         verify(workingMemory).update(a3FactHandle, a3);
         verify(workingMemory).update(b1FactHandle, b1);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 

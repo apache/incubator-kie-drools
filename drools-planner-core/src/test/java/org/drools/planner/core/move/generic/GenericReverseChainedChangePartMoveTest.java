@@ -50,7 +50,7 @@ public class GenericReverseChainedChangePartMoveTest {
         entitiesSubChain.add(a5);
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b1, null, null, null, null);
+                variableDescriptor, b1, null, null);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -61,12 +61,10 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a5, a4.getChainedObject());
         assertEquals(a4, a3.getChainedObject());
 
-        verify(workingMemory).getFactHandle(a5);
         verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 
@@ -100,7 +98,7 @@ public class GenericReverseChainedChangePartMoveTest {
         entitiesSubChain.add(a5);
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, a2, null, null, null, null);
+                variableDescriptor, a2, null, null);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -109,12 +107,10 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a5, a4.getChainedObject());
         assertEquals(a4, a3.getChainedObject());
 
-        verify(workingMemory).getFactHandle(a5);
         verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 
@@ -156,7 +152,7 @@ public class GenericReverseChainedChangePartMoveTest {
         entitiesSubChain.add(a4);
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b0, a5, a5FactHandle, b1, b1FactHandle);
+                variableDescriptor, b0, a5, b1);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -168,13 +164,11 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a2, b1.getChainedObject());
 
         verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).getFactHandle(a2);
         verify(workingMemory).update(a2FactHandle, a2);
         verify(workingMemory).update(b1FactHandle, b1);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 
@@ -210,7 +204,7 @@ public class GenericReverseChainedChangePartMoveTest {
         entitiesSubChain.add(a4);
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, a1, a5, a5FactHandle, a2, a2FactHandle);
+                variableDescriptor, a1, a5, a2);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -220,12 +214,10 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a2, a5.getChainedObject());
 
         verify(workingMemory, atLeast(1)).update(a5FactHandle, a5);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).getFactHandle(a2);
         verify(workingMemory).update(a2FactHandle, a2);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 

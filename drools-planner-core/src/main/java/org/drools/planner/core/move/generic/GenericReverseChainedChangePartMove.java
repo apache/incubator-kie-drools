@@ -24,7 +24,6 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -37,21 +36,16 @@ public class GenericReverseChainedChangePartMove implements Move {
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final Object toPlanningValue;
     private final Object oldTrailingEntity;
-    private final FactHandle oldTrailingEntityFactHandle;
     private final Object newTrailingEntity;
-    private final FactHandle newTrailingEntityFactHandle;
 
     public GenericReverseChainedChangePartMove(List<Object> entitiesSubChain,
             PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue,
-            Object oldTrailingEntity, FactHandle oldTrailingEntityFactHandle,
-            Object newTrailingEntity, FactHandle newTrailingEntityFactHandle) {
+            Object oldTrailingEntity, Object newTrailingEntity) {
         this.entitiesSubChain = entitiesSubChain;
         this.planningVariableDescriptor = planningVariableDescriptor;
         this.toPlanningValue = toPlanningValue;
         this.oldTrailingEntity = oldTrailingEntity;
-        this.oldTrailingEntityFactHandle = oldTrailingEntityFactHandle;
         this.newTrailingEntity = newTrailingEntity;
-        this.newTrailingEntityFactHandle = newTrailingEntityFactHandle;
         firstEntity = this.entitiesSubChain.get(0);
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
@@ -66,7 +60,7 @@ public class GenericReverseChainedChangePartMove implements Move {
         Collections.reverse(reversedEntitiesSubChain);
         return new GenericReverseChainedChangePartMove(reversedEntitiesSubChain,
                 planningVariableDescriptor, oldFirstPlanningValue,
-                newTrailingEntity, newTrailingEntityFactHandle, oldTrailingEntity, oldTrailingEntityFactHandle);
+                newTrailingEntity, oldTrailingEntity);
     }
 
     public void doMove(WorkingMemory workingMemory) {
@@ -76,13 +70,13 @@ public class GenericReverseChainedChangePartMove implements Move {
             // Temporary close the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
             }
         } else {
             // Close the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
             }
         }
         // Change the entity
@@ -98,13 +92,13 @@ public class GenericReverseChainedChangePartMove implements Move {
             // Reroute the old chain
             if (oldTrailingEntity != null) {
                 planningVariableDescriptor.setValue(oldTrailingEntity, firstEntity);
-                workingMemory.update(oldTrailingEntityFactHandle, oldTrailingEntity);
+                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
             }
         } else {
             // Reroute the new chain
             if (newTrailingEntity != null) {
                 planningVariableDescriptor.setValue(newTrailingEntity, firstEntity);
-                workingMemory.update(newTrailingEntityFactHandle, newTrailingEntity);
+                workingMemory.update(workingMemory.getFactHandle(newTrailingEntity), newTrailingEntity);
             }
         }
     }

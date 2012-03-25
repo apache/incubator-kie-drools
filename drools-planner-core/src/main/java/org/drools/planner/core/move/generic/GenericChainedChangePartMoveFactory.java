@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -86,37 +85,30 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                                 for (int toIndex = fromIndex + 2; toIndex <= chainSize; toIndex++) {
                                     List<Object> entitiesSubChain = anchorWithChain.subList(fromIndex, toIndex);
                                     Object oldTrailingEntity;
-                                    FactHandle oldTrailingEntityFactHandle;
                                     if (toIndex < chainSize) {
                                         oldTrailingEntity = anchorWithChain.get(toIndex);
-                                        oldTrailingEntityFactHandle = workingMemory.getFactHandle(oldTrailingEntity);
                                     } else {
                                         oldTrailingEntity = null;
-                                        oldTrailingEntityFactHandle = null;
                                     }
                                     for (Object toValue : values) {
                                         // Subchains can only be moved into other (sub)chains
                                         if (!entitiesSubChain.contains(toValue)) {
                                             Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap,
                                                     variableDescriptor, toValue);
-                                            FactHandle newTrailingEntityFactHandle = newTrailingEntity == null
-                                                    ? null : workingMemory.getFactHandle(newTrailingEntity);
                                             // Moving to the same oldToValue has no effect
                                             // TODO also filter out moves done by GenericChainedChangeMoveFactory
                                             // where the entire subchain is only moved 1 position back or forth
                                             if (!oldToValue.equals((toValue))) {
                                                 moveList.add(new GenericChainedChangePartMove(entitiesSubChain,
                                                         variableDescriptor, toValue,
-                                                        oldTrailingEntity, oldTrailingEntityFactHandle,
-                                                        newTrailingEntity, newTrailingEntityFactHandle));
+                                                        oldTrailingEntity, newTrailingEntity));
                                             }
                                             // Reversing an entire chain has no effect
                                             // TODO in some case it has an effect (when the trucks don't go back to the depot) make this configurable
                                             if (chainSize != entitiesSubChain.size()) {
                                                 moveList.add(new GenericReverseChainedChangePartMove(entitiesSubChain,
                                                         variableDescriptor, toValue,
-                                                        oldTrailingEntity, oldTrailingEntityFactHandle,
-                                                        newTrailingEntity, newTrailingEntityFactHandle));
+                                                        oldTrailingEntity, newTrailingEntity));
                                             }
                                         }
                                     }

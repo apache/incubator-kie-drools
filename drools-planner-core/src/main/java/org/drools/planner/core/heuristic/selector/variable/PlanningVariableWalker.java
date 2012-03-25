@@ -46,7 +46,6 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     private SolutionDirector solutionDirector;
 
     private Object planningEntity;
-    private FactHandle planningEntityFactHandle;
 
     public PlanningVariableWalker(PlanningEntityDescriptor planningEntityDescriptor) {
         this.planningEntityDescriptor = planningEntityDescriptor;
@@ -101,10 +100,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
         // Insert must happen after every planningValueWalker.initWalk() to avoid a NullPointerException, for example:
         // Rules use Lecture.getDay(), which is implemented as "return period.getDay();"
         // so the planning variable period cannot be null when the planning entity is inserted.
-        planningEntityFactHandle = workingMemory.insert(planningEntity);
-        for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-            planningValueWalker.initPlanningEntityFactHandle(planningEntityFactHandle);
-        }
+        workingMemory.insert(planningEntity);
     }
 
     public boolean hasWalk() {
@@ -140,17 +136,15 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     // TODO refactor variableWalker to this
     public Iterator<Move> moveIterator(final Object planningEntity) {
-        FactHandle planningEntityFactHandle = workingMemory.insert(planningEntity);
+        workingMemory.insert(planningEntity);
         if (planningValueWalkerList.size() == 1) {
             PlanningValueWalker planningValueWalker = planningValueWalkerList.iterator().next();
-            planningValueWalker.initPlanningEntityFactHandle(planningEntityFactHandle);
             return planningValueWalker.moveIterator(planningEntity);
         } else {
             final List<Iterator<Move>> moveIteratorList = new ArrayList<Iterator<Move>>(planningValueWalkerList.size());
             final List<Move> composedMoveList = new ArrayList<Move>(planningValueWalkerList.size());
             boolean moveIteratorIsFirst = true;
             for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
-                planningValueWalker.initPlanningEntityFactHandle(planningEntityFactHandle);
                 Iterator<Move> moveIterator = planningValueWalker.moveIterator(planningEntity);
                 moveIteratorList.add(moveIterator);
                 Move initialMove;

@@ -50,7 +50,7 @@ public class GenericChainedChangePartMoveTest {
         entitiesSubChain.add(a5);
 
         GenericChainedChangePartMove move = new GenericChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b1, null, null, null, null);
+                variableDescriptor, b1, null, null);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -61,12 +61,10 @@ public class GenericChainedChangePartMoveTest {
         assertEquals(a3, a4.getChainedObject());
         assertEquals(a4, a5.getChainedObject());
 
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).getFactHandle(a5);
         verify(workingMemory).update(a5FactHandle, a5);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 
@@ -108,7 +106,7 @@ public class GenericChainedChangePartMoveTest {
         entitiesSubChain.add(a4);
 
         GenericChainedChangePartMove move = new GenericChainedChangePartMove(entitiesSubChain,
-                variableDescriptor, b0, a5, a5FactHandle, b1, b1FactHandle);
+                variableDescriptor, b0, a5, b1);
         move.doMove(workingMemory);
 
         assertEquals(a0, a1.getChainedObject());
@@ -120,13 +118,11 @@ public class GenericChainedChangePartMoveTest {
         assertEquals(a4, b1.getChainedObject());
 
         verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).getFactHandle(a2);
         verify(workingMemory).update(a2FactHandle, a2);
-        verify(workingMemory).getFactHandle(a3);
         verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).getFactHandle(a4);
         verify(workingMemory).update(a4FactHandle, a4);
         verify(workingMemory).update(b1FactHandle, b1);
+        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
         verifyNoMoreInteractions(workingMemory);
     }
 

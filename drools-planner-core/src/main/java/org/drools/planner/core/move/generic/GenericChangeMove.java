@@ -22,7 +22,6 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -30,15 +29,12 @@ import org.drools.planner.core.move.Move;
 public class GenericChangeMove implements Move {
 
     protected final Object planningEntity;
-    protected final FactHandle planningEntityFactHandle;
-
     protected final PlanningVariableDescriptor planningVariableDescriptor;
     protected final Object toPlanningValue;
 
-    public GenericChangeMove(Object planningEntity, FactHandle planningEntityFactHandle,
-            PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue) {
+    public GenericChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
+            Object toPlanningValue) {
         this.planningEntity = planningEntity;
-        this.planningEntityFactHandle = planningEntityFactHandle;
         this.planningVariableDescriptor = planningVariableDescriptor;
         this.toPlanningValue = toPlanningValue;
     }
@@ -50,13 +46,12 @@ public class GenericChangeMove implements Move {
 
     public Move createUndoMove(WorkingMemory workingMemory) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChangeMove(planningEntity, planningEntityFactHandle,
-                planningVariableDescriptor, oldPlanningValue);
+        return new GenericChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
     }
 
     public void doMove(WorkingMemory workingMemory) {
         planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        workingMemory.update(planningEntityFactHandle, planningEntity);
+        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
     }
 
     public Collection<? extends Object> getPlanningEntities() {
