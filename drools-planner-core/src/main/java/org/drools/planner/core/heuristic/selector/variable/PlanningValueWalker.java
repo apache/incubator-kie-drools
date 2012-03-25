@@ -18,7 +18,6 @@ package org.drools.planner.core.heuristic.selector.variable;
 
 import java.util.Iterator;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;

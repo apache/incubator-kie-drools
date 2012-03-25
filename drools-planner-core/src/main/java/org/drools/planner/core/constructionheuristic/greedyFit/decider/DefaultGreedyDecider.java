@@ -18,7 +18,6 @@ package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
-import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;

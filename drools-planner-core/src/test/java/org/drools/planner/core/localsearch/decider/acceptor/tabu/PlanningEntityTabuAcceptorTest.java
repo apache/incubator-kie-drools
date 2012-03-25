@@ -1,6 +1,5 @@
 package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
-import org.drools.FactHandle;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;

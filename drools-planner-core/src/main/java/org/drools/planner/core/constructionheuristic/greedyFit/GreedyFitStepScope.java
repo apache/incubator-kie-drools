@@ -18,8 +18,6 @@ package org.drools.planner.core.constructionheuristic.greedyFit;
 
 import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
