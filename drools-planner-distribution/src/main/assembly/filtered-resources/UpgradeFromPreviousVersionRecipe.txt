@@ -1569,7 +1569,7 @@ After in *.java:
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public Room getRoom() {...}
 
-[MINOR] If you copied the examples GUI's HACKs with DefaultSolverScope,
+[MAJOR] If you copied the examples GUI's HACKs with DefaultSolverScope,
 transform them to use the less worse SolutionDirector HACK. But it's still a hack: avoid if you can.
 An important change is that the GUI and the Solver should never share the same workingSolution instance any more.
 Also, the Solver implementation has been adjusted so that the workingSolution is a clone of setPlanningProblem(),
@@ -1608,6 +1608,7 @@ After in *.java:
         Solution bestSolution = solver.getBestSolution();
         guiSolutionDirector.setWorkingSolution(bestSolution);
     }
+A future version will support this with a good API, something like SolverConfig.getScoreDirectorFactory().createSolverDirector()
 
 [MAJOR] The interface Move has gotten 2 new methods: getPlanningEntities() and getPlanningValues()
 The TabuPropertyEnabled interface has been removed:
