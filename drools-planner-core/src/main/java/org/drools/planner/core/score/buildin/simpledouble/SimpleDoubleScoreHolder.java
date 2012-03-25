@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.hardandsoft;
+package org.drools.planner.core.score.buildin.simpledouble;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
+import org.drools.planner.core.score.holder.AbstractScoreHolder;
 
-public class HardAndSoftScoreCalculator extends AbstractScoreCalculator {
+public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
 
-    protected int hardConstraintsBroken;
-    protected int softConstraintsBroken;
+    private double score;
 
-    public int getHardConstraintsBroken() {
-        return hardConstraintsBroken;
+    public double getScore() {
+        return score;
     }
 
-    public void setHardConstraintsBroken(int hardConstraintsBroken) {
-        this.hardConstraintsBroken = hardConstraintsBroken;
-    }
-
-    public int getSoftConstraintsBroken() {
-        return softConstraintsBroken;
-    }
-
-    public void setSoftConstraintsBroken(int softConstraintsBroken) {
-        this.softConstraintsBroken = softConstraintsBroken;
+    public void setScore(double score) {
+        this.score = score;
     }
 
     // ************************************************************************
@@ -45,7 +36,7 @@ public class HardAndSoftScoreCalculator extends AbstractScoreCalculator {
     // ************************************************************************
 
     public Score calculateScore() {
-        return DefaultHardAndSoftScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
+        return DefaultSimpleDoubleScore.valueOf(score);
     }
 
 }

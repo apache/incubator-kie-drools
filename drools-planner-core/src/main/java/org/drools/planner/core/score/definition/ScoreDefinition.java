@@ -17,7 +17,7 @@
 package org.drools.planner.core.score.definition;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
@@ -72,9 +72,9 @@ public interface ScoreDefinition<S extends Score> {
     Double translateScoreToGraphValue(S score);
 
     /**
-     * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
+     * TODO JBRULES-2238 remove when the rule that sums the final score can be written as a single rule and {@link ScoreHolder} is dead
      * @return never null
      */
-    ScoreCalculator buildScoreCalculator();
+    ScoreHolder buildScoreHolder();
 
 }

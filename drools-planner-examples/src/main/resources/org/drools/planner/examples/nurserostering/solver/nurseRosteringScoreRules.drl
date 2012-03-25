@@ -17,7 +17,7 @@
 package org.drools.planner.examples.nurserostering.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -57,7 +57,7 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequ
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 
-global HardAndSoftScoreCalculator scoreCalculator;
+global HardAndSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -676,7 +676,7 @@ rule "hardConstraintsBroken"
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
@@ -688,5 +688,5 @@ rule "softConstraintsBroken"
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
 end

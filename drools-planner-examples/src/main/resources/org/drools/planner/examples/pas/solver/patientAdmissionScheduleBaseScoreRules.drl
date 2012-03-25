@@ -17,7 +17,7 @@
 package org.drools.planner.examples.pas.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -41,7 +41,7 @@ import org.drools.planner.examples.pas.domain.Specialism;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
-global HardAndSoftScoreCalculator scoreCalculator;
+global HardAndSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -205,7 +205,7 @@ rule "hardConstraintsBroken"
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
 end
 
 // Accumulate soft constraints
@@ -217,5 +217,5 @@ rule "softConstraintsBroken"
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
 end

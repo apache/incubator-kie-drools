@@ -17,9 +17,9 @@
 package org.drools.planner.core.score.buildin.hardandsoftlong;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
+import org.drools.planner.core.score.holder.AbstractScoreHolder;
 
-public class HardAndSoftLongScoreCalculator extends AbstractScoreCalculator {
+public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
 
     protected long hardConstraintsBroken;
     protected long softConstraintsBroken;

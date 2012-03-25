@@ -17,7 +17,7 @@
 package org.drools.planner.examples.manners2009.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.simple.SimpleScoreCalculator;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -32,7 +32,7 @@ import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.drools.planner.examples.manners2009.domain.Table;
 
-global SimpleScoreCalculator scoreCalculator;
+global SimpleScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -102,5 +102,5 @@ rule "hardConstraintsBroken"
             count($unweightedConstraintOccurrence)
         )
     then
-        scoreCalculator.setScore(- $occurrenceCount.intValue());
+        scoreHolder.setScore(- $occurrenceCount.intValue());
 end

@@ -32,7 +32,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultSolutionDirector implements SolutionDirector {
 
-    public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
+    public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -56,7 +56,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
 
     protected Solution workingSolution;
     protected StatefulSession workingMemory;
-    protected ScoreCalculator workingScoreCalculator;
+    protected ScoreHolder workingScoreHolder;
 
     protected long calculateCount;
 
@@ -118,8 +118,8 @@ public class DefaultSolutionDirector implements SolutionDirector {
             workingMemory.dispose();
         }
         workingMemory = ruleBase.newStatefulSession();
-        workingScoreCalculator = scoreDefinition.buildScoreCalculator();
-        workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
+        workingScoreHolder = scoreDefinition.buildScoreHolder();
+        workingMemory.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         for (Object fact : getWorkingFacts()) {
             workingMemory.insert(fact);
         }
@@ -139,7 +139,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
 
     public Score calculateScoreFromWorkingMemory() {
         workingMemory.fireAllRules();
-        Score score = workingScoreCalculator.calculateScore();
+        Score score = workingScoreHolder.calculateScore();
         workingSolution.setScore(score);
         calculateCount++;
         return score;

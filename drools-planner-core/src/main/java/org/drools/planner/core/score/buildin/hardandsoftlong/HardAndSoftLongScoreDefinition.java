@@ -17,7 +17,7 @@
 package org.drools.planner.core.score.buildin.hardandsoftlong;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
 public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<HardAndSoftLongScore> {
@@ -106,8 +106,8 @@ public class HardAndSoftLongScoreDefinition extends AbstractScoreDefinition<Hard
         }
     }
 
-    public ScoreCalculator buildScoreCalculator() {
-        return new HardAndSoftLongScoreCalculator();
+    public ScoreHolder buildScoreHolder() {
+        return new HardAndSoftLongScoreHolder();
     }
 
 }

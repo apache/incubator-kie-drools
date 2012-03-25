@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.calculator;
+package org.drools.planner.core.score.holder;
 
 import java.io.Serializable;
 
 /**
- * Makes it easier to implement a ScoreCalculator.
+ * Makes it easier to implement a {@link ScoreHolder}.
  */
-public abstract class AbstractScoreCalculator implements ScoreCalculator, Serializable {
+public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
 }

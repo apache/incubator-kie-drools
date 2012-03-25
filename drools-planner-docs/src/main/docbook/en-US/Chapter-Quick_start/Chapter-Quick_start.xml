@@ -356,7 +356,7 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
-global HardAndSoftScoreCalculator scoreCalculator;
+global HardAndSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -398,7 +398,7 @@ rule "hardConstraintsBroken"
             sum($weight)
         )
     then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+        scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
 end</programlisting>
       </example>
 
@@ -435,7 +435,7 @@ rule "softConstraintsBroken"
             sum($weight)
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
 end</programlisting>
       </example>
     </section>

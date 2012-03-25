@@ -17,13 +17,13 @@
 package org.drools.planner.examples.nqueens.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.simple.SimpleScoreCalculator;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreHolder;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.nqueens.domain.Queen;
 
-global SimpleScoreCalculator scoreCalculator;
+global SimpleScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -66,5 +66,5 @@ rule "hardConstraintsBroken"
             count($unweightedConstraintOccurrence)
         )
     then
-        scoreCalculator.setScore(- $occurrenceCount.intValue());
+        scoreHolder.setScore(- $occurrenceCount.intValue());
 end

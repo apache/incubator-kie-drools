@@ -17,7 +17,7 @@
 package org.drools.planner.examples.travelingtournament.smart.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -27,7 +27,7 @@ import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.domain.solver.Hop;
 
-global HardAndSoftScoreCalculator scoreCalculator;
+global HardAndSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -115,7 +115,7 @@ rule "hardConstraintsBroken"
             count($unweightedConstraintOccurrence)
         )
     then
-        scoreCalculator.setHardConstraintsBroken($occurrenceCount.intValue());
+        scoreHolder.setHardConstraintsBroken($occurrenceCount.intValue());
 end
 
 rule "softConstraintsBroken"
@@ -126,6 +126,6 @@ rule "softConstraintsBroken"
             sum($distance)
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($totalDistance.intValue());
+        scoreHolder.setSoftConstraintsBroken($totalDistance.intValue());
 end
 

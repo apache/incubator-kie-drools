@@ -155,11 +155,11 @@ end</programlisting>
   <section>
     <title>Aggregating the score rules into the <literal>Score</literal></title>
 
-    <para>A <literal>ScoreCalculator</literal> instance is asserted into the <literal>WorkingMemory</literal> as a
-    global called <literal>scoreCalculator</literal>. Your score rules need to (direclty or indirectly) update that
+    <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>WorkingMemory</literal> as a
+    global called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
     instance. Usually you 'll make a single rule as an aggregation of the other rules to update the score:</para>
 
-    <programlisting>global SimpleScoreCalculator scoreCalculator;
+    <programlisting>global SimpleScoreHolder scoreHolder;
 
 rule "multipleQueensHorizontal"
     when
@@ -194,7 +194,7 @@ rule "hardConstraintsBroken"
             count($unweightedConstraintOccurrence)
         );
     then
-        scoreCalculator.setScore(- $occurrenceCount.intValue());
+        scoreHolder.setScore(- $occurrenceCount.intValue());
 end</programlisting>
 
     <para>Most use cases will also weigh their constraints differently, by multiplying the count of each score rule with
@@ -242,7 +242,7 @@ rule "softConstraintsBroken"
             sum($weight)
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+        scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
 end</programlisting>
   </section>
 

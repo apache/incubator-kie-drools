@@ -14,21 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.buildin.simple;
+package org.drools.planner.core.score.buildin.hardandsoft;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
+import org.drools.planner.core.score.holder.AbstractScoreHolder;
 
-public class SimpleScoreCalculator extends AbstractScoreCalculator {
+public class HardAndSoftScoreHolder extends AbstractScoreHolder {
 
-    private int score;
+    protected int hardConstraintsBroken;
+    protected int softConstraintsBroken;
 
-    public int getScore() {
-        return score;
+    public int getHardConstraintsBroken() {
+        return hardConstraintsBroken;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setHardConstraintsBroken(int hardConstraintsBroken) {
+        this.hardConstraintsBroken = hardConstraintsBroken;
+    }
+
+    public int getSoftConstraintsBroken() {
+        return softConstraintsBroken;
+    }
+
+    public void setSoftConstraintsBroken(int softConstraintsBroken) {
+        this.softConstraintsBroken = softConstraintsBroken;
     }
 
     // ************************************************************************
@@ -36,7 +45,7 @@ public class SimpleScoreCalculator extends AbstractScoreCalculator {
     // ************************************************************************
 
     public Score calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return DefaultHardAndSoftScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
     }
 
 }

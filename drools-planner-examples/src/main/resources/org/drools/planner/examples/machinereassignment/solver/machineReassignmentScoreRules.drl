@@ -17,7 +17,7 @@
 package org.drools.planner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreCalculator;
+import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreHolder;
 import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -38,7 +38,7 @@ import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTr
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
-global HardAndSoftLongScoreCalculator scoreCalculator;
+global HardAndSoftLongScoreHolder scoreHolder;
 
 rule "machineUsage"
         salience 1 // Do these rules first (optional, for performance)
@@ -219,7 +219,7 @@ rule "hardConstraintsBroken"
             $hardTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.longValue());
+        scoreHolder.setHardConstraintsBroken($hardTotal.longValue());
 end
 
 // Accumulate soft constraints
@@ -231,5 +231,5 @@ rule "softConstraintsBroken"
             $softTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.longValue());
+        scoreHolder.setSoftConstraintsBroken($softTotal.longValue());
 end

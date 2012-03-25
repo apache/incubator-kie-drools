@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.calculator;
+package org.drools.planner.core.score.holder;
 
 import org.drools.planner.core.score.Score;
 
@@ -22,9 +22,9 @@ import org.drools.planner.core.score.Score;
  * A wrapper for the elements of a Score, injected as a global in the WorkingMemory
  * to avoid a performance problem in Drools Expert with using 2 or more accumulates in the same rule.
  * <p/>
- * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
+ * TODO JBRULES-2238 remove when the rule that sums the final score can be written as a single rule and {@link ScoreHolder} is dead
  */
-public interface ScoreCalculator {
+public interface ScoreHolder {
 
     /**
      * Calculates the score: the solution (encountered at a step)
