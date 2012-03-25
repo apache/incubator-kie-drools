@@ -1685,3 +1685,9 @@ Before in *.java:
     public void stepDecided(...) {
         ...
     }
+
+[MINOR] If you have a custom ScoreCalculator: the clone() method has been removed
+Before in *ScoreCalculator.java:
+    public ... clone() {
+        ...
+    }

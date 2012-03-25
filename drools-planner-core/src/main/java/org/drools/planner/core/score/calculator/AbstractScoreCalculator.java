@@ -23,16 +23,4 @@ import java.io.Serializable;
  */
 public abstract class AbstractScoreCalculator implements ScoreCalculator, Serializable {
 
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
-
-    public ScoreCalculator clone() {
-        try {
-            return (ScoreCalculator) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
 }

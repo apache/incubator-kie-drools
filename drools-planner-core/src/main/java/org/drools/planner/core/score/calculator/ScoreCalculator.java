@@ -24,7 +24,7 @@ import org.drools.planner.core.score.Score;
  * <p/>
  * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
  */
-public interface ScoreCalculator extends Cloneable {
+public interface ScoreCalculator {
 
     /**
      * Calculates the score: the solution (encountered at a step)
@@ -39,7 +39,5 @@ public interface ScoreCalculator extends Cloneable {
      * @return never null, the score of the solution
      */
     Score calculateScore();
-
-    ScoreCalculator clone();
 
 }
