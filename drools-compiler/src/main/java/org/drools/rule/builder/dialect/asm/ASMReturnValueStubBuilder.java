@@ -28,10 +28,6 @@ public class ASMReturnValueStubBuilder extends AbstractASMReturnValueBuilder {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "getLocalDeclarationTypes", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) {
-                returnAsArray((String[]) vars.get("localDeclarationTypes"));
-            }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(FieldValue.class, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {

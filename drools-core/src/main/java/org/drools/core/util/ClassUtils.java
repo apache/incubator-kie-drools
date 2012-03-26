@@ -277,5 +277,17 @@ public final class ClassUtils {
             return pkg.getName();
         }
     }
-    
+
+    public static final Class<?> convertFromPrimitiveType(Class<?> type) {
+        if (!type.isPrimitive()) return type;
+        if (type == int.class) return Integer.class;
+        if (type == long.class) return Long.class;
+        if (type == float.class) return Float.class;
+        if (type == double.class) return Double.class;
+        if (type == short.class) return Short.class;
+        if (type == byte.class) return Byte.class;
+        if (type == char.class) return Character.class;
+        if (type == boolean.class) return Boolean.class;
+        throw new RuntimeException("Class not convertible from primitive: " + type.getName());
+    }
 }

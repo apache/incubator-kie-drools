@@ -121,7 +121,6 @@ public class JavaDialect
     }
 
     //
-    private static final DeclarationTypeFixer        typeFixer                     = new DeclarationTypeFixer();
     private static final JavaExprAnalyzer            analyzer                      = new JavaExprAnalyzer();
 
     private JavaDialectConfiguration                 configuration;
@@ -283,13 +282,6 @@ public class JavaDialect
      */
     public TypeResolver getTypeResolver() {
         return this.packageRegistry.getTypeResolver();
-    }
-
-    /**
-     * @return the typeFixer
-     */
-    public DeclarationTypeFixer getTypeFixer() {
-        return this.typeFixer;
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {

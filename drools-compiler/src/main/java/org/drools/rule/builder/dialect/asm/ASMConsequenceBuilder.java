@@ -44,7 +44,6 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
-                final String[] declarationTypes = data.getDeclarationTypes();
                 final String[] globals = data.getGlobals();
                 final String[] globalTypes = data.getGlobalTypes();
                 final Boolean[] notPatterns = (Boolean[])consequenceContext.get("notPatterns");
@@ -74,10 +73,10 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                     String readMethod = declarations[i].getNativeReadMethod().getName();
                     boolean isObject = readMethod.equals("getValue");
-                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
+                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
                     mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                    if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                    offset += store(objPos, declarationTypes[i]); // obj[i]
+                    if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
+                    offset += store(objPos, declarations[i].getTypeName()); // obj[i]
 
                     if (notPatterns[i]) {
                         mv.visitVarInsn(ALOAD, 1);
@@ -95,7 +94,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // fact[i]
-                    consequenceMethodDescr.append(typeDescr(declarationTypes[i]) + "Lorg/drools/FactHandle;");
+                    consequenceMethodDescr.append(typeDescr(declarations[i].getTypeName()) + "Lorg/drools/FactHandle;");
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

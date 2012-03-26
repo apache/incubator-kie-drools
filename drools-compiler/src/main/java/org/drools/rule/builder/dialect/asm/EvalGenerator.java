@@ -20,12 +20,11 @@ public class EvalGenerator extends InvokerGenerator {
                                 final Object context) {
 
         final LeftTuple leftTuple = (LeftTuple)tuple;
-        final String[] declarationTypes = stub.getDeclarationTypes();
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
-        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations, leftTuple);
+        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations, leftTuple);
 
         final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory)
                 .setInterfaces(EvalExpression.class, CompiledInvoker.class);
@@ -67,14 +66,14 @@ public class EvalGenerator extends InvokerGenerator {
                     invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
 
-                    storeObjectFromDeclaration(declarations[i], declarationTypes[i]);
+                    storeObjectFromDeclaration(declarations[i], declarations[i].getTypeName());
                 }
 
                 // @{ruleClassName}.@{methodName}(@foreach{declarations}, @foreach{globals})
                 StringBuilder evalMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < declarations.length; i++) {
                     load(declarationsParamsPos[i]); // declarations[i]
-                    evalMethodDescr.append(typeDescr(declarationTypes[i]));
+                    evalMethodDescr.append(typeDescr(declarations[i].getTypeName()));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

@@ -153,33 +153,12 @@ public final class JavaRuleBuilderHelper {
                      new Integer( text.hashCode() ) );
         }
 
-        final String[] declarationTypes = new String[declarations.length];
-        for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
-            if ( declarationTypes[i] == null ) {
-                // declaration type was not fixed properly, assume this was reported from it's original problem
-                //return null;
-                declarationTypes[i] = "java.lang.Object";
-            }
-        }
-
         map.put( "declarations",
                  declarations );
 
-        map.put( "declarationTypes",
-                 declarationTypes );
-
         if ( localDeclarations != null ) {
-            final String[] localDeclarationTypes = new String[localDeclarations.length];
-            for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-                localDeclarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( localDeclarations[i] );
-            }
-
             map.put( "localDeclarations",
                      localDeclarations );
-
-            map.put( "localDeclarationTypes",
-                     localDeclarationTypes );
         }
 
         String[] globalStr = new String[globals.size()];

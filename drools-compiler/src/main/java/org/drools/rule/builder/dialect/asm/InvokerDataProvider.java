@@ -6,7 +6,6 @@ public interface InvokerDataProvider {
     String getInternalRuleClassName();
     String getMethodName();
     String getInvokerClassName();
-    String[] getDeclarationTypes();
     String[] getGlobals();
     String[] getGlobalTypes();
 }

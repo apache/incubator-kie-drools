@@ -44,15 +44,15 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
-import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
+
+import static org.drools.core.util.ClassUtils.canonicalName;
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class Declaration
     implements
@@ -293,6 +293,24 @@ public class Declaration
                                                   e );
             }
         }
+    }
+
+    private transient String cachedTypeName;
+    public String getTypeName() {
+        if (cachedTypeName == null) {
+            // we assume that null extractor errors are reported else where
+            cachedTypeName = getExtractor() != null ? canonicalName(getExtractor().getExtractToClass()) : "java.lang.Object";
+        }
+        return cachedTypeName;
+    }
+
+    private transient String cachedBoxedTypeName;
+    public String getBoxedTypeName() {
+        if (cachedBoxedTypeName == null) {
+            // we assume that null extractor errors are reported else where
+            cachedBoxedTypeName = getExtractor() != null ? canonicalName(convertFromPrimitiveType(getExtractor().getExtractToClass())) : "java.lang.Object";
+        }
+        return cachedBoxedTypeName;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

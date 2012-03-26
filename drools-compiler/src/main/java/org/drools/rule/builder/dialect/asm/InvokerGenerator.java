@@ -75,10 +75,6 @@ public class InvokerGenerator {
                 push(data.getInvokerClassName());
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "getDeclarationTypes", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) {
-                returnAsArray(data.getDeclarationTypes());
-            }
         }).addMethod(ACC_PUBLIC, "getGlobals", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 returnAsArray(data.getGlobals());
@@ -159,7 +155,7 @@ public class InvokerGenerator {
 
     // DeclarationMatcher
 
-    protected static List<DeclarationMatcher> matchDeclarationsToTuple(String[] declarationTypes, Declaration[] declarations, LeftTuple tuple) {
+    protected static List<DeclarationMatcher> matchDeclarationsToTuple(Declaration[] declarations, LeftTuple tuple) {
         List<DeclarationMatcher> matchers = new ArrayList<DeclarationMatcher>();
         for (int i = 0; i < declarations.length; i++)
             matchers.add(new DeclarationMatcher(i, declarations[i].getPattern().getOffset()));
@@ -243,7 +239,7 @@ public class InvokerGenerator {
     public static abstract class EvaluateMethod extends ClassGenerator.MethodBody {
         protected int objAstorePos;
 
-        protected int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
+        protected int[] parseDeclarations(Declaration[] declarations, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
             int[] declarationsParamsPos = new int[declarations.length];
             // DeclarationTypes[i] value[i] = (DeclarationTypes[i])localDeclarations[i].getValue((InternalWorkingMemory)workingMemory, object);
             for (int i = 0; i < declarations.length; i++) {
@@ -267,10 +263,10 @@ public class InvokerGenerator {
 
                 String readMethod = declarations[i].getNativeReadMethod().getName();
                 boolean isObject = readMethod.equals("getValue");
-                String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
+                String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                objAstorePos += store(objAstorePos, declarationTypes[i]); // obj[i]
+                if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarations[i].getTypeName()));
+                objAstorePos += store(objAstorePos, declarations[i].getTypeName()); // obj[i]
             }
             return declarationsParamsPos;
         }
