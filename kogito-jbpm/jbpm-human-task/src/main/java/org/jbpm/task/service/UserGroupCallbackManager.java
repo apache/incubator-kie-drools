@@ -26,6 +26,7 @@ public class UserGroupCallbackManager {
     private static UserGroupCallbackManager instance;
     private UserGroupCallback callback = null;
     private static final Logger logger = LoggerFactory.getLogger(UserGroupCallbackManager.class);
+    private Properties callbackproperties = null;
     
     private UserGroupCallbackManager() {
         try {
@@ -62,6 +63,7 @@ public class UserGroupCallbackManager {
     }
 
     public void setCallbackFromProperties(Properties callbackproperties) {
+        this.callbackproperties = callbackproperties;
     	try {
 			if (!isEmpty(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY))) {
 			    callback = (UserGroupCallback) Class.forName(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY)).newInstance();
@@ -88,6 +90,21 @@ public class UserGroupCallbackManager {
     
     public UserGroupCallback getCallback() {
         return callback;
+    }
+    
+    public String getProperty(String name) {
+        if (this.callbackproperties != null) {
+            this.callbackproperties.getProperty(name);
+        }
+        
+        return null;
+    }
+    
+    public void setProperty(String name, String value) {
+        if (this.callbackproperties == null) {
+            this.callbackproperties = new Properties();
+        }
+        this.callbackproperties.setProperty(name, value);
     }
     
     private boolean isEmpty(final CharSequence str) {

@@ -18,17 +18,18 @@ package org.jbpm.integration.console;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.security.Principal;
+import java.security.acl.Group;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
+import javax.security.auth.Subject;
+import javax.security.jacc.PolicyContext;
 
 import org.jboss.bpm.console.client.model.TaskRef;
 import org.jbpm.task.AccessType;
@@ -44,58 +45,21 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 	private static int clientCounter = 0;
     
 	private TaskService service;
-	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
-
+	
 	public TaskManagement () {
 	    super();
 	}
 	
 	public void connect() {
+
 	    if (service == null) {
 	        
     	    Properties jbpmConsoleProperties = StatefulKnowledgeSessionUtil.getJbpmConsoleProperties();   
             service = TaskClientFactory.newInstance(jbpmConsoleProperties, "org.jbpm.integration.console.TaskManagement"+clientCounter);
             clientCounter++;
        
-    	    loadUserGroups();
 	    }
 		
-	}
-	
-	private void loadUserGroups() {
-		try {
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			URL url = null;
-			String propertyName = "roles.properties";
-
-			if (loader instanceof URLClassLoader) {
-				URLClassLoader ucl = (URLClassLoader) loader;
-				url = ucl.findResource(propertyName);
-			}
-			if (url == null) {
-				url = loader.getResource(propertyName);
-			}
-			if (url == null) {
-				System.out.println("No properties file: " + propertyName + " found");
-			} else {
-				Properties bundle = new Properties();
-				InputStream is = url.openStream();
-				if (is != null) {
-					bundle.load(is);
-					is.close();
-				} else {
-					throw new IOException("Properties file " + propertyName	+ " not available");
-				}
-				Enumeration<?> propertyNames = bundle.propertyNames();
-				while (propertyNames.hasMoreElements()) {
-					String key = (String) propertyNames.nextElement();
-					String value = bundle.getProperty(key);
-					groupListMap.put(key, Arrays.asList(value.split(",")));
-				}
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
 	}
 	
 	public TaskRef getTaskById(long taskId) {
@@ -111,13 +75,14 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 		if (idRef == null) {
 			service.release(taskId, userId);
 		} else if (idRef.equals(userId)) {
-			List<String> roles = groupListMap.get(userId);
+			List<String> roles = getCallerRoles();
 			if (roles == null) {
 				service.claim(taskId, idRef);
 			} else {
 				service.claim(taskId, idRef, roles);
 			}
 		} else {
+
 			service.delegate(taskId, userId, idRef);
 		}
 		
@@ -188,7 +153,8 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 		connect();
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
-			List<String> roles = groupListMap.get(idRef);
+            
+			List<String> roles = getCallerRoles();
 			List<TaskSummary> tasks = null;
 			
 			if (roles == null) {
@@ -211,5 +177,37 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 	    connect();
         service.skip(taskId, userId);
 	}
+
+    private List<String> getCallerRoles() {
+        List<String> roles = null;
+        try {
+            Subject subject = (Subject) PolicyContext.getContext("javax.security.auth.Subject.container");
+    
+            if (subject != null) {
+                Set<Principal> principals = subject.getPrincipals();
+    
+                if (principals != null) {
+                    roles = new ArrayList<String>();
+                    for (Principal principal : principals) {
+                        if (principal instanceof Group  && "Roles".equalsIgnoreCase(principal.getName())) {
+                            Enumeration<? extends Principal> groups = ((Group) principal).members();
+                            
+                            while (groups.hasMoreElements()) {
+                                Principal groupPrincipal = (Principal) groups.nextElement();
+                                roles.add(groupPrincipal.getName());
+                               
+                            }
+                            break;
+    
+                        }
+    
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roles;
+    }
 
 }

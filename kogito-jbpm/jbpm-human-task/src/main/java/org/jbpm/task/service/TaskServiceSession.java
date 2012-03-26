@@ -979,14 +979,11 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             doCallbackUserOperation(userId);
             doCallbackGroupsOperation(userId, groupIds);
-            // get all groups
-            Query query = tpm.createNewQuery("from Group");
-			List<Group> allGroups = ((List<Group>) query.getResultList());
-            List<String> allGroupIds = new ArrayList<String>();
-            if(allGroups != null) {
-            	for(Group g : allGroups) {
-            		allGroupIds.add(g.getId());
-            	}
+            List<String> allGroupIds = null;
+            if (UserGroupCallbackManager.getInstance().getProperty("disable.all.groups") == null) {
+                // get all groups
+                Query query = tpm.createNewQuery("select g.id from Group g");
+    			allGroupIds = ((List<String>) query.getResultList());
             }
             return UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, allGroupIds);
         } else {
@@ -1328,17 +1325,18 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
     private void doCallbackGroupsOperation(String userId, List<String> groupIds) { 
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             if(userId != null) {
+                UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
                 if(groupIds != null && groupIds.size() > 0) {
+                    
                     for(String groupId : groupIds) {
-                        if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId) && 
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, null) != null &&
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, null).contains(groupId)) {
+                        List<String> userGroups = callback.getGroupsForUser(userId, groupIds, null);
+                        if(callback.existsGroup(groupId) && userGroups != null && userGroups.contains(groupId)) {
                             addGroupFromCallbackOperation(groupId);
                         }
                     }
                 } else {
                     if(!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) { 
-                        List<String> userGroups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, null, null);
+                        List<String> userGroups = callback.getGroupsForUser(userId, null, null);
                         if(userGroups != null && userGroups.size() > 0) {
                             for(String group : userGroups) {
                                 addGroupFromCallbackOperation(group);
