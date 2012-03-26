@@ -19,7 +19,6 @@ package org.jbpm.process.instance.timer;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +29,10 @@ import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.marshalling.impl.ProtobufMessages;
+import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.time.Job;
@@ -39,7 +42,9 @@ import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
+import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 
@@ -142,7 +147,6 @@ public class TimerManager {
 //            System.out.println( timer );
 //            timerService.removeJob( timer.getJobHandle() );
 //        }
-        int i = 0;
         for ( Iterator<TimerInstance> it = timers.values().iterator(); it.hasNext(); ) {
             TimerInstance timer = it.next();            
             timerService.removeJob( timer.getJobHandle() );
@@ -187,6 +191,20 @@ public class TimerManager {
             
             ProcessMarshallerImpl.writeTimer( outCtx, pctx.getTimer() );
         }
+
+        public Timer serialize(JobContext jobCtx,
+                               MarshallerWriteContext outputCtx) {
+            ProcessJobContext pctx = ( ProcessJobContext ) jobCtx;
+            
+            return ProtobufMessages.Timers.Timer.newBuilder()
+                    .setType( ProtobufMessages.Timers.TimerType.PROCESS )
+                    .setExtension( JBPMMessages.procTimer, 
+                                   JBPMMessages.ProcessTimer.newBuilder()
+                                   .setTimer( ProtobufProcessMarshaller.writeTimer( outputCtx, pctx.getTimer() ) )
+                                   .setTrigger( ProtobufOutputMarshaller.writeTrigger( pctx.getTrigger(), outputCtx ) )
+                                   .build() )
+                    .build();
+        }
     }
     
     public static class ProcessTimerInputMarshaller  implements TimersInputMarshaller {
@@ -201,6 +219,32 @@ public class TimerManager {
 
             ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
 
+            
+            JobHandle jobHandle = ts.scheduleJob( processJob,
+                                                  pctx,
+                                                  trigger );
+            timerInstance.setJobHandle( jobHandle );
+            pctx.setJobHandle( jobHandle );   
+            
+            TimerManager tm = ((InternalProcessRuntime)inCtx.wm.getProcessRuntime()).getTimerManager();
+            
+            tm.getTimerMap().put( timerInstance.getId(),
+                                  timerInstance );            
+        }
+
+        public void deserialize(MarshallerReaderContext inCtx,
+                                Timer _timer) throws ClassNotFoundException {
+            JBPMMessages.ProcessTimer _ptimer = _timer.getExtension( JBPMMessages.procTimer );
+            
+            TimerService ts = inCtx.wm.getTimerService();
+            
+            long processInstanceId = _ptimer.getTimer().getProcessInstanceId();           
+
+            Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx, _ptimer.getTrigger() );
+            
+            TimerInstance timerInstance = ProtobufProcessMarshaller.readTimer( inCtx, _ptimer.getTimer() );            
+
+            ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId, inCtx.wm.getKnowledgeRuntime());
             
             JobHandle jobHandle = ts.scheduleJob( processJob,
                                                   pctx,
@@ -248,6 +292,8 @@ public class TimerManager {
     public static class ProcessJobContext
         implements
         JobContext {
+        private static final long serialVersionUID = 476843895176221627L;
+        
         private Long                     processInstanceId;
         private InternalKnowledgeRuntime kruntime;
         private TimerInstance            timer;

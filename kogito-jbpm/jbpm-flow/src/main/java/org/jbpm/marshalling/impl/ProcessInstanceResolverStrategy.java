@@ -19,8 +19,6 @@ package org.jbpm.marshalling.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
-import java.util.Iterator;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
@@ -28,7 +26,6 @@ import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
@@ -46,35 +43,39 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
  * to remember that the {@link ProcessInstanceManager} cache of process instances is emptied 
  * at the end of every transaction (commit). 
  */
-public class ProcessInstanceResolverStrategy implements ObjectMarshallingStrategy {
-    
+public class ProcessInstanceResolverStrategy
+        implements
+        ObjectMarshallingStrategy {
+
     public boolean accept(Object object) {
-        if( object instanceof ProcessInstance ) { 
+        if ( object instanceof ProcessInstance ) {
             return true;
         }
-        else { 
+        else {
             return false;
         }
     }
 
-    public void write(ObjectOutputStream os, Object object) throws IOException {
+    public void write(ObjectOutputStream os,
+                      Object object) throws IOException {
         ProcessInstance processInstance = (ProcessInstance) object;
-      
-        connectProcessInstanceToRuntimeAndProcess(processInstance, os);
-        
-        os.writeLong(processInstance.getId());
+
+        connectProcessInstanceToRuntimeAndProcess( processInstance, os );
+
+        os.writeLong( processInstance.getId() );
     }
 
-    public Object read(ObjectInputStream is) throws IOException, ClassNotFoundException {
+    public Object read(ObjectInputStream is) throws IOException,
+                                            ClassNotFoundException {
         long processInstanceId = is.readLong();
-        ProcessInstanceManager pim = retrieveProcessInstanceManager(is);
-        ProcessInstance processInstance = pim.getProcessInstance(processInstanceId);
-       
-        connectProcessInstanceToRuntimeAndProcess(processInstance, is);
-        
+        ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
+        ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
+
+        connectProcessInstanceToRuntimeAndProcess( processInstance, is );
+
         return processInstance;
     }
-    
+
     /**
      * Retrieve the {@link ProcessInstanceManager} object from the ObjectOutput- or ObjectInputStream.
      * The stream object will secretly also either be a {@link MarshallerReaderContext} or a
@@ -82,19 +83,19 @@ public class ProcessInstanceResolverStrategy implements ObjectMarshallingStrateg
      * @param streamContext The marshaller stream/context.
      * @return A {@link ProcessInstanceManager} object. 
      */
-    public static ProcessInstanceManager retrieveProcessInstanceManager(Object streamContext) { 
+    public static ProcessInstanceManager retrieveProcessInstanceManager(Object streamContext) {
         ProcessInstanceManager pim = null;
-        if( streamContext instanceof MarshallerWriteContext ) { 
+        if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
             pim = ((ProcessRuntimeImpl) ((ReteooStatefulSession) context.wm).getProcessRuntime()).getProcessInstanceManager();
         }
-        else if( streamContext instanceof MarshallerReaderContext ) { 
+        else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
             pim = ((ProcessRuntimeImpl) ((ReteooStatefulSession) context.wm).getProcessRuntime()).getProcessInstanceManager();
         }
-        else { 
-            throw new UnsupportedOperationException("Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
-                    + streamContext.getClass().getName() );
+        else {
+            throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
+                                                     + streamContext.getClass().getName() );
         }
         return pim;
     }
@@ -104,22 +105,23 @@ public class ProcessInstanceResolverStrategy implements ObjectMarshallingStrateg
      * @param processInstance
      * @param streamContext
      */
-    private void connectProcessInstanceToRuntimeAndProcess(ProcessInstance processInstance, Object streamContext) { 
+    private void connectProcessInstanceToRuntimeAndProcess(ProcessInstance processInstance,
+                                                           Object streamContext) {
         ProcessInstanceImpl processInstanceImpl = (ProcessInstanceImpl) processInstance;
         InternalKnowledgeRuntime kruntime = processInstanceImpl.getKnowledgeRuntime();
 
         // Attach the kruntime if not present
-        if (kruntime == null) {
-            kruntime = retrieveKnowledgeRuntime(streamContext);
-            processInstanceImpl.setKnowledgeRuntime(kruntime);
+        if ( kruntime == null ) {
+            kruntime = retrieveKnowledgeRuntime( streamContext );
+            processInstanceImpl.setKnowledgeRuntime( kruntime );
         }
         // Attach the process if not present
-        if (processInstance.getProcess() == null) {
-            Process process = kruntime.getKnowledgeBase().getProcess(processInstance.getProcessId());
-            processInstanceImpl.setProcess(process);
+        if ( processInstance.getProcess() == null ) {
+            Process process = kruntime.getKnowledgeBase().getProcess( processInstance.getProcessId() );
+            processInstanceImpl.setProcess( process );
         }
     }
-    
+
     /**
      * Retrieve the {@link ProcessInstanceManager} object from the ObjectOutput- or ObjectInputStream.
      * The stream object will secretly also either be a {@link MarshallerReaderContext} or a
@@ -130,21 +132,63 @@ public class ProcessInstanceResolverStrategy implements ObjectMarshallingStrateg
      * @param streamContext The marshaller stream/context.
      * @return A {@link InternalKnowledgeRuntime} object. 
      */
-    public static InternalKnowledgeRuntime retrieveKnowledgeRuntime(Object streamContext) { 
+    public static InternalKnowledgeRuntime retrieveKnowledgeRuntime(Object streamContext) {
         InternalKnowledgeRuntime kruntime = null;
-        if( streamContext instanceof MarshallerWriteContext ) { 
+        if ( streamContext instanceof MarshallerWriteContext ) {
             MarshallerWriteContext context = (MarshallerWriteContext) streamContext;
             kruntime = ((ReteooStatefulSession) context.wm).getKnowledgeRuntime();
         }
-        else if( streamContext instanceof MarshallerReaderContext ) { 
+        else if ( streamContext instanceof MarshallerReaderContext ) {
             MarshallerReaderContext context = (MarshallerReaderContext) streamContext;
             kruntime = ((ReteooStatefulSession) context.wm).getKnowledgeRuntime();
         }
-        else { 
-            throw new UnsupportedOperationException("Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
-                    + streamContext.getClass().getName() );
+        else {
+            throw new UnsupportedOperationException( "Unable to retrieve " + ProcessInstanceManager.class.getSimpleName() + " from "
+                                                     + streamContext.getClass().getName() );
         }
         return kruntime;
     }
+
+    public byte[] marshal(ObjectOutputStream os,
+                          Object object) throws IOException {
+        ProcessInstance processInstance = (ProcessInstance) object;
+        connectProcessInstanceToRuntimeAndProcess( processInstance, os );
+        return longToByteArray( processInstance.getId() );
+    }
+
+    public Object unmarshal(ObjectInputStream is,
+                            byte[] object,
+                            ClassLoader classloader) throws IOException,
+                                                    ClassNotFoundException {
+        long processInstanceId = byteArrayToLong( object );
+        ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
+        ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
+        connectProcessInstanceToRuntimeAndProcess( processInstance, is );
+        return processInstance;
+    }
+
+    // more efficient than instantiating byte buffers and opening streams
+    private final byte[] longToByteArray(long value) {
+        return new byte[]{
+                (byte) ((value >>> 56) & 0xFF),
+                (byte) ((value >>> 48) & 0xFF),
+                (byte) ((value >>> 40) & 0xFF),
+                (byte) ((value >>> 32) & 0xFF),
+                (byte) ((value >>> 24) & 0xFF),
+                (byte) ((value >>> 16) & 0xFF),
+                (byte) ((value >>> 8) & 0xFF),
+                (byte) (value & 0xFF)};
+    }
+
+    private final long byteArrayToLong(byte[] b) {
+        return ((((long)b[0]) & 0xFF) << 56)
+               + ((((long)b[1]) & 0xFF) << 48)
+               + ((((long)b[2]) & 0xFF) << 40)
+               + ((((long)b[3]) & 0xFF) << 32)
+               + ((((long)b[4]) & 0xFF) << 24)
+               + ((((long)b[5]) & 0xFF) << 16)
+               + ((((long)b[6]) & 0xFF) << 8)
+               + (((long)b[7]) & 0xFF);
+    }    
 
 }
