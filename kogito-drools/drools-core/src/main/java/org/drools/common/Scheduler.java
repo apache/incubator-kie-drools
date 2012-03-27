@@ -81,17 +81,22 @@ public final class Scheduler {
             ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
 
             boolean wasFired = agenda.fireTimedActivation( item, false );
+
             if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
+
+                if ( wasFired ) {
+                    agenda.getWorkingMemory().fireAllRules();
+                }
+
                 agenda.getScheduledActivationsLinkedList().remove( item );
                 item.setEnqueued( false );
             } else {
                 // the activation has been rescheduled, the Agenda would have set it's activated to false
                 // so reset the activated to true here
                 item.setActivated( true );
-            }
-
-            if ( wasFired ) {
-                agenda.getWorkingMemory().fireAllRules();
+                if ( wasFired ) {
+                    agenda.getWorkingMemory().fireAllRules();
+                }
             }
         }
     }
