@@ -32,9 +32,10 @@ import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 
-public class ProcessManagement implements org.jboss.bpm.console.server.integration.ProcessManagement {
+public class ProcessManagement  extends SessionInitializer implements org.jboss.bpm.console.server.integration.ProcessManagement {
 
     public ProcessManagement() {
+        super();
     }
     
     public List<ProcessDefinitionRef> getProcessDefinitions() {

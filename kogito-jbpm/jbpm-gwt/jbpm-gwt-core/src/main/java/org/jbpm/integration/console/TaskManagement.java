@@ -46,7 +46,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
+public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
 	public static String TASK_SERVICE_STRATEGY = "Mina";
     
@@ -55,6 +55,10 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 	private TaskService service;
 	private TaskClient client;
 	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
+	
+	public TaskManagement () {
+	    super();
+	}
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
