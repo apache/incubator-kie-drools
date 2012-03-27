@@ -28,6 +28,7 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
