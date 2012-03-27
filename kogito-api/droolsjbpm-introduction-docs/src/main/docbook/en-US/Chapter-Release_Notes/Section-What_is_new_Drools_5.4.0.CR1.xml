@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is New and Noteworthy in Drools 5.4.0.CR1</title>
 
   <section>
@@ -15,8 +12,7 @@
     <section>
       <title>Decision Tables support "timer" and "calendar" attributes</title>
 
-      <para>Support has been added for the "timer" and "calendar"
-      attributes.</para>
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
 
       <table>
         <title>New attributes</title>
@@ -46,8 +42,7 @@
 
               <entry>E</entry>
 
-              <entry>A calendars definition. See "Timers and
-              Calendars".</entry>
+              <entry>A calendars definition. See "Timers and Calendars".</entry>
             </row>
           </tbody>
         </tgroup>
@@ -55,12 +50,10 @@
     </section>
 
     <section>
-      <title>KnowledgeBuilder supports building of cross referencing drl
-      files</title>
+      <title>KnowledgeBuilder supports building of cross referencing drl files</title>
 
-      <para>KnowledgeBuilder has a new batch mode, with a fluent interface,
-      that allows to build multiple DRLs at once as in the following
-      example:</para>
+      <para>KnowledgeBuilder has a new batch mode, with a fluent interface, that allows to build multiple DRLs at once
+      as in the following example:</para>
 
       <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.batch()
@@ -69,15 +62,13 @@ kbuilder.batch()
       .add(ResourceFactory.newByteArrayResource(declarations.getBytes()), ResourceType.DRL)
       .build();</programlisting>
 
-      <para>In this way it is no longer necessary to build the DRLs files in
-      the right order (e.g. first the DRLs containing the type declarations
-      and then the ones with the rules using them) and it will also be
-      possible to have circular references among them.</para>
+      <para>In this way it is no longer necessary to build the DRLs files in the right order (e.g. first the DRLs
+      containing the type declarations and then the ones with the rules using them) and it will also be possible to have
+      circular references among them.</para>
 
-      <para>Moreover the KnowledgeBuilder (regardless if you are using the
-      batch mode or not) also allows to discard what has been added with the
-      last DRL(s) building. This can be useful to recover from having added a
-      wrong DRL to the KnowledgeBuilder as it follows:</para>
+      <para>Moreover the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
+      what has been added with the last DRL(s) building. This can be useful to recover from having added a wrong DRL to
+      the KnowledgeBuilder as it follows:</para>
 
       <programlisting>kbuilder.add(ResourceFactory.newByteArrayResource(wrongDrl.getBytes()), ResourceType.DRL);
 if ( kbuilder.hasErrors() ) {
@@ -88,24 +79,19 @@ if ( kbuilder.hasErrors() ) {
     <section>
       <title>Fine grained property change listeners</title>
 
-      <para>In Drools when you invoke update() or modify() on a given object
-      it will trigger a revaluation of all patterns of the matching object
-      type in the knowledge base. As some have experienced, this can be a
-      problem that often can lead to unwanted and useless evaluations and in
-      the worst cases to infinite recursions. The only workaround to avoid it
-      was to split up your objects into smaller ones having a 1 to 1
-      relationship with the original object.</para>
+      <para>In Drools when you invoke update() or modify() on a given object it will trigger a revaluation of all
+      patterns of the matching object type in the knowledge base. As some have experienced, this can be a problem that
+      often can lead to unwanted and useless evaluations and in the worst cases to infinite recursions. The only
+      workaround to avoid it was to split up your objects into smaller ones having a 1 to 1 relationship with the
+      original object.</para>
 
-      <para>This new feature allows the pattern matching to only react to
-      modification of properties actually constrained or bound inside of a
-      given pattern. That will help with performance and recursion and avoid
-      artificial object splitting.</para>
+      <para>This new feature allows the pattern matching to only react to modification of properties actually
+      constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
+      object splitting.</para>
 
-      <para>By default this feature is off in order to make the behavior of
-      the rule engine backward compatible with the former releases. When you
-      want to activate it on a specific bean you have to annotate it with
-      @propertyReactive. This annotation works both on drl type
-      declarations:</para>
+      <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
+      former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
+      This annotation works both on drl type declarations:</para>
 
       <programlisting>declare Person
     @propertyReactive
@@ -121,8 +107,7 @@ public static class Person {
     private String lastName;
 }</programlisting>
 
-      <para>In this way, for instance, if you have a rule like the
-      following:</para>
+      <para>In this way, for instance, if you have a rule like the following:</para>
 
       <programlisting>rule "Every person named Mario is a male" when
     $person : Person( firstName == "Mario" )
@@ -130,15 +115,12 @@ then
     modify ( $person )  { setMale( true ) }
 end</programlisting>
 
-      <para>you won't have to add the no-loop attribute to it in order to
-      avoid an infinite recursion because the engine recognizes that the
-      pattern matching is done on the 'firstName' property while the RHS of
-      the rule modifies the 'male' one. Note that this feature does not work
-      for update(), and this is one of the reasons why we promote modify()
-      since it encapsulates the field changes within the statement. Moreover,
-      on Java classes, you can also annotate any method to say that its
-      invocation actually modifies other properties. For instance in the
-      former Person class you could have a method like:</para>
+      <para>you won't have to add the no-loop attribute to it in order to avoid an infinite recursion because the engine
+      recognizes that the pattern matching is done on the 'firstName' property while the RHS of the rule modifies the
+      'male' one. Note that this feature does not work for update(), and this is one of the reasons why we promote
+      modify() since it encapsulates the field changes within the statement. Moreover, on Java classes, you can also
+      annotate any method to say that its invocation actually modifies other properties. For instance in the former
+      Person class you could have a method like:</para>
 
       <programlisting>@Modifies( { "firstName", "lastName" } )
 public void setName(String name) {
@@ -151,53 +133,43 @@ public void setName(String name) {
 
       <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
 
-      <para>it will correctly recognize that the values of both properties
-      'firstName' and 'lastName' could have potentially been modified and act
-      accordingly, not missing of reevaluating the patterns constrained on
-      them. At the moment the usage of @Modifies is not allowed on fields but
-      only on methods. This is coherent with the most common scenario where
-      the @Modifies will be used for methods that are not related with a class
-      field as in the Person.setName() in the former example. Also note that
-      @Modifies is not transitive, meaning that if another method internally
-      invokes the Person.setName() one it won't be enough to annotate it with
-      @Modifies( { "name" } ), but it is necessary to use @Modifies( {
-      "firstName", "lastName" } ) even on it. Very likely @Modifies
-      transitivity will be implemented in the next release.</para>
+      <para>it will correctly recognize that the values of both properties 'firstName' and 'lastName' could have
+      potentially been modified and act accordingly, not missing of reevaluating the patterns constrained on them. At
+      the moment the usage of @Modifies is not allowed on fields but only on methods. This is coherent with the most
+      common scenario where the @Modifies will be used for methods that are not related with a class field as in the
+      Person.setName() in the former example. Also note that @Modifies is not transitive, meaning that if another method
+      internally invokes the Person.setName() one it won't be enough to annotate it with @Modifies( { "name" } ), but it
+      is necessary to use @Modifies( { "firstName", "lastName" } ) even on it. Very likely @Modifies transitivity will
+      be implemented in the next release.</para>
 
-      <para>For what regards nested accessors, the engine will be notified
-      only for top level fields. In other words a pattern matching
-      like:</para>
+      <para>For what regards nested accessors, the engine will be notified only for top level fields. In other words a
+      pattern matching like:</para>
 
       <programlisting>Person ( address.city.name == "London ) </programlisting>
 
-      <para>will be revaluated only for modification of the 'address' property
-      of a Person object. In the same way the constraints analysis is
-      currently strictly limited to what there is inside a pattern. Another
-      example could help to clarify this. An LHS like the following:</para>
+      <para>will be revaluated only for modification of the 'address' property of a Person object. In the same way the
+      constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
+      to clarify this. An LHS like the following:</para>
 
       <programlisting>$p : Person( )
 Car( owner = $p.name )</programlisting>
 
-      <para>will not listen on modifications of the person's name, while this
-      one will do:</para>
+      <para>will not listen on modifications of the person's name, while this one will do:</para>
 
       <programlisting>Person( $name : name )
 Car( owner = $name )</programlisting>
 
-      <para>To overcome this problem it is possible to annotate a pattern with
-      @watch as it follows:</para>
+      <para>To overcome this problem it is possible to annotate a pattern with @watch as it follows:</para>
 
       <programlisting>$p : Person( ) @watch ( name )
 Car( owner = $p.name )</programlisting>
 
-      <para>Indeed, annotating a pattern with @watch allows you to modify the
-      inferred set of properties for which that pattern will react. Note that
-      the properties named in the @watch annotation are actually added to the
-      ones automatically inferred, but it is also possible to explicitly
-      exclude one or more of them prepending their name with a ! and to make
-      the pattern to listen for all or none of the properties of the type used
-      in the pattern respectively with the wildcrds * and !*. So, for example,
-      you can annotate a pattern in the LHS of a rule like:</para>
+      <para>Indeed, annotating a pattern with @watch allows you to modify the inferred set of properties for which that
+      pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
+      automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
+      with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
+      respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
+      like:</para>
 
       <programlisting>// listens for changes on both firstName (inferred) and lastName
 Person( firstName == $expectedFirstName ) @watch( lastName )
@@ -211,40 +183,35 @@ Person( firstName == $expectedFirstName ) @watch( lastName, !firstName )
 // listens for changes on all the properties except the age one
 Person( firstName == $expectedFirstName ) @watch( *, !age )</programlisting>
 
-      <para>Since doesn't make sense to use this annotation on a pattern using
-      a type not annotated with @PropertyReactive the rule compiler will raise
-      a compilation error if you try to do so. Also the duplicated usage of
-      the same property in @watch (for example like in: @watch( firstName, !
-      firstName ) ) will end up in a compilation error. In a next release we
-      will make the automatic detection of the properties to be listened
-      smarter by doing analysis even outside of the pattern.</para>
+      <para>Since doesn't make sense to use this annotation on a pattern using a type not annotated with
+      @PropertyReactive the rule compiler will raise a compilation error if you try to do so. Also the duplicated usage
+      of the same property in @watch (for example like in: @watch( firstName, ! firstName ) ) will end up in a
+      compilation error. In a next release we will make the automatic detection of the properties to be listened smarter
+      by doing analysis even outside of the pattern.</para>
 
-      <para>It also possible to enable this feature by default on all the
-      types of your model or to completely disallow it by using on option of
-      the KnowledgeBuilderConfiguration. In particular this new
-      PropertySpecificOption can have one of the following 3 values:</para>
+      <para>It also possible to enable this feature by default on all the types of your model or to completely disallow
+      it by using on option of the KnowledgeBuilderConfiguration. In particular this new PropertySpecificOption can have
+      one of the following 3 values:</para>
 
       <programlisting>- DISABLED =&gt; the feature is turned off and all the other related annotations are just ignored
 - ALLOWED =&gt; this is the default behavior: types are not property reactive unless they are not annotated with @PropertySpecific
 - ALWAYS =&gt; all types are property reactive by default</programlisting>
 
-      <para>So, for example, to have a KnowledgeBuilder generating property
-      reactive types by default you could do:</para>
+      <para>So, for example, to have a KnowledgeBuilder generating property reactive types by default you could
+      do:</para>
 
       <programlisting>KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 config.setOption(PropertySpecificOption.ALWAYS);
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);</programlisting>
 
-      <para>In this last case it will be possible to disable the property
-      reactivity feature on a specific type by annotating it with
-      @ClassReactive.</para>
+      <para>In this last case it will be possible to disable the property reactivity feature on a specific type by
+      annotating it with @ClassReactive.</para>
     </section>
 
     <section>
       <title>Fluent simulation testing</title>
 
-      <para>Using the new fluent simulation testing, you can test your rules
-      in unit tests more easily:</para>
+      <para>Using the new fluent simulation testing, you can test your rules in unit tests more easily:</para>
 
       <programlisting language="java">    @Test
     public void rejectMinors() {
@@ -276,8 +243,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         .runSimulation();
     }</programlisting>
 
-      <para>You can even test your CEP rules in unit tests without suffering
-      from slow tests:</para>
+      <para>You can even test your CEP rules in unit tests without suffering from slow tests:</para>
 
       <programlisting language="java">    @Test
     public void lyingAboutAge() {
@@ -337,17 +303,15 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>BRL editor supports "timer" and "calendar" attributes</title>
 
-      <para>Support has been added for the "timer" and "calendar"
-      attributes.</para>
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
 
       <figure>
         <title>Timer and Calendar</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-brl.png"
-                       format="PNG"/>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-brl.png"
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -356,8 +320,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>Decision Tables support "timer" and "calendar" attributes</title>
 
-      <para>Support has been added for the "timer" and "calendar"
-      attributes.</para>
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
 
       <figure>
         <title>Timer and Calendar</title>
@@ -365,8 +328,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png"
-                       format="PNG"/>
+                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -375,11 +337,9 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>Guided Decision Tables import from XLS</title>
 
-      <para>Uploading a XLS decision table results in the creation of numerous
-      new assets, including (obviously) web-guided Decision Tables, functions,
-      declarative types and modifications to package globals and imports etc
-      (Queries are not converted, although supported in the XLS form, as
-      Guvnor doesn't support them <link
+      <para>Uploading a XLS decision table results in the creation of numerous new assets, including (obviously)
+      web-guided Decision Tables, functions, declarative types and modifications to package globals and imports etc
+      (Queries are not converted, although supported in the XLS form, as Guvnor doesn't support them <link
       xlink:href="https://issues.jboss.org/browse/GUVNOR-1532">yet</link>).</para>
 
       <figure>
@@ -387,9 +347,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-xls.png"
-                       format="PNG"/>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -399,37 +357,28 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-converted.png"
-                       format="PNG"/>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-converted.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>This is the first stage of "round-tripping" decision tables. We
-      still need to add the ability to export a guided decision table back to
-      XLS, plus we'd like to add tighter integration of updated XLS assets to
-      their original converted cousins - so if a new version of the XLS
-      decision table is uploaded the related assets' versions are updated
-      (rather than creating new) upon conversion.</para>
+      <para>This is the first stage of "round-tripping" decision tables. We still need to add the ability to export a
+      guided decision table back to XLS, plus we'd like to add tighter integration of updated XLS assets to their
+      original converted cousins - so if a new version of the XLS decision table is uploaded the related assets'
+      versions are updated (rather than creating new) upon conversion.</para>
 
-      <para>This is a powerful enhancement and as such your feedback is
-      critical to ensure we implement the feature as you'd like it to operate.
-      Check it out, feedback your opinions and help guide the future
-      work.</para>
+      <para>This is a powerful enhancement and as such your feedback is critical to ensure we implement the feature as
+      you'd like it to operate. Check it out, feedback your opinions and help guide the future work.</para>
     </section>
 
     <section>
       <title>Improved value editors for numerical types</title>
 
-      <para>Numerical "value editors" (i.e. the text boxes for numerical
-      values) in the BRL, Rule Template, Test Scenarios and Decision Table
-      editors now support the types Byte, Short, Integer, Long, Double, Float,
-      BigDecimal and BigInteger (and their primitive counterparts) correctly.
-      The generated DRL is automatically appended with "B" or "I" type
-      classifiers for BigDecimal and BigInteger values respectively, as
-      provided for by Drools Expert. The Right-hand Side generates applicable
-      DRL for BigDecimal and BigInteger values according to the rule's
+      <para>Numerical "value editors" (i.e. the text boxes for numerical values) in the BRL, Rule Template, Test
+      Scenarios and Decision Table editors now support the types Byte, Short, Integer, Long, Double, Float, BigDecimal
+      and BigInteger (and their primitive counterparts) correctly. The generated DRL is automatically appended with "B"
+      or "I" type classifiers for BigDecimal and BigInteger values respectively, as provided for by Drools Expert. The
+      Right-hand Side generates applicable DRL for BigDecimal and BigInteger values according to the rule's
       dialect.</para>
 
       <figure>
@@ -437,9 +386,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
-                       format="PNG"/>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
+                       format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -448,20 +396,71 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>Improved dependent enumerations support</title>
 
-      <para>Dependent enumerations can now be used in both the Web Guided
-      Decision Table editor and the Rule Template Data grid. Furthermore
-      improvements were made to the operation of dependent enumerations in the
-      BRL Guided Rule editor for sub-fields and expressions.</para>
+      <para>Dependent enumerations can now be used in both the Web Guided Decision Table editor and the Rule Template
+      Data grid. Furthermore improvements were made to the operation of dependent enumerations in the BRL Guided Rule
+      editor for sub-fields and expressions.</para>
 
       <figure>
-        <title>Dependent enumerations in the Web Guided Decision Table
-        editor</title>
+        <title>Dependent enumerations in the Web Guided Decision Table editor</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/dtable-dependent-enums.png"
-                       format="PNG"/>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-dependent-enums.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Improved Guided Decision Table default value support</title>
+
+      <para>The editor to define a default value has been greatly improved:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A default value editor is correct for the data-type of the column's Fact\.</para>
+        </listitem>
+
+        <listitem>
+          <para>If a "Value List" is provided, the default value needs to be one of the values in the list.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column represents a field with an enumeration the default value must be one of the enumeration's
+          members.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column uses an operator that does not need a value (e.g. "is null") a default value cannot be
+          provided.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column field is a "dependent enumeration" the default value must be one of the permitted values
+          based upon parent enumeration default values, if any.</para>
+        </listitem>
+
+        <listitem>
+          <para>Default values are not required for Limited Entry tables.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title>Setting the default value of a Date column</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-default-1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Setting the default value of a cell with a Value List</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-default-2.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -476,7 +475,7 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Release_Notes/plannerExamplesAppScreenshot.png"/>
+          <imagedata fileref="images/Chapter-Release_Notes/plannerExamplesAppScreenshot.png"></imagedata>
         </imageobject>
       </mediaobject>
     </section>
@@ -484,61 +483,48 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>New example: TSP</title>
 
-      <para>This is an implementation of the classic <emphasis>Traveling
-      Salesman Problem</emphasis>: given a list of cities, find the shortest
-      tour for a salesman that visits each city exactly once.</para>
+      <para>This is an implementation of the classic <emphasis>Traveling Salesman Problem</emphasis>: given a list of
+      cities, find the shortest tour for a salesman that visits each city exactly once.</para>
 
-      <para>See <link
-      xlink:href="http://www.youtube.com/watch?v=T5D3hTjZlRc">this
-      video</link>.</para>
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=T5D3hTjZlRc">this video</link>.</para>
     </section>
 
     <section>
       <title>New example: Vehicle Routing</title>
 
-      <para>This is an implementation of capacitated vehicle routing: Using a
-      fleet of vehicles, transport items from the depot(s) to customers at
-      different locations. Each vehicle can service multiple locations, but it
-      has a limited capacity for items.</para>
+      <para>This is an implementation of capacitated vehicle routing: Using a fleet of vehicles, transport items from
+      the depot(s) to customers at different locations. Each vehicle can service multiple locations, but it has a
+      limited capacity for items.</para>
 
-      <para>In the screenshot below, there are 6 vehicles (the lines in
-      different colors) that drop off 541 items at 33 customer locations. Each
-      vehicle can carry 100 items.</para>
+      <para>In the screenshot below, there are 6 vehicles (the lines in different colors) that drop off 541 items at 33
+      customer locations. Each vehicle can carry 100 items.</para>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Release_Notes/vehicleRoutingScreenshot.png"/>
+          <imagedata fileref="images/Chapter-Release_Notes/vehicleRoutingScreenshot.png"></imagedata>
         </imageobject>
       </mediaobject>
 
-      <para>See <link
-      xlink:href="http://www.youtube.com/watch?v=GybpV0uLrxc">this
-      video</link>.</para>
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=GybpV0uLrxc">this video</link>.</para>
     </section>
 
     <section>
       <title>Employee rostering example: better GUI</title>
 
-      <para>The employee rostering example's GUI has been reworked to show
-      shift assignment more clearly.</para>
+      <para>The employee rostering example's GUI has been reworked to show shift assignment more clearly.</para>
 
-      <para>See <link
-      xlink:href="http://www.youtube.com/watch?v=Gxd-DqtK5Xc">this
-      video</link>.</para>
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=Gxd-DqtK5Xc">this video</link>.</para>
     </section>
 
     <section>
-      <title>Chaining support makes it easy to implement TSP and Vehicle
-      Routing</title>
+      <title>Chaining support makes it easy to implement TSP and Vehicle Routing</title>
 
-      <para>Untill now, implementing TSP or Vehicle Routing like problems in
-      Planner was hard. The new chaining support makes it easy.</para>
+      <para>Untill now, implementing TSP or Vehicle Routing like problems in Planner was hard. The new chaining support
+      makes it easy.</para>
 
-      <para>You simply declare that a planning variable
-      (<literal>previousAppearance</literal>) of this planning entity
-      (<literal>VrpCustomer</literal>) is chained and therefor possibly
-      referencing another planning entity (<literal>VrpCustomer</literal>)
-      itself, creating a chain with that entity.</para>
+      <para>You simply declare that a planning variable (<literal>previousAppearance</literal>) of this planning entity
+      (<literal>VrpCustomer</literal>) is chained and therefor possibly referencing another planning entity
+      (<literal>VrpCustomer</literal>) itself, creating a chain with that entity.</para>
 
       <programlisting language="java">public class VrpCustomer implements VrpAppearance {
 
@@ -560,24 +546,21 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Release_Notes/chainCorrection.png"/>
+          <imagedata fileref="images/Chapter-Release_Notes/chainCorrection.png"></imagedata>
         </imageobject>
       </mediaobject>
 
-      <para>Without any extra boilerplate code, this is compatible
-      with:</para>
+      <para>Without any extra boilerplate code, this is compatible with:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Every optimization algorithm: including construction
-          heuristics (first fit, first fit decreasing, ...), local search
-          (tabu search, simmulated annealing), ...</para>
+          <para>Every optimization algorithm: including construction heuristics (first fit, first fit decreasing, ...),
+          local search (tabu search, simmulated annealing), ...</para>
         </listitem>
 
         <listitem>
-          <para>The generic build-in move factories. Note: currently there are
-          chained alternatives for each move factory, but those will be
-          unified with the originals soon.</para>
+          <para>The generic build-in move factories. Note: currently there are chained alternatives for each move
+          factory, but those will be unified with the originals soon.</para>
         </listitem>
 
         <listitem>
@@ -585,17 +568,15 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         </listitem>
       </itemizedlist>
 
-      <para>For more information, <link
-      xlink:href="http://www.jboss.org/drools/documentation">read the Planner
+      <para>For more information, <link xlink:href="http://www.jboss.org/drools/documentation">read the Planner
       reference manual</link>.</para>
     </section>
 
     <section>
       <title>New Tabu Search implementation: planning value tabu</title>
 
-      <para>Property tabu has been renamed to planning entity tabu. Planning
-      value tabu has been added. The generic moves support this
-      out-of-the-box.</para>
+      <para>Property tabu has been renamed to planning entity tabu. Planning value tabu has been added. The generic
+      moves support this out-of-the-box.</para>
 
       <programlisting language="xml">    &lt;acceptor&gt;
       &lt;planningValueTabuSize&gt;5&lt;/planningValueTabuSize&gt;
@@ -605,11 +586,9 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>Quick start tutorial</title>
 
-      <para>The documentation now has a new chapter <emphasis>Quick start
-      tutorial</emphasis>. It explains how to write the CloudBalance example
-      from scratch. <link
-      xlink:href="http://www.jboss.org/drools/documentation">Read the Planner
-      reference manual</link>.</para>
+      <para>The documentation now has a new chapter <emphasis>Quick start tutorial</emphasis>. It explains how to write
+      the CloudBalance example from scratch. <link xlink:href="http://www.jboss.org/drools/documentation">Read the
+      Planner reference manual</link>.</para>
     </section>
   </section>
 </section>
