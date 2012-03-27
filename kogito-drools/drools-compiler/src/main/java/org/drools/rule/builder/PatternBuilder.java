@@ -1127,7 +1127,10 @@ public class PatternBuilder
                 mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
             }
 
-            boolean isDynamic = requiredOperators.length > 0 || ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType());
+            boolean isDynamic = requiredOperators.length > 0 ||
+                    ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType()) ||
+                    !context.getPackageBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe();
+
             Constraint constraint = new MvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic);
             pattern.addConstraint( constraint );
         }
