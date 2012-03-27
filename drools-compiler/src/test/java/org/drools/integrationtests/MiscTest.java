@@ -10449,6 +10449,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         ksession.dispose();
+    }
 
     public void testDeclaresWithArrayFields() throws Exception {
         String rule = "package org.drools.test; \n" +
