@@ -85,7 +85,7 @@ public class GuvnorConnectionUtils {
                         + getGuvnorSubdomain()
                         + "/org.drools.guvnor.Guvnor/package/"
                         + pkg
-                        + "/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "/"
+                        + "/" + getGuvnorSnapshotName() + "/"
                         + URLEncoder.encode(processId, "UTF-8")
                         + "-image.png";
                         
@@ -136,7 +136,7 @@ public class GuvnorConnectionUtils {
                     + getGuvnorSubdomain()
                     + "/org.drools.guvnor.Guvnor/package/"
                     + pkg
-                    + "/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "/"
+                    + "/" + getGuvnorSnapshotName() + "/"
                     + URLEncoder.encode(templateName, "UTF-8")
                     + "." + format;
                     
@@ -324,6 +324,10 @@ public class GuvnorConnectionUtils {
     
     public String getGuvnorReadTimeout() {
         return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "10000" : properties.getProperty(GUVNOR_READTIMEOUT_KEY).trim();
+    }
+    
+    public String getGuvnorSnapshotName() {
+    	return isEmpty(properties.getProperty(GUVNOR_SNAPSHOT_NAME)) ? "LATEST" : properties.getProperty(GUVNOR_SNAPSHOT_NAME).trim();
     }
     
     protected Properties getGuvnorProperties() {
