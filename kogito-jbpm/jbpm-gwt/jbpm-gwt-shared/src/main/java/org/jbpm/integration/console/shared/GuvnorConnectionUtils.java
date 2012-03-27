@@ -51,6 +51,7 @@ public class GuvnorConnectionUtils {
     public static final String GUVNOR_SUBDOMAIN_KEY = "guvnor.subdomain";
     public static final String GUVNOR_CONNECTTIMEOUT_KEY = "guvnor.connect.timeout";
     public static final String GUVNOR_READTIMEOUT_KEY = "guvnor.read.timeout";
+    public static final String GUVNOR_SNAPSHOT_NAME = "guvnor.snapshot.name";
     public static final String EXT_BPMN = "bpmn";
     public static final String EXT_BPMN2 = "bpmn2";
     
@@ -84,7 +85,7 @@ public class GuvnorConnectionUtils {
                         + getGuvnorSubdomain()
                         + "/org.drools.guvnor.Guvnor/package/"
                         + pkg
-                        + "/LATEST/"
+                        + "/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "/"
                         + URLEncoder.encode(processId, "UTF-8")
                         + "-image.png";
                         
@@ -135,7 +136,7 @@ public class GuvnorConnectionUtils {
                     + getGuvnorSubdomain()
                     + "/org.drools.guvnor.Guvnor/package/"
                     + pkg
-                    + "/LATEST/"
+                    + "/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "/"
                     + URLEncoder.encode(templateName, "UTF-8")
                     + "." + format;
                     
@@ -507,7 +508,7 @@ public class GuvnorConnectionUtils {
                 sb.append(protocol).append("://");
                 sb.append(host).append("/");
                 sb.append(subdomain).append("/").append("org.drools.guvnor.Guvnor/package/");
-                sb.append(pkg).append("/LATEST\"");
+                sb.append(pkg).append("/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "\"");
                 sb.append(" type=\"PKG\"");
                 if(!isEmpty(usr) && !isEmpty(pwd)) {
                     sb.append(" basicAuthentication=\"enabled\"");
