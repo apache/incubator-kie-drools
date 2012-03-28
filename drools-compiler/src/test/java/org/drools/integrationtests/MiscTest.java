@@ -10371,10 +10371,10 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(3, ksession.fireAllRules());
     }
 
-    @Test @Ignore
+    @Test
     public void testVariableBindingWithOR() throws Exception {
         // JBRULES-3390
-        String str = "package org.drools.test; \n" +
+        String str1 = "package org.drools.test; \n" +
                 "declare A\n" +
                 "end\n" +
                 "declare B\n" +
@@ -10392,8 +10392,29 @@ public class MiscTest extends CommonTestMethodBase {
                 "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(str1.getBytes()), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
+
+        String str2 = "package org.drools.test; \n" +
+                "declare A\n" +
+                "end\n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   A( ) and ( B( $field : field ) or C( $field : field ) ) " +
+                ")\n" +
+                "then\n" +
+                "    System.out.println($field);\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL );
+        assertFalse(kbuilder2.hasErrors());
     }
 
     @Test

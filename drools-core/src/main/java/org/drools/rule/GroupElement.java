@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -361,16 +362,22 @@ public class GroupElement extends ConditionalElement
     /**
      * A public enum for CE types
      */
-    public static enum Type {
+    public enum Type {
 
-        AND(false), 
-        OR(false), 
-        NOT(true), 
-        EXISTS(true);
+        AND(ScopeDelimiter.NEVER),
+        OR(ScopeDelimiter.CONSENSUS),
+        NOT(ScopeDelimiter.ALWAYS),
+        EXISTS(ScopeDelimiter.ALWAYS);
 
-        private final boolean scopeDelimiter;
+        enum ScopeDelimiter {
+            NEVER,
+            CONSENSUS, // it isn't a scope delimiter only if a given Declaration is present on ALL branches
+            ALWAYS
+        }
 
-        Type(final boolean scopeDelimiter) {
+        private final ScopeDelimiter scopeDelimiter;
+
+        Type(final ScopeDelimiter scopeDelimiter) {
             this.scopeDelimiter = scopeDelimiter;
         }
 
@@ -379,19 +386,7 @@ public class GroupElement extends ConditionalElement
          * visible inside of an element of this type
          */
         public Map<String, Declaration> getInnerDeclarations(List<RuleConditionElement> children) {
-            Map<String, Declaration> declarations;
-
-            if ( children.isEmpty() ) {
-                declarations = Collections.EMPTY_MAP;
-            } else if ( children.size() == 1 ) {
-                declarations = children.get(0).getOuterDeclarations();
-            } else {
-                declarations = new HashMap<String, Declaration>();
-                for ( RuleConditionElement re : children ) {
-                    declarations.putAll( re.getOuterDeclarations() );
-                }
-            }
-            return declarations;
+            return getDeclarations(children, ScopeDelimiter.NEVER);
         }
 
         /**
@@ -399,19 +394,29 @@ public class GroupElement extends ConditionalElement
          * visible outside of an element of this type
          */
         public Map<String, Declaration> getOuterDeclarations(List<RuleConditionElement> children) {
-            Map<String, Declaration> declarations;
+            return getDeclarations(children, this.scopeDelimiter);
+        }
 
-            if ( this.scopeDelimiter || children.isEmpty() ) {
-                declarations = Collections.EMPTY_MAP;
+        private Map<String, Declaration> getDeclarations(List<RuleConditionElement> children, ScopeDelimiter scopeDelimiter) {
+            if ( scopeDelimiter == ScopeDelimiter.ALWAYS || children.isEmpty() ) {
+                return Collections.EMPTY_MAP;
             } else if ( children.size() == 1 ) {
-                declarations = children.get(0).getOuterDeclarations();
+                return children.get(0).getOuterDeclarations();
             } else {
-                declarations = new HashMap<String, Declaration>();
-                for ( RuleConditionElement re : children ) {
-                    declarations.putAll( re.getOuterDeclarations() );
+                Map<String, Declaration> declarations = new HashMap<String, Declaration>();
+                if ( scopeDelimiter == ScopeDelimiter.NEVER ) {
+                    for ( RuleConditionElement re : children ) {
+                        declarations.putAll( re.getOuterDeclarations() );
+                    }
+                } else if ( scopeDelimiter == ScopeDelimiter.CONSENSUS ) {
+                    Iterator<RuleConditionElement> i = children.iterator();
+                    declarations.putAll( i.next().getOuterDeclarations() );
+                    while ( i.hasNext() ) {
+                        declarations.keySet().retainAll( i.next().getOuterDeclarations().keySet() );
+                    }
                 }
+                return declarations;
             }
-            return declarations;
         }
 
         /**
@@ -423,7 +428,7 @@ public class GroupElement extends ConditionalElement
          * @return
          */
         public boolean isPatternScopeDelimiter() {
-            return this.scopeDelimiter;
+            return this.scopeDelimiter == ScopeDelimiter.ALWAYS;
         }
 
     }
