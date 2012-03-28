@@ -176,6 +176,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
+            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
             <Require-Bundle>org.drools.internalapi;visibility:=reexport;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
             <Export-Package>!org.drools.visualize,org.drools.reteoo.*, org.drools.*</Export-Package>
