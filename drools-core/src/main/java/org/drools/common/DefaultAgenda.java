@@ -424,7 +424,7 @@ public class DefaultAgenda
         addItemToActivationGroup(  item );            
         
         final Timer timer = rule.getTimer();
-        if ( timer != null ) {
+        if ( timer != null && item instanceof ScheduledAgendaItem ) {
             scheduleItem( (ScheduledAgendaItem) item,
                           workingMemory );
         } else {                
@@ -574,6 +574,72 @@ public class DefaultAgenda
         
         ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                       workingMemory ); 
+        return true;
+    }
+
+    public boolean createPostponedActivation(final LeftTuple tuple,
+                                             final PropagationContext context,
+                                             final InternalWorkingMemory workingMemory,
+                                             final RuleTerminalNode rtn ) {
+
+        final Rule rule = rtn.getRule();
+        AgendaItem item = null;
+        if ( rule.getCalendars() != null ) {
+            // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
+            long timestamp = workingMemory.getSessionClock().getCurrentTime();
+            for ( String cal : rule.getCalendars() ) {
+                if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                    return false;
+                }
+            }
+        }
+
+        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
+        if ( rule.getRuleFlowGroup() == null ) {
+            // No RuleFlowNode so add it directly to the Agenda
+            // do not add the activation if the rule is "lock-on-active" and the
+            // AgendaGroup is active
+            if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                return false;
+            }
+        } else {
+            // There is a RuleFlowNode so add it there, instead of the Agenda
+            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
+
+            // do not add the activation if the rule is "lock-on-active" and the
+            // RuleFlowGroup is active
+            if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                return false;
+            }
+        }
+
+
+        item = createAgendaItem( tuple,
+                rule.getSalience().getValue( tuple,
+                        rule,
+                        workingMemory ),
+                context,
+                rtn);
+
+
+        item.setAgendaGroup( agendaGroup );
+
+        tuple.setObject( item );
+
+        if( activationsFilter != null && !activationsFilter.accept( item,
+                                                                    context,
+                                                                    workingMemory,
+                                                                    rtn ) ) {
+            increaseDormantActivations();
+            return false;
+        }
+        item.setActivated( true );
+        tuple.increaseActivationCountForEvents();
+        increaseActiveActivations();
+        item.setSequenence( rtn.getSequence() );
+
+        ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                      workingMemory );
         return true;
     }
 

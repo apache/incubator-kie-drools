@@ -1016,11 +1016,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             public void run(){ workingMemory.fireUntilHalt(); }
             } ).start();
         Thread.sleep( 1000 );
-        workingMemory.insert( "halt" );
+        FactHandle handle = workingMemory.insert( "halt" );
         Thread.sleep( 2000 );
 
         // now check that rule "halt" fired once, creating one Integer
         assertEquals( 2, workingMemory.getFactCount() );
+        workingMemory.retract( handle );
     }
 
     @Test
@@ -1223,14 +1224,16 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        String drl = "package org.drools.test;\n" +
+        String drl = "package org.drools.test;" +
+                "global java.util.List list; \n" +
+                "\n" +
                 "\n" +
                 "rule FireAtWill\n" +
-                "timer(int:0 1000)\n" +
+                "timer(int:0 100)\n" +
                 "when  \n" +
-                "then\n" +
+                "then \n" +
                 "  System.out.println(\"fire\"); \n" +
-                "  insert( new java.util.Date() );\n" +
+                "  list.add( 0 );\n" +
                 "end\n" +
                 "\n" +
                 "rule ImDone\n" +
@@ -1239,7 +1242,24 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "then\n" +
                 "  System.out.println(\"HALT\"); \n" +
                 "  drools.halt();\n" +
-                "end";
+                "end\n" +
+                "\n" +
+                "rule Hi \n" +
+                "salience 10 \n" +
+                "when \n" +
+                "  String( this == \"trigger\" ) \n" +
+                "then \n " +
+                "  list.add( 5 ); \n" +
+                "end \n" +
+                "\n" +
+                "rule Lo \n" +
+                "salience -5 \n" +
+                "when \n" +
+                "  String( this == \"trigger\" ) \n" +
+                "then \n " +
+                "  list.add( -5 ); \n" +
+                "end \n"
+                ;
         
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
@@ -1248,23 +1268,86 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final StatefulSession workingMemory = ruleBase.newStatefulSession();
+        final StatefulSession ksession = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
         new Thread( new Runnable(){
-            public void run(){ workingMemory.fireUntilHalt(); }
+            public void run(){ ksession.fireUntilHalt(); }
         } ).start();
-        Thread.sleep( 2500 );
+        Thread.sleep( 250 );
 
-        workingMemory.insert( "halt" );
-        Thread.sleep( 3000 );
+        ksession.insert( "halt" );
+        ksession.insert( "trigger" );
+        Thread.sleep( 300 );
 
         new Thread( new Runnable(){
-            public void run(){ workingMemory.fireUntilHalt(); }
+            public void run(){ ksession.fireUntilHalt(); }
         } ).start();
-        Thread.sleep( 2000 );
+        Thread.sleep( 200 );
 
-        // now check that rule "fireAtWill" fired just 3+2 times
-        assertEquals(6, workingMemory.getFactCount());
+        assertEquals( java.util.Arrays.asList( 0, 0, 0, 5, 0, 0, 0, -5, 0, 0 ), list );
+    }
+
+
+
+    @Test
+    public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
+        String drl = "package org.drools.test;" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "\n" +
+                "rule FireAtWill\n" +
+                "timer(int:0 100)\n" +
+                "when  \n" +
+                "  eval(true)" +
+                "  String( this == \"trigger\" )" +
+                "then \n" +
+                "  System.out.println(\"fire\"); \n" +
+                "  list.add( 0 );\n" +
+                "end\n" +
+                "\n" +
+                "rule ImDone\n" +
+                "when\n" +
+                "  String( this == \"halt\" )\n" +
+                "then\n" +
+                "  System.out.println(\"HALT\"); \n" +
+                "  drools.halt();\n" +
+                "end\n" +
+                "\n"
+                ;
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final StatefulSession ksession = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle handle = ksession.insert( "trigger" );
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 150 );
+
+        ksession.insert( "halt" );
+
+        Thread.sleep( 200 );
+        ksession.retract( handle );
+
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 200 );
+
+        assertEquals( 2, list.size() );
+        assertEquals( java.util.Arrays.asList( 0, 0 ), list );
     }
 
 
