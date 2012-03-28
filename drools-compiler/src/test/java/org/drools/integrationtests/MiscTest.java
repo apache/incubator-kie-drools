@@ -9675,5 +9675,343 @@ public class MiscTest {
             return "A) " + field1 + ":" + field2;
         }
     }
+/*
+<<<<<<< HEAD
+=======
+*/
+    @Test
+    public void testUnwantedCoersion() throws Exception {
+        String rule = "package org.drools\n" +
+                "import org.drools.integrationtests.MiscTest.InnerBean;\n" +
+                "import org.drools.integrationtests.MiscTest.OuterBean;\n" +
+                "rule \"Test.Code One\"\n" +
+                "when\n" +
+                "   OuterBean($code : inner.code in (\"1.50\", \"2.50\"))\n" +
+                "then\n" +
+                "   System.out.println(\"Code compared values: 1.50, 2.50 - actual code value: \" + $code);\n" +
+                "end\n" +
+                "rule \"Test.Code Two\"\n" +
+                "when\n" +
+                "   OuterBean($code : inner.code in (\"1.5\", \"2.5\"))\n" +
+                "then\n" +
+                "   System.out.println(\"Code compared values: 1.5, 2.5 - actual code value: \" + $code);\n" +
+                "end\n" +
+                "rule \"Big Test ID One\"\n" +
+                "when\n" +
+                "   OuterBean($id : id in (\"3.5\", \"4.5\"))\n" +
+                "then\n" +
+                "   System.out.println(\"ID compared values: 3.5, 4.5 - actual ID value: \" + $id);\n" +
+                "end\n" +
+                "rule \"Big Test ID Two\"\n" +
+                "when\n" +
+                "   OuterBean($id : id in ( \"3.0\", \"4.0\"))\n" +
+                "then\n" +
+                "   System.out.println(\"ID compared values: 3.0, 4.0 - actual ID value: \" + $id);\n" +
+                "end";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        InnerBean innerTest = new InnerBean();
+        innerTest.setCode("1.500");
+        ksession.insert(innerTest);
+
+        OuterBean outerTest = new OuterBean();
+        outerTest.setId("3");
+        outerTest.setInner(innerTest);
+        ksession.insert(outerTest);
+
+        OuterBean outerTest2 = new OuterBean();
+        outerTest2.setId("3.0");
+        outerTest2.setInner(innerTest);
+        ksession.insert(outerTest2);
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    public static class InnerBean {
+        private String code;
+        public String getCode() {
+            return code;
+        }
+        public void setCode(String code) {
+            this.code = code;
+        }
+    }
+
+    public static class OuterBean {
+        private InnerBean inner;
+        private String id;
+
+        public InnerBean getInner() {
+            return inner;
+        }
+        public void setInner(InnerBean inner) {
+            this.inner = inner;
+        }
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    @Test
+    public void testShiftOperator() throws Exception {
+        String rule = "dialect \"mvel\"\n" +
+                "rule kickOff\n" +
+                "when\n" +
+                "then\n" +
+                "   insert( Integer.valueOf( 1 ) );\n" +
+                "   insert( Long.valueOf( 1 ) );\n" +
+                "   insert( Integer.valueOf( 65552 ) ); // 0x10010\n" +
+                "   insert( Long.valueOf( 65552 ) );\n" +
+                "   insert( Integer.valueOf( 65568 ) ); // 0x10020\n" +
+                "   insert( Long.valueOf( 65568 ) );\n" +
+                "   insert( Integer.valueOf( 65536 ) ); // 0x10000\n" +
+                "   insert( Long.valueOf( 65536L ) );\n" +
+                "   insert( Long.valueOf( 4294967296L ) ); // 0x100000000L\n" +
+                "end\n" +
+                "rule test1\n" +
+                "   salience -1\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test1 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test2\n" +
+                "   salience -2\n" +
+                "when\n" +
+                "   $a: Integer( $one: intValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test2 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test3\n" +
+                "   salience -3\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Long ( $shift: longValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test3 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end\n" +
+                "rule test4\n" +
+                "   salience -4\n" +
+                "when\n" +
+                "   $a: Long ( $one: longValue == 1 )\n" +
+                "   $b: Integer( $shift: intValue )\n" +
+                "   $c: Integer( $i: intValue, intValue == ($one << $shift ) )\n" +
+                "then\n" +
+                "   System.out.println( \"test4 \" + $a + \" << \" + $b + \" = \" + Integer.toHexString( $c ) );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        int rules = ksession.fireAllRules();
+        assertEquals(13, rules);
+    }
+
+    @Test
+    public void testPatternMatchingOnThis() throws Exception {
+        String rule = "package org.drools\n" +
+                "rule R1 when\n" +
+                "    $i1: Integer()\n" +
+                "    $i2: Integer( this > $i1 )\n" +
+                "then\n" +
+                "   System.out.println( $i2 + \" > \" + $i1 );\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Integer(1) );
+        ksession.insert( new Integer(2) );
+
+        int rules = ksession.fireAllRules();
+        assertEquals(1, rules);
+    }
+
+    @Test
+    public void testArrayUsage() {
+        String str = "import org.drools.base.DroolsQuery;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "query extract( String s )\n" +
+                "    Object()    \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Intercept\"\n" +
+                "when\n" +
+                "    DroolsQuery( name == \"extract\", $args : elements )\n" +
+                "    $s : String( this == $args[$s.length() - $s.length()] )\n" +
+                "    $s1 : String( this == $args[0] )\n" +
+                "    $s2 : String( this == $args[$args.length - $args.length] )\n" +
+                "then\n" +
+                "    retract( $s );  \n" +
+                "    list.add( $s );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Exec\"\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "    ?extract( $s ; )\n" +
+                "then\n" +
+                "    \n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        int N = 2;
+        for ( int j = 0; j < N; j++ ) {
+            ksession.insert( "x" + j );
+            ksession.fireAllRules();
+        }
+
+        assertEquals( N, list.size() );
+
+        ksession.dispose();
+    }
+
+    public interface InterfaceA {
+        InterfaceB getB();
+    }
+
+    public interface InterfaceB { }
+
+    public static class ClassA implements InterfaceA {
+        private ClassB b = null;
+        public ClassB getB() {
+            return b;
+        }
+        public void setB(InterfaceB b) {
+            this.b = (ClassB)b;
+        }
+    }
+
+    public static class ClassB implements InterfaceB {
+        private String id = "123";
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    @Test
+    public void testCovariance() throws Exception {
+        // JBRULES-3392
+        String str =
+                "import org.drools.integrationtests.MiscTest.*\n" +
+                "rule x\n" +
+                "when\n" +
+                "   $b : ClassB( )\n" +
+                "   $a : ClassA( b.id == $b.id )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ClassA a = new ClassA();
+        ClassB b = new ClassB();
+        a.setB(b);
+
+        ksession.insert(a);
+        ksession.insert(b);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testRetractLeftTuple() throws Exception {
+        // JBRULES-3420
+        String str = "import org.drools.integrationtests.MiscTest.*\n" +
+                "rule R1 salience 3\n" +
+                "when\n" +
+                "   $b : InterfaceB( )\n" +
+                "   $a : ClassA( b == null )\n" +
+                "then\n" +
+                "   $a.setB( $b );\n" +
+                "   update( $a );\n" +
+                "end\n" +
+                "rule R2 salience 2\n" +
+                "when\n" +
+                "   $b : ClassB( id == \"123\" )\n" +
+                "   $a : ClassA( b != null && b.id == $b.id )\n" +
+                "then\n" +
+                "   $b.setId( \"456\" );\n" +
+                "   update( $b );\n" +
+                "end\n" +
+                "rule R3 salience 1\n" +
+                "when\n" +
+                "   InterfaceA( $b : b )\n" +
+                "then\n" +
+                "   retract( $b );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new ClassA());
+        ksession.insert(new ClassB());
+        assertEquals(3, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testVariableBindingWithOR() throws Exception {
+        // JBRULES-3390
+        String str1 = "package org.drools.test; \n" +
+                "declare A\n" +
+                "end\n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   A( ) and ( B( $bField : field ) or C( $cField : field ) ) " +
+                ")\n" +
+                "then\n" +
+                "    System.out.println($bField);\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str1.getBytes()), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+
+        String str2 = "package org.drools.test; \n" +
+                "declare A\n" +
+                "end\n" +
+                "declare B\n" +
+                "   field : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "   field : int\n" +
+                "end\n" +
+                "rule R when\n" +
+                "( " +
+                "   A( ) and ( B( $field : field ) or C( $field : field ) ) " +
+                ")\n" +
+                "then\n" +
+                "    System.out.println($field);\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL );
+        assertFalse(kbuilder2.hasErrors());
+    }
 }
