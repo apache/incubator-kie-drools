@@ -512,7 +512,7 @@ public class GuvnorConnectionUtils {
                 sb.append(protocol).append("://");
                 sb.append(host).append("/");
                 sb.append(subdomain).append("/").append("org.drools.guvnor.Guvnor/package/");
-                sb.append(pkg).append("/" + properties.getProperty(GUVNOR_SNAPSHOT_NAME) + "\"");
+                sb.append(pkg).append("/" + getGuvnorSnapshotName() + "\"");
                 sb.append(" type=\"PKG\"");
                 if(!isEmpty(usr) && !isEmpty(pwd)) {
                     sb.append(" basicAuthentication=\"enabled\"");
