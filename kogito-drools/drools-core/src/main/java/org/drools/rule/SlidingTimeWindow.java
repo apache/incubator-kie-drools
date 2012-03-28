@@ -319,7 +319,19 @@ public class SlidingTimeWindow
 
         public Timer serialize(JobContext jobCtx,
                                MarshallerWriteContext outputCtx) {
-            return null;
+            // BehaviorJob, no state            
+            BehaviorJobContext bjobCtx = ( BehaviorJobContext ) jobCtx;
+            // write out SlidingTimeWindowContext
+            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
+  
+            EventFactHandle handle = slCtx.getQueue().peek();
+            
+            return ProtobufMessages.Timers.Timer.newBuilder()
+                    .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
+                    .setBehavior( ProtobufMessages.Timers.BehaviorTimer.newBuilder()
+                                  .setHandleId( handle.getId() )
+                                  .build() )
+                    .build();
         }
     }
     
@@ -344,6 +356,13 @@ public class SlidingTimeWindow
 
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
+            int i = _timer.getBehavior().getHandleId();
+            // this should probably be doing something...
+                       
+//            updateNextExpiration( ( RightTuple) stwCtx.queue.peek(),
+//                                  inCtx.wm,
+//                                  (SlidingTimeWindow) betaNode.getBehaviors()[i],
+//                                  stwCtx );            
         }
     }    
     
