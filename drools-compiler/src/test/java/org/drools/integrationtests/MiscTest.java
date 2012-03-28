@@ -9675,10 +9675,7 @@ public class MiscTest {
             return "A) " + field1 + ":" + field2;
         }
     }
-/*
-<<<<<<< HEAD
-=======
-*/
+
     @Test
     public void testUnwantedCoersion() throws Exception {
         String rule = "package org.drools\n" +
