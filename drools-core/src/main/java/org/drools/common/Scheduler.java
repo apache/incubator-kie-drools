@@ -86,6 +86,8 @@ public final class Scheduler {
 
                 if ( wasFired ) {
                     agenda.getWorkingMemory().fireAllRules();
+                } else {
+                    postpone(item, agenda);
                 }
 
                 agenda.getScheduledActivationsLinkedList().remove( item );
@@ -96,11 +98,35 @@ public final class Scheduler {
                 item.setActivated( true );
                 if ( wasFired ) {
                     agenda.getWorkingMemory().fireAllRules();
+                } else {
+                    postpone(item, agenda);
                 }
             }
         }
+
+        private void postpone( ScheduledAgendaItem item, InternalAgenda agenda ) {
+
+            LeftTuple postponedTuple;
+            if ( item.getTuple().getParent() != null ) {
+                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
+
+                item.getTuple().getLeftParent().setLastChild( postponedTuple );
+                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
+
+            } else {
+                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), false );
+                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
+            }
+
+            ((DefaultAgenda) agenda).createPostponedActivation( postponedTuple,
+                                                                item.getPropagationContext(),
+                                                                (InternalWorkingMemory) agenda.getWorkingMemory(),
+                                                                item.getRuleTerminalNode() );
+            agenda.addActivation( (AgendaItem) postponedTuple.getObject() );
+            
+        }
     }
-    
+
     public static class ActivationTimerJobContext implements JobContext {
         private JobHandle jobHandle;
         private ScheduledAgendaItem scheduledAgendaItem;

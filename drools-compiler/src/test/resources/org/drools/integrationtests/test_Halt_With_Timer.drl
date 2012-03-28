@@ -3,7 +3,7 @@
 rule x
 timer(int:0 1000)
 when
-    $s: String()
+    $s: String( this == "halt" )
 then
     insert( new Integer(1) );
     drools.halt();
