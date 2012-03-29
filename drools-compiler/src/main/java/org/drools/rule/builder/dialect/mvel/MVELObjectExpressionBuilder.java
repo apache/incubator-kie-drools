@@ -17,7 +17,9 @@ import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class MVELObjectExpressionBuilder {
 
-    public MVELObjectExpression build( String expression, RuleBuildContext context ) {
+    private MVELObjectExpressionBuilder() { }
+
+    public static MVELObjectExpression build( String expression, RuleBuildContext context ) {
         boolean typesafe = context.isTypesafe();
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );

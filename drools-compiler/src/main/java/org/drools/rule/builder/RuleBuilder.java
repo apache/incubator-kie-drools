@@ -378,11 +378,10 @@ public class RuleBuilder {
                 return;
             }
 
-            MVELObjectExpressionBuilder builder = new MVELObjectExpressionBuilder();
-            MVELObjectExpression times = builder.build( tok.nextToken().trim(), context );
+            MVELObjectExpression times = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
             MVELObjectExpression period = null;
             if ( tok.hasMoreTokens() ) {
-                period = builder.build( tok.nextToken().trim(), context );
+                period = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
             }
 
             timer = new ExpressionIntervalTimer( startDate, endDate, repeatLimit, times, period );
