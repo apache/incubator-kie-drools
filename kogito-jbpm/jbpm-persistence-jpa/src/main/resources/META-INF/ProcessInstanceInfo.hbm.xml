@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="org.jbpm.persistence.processinstance">
+
+    <!-- access="field" for fields that have no setter methods -->
+    <class name="ProcessInstanceInfo" table="ProcessInstanceInfo">
+    
+        <id name="processInstanceId" type="long" column="InstanceId">
+            <generator class="native" />
+        </id>
+        
+        <version name="version" type="integer" unsaved-value="null" access="field">
+          <column name="OPTLOCK" not-null="false" />
+        </version>
+        
+        <property name="processId" access="field" />
+        <property name="startDate" type="timestamp" access="field" />
+        <property name="lastReadDate" type="timestamp"  access="field" />
+        <property name="lastModificationDate" type="timestamp" access="field" />
+        <property name="state" type="integer" not-null="true" access="field" />
+        
+        <property name="processInstanceByteArray" type="org.jbpm.persistence.processinstance.BlobUserType" 
+            column="processInstanceByteArray" access="field" />
+
+        <set name="eventTypes" table="EventTypes" access="field" >
+            <key column="InstanceId"/>
+            <element column="element" type="string"/>
+        </set>
+    
+        <!-- NOT mapping [processInstance] field because field is transient -->    
+        <!-- NOT mapping [env] field because field is transient -->    
+        
+    </class>
+
+</hibernate-mapping>

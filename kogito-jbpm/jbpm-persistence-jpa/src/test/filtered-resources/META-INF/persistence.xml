@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence       http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd    http://java.sun.com/xml/ns/persistence/orm     http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+<persistence version="1.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
 
     <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
+        <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+        <!-- madsfpping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file -->
+        
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+        <class>org.drools.persistence.info.WorkItemInfo</class>
+        
         <class>org.jbpm.persistence.session.objects.MyEntity</class>
         <class>org.jbpm.persistence.session.objects.MyEntityMethods</class>
         <class>org.jbpm.persistence.session.objects.MyEntityOnlyFields</class>
         <class>org.jbpm.persistence.session.objects.MyVariableExtendingSerializable</class>
         <class>org.jbpm.persistence.processinstance.objects.NonSerializableClass</class>
-        <class>org.drools.persistence.info.WorkItemInfo</class>
+        
         <class>org.drools.marshalling.util.MarshalledData</class>
+        <class>org.jbpm.persistence.processinstance.objects.UserTypePropertyHolder</class>
+        
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
-		    <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="false" />	
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
             
-	        <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+            <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
          
             <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
             <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
             <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
             <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-	    </properties>        
+        </properties>        
     </persistence-unit>
 </persistence>

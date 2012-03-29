@@ -83,7 +83,7 @@ public class ProcessInstanceResolverStrategyTest {
         if( ksession != null ) { 
             ksession.dispose();
         }
-        tearDown(context);
+        cleanUp(context);
     }
 
     @Test

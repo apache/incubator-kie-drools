@@ -561,7 +561,7 @@ public class PersistentStatefulSessionTest {
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
-        assertNull( processInstance );
+        assertNull( "Process did not complete.", processInstance );
     }
     
     @Test
