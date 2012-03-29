@@ -182,6 +182,97 @@
         </dependencies>
     </profile>
     -->
+    
+    <profile>
+      <id>hibernate-4</id>
+       <dependencies>
+         <dependency> 
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-core</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+         <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-entitymanager</artifactId>
+           <version>${hibernate.4.ORM.version}</version>
+           <scope>test</scope>
+         </dependency>
+      </dependencies>
+      
+     <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>maven-replacer-plugin</artifactId>
+            <version>1.4.1</version>
+            <executions>
+              <execution>
+                <id>hib4-blob-user-type</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>
+                <configuration>
+                  <ignoreMissingFile>true</ignoreMissingFile>
+                  <file>src/main/java/org/jbpm/persistence/processinstance/BlobUserType.java</file>
+                  <replacements>
+                    <!-- for BlobUserType hib4 UserType class compatibility, even though it's not used -->
+                    <replacement>
+                      <token>(/\*\*|):HIB4 REMOVE ME:(\*\*/|)</token>
+                      <value>// :HIB4 REMOVE ME:</value>
+                    </replacement>
+                  </replacements>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jpa2-xml-config</id>
+                <phase>process-test-resources</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals>
+                <configuration>
+                  <includes>
+                    <include>target/*classes/META-INF/JBPMorm.xml</include>
+                    <include>target/*classes/META-INF/persistence.xml</include>
+                  </includes>
+                  <replacements>
+                    <!-- for jpa 2 xml config files -->
+                    <replacement>
+                      <token>(persistence version)="1.0"</token>
+                      <value>$1="2.0"</value>
+                    </replacement>
+                    <!-- for the schemaLocation's in persistence.xml -->
+                    <replacement>
+                      <token>(http://java.sun.com/xml/ns/persistence/persistence)_1(_0.xsd)</token>
+                      <value>$1_2$2</value>
+                    </replacement>
+                    <replacement>
+                      <token>(http://java.sun.com/xml/ns/persistence/orm)_1(_0.xsd)</token>
+                      <value>$1_2$2</value>
+                    </replacement>
+                    <!-- for the ProcessInstanceInfo.hbm.xml -->
+                    <replacement>
+                      <token>(mapping-file&gt;META-INF/ProcessInstanceInfo.hbm.xml&lt;/mapping-file)</token>
+                      <value>!-- $1 --</value>
+                    </replacement>
+                    <!-- for the JBPMorm.xml -->
+                    <replacement>
+                      <token>(xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm) orm_1_0.(xsd"\n *version=)"1.0"</token>
+                      <value>$1 orm_2_0.$2"2.0"</value>
+                    </replacement>
+                    <replacement>
+                      <token>(&lt;!--|):JPA2 REMOVE ME:(--&gt;|)</token>
+                      <value></value>
+                    </replacement>
+                  </replacements>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
-  
+    
 </project>
