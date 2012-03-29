@@ -11,14 +11,19 @@
   <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>jdbc/jbpm-ds</jta-data-source>        
+    
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
+    
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.drools.persistence.info.WorkItemInfo</class>
+    
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
+    
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.Content</class>
     <class>org.jbpm.task.BooleanExpression</class>
@@ -42,6 +47,7 @@
     <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
     <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
     <class>org.jbpm.task.User</class>
+    
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="update" />
