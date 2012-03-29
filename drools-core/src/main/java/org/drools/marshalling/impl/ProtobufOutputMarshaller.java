@@ -26,11 +26,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.drools.InitialFact;
-import org.drools.RuntimeDroolsException;
-import org.drools.common.ActivationNode;
+import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
@@ -46,7 +44,6 @@ import org.drools.common.ObjectStore;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.WorkingMemoryAction;
-import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -66,7 +63,6 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightInputAdapterNode.RIAMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Rule;
-import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;
@@ -206,12 +202,6 @@ public class ProtobufOutputMarshaller {
             _agb.setIsActive( group.isActive() );
             _ab.addAgendaGroup( _agb.build() );
             
-            // serialize the activations on that agenda group
-            org.drools.spi.Activation[] activations = (org.drools.spi.Activation[]) group.getActivations();
-            Arrays.sort( activations, ActivationsSorter.INSTANCE );
-            for( Activation activation : activations ) {
-                _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
-            }
         }
 
         org.drools.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
@@ -231,11 +221,6 @@ public class ProtobufOutputMarshaller {
             _rfgb.setIsActive( group.isActive() );
             _rfgb.setIsAutoDeactivate( group.isAutoDeactivate() );
             
-            for ( ActivationNode node : group ) {
-                final Activation activation = node.getActivation();
-                _rfgb.addActivation( writeActivation( context, (AgendaItem) activation ) );
-            }
-
             Map<Long, String> nodeInstances = group.getNodeInstances();
             for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
                 org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.Builder _nib = ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance.newBuilder();
@@ -244,6 +229,19 @@ public class ProtobufOutputMarshaller {
                 _rfgb.addNodeInstance( _nib.build() );
             }
             _ab.addRuleFlowGroup( _rfgb.build() );
+        }
+        
+        // serialize all dormant activations
+        ActivationIterator it = ActivationIterator.iterator( wm );
+        List<org.drools.spi.Activation> dormant = new ArrayList<org.drools.spi.Activation>();
+        for ( org.drools.spi.Activation item = (org.drools.spi.Activation) it.next(); item != null; item = (org.drools.spi.Activation) it.next() ) {
+            if( ! item.isActive() ) {
+                dormant.add( item );
+            }
+        }
+        Collections.sort( dormant, ActivationsSorter.INSTANCE );
+        for( org.drools.spi.Activation activation : dormant ) {
+            _ab.addActivation( writeActivation( context, (AgendaItem) activation ) );
         }
         
         _ksb.setAgenda( _ab.build() );
@@ -678,43 +676,6 @@ public class ProtobufOutputMarshaller {
         return _activation.build();
     }
 
-    //    public static void writeWorkItem(MarshallerWriteContext context,
-    //                                     WorkItem workItem) throws IOException {
-    //        ObjectOutputStream stream = context.stream;
-    //        stream.writeLong( workItem.getId() );
-    //        stream.writeLong( workItem.getProcessInstanceId() );
-    //        stream.writeUTF( workItem.getName() );
-    //        stream.writeInt( workItem.getState() );
-    //
-    //        //Work Item Parameters
-    //        Map<String, Object> parameters = workItem.getParameters();
-    //        Collection<Object> notNullValues = new ArrayList<Object>();
-    //        for ( Object value : parameters.values() ) {
-    //            if ( value != null ) {
-    //                notNullValues.add( value );
-    //            }
-    //        }
-    //
-    //        stream.writeInt( notNullValues.size() );
-    //        for ( String key : parameters.keySet() ) {
-    //            Object object = parameters.get( key );
-    //            if ( object != null ) {
-    //                stream.writeUTF( key );
-    //
-    //                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( object );
-    //                String strategyClassName = strategy.getClass().getName();
-    //                stream.writeInt( -2 ); // backwards compatibility
-    //                stream.writeUTF( strategyClassName );
-    //                if ( strategy.accept( object ) ) {
-    //                    strategy.write( stream,
-    //                                    object );
-    //                }
-    //            }
-    //
-    //        }
-    //
-    //    }
-    //
     private static ProtobufMessages.Timers writeTimers(Collection<TimerJobInstance> timers,
                                                        MarshallerWriteContext outCtx) {
         if( ! timers.isEmpty() ) {
