@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.base.ClassObjectType;
@@ -47,6 +49,8 @@ public class TypeDeclaration
     public static final int TYPESAFE_BIT                = 2;
     public static final int FORMAT_BIT                  = 4;
     public static final int KIND_BIT                    = 8;
+    public static final int NATURE_BIT                  = 16;
+
 
     public static final String ATTR_CLASS               = "class";
     public static final String ATTR_TYPESAFE            = "typesafe";
@@ -108,10 +112,38 @@ public class TypeDeclaration
         }
     }
 
+    public static enum Nature {
+        /**
+         * A DECLARATION is a Type Declaration that does not contain any
+         * field definition and that is just used to add meta-data to an
+         * DEFINITION.
+         * A DEFINITION of an exiting DEFINITION is also considered a DECLARATION
+         */
+        DECLARATION,
+        /**
+         * A DEFINITION is:
+         *  1.- Type Declaration containing field definitions.
+         *  2.- A DECLARATION with no previous DEFINITION
+         */
+        DEFINITION;
+
+        public static final String ID = "nature";
+
+        public static Nature parseNature(String nature) {
+            if ( "declaration".equalsIgnoreCase( nature ) ) {
+                return DECLARATION;
+            } else if ( "definition".equalsIgnoreCase( nature ) ) {
+                return DEFINITION;
+            }
+            return null;
+        }
+    }
+
     private String                 typeName;
     private Role                   role;
     private Format                 format;
     private Kind                   kind;
+    private Nature                 nature;
     private String                 timestampAttribute;
     private String                 durationAttribute;
     private InternalReadAccessor   durationExtractor;
@@ -124,35 +156,51 @@ public class TypeDeclaration
     private boolean                dynamic;
     private boolean                typesafe;
     private boolean                novel;
-    private boolean propertySpecific;
+    private boolean                valid;
+    private boolean                propertySpecific;
     private transient List<String> settableProprties;
 
-    private transient ObjectType objectType;
-    private long                 expirationOffset = -1;
+    private transient ObjectType   objectType;
+    private long                   expirationOffset = -1;
+
+    private List<TypeDeclaration>  redeclarations;
 
     public TypeDeclaration() {
-        this.role = Role.FACT;
-        this.format = Format.POJO;
-        this.kind = Kind.CLASS;
+
+        role = Role.FACT;
+        format = Format.POJO;
+        kind = Kind.CLASS;
+        nature = Nature.DECLARATION;
+
+        this.valid =  true;
+
+        addRedeclaration( this );
     }
 
-    public TypeDeclaration(String typeName) {
+    public TypeDeclaration( String typeName ) {
         this.typeName = typeName;
-        this.role = Role.FACT;
-        this.format = Format.POJO;
-        this.kind = Kind.CLASS;
+
+        role = Role.FACT;
+        format = Format.POJO;
+        kind = Kind.CLASS;
+        nature = Nature.DECLARATION;
+
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeTemplate = null;
         this.typesafe =  true;
+        this.valid =  true;
+
+        addRedeclaration( this );
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
         this.typeName = (String) in.readObject();
         this.role = (Role) in.readObject();
         this.format = (Format) in.readObject();
         this.kind = (Kind) in.readObject();
+        this.nature = (Nature) in.readObject();
         this.durationAttribute = (String) in.readObject();
         this.timestampAttribute = (String) in.readObject();
         this.typeClassName = (String) in.readObject();
@@ -165,6 +213,7 @@ public class TypeDeclaration
         this.dynamic = in.readBoolean();
         this.typesafe = in.readBoolean();
         this.propertySpecific = in.readBoolean();
+        this.valid = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -172,6 +221,7 @@ public class TypeDeclaration
         out.writeObject( role );
         out.writeObject( format );
         out.writeObject( kind );
+        out.writeObject( nature );
         out.writeObject( durationAttribute );
         out.writeObject( timestampAttribute );
         out.writeObject( typeClassName );
@@ -184,6 +234,7 @@ public class TypeDeclaration
         out.writeBoolean(dynamic);
         out.writeBoolean( typesafe );
         out.writeBoolean(propertySpecific);
+        out.writeBoolean(valid);
     }
 
     public int getSetMask() {
@@ -242,6 +293,15 @@ public class TypeDeclaration
         this.kind = kind;
     }
 
+    public Nature getNature() {
+        return nature;
+    }
+
+    public void setNature( Nature nature ) {
+        this.setMask = this.setMask | NATURE_BIT;
+        this.nature = nature;
+    }
+
     /**
      * @return the timestampAttribute
      */
@@ -268,6 +328,14 @@ public class TypeDeclaration
      */
     public void setDurationAttribute(String durationAttribute) {
         this.durationAttribute = durationAttribute;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
     }
 
     /**
@@ -467,9 +535,40 @@ public class TypeDeclaration
     }
 
     public List<String> getSettableProperties() {
-        if (settableProprties == null) {
-            settableProprties = ClassUtils.getSettableProperties(getTypeClass());
+        if ( settableProprties == null ) {
+            settableProprties = ClassUtils.getSettableProperties( getTypeClass() );
         }
         return settableProprties;
+    }
+
+    public void addRedeclaration( TypeDeclaration typeDeclaration ) {
+        if ( redeclarations == null ) {
+            redeclarations = new ArrayList();
+        }
+        redeclarations.add( typeDeclaration );
+    }
+
+    private List<TypeDeclaration> getRedeclarations( ) {
+        return Collections.unmodifiableList( redeclarations );
+    }
+
+
+    public boolean removeRedeclaration( TypeDeclaration decl ) {
+        if ( ! redeclarations.contains( decl ) ) {
+            return false;
+        } else {
+            redeclarations.remove( decl );
+            return true;
+        }
+    }
+
+    public String toString() {
+        return "TypeDeclaration{" +
+                "typeName='" + typeName + '\'' +
+                ", role=" + role +
+                ", format=" + format +
+                ", kind=" + kind +
+                ", nature=" + nature +
+                '}';
     }
 }

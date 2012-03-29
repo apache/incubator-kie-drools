@@ -94,10 +94,8 @@ public class Declaration
      *
      * @param identifier
      *            The name of the variable.
-     * @param objectType
-     *            The type of this variable declaration.
-     * @param order
-     *            The index within a rule.
+     * @param pattern
+     *            The pattern this variable is declared in
      */
     public Declaration(final String identifier,
                        final Pattern pattern) {
@@ -112,10 +110,10 @@ public class Declaration
      *
      * @param identifier
      *            The name of the variable.
-     * @param objectType
-     *            The type of this variable declaration.
-     * @param order
-     *            The index within a rule.
+     * @param extractor
+     *            The extractor for this variable
+     * @param pattern
+     *            The pattern this variable is declared in
      */
     public Declaration(final String identifier,
                        final InternalReadAccessor extractor,
@@ -131,10 +129,10 @@ public class Declaration
      *
      * @param identifier
      *            The name of the variable.
-     * @param objectType
-     *            The type of this variable declaration.
-     * @param order
-     *            The index within a rule.
+     * @param identifier
+     *            The name of the variable.
+     * @param extractor
+     *            The extractor for this variable
      * @param internalFact
      *            True if this is an internal fact created by the engine, like a collection result
      *            of a collect CE
@@ -319,7 +317,9 @@ public class Declaration
     public String getTypeName() {
         if (cachedTypeName == null) {
         // we assume that null extractor errors are reported else where
-            cachedTypeName = getExtractor() != null ? canonicalName(getExtractor().getExtractToClass()) : "java.lang.Object";
+            cachedTypeName = ( getExtractor() != null && getExtractor().getExtractToClass() != null )
+                             ? canonicalName(getExtractor().getExtractToClass())
+                             : "java.lang.Object";
         }
         return cachedTypeName;
     }

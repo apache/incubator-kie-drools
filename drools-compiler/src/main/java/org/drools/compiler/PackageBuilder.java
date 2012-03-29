@@ -209,7 +209,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the builder.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
-    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the 
+    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
     //AttributeDescr's name.
     private final Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
@@ -420,7 +420,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     /**
      * Load a rule package from DRL source and associate all loaded artifacts
      * with the given resource.
-     * 
+     *
      * @param reader
      * @param sourceResource the source resource for the read artifacts
      * @throws DroolsParserException
@@ -1177,9 +1177,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
         // process types in 2 steps to deal with circular and recursive declarations
-        processUnresolvedTypes(pkgRegistry, processTypeDeclarations(pkgRegistry, packageDescr));
+        processUnresolvedTypes( pkgRegistry, processTypeDeclarations( pkgRegistry, packageDescr ) );
 
-        processOtherDeclarations(pkgRegistry, packageDescr);
+        processOtherDeclarations( pkgRegistry, packageDescr );
     }
 
     void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
@@ -1713,7 +1713,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         // finally, locally declared fields are merged. The map swap ensures that super-fields are added in order, before the subclass' ones
         // notice that it is not possible to override a field changing its type
         for (String fieldName : typeDescr.getFields().keySet()) {
-            if (fieldMap.containsKey( fieldName )) {
+            if ( fieldMap.containsKey( fieldName ) ) {
                 String type1 = fieldMap.get( fieldName ).getPattern().getObjectType();
                 String type2 = typeDescr.getFields().get( fieldName ).getPattern().getObjectType();
                 if (type2.lastIndexOf( "." ) < 0) {
@@ -1724,7 +1724,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         // now that we are at it... this will be needed later anyway
                         fieldMap.get( fieldName ).getPattern().setObjectType( type1 );
                         typeDescr.getFields().get( fieldName ).getPattern().setObjectType( type2 );
-                    } catch (ClassNotFoundException cnfe) {
+                    } catch ( ClassNotFoundException cnfe ) {
                         // will fail later
                     }
                 }
@@ -1803,7 +1803,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     void registerGeneratedType(AbstractClassTypeDeclarationDescr typeDescr) {
-        generatedTypes.add(typeDescr.getType().getFullName());
+        String fullName = typeDescr.getType().getFullName();
+        generatedTypes.add( fullName );
     }
 
     /**
@@ -1812,8 +1813,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
-            if (isEmpty( typeDescr.getNamespace() )) {
-                for (ImportDescr id : packageDescr.getImports()) {
+            if ( isEmpty( typeDescr.getNamespace() ) ) {
+                for ( ImportDescr id : packageDescr.getImports() ) {
                     String imp = id.getTarget();
                     int separator = imp.lastIndexOf( '.' );
                     String tail = imp.substring( separator + 1 );
@@ -1864,10 +1865,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 }
             }
 
-            if (isEmpty( typeDescr.getNamespace() ) && typeDescr.getFields().isEmpty()) {
+            if ( isEmpty( typeDescr.getNamespace() ) && typeDescr.getFields().isEmpty() ) {
                 // might be referencing a class imported with a package import (.*)
                 PackageRegistry pkgReg = this.pkgRegistryMap.get( packageDescr.getName() );
-                if (pkgReg != null) {
+                if ( pkgReg != null ) {
                     try {
                         Class<?> clz = pkgReg.getTypeResolver().resolveType( typeDescr.getTypeName() );
                         java.lang.Package pkg = clz.getPackage();
@@ -1883,7 +1884,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 }
             }
 
-            if (isEmpty( typeDescr.getNamespace() )) {
+            if ( isEmpty( typeDescr.getNamespace() ) ) {
                 typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
             }
 
@@ -1897,7 +1898,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             fillFieldTypes( typeDescr,
                             packageDescr );
 
-            if (!typeDescr.getNamespace().equals( packageDescr.getNamespace() )) {
+            if ( !typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
                 // If the type declaration is for a different namespace, process that separately.
                 PackageDescr altDescr = new PackageDescr( typeDescr.getNamespace() );
                 if ( typeDescr instanceof TypeDeclarationDescr ) {
@@ -1920,8 +1921,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         // sort declarations : superclasses must be generated first
         Collection<AbstractClassTypeDeclarationDescr> sortedTypeDescriptors = sortByHierarchy( packageDescr.getClassAndEnumDeclarationDescrs() );
 
-        for (AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors) {
-            registerGeneratedType(typeDescr);
+        for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
+            registerGeneratedType( typeDescr );
         }
 
         List<TypeDefinition> unresolvedTypeDefinitions = null;
@@ -2007,9 +2008,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                       type,
                                       pkgRegistry );
 
-
                 clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
-
                 type.setTypeClass( clazz );
 
 
@@ -2021,11 +2020,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 continue;
             }
 
-            if (!processTypeFields(pkgRegistry, typeDescr, type, true)) {
+            if ( ! processTypeFields( pkgRegistry, typeDescr, type, true ) ) {
                 if (unresolvedTypeDefinitions == null) {
                     unresolvedTypeDefinitions = new ArrayList<TypeDefinition>();
                 }
-                unresolvedTypeDefinitions.add(new TypeDefinition(type, typeDescr));
+                unresolvedTypeDefinitions.add( new TypeDefinition( type, typeDescr ) );
             }
         }
 
@@ -2095,7 +2094,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
         type.setPropertySpecific( propertySpecific );
 
-        pkgRegistry.getPackage().addTypeDeclaration( type );
+        if ( type.isValid() ) {
+            pkgRegistry.getPackage().addTypeDeclaration( type );
+        }
+
         return true;
     }
 
@@ -2144,15 +2146,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     private boolean isNovelClass( AbstractClassTypeDeclarationDescr typeDescr ) {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
-            if (reg != null) {
+            if ( reg != null ) {
                 String availableName = typeDescr.getType().getFullName();
-                Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
-                if (resolvedType != null && typeDescr.getFields().size() > 1) {
-                    this.results.add( new TypeDeclarationError( typeDescr,
-                                                                "Duplicate type definition. A class with the name '" + resolvedType.getName() +
-                                                                "' was found in the classpath while trying to " +
-                                                                "redefine the fields in the declare statement. Fields can only be defined for non-existing classes." ) );
-                }
+                Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
                 return false;
             } else {
                 return false;
@@ -2220,7 +2216,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             NoSuchFieldException {
         ClassDefinition cd = type.getTypeClassDef();
         ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-        for (FieldDefinition attrDef : cd.getFieldsDefinitions()) {
+        for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
             ClassFieldAccessor accessor = store.getAccessor( cd.getDefinedClass().getName(),
                                                              attrDef.getName() );
             attrDef.setReadWriteAccessor( accessor );
@@ -2330,11 +2326,69 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         // attach the class definition, it will be completed later
         type.setTypeClassDef( def );
 
+        //if is not new, search the already existing declaration and
+        //compare them o see if they are at least compatibles
+        if ( ! type.isNovel() ) {
+            TypeDeclaration previousTypeDeclaration = this.pkgRegistryMap.get( typeDescr.getNamespace() ).getPackage().getTypeDeclaration( typeDescr.getTypeName() );
+
+            try {
+
+                if ( type.getTypeClassDef().getFields().size() > 0 ){
+                    //since the declaration defines one or more fields, it is a DEFINITION
+                    type.setNature( TypeDeclaration.Nature.DEFINITION );
+                } else{
+                    //The declaration doesn't define any field, it is a DECLARATION
+                    type.setNature( TypeDeclaration.Nature.DECLARATION );
+                }
+
+                //if there is no previous declaration, then the original declaration was a POJO
+                //to the behavior previous these changes
+                if ( previousTypeDeclaration == null ) {
+                    // new declarations of a POJO can't declare new fields
+                    if (type.getTypeClassDef().getFields().size() > 0 ){
+                        type.setValid(false);
+                        this.results.add(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
+                                +" can't declare new fields"));
+                    }
+                } else {
+
+                    int typeComparisonResult = this.compareTypeDeclarations(previousTypeDeclaration, type);
+
+                    if ( typeComparisonResult < 0 ) {
+                        //oldDeclaration is "less" than newDeclaration -> error
+                        this.results.add( new TypeDeclarationError(typeDescr, typeDescr.getType().getFullName()
+                                +" declares more fields than the already existing version") );
+                        type.setValid( false );
+                    } else if ( typeComparisonResult > 0 && ! type.getTypeClassDef().getFields().isEmpty() ) {
+                        //oldDeclaration is "grater" than newDeclaration -> error
+                        this.results.add( new TypeDeclarationError( typeDescr, typeDescr.getType().getFullName()
+                                +" declares less fields than the already existing version") );
+                        type.setValid( false );
+                    }
+
+                    //if they are "equal" -> no problem
+
+                    // in the case of a declaration, we need to copy all the
+                    // fields present in the previous declaration
+                    if ( type.getNature() == TypeDeclaration.Nature.DECLARATION ) {
+                        this.mergeTypeDeclarations( previousTypeDeclaration, type );
+                    }
+                }
+
+            } catch ( IncompatibleClassChangeError error ) {
+                //if the types are incompatible -> error
+                this.results.add( new TypeDeclarationError( typeDescr, error.getMessage() ) );
+            }
+
+        } else {
+            //if the declaration is novel, then it is a DEFINITION
+            type.setNature( TypeDeclaration.Nature.DEFINITION );
+        }
+
         generateDeclaredBean( typeDescr,
                               type,
                               pkgRegistry,
                               def );
-
     }
 
     private void generateDeclaredBean( AbstractClassTypeDeclarationDescr typeDescr,
@@ -2358,12 +2412,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         } else if ( type.getKind().equals( TypeDeclaration.Kind.TRAIT )
                     || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null ) {
 
-            if (!type.isNovel()) {
+            if ( !type.isNovel() ) {
                 try {
                     PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType( availableName );
-                    if (!Thing.class.isAssignableFrom( resolvedType )) {
+                    if ( ! Thing.class.isAssignableFrom( resolvedType ) ) {
                         updateTraitDefinition( type,
                                                resolvedType );
 
@@ -2390,6 +2444,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         tempDef.setInterfaces( def.getInterfaces() );
                         tempDef.setSuperClass( def.getClassName() );
                         tempDef.setDefinedClass( resolvedType );
+                        tempDef.setAbstrakt( true );
+                        tempDeclr.setTypeClassDef( tempDef );
 
                         type.setKind( TypeDeclaration.Kind.CLASS );
 
@@ -2397,6 +2453,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                               tempDeclr,
                                               pkgRegistry,
                                               tempDef );
+                        try {
+                            Class<?> clazz = pkgRegistry.getTypeResolver().resolveType( tempDescr.getType().getFullName() );
+                            tempDeclr.setTypeClass( clazz );
+                        } catch ( ClassNotFoundException cnfe ) {
+                            this.results.add( new TypeDeclarationError( typeDescr,
+                                                                        "Internal Trait extension Class '" + target +
+                                                                        "' could not be generated correctly'" ) );
+                        } finally {
+                            pkgRegistry.getPackage().addTypeDeclaration( tempDeclr );
+                        }
 
                     } else {
                         updateTraitDefinition( type,
@@ -2418,15 +2484,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         }
 
-        if (type.isNovel()) {
+        if ( type.isNovel() ) {
             String fullName = typeDescr.getType().getFullName();
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
             switch ( type.getKind() ) {
                 case TRAIT :
                     try {
-                        byte[] d = ClassBuilderFactory.getTraitBuilderService().buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
-                    } catch (Exception e) {
+                        ClassBuilder tb = ClassBuilderFactory.getTraitBuilderService();
+                        byte[] d = tb.buildClass( def );
+                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
+                        dialect.putClassDefinition( resourceName, d );
+                        dialect.write( resourceName, d );
+                    } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to compile declared trait " + fullName +
                                                                     ": " + e.getMessage() + ";" ) );
@@ -2434,22 +2503,30 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     break;
                 case ENUM :
                     try {
-                        byte[] d = ClassBuilderFactory.getEnumClassBuilderService().buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
+                        ClassBuilder eb = ClassBuilderFactory.getEnumClassBuilderService();
+                        byte[] d = eb.buildClass( def );
+                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
+                        dialect.putClassDefinition( resourceName, d );
+                        dialect.write( resourceName, d );
                     } catch ( Exception e ) {
                         e.printStackTrace();
-                        this.results.add( new TypeDeclarationError( typeDescr, "Unable to compile declared enum " + fullName + ": " + e.getMessage() + ";" ) );
+                        this.results.add( new TypeDeclarationError( typeDescr,
+                                                                    "Unable to compile declared enum " + fullName +
+                                                                    ": " + e.getMessage() + ";" ) );
                     }
                     break;
                 case CLASS :
                 default :
                     try {
-                        byte[] d = ClassBuilderFactory.getBeanClassBuilderService().buildClass( def );
-                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ), d );
-                    } catch (Exception e) {
+                        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
+                        byte[] d = cb.buildClass( def );
+                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
+                        dialect.putClassDefinition( resourceName, d );
+                        dialect.write( resourceName, d );
+                    } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
-                                                                            ": " + e.getMessage() + ";" ) );
+                                                                    ": " + e.getMessage() + ";" ) );
                     }
                     break;
             }
@@ -3002,7 +3079,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      * @param typeDeclarations
      * @return
      */
-    public static Collection<AbstractClassTypeDeclarationDescr> sortByHierarchy( List<AbstractClassTypeDeclarationDescr> typeDeclarations ) {
+    public Collection<AbstractClassTypeDeclarationDescr> sortByHierarchy( List<AbstractClassTypeDeclarationDescr> typeDeclarations ) {
 
         Node<AbstractClassTypeDeclarationDescr> root = new Node<AbstractClassTypeDeclarationDescr>( null );
         Map<String, Node<AbstractClassTypeDeclarationDescr>> map = new HashMap<String, Node<AbstractClassTypeDeclarationDescr>>();
@@ -3015,8 +3092,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                  tdescr );
                 map.put( typeName,
                          node );
-            } else if (node.getData() == null) {
+            } else if ( node.getData() == null ) {
                 node.setData( tdescr );
+            } else {
+                this.results.add( new TypeDeclarationError( tdescr,
+                                       "Found duplicate declaration for type " + tdescr.getTypeName() ) );
             }
 
                 if ( tdescr.getSuperTypes().isEmpty() ) {
@@ -3140,11 +3220,134 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
+    private int compareTypeDeclarations(TypeDeclaration oldDeclaration, TypeDeclaration newDeclaration) throws IncompatibleClassChangeError{
+
+        //different formats -> incompatible
+        if (!oldDeclaration.getFormat().equals(newDeclaration.getFormat())){
+            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
+                    + " format that its previous definition: "+newDeclaration.getFormat()+"!="+oldDeclaration.getFormat());
+        }
+
+        //different superclasses -> Incompatible (TODO: check for hierarchy)
+        if (!oldDeclaration.getTypeClassDef().getSuperClass().equals(newDeclaration.getTypeClassDef().getSuperClass())){
+            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
+                    + " supperclass that its previous definition: "+newDeclaration.getTypeClassDef().getSuperClass()
+                    +" != "+oldDeclaration.getTypeClassDef().getSuperClass());
+        }
+
+        //different duration -> Incompatible
+        if (!this.nullSafeEqualityComparison(oldDeclaration.getDurationAttribute(),newDeclaration.getDurationAttribute())){
+            throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" has a different"
+                    + " duration: "+newDeclaration.getDurationAttribute()
+                    +" != "+oldDeclaration.getDurationAttribute());
+        }
+
+//        //different masks -> incompatible
+        if ( newDeclaration.getNature().equals( TypeDeclaration.Nature.DEFINITION ) ) {
+            if (oldDeclaration.getSetMask() != newDeclaration.getSetMask() ){
+                throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+" is incompatible with"
+                        + " the previous definition: "+newDeclaration
+                        +" != "+oldDeclaration);
+            }
+        }
+
+        //TODO: further comparison?
+
+        //Field comparison
+        List<FactField> oldFields = oldDeclaration.getTypeClassDef().getFields();
+        Map<String, FactField> newFieldsMap = new HashMap<String, FactField>();
+        for (FactField factField : newDeclaration.getTypeClassDef().getFields()) {
+            newFieldsMap.put(factField.getName(), factField);
+        }
+
+        //each of the fields in the old definition that are also present in the
+        //new definition must have the same type. If not -> Incompatible
+        boolean allFieldsInOldDeclarationAreStillPresent = true;
+        for (FactField oldFactField : oldFields) {
+            FactField newFactField = newFieldsMap.get(oldFactField.getName());
+
+            if (newFactField != null){
+                //we can't use newFactField.getType() since it throws a NPE at this point.
+                String newFactType = ((FieldDefinition)newFactField).getTypeName();
+
+                if (!newFactType.equals(oldFactField.getType().getCanonicalName())){
+                    throw new IncompatibleClassChangeError("Type Declaration "+newDeclaration.getTypeName()+"."+newFactField.getName()+" has a different"
+                        + " type that its previous definition: "+newFactType
+                        +" != "+oldFactField.getType().getCanonicalName());
+                }
+            }else{
+                allFieldsInOldDeclarationAreStillPresent = false;
+            }
+
+        }
+
+
+        //If the old declaration has less fields than the new declaration, oldDefinition < newDefinition
+        if (oldFields.size() < newFieldsMap.size()){
+            return -1;
+        }
+
+        //If the old declaration has more fields than the new declaration, oldDefinition > newDefinition
+        if (oldFields.size() > newFieldsMap.size()){
+            return 1;
+        }
+
+        //If the old declaration has the same fields as the new declaration,
+        //and all the fieds present in the old declaration are also present in
+        //the new declaration, then they are considered "equal", otherwise
+        //they are incompatible
+        if (allFieldsInOldDeclarationAreStillPresent){
+            return 0;
+        }
+
+        //Both declarations have the same number of fields, but not all the
+        //fields in the old declaration are present in the new declaration.
+        throw new IncompatibleClassChangeError(newDeclaration.getTypeName()+" introduces"
+            + " fields that are not present in its previous version.");
+
+
+    }
+
+    /**
+     * Merges all the missing FactFields from oldDefinition into newDeclaration.
+     * @param oldDeclaration
+     * @param newDeclaration
+     */
+    private void mergeTypeDeclarations( TypeDeclaration oldDeclaration, TypeDeclaration newDeclaration ) {
+        if ( oldDeclaration == null ){
+            return;
+        }
+
+        //add the missing fields (if any) to newDeclaration
+        for ( FieldDefinition oldFactField : oldDeclaration.getTypeClassDef().getFieldsDefinitions() ) {
+            FieldDefinition newFactField = newDeclaration.getTypeClassDef().getField( oldFactField.getName() );
+            if ( newFactField == null){
+                newDeclaration.getTypeClassDef().addField( oldFactField );
+            }
+        }
+
+        //copy the defined class
+        newDeclaration.setTypeClass( oldDeclaration.getTypeClass() );
+    }
+
+
+    private boolean nullSafeEqualityComparison( Comparable c1, Comparable c2 ){
+        if ( c1 == null && c2 == null ){
+            return true;
+        }
+
+        if ( c1 != null ) {
+            return c1.compareTo( c2 ) == 0;
+        }
+
+        return false;
+    }
+
     static class TypeDefinition {
         private final AbstractClassTypeDeclarationDescr typeDescr;
         private final TypeDeclaration type;
 
-        private TypeDefinition(TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr) {
+        private TypeDefinition( TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr ) {
             this.type = type;
             this.typeDescr = typeDescr;
         }

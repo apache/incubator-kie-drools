@@ -89,6 +89,21 @@ public class TraitTest extends CommonTestMethodBase {
         return session;
     }
 
+    private StatefulKnowledgeSession getSessionFromString( String drl ) {
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
+                ResourceType.DRL );
+        if (knowledgeBuilder.hasErrors()) {
+            throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        return session;
+    }
+
     @Test
     public void testTraitWrapper_GetAndSet() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
@@ -864,7 +879,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     // At the moment this fauils randomly: remove the @Ignore when it will be fixed
-    @Test @Ignore
+    @Test
     public void testIsA() {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
@@ -1068,5 +1083,87 @@ public class TraitTest extends CommonTestMethodBase {
                     is( "print school" ) );
 
     }
+
+
+    @Test
+    public void testManyTraits() {
+        String source = "" +
+                "import org.drools.Message;" +
+                "" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Message\n" +
+                "      @Traitable\n" +
+                "    end\n" +
+                "\n" +
+                "    declare trait NiceMessage\n" +
+                "       message : String\n" +
+                "    end\n" +
+                "" +
+                "rule \"Nice\"\n" +
+                "when\n" +
+                "  $n : NiceMessage( $m : message )\n" +
+                "then\n" +
+                "  System.out.println( $m );\n" +
+                "end" +
+                "\n" +
+                "    rule load\n" +
+                "        when\n" +
+                "\n" +
+                "        then\n" +
+                "            Message message = new Message();\n" +
+                "            message.setMessage(\"Hello World\");\n" +
+                "            insert(message);\n" +
+                "            don( message, NiceMessage.class );\n" +
+                "\n" +
+                "            Message unreadMessage = new Message();\n" +
+                "            unreadMessage.setMessage(\"unread\");\n" +
+                "            insert(unreadMessage);\n" +
+                "            don( unreadMessage, NiceMessage.class );\n" +
+                "\n" +
+                "            Message oldMessage = new Message();\n" +
+                "            oldMessage.setMessage(\"old\");\n" +
+                "            insert(oldMessage);\n" +
+                "            don( oldMessage, NiceMessage.class );" +
+
+                "            list.add(\"OK\");\n" +
+                "    end";
+        StatefulKnowledgeSession ksession = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Person student = new Person( "student", 18 );
+        ksession.insert( student );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "OK" ) );
+
+    }
+
+    @Test
+    public void testTraitManyTimes() {
+
+        StatefulKnowledgeSession ksession = getSession( "org/drools/factmodel/traits/testTraitDonMultiple.drl" );
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 0, list.get( 0 ) );
+        assertFalse( list.contains( 1 ) );
+
+
+    }
+
+
+
+
+
+
 
 }

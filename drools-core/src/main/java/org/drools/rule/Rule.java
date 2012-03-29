@@ -499,7 +499,7 @@ public class Rule
      * Add a pattern to the rule. All patterns are searched for bindings which are then added to the rule
      * as declarations
      *
-     * @param condition
+     * @param element
      *            The <code>Test</code> to add.
      * @throws InvalidRuleException
      */
@@ -592,7 +592,7 @@ public class Rule
             setSalience( (Salience) object );
         } else if ( object instanceof Enabled ) {
             setEnabled( (Enabled) object );
-        } else {
+        } else if ( object instanceof Consequence ) {
             Consequence c = (Consequence) object;
             if ( "default".equals( c.getName() ) ) {
                 setConsequence( c );

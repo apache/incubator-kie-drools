@@ -126,13 +126,44 @@ public class BuildUtils {
             internalType = "Z";
         } else if ( "void".equals( type ) ) {
             internalType = "V";
+        } else if ( type != null && type.startsWith( "[" ) ) {
+            int j = 0;
+            while ( type.charAt( ++j ) == '[' ) {}
+            if ( type.charAt( j ) == 'L' ) {
+                internalType = type.replace( '.', '/' );
+            } else {
+                internalType = type;
+            }
         } else if ( type != null ) {
             // I think this will fail for inner classes, but we don't really
             // support inner class generation at the moment
-            internalType = "L" + type.replace( '.',
-                    '/' ) + ";";
+            internalType = "L" + type.replace( '.', '/' ) + ";";
         }
         return internalType;
+    }
+
+    
+    
+    public static String arrayType( String type ) {
+        if ( isArray( type ) )
+            if ( type.length() == arrayDimSize(type) +1  ) {
+                return type;
+            } else {
+                String ans = "Ljava/lang/Object;";
+                for ( int j = 0; j < arrayDimSize( type ); j++ ) {
+                    ans = "[" + ans;
+                }
+                return ans;
+            }
+        return null;
+    }
+
+    public static int arrayDimSize(String type) {
+        int j = 0;
+        while ( type.charAt( j ) == '[' ) {
+            j++;
+        }
+        return j;
     }
 
     /**
@@ -151,6 +182,15 @@ public class BuildUtils {
 
 
 
+    /**
+     * Returns true if the provided type is an arrayType
+     *
+     * @param type
+     * @return
+     */
+    public static boolean isArray( String type ) {
+        return type.startsWith( "[" );
+    }
 
 
     public static Object getDefaultValue( FieldDefinition fld ) {
@@ -193,7 +233,8 @@ public class BuildUtils {
             return fld.getDefaultValueAsBoolean();
         }
 
-        return StringUtils.isEmpty( fld.getInitExpr() ) ? null : MVEL.eval( fld.getInitExpr() );
+//        return StringUtils.isEmpty( fld.getInitExpr() ) ? null : MVEL.eval( fld.getInitExpr() );
+        return null;
 
     }
 
@@ -476,4 +517,6 @@ public class BuildUtils {
             default : mv.visitIntInsn( Opcodes.BIPUSH, j );
         }
     }
+
+
 }

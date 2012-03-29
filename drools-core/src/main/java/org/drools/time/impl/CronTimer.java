@@ -23,7 +23,10 @@ import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
 import org.drools.time.Trigger;
 
 public class CronTimer
@@ -52,6 +55,7 @@ public class CronTimer
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( startTime );
         out.writeObject( endTime );
+        out.writeInt( repeatLimit );
         out.writeObject( cronExpression.getCronExpression() );
     }
 
@@ -59,6 +63,7 @@ public class CronTimer
                                             ClassNotFoundException {
         this.startTime = (Date) in.readObject();
         this.endTime = (Date) in.readObject();
+        this.repeatLimit = in.readInt();
         String string = (String) in.readObject();
         try {
             this.cronExpression = new CronExpression( string );
@@ -80,6 +85,14 @@ public class CronTimer
         return cronExpression;
     }
 
+
+    public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        String[] calendarNames = item.getRule().getCalendars();
+        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        return createTrigger( timestamp, calendarNames, calendars );
+    }
+
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
                                  Calendars calendars) {
@@ -97,6 +110,7 @@ public class CronTimer
         final int prime = 31;
         int result = 1;
         result = prime * result + ((cronExpression.getCronExpression() == null) ? 0 : cronExpression.getCronExpression().hashCode());
+        result = prime * result + repeatLimit;
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
         result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         return result;
@@ -108,6 +122,7 @@ public class CronTimer
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         CronTimer other = (CronTimer) obj;
+        if ( repeatLimit != other.repeatLimit ) return false;
         if ( cronExpression.getCronExpression() == null ) {
             if ( other.cronExpression.getCronExpression() != null ) return false;
         } else if ( !cronExpression.getCronExpression().equals( other.cronExpression.getCronExpression() ) ) return false;

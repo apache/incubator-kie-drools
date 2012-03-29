@@ -55,6 +55,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private static Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 
+    private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache;
+
     private AbstractRuleBase ruleBase;
 
 
@@ -192,8 +194,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
 
-        JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( tdef.getDefinedClass().getPackage().getName() ).getDialectRuntimeRegistry().
-                getDialectData( "java" ));
+//        JavaDialectRuntimeData data = ruleBase.gett
+//
+//                ((JavaDialectRuntimeData) getPackage( tdef.getDefinedClass().getPackage().getName() ).getDialectRuntimeRegistry().
+//                getDialectData( "java" ));
 
 
 
@@ -208,7 +212,12 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         propWrapperBuilder.init( tdef );
         try {
             byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
-            data.write(JavaDialectRuntimeData.convertClassToResourcePath( wrapperName ), propWrapper );
+            ruleBase.registerAndLoadTypeDefinition( wrapperName, propWrapper );
+
+//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( wrapperName );
+//            data.putClassDefinition( resourceName, propWrapper );
+//            data.write( resourceName, propWrapper );
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,12 +234,17 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         proxyBuilder.init( tdef );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
-            data.write(JavaDialectRuntimeData.convertClassToResourcePath( proxyName ), proxy);
+            ruleBase.registerAndLoadTypeDefinition( proxyName, proxy );
+
+//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( proxyName );
+//            data.putClassDefinition( resourceName, proxy );
+//            data.write( resourceName, proxy );
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        data.onBeforeExecute();
+//        data.onBeforeExecute();
 
         try {
             long mask = TraitRegistry.getInstance().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
@@ -312,17 +326,16 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    private Map<Class, Class<? extends CoreWrapper<K>>> wrapperCache;
 
 
 
     public CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz ) {
         if ( wrapperCache == null ) {
-            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<K>>>();
+            wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
         }
         Class<? extends CoreWrapper<K>> wrapperClass = null;
         if ( wrapperCache.containsKey( coreKlazz ) ) {
-            wrapperClass = wrapperCache.get( coreKlazz );
+            wrapperClass = (Class<? extends CoreWrapper<K>>) wrapperCache.get( coreKlazz );
         } else {
             try {
                 wrapperClass = buildCoreWrapper( coreKlazz );
@@ -349,7 +362,15 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private ClassDefinition buildWrapperClassDefinition(Class<K> coreKlazz, Class<? extends CoreWrapper<K>> wrapperClass) throws IOException {
         ClassFieldInspector inspector = new ClassFieldInspector( coreKlazz );
-        ClassFieldAccessorStore store = ruleBase.getPackagesMap().get( pack ).getClassFieldAccessorStore();
+
+        Package traitPackage = ruleBase.getPackagesMap().get( pack );
+        if ( traitPackage == null ) {
+            traitPackage = new Package( pack );
+            traitPackage.setClassFieldAccessorCache( ruleBase.getClassFieldAccessorCache() );
+            ruleBase.getPackagesMap().put( pack, traitPackage );
+        }
+        ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
+//        ClassFieldAccessorStore store = ((JavaDialectRuntimeData.TypeDeclarationClassLoader) ruleBase.getTypeDeclarationClassLoader()).getAccessorStore();
 
         String className = coreKlazz.getName() + "Wrapper";
         String superClass = coreKlazz.getName();
@@ -386,11 +407,17 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             coreDef.setDefinedClass( coreKlazz );
 
         try {
-            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass(coreDef);
-            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
-                getDialectData( "java" ));
-            data.write(JavaDialectRuntimeData.convertClassToResourcePath(wrapperName), wrapper);
-            data.onBeforeExecute();
+            byte[] wrapper = new TraitCoreWrapperClassBuilderImpl().buildClass( coreDef );
+            ruleBase.registerAndLoadTypeDefinition( wrapperName, wrapper );
+//            JavaDialectRuntimeData data = ((JavaDialectRuntimeData) getPackage( pack ).getDialectRuntimeRegistry().
+//                getDialectData( "java" ));
+
+//            String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( wrapperName );
+//            data.putClassDefinition( resourceName, wrapper );
+//            data.write( resourceName, wrapper );
+
+
+//            data.onBeforeExecute();
         } catch ( Exception e ) {
 
         }

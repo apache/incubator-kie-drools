@@ -32,6 +32,7 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -40,6 +41,7 @@ import org.drools.time.Calendar;
 import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
+import org.junit.Ignore;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -1014,11 +1016,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             public void run(){ workingMemory.fireUntilHalt(); }
             } ).start();
         Thread.sleep( 1000 );
-        workingMemory.insert( "halt" );
+        FactHandle handle = workingMemory.insert( "halt" );
         Thread.sleep( 2000 );
 
         // now check that rule "halt" fired once, creating one Integer
         assertEquals( 2, workingMemory.getFactCount() );
+        workingMemory.retract( handle );
     }
 
     @Test
@@ -1072,8 +1075,281 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         } catch (InterruptedException e) {
             throw new RuntimeException( e );
         }
-    }    
-    
-    
-    
+    }
+
+    @Test
+    public void testIntervalTimerWithLongExpressions() throws Exception {
+        String str = "package org.simple;\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "  delay   : long = 30000\n" +
+                "  period  : long = 10000\n" +
+                "end\n" +
+
+                "\n" +
+                "rule init \n" +
+                "when \n" +
+                "then \n" +
+                " insert( new Bean() );\n" +
+                "end \n" +
+                "\n" +
+                "rule xxx\n" +
+                "  salience ($d) \n" +
+                "  timer( expr: $d, $p; start=3-JAN-2010 )\n" +
+                "when\n" +
+                "  Bean( $d : delay, $p : period )\n" +
+                "then\n" +
+                "  list.add( \"fired\" );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        List list = new ArrayList();
+
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 15, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        timeService.advanceTime( 3, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        timeService.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+    }
+
+
+    @Test
+    public void testIntervalTimerWithStringExpressions() throws Exception {
+        String str = "package org.simple;\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "declare Bean\n" +
+                "  delay   : String = \"30s\"\n" +
+                "  period  : long = 10000\n" +
+                "end\n" +
+                "\n" +
+                "rule init \n" +
+                "when \n" +
+                "then \n" +
+                " insert( new Bean() );\n" +
+                "end \n" +
+                "\n" +
+                "rule xxx\n" +
+                "  salience ($d) \n" +
+                "  timer( expr: $d, $p; start=3-JAN-2010 )\n" +
+                "when\n" +
+                "  Bean( $d : delay, $p : period )\n" +
+                "then\n" +
+                "  list.add( \"fired\" );\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        List list = new ArrayList();
+
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 15, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        timeService.advanceTime( 3, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        timeService.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+    }
+
+
+    @Test
+    public void testHaltAfterSomeTimeThenRestart() throws Exception {
+        String drl = "package org.drools.test;" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "\n" +
+                "rule FireAtWill\n" +
+                "timer(int:0 100)\n" +
+                "when  \n" +
+                "then \n" +
+                "  System.out.println(\"fire\"); \n" +
+                "  list.add( 0 );\n" +
+                "end\n" +
+                "\n" +
+                "rule ImDone\n" +
+                "when\n" +
+                "  String( this == \"halt\" )\n" +
+                "then\n" +
+                "  System.out.println(\"HALT\"); \n" +
+                "  drools.halt();\n" +
+                "end\n" +
+                "\n" +
+                "rule Hi \n" +
+                "salience 10 \n" +
+                "when \n" +
+                "  String( this == \"trigger\" ) \n" +
+                "then \n " +
+                "  list.add( 5 ); \n" +
+                "end \n" +
+                "\n" +
+                "rule Lo \n" +
+                "salience -5 \n" +
+                "when \n" +
+                "  String( this == \"trigger\" ) \n" +
+                "then \n " +
+                "  list.add( -5 ); \n" +
+                "end \n"
+                ;
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final StatefulSession ksession = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 250 );
+
+        ksession.insert( "halt" );
+        ksession.insert( "trigger" );
+        Thread.sleep( 300 );
+
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 200 );
+
+        assertEquals( java.util.Arrays.asList( 0, 0, 0, 5, 0, 0, 0, -5, 0, 0 ), list );
+    }
+
+
+
+    @Test
+    public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
+        String drl = "package org.drools.test;" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "\n" +
+                "rule FireAtWill\n" +
+                "timer(int:0 100)\n" +
+                "when  \n" +
+                "  eval(true)" +
+                "  String( this == \"trigger\" )" +
+                "then \n" +
+                "  System.out.println(\"fire\"); \n" +
+                "  list.add( 0 );\n" +
+                "end\n" +
+                "\n" +
+                "rule ImDone\n" +
+                "when\n" +
+                "  String( this == \"halt\" )\n" +
+                "then\n" +
+                "  System.out.println(\"HALT\"); \n" +
+                "  drools.halt();\n" +
+                "end\n" +
+                "\n"
+                ;
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new ByteArrayResource( drl.getBytes() ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final StatefulSession ksession = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle handle = ksession.insert( "trigger" );
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 150 );
+
+        ksession.insert( "halt" );
+
+        Thread.sleep( 200 );
+        ksession.retract( handle );
+
+        new Thread( new Runnable(){
+            public void run(){ ksession.fireUntilHalt(); }
+        } ).start();
+        Thread.sleep( 200 );
+
+        assertEquals( 2, list.size() );
+        assertEquals( java.util.Arrays.asList( 0, 0 ), list );
+    }
+
+
+
 }

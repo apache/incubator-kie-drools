@@ -133,10 +133,8 @@ public class DefaultAgenda
     /**
      * Construct.
      * 
-     * @param workingMemory
-     *            The <code>WorkingMemory</code> of this agenda.
-     * @param conflictResolver
-     *            The conflict resolver.
+     * @param rb
+     *            The <code>InternalRuleBase</code> of this agenda.
      */
     public DefaultAgenda(InternalRuleBase rb) {
         this( rb,
@@ -146,10 +144,10 @@ public class DefaultAgenda
     /**
      * Construct.
      * 
-     * @param workingMemory
-     *            The <code>WorkingMemory</code> of this agenda.
-     * @param conflictResolver
-     *            The conflict resolver.
+     * @param rb
+     *            The <code>InternalRuleBase</code> of this agenda.
+     * @param initMain
+     *            Flag to initialize the MAIN agenda group
      */
     public DefaultAgenda(InternalRuleBase rb,
                          boolean initMain) {
@@ -269,7 +267,7 @@ public class DefaultAgenda
                                       this,
                                       wm );
         this.scheduledActivations.add( item );
-
+        item.setEnqueued( true );
     }
 
     
@@ -334,12 +332,19 @@ public class DefaultAgenda
         return declarativeAgenda;
     }
     
-    public void removeActivation(final AgendaItem activation) {    
+    public void removeActivation(final AgendaItem activation) {
         if ( declarativeAgenda ) {
             workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
 
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            }
+        }
+        if ( activation instanceof ScheduledAgendaItem ) {
+            ScheduledAgendaItem scheduledAgendaItem = (ScheduledAgendaItem) activation;
+            if ( scheduledAgendaItem.isEnqueued() ) {
+                scheduledAgendaItem.getJobHandle().setCancel( true );
+                removeScheduleItem( scheduledAgendaItem );
             }
         }
     }
@@ -423,7 +428,7 @@ public class DefaultAgenda
         addItemToActivationGroup(  item );            
         
         final Timer timer = rule.getTimer();
-        if ( timer != null ) {
+        if ( timer != null && item instanceof ScheduledAgendaItem ) {
             scheduleItem( (ScheduledAgendaItem) item,
                           workingMemory );
         } else {                
@@ -448,9 +453,12 @@ public class DefaultAgenda
     }
     
     public void removeScheduleItem(final ScheduledAgendaItem item) {
-        this.scheduledActivations.remove( item );
-        Scheduler.removeAgendaItem( item,
-                                    this );
+        if ( item.isEnqueued() ) {
+            this.scheduledActivations.remove( item );
+            item.setEnqueued( false );
+            Scheduler.removeAgendaItem( item,
+                                        this );
+        }
     }
 
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
@@ -570,6 +578,72 @@ public class DefaultAgenda
         
         ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                       workingMemory ); 
+        return true;
+    }
+
+    public boolean createPostponedActivation(final LeftTuple tuple,
+                                             final PropagationContext context,
+                                             final InternalWorkingMemory workingMemory,
+                                             final RuleTerminalNode rtn ) {
+
+        final Rule rule = rtn.getRule();
+        AgendaItem item = null;
+        if ( rule.getCalendars() != null ) {
+            // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
+            long timestamp = workingMemory.getSessionClock().getCurrentTime();
+            for ( String cal : rule.getCalendars() ) {
+                if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
+                    return false;
+                }
+            }
+        }
+
+        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) getAgendaGroup( rule.getAgendaGroup() );
+        if ( rule.getRuleFlowGroup() == null ) {
+            // No RuleFlowNode so add it directly to the Agenda
+            // do not add the activation if the rule is "lock-on-active" and the
+            // AgendaGroup is active
+            if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                return false;
+            }
+        } else {
+            // There is a RuleFlowNode so add it there, instead of the Agenda
+            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) getRuleFlowGroup( rule.getRuleFlowGroup() );
+
+            // do not add the activation if the rule is "lock-on-active" and the
+            // RuleFlowGroup is active
+            if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                return false;
+            }
+        }
+
+
+        item = createAgendaItem( tuple,
+                rule.getSalience().getValue( tuple,
+                        rule,
+                        workingMemory ),
+                context,
+                rtn);
+
+
+        item.setAgendaGroup( agendaGroup );
+
+        tuple.setObject( item );
+
+        if( activationsFilter != null && !activationsFilter.accept( item,
+                                                                    context,
+                                                                    workingMemory,
+                                                                    rtn ) ) {
+            increaseDormantActivations();
+            return false;
+        }
+        item.setActivated( true );
+        tuple.increaseActivationCountForEvents();
+        increaseActiveActivations();
+        item.setSequenence( rtn.getSequence() );
+
+        ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
+                                                                                      workingMemory );
         return true;
     }
 
@@ -883,6 +957,7 @@ public class DefaultAgenda
         // reset scheduled activations
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );
             }
@@ -920,6 +995,7 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
+                item.setEnqueued( false );
                 Scheduler.removeAgendaItem( item,
                                             this );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
@@ -1130,8 +1206,8 @@ public class DefaultAgenda
     /**
      * Fire this item.
      * 
-     * @param workingMemory
-     *            The working memory context.
+     * @param activation
+     *            The activation to fire
      * 
      * @throws ConsequenceException
      *             If an error occurs while attempting to fire the consequence.
@@ -1213,6 +1289,17 @@ public class DefaultAgenda
                 notifyHalt();
             }
             this.workingMemory.endOperation();
+        }
+    }
+
+
+    public synchronized boolean fireTimedActivation( final Activation activation, boolean saveForLater ) throws ConsequenceException {
+        //TODO : "save for later" : put activation in queue if halted, then dispatch again on next fire
+        if ( ! this.halt.get() ) {
+            fireActivation( activation );
+            return ! this.halt.get();
+        } else {
+            return false;
         }
     }
 

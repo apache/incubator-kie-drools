@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.time.impl;
+package org.drools.spi;
 
-import java.io.Serializable;
 
-import org.drools.WorkingMemory;
-import org.drools.runtime.Calendars;
-import org.drools.spi.Activation;
-import org.drools.time.Trigger;
+import org.drools.base.ClassObjectType;
 
-public interface Timer extends Serializable {
+public interface ClassWireable {
 
-    Trigger createTrigger( long timestamp, String[] calendarNames, Calendars calendars);
+    public void wire( Class<?> klass );
 
-    Trigger createTrigger( Activation schedulableActivation, WorkingMemory workingMemory );
+    public String getClassName();
+
+    public Class<?> getClassType();
+
 }

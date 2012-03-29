@@ -678,7 +678,7 @@ public class ASMConditionEvaluatorJitter {
             }
             readField(field);
         }
-        
+
         private void jitPrimitiveOperation(BooleanOperator op, Class<?> type) {
             int opCode = toOpCode(op, type);
 
@@ -755,7 +755,9 @@ public class ASMConditionEvaluatorJitter {
                 result = findCommonClass(class2, class1, primitive1);
             }
             if (result == null) {
-                throw new RuntimeException("Cannot find a common class between " + class1.getName() + " and " + class2.getName());
+                throw new RuntimeException( "Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
+                                             " ||  " + class1.hashCode() + " vs " + class2.hashCode()
+                );
             }
             return result == Number.class ? Double.class : result;
         }

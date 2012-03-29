@@ -16,37 +16,45 @@
 
 package org.drools.time.impl;
 
+import org.drools.WorkingMemory;
+import org.drools.base.mvel.MVELObjectExpression;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.runtime.Calendars;
+import org.drools.spi.Activation;
+import org.drools.time.TimeUtils;
+import org.drools.time.Trigger;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.runtime.Calendars;
-import org.drools.spi.Activation;
-import org.drools.time.Trigger;
-
-public class IntervalTimer
+public class ExpressionIntervalTimer
     implements
     Timer,
     Externalizable {
+
     private Date startTime;
+
     private Date endTime;
+
     private int  repeatLimit;
-    private long delay;
-    private long period;
-    
-    public IntervalTimer() {
-        
+
+    private MVELObjectExpression delay;
+    private MVELObjectExpression period;
+
+    public ExpressionIntervalTimer() {
+
     }
 
-    public IntervalTimer(Date startTime,
-                         Date endTime,
-                         int repeatLimit,
-                         long delay,
-                         long period) {
+
+
+    public ExpressionIntervalTimer(Date startTime,
+                                   Date endTime,
+                                   int repeatLimit,
+                                   MVELObjectExpression delay,
+                                   MVELObjectExpression period) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.repeatLimit = repeatLimit;
@@ -58,8 +66,8 @@ public class IntervalTimer
         out.writeObject( startTime );
         out.writeObject( endTime );
         out.writeInt( repeatLimit );
-        out.writeLong( delay );
-        out.writeLong( period );
+        out.writeObject( delay );
+        out.writeObject( period );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -67,8 +75,8 @@ public class IntervalTimer
         this.startTime = (Date) in.readObject();
         this.endTime = (Date) in.readObject();
         this.repeatLimit = in.readInt();
-        this.delay = in.readLong();
-        this.period = in.readLong();
+        this.delay = (MVELObjectExpression) in.readObject();
+        this.period = (MVELObjectExpression) in.readObject();
     }
 
     public Date getStartTime() {
@@ -79,20 +87,49 @@ public class IntervalTimer
         return endTime;
     }
 
-    public long getDelay() {
+    public MVELObjectExpression getDelay() {
         return delay;
     }
 
-    public long getPeriod() {
+    public MVELObjectExpression getPeriod() {
         return period;
     }
 
+
     public Trigger createTrigger( Activation item, WorkingMemory wm ) {
+
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
-        return createTrigger( timestamp, calendarNames, calendars );
+
+        return new IntervalTrigger( timestamp,
+                                    this.startTime,
+                                    this.endTime,
+                                    this.repeatLimit,
+                                    delay  != null ? evalDelay( item, wm ) : 0,
+                                    period != null ? evalPeriod( item, wm ) : 0,
+                                    calendarNames,
+                                    calendars );
     }
+
+    private long evalPeriod( Activation item, WorkingMemory wm ) {
+        Object p = this.period.getValue( item.getTuple(), item.getRule(), wm );
+        if ( p instanceof Number ) {
+            return ((Number) p).longValue();
+        } else {
+            return TimeUtils.parseTimeString( p.toString() );
+        }
+    }
+
+    private long evalDelay(Activation item, WorkingMemory wm) {
+        Object d = this.delay.getValue( item.getTuple(), item.getRule(), wm );
+        if ( d instanceof Number ) {
+            return ((Number) d).longValue();
+        } else {
+            return TimeUtils.parseTimeString( d.toString() );
+        }
+    }
+
 
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
@@ -101,19 +138,21 @@ public class IntervalTimer
                                     this.startTime,
                                     this.endTime,
                                     this.repeatLimit,
-                                    this.delay,
-                                    this.period,
+                                    0,
+                                    0,
                                     calendarNames,
                                     calendars );
     }
+
+
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (int) (delay ^ (delay >>> 32));
+        result = prime * result + delay.hashCode();
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
-        result = prime * result + (int) (period ^ (period >>> 32));
+        result = prime * result + period.hashCode();
         result = prime * result + repeatLimit;
         result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         return result;
@@ -124,7 +163,7 @@ public class IntervalTimer
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        IntervalTimer other = (IntervalTimer) obj;
+        ExpressionIntervalTimer other = (ExpressionIntervalTimer) obj;
         if ( delay != other.delay ) return false;
         if ( repeatLimit != other.repeatLimit ) return false;
         if ( endTime == null ) {

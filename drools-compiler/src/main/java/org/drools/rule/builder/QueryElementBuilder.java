@@ -265,6 +265,9 @@ public class QueryElementBuilder
                                                                 pos,
                                                                 params[pos].getExtractor().getExtractToClass() );
 
+            // Should the reader be registered like the others? Probably yes...
+            // PatternBuilder.registerReadAccessor(  );
+
             declr.setReadAccessor( reader );
 
             varIndexes.add( pos );

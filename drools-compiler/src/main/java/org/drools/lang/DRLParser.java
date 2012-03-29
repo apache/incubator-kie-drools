@@ -865,7 +865,7 @@ public class DRLParser {
     
     
     /**
-     * field := label qualifiedIdentifier (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
+     * field := label fieldType (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
      */
     private void field( AbstractClassTypeDeclarationBuilder declare ) {
         FieldDescrBuilder field = null;
@@ -883,7 +883,7 @@ public class DRLParser {
                                   fname );
 
             // type
-            String type = qualifiedIdentifier();
+            String type = type();
             if ( state.failed ) return;
             if ( state.backtracking == 0 ) field.type( type );
 
@@ -930,6 +930,7 @@ public class DRLParser {
                         field );
         }
     }
+
 
     /* ------------------------------------------------------------------------------------------------
      *                         FUNCTION STATEMENT

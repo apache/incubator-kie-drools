@@ -33,7 +33,6 @@ import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.LeftTuple;
-import org.drools.runtime.Calendars;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -57,16 +56,14 @@ public final class Scheduler {
      * 
      * @param item
      *            The item to schedule.
-     * @param wm 
-     * @param workingMemory
+     * @param agenda
+     * @param wm
      *            The working memory session.
      */
     public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda, InternalWorkingMemory wm) {
-        String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = wm.getCalendars();
-        
-        Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime(), calendarNames, calendars);
-        
+
+        Trigger trigger = item.getRule().getTimer().createTrigger( item, wm );
+
         ActivationTimerJob job = new ActivationTimerJob();
         ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                 
@@ -82,19 +79,54 @@ public final class Scheduler {
         public void execute(JobContext ctx) {
             InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
             ScheduledAgendaItem item  = ((ActivationTimerJobContext)ctx).getScheduledAgendaItem();
-            
-            agenda.fireActivation( item );
+
+            boolean wasFired = agenda.fireTimedActivation( item, false );
+
             if ( ((ActivationTimerJobContext)ctx).getTrigger().hasNextFireTime() == null ) {
+
+                if ( wasFired ) {
+                    agenda.getWorkingMemory().fireAllRules();
+                } else {
+                    postpone(item, agenda);
+                }
+
                 agenda.getScheduledActivationsLinkedList().remove( item );
+                item.setEnqueued( false );
             } else {
                 // the activation has been rescheduled, the Agenda would have set it's activated to false
                 // so reset the activated to true here
                 item.setActivated( true );
+                if ( wasFired ) {
+                    agenda.getWorkingMemory().fireAllRules();
+                } else {
+                    postpone(item, agenda);
+                }
             }
-            agenda.getWorkingMemory().fireAllRules();
+        }
+
+        private void postpone( ScheduledAgendaItem item, InternalAgenda agenda ) {
+
+            LeftTuple postponedTuple;
+            if ( item.getTuple().getParent() != null ) {
+                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
+
+                item.getTuple().getLeftParent().setLastChild( postponedTuple );
+                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
+
+            } else {
+                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), false );
+                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
+            }
+
+            ((DefaultAgenda) agenda).createPostponedActivation( postponedTuple,
+                                                                item.getPropagationContext(),
+                                                                (InternalWorkingMemory) agenda.getWorkingMemory(),
+                                                                item.getRuleTerminalNode() );
+            agenda.addActivation( (AgendaItem) postponedTuple.getObject() );
+            
         }
     }
-    
+
     public static class ActivationTimerJobContext implements JobContext {
         private JobHandle jobHandle;
         private ScheduledAgendaItem scheduledAgendaItem;

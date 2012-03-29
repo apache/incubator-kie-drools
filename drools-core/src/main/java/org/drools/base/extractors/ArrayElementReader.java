@@ -33,16 +33,18 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MathUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.ClassWireable;
 import org.drools.spi.InternalReadAccessor;
 
 public class ArrayElementReader
     implements
     AcceptsReadAccessor,
     InternalReadAccessor,
+    ClassWireable,
     Externalizable {
     private InternalReadAccessor arrayReadAccessor;
     private int                  index;
-    private Class< ? >           type;
+    private Class                type;
 
     public ArrayElementReader() {
 
@@ -50,7 +52,7 @@ public class ArrayElementReader
 
     public ArrayElementReader(InternalReadAccessor arrayExtractor,
                               int index,
-                              Class< ? > type) {
+                              Class<?> type) {
         this.arrayReadAccessor = arrayExtractor;
         this.index = index;
         this.type = type;
@@ -64,7 +66,7 @@ public class ArrayElementReader
                                             ClassNotFoundException {
         arrayReadAccessor = (InternalReadAccessor) in.readObject();
         index = in.readInt();
-        type = (Class< ? >) in.readObject();
+        type = (Class<?>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -143,11 +145,10 @@ public class ArrayElementReader
                                               e );
         }
     }
-
     public String getNativeReadMethodName() {
         String method = "";
-        if ( type.isPrimitive() ) {
-            method = StringUtils.ucFirst( type.getName() );
+        if ( type != null && type.isPrimitive() ) {
+            method = StringUtils.ucFirst( type.getName () );
         }
         return "get" + method + "Value";
     }
@@ -293,5 +294,17 @@ public class ArrayElementReader
 
     public BigInteger getBigIntegerValue(Object object) {
         return null;
+    }
+
+    public void wire( Class<?> klass ) {
+        this.type = klass;
+    }
+
+    public String getClassName() {
+        return type.getName();
+    }
+
+    public Class<?> getClassType() {
+        return type;
     }
 }

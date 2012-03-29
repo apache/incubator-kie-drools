@@ -76,12 +76,12 @@ abstract public class BaseClassFieldReader
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
-    }    
+    }
 
     public int getIndex() {
         return this.index;
     }
-    
+
     public void setIndex(int i) {
         this.index = i;
     }
@@ -117,9 +117,9 @@ abstract public class BaseClassFieldReader
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + this.fieldType.hashCode();
+        result = PRIME * result + ( (this.fieldType != null ) ? this.fieldType.hashCode() : 0 );
         result = PRIME * result + this.index;
-        result = PRIME * result + this.valueType.hashCode();
+        result = PRIME * result + ( (this.valueType != null ) ? this.valueType.hashCode() : 0 );
         return result;
     }
 

@@ -37,13 +37,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInputStream;
+import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Constraint;
@@ -61,6 +62,8 @@ public class JavaDialectRuntimeData
     private static final ProtectionDomain  PROTECTION_DOMAIN;
 
     private Map<String, Object>            invokerLookups;
+
+    private Map<String,byte[]>             classLookups;
 
     private Map<String, byte[]>            store;
 
@@ -85,7 +88,8 @@ public class JavaDialectRuntimeData
 
     public JavaDialectRuntimeData() {
         this.invokerLookups = new HashMap<String, Object>();
-        this.store = new HashMap<String, byte[]>();
+		this.classLookups = new HashMap();	
+		this.store = new HashMap<String, byte[]>();        
         this.dirty = false;
     }
 
@@ -125,6 +129,13 @@ public class JavaDialectRuntimeData
             Entry entry = (Entry) stringObjectEntry;
             stream.writeObject(entry.getKey());
             stream.writeObject(entry.getValue());
+        }
+
+        stream.writeInt( this.classLookups.size() );
+        for (Iterator it = this.classLookups.entrySet().iterator(); it.hasNext();) {
+            Entry<String, byte[]> entry = (Entry<String,byte[]>) it.next();
+            stream.writeObject( entry.getKey() );
+            stream.writeObject( entry.getValue() );
         }
 
     }
@@ -185,6 +196,11 @@ public class JavaDialectRuntimeData
                                      stream.readObject() );
         }
 
+        for (int i = 0, length = stream.readInt(); i < length; i++) {
+            this.classLookups.put( (String) stream.readObject(),
+                                   (byte[]) stream.readObject() );
+        }
+
         // mark it as dirty, so that it reloads everything.
         this.dirty = true;
     }
@@ -231,7 +247,7 @@ public class JavaDialectRuntimeData
     }
 
     public void onBeforeExecute() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             reload();
         } else if (!this.wireList.isEmpty()) {
             try {
@@ -249,25 +265,40 @@ public class JavaDialectRuntimeData
     }
 
     public DialectRuntimeData clone( DialectRuntimeRegistry registry,
-            CompositeClassLoader rootClassLoader ) {
+                                     CompositeClassLoader rootClassLoader ) {
+        return clone( registry, rootClassLoader, false );
+    }
+
+    public DialectRuntimeData clone( DialectRuntimeRegistry registry,
+                                     CompositeClassLoader rootClassLoader,
+                                     boolean excludeClasses ) {
         DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
         cloneOne.merge( registry,
-                        this );
+                        this,
+                        excludeClasses );
         cloneOne.onAdd( registry,
                         rootClassLoader );
         return cloneOne;
     }
 
     public void merge( DialectRuntimeRegistry registry,
-            DialectRuntimeData newData ) {
+                DialectRuntimeData newData ) {
+        // false for backward compatibility, should probably be true by default
+        merge( registry, newData, false );
+    }
+
+    public void merge( DialectRuntimeRegistry registry,
+            DialectRuntimeData newData, boolean excludeClasses ) {
         this.registry = registry;
         JavaDialectRuntimeData newJavaData = (JavaDialectRuntimeData) newData;
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
         for (String resourceName : newJavaData.list()) {
-            write( resourceName,
-                   newJavaData.read( resourceName ) );
+            if ( ! excludeClasses || ! newJavaData.getClassDefinitions().containsKey( resourceName ) ) {
+                write( resourceName,
+                       newJavaData.read( resourceName ) );
+            }
             //            // no need to wire, as we already know this is done in a merge
             //            if ( getStore().put( resourceName,
             //                                 newJavaData.read( resourceName ) ) != null ) {
@@ -287,6 +318,10 @@ public class JavaDialectRuntimeData
 
         // Add invokers
         putAllInvokers( newJavaData.getInvokers() );
+
+        if ( ! excludeClasses ) {
+            putAllClassDefinitions( newJavaData.getClassDefinitions() );
+        }
 
     }
 
@@ -493,13 +528,45 @@ public class JavaDialectRuntimeData
         getInvokers().remove( className );
     }
 
+
+
+    public void putClassDefinition( final String className,
+                                    final byte[] classDef ) {
+        getClassDefinitions().put( className,
+                                   classDef );
+    }
+
+    public void putAllClassDefinitions( final Map classDefinitions ) {
+        getClassDefinitions().putAll( classDefinitions );
+
+    }
+
+    public Map getClassDefinitions() {
+        if (this.classLookups == null) {
+            this.classLookups = new HashMap();
+        }
+        return this.classLookups;
+    }
+
+    public byte[] getClassDefinition( String className ) {
+        if (this.classLookups == null) {
+            this.classLookups = new HashMap();
+        }
+        Object classDef = this.classLookups.get( className );
+        return classDef != null ? (byte[]) classDef : null;
+    }
+
+    public void removeClassDefinition( final String className ) {
+        getClassDefinitions().remove( className );
+    }
+
     /**
      * This is an Internal Drools Class
      */
     public static class PackageClassLoader extends ClassLoader implements FastClassLoader {
 
-        private JavaDialectRuntimeData store;
-        CompositeClassLoader           rootClassLoader;
+        protected JavaDialectRuntimeData store;
+        CompositeClassLoader             rootClassLoader;
 
         public PackageClassLoader(JavaDialectRuntimeData store,
                 CompositeClassLoader rootClassLoader) {
@@ -612,6 +679,30 @@ public class JavaDialectRuntimeData
     public static String stripExtension( final String pResourceName ) {
         final int i = pResourceName.lastIndexOf( '.' );
         return pResourceName.substring( 0, i );
+    }
+
+
+
+    /**
+     * This is an Internal Drools Class
+     */
+    public static class TypeDeclarationClassLoader extends PackageClassLoader {
+
+        public TypeDeclarationClassLoader( JavaDialectRuntimeData store,
+                                           CompositeClassLoader rootClassLoader ) {
+            super( store, rootClassLoader );
+            store.rootClassLoader = rootClassLoader;
+            store.classLoader = this;
+        }
+
+        public void addClassDefinition( String className, byte[] def ) {
+            this.store.write( convertClassToResourcePath( className ), def );
+            this.store.putClassDefinition( convertClassToResourcePath( className ), def );
+        }
+
+        public JavaDialectRuntimeData getStore() {
+            return store;
+        }
     }
 
 }

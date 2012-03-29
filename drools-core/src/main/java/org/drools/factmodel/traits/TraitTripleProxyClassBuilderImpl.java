@@ -86,8 +86,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         Map<String,Method> mixinGetSet = new HashMap<String,Method>();
         try {
             if ( getTrait().getDefinedClass() != null ) {
-                Trait annTrait = getAnnotation( getTrait().getDefinedClass(),Trait.class);
-                if ( annTrait != null && ! annTrait.impl().equals(Trait.NullMixin.class) ) {
+                Trait annTrait = getAnnotation( getTrait().getDefinedClass(), Trait.class );
+                if ( hasImpl( annTrait ) ) {
                     mixinClass = annTrait.impl();
                     mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
                     ClassFieldInspector cfi = new ClassFieldInspector( mixinClass );
@@ -206,9 +206,15 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
     }
 
+    private boolean hasImpl( Trait annTrait ) {
+        return annTrait != null && ! annTrait.impl().equals( Trait.NullMixin.class );
+    }
 
 
     private <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
+        if ( klass.equals( Thing.class ) ) {
+            return null;
+        }
         K ann = (K) klass.getAnnotation( annotationClass );
 
         if ( ann == null ) {
