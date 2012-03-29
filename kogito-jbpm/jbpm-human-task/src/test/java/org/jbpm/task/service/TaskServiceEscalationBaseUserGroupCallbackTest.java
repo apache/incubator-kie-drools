@@ -29,7 +29,6 @@ import org.jbpm.task.BaseTestNoUserGroupSetup;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 
 public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
@@ -67,35 +66,7 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
             addTaskResponseHandler.waitTillDone( 1000 );
         }
 
-        handler.wait( 3, 8000 );
-        
-        assertEquals( 3, handler.getList().size() );
-        
-        boolean firstDeadlineMet = false;
-        boolean secondDeadlineMet = false;
-        boolean thirdDeadlineMet = false;
-        for( Item item : handler.getList() ) { 
-            long deadlineTime = item.getDeadline().getDate().getTime();
-            if( deadlineTime == now + 2000 ) { 
-                firstDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 4000 ) { 
-                secondDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 6000 ) { 
-                thirdDeadlineMet = true;
-            }
-            else { 
-                fail( deadlineTime + " is not an expected deadline time." );
-            }
-        }
-        
-        assertTrue( "First deadline was not met." , firstDeadlineMet );
-        assertTrue( "Second deadline was not met." , secondDeadlineMet );
-        assertTrue( "Third deadline was not met." , thirdDeadlineMet );
-        
-        // Wait for deadlines to finish
-        Thread.sleep(1000);
+        testDeadlines(now, handler); 
     }
     
     public void testUnescalatedDeadlinesOnStartup() throws Exception {
@@ -125,33 +96,8 @@ public abstract class TaskServiceEscalationBaseUserGroupCallbackTest extends Bas
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
         new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
         
-        handler.wait( 3, 8000 );
-        
-        boolean firstDeadlineMet = false;
-        boolean secondDeadlineMet = false;
-        boolean thirdDeadlineMet = false;
-        for( Item item : handler.getList() ) { 
-            long deadlineTime = item.getDeadline().getDate().getTime();
-            if( deadlineTime == now + 2000 ) { 
-                firstDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 4000 ) { 
-                secondDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 6000 ) { 
-                thirdDeadlineMet = true;
-            }
-            else { 
-                fail( deadlineTime + " is not an expected deadline time." );
-            }
-        }
-        
-        assertTrue( "First deadline was not met." , firstDeadlineMet );
-        assertTrue( "Second deadline was not met." , secondDeadlineMet );
-        assertTrue( "Third deadline was not met." , thirdDeadlineMet );    
-        
-        // Wait for deadlines to finish
-        Thread.sleep(1000);
+        testDeadlines(now, handler); 
+
     }
     
 }

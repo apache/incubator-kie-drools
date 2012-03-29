@@ -18,18 +18,27 @@ package org.jbpm.task.service.persistence;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
+
 import org.jbpm.task.BaseTest;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
 import org.jbpm.task.query.DeadlineSummary;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.MvelFilePath;
-import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
-import org.jbpm.task.service.persistence.TaskPersistenceManager;
 
 public class QueryTest extends BaseTest {
 
@@ -81,6 +90,87 @@ public class QueryTest extends BaseTest {
         assertTrue( "First deadline was not met." , firstDeadlineMet );
         assertTrue( "Second deadline was not met." , secondDeadlineMet );
         assertTrue( "Third deadline was not met." , thirdDeadlineMet ); 
+    }
+    
+    String queryString = 
+              "select new org.jbpm.task.query.TaskSummary("
+            + "     t.id,"
+            + "     t.taskData.processInstanceId,"
+            + "     name.text,"
+            + "     subject.text,"
+            + "     description.text,"
+            + "     t.taskData.status,"
+            + "     t.priority,"
+            + "     t.taskData.skipable,"
+            + "     t.taskData.actualOwner,"
+            + "     t.taskData.createdBy,"
+            + "     t.taskData.createdOn,"
+            + "     t.taskData.activationTime,"
+            + "     t.taskData.expirationTime,"
+            + "     t.taskData.processId,"
+            + "     t.taskData.processSessionId)"
+            + " from"
+            + "    Task t"
+            + "    left join t.taskData.createdBy"
+            + "    left join t.taskData.actualOwner"
+            + "    left join t.subjects as subject"
+            + "    left join t.descriptions as description"
+            + "    left join t.names as name,"
+            + "    OrganizationalEntity potOwn"
+            + " where"
+            + "    potOwn.id = :userId and"
+            + "    potOwn in elements ( t.peopleAssignments.potentialOwners  ) and"
+            + "    t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and"
+            + "    t.taskData.expirationTime is null";
+
+    /**
+     * This test works with Hibernate 3, but not with Hibernate 4
+     * It has something to do with potential owners.. 
+     * 
+     * @throws Exception
+     */
+    public void testPotentialOwnerHibernate4QueryTest() throws Exception { 
+        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        String name = "Bobba Fet";
+        Task task = new Task();
+        User bobba = new User();
+        bobba.setId(name);
+        
+        task.setPriority(55);
+        TaskData taskData = new TaskData();
+        taskData.setActivationTime(new Date());
+        taskData.setCreatedOn(new Date());
+        taskData.setDocumentContentId(-1);
+        taskData.setFault(-1, new FaultData());
+        taskData.setOutput(-1, new ContentData());
+        taskData.setParentId(-1);
+        taskData.setPreviousStatus(Status.Created);
+        taskData.setProcessInstanceId(-1);
+        taskData.setProcessSessionId(0);
+        taskData.setSkipable(false);
+        taskData.setStatus(Status.Reserved);
+        taskData.setWorkItemId(1);
+        
+        task.setTaskData(taskData);
+        task.setPeopleAssignments(new PeopleAssignments());
+        task.getPeopleAssignments().setPotentialOwners((List) new ArrayList<OrganizationalEntity>());
+        task.getPeopleAssignments().getPotentialOwners().add(bobba);
+        
+        tpm.beginTransaction();
+        tpm.saveEntity(task);
+        task = (Task) tpm.findEntity(Task.class, task.getId());
+        tpm.endTransaction(true);
+        
+        tpm.beginTransaction();
+        List<TaskSummary> list = null;
+//        list = tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsPotentialOwner", name, "en-UK"); 
+        Query query = tpm.createNewQuery(queryString);
+        query.setParameter("userId", name);
+        
+        list = query.getResultList();
+        tpm.endTransaction(true);
+        
+        assertTrue( "Query did not succeed.", list.size() > 0 );
     }
 
 }

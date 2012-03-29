@@ -13,9 +13,23 @@
 	</logger>
 	
 	<logger name="org.hibernate">
+		<level value="INFO"/>
+	</logger>
+    <logger name="org.hibernate.cfg">
+        <level value="WARN"/>
+    </logger>
+    
+    <!-- hibernate 4 verbosity -->
+	<logger name="org.hibernate.tool.hbm2ddl.TableMetadata">
+		<level value="INFO"/>
+	</logger>
+	<logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
+		<level value="FATAL"/>
+	</logger>
+	<logger name="java.sql.DatabaseMetaData">
 		<level value="WARN"/>
 	</logger>
-  
+
 	<logger name="org.apache.mina.filter.logging">
 		<level value="WARN"/>
 	</logger>

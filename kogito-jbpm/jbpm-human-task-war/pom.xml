@@ -48,5 +48,17 @@
     	<version>3.2.0.Final</version>
     	<scope>runtime</scope>
     </dependency>
+
+    <!-- Test -->
+    <dependency>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.hibernate</groupId>
+    	<artifactId>hibernate-entitymanager</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -29,6 +29,8 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler;
+import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
@@ -126,5 +128,38 @@ public abstract class BaseTest extends TestCase {
         vars.put( "groups", groups );        
         vars.put( "now", new Date() );
         return vars;
+    }
+    
+    protected static void testDeadlines(long now, MockEscalatedDeadlineHandler handler) throws Exception { 
+        int sleep = 8000;
+        handler.wait(3, sleep);
+
+        assertEquals(3, handler.getList().size());
+
+        boolean firstDeadlineMet = false;
+        boolean secondDeadlineMet = false;
+        boolean thirdDeadlineMet = false;
+        for( Item item : handler.getList() ) { 
+            long deadlineTime = item.getDeadline().getDate().getTime();
+            if( deadlineTime == now + 2000 ) { 
+                firstDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 4000 ) { 
+                secondDeadlineMet = true;
+            }
+            else if( deadlineTime == now + 6000 ) { 
+                thirdDeadlineMet = true;
+            }
+            else { 
+                fail( deadlineTime + " is not an expected deadline time." );
+            }
+        }
+        
+        assertTrue( "First deadline was not met." , firstDeadlineMet );
+        assertTrue( "Second deadline was not met." , secondDeadlineMet );
+        assertTrue( "Third deadline was not met." , thirdDeadlineMet );   
+        
+        // Wait for deadlines to finish
+        Thread.sleep(1000);
     }
 }
