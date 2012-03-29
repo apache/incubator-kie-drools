@@ -1254,9 +1254,16 @@ public class PatternBuilder
 
             Object o = MVEL.executeExpression( MVEL.compileExpression( value,
                                                                        pctx ) );
-            if ( o != null && vtype == null ) {
-                // was a compilation problem else where, so guess valuetype so we can continue
-                vtype = ValueType.determineValueType( o.getClass() );
+            if ( o != null ) {
+                if ( vtype == null ) {
+                    // was a compilation problem else where, so guess valuetype so we can continue
+                    vtype = ValueType.determineValueType( o.getClass() );
+                } else {
+                    // if the value is of type String coerce the object to a String
+                    if ( vtype.getClassType() == String.class ) {
+                        o = o.toString();
+                    }
+                }
             }
 
             field = FieldFactory.getFieldValue( o,

@@ -10001,4 +10001,28 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+    @Test
+    public void testCoercionOfStringValueWithoutQuotes() throws Exception {
+        // JBRULES-3080
+        String str = "package org.drools.test; \n" +
+                "declare A\n" +
+                "   field : String\n" +
+                "end\n" +
+                "rule R when\n" +
+                "   A( field == 12 )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
+        Object a = typeA.newInstance();
+        typeA.set( a, "field", "12" );
+        ksession.insert( a );
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
