@@ -72,6 +72,28 @@ public class ResourceFactoryServiceImpl
         return new ClassPathResource( path,
                                       clazz );
     }
+
+    public Resource newClassPathResource(String path,
+                                         String encoding) {
+        return new ClassPathResource( path,
+                                      encoding );
+    }
+
+    public Resource newClassPathResource(String path,
+                                         String encoding,
+                                         ClassLoader classLoader) {
+        return new ClassPathResource( path,
+                                      encoding,
+                                      classLoader );
+    }
+
+    public Resource newClassPathResource(String path,
+                                         String encoding,
+                                         Class<?> clazz) {
+        return new ClassPathResource( path,
+                                      encoding,
+                                      clazz );
+    }
     
     public Resource newFileSystemResource(File file) {
         return new FileSystemResource( file );
@@ -83,6 +105,12 @@ public class ResourceFactoryServiceImpl
 
     public Resource newInputStreamResource(InputStream stream) {
         return new InputStreamResource( stream );
+    }
+
+    public Resource newInputStreamResource(InputStream stream,
+                                           String encoding) {
+        return new InputStreamResource( stream,
+                                        encoding);
     }
 
     public Resource newReaderResource(Reader reader) {
