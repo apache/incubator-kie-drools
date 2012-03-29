@@ -30,6 +30,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.InputStreamResource;
+import org.drools.io.impl.ReaderResource;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsSentence;
@@ -145,6 +146,9 @@ public class DrlParser {
         String encoding = null;
         if (resource instanceof ClassPathResource) {
             encoding = ((ClassPathResource) resource).getEncoding();
+        }
+        if (resource instanceof ReaderResource) {
+            encoding = ((ReaderResource) resource).getEncoding();
         }
         if (resource instanceof InputStreamResource) {
             encoding = ((InputStreamResource) resource).getEncoding();
