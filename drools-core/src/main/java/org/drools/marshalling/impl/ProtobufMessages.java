@@ -27603,6 +27603,18 @@ public final class ProtobufMessages {
     
     public interface BehaviorTimerOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
+      
+      // optional int32 DEPRECATED_node_id = 1;
+      boolean hasDEPRECATEDNodeId();
+      int getDEPRECATEDNodeId();
+      
+      // optional int32 DEPRECATED_behavior_index = 2;
+      boolean hasDEPRECATEDBehaviorIndex();
+      int getDEPRECATEDBehaviorIndex();
+      
+      // optional int32 handle_id = 3;
+      boolean hasHandleId();
+      int getHandleId();
     }
     public static final class BehaviorTimer extends
         com.google.protobuf.GeneratedMessage
@@ -27632,7 +27644,41 @@ public final class ProtobufMessages {
         return org.drools.marshalling.impl.ProtobufMessages.internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable;
       }
       
+      private int bitField0_;
+      // optional int32 DEPRECATED_node_id = 1;
+      public static final int DEPRECATED_NODE_ID_FIELD_NUMBER = 1;
+      private int dEPRECATEDNodeId_;
+      public boolean hasDEPRECATEDNodeId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      public int getDEPRECATEDNodeId() {
+        return dEPRECATEDNodeId_;
+      }
+      
+      // optional int32 DEPRECATED_behavior_index = 2;
+      public static final int DEPRECATED_BEHAVIOR_INDEX_FIELD_NUMBER = 2;
+      private int dEPRECATEDBehaviorIndex_;
+      public boolean hasDEPRECATEDBehaviorIndex() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      public int getDEPRECATEDBehaviorIndex() {
+        return dEPRECATEDBehaviorIndex_;
+      }
+      
+      // optional int32 handle_id = 3;
+      public static final int HANDLE_ID_FIELD_NUMBER = 3;
+      private int handleId_;
+      public boolean hasHandleId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public int getHandleId() {
+        return handleId_;
+      }
+      
       private void initFields() {
+        dEPRECATEDNodeId_ = 0;
+        dEPRECATEDBehaviorIndex_ = 0;
+        handleId_ = 0;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -27646,6 +27692,15 @@ public final class ProtobufMessages {
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeInt32(1, dEPRECATEDNodeId_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeInt32(2, dEPRECATEDBehaviorIndex_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          output.writeInt32(3, handleId_);
+        }
         getUnknownFields().writeTo(output);
       }
       
@@ -27655,6 +27710,18 @@ public final class ProtobufMessages {
         if (size != -1) return size;
       
         size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, dEPRECATEDNodeId_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(2, dEPRECATEDBehaviorIndex_);
+        }
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(3, handleId_);
+        }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
         return size;
@@ -27777,6 +27844,12 @@ public final class ProtobufMessages {
         
         public Builder clear() {
           super.clear();
+          dEPRECATEDNodeId_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          dEPRECATEDBehaviorIndex_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          handleId_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
         
@@ -27813,6 +27886,21 @@ public final class ProtobufMessages {
         
         public org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer buildPartial() {
           org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer result = new org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.dEPRECATEDNodeId_ = dEPRECATEDNodeId_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.dEPRECATEDBehaviorIndex_ = dEPRECATEDBehaviorIndex_;
+          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+            to_bitField0_ |= 0x00000004;
+          }
+          result.handleId_ = handleId_;
+          result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
         }
@@ -27828,6 +27916,15 @@ public final class ProtobufMessages {
         
         public Builder mergeFrom(org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer other) {
           if (other == org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.getDefaultInstance()) return this;
+          if (other.hasDEPRECATEDNodeId()) {
+            setDEPRECATEDNodeId(other.getDEPRECATEDNodeId());
+          }
+          if (other.hasDEPRECATEDBehaviorIndex()) {
+            setDEPRECATEDBehaviorIndex(other.getDEPRECATEDBehaviorIndex());
+          }
+          if (other.hasHandleId()) {
+            setHandleId(other.getHandleId());
+          }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
         }
@@ -27859,10 +27956,89 @@ public final class ProtobufMessages {
                 }
                 break;
               }
+              case 8: {
+                bitField0_ |= 0x00000001;
+                dEPRECATEDNodeId_ = input.readInt32();
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                dEPRECATEDBehaviorIndex_ = input.readInt32();
+                break;
+              }
+              case 24: {
+                bitField0_ |= 0x00000004;
+                handleId_ = input.readInt32();
+                break;
+              }
             }
           }
         }
         
+        private int bitField0_;
+        
+        // optional int32 DEPRECATED_node_id = 1;
+        private int dEPRECATEDNodeId_ ;
+        public boolean hasDEPRECATEDNodeId() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        public int getDEPRECATEDNodeId() {
+          return dEPRECATEDNodeId_;
+        }
+        public Builder setDEPRECATEDNodeId(int value) {
+          bitField0_ |= 0x00000001;
+          dEPRECATEDNodeId_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearDEPRECATEDNodeId() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          dEPRECATEDNodeId_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // optional int32 DEPRECATED_behavior_index = 2;
+        private int dEPRECATEDBehaviorIndex_ ;
+        public boolean hasDEPRECATEDBehaviorIndex() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        public int getDEPRECATEDBehaviorIndex() {
+          return dEPRECATEDBehaviorIndex_;
+        }
+        public Builder setDEPRECATEDBehaviorIndex(int value) {
+          bitField0_ |= 0x00000002;
+          dEPRECATEDBehaviorIndex_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearDEPRECATEDBehaviorIndex() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          dEPRECATEDBehaviorIndex_ = 0;
+          onChanged();
+          return this;
+        }
+        
+        // optional int32 handle_id = 3;
+        private int handleId_ ;
+        public boolean hasHandleId() {
+          return ((bitField0_ & 0x00000004) == 0x00000004);
+        }
+        public int getHandleId() {
+          return handleId_;
+        }
+        public Builder setHandleId(int value) {
+          bitField0_ |= 0x00000004;
+          handleId_ = value;
+          onChanged();
+          return this;
+        }
+        public Builder clearHandleId() {
+          bitField0_ = (bitField0_ & ~0x00000004);
+          handleId_ = 0;
+          onChanged();
+          return this;
+        }
         
         // @@protoc_insertion_point(builder_scope:org.drools.marshalling.Timers.BehaviorTimer)
       }
@@ -31467,7 +31643,7 @@ public final class ProtobufMessages {
       "\023\n\017BEHAVIOR_EXPIRE\020\001\022\027\n\023DEACTIVATE_CALLB" +
       "ACK\020\002\022\023\n\017LOGICAL_RETRACT\020\003\022\r\n\tPROPAGATE\020" +
       "\004\022\n\n\006ASSERT\020\005\022\n\n\006EXPIRE\020\006\022\n\n\006SIGNAL\020\007\022\033\n",
-      "\027SIGNAL_PROCESS_INSTANCE\020\010\"\203\005\n\006Timers\0223\n" +
+      "\027SIGNAL_PROCESS_INSTANCE\020\010\"\325\005\n\006Timers\0223\n" +
       "\005timer\030\001 \003(\0132$.org.drools.marshalling.Ti" +
       "mers.Timer\032\206\002\n\005Timer\0226\n\004type\030\001 \001(\0162(.org" +
       ".drools.marshalling.Timers.TimerType\022:\n\006" +
@@ -31481,28 +31657,30 @@ public final class ProtobufMessages {
       "t_fire_timestamp\030\004 \001(\003\032{\n\017ActivationTime" +
       "r\0226\n\nactivation\030\001 \001(\0132\".org.drools.marsh" +
       "alling.Activation\0220\n\007trigger\030\002 \001(\0132\037.org" +
-      ".drools.marshalling.Trigger\032\017\n\rBehaviorT" +
-      "imer\"B\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIVAT" +
-      "ION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\"\272\005\n\007Tri" +
-      "gger\0229\n\004type\030\001 \001(\0162+.org.drools.marshall" +
-      "ing.Trigger.TriggerType\0229\n\004cron\030\002 \001(\0132+." +
-      "org.drools.marshalling.Trigger.CronTrigg",
-      "er\022A\n\010interval\030\003 \001(\0132/.org.drools.marsha" +
-      "lling.Trigger.IntervalTrigger\022?\n\003pit\030\004 \001" +
-      "(\01322.org.drools.marshalling.Trigger.Poin" +
-      "tInTimeTrigger\032\247\001\n\013CronTrigger\022\022\n\nstart_" +
-      "time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat_l" +
-      "imit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cron" +
-      "_expression\030\005 \001(\t\022\026\n\016next_fire_time\030\006 \001(" +
-      "\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017IntervalTri" +
-      "gger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001" +
-      "(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_count",
-      "\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006period" +
-      "\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022PointIn" +
-      "TimeTrigger\022\026\n\016next_fire_time\030\001 \001(\003\"8\n\013T" +
-      "riggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\rPO" +
-      "INT_IN_TIME\020\002B/\n\033org.drools.marshalling." +
-      "implB\020ProtobufMessages"
+      ".drools.marshalling.Trigger\032a\n\rBehaviorT" +
+      "imer\022\032\n\022DEPRECATED_node_id\030\001 \001(\005\022!\n\031DEPR" +
+      "ECATED_behavior_index\030\002 \001(\005\022\021\n\thandle_id" +
+      "\030\003 \001(\005\"B\n\tTimerType\022\n\n\006EXPIRE\020\001\022\016\n\nACTIV" +
+      "ATION\020\002\022\014\n\010BEHAVIOR\020\003\022\013\n\007PROCESS\020\004\"\272\005\n\007T" +
+      "rigger\0229\n\004type\030\001 \001(\0162+.org.drools.marsha",
+      "lling.Trigger.TriggerType\0229\n\004cron\030\002 \001(\0132" +
+      "+.org.drools.marshalling.Trigger.CronTri" +
+      "gger\022A\n\010interval\030\003 \001(\0132/.org.drools.mars" +
+      "halling.Trigger.IntervalTrigger\022?\n\003pit\030\004" +
+      " \001(\01322.org.drools.marshalling.Trigger.Po" +
+      "intInTimeTrigger\032\247\001\n\013CronTrigger\022\022\n\nstar" +
+      "t_time\030\001 \001(\003\022\020\n\010end_time\030\002 \001(\003\022\024\n\014repeat" +
+      "_limit\030\003 \001(\005\022\024\n\014repeat_count\030\004 \001(\005\022\027\n\017cr" +
+      "on_expression\030\005 \001(\t\022\026\n\016next_fire_time\030\006 " +
+      "\001(\003\022\025\n\rcalendar_name\030\007 \003(\t\032\242\001\n\017IntervalT",
+      "rigger\022\022\n\nstart_time\030\001 \001(\003\022\020\n\010end_time\030\002" +
+      " \001(\003\022\024\n\014repeat_limit\030\003 \001(\005\022\024\n\014repeat_cou" +
+      "nt\030\004 \001(\005\022\026\n\016next_fire_time\030\006 \001(\003\022\016\n\006peri" +
+      "od\030\007 \001(\003\022\025\n\rcalendar_name\030\010 \003(\t\032,\n\022Point" +
+      "InTimeTrigger\022\026\n\016next_fire_time\030\001 \001(\003\"8\n" +
+      "\013TriggerType\022\010\n\004CRON\020\000\022\014\n\010INTERVAL\020\001\022\021\n\r" +
+      "POINT_IN_TIME\020\002B/\n\033org.drools.marshallin" +
+      "g.implB\020ProtobufMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -31858,7 +32036,7 @@ public final class ProtobufMessages {
           internal_static_org_drools_marshalling_Timers_BehaviorTimer_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_drools_marshalling_Timers_BehaviorTimer_descriptor,
-              new java.lang.String[] { },
+              new java.lang.String[] { "DEPRECATEDNodeId", "DEPRECATEDBehaviorIndex", "HandleId", },
               org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.class,
               org.drools.marshalling.impl.ProtobufMessages.Timers.BehaviorTimer.Builder.class);
           internal_static_org_drools_marshalling_Trigger_descriptor =
