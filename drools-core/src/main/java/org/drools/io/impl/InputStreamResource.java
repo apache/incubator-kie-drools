@@ -48,7 +48,11 @@ public class InputStreamResource  extends BaseResource implements InternalResour
     public InputStream getInputStream() throws IOException {
         return stream;
     }
-    
+
+    public String getEncoding() {
+        return encoding;
+    }
+
     public Reader getReader() throws IOException {
         if (encoding == null) {
             return new InputStreamReader( getInputStream() );
