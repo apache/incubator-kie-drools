@@ -1232,7 +1232,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "timer(int:0 100)\n" +
                 "when  \n" +
                 "then \n" +
-                "  System.out.println(\"fire\"); \n" +
                 "  list.add( 0 );\n" +
                 "end\n" +
                 "\n" +
@@ -1240,7 +1239,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "when\n" +
                 "  String( this == \"halt\" )\n" +
                 "then\n" +
-                "  System.out.println(\"HALT\"); \n" +
                 "  drools.halt();\n" +
                 "end\n" +
                 "\n" +
@@ -1304,7 +1302,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "  eval(true)" +
                 "  String( this == \"trigger\" )" +
                 "then \n" +
-                "  System.out.println(\"fire\"); \n" +
                 "  list.add( 0 );\n" +
                 "end\n" +
                 "\n" +
@@ -1312,7 +1309,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "when\n" +
                 "  String( this == \"halt\" )\n" +
                 "then\n" +
-                "  System.out.println(\"HALT\"); \n" +
                 "  drools.halt();\n" +
                 "end\n" +
                 "\n"
