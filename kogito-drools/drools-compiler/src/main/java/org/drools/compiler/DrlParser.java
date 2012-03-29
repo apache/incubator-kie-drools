@@ -28,6 +28,8 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.io.Resource;
+import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.InputStreamResource;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsSentence;
@@ -140,7 +142,14 @@ public class DrlParser {
                               final Resource resource) throws DroolsParserException, IOException {
         this.resource = resource;
         InputStream is = resource.getInputStream();
-        final DRLParser parser = getParser( is );
+        String encoding = null;
+        if (resource instanceof ClassPathResource) {
+            encoding = ((ClassPathResource) resource).getEncoding();
+        }
+        if (resource instanceof InputStreamResource) {
+            encoding = ((InputStreamResource) resource).getEncoding();
+        }
+        final DRLParser parser = getParser( is, encoding );
         return compile( isEditor, parser );
     }
 
@@ -287,9 +296,15 @@ public class DrlParser {
         }
     }
 
-    private DRLParser getParser( final InputStream is ) {
+    private DRLParser getParser( final InputStream is, final String encoding ) {
         try {
-            lexer = new DRLLexer( new ANTLRInputStream( is ) );
+            ANTLRInputStream antlrInputStream;
+            if (encoding != null) {
+                antlrInputStream = new ANTLRInputStream(is, encoding);
+            } else {
+                antlrInputStream = new ANTLRInputStream(is);
+            }
+            lexer = new DRLLexer(antlrInputStream);
             DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
             return parser;
         } catch ( final Exception e ) {

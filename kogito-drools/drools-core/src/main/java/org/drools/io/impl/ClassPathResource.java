@@ -185,6 +185,10 @@ public class ClassPathResource extends BaseResource
         return this.lastRead;
     }
 
+    public String getEncoding() {
+        return encoding;
+    }
+
     public Reader getReader() throws IOException {
         if ( this.encoding != null ) {
             return new InputStreamReader( getInputStream(), encoding );

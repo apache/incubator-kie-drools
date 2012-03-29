@@ -12,10 +12,10 @@ rule "Use garçon property"
         list.add( "garçon" );
 end
 
-rule "Use élève property"
-    salience 10
-    when
-        p : I18nPerson( élève != null )
-    then
-        list.add( "élève" );
-end
+// rule "Use élève property"
+//     salience 10
+//     when
+//         p : I18nPerson( élève != null )
+//     then
+//         list.add( "élève" );
+// end
