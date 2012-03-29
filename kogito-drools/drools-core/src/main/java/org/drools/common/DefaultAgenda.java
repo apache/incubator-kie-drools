@@ -120,6 +120,10 @@ public class DefaultAgenda
     
     private ActivationsFilter                                   activationsFilter;
 
+    private volatile boolean                                    isFiringActivation = false;
+
+    private volatile boolean                                    mustNotifyHalt     = false;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -434,7 +438,12 @@ public class DefaultAgenda
             }
         }   
         if ( notify ) {
-            notifyHalt();
+            // if an activation is currently firing allows to completely fire it before to send the notify
+            if (isFiringActivation) {
+                mustNotifyHalt = true;
+            } else {
+                notifyHalt();
+            }
         }
     }
     
@@ -1132,6 +1141,7 @@ public class DefaultAgenda
         // on an empty pattern
         // we need to make sure it re-activates
         this.workingMemory.startOperation();
+        isFiringActivation = true;
         try {
             increaseDormantActivations();
             decreaseActiveActivations();
@@ -1197,6 +1207,11 @@ public class DefaultAgenda
             
             unstageActivations();
         } finally {
+            isFiringActivation = false;
+            if (mustNotifyHalt) {
+                mustNotifyHalt = false;
+                notifyHalt();
+            }
             this.workingMemory.endOperation();
         }
     }

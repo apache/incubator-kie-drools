@@ -44,6 +44,7 @@ import org.drools.builder.ResourceType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DroolsParserException;
 import org.drools.conf.EventProcessingOption;
+import org.drools.definition.type.FactType;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
@@ -93,25 +94,6 @@ public class StreamsTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         return SerializationHelper.serializeObject(kbase);
-    }
-
-    private KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBaseConfiguration kbconf, String... drlContentStrings) {
-        if (kbconf == null) {
-            kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        }
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String drlContentString : drlContentStrings) {
-            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
-                          ResourceType.DRL );
-        }
-
-        if (kbuilder.hasErrors()) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconf);
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        return kbase;
     }
 
     @Test
@@ -309,7 +291,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
         session.fireAllRules();
 
-        System.out.println( results );
+        System.out.println(results);
         assertEquals( 2,
                       results.size() );
         assertEquals( 30,
@@ -322,7 +304,7 @@ public class StreamsTest extends CommonTestMethodBase {
                      entry.getObjects().size());
         // but no fact was inserted into the main session
         assertEquals(0,
-                     session.getObjects().size());
+                session.getObjects().size());
 
     }
 
@@ -400,18 +382,18 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        WorkingMemoryEntryPoint def = session.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() );
-        WorkingMemoryEntryPoint s1 = session.getWorkingMemoryEntryPoint( "stream1" );
+        WorkingMemoryEntryPoint def = session.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId());
+        WorkingMemoryEntryPoint s1 = session.getWorkingMemoryEntryPoint("stream1");
         WorkingMemoryEntryPoint s2 = session.getWorkingMemoryEntryPoint( "stream2" );
         WorkingMemoryEntryPoint s3 = session.getWorkingMemoryEntryPoint( "stream3" );
         Collection<? extends WorkingMemoryEntryPoint> eps = session.getWorkingMemoryEntryPoints();
 
         assertEquals( 4,
                       eps.size() );
-        assertTrue( eps.contains( def ) );
-        assertTrue( eps.contains( s1 ) );
-        assertTrue( eps.contains( s2 ) );
-        assertTrue( eps.contains( s3 ) );
+        assertTrue(eps.contains(def));
+        assertTrue(eps.contains(s1));
+        assertTrue(eps.contains(s2));
+        assertTrue(eps.contains(s3));
     }
 
     @Test
@@ -419,12 +401,12 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBase("test_EventExpiration.drl",
-                                                kconf);
+                kconf);
 
         KnowledgeSessionConfiguration ksessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksessionConfig.setOption(ClockTypeOption.get("pseudo"));
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
-                                                                              null);
+                null);
 
         WorkingMemoryEventListener wml = mock(WorkingMemoryEventListener.class);
         ksession.addEventListener(wml);
@@ -458,7 +440,7 @@ public class StreamsTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertThat(ksession.getObjects().size(),
-                   equalTo(0));
+                equalTo(0));
     }
 
     @Test
@@ -505,7 +487,7 @@ public class StreamsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
         assertThat(fired,
-                   equalTo(2));
+                equalTo(2));
 
         clock.advanceTime(3,
                           TimeUnit.SECONDS);
@@ -574,8 +556,8 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( (KnowledgeBaseConfiguration)null, drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertNotNull( ksession.getWorkingMemoryEntryPoint( "UsedEntryPoint" ) );
-        assertNotNull( ksession.getWorkingMemoryEntryPoint( "UnusedEntryPoint" ) );
+        assertNotNull(ksession.getWorkingMemoryEntryPoint("UsedEntryPoint"));
+        assertNotNull(ksession.getWorkingMemoryEntryPoint("UnusedEntryPoint"));
 
         ksession.dispose();
     }
@@ -628,5 +610,59 @@ public class StreamsTest extends CommonTestMethodBase {
         Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$cnt")).intValue(),
                           is(3));
 
+    }
+
+    @Test
+    public void testAtomicActivationFiring() throws Exception {
+        // JBRULES-3383
+        String str = "package org.drools.test\n" +
+                "declare Event\n" +
+                "   @role(event)\n" +
+                "   name : String\n" +
+                "end\n" +
+                "declare Monitor\n" +
+                "   @role(event)\n" +
+                "   event : Event\n" +
+                "   name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"start monitoring\"\n" +
+                "when\n" +
+                "    $e : Event( $in : name )\n" +
+                "    not Monitor( name == $in )\n" +
+                "then\n" +
+                "    Monitor m = new Monitor( $e, $in );\n" +
+                "    insert( m );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"stop monitoring\"\n" +
+                "timer( int: 1s )\n" +
+                "when\n" +
+                "    $m : Monitor( $in : name )\n" +
+                "    $e : Event( name == $in )\n" +
+                "then\n" +
+                "    retract( $m );\n" +
+                "    retract( $m.getEvent() );\n" +
+                "end\n" +
+                "rule \"halt\"\n" +
+                "salience -1\n" +
+                "when\n" +
+                "    not Event( )\n" +
+                "then\n" +
+                "    drools.halt();\n" +
+                "end\n";
+
+        KnowledgeBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kBaseConfig.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType eventType = kbase.getFactType("org.drools.test", "Event");
+
+        Object event = eventType.newInstance();
+        eventType.set(event, "name", "myName");
+        ksession.insert( event );
+
+        ksession.fireUntilHalt();
     }
 }
