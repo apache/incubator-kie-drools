@@ -10631,8 +10631,8 @@ public class MiscTest extends CommonTestMethodBase {
 
 
     @Test
-    // JBRULES-3396
     public void testBindingToNullFieldWithEquality() {
+        // JBRULES-3396
         String str = "package org.drools.test; \n" +
                 "\n" +
                 "global java.util.List list;" +
@@ -10657,15 +10657,10 @@ public class MiscTest extends CommonTestMethodBase {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
         KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-                kbConf.setOption(AssertBehaviorOption.EQUALITY);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbConf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbConf.setOption(AssertBehaviorOption.EQUALITY);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         java.util.List list = new java.util.ArrayList();
@@ -10677,5 +10672,26 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testCoercionOfStringValueWithoutQuotes() throws Exception {
+        // JBRULES-3080
+        String str = "package org.drools.test; \n" +
+                "declare A\n" +
+                "   field : String\n" +
+                "end\n" +
+                "rule R when\n" +
+                "   A( field == 12 )\n" +
+                "then\n" +
+                "end\n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
+        Object a = typeA.newInstance();
+        typeA.set( a, "field", "12" );
+        ksession.insert( a );
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
