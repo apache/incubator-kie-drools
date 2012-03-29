@@ -409,8 +409,8 @@ public class ProtobufInputMarshaller {
             agenda.getRuleFlowGroupsMap().put( _ruleFlowGroup.getName(),
                                                rfgi );
             
-            readActivations( context, 
-                             _ruleFlowGroup.getActivationList() );
+//            readActivations( context, 
+//                             _ruleFlowGroup.getActivationList() );
             
             for ( NodeInstance _nodeInstance : _ruleFlowGroup.getNodeInstanceList() ) {
                 rfgi.addNodeInstance( _nodeInstance.getProcessInstanceId(),
@@ -434,36 +434,6 @@ public class ProtobufInputMarshaller {
         }
     }
 
-    //
-    //    public static void readTruthMaintenanceSystem( MarshallerReaderContext context ) throws IOException {
-    //        ObjectInputStream stream = context.stream;
-    //
-    //        TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
-    //        while (stream.readShort() == PersisterEnums.EQUALITY_KEY) {
-    //            int status = stream.readInt();
-    //            int factHandleId = stream.readInt();
-    //            InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
-    //
-    //            // ObjectTypeConf state is not marshalled, so it needs to be re-determined
-    //            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.wm.getEntryPoint(),
-    //                                                                                                         handle.getObject() );
-    //            if (!typeConf.isTMSEnabled()) {
-    //                typeConf.enableTMS();
-    //            }
-    //
-    //            EqualityKey key = new EqualityKey( handle,
-    //                                               status );
-    //            handle.setEqualityKey( key );
-    //            while (stream.readShort() == PersisterEnums.FACT_HANDLE) {
-    //                factHandleId = stream.readInt();
-    //                handle = (InternalFactHandle) context.handles.get( factHandleId );
-    //                key.addFactHandle( handle );
-    //                handle.setEqualityKey( key );
-    //            }
-    //            tms.put( key );
-    //        }
-    //    }
-    //
     public static void readFactHandles(MarshallerReaderContext context,
                                        org.drools.marshalling.impl.ProtobufMessages.EntryPoint _ep,
                                        ObjectStore objectStore) throws IOException,
@@ -610,219 +580,17 @@ public class ProtobufInputMarshaller {
         }
     }
 
-    //
-    //    public static void readBehaviors( WindowNode windowNode,
-    //                                      WindowMemory memory,
-    //                                      MarshallerReaderContext inCtx ) throws IOException {
-    //        short token = -1;
-    //        while (( token = inCtx.readShort() ) != PersisterEnums.END) {
-    //            int i = inCtx.readInt();
-    //            Object object = ( (Object[]) memory.behaviorContext )[i];
-    //            switch (token) {
-    //                case PersisterEnums.SLIDING_TIME_WIN: {
-    //                    readSlidingTimeWindowBehaviour( windowNode,
-    //                                                    memory,
-    //                                                    (SlidingTimeWindow) windowNode.getBehaviors()[i],
-    //                                                    (SlidingTimeWindowContext) object,
-    //                                                    inCtx );
-    //                    break;
-    //                }
-    //                case PersisterEnums.SLIDING_LENGTH_WIN: {
-    //                    readSlidingLengthWindowBehaviour( windowNode,
-    //                                                      memory,
-    //                                                      (SlidingLengthWindow) windowNode.getBehaviors()[i],
-    //                                                      (SlidingLengthWindowContext) object,
-    //                                                      inCtx );
-    //                    break;
-    //                }
-    //            }
-    //
-    //        }
-    //    }
-    //
-    //    public static void readSlidingTimeWindowBehaviour( WindowNode windowNode,
-    //            WindowMemory memory,
-    //            SlidingTimeWindow stw,
-    //            SlidingTimeWindowContext stwCtx,
-    //            MarshallerReaderContext inCtx ) throws IOException {
-    //
-    //        if (inCtx.readBoolean()) {
-    //            int sinkId = inCtx.readInt();
-    //            int factId = inCtx.readInt();
-    //
-    //            RightTupleSink sink = (RightTupleSink) inCtx.sinks.get( sinkId );
-    //            RightTupleKey key = new RightTupleKey( factId,
-    //                                                   sink );
-    //            RightTuple rightTuple = inCtx.rightTuples.get( key );
-    //
-    //            //FIXME: stwCtx.expiringTuple = rightTuple;
-    //        }
-    //
-    //        if (inCtx.readBoolean()) {
-    //            int size = inCtx.readInt();
-    //            for (int i = 0; i < size; i++) {
-    //                int sinkId = inCtx.readInt();
-    //                int factId = inCtx.readInt();
-    //
-    //                RightTupleSink sink = (RightTupleSink) inCtx.sinks.get( sinkId );
-    //                RightTupleKey key = new RightTupleKey( factId,
-    //                                                       sink );
-    //                RightTuple rightTuple = inCtx.rightTuples.get( key );
-    //
-    //                //FIXME: stwCtx.queue.add( rightTuple );
-    //            }
-    //        }
-    //    }
-    //
-    //    public static void readSlidingLengthWindowBehaviour( WindowNode windowNode,
-    //            WindowMemory memory,
-    //            SlidingLengthWindow slw,
-    //            SlidingLengthWindowContext slwCtx,
-    //            MarshallerReaderContext inCtx ) throws IOException {
-    //        int pos = inCtx.readInt();
-    //        int length = inCtx.readInt();
-    //
-    //        slwCtx.pos = pos;
-    //        //FIXME: slwCtx.rightTuples = new RightTuple[length];
-    //        for (int i = 0; i < length; i++) {
-    //            int factId = inCtx.readInt();
-    //
-    //            if (factId >= 0) {
-    //                int sinkId = inCtx.readInt();
-    //
-    //                RightTupleSink sink = (RightTupleSink) inCtx.sinks.get( sinkId );
-    //                RightTupleKey key = new RightTupleKey( factId,
-    //                                                       sink );
-    //                RightTuple rightTuple = inCtx.rightTuples.get( key );
-    //
-    //                //FIXME: slwCtx.rightTuples[i] = rightTuple;
-    //            }
-    //
-    //        }
-    //    }
-    //
-    //    private static void addToLeftMemory( LeftTuple parentLeftTuple,
-    //            BetaMemory memory ) {
-    //        memory.getLeftTupleMemory().add( parentLeftTuple );
-    //        memory.linkRight();
-    //    }
-    //
     private static void readActivations(MarshallerReaderContext context,
                                         List<ProtobufMessages.Activation> _list) {
 
         for ( ProtobufMessages.Activation _activation : _list ) {
-            context.filter.getActivationsMap().put( PersisterHelper.createActivationKey( _activation.getPackageName(),
-                                                                                         _activation.getRuleName(),
-                                                                                         _activation.getTuple() ),
-                                                    _activation );
+            context.filter.getDormantActivationsMap().put( PersisterHelper.createActivationKey( _activation.getPackageName(),
+                                                                                                _activation.getRuleName(),
+                                                                                                _activation.getTuple() ),
+                                                           _activation );
         }
     }
 
-    //
-    //    public static void readPropagationContexts( MarshallerReaderContext context ) throws IOException {
-    //        ObjectInputStream stream = context.stream;
-    //
-    //        while (stream.readShort() == PersisterEnums.PROPAGATION_CONTEXT) {
-    //            readPropagationContext( context );
-    //        }
-    //
-    //    }
-    //
-    //    public static void readPropagationContext( MarshallerReaderContext context ) throws IOException {
-    //        ObjectInputStream stream = context.stream;
-    //        InternalRuleBase ruleBase = context.ruleBase;
-    //
-    //        int type = stream.readInt();
-    //
-    //        Rule rule = null;
-    //        if (stream.readBoolean()) {
-    //            String pkgName = stream.readUTF();
-    //            String ruleName = stream.readUTF();
-    //            Package pkg = ruleBase.getPackage( pkgName );
-    //            rule = pkg.getRule( ruleName );
-    //        }
-    //
-    //        LeftTuple leftTuple = null;
-    //        if (stream.readBoolean()) {
-    //            int tuplePos = stream.readInt();
-    //            leftTuple = context.terminalTupleMap.get( tuplePos );
-    //        }
-    //
-    //        long propagationNumber = stream.readLong();
-    //
-    //        int factHandleId = stream.readInt();
-    //        InternalFactHandle factHandle = context.handles.get( factHandleId );
-    //
-    //        int activeActivations = stream.readInt();
-    //        int dormantActivations = stream.readInt();
-    //        String entryPointId = stream.readUTF();
-    //
-    //        EntryPoint entryPoint = context.entryPoints.get( entryPointId );
-    //        if (entryPoint == null) {
-    //            entryPoint = new EntryPoint( entryPointId );
-    //            context.entryPoints.put( entryPointId,
-    //                                     entryPoint );
-    //        }
-    //
-    //        PropagationContext pc = new PropagationContextImpl( propagationNumber,
-    //                                                            type,
-    //                                                            rule,
-    //                                                            leftTuple,
-    //                                                            factHandle,
-    //                                                            activeActivations,
-    //                                                            dormantActivations,
-    //                                                            entryPoint );
-    //        context.propagationContexts.put( propagationNumber,
-    //                                         pc );
-    //    }
-    //
-    //    public static WorkItem readWorkItem( MarshallerReaderContext context ) throws IOException {
-    //        ObjectInputStream stream = context.stream;
-    //
-    //        WorkItemImpl workItem = new WorkItemImpl();
-    //        workItem.setId( stream.readLong() );
-    //        workItem.setProcessInstanceId( stream.readLong() );
-    //        workItem.setName( stream.readUTF() );
-    //        workItem.setState( stream.readInt() );
-    //
-    //        //WorkItem Paramaters
-    //        int nbVariables = stream.readInt();
-    //        if (nbVariables > 0) {
-    //
-    //            for (int i = 0; i < nbVariables; i++) {
-    //                String name = stream.readUTF();
-    //                try {
-    //                    int index = stream.readInt();
-    //                    ObjectMarshallingStrategy strategy = null;
-    //                    // Old way of retrieving strategy objects
-    //                    if (index >= 0) {
-    //                        strategy = context.resolverStrategyFactory.getStrategy( index );
-    //                        if (strategy == null) {
-    //                            throw new IllegalStateException( "No strategy of with index " + index + " available." );
-    //                        }
-    //                    }
-    //                    // New way 
-    //                    else if (index == -2) {
-    //                        String strategyClassName = stream.readUTF();
-    //                        strategy = context.resolverStrategyFactory.getStrategyObject( strategyClassName );
-    //                        if (strategy == null) {
-    //                            throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
-    //                        }
-    //                    }
-    //
-    //                    Object value = strategy.read( stream );
-    //                    workItem.setParameter( name,
-    //                                           value );
-    //                } catch (ClassNotFoundException e) {
-    //                    throw new IllegalArgumentException(
-    //                                                        "Could not reload variable " + name );
-    //                }
-    //            }
-    //        }
-    //
-    //        return workItem;
-    //    }
-    //
     public static void readTimer( MarshallerReaderContext inCtx, Timer _timer ) throws IOException, ClassNotFoundException {
         TimersInputMarshaller reader = inCtx.readersByInt.get( _timer.getType().getNumber() );
         reader.deserialize( inCtx, _timer );
@@ -883,16 +651,16 @@ public class ProtobufInputMarshaller {
     public static class PBActivationsFilter
             implements
             ActivationsFilter {
-        private Map<ActivationKey, ProtobufMessages.Activation> activeActivations;
+        private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, LeftTuple>                   tuplesCache;
 
         public PBActivationsFilter() {
-            this.activeActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
+            this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, LeftTuple>();
         }
 
-        public Map<ActivationKey, ProtobufMessages.Activation> getActivationsMap() {
-            return this.activeActivations;
+        public Map<ActivationKey, ProtobufMessages.Activation> getDormantActivationsMap() {
+            return this.dormantActivations;
         }
 
         public boolean accept(Activation activation,
@@ -903,7 +671,7 @@ public class ProtobufInputMarshaller {
             // add the tuple to the cache for correlation
             this.tuplesCache.put( key, activation.getTuple() );
             // check if there was an active activation for it
-            return this.activeActivations.containsKey( key );
+            return !this.dormantActivations.containsKey( key );
         }
 
         public Map<ActivationKey, LeftTuple> getTuplesCache() {
