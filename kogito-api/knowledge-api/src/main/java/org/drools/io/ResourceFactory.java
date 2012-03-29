@@ -86,6 +86,12 @@ public class ResourceFactory {
         return getFactoryService().newInputStreamResource( stream );
     }
 
+    public static Resource newInputStreamResource(InputStream stream,
+                                                  String encoding) {
+        return getFactoryService().newInputStreamResource( stream,
+                                                           encoding );
+    }
+
     public static Resource newReaderResource(Reader reader) {
         return getFactoryService().newReaderResource( reader );
     }
@@ -110,6 +116,28 @@ public class ResourceFactory {
                                                 ClassLoader classLoader) {
         return getFactoryService().newClassPathResource( path,
                                                            classLoader );
+    }
+
+    public static Resource newClassPathResource(String path,
+                                                String encoding) {
+        return getFactoryService().newClassPathResource( path,
+                                                         encoding );
+    }
+
+    public static Resource newClassPathResource(String path,
+                                                String encoding,
+                                                Class clazz) {
+        return getFactoryService().newClassPathResource( path,
+                                                         encoding,
+                                                         clazz );
+    }
+
+    public static Resource newClassPathResource(String path,
+                                                String encoding,
+                                                ClassLoader classLoader) {
+        return getFactoryService().newClassPathResource( path,
+                                                         encoding,
+                                                         classLoader );
     }
     
     public static Resource newDescrResource( KnowledgeDescr descr ) {
