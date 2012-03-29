@@ -1,0 +1,21 @@
+package org.drools.test
+
+import org.drools.I18nPerson
+
+global java.util.List list
+
+rule "Use garçon property"
+    salience 10
+    when
+        p : I18nPerson( garçon != null )
+    then
+        list.add( "garçon" );
+end
+
+rule "Use élève property"
+    salience 10
+    when
+        p : I18nPerson( élève != null )
+    then
+        list.add( "élève" );
+end
