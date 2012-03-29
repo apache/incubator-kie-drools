@@ -338,7 +338,9 @@ message Timers {
         optional Trigger trigger = 2;
     }
     message BehaviorTimer {
-
+        optional int32 DEPRECATED_node_id = 1;
+        optional int32 DEPRECATED_behavior_index = 2;
+        optional int32 handle_id = 3;
     }
 }
 
