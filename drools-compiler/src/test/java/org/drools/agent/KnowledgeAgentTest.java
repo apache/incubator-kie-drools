@@ -817,7 +817,6 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
                 "rule \"init\"\n" +
                 "when \n" +
                 "then \n" +
-                "  System.out.println(\"X\");\n" +
                 "end";
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
