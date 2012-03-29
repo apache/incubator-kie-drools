@@ -7518,7 +7518,7 @@ public class MiscTest extends CommonTestMethodBase {
         rule1 += "rule testFireUntilHalt\n";
         rule1 += "when\n";
         rule1 += "       Cheese()\n";
-        rule1 += "  $p : Person() from entry-point \"testep\"\n";
+        rule1 += "  $p : Person() from entry-point \"testep2\"\n";
         rule1 += "then \n";
         rule1 += "  list.add( $p ) ;\n";
         rule1 += "end\n";
@@ -7537,7 +7537,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep" );
+        final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "testep2" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
