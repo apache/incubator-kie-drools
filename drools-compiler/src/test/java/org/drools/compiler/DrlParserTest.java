@@ -52,7 +52,6 @@ public class DrlParserTest {
     }
     
     @Test
-    @Ignore("Bean2 should have a superTypeName of Bean1. See https://issues.jboss.org/browse/JBRULES-3417")
     public void testDeclaredSuperType() throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"

@@ -1319,7 +1319,6 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
     
     @Test
-    @Ignore("RuntimeDroolsException thrown. See JIRA https://issues.jboss.org/browse/JBRULES-3418")
     public void testDeclaredSuperTypeFields() throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
