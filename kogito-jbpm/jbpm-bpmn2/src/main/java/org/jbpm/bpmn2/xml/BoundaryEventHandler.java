@@ -28,6 +28,7 @@ import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -75,6 +76,10 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
                 handleCompensationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
+                break;
+            } else if ("signalEventDefinition".equals(nodeName)) {
+                // reuse already created EventNode
+                handleSignalNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -226,6 +231,43 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         ((EventNode) node).setEventFilters(eventFilters);
     }
     
+    protected void handleSignalNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser, final String attachedTo,
+            final boolean cancelActivity) throws SAXException {
+        super.handleNode(node, element, uri, localName, parser);
+        EventNode eventNode = (EventNode) node;
+        eventNode.setMetaData("AttachedTo", attachedTo);
+        eventNode.setMetaData("CancelActivity", cancelActivity);
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("dataOutputAssociation".equals(nodeName)) {
+                readDataOutputAssociation(xmlNode, eventNode);
+            } else if ("signalEventDefinition".equals(nodeName)) {
+                String type = ((Element) xmlNode).getAttribute("signalRef");
+                if (type != null && type.trim().length() > 0) {
+                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    EventTypeFilter eventFilter = new EventTypeFilter();
+                    eventFilter.setType(type);
+                    eventFilters.add(eventFilter);
+                    eventNode.setEventFilters(eventFilters);
+                    eventNode.setScope("external");
+                    eventNode.setMetaData("SignalName", type);
+                }
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode,  EventNode eventNode) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        // targetRef
+        subNode = subNode.getNextSibling();
+        String to = subNode.getTextContent();
+        eventNode.setVariableName(to);
+    }
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 	    throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }

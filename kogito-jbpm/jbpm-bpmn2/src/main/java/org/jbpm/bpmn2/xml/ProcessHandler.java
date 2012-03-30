@@ -24,6 +24,9 @@ import java.util.Map;
 
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
+import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.ProcessContext;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -43,18 +46,22 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.ConnectionRef;
 import org.jbpm.workflow.core.impl.ConstraintImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.CompositeContextNode;
+import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -376,7 +383,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         exceptionScope.setExceptionHandler(errorCode, exceptionHandler);
                     } else if (type.startsWith("Timer-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
-                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        StateBasedNode compositeNode = (StateBasedNode) attachedNode;
                         String timeDuration = (String) node.getMetaData().get("TimeDuration");
                         String timeCycle = (String) node.getMetaData().get("TimeCycle");
                         Timer timer = new Timer();
@@ -404,6 +411,32 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     	}
             	        String eventType = "Compensate-" + activityRef;
             	        ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).setType(eventType);
+                    } else if (node.getMetaData().get("SignalName") != null) {
+                        boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
+                        final long attachedToNodeId = attachedNode.getId();
+                        if (cancelActivity) {
+                            List<DroolsAction> actions = ((EventNode)node).getActions(EndNode.EVENT_NODE_EXIT);
+                            if (actions == null) {
+                                actions = new ArrayList<DroolsAction>();
+                            }
+                            DroolsConsequenceAction action =  new DroolsConsequenceAction("java", null);
+                            
+                            action.setMetaData("Action", new Action() {
+                                public void execute(ProcessContext context) throws Exception {
+                                    WorkflowProcessInstance pi = context.getNodeInstance().getProcessInstance();
+                                    long nodeInstanceId = -1;
+                                    for (NodeInstance nodeInstance : pi.getNodeInstances()) {
+                                        if (attachedToNodeId == nodeInstance.getNodeId()) {
+                                            nodeInstanceId = nodeInstance.getId();
+                                            break;
+                                        }
+                                    }
+                                    ((org.jbpm.workflow.instance.NodeInstance)context.getNodeInstance().getProcessInstance().getNodeInstance(nodeInstanceId)).cancel();
+                                }
+                            });
+                            actions.add(action);
+                            ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+                        }
                     }
                 }
             }

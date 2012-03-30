@@ -85,6 +85,73 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         super.setUp();
     }
     
+    public void testSignalBoundaryEventOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("After node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("After node triggered " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("Before node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("Before node triggered " + event.getNodeInstance().getNodeName());
+            }
+           
+        });
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+        ksession.signalEvent("MyMessage", "maciek");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+    
+    public void testSignalBoundaryEventOnTaskComplete() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-BoundarySignalEventOnTaskbpmn2.bpmn");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("After node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("After node triggered " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("Before node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("Before node triggered " + event.getNodeInstance().getNodeName());
+            }
+           
+        });
+        ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+    
 	public void testMinimalProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -907,6 +974,35 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
+	
+	public void testTimerBoundaryEventInterruptingOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterruptingOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        ksession = restoreSession(ksession, true);
+        logger.debug("Firing timer");
+        ksession.fireAllRules();
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+	
+	public void testSignalBoundaryEventInterrupting() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalBoundaryEventInterrupting.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask",
+                new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession
+                .startProcess("SignalBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        ksession = restoreSession(ksession, true);
+        ksession.signalEvent("MyMessage", null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
 	public void testAdHocSubProcess() throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory

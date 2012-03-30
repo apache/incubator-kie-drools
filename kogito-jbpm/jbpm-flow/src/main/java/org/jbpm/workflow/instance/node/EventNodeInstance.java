@@ -16,10 +16,19 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.List;
+
 import org.drools.runtime.process.NodeInstance;
+import org.drools.spi.ProcessContext;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
+import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.Action;
+import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 
@@ -63,7 +72,32 @@ public class EventNodeInstance extends NodeInstanceImpl implements EventNodeInst
     }
 
     public void triggerCompleted() {
+        List<DroolsAction> actions = getEventNode().getActions(EndNode.EVENT_NODE_EXIT);
+        if (actions != null) {
+            for (DroolsAction droolsAction: actions) {
+                executeAction(droolsAction);
+            }
+        }
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
+    protected void executeAction(DroolsAction droolsAction) {
+        Action action = (Action) droolsAction.getMetaData("Action");
+        ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+        context.setNodeInstance(this);
+        try {
+            action.execute(context);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            String exceptionName = exception.getClass().getName();
+            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
+                resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
+            if (exceptionScopeInstance == null) {
+                exception.printStackTrace();
+                throw new IllegalArgumentException(
+                    "Could not find exception handler for " + exceptionName + " while executing node " + getNodeId());
+            }
+            exceptionScopeInstance.handleException(exceptionName, exception);
+        }
+    }
 }
