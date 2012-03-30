@@ -21,11 +21,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 
@@ -53,14 +56,29 @@ public class TaskClientFactory {
      * @return new instance of task client that is already connected
      * @throws IllegalArgumentException in case unknown type of a task client is given as <code>jbpm.console.task.service.strategy</code> or connection to the task server failed.
      */
-    public static TaskClient newInstance(Properties properties, String connectorId) {
+    public static TaskService newInstance(Properties properties, String connectorId) {
+        TaskService service = null;
+        String strategy = properties.getProperty("jbpm.console.task.service.strategy", DEFAULT_TASK_SERVICE_STRATEGY);
+        if ("Local".equalsIgnoreCase(strategy)) {
+
+            org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
+            service = new LocalTaskService(taskService);
+
+            
+        } else {
+            service = new AsyncTaskServiceWrapper(newAsyncInstance(properties, connectorId));
+        }
+        
+        return service;
+    }
+    
+    public static TaskClient newAsyncInstance(Properties properties, String connectorId) {
         TaskClient client = null;
         String strategy = properties.getProperty("jbpm.console.task.service.strategy", DEFAULT_TASK_SERVICE_STRATEGY);
         if ("Mina".equalsIgnoreCase(strategy)) {
             if (client == null) {
                 client = new TaskClient(new MinaTaskClientConnector(connectorId,
                                         new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-                
                 
             }
         } else if ("HornetQ".equalsIgnoreCase(strategy)) {

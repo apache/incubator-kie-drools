@@ -28,16 +28,11 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
-import org.jbpm.integration.console.HumanTaskService;
 import org.jbpm.integration.console.TaskClientFactory;
 import org.jbpm.task.Content;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.local.LocalTaskService;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 
 /**
  * @author Kris Verlaenen
@@ -46,12 +41,11 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
 
     private static int clientCounter = 0;
     
-    private TaskClient client;
     private TaskService service;
     private boolean local = false;
 
     public void connect() {
-        if (client == null) {
+        if (service == null) {
 
             Properties properties = new Properties();
             try {
@@ -59,43 +53,22 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
             } catch (IOException e) {
                 throw new RuntimeException("Could not load jbpm.console.properties", e);
             }
-            if ("Local".equalsIgnoreCase(properties.getProperty("jbpm.console.task.service.strategy", TaskClientFactory.DEFAULT_TASK_SERVICE_STRATEGY))) {
-                if (service == null) {
-                    org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
-                    service = new LocalTaskService(taskService);
-                }
-                local = true;
-                
-            } else  {
-                client = TaskClientFactory.newInstance(properties, "org.jbpm.integration.console.forms.TaskFormDispatcher"+clientCounter);
-                local = false;
-                clientCounter++;
-            }
+
+            service =TaskClientFactory.newInstance(properties, "org.jbpm.integration.console.forms.TaskFormDispatcher"+clientCounter);
         }
     }
 
     public DataHandler provideForm(FormAuthorityRef ref) {
         connect();
-        Task task = null;
-        if (local) {
-            task = service.getTask(new Long(ref.getReferenceId()));
-        } else {
-            BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
-            client.getTask(new Long(ref.getReferenceId()), getTaskResponseHandler);
-            task = getTaskResponseHandler.getTask();
-        }
+        Task task = service.getTask(new Long(ref.getReferenceId()));
+        
         Object input = null;
         long contentId = task.getTaskData().getDocumentContentId();
         if (contentId != -1) {
             Content content = null;
             
-            if (local) {
-                content = service.getContent(contentId);
-            } else {
-                BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
-                client.getContent(contentId, getContentResponseHandler);
-                content = getContentResponseHandler.getContent();
-            }
+            content = service.getContent(contentId);
+            
             ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
             ObjectInputStream in;
             try {

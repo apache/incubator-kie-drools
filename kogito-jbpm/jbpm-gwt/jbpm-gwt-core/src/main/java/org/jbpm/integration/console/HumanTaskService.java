@@ -30,10 +30,8 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
-import org.jbpm.task.service.UserGroupCallbackManager;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -60,7 +58,6 @@ public class HumanTaskService {
 	            taskSession.addGroup( group );
 	        }
 	        taskSession.dispose();
-	        UserGroupCallbackManager.getInstance().setCallback(new DefaultUserGroupCallbackImpl());
 	        System.out.println("Task service running and started correctly !");
 	        INSTANCE = taskService;
 		}

@@ -310,7 +310,7 @@ public class StatefulKnowledgeSessionUtil {
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         } else  {
             CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
-            TaskClient client = TaskClientFactory.newInstance(consoleProperties, "org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler");
+            TaskClient client = TaskClientFactory.newAsyncInstance(consoleProperties, "org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler");
             
             handler.configureClient(client);
             ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler);
