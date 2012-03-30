@@ -35,7 +35,7 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
-    public Score calculateScore() {
+    public Score extractScore() {
         return DefaultSimpleScore.valueOf(score);
     }
 

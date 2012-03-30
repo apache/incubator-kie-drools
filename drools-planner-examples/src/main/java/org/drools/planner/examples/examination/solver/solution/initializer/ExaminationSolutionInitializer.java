@@ -25,12 +25,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
@@ -48,24 +46,22 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(SolutionDirector solutionDirector) {
-        Examination examination = (Examination) solutionDirector.getWorkingSolution();
-        initializeExamList(solutionDirector, examination);
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
+        Examination examination = (Examination) scoreDirector.getWorkingSolution();
+        initializeExamList(scoreDirector, examination);
     }
 
-    private void initializeExamList(SolutionDirector solutionDirector, Examination examination) {
+    private void initializeExamList(ScoreDirector scoreDirector, Examination examination) {
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size()); // TODO this can be returned from createExamAssigningScoreList
-        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         List<ExamInitializationWeight> examInitialWeightList = createExamAssigningScoreList(examination);
 
         for (ExamInitializationWeight examInitialWeight : examInitialWeightList) {
-            Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = scoreDirector.calculateScore();
             Exam leader = examInitialWeight.getExam();
-            FactHandle leaderHandle = null;
 
             List<ExamToHandle> examToHandleList = new ArrayList<ExamToHandle>(5);
             if (leader.getExamCoincidence() == null) {
@@ -79,23 +75,24 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
             for (Period period : periodList) {
                 for (ExamToHandle examToHandle : examToHandleList) {
-                    examToHandle.getExam().setPeriod(period);
-                    if (examToHandle.getExamHandle() == null) {
-                        examToHandle.setExamHandle(workingMemory.insert(examToHandle.getExam()));
-                        if (examToHandle.getExam().isCoincidenceLeader()) {
-                            leaderHandle = examToHandle.getExamHandle();
-                        }
+                    Exam exam = examToHandle.getExam();
+                    if (!examToHandle.isAdded()) {
+                        scoreDirector.beforeEntityAdded(exam);
+                        exam.setPeriod(period);
+                        scoreDirector.afterEntityAdded(exam);
+                        examToHandle.setAdded(true);
                     } else {
-                        workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                        scoreDirector.beforeVariableChanged(exam, "period");
+                        exam.setPeriod(period);
+                        scoreDirector.afterVariableChanged(exam, "period");
                     }
                 }
-                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                Score score = scoreDirector.calculateScore();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
 
-            scheduleLeader(periodScoringList, roomList, solutionDirector, workingMemory, unscheduledScore,
-                    examToHandleList, leader, leaderHandle);
+            scheduleLeader(periodScoringList, roomList, scoreDirector, unscheduledScore, examToHandleList, leader);
             examList.add(leader);
 
             // Schedule the non leaders
@@ -103,7 +100,7 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 Exam exam = examToHandle.getExam();
                 // Leader already has a room
                 if (!exam.isCoincidenceLeader()) {
-                    scheduleNonLeader(roomList, solutionDirector, workingMemory, exam, examToHandle.getExamHandle());
+                    scheduleNonLeader(roomList, scoreDirector, exam);
                     examList.add(exam);
                 }
             }
@@ -113,8 +110,8 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
     }
 
     private void scheduleLeader(List<PeriodScoring> periodScoringList, List<Room> roomList,
-            SolutionDirector solutionDirector, WorkingMemory workingMemory, Score unscheduledScore,
-            List<ExamToHandle> examToHandleList, Exam leader, FactHandle leaderHandle) {
+            ScoreDirector scoreDirector, Score unscheduledScore,
+            List<ExamToHandle> examToHandleList, Exam leader) {
         boolean perfectMatch = false;
         Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
         Period bestPeriod = null;
@@ -125,13 +122,16 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 break;
             }
             for (ExamToHandle examToHandle : examToHandleList) {
-                examToHandle.getExam().setPeriod(periodScoring.getPeriod());
-                workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                Exam exam = examToHandle.getExam();
+                scoreDirector.beforeVariableChanged(exam, "period");
+                exam.setPeriod(periodScoring.getPeriod());
+                scoreDirector.afterVariableChanged(exam, "period");
             }
             for (Room room : roomList) {
+                scoreDirector.beforeVariableChanged(leader, "room");
                 leader.setRoom(room);
-                workingMemory.update(leaderHandle, leader);
-                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                scoreDirector.afterVariableChanged(leader, "room");
+                Score score = scoreDirector.calculateScore();
                 if (score.compareTo(unscheduledScore) < 0) {
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
@@ -155,30 +155,32 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 throw new IllegalStateException("The bestPeriod (" + bestPeriod + ") or the bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
+            scoreDirector.beforeVariableChanged(leader, "room");
             leader.setRoom(bestRoom);
-            workingMemory.update(leaderHandle, leader);
+            scoreDirector.afterVariableChanged(leader, "room");
             for (ExamToHandle examToHandle : examToHandleList) {
-                examToHandle.getExam().setPeriod(bestPeriod);
-                workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
+                Exam exam = examToHandle.getExam();
+                scoreDirector.beforeVariableChanged(exam, "period");
+                exam.setPeriod(bestPeriod);
+                scoreDirector.afterVariableChanged(exam, "period");
             }
         }
         logger.debug("    Exam ({}) initialized.", leader);
     }
 
-    private void scheduleNonLeader(List<Room> roomList,
-            SolutionDirector solutionDirector, WorkingMemory workingMemory,
-            Exam exam, FactHandle examHandle) {
+    private void scheduleNonLeader(List<Room> roomList, ScoreDirector scoreDirector, Exam exam) {
         if (exam.getRoom() != null) {
             throw new IllegalStateException("Exam (" + exam + ") already has a room.");
         }
-        Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
+        Score unscheduledScore = scoreDirector.calculateScore();
         boolean perfectMatch = false;
         Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
         Room bestRoom = null;
         for (Room room : roomList) {
+            scoreDirector.beforeVariableChanged(exam, "room");
             exam.setRoom(room);
-            workingMemory.update(examHandle, exam);
-            Score score = solutionDirector.calculateScoreFromWorkingMemory();
+            scoreDirector.afterVariableChanged(exam, "room");
+            Score score = scoreDirector.calculateScore();
             if (score.compareTo(unscheduledScore) < 0) {
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
@@ -197,8 +199,9 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
                 throw new IllegalStateException("The bestRoom ("
                         + bestRoom + ") cannot be null.");
             }
+            scoreDirector.beforeVariableChanged(exam, "room");
             exam.setRoom(bestRoom);
-            workingMemory.update(examHandle, exam);
+            scoreDirector.afterVariableChanged(exam, "room");
         }
         logger.debug("    Exam ({}) initialized.", exam);
     }
@@ -206,7 +209,7 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
     public static class ExamToHandle {
 
         private Exam exam;
-        private FactHandle examHandle;
+        private boolean added = false;
 
         public ExamToHandle(Exam exam) {
             this.exam = exam;
@@ -216,12 +219,12 @@ public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand 
             return exam;
         }
 
-        public FactHandle getExamHandle() {
-            return examHandle;
+        public boolean isAdded() {
+            return added;
         }
 
-        public void setExamHandle(FactHandle examHandle) {
-            this.examHandle = examHandle;
+        public void setAdded(boolean added) {
+            this.added = added;
         }
     }
 

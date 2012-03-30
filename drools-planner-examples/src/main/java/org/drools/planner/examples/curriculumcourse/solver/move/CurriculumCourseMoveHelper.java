@@ -16,31 +16,30 @@
 
 package org.drools.planner.examples.curriculumcourse.solver.move;
 
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 
 public class CurriculumCourseMoveHelper {
 
-    public static void movePeriod(WorkingMemory workingMemory, Lecture lecture, Period period) {
-        FactHandle factHandle = workingMemory.getFactHandle(lecture);
+    public static void movePeriod(ScoreDirector scoreDirector, Lecture lecture, Period period) {
+        scoreDirector.beforeVariableChanged(lecture, "period");
         lecture.setPeriod(period);
-        workingMemory.update(factHandle, lecture);
+        scoreDirector.afterVariableChanged(lecture, "period");
     }
 
-    public static void moveRoom(WorkingMemory workingMemory, Lecture lecture, Room room) {
-        FactHandle factHandle = workingMemory.getFactHandle(lecture);
+    public static void moveRoom(ScoreDirector scoreDirector, Lecture lecture, Room room) {
+        scoreDirector.beforeVariableChanged(lecture, "room");
         lecture.setRoom(room);
-        workingMemory.update(factHandle, lecture);
+        scoreDirector.afterVariableChanged(lecture, "room");
     }
 
-    public static void moveLecture(WorkingMemory workingMemory, Lecture lecture, Period period, Room room) {
-        FactHandle factHandle = workingMemory.getFactHandle(lecture);
+    public static void moveLecture(ScoreDirector scoreDirector, Lecture lecture, Period period, Room room) {
+        scoreDirector.beforeAllVariablesChanged(lecture);
         lecture.setPeriod(period);
         lecture.setRoom(room);
-        workingMemory.update(factHandle, lecture);
+        scoreDirector.afterAllVariablesChanged(lecture);
     }
 
     private CurriculumCourseMoveHelper() {

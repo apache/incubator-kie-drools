@@ -22,9 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 
@@ -38,18 +37,16 @@ public class BedChangeMove implements Move {
         this.toBed = toBed;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(bedDesignation.getBed(), toBed);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new BedChangeMove(bedDesignation, bedDesignation.getBed());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        FactHandle factHandle = workingMemory.getFactHandle(bedDesignation);
-        bedDesignation.setBed(toBed);
-        workingMemory.update(factHandle, bedDesignation);
+    public void doMove(ScoreDirector scoreDirector) {
+        PatientAdmissionMoveHelper.moveBed(scoreDirector, bedDesignation, toBed);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

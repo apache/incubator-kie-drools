@@ -18,9 +18,9 @@ package org.drools.planner.core.phase.step;
 
 import java.util.Random;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 public abstract class AbstractStepScope {
@@ -79,12 +79,12 @@ public abstract class AbstractStepScope {
     // Calculated methods
     // ************************************************************************
 
-    public Solution getWorkingSolution() {
-        return getSolverPhaseScope().getWorkingSolution();
+    public ScoreDirector getScoreDirector() {
+        return getSolverPhaseScope().getScoreDirector();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return getSolverPhaseScope().getWorkingMemory();
+    public Solution getWorkingSolution() {
+        return getSolverPhaseScope().getWorkingSolution();
     }
 
     public Random getWorkingRandom() {

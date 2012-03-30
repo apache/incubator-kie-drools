@@ -20,13 +20,13 @@ import java.awt.BorderLayout;
 import java.util.Random;
 import javax.swing.JTabbedPane;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.vehiclerouting.domain.VrpCustomer;
 import org.drools.planner.examples.vehiclerouting.domain.VrpLocation;
 import org.drools.planner.examples.vehiclerouting.domain.VrpSchedule;
@@ -104,17 +104,19 @@ public class VehicleRoutingPanel extends SolutionPanel {
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(SolutionDirector solutionDirector) {
-                VrpSchedule solution = (VrpSchedule) solutionDirector.getWorkingSolution();
-                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+            public void doChange(ScoreDirector scoreDirector) {
+                VrpSchedule solution = (VrpSchedule) scoreDirector.getWorkingSolution();
+                scoreDirector.beforeProblemFactAdded(newLocation);
                 solution.getLocationList().add(newLocation);
-                workingMemory.insert(newLocation);
+                scoreDirector.afterProblemFactAdded(newLocation);
                 VrpCustomer newCustomer = new VrpCustomer();
                 newCustomer.setId(newLocation.getId());
                 newCustomer.setLocation(newLocation);
                 // Demand must not be 0
                 newCustomer.setDemand(demandRandom.nextInt(10) + 1);
+                scoreDirector.beforeEntityAdded(newCustomer);
                 solution.getCustomerList().add(newCustomer);
+                scoreDirector.afterEntityAdded(newCustomer);
             }
         });
         updatePanel(solutionBusiness.getSolution());

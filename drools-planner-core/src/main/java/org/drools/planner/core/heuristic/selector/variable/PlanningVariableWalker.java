@@ -18,32 +18,23 @@ package org.drools.planner.core.heuristic.selector.variable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.move.generic.GenericChangeMove;
-import org.drools.planner.core.move.generic.GenericChangeMoveFactory;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
     
     private final PlanningEntityDescriptor planningEntityDescriptor;
     private List<PlanningValueWalker> planningValueWalkerList;
 
-    private WorkingMemory workingMemory;
-    private SolutionDescriptor solutionDescriptor;
-    private SolutionDirector solutionDirector;
+    private ScoreDirector scoreDirector;
 
     private Object planningEntity;
 
@@ -63,9 +54,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
             planningValueWalker.phaseStarted(solverPhaseScope);
         }
-        workingMemory = solverPhaseScope.getWorkingMemory();
-        solutionDescriptor = solverPhaseScope.getSolutionDescriptor();
-        solutionDirector = solverPhaseScope.getSolutionDirector();
+        scoreDirector = solverPhaseScope.getScoreDirector();
     }
 
     public void beforeDeciding(AbstractStepScope stepScope) {
@@ -84,7 +73,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
             planningValueWalker.phaseEnded(solverPhaseScope);
         }
-        workingMemory = null;
+        scoreDirector = null;
         planningEntity = null;
     }
 
@@ -94,13 +83,15 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     public void initWalk(Object planningEntity) {
         this.planningEntity = planningEntity;
+        scoreDirector.beforeEntityAdded(planningEntity);
         for (PlanningValueWalker planningValueWalker : planningValueWalkerList) {
             planningValueWalker.initWalk(planningEntity);
         }
+        // TODO delete dead code in Walker's so this WorkingMemory specific stuff is gone
         // Insert must happen after every planningValueWalker.initWalk() to avoid a NullPointerException, for example:
         // Rules use Lecture.getDay(), which is implemented as "return period.getDay();"
         // so the planning variable period cannot be null when the planning entity is inserted.
-        workingMemory.insert(planningEntity);
+        scoreDirector.afterEntityAdded(planningEntity);
     }
 
     public boolean hasWalk() {
@@ -136,7 +127,9 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
 
     // TODO refactor variableWalker to this
     public Iterator<Move> moveIterator(final Object planningEntity) {
-        workingMemory.insert(planningEntity);
+        scoreDirector.beforeEntityAdded(planningEntity);
+        // TODO add uninitialized entities immediately again
+        scoreDirector.afterEntityAdded(planningEntity);
         if (planningValueWalkerList.size() == 1) {
             PlanningValueWalker planningValueWalker = planningValueWalkerList.iterator().next();
             return planningValueWalker.moveIterator(planningEntity);
@@ -157,7 +150,7 @@ public class PlanningVariableWalker implements SolverPhaseLifecycleListener {
                         // TODO the algorithms should be able to cope with that. Mind the use of ..walkerList.get(j)
                         throw new IllegalStateException("The planning entity class ("
                                 + planningEntityDescriptor.getPlanningEntityClass() + ") for planning variable ("
-                                + planningValueWalker.getPlanningVariableDescriptor().getVariablePropertyName()
+                                + planningValueWalker.getPlanningVariableDescriptor().getVariableName()
                                 + ") has an empty planning value range for planning entity (" + planningEntity + ").");
                     }
                     initialMove = moveIterator.next();

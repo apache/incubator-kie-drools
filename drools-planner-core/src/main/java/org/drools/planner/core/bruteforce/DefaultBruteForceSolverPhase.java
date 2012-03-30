@@ -44,7 +44,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
         BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
         while (!termination.isPhaseTerminated(bruteForceSolverPhaseScope) && bruteForceEntityWalker.hasWalk()) {
             bruteForceEntityWalker.walk();
-            Score score = bruteForceSolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score score = bruteForceSolverPhaseScope.calculateScore();
             bruteForceStepScope.setScore(score);
             stepTaken(bruteForceStepScope);
             bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, bruteForceStepScope);

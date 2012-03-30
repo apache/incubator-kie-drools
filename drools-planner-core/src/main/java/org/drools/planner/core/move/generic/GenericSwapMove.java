@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericSwapMove implements Move {
 
@@ -43,7 +43,7 @@ public class GenericSwapMove implements Move {
         this.rightPlanningEntity = rightPlanningEntity;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
             Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
@@ -54,20 +54,22 @@ public class GenericSwapMove implements Move {
         return false;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new GenericSwapMove(planningVariableDescriptors,
                 rightPlanningEntity, leftPlanningEntity);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
             Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
+                scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(leftPlanningEntity, rightValue);
-                workingMemory.update(workingMemory.getFactHandle(leftPlanningEntity), leftPlanningEntity);
+                scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
+                scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(rightPlanningEntity, leftValue);
-                workingMemory.update(workingMemory.getFactHandle(rightPlanningEntity), rightPlanningEntity);
+                scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
             }
         }
     }

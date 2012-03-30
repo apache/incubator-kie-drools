@@ -18,10 +18,10 @@ package org.drools.planner.core.localsearch.decider;
 
 import java.util.Random;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 public class MoveScope {
@@ -76,12 +76,12 @@ public class MoveScope {
     // Calculated methods
     // ************************************************************************
 
-    public Solution getWorkingSolution() {
-        return localSearchStepScope.getWorkingSolution();
+    public ScoreDirector getScoreDirector() {
+        return localSearchStepScope.getScoreDirector();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return localSearchStepScope.getWorkingMemory();
+    public Solution getWorkingSolution() {
+        return localSearchStepScope.getWorkingSolution();
     }
 
     public Random getWorkingRandom() {

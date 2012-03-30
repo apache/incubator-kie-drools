@@ -20,36 +20,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 // TODO Unify me into the normal GenericChangeMoveFactory
 public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
-    private SolutionDirector solutionDirector;
+    private ScoreDirector scoreDirector;
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
         solutionDescriptor = localSearchSolverPhaseScope.getSolutionDescriptor();
-        solutionDirector = localSearchSolverPhaseScope.getSolutionDirector();
+        scoreDirector = localSearchSolverPhaseScope.getScoreDirector();
     }
 
     public List<Move> createMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
-        Solution workingSolution = solutionDirector.getWorkingSolution();
-        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+        Solution workingSolution = scoreDirector.getWorkingSolution();
         for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getPlanningEntityDescriptors()) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
-                Map<Object,List<Object>> variableToEntitiesMap = solutionDirector.getVariableToEntitiesMap(
+                Map<Object,List<Object>> variableToEntitiesMap = scoreDirector.getVariableToEntitiesMap(
                         variableDescriptor);
                 // TODO this fetches the list twice
                 List<Object> entityList =  entityDescriptor.extractEntities(workingSolution);
@@ -85,7 +83,7 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
             throw new IllegalStateException("The planningValue (" + planningValue
                     + ") has multiple trailing entities (" + trailingEntities
                     + ") pointing to it for chained planningVariable ("
-                    + variableDescriptor.getVariablePropertyName() + ").");
+                    + variableDescriptor.getVariableName() + ").");
         }
         return trailingEntities.get(0);
     }
@@ -94,7 +92,7 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseEnded(localSearchSolverPhaseScope);
         solutionDescriptor = null;
-        solutionDirector = null;
+        scoreDirector = null;
     }
 
 }

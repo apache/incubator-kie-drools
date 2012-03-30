@@ -41,14 +41,14 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
         if (!valueRangeAnnotation.solutionProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
                     + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with an empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
@@ -66,7 +66,7 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
         if (rangePropertyDescriptor == null) {
             String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a planningEntityProperty (" + planningEntityProperty
                     + ") that does not exist.";
             if (planningEntityProperty.length() >= 2 && Character.isUpperCase(planningEntityProperty.charAt(1))) {
@@ -81,7 +81,7 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
         if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a planningEntityProperty (" + planningEntityProperty
                     + ") that does not return a Collection.");
         }

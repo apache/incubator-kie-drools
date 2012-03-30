@@ -39,14 +39,14 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
         if (valueRangeAnnotation.solutionProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with an empty solutionProperty ("
                     + valueRangeAnnotation.solutionProperty() + ").");
         }
         if (!valueRangeAnnotation.planningEntityProperty().equals("")) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty planningEntityProperty ("
                     + valueRangeAnnotation.planningEntityProperty() + ").");
         }
@@ -65,7 +65,7 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
         if (rangePropertyDescriptor == null) {
             String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a solutionClass ("
                     + planningEntityDescriptor.getSolutionDescriptor().getSolutionClass()
                     + ") solutionProperty (" + solutionProperty
@@ -82,7 +82,7 @@ public class SolutionPropertyPlanningValueRangeDescriptor extends AbstractPlanni
         if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a solutionClass ("
                     + planningEntityDescriptor.getSolutionDescriptor().getSolutionClass()
                     + ") solutionProperty (" + solutionProperty

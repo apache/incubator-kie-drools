@@ -14,111 +14,67 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solution.director;
+package org.drools.planner.core.score.director.drools;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.ClassObjectFilter;
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.AbstractScoreDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.holder.ScoreHolder;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Default implementation for {@link SolutionDirector}.
- * @see SolutionDirector
+ * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
+ * of the {@link Solution} workingSolution.
+ * @see ScoreDirector
  */
-public class DefaultSolutionDirector implements SolutionDirector {
+public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirectorFactory> {
 
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    protected SolutionDescriptor solutionDescriptor;
-
-    protected RuleBase ruleBase;
-    protected ScoreDefinition scoreDefinition;
-
-    protected Solution workingSolution;
     protected StatefulSession workingMemory;
     protected ScoreHolder workingScoreHolder;
 
-    protected long calculateCount;
-
-    public SolutionDescriptor getSolutionDescriptor() {
-        return solutionDescriptor;
+    public DroolsScoreDirector(DroolsScoreDirectorFactory scoreDirectorFactory) {
+        super(scoreDirectorFactory);
     }
 
-    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
-        this.solutionDescriptor = solutionDescriptor;
+    protected RuleBase getRuleBase() {
+        return scoreDirectorFactory.getRuleBase();
     }
 
-    public RuleBase getRuleBase() {
-        return ruleBase;
-    }
-
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
-    }
-
-    public ScoreDefinition getScoreDefinition() {
-        return scoreDefinition;
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        this.scoreDefinition = scoreDefinition;
-    }
-
-    public Solution getWorkingSolution() {
-        return workingSolution;
-    }
-
-    /**
-     * The workingSolution must never be the same instance as the bestSolution, it should be a (un)changed clone.
-     * @param workingSolution never null
-     */
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
         resetWorkingMemory();
     }
 
+    /**
+     * @return never null
+     */
     public WorkingMemory getWorkingMemory() {
         return workingMemory;
     }
 
-    public long getCalculateCount() {
-        return calculateCount;
-    }
-
     // ************************************************************************
-    // Calculated methods
+    // Complex methods
     // ************************************************************************
-
-    public void resetCalculateCount() {
-        calculateCount = 0L;
-    }
 
     private void resetWorkingMemory() {
         if (workingMemory != null) {
             workingMemory.dispose();
         }
-        workingMemory = ruleBase.newStatefulSession();
-        workingScoreHolder = scoreDefinition.buildScoreHolder();
+        workingMemory = getRuleBase().newStatefulSession();
+        workingScoreHolder = getScoreDefinition().buildScoreHolder();
         workingMemory.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         for (Object fact : getWorkingFacts()) {
             workingMemory.insert(fact);
@@ -126,76 +82,100 @@ public class DefaultSolutionDirector implements SolutionDirector {
     }
 
     public Collection<Object> getWorkingFacts() {
-        return solutionDescriptor.getAllFacts(workingSolution);
+        return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
-    public List<Object> getWorkingPlanningEntityList() {
-        return solutionDescriptor.getPlanningEntityList(workingSolution);
+    public void beforeEntityAdded(Object entity) {
+        // Do nothing
     }
 
-    public boolean isWorkingSolutionInitialized() {
-        return solutionDescriptor.isInitialized(workingSolution);
+    public void afterEntityAdded(Object entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("The entity (" + entity + ") cannot be added to the ScoreDirector.");
+        }
+        if (!getSolutionDescriptor().hasPlanningEntityDescriptor(entity.getClass())) {
+            throw new IllegalArgumentException("The entity (" + entity + ") of class (" + entity.getClass()
+                    + ") is not a configured @PlanningEntity.");
+        }
+        workingMemory.insert(entity);
     }
 
-    public Score calculateScoreFromWorkingMemory() {
+    public void beforeAllVariablesChanged(Object entity) {
+        // Do nothing
+    }
+
+    public void afterAllVariablesChanged(Object entity) {
+        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
+        }
+        workingMemory.update(factHandle, entity);
+    }
+
+    public void beforeVariableChanged(Object entity, String variableName) {
+        beforeAllVariablesChanged(entity);
+    }
+
+    public void afterVariableChanged(Object entity, String variableName) {
+        afterAllVariablesChanged(entity);
+    }
+
+    public void beforeEntityRemoved(Object entity) {
+        // Do nothing
+    }
+
+    public void afterEntityRemoved(Object entity) {
+        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
+        }
+        workingMemory.retract(factHandle);
+    }
+
+    public void beforeProblemFactAdded(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactAdded(Object problemFact) {
+        workingMemory.insert(problemFact);
+    }
+
+    public void beforeProblemFactChanged(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactChanged(Object problemFact) {
+        FactHandle factHandle = workingMemory.getFactHandle(problemFact);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The problemFact (" + problemFact
+                    + ") was never added to this ScoreDirector.");
+        }
+        workingMemory.update(factHandle, problemFact);
+    }
+
+    public void beforeProblemFactRemoved(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactRemoved(Object problemFact) {
+        FactHandle factHandle = workingMemory.getFactHandle(problemFact);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The problemFact (" + problemFact
+                    + ") was never added to this ScoreDirector.");
+        }
+        workingMemory.retract(factHandle);
+    }
+
+    public Score calculateScore() {
         workingMemory.fireAllRules();
-        Score score = workingScoreHolder.calculateScore();
+        Score score = workingScoreHolder.extractScore();
         workingSolution.setScore(score);
         calculateCount++;
         return score;
     }
-    
-    public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
-        List<Object> entityList = variableDescriptor.getPlanningEntityDescriptor().extractEntities(
-                workingSolution);
-        Map<Object, List<Object>> variableToEntitiesMap = new HashMap<Object, List<Object>>(entityList.size());
-        for (Object entity : entityList) {
-            Object variable = variableDescriptor.getValue(entity);
-            List<Object> subEntities = variableToEntitiesMap.get(variable);
-            if (subEntities == null) {
-                subEntities = new ArrayList<Object>();
-                variableToEntitiesMap.put(variable, subEntities);
-            }
-            subEntities.add(entity);
-        }
-        return variableToEntitiesMap;
-    }
 
-    public void disposeWorkingSolution() {
-        if (workingMemory != null) {
-            workingMemory.dispose();
-            workingMemory = null;
-        }
-    }
-
-    /**
-     * @param workingScore never null
-     */
-    public void assertWorkingScore(Score workingScore) {
-        DefaultSolutionDirector uncorruptedSolutionDirector = cloneWithoutWorkingSolution();
-        uncorruptedSolutionDirector.setWorkingSolution(workingSolution);
-        Score uncorruptedScore = uncorruptedSolutionDirector.calculateScoreFromWorkingMemory();
-        if (!workingScore.equals(uncorruptedScore)) {
-            String scoreCorruptionAnalysis = buildScoreCorruptionAnalysis(uncorruptedSolutionDirector);
-            uncorruptedSolutionDirector.disposeWorkingSolution();
-            throw new IllegalStateException(
-                    "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + "):\n"
-                            + scoreCorruptionAnalysis);
-        } else {
-            uncorruptedSolutionDirector.disposeWorkingSolution();
-        }
-    }
-
-    public DefaultSolutionDirector cloneWithoutWorkingSolution() {
-        DefaultSolutionDirector clone = new DefaultSolutionDirector();
-        clone.setSolutionDescriptor(solutionDescriptor);
-        clone.setRuleBase(ruleBase);
-        clone.setScoreDefinition(scoreDefinition);
-        return clone;
-    }
-
-    private String buildScoreCorruptionAnalysis(DefaultSolutionDirector uncorruptedSolutionDirector) {
+    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        DroolsScoreDirector uncorruptedDroolsScoreDirector = (DroolsScoreDirector) uncorruptedScoreDirector;
         Set<ConstraintOccurrence> workingConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
         Iterator<ConstraintOccurrence> workingIt = (Iterator<ConstraintOccurrence>)
                 workingMemory.iterateObjects(
@@ -205,7 +185,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
         }
         Set<ConstraintOccurrence> uncorruptedConstraintOccurrenceSet = new LinkedHashSet<ConstraintOccurrence>();
         Iterator<ConstraintOccurrence> uncorruptedIt = (Iterator<ConstraintOccurrence>)
-                uncorruptedSolutionDirector.getWorkingMemory().iterateObjects(
+                uncorruptedDroolsScoreDirector.getWorkingMemory().iterateObjects(
                         new ClassObjectFilter(ConstraintOccurrence.class));
         while (uncorruptedIt.hasNext()) {
             uncorruptedConstraintOccurrenceSet.add(uncorruptedIt.next());
@@ -256,6 +236,13 @@ public class DefaultSolutionDirector implements SolutionDirector {
                     " Verify that each ConstraintOccurrence's causes and weight is correct.");
         }
         return analysis.toString();
+    }
+
+    public void dispose() {
+        if (workingMemory != null) {
+            workingMemory.dispose();
+            workingMemory = null;
+        }
     }
 
 }

@@ -22,9 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
@@ -38,26 +37,26 @@ public class SeatDesignationSwapMove implements Move {
         this.rightSeatDesignation = rightSeatDesignation;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(leftSeatDesignation.getSeat(), rightSeatDesignation.getSeat());
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new SeatDesignationSwapMove(rightSeatDesignation, leftSeatDesignation);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Seat oldLeftSeat = leftSeatDesignation.getSeat();
         Seat oldRightSeat = rightSeatDesignation.getSeat();
-        moveSeat(workingMemory, leftSeatDesignation, oldRightSeat);
-        moveSeat(workingMemory, rightSeatDesignation, oldLeftSeat);
+        moveSeat(scoreDirector, leftSeatDesignation, oldRightSeat);
+        moveSeat(scoreDirector, rightSeatDesignation, oldLeftSeat);
     }
 
     // Extract to helper class if other moves are created
-    private static void moveSeat(WorkingMemory workingMemory, SeatDesignation seatDesignation, Seat toSeat) {
-        FactHandle factHandle = workingMemory.getFactHandle(seatDesignation);
+    private static void moveSeat(ScoreDirector scoreDirector, SeatDesignation seatDesignation, Seat toSeat) {
+        scoreDirector.beforeVariableChanged(seatDesignation, "seat");
         seatDesignation.setSeat(toSeat);
-        workingMemory.update(factHandle, seatDesignation);
+        scoreDirector.afterVariableChanged(seatDesignation, "seat");
     }
 
     public Collection<? extends Object> getPlanningEntities() {

@@ -22,8 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 
@@ -37,16 +37,16 @@ public class RoomChangeMove implements Move {
         this.toRoom = toRoom;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(lecture.getRoom(), toRoom);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new RoomChangeMove(lecture, lecture.getRoom());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        CurriculumCourseMoveHelper.moveRoom(workingMemory, lecture, toRoom);
+    public void doMove(ScoreDirector scoreDirector) {
+        CurriculumCourseMoveHelper.moveRoom(scoreDirector, lecture, toRoom);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

@@ -16,10 +16,10 @@
 
 package org.drools.planner.core.phase.custom;
 
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public interface CustomSolverPhaseCommand {
 
-    void changeWorkingSolution(SolutionDirector solutionDirector);
+    void changeWorkingSolution(ScoreDirector scoreDirector);
 
 }

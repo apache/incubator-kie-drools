@@ -22,8 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
@@ -38,29 +38,29 @@ public class ExamSwapMove implements Move {
         this.rightExam = rightExam;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !(ObjectUtils.equals(leftExam.getPeriod(), rightExam.getPeriod())
                 && ObjectUtils.equals(leftExam.getRoom(), rightExam.getRoom()));
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new ExamSwapMove(rightExam, leftExam);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Period oldLeftPeriod = leftExam.getPeriod();
         Period oldRightPeriod = rightExam.getPeriod();
         Room oldLeftRoom = leftExam.getRoom();
         Room oldRightRoom = rightExam.getRoom();
         if (oldLeftPeriod.equals(oldRightPeriod)) {
-            ExaminationMoveHelper.moveRoom(workingMemory, leftExam, oldRightRoom);
-            ExaminationMoveHelper.moveRoom(workingMemory, rightExam, oldLeftRoom);
+            ExaminationMoveHelper.moveRoom(scoreDirector, leftExam, oldRightRoom);
+            ExaminationMoveHelper.moveRoom(scoreDirector, rightExam, oldLeftRoom);
         } else if (oldLeftRoom.equals(oldRightRoom)) {
-            ExaminationMoveHelper.movePeriod(workingMemory, leftExam, oldRightPeriod);
-            ExaminationMoveHelper.movePeriod(workingMemory, rightExam, oldLeftPeriod);
+            ExaminationMoveHelper.movePeriod(scoreDirector, leftExam, oldRightPeriod);
+            ExaminationMoveHelper.movePeriod(scoreDirector, rightExam, oldLeftPeriod);
         } else {
-            ExaminationMoveHelper.moveExam(workingMemory, leftExam, oldRightPeriod, oldRightRoom);
-            ExaminationMoveHelper.moveExam(workingMemory, rightExam, oldLeftPeriod, oldLeftRoom);
+            ExaminationMoveHelper.moveExam(scoreDirector, leftExam, oldRightPeriod, oldRightRoom);
+            ExaminationMoveHelper.moveExam(scoreDirector, rightExam, oldLeftPeriod, oldLeftRoom);
         }
     }
 

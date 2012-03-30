@@ -24,9 +24,9 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericReverseChainedChangePartMove implements Move {
 
@@ -50,11 +50,11 @@ public class GenericReverseChainedChangePartMove implements Move {
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true; // Done by GenericChainedChangePartMoveFactory
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         ArrayList<Object> reversedEntitiesSubChain = new ArrayList<Object>(entitiesSubChain);
         Collections.reverse(reversedEntitiesSubChain);
@@ -63,42 +63,47 @@ public class GenericReverseChainedChangePartMove implements Move {
                 newTrailingEntity, oldTrailingEntity);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         if (firstEntity.equals(newTrailingEntity)) {
             // Unmoved reverse
             // Temporary close the old chain
             if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
             }
         } else {
             // Close the old chain
             if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
             }
         }
         // Change the entity
         Object nextEntity = toPlanningValue;
         for (ListIterator<Object> it = entitiesSubChain.listIterator(entitiesSubChain.size()); it.hasPrevious();) {
             Object entity = it.previous();
+            scoreDirector.beforeVariableChanged(entity, planningVariableDescriptor.getVariableName());
             planningVariableDescriptor.setValue(entity, nextEntity);
-            workingMemory.update(workingMemory.getFactHandle(entity), entity);
+            scoreDirector.afterVariableChanged(entity, planningVariableDescriptor.getVariableName());
             nextEntity = entity;
         }
         if (firstEntity.equals(newTrailingEntity)) {
             // Unmoved reverse
             // Reroute the old chain
             if (oldTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(oldTrailingEntity, firstEntity);
-                workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
+                scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
             }
         } else {
             // Reroute the new chain
             if (newTrailingEntity != null) {
+                scoreDirector.beforeVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
                 planningVariableDescriptor.setValue(newTrailingEntity, firstEntity);
-                workingMemory.update(workingMemory.getFactHandle(newTrailingEntity), newTrailingEntity);
+                scoreDirector.afterVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
             }
         }
     }
@@ -118,8 +123,8 @@ public class GenericReverseChainedChangePartMove implements Move {
             GenericReverseChainedChangePartMove other = (GenericReverseChainedChangePartMove) o;
             return new EqualsBuilder()
                     .append(entitiesSubChain, other.entitiesSubChain)
-                    .append(planningVariableDescriptor.getVariablePropertyName(),
-                            other.planningVariableDescriptor.getVariablePropertyName())
+                    .append(planningVariableDescriptor.getVariableName(),
+                            other.planningVariableDescriptor.getVariableName())
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -130,7 +135,7 @@ public class GenericReverseChainedChangePartMove implements Move {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(entitiesSubChain)
-                .append(planningVariableDescriptor.getVariablePropertyName())
+                .append(planningVariableDescriptor.getVariableName())
                 .append(toPlanningValue)
                 .toHashCode();
     }

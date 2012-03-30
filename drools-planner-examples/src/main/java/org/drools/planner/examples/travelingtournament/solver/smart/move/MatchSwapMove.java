@@ -21,11 +21,11 @@ import java.util.Collection;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.solver.move.TravelingTournamentMoveHelper;
 
 public class MatchSwapMove implements Move {
 
@@ -37,22 +37,19 @@ public class MatchSwapMove implements Move {
         this.rightMatch = rightMatch;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return this;
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        Day oldFirstMatchDay = leftMatch.getDay();
-        FactHandle firstMatchHandle = workingMemory.getFactHandle(leftMatch);
-        FactHandle secondMatchHandle = workingMemory.getFactHandle(rightMatch);
-        leftMatch.setDay(rightMatch.getDay());
-        rightMatch.setDay(oldFirstMatchDay);
-        workingMemory.update(firstMatchHandle, leftMatch);
-        workingMemory.update(secondMatchHandle, rightMatch);
+    public void doMove(ScoreDirector scoreDirector) {
+        Day oldLeftDay = leftMatch.getDay();
+        Day oldRightDay = rightMatch.getDay();
+        TravelingTournamentMoveHelper.moveDay(scoreDirector, leftMatch, oldRightDay);
+        TravelingTournamentMoveHelper.moveDay(scoreDirector, rightMatch, oldLeftDay);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

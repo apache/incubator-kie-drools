@@ -18,7 +18,6 @@ package org.drools.planner.core.localsearch.decider;
 
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
@@ -27,6 +26,7 @@ import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,14 +92,14 @@ public class DefaultDecider implements Decider {
     }
 
     public void decideNextStep(LocalSearchStepScope stepScope) {
-        WorkingMemory workingMemory = stepScope.getWorkingMemory();
+        ScoreDirector scoreDirector = stepScope.getScoreDirector();
         Iterator<Move> moveIterator = selector.moveIterator(stepScope);
         while (moveIterator.hasNext()) {
             Move move = moveIterator.next();
             MoveScope moveScope = new MoveScope(stepScope);
             moveScope.setMove(move);
             // Filter out not doable moves
-            if (move.isMoveDoable(workingMemory)) {
+            if (move.isMoveDoable(scoreDirector)) {
                 doMove(moveScope);
                 if (forager.isQuitEarly()) {
                     break;
@@ -121,22 +121,21 @@ public class DefaultDecider implements Decider {
     }
 
     private void doMove(MoveScope moveScope) {
-        WorkingMemory workingMemory = moveScope.getWorkingMemory();
+        ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
-        Move undoMove = move.createUndoMove(workingMemory);
+        Move undoMove = move.createUndoMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
         processMove(moveScope);
-        undoMove.doMove(workingMemory);
+        undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
             LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope()
                     .getLocalSearchSolverPhaseScope();
-            Score undoScore = localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score undoScore = localSearchSolverPhaseScope.calculateScore();
             Score lastCompletedStepScore = localSearchSolverPhaseScope.getLastCompletedStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 // First assert that are probably no corrupted score rules.
-                localSearchSolverPhaseScope.getSolverScope().getSolutionDirector()
-                        .assertWorkingScore(undoScore);
+                scoreDirector.assertWorkingScore(undoScore);
                 throw new IllegalStateException(
                         "The moveClass (" + move.getClass() + ")'s move (" + move
                                 + ") probably has a corrupted undoMove (" + undoMove + ")." +
@@ -152,7 +151,7 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(MoveScope moveScope) {
-        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScoreFromWorkingMemory();
+        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
             moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().assertWorkingScore(score);
         }

@@ -27,21 +27,20 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 // TODO Unify me into the normal GenericSwapMoveFactory
 public class GenericChainedSwapMoveFactory extends AbstractMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
-    private SolutionDirector solutionDirector;
+    private ScoreDirector scoreDirector;
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseStarted(localSearchSolverPhaseScope);
         solutionDescriptor = localSearchSolverPhaseScope.getSolutionDescriptor();
-        solutionDirector = localSearchSolverPhaseScope.getSolutionDirector();
+        scoreDirector = localSearchSolverPhaseScope.getScoreDirector();
     }
 
     public List<Move> createMoveList(Solution solution) {
@@ -72,7 +71,7 @@ public class GenericChainedSwapMoveFactory extends AbstractMoveFactory {
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseEnded(localSearchSolverPhaseScope);
         solutionDescriptor = null;
-        solutionDirector = null;
+        scoreDirector = null;
     }
 
 }

@@ -22,8 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
@@ -38,29 +38,29 @@ public class LectureSwapMove implements Move {
         this.rightLecture = rightLecture;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !(ObjectUtils.equals(leftLecture.getPeriod(), rightLecture.getPeriod())
                 && ObjectUtils.equals(leftLecture.getRoom(), rightLecture.getRoom()));
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new LectureSwapMove(rightLecture, leftLecture);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Period oldLeftPeriod = leftLecture.getPeriod();
         Period oldRightPeriod = rightLecture.getPeriod();
         Room oldLeftRoom = leftLecture.getRoom();
         Room oldRightRoom = rightLecture.getRoom();
         if (oldLeftPeriod.equals(oldRightPeriod)) {
-            CurriculumCourseMoveHelper.moveRoom(workingMemory, leftLecture, oldRightRoom);
-            CurriculumCourseMoveHelper.moveRoom(workingMemory, rightLecture, oldLeftRoom);
+            CurriculumCourseMoveHelper.moveRoom(scoreDirector, leftLecture, oldRightRoom);
+            CurriculumCourseMoveHelper.moveRoom(scoreDirector, rightLecture, oldLeftRoom);
         } else if (oldLeftRoom.equals(oldRightRoom)) {
-            CurriculumCourseMoveHelper.movePeriod(workingMemory, leftLecture, oldRightPeriod);
-            CurriculumCourseMoveHelper.movePeriod(workingMemory, rightLecture, oldLeftPeriod);
+            CurriculumCourseMoveHelper.movePeriod(scoreDirector, leftLecture, oldRightPeriod);
+            CurriculumCourseMoveHelper.movePeriod(scoreDirector, rightLecture, oldLeftPeriod);
         } else {
-            CurriculumCourseMoveHelper.moveLecture(workingMemory, leftLecture, oldRightPeriod, oldRightRoom);
-            CurriculumCourseMoveHelper.moveLecture(workingMemory, rightLecture, oldLeftPeriod, oldLeftRoom);
+            CurriculumCourseMoveHelper.moveLecture(scoreDirector, leftLecture, oldRightPeriod, oldRightRoom);
+            CurriculumCourseMoveHelper.moveLecture(scoreDirector, rightLecture, oldLeftPeriod, oldLeftRoom);
         }
     }
 

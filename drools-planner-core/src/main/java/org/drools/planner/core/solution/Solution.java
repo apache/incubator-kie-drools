@@ -18,8 +18,11 @@ package org.drools.planner.core.solution;
 
 import java.util.Collection;
 
+import org.drools.WorkingMemory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
+import org.drools.planner.core.solver.ProblemFactChange;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.
@@ -46,11 +49,14 @@ public interface Solution<S extends Score> {
     void setScore(S score);
 
     /**
-     * Called by the {@link Solver} when the {@link Solution} needs to be inserted into an empty WorkingMemory.
-     * These facts can be used by the score rules. They don't change during planning.
+     * Called by the {@link DroolsScoreDirector} when the {@link Solution} needs to be inserted
+     * into an empty {@link WorkingMemory}.
+     * These facts can be used by the score rules.
+     * They don't change during planning (except through {@link ProblemFactChange} events).
      * <p/>
-     * Do not include the planning entities as problem facts: they are automatically inserted into the WorkingMemory
-     * if and only if they are initialized. When they are initialized later, they are also automatically inserted.
+     * Do not include the planning entities as problem facts:
+     * they are automatically inserted into the {@link WorkingMemory} if and only if they are initialized.
+     * When they are initialized later, they are also automatically inserted.
      * @return never null (although an empty collection is allowed),
      *         all the facts of this solution except for the planning entities
      */

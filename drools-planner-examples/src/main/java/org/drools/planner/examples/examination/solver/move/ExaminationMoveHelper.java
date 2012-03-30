@@ -16,42 +16,43 @@
 
 package org.drools.planner.examples.examination.solver.move;
 
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
 
 public class ExaminationMoveHelper {
 
-    public static void movePeriod(WorkingMemory workingMemory, Exam exam, Period period) {
-        FactHandle factHandle = workingMemory.getFactHandle(exam);
+    public static void movePeriod(ScoreDirector scoreDirector, Exam exam, Period period) {
+        scoreDirector.beforeVariableChanged(exam, "period");
         exam.setPeriod(period);
-        workingMemory.update(factHandle, exam);
-        movePeriodCoincidene(workingMemory, exam, period);
+        scoreDirector.afterVariableChanged(exam, "period");
+
+        movePeriodCoincidence(scoreDirector, exam, period);
     }
 
-    public static void moveRoom(WorkingMemory workingMemory, Exam exam, Room room) {
-        FactHandle factHandle = workingMemory.getFactHandle(exam);
+    public static void moveRoom(ScoreDirector scoreDirector, Exam exam, Room room) {
+        scoreDirector.beforeVariableChanged(exam, "room");
         exam.setRoom(room);
-        workingMemory.update(factHandle, exam);
+        scoreDirector.afterVariableChanged(exam, "room");
     }
 
-    public static void moveExam(WorkingMemory workingMemory, Exam exam, Period period, Room room) {
-        FactHandle factHandle = workingMemory.getFactHandle(exam);
+    public static void moveExam(ScoreDirector scoreDirector, Exam exam, Period period, Room room) {
+        scoreDirector.beforeAllVariablesChanged(exam);
         exam.setPeriod(period);
         exam.setRoom(room);
-        workingMemory.update(factHandle, exam);
-        movePeriodCoincidene(workingMemory, exam, period);
+        scoreDirector.afterAllVariablesChanged(exam);
+
+        movePeriodCoincidence(scoreDirector, exam, period);
     }
 
-    public static void movePeriodCoincidene(WorkingMemory workingMemory, Exam exam, Period period) {
+    public static void movePeriodCoincidence(ScoreDirector scoreDirector, Exam exam, Period period) {
         if (exam.getExamCoincidence() != null) {
             for (Exam coincidenceExam : exam.getExamCoincidence().getCoincidenceExamSet()) {
                 if (!exam.equals(coincidenceExam)) {
-                    FactHandle factHandle = workingMemory.getFactHandle(coincidenceExam);
+                    scoreDirector.beforeVariableChanged(coincidenceExam, "period");
                     coincidenceExam.setPeriod(period);
-                    workingMemory.update(factHandle, coincidenceExam);
+                    scoreDirector.afterVariableChanged(coincidenceExam, "period");
                 }
             }
         }

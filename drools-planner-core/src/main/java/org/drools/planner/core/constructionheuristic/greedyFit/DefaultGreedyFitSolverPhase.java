@@ -68,7 +68,7 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                         solverPhaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
-            nextStep.doMove(stepScope.getWorkingMemory());
+            nextStep.doMove(stepScope.getScoreDirector());
             // there is no need to recalculate the score, but we still need to set it
             solverPhaseScope.getWorkingSolution().setScore(stepScope.getScore());
             if (assertStepScoreIsUncorrupted) {

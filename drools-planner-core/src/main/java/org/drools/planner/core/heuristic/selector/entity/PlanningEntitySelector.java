@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 /**
  * Determines the order in which the planning entities of 1 planning entity class are selected for an algorithm
@@ -65,9 +65,10 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
                 it.remove();
             } else if (planningEntityDescriptor.isInitialized(planningEntity)) {
                 if (resetInitializedPlanningEntities) {
-                    WorkingMemory workingMemory = solverPhaseScope.getWorkingMemory();
-                    workingMemory.retract(workingMemory.getFactHandle(planningEntity));
+                    ScoreDirector scoreDirector = solverPhaseScope.getScoreDirector();
+                    scoreDirector.beforeEntityRemoved(planningEntity);
                     planningEntityDescriptor.uninitialize(planningEntity);
+                    scoreDirector.afterEntityRemoved(planningEntity);
                 } else {
                     // Do not plan the initialized planning entity
                     it.remove();

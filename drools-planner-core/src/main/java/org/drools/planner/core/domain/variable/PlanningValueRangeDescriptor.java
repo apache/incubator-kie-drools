@@ -19,7 +19,6 @@ package org.drools.planner.core.domain.variable;
 import java.util.Collection;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 public interface PlanningValueRangeDescriptor {
 

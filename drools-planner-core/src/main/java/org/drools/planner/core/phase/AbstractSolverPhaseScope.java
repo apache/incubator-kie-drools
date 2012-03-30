@@ -16,17 +16,15 @@
 
 package org.drools.planner.core.phase;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +79,7 @@ public abstract class AbstractSolverPhaseScope {
         startingSystemTimeMillis = System.currentTimeMillis();
         bestSolutionStepIndex = -1;
         // TODO Usage of solverScope.getBestScore() would be better performance wise but is null with a uninitialized score
-        startingScore = solverScope.calculateScoreFromWorkingMemory();
+        startingScore = solverScope.calculateScore();
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
@@ -101,16 +99,12 @@ public abstract class AbstractSolverPhaseScope {
         return now - startingSystemTimeMillis;
     }
 
-    public SolutionDirector getSolutionDirector() {
-        return solverScope.getSolutionDirector();
+    public ScoreDirector getScoreDirector() {
+        return solverScope.getScoreDirector();
     }
 
     public Solution getWorkingSolution() {
         return solverScope.getWorkingSolution();
-    }
-
-    public Collection<Object> getWorkingFacts() {
-        return solverScope.getWorkingFacts();
     }
 
     public List<Object> getWorkingPlanningEntityList() {
@@ -121,12 +115,8 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.isWorkingSolutionInitialized();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return solverScope.getWorkingMemory();
-    }
-
-    public Score calculateScoreFromWorkingMemory() {
-        return solverScope.calculateScoreFromWorkingMemory();
+    public Score calculateScore() {
+        return solverScope.calculateScore();
     }
 
     public void assertWorkingScore(Score workingScore) {

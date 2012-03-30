@@ -44,8 +44,8 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.solver.BasicPlumbingTermination;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.termination.Termination;
@@ -166,12 +166,12 @@ public class SolverConfig {
             }
         }
         SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
-        DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
-        solutionDirector.setSolutionDescriptor(solutionDescriptor);
-        solutionDirector.setRuleBase(buildRuleBase());
+        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
+        scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
+        scoreDirectorFactory.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
-        solutionDirector.setScoreDefinition(scoreDefinition);
-        solver.setSolutionDirector(solutionDirector);
+        scoreDirectorFactory.setScoreDefinition(scoreDefinition);
+        solver.setScoreDirectorFactory(scoreDirectorFactory);
         Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();

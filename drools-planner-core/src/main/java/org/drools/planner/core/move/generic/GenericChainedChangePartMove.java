@@ -22,9 +22,9 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericChainedChangePartMove implements Move {
 
@@ -48,33 +48,43 @@ public class GenericChainedChangePartMove implements Move {
         lastEntity = this.entitiesSubChain.get(entitiesSubChain.size() - 1);
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true; // Done by GenericChainedChangePartMoveFactory
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
         return new GenericChainedChangePartMove(entitiesSubChain,
                 planningVariableDescriptor, oldFirstPlanningValue,
                 newTrailingEntity, oldTrailingEntity);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Object oldFirstPlanningValue = planningVariableDescriptor.getValue(firstEntity);
+
         // Close the old chain
         if (oldTrailingEntity != null) {
+            scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
             planningVariableDescriptor.setValue(oldTrailingEntity, oldFirstPlanningValue);
-            workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
+            scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
         }
+
         // Change the entity
+        for (Object entity : entitiesSubChain) {
+            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
+            scoreDirector.beforeVariableChanged(entity, planningVariableDescriptor.getVariableName());
+        }
         planningVariableDescriptor.setValue(firstEntity, toPlanningValue);
         for (Object entity : entitiesSubChain) {
-            workingMemory.update(workingMemory.getFactHandle(entity), entity);
+            // When firstEntity changes, other entities in the chain can get a new anchor, so they are changed too
+            scoreDirector.afterVariableChanged(entity, planningVariableDescriptor.getVariableName());
         }
+
         // Reroute the new chain
         if (newTrailingEntity != null) {
+            scoreDirector.beforeVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
             planningVariableDescriptor.setValue(newTrailingEntity, lastEntity);
-            workingMemory.update(workingMemory.getFactHandle(newTrailingEntity), newTrailingEntity);
+            scoreDirector.afterVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
         }
     }
 
@@ -93,8 +103,8 @@ public class GenericChainedChangePartMove implements Move {
             GenericChainedChangePartMove other = (GenericChainedChangePartMove) o;
             return new EqualsBuilder()
                     .append(entitiesSubChain, other.entitiesSubChain)
-                    .append(planningVariableDescriptor.getVariablePropertyName(),
-                            other.planningVariableDescriptor.getVariablePropertyName())
+                    .append(planningVariableDescriptor.getVariableName(),
+                            other.planningVariableDescriptor.getVariableName())
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -105,7 +115,7 @@ public class GenericChainedChangePartMove implements Move {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(entitiesSubChain)
-                .append(planningVariableDescriptor.getVariablePropertyName())
+                .append(planningVariableDescriptor.getVariableName())
                 .append(toPlanningValue)
                 .toHashCode();
     }

@@ -49,7 +49,7 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
         boolean workingSolutionInitialized = solverScope.isWorkingSolutionInitialized();
         Score startingInitializedScore;
         if (workingSolutionInitialized) {
-            startingInitializedScore = solverScope.calculateScoreFromWorkingMemory();
+            startingInitializedScore = solverScope.calculateScore();
         } else {
             startingInitializedScore = null;
         }

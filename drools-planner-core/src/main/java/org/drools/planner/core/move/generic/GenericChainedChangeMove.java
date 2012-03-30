@@ -17,9 +17,9 @@
 package org.drools.planner.core.move.generic;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericChainedChangeMove extends GenericChangeMove {
 
@@ -34,33 +34,38 @@ public class GenericChainedChangeMove extends GenericChangeMove {
     }
 
     @Override
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return super.isMoveDoable(workingMemory) && !ObjectUtils.equals(planningEntity, toPlanningValue);
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+        return super.isMoveDoable(scoreDirector) && !ObjectUtils.equals(planningEntity, toPlanningValue);
     }
 
     @Override
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
         return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue,
                 newTrailingEntity, oldTrailingEntity);
     }
 
     @Override
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
 
         // Close the old chain
         if (oldTrailingEntity != null) {
+            scoreDirector.beforeVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
             planningVariableDescriptor.setValue(oldTrailingEntity, oldPlanningValue);
-            workingMemory.update(workingMemory.getFactHandle(oldTrailingEntity), oldTrailingEntity);
+            scoreDirector.afterVariableChanged(oldTrailingEntity, planningVariableDescriptor.getVariableName());
         }
+
         // Change the entity
+        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
+        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
+
         // Reroute the new chain
         if (newTrailingEntity != null) {
+            scoreDirector.beforeVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
             planningVariableDescriptor.setValue(newTrailingEntity, planningEntity);
-            workingMemory.update(workingMemory.getFactHandle(newTrailingEntity), newTrailingEntity);
+            scoreDirector.afterVariableChanged(newTrailingEntity, planningVariableDescriptor.getVariableName());
         }
     }
 

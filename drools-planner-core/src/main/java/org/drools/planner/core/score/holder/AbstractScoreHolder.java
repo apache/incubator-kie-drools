@@ -19,7 +19,7 @@ package org.drools.planner.core.score.holder;
 import java.io.Serializable;
 
 /**
- * Makes it easier to implement a {@link ScoreHolder}.
+ * Abstract superclass for {@link ScoreHolder}.
  */
 public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 

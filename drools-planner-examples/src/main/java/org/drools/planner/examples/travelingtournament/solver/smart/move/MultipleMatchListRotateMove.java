@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.solver.move.TravelingTournamentMoveHelper;
 
 public class MultipleMatchListRotateMove implements Move {
 
@@ -40,11 +40,11 @@ public class MultipleMatchListRotateMove implements Move {
         this.secondMatchList = secondMatchList;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         List<Match> inverseFirstMatchList = new ArrayList<Match>(firstMatchList);
         Collections.reverse(inverseFirstMatchList);
         List<Match> inverseSecondMatchList = new ArrayList<Match>(secondMatchList);
@@ -52,28 +52,24 @@ public class MultipleMatchListRotateMove implements Move {
         return new MultipleMatchListRotateMove(inverseFirstMatchList, inverseSecondMatchList);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        rotateList(firstMatchList, workingMemory);
+    public void doMove(ScoreDirector scoreDirector) {
+        rotateList(scoreDirector, firstMatchList);
         if (!secondMatchList.isEmpty()) { // TODO create SingleMatchListRotateMove
-            rotateList(secondMatchList, workingMemory);
+            rotateList(scoreDirector, secondMatchList);
         }
     }
 
-    private void rotateList(List<Match> matchList, WorkingMemory workingMemory) {
+    private void rotateList(ScoreDirector scoreDirector, List<Match> matchList) {
         Iterator<Match> it = matchList.iterator();
-        Match firstMatch = it.next();
-        Match secondMatch = null;
-        Day startDay = firstMatch.getDay();
+        Match previousMatch = it.next();
+        Match match = null;
+        Day firstDay = previousMatch.getDay();
         while (it.hasNext()) {
-            secondMatch = it.next();
-            FactHandle firstMatchHandle = workingMemory.getFactHandle(firstMatch);
-            firstMatch.setDay(secondMatch.getDay());
-            workingMemory.update(firstMatchHandle, firstMatch);
-            firstMatch = secondMatch;
+            match = it.next();
+            TravelingTournamentMoveHelper.moveDay(scoreDirector, previousMatch, match.getDay());
+            previousMatch = match;
         }
-        FactHandle secondMatchHandle = workingMemory.getFactHandle(firstMatch);
-        secondMatch.setDay(startDay);
-        workingMemory.update(secondMatchHandle, secondMatch);
+        TravelingTournamentMoveHelper.moveDay(scoreDirector, match, firstDay);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

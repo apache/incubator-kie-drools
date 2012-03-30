@@ -22,8 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 
@@ -37,16 +37,16 @@ public class PeriodChangeMove implements Move {
         this.toPeriod = toPeriod;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(lecture.getPeriod(), toPeriod);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new PeriodChangeMove(lecture, lecture.getPeriod());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        CurriculumCourseMoveHelper.movePeriod(workingMemory, lecture, toPeriod);
+    public void doMove(ScoreDirector scoreDirector) {
+        CurriculumCourseMoveHelper.movePeriod(scoreDirector, lecture, toPeriod);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

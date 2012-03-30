@@ -18,19 +18,19 @@ package org.drools.planner.core.move;
 
 import java.util.Collection;
 
-import org.drools.WorkingMemory;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class DummyMove implements Move {
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new DummyMove();
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         // do nothing
     }
 

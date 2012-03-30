@@ -31,8 +31,8 @@ import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,7 @@ public class DefaultSolver implements Solver {
 
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
+    protected ScoreDirectorFactory scoreDirectorFactory;
     protected Long randomSeed;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
@@ -63,12 +64,16 @@ public class DefaultSolver implements Solver {
         this.randomSeed = randomSeed;
     }
 
-    public void setSolutionDirector(DefaultSolutionDirector solutionDirector) {
-        solverScope.setSolutionDirector(solutionDirector);
+    public ScoreDirectorFactory getScoreDirectorFactory() {
+        return scoreDirectorFactory;
+    }
+
+    public void setScoreDirectorFactory(ScoreDirectorFactory scoreDirectorFactory) {
+        this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
     public ScoreDefinition getScoreDefinition() {
-        return solverScope.getScoreDefinition();
+        return scoreDirectorFactory.getScoreDefinition();
     }
 
     public void setBasicPlumbingTermination(BasicPlumbingTermination basicPlumbingTermination) {
@@ -152,7 +157,7 @@ public class DefaultSolver implements Solver {
             checkProblemFactChanges();
         }
         // Must be kept open for doProblemFactChange
-        solverScope.getSolutionDirector().disposeWorkingSolution();
+        solverScope.getScoreDirector().dispose();
         solving.set(false);
     }
 
@@ -161,7 +166,8 @@ public class DefaultSolver implements Solver {
             throw new IllegalStateException("The planningProblem must not be null." +
                     " Use Solver.setPlanningProblem(Solution).");
         }
-        solverScope.reset();
+        solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         if (randomSeed != null) {
             solverScope.setWorkingRandom(new Random(randomSeed));
         } else {
@@ -221,8 +227,8 @@ public class DefaultSolver implements Solver {
     }
 
     private Score doProblemFactChange(ProblemFactChange problemFactChange) {
-        problemFactChange.doChange(solverScope.getSolutionDirector());
-        Score score = solverScope.calculateScoreFromWorkingMemory();
+        problemFactChange.doChange(solverScope.getScoreDirector());
+        Score score = solverScope.calculateScore();
         logger.debug("    Done ProblemFactChange: new score ({}).", score);
         return score;
     }

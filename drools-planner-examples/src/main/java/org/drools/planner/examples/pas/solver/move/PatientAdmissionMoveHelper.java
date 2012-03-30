@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nurserostering.solver.move;
+package org.drools.planner.examples.pas.solver.move;
 
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
-import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.pas.domain.Bed;
+import org.drools.planner.examples.pas.domain.BedDesignation;
 
-public class NurseRosteringMoveHelper {
+public class PatientAdmissionMoveHelper {
 
-    public static void moveEmployee(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment, Employee toEmployee) {
-        scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
-        shiftAssignment.setEmployee(toEmployee);
-        scoreDirector.afterVariableChanged(shiftAssignment, "employee");
+    public static void moveBed(ScoreDirector scoreDirector, BedDesignation bedDesignation, Bed toBed) {
+        scoreDirector.beforeVariableChanged(bedDesignation, "bed");
+        bedDesignation.setBed(toBed);
+        scoreDirector.afterVariableChanged(bedDesignation, "bed");
     }
 
-    private NurseRosteringMoveHelper() {
+    private PatientAdmissionMoveHelper() {
     }
 
 }

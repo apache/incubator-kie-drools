@@ -16,11 +16,10 @@
 
 package org.drools.planner.core.solver;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 /**
  * A ProblemFactChange represents a change in 1 or more problem facts of a {@link Solution}.
@@ -29,18 +28,19 @@ import org.drools.planner.core.solution.director.SolutionDirector;
  * <p/>
  * Note that the {@link Solver} clones a {@link Solution} at will.
  * So any change must be done on the problem facts and planning entities referenced by the {@link Solution}
- * on the {@link SolutionDirector}. On each change it should also notify the {@link WorkingMemory} accordingly.
+ * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.
  */
 public interface ProblemFactChange {
 
     /**
-     * Does the change and updates the {@link Solution} and its {@link WorkingMemory} accordingly.
-     * When the solution is modified, the {@link WorkingMemory}'s {@link FactHandle}s must be correctly notified,
-     * otherwise the score(s) calculated will be corrupted.
-     * @param solutionDirector never null.
+     * Does the change on the {@link Solution} of the {@link ScoreDirector}
+     * and notifies the {@link ScoreDirector} accordingly.
+     * Every modification to the {@link Solution}, must be correctly notified to the {@link ScoreDirector},
+     * otherwise the {@link Score} calculation will be corrupted.
+     * @param scoreDirector never null
      * Contains the working {@link Solution} which contains the planning facts (and planning entities) to change.
-     * Also contains the {@link WorkingMemory} that needs to get notified of those changes.
+     * Also needs to get notified of those changes.
      */
-    void doChange(SolutionDirector solutionDirector);
+    void doChange(ScoreDirector scoreDirector);
 
 }

@@ -22,8 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
@@ -37,16 +37,16 @@ public class CloudComputerChangeMove implements Move {
         this.toCloudComputer = toCloudComputer;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(cloudProcess.getComputer(), toCloudComputer);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, cloudProcess, toCloudComputer);
+    public void doMove(ScoreDirector scoreDirector) {
+        CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

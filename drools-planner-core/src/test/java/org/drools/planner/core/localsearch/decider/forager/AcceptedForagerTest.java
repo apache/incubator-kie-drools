@@ -27,9 +27,9 @@ import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
-import org.drools.planner.core.solution.director.DefaultSolutionDirector;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -175,9 +175,9 @@ public class AcceptedForagerTest {
     private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
-        solutionDirector.setScoreDefinition(new SimpleScoreDefinition());
-        solverScope.setSolutionDirector(solutionDirector);
+        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
+        scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         solverScope.setWorkingRandom(new Random() {
             public double nextDouble() {
                 return 0.2;

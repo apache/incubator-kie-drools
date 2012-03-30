@@ -22,9 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 
@@ -38,26 +37,19 @@ public class BedDesignationSwapMove implements Move {
         this.rightBedDesignation = rightBedDesignation;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new BedDesignationSwapMove(rightBedDesignation, leftBedDesignation);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Bed oldLeftBed = leftBedDesignation.getBed();
         Bed oldRightBed = rightBedDesignation.getBed();
-        moveBed(workingMemory, leftBedDesignation, oldRightBed);
-        moveBed(workingMemory, rightBedDesignation, oldLeftBed);
-    }
-
-    // Extract to helper class if other moves are created
-    private static void moveBed(WorkingMemory workingMemory, BedDesignation bedDesignation, Bed toBed) {
-        FactHandle factHandle = workingMemory.getFactHandle(bedDesignation);
-        bedDesignation.setBed(toBed);
-        workingMemory.update(factHandle, bedDesignation);
+        PatientAdmissionMoveHelper.moveBed(scoreDirector, leftBedDesignation, oldRightBed);
+        PatientAdmissionMoveHelper.moveBed(scoreDirector, rightBedDesignation, oldLeftBed);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

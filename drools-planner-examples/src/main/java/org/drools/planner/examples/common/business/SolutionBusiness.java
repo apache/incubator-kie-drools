@@ -36,8 +36,9 @@ import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
+import org.drools.planner.core.score.director.ScoreDirectorFactory;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
@@ -63,7 +64,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
-    private DefaultSolutionDirector guiSolutionDirector;
+    private DroolsScoreDirector guiScoreDirector;
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -147,8 +148,8 @@ public class SolutionBusiness {
     public void setSolver(Solver solver) {
         this.solver = solver;
         // TODO HACK Planner internal API: don't do this
-        this.guiSolutionDirector = ((DefaultSolver) solver).getSolverScope()
-                .getSolutionDirector().cloneWithoutWorkingSolution();
+        ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
+        guiScoreDirector = (DroolsScoreDirector) scoreDirectorFactory.buildScoreDirector();
     }
 
     public List<File> getUnsolvedFileList() {
@@ -164,11 +165,11 @@ public class SolutionBusiness {
     }
 
     public Solution getSolution() {
-        return guiSolutionDirector.getWorkingSolution();
+        return guiScoreDirector.getWorkingSolution();
     }
 
     public Score getScore() {
-        return guiSolutionDirector.calculateScoreFromWorkingMemory();
+        return guiScoreDirector.calculateScore();
     }
 
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
@@ -184,7 +185,7 @@ public class SolutionBusiness {
                     // Migrate it to the event thread
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            guiSolutionDirector.setWorkingSolution(latestBestSolution);
+                            guiScoreDirector.setWorkingSolution(latestBestSolution);
                             solverAndPersistenceFrame.bestSolutionChanged();
                         }
                     });
@@ -195,7 +196,7 @@ public class SolutionBusiness {
 
     public List<ScoreDetail> getScoreDetailList() {
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        WorkingMemory workingMemory = guiSolutionDirector.getWorkingMemory();
+        WorkingMemory workingMemory = guiScoreDirector.getWorkingMemory();
         if (workingMemory == null) {
             return Collections.emptyList();
         }
@@ -217,21 +218,21 @@ public class SolutionBusiness {
 
     public void importSolution(File file) {
         Solution solution = importer.readSolution(file);
-        guiSolutionDirector.setWorkingSolution(solution);
+        guiScoreDirector.setWorkingSolution(solution);
     }
 
     public void openSolution(File file) {
         Solution solution = solutionDao.readSolution(file);
-        guiSolutionDirector.setWorkingSolution(solution);
+        guiScoreDirector.setWorkingSolution(solution);
     }
 
     public void saveSolution(File file) {
-        Solution solution = guiSolutionDirector.getWorkingSolution();
+        Solution solution = guiScoreDirector.getWorkingSolution();
         solutionDao.writeSolution(solution, file);
     }
 
     public void exportSolution(File file) {
-        Solution solution = guiSolutionDirector.getWorkingSolution();
+        Solution solution = guiScoreDirector.getWorkingSolution();
         exporter.writeSolution(solution, file);
     }
 
@@ -240,27 +241,27 @@ public class SolutionBusiness {
             logger.error("Not doing user move ({}) because the solver is solving.", move);
             return;
         }
-        if (!move.isMoveDoable(guiSolutionDirector.getWorkingMemory())) {
+        if (!move.isMoveDoable(guiScoreDirector)) {
             logger.warn("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         logger.info("Doing user move ({}).", move);
-        move.doMove(guiSolutionDirector.getWorkingMemory());
+        move.doMove(guiScoreDirector);
     }
 
     public void doProblemFactChange(ProblemFactChange problemFactChange) {
         if (solver.isSolving()) {
             solver.addProblemFactChange(problemFactChange);
         } else {
-            problemFactChange.doChange(guiSolutionDirector);
+            problemFactChange.doChange(guiScoreDirector);
         }
     }
 
     public void solve() {
-        solver.setPlanningProblem(guiSolutionDirector.getWorkingSolution());
+        solver.setPlanningProblem(guiScoreDirector.getWorkingSolution());
         solver.solve();
         Solution bestSolution = solver.getBestSolution();
-        guiSolutionDirector.setWorkingSolution(bestSolution);
+        guiScoreDirector.setWorkingSolution(bestSolution);
     }
 
     public void terminateSolvingEarly() {

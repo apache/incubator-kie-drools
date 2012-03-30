@@ -18,11 +18,10 @@ package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import java.util.Random;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 public class GreedyMoveScope {
@@ -68,12 +67,12 @@ public class GreedyMoveScope {
     // Calculated methods
     // ************************************************************************
 
-    public Solution getWorkingSolution() {
-        return greedyFitStepScope.getWorkingSolution();
+    public ScoreDirector getScoreDirector() {
+        return greedyFitStepScope.getScoreDirector();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return greedyFitStepScope.getWorkingMemory();
+    public Solution getWorkingSolution() {
+        return greedyFitStepScope.getWorkingSolution();
     }
 
     public Random getWorkingRandom() {

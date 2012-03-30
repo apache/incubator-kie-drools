@@ -33,10 +33,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -163,24 +161,26 @@ public class CloudBalancingPanel extends SolutionPanel {
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(SolutionDirector solutionDirector) {
-                CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
-                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
                     if (ObjectUtils.equals(process.getComputer(), computer)) {
-                        FactHandle processHandle = workingMemory.getFactHandle(process);
+                        // TODO HACK we are removing it because it becomes uninitialized,
+                        // which means it has to be retracted
+                        // This is nonsense from a ProblemFactChange point of view, FIXME!
+                        scoreDirector.beforeEntityRemoved(process);
                         process.setComputer(null);
-                        workingMemory.retract(processHandle);
+                        scoreDirector.afterEntityRemoved(process);
                     }
                 }
                 // Next remove it the planning fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
                     if (ObjectUtils.equals(workingComputer, computer)) {
-                        FactHandle computerHandle = workingMemory.getFactHandle(workingComputer);
-                        workingMemory.retract(computerHandle);
+                        scoreDirector.beforeProblemFactRemoved(workingComputer);
                         it.remove(); // remove from list
+                        scoreDirector.beforeProblemFactRemoved(workingComputer);
                         break;
                     }
                 }

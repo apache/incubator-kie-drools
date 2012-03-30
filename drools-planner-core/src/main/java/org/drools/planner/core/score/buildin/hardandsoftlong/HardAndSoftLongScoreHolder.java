@@ -44,7 +44,7 @@ public class HardAndSoftLongScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
-    public Score calculateScore() {
+    public Score extractScore() {
         return DefaultHardAndSoftLongScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
     }
 

@@ -16,8 +16,6 @@
 
 package org.drools.planner.examples.nurserostering.swingui;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -31,10 +29,8 @@ import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nurserostering.domain.Shift;
@@ -157,24 +153,26 @@ public class NurseRosteringPanel extends SolutionPanel {
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(SolutionDirector solutionDirector) {
-                NurseRoster nurseRoster = (NurseRoster) solutionDirector.getWorkingSolution();
-                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+            public void doChange(ScoreDirector scoreDirector) {
+                NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
                 for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
                     if (ObjectUtils.equals(shiftAssignment.getEmployee(), employee)) {
-                        FactHandle shiftAssignmentHandle = workingMemory.getFactHandle(shiftAssignment);
+                        // TODO HACK we are removing it because it becomes uninitialized,
+                        // which means it has to be retracted
+                        // This is nonsense from a ProblemFactChange point of view, FIXME!
+                        scoreDirector.beforeEntityRemoved(shiftAssignment);
                         shiftAssignment.setEmployee(null);
-                        workingMemory.retract(shiftAssignmentHandle);
+                        scoreDirector.afterEntityRemoved(shiftAssignment);
                     }
                 }
                 // Next remove it the planning fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();
                     if (ObjectUtils.equals(workingEmployee, employee)) {
-                        FactHandle employeeHandle = workingMemory.getFactHandle(workingEmployee);
-                        workingMemory.retract(employeeHandle);
+                        scoreDirector.beforeProblemFactRemoved(workingEmployee);
                         it.remove(); // remove from list
+                        scoreDirector.beforeProblemFactRemoved(employee);
                         break;
                     }
                 }

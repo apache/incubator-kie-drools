@@ -18,7 +18,7 @@ package org.drools.planner.api.domain.variable.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public interface PlanningVariableListener extends EventListener {
 
@@ -27,13 +27,13 @@ public interface PlanningVariableListener extends EventListener {
      * <p/>
      * Called from the solver thread.
      * Should return fast, as it steals time from the Solver.
-     * @param solutionDirector never null
+     * @param scoreDirector never null
      * @param planningEntity never null
      * @param variableName never null
      * @param oldValue sometimes null
      * @param newValue sometimes null
      */
-    void afterChange(SolutionDirector solutionDirector, Object planningEntity, String variableName,
+    void afterChange(ScoreDirector scoreDirector, Object planningEntity, String variableName,
             Object oldValue, Object newValue);
 
 }

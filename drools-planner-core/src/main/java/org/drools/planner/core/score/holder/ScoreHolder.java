@@ -16,28 +16,28 @@
 
 package org.drools.planner.core.score.holder;
 
+import org.drools.WorkingMemory;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
+import org.drools.planner.core.solution.Solution;
 
 /**
- * A wrapper for the elements of a Score, injected as a global in the WorkingMemory
+ * A workaround class that wraps parts of a {@link Score}.
+ * It injected as a global by {@link DroolsScoreDirector} in the {@link WorkingMemory}
  * to avoid a performance problem in Drools Expert with using 2 or more accumulates in the same rule.
+ * Other {@link ScoreDirector} implementations do not use this class.
  * <p/>
- * TODO JBRULES-2238 remove when the rule that sums the final score can be written as a single rule and {@link ScoreHolder} is dead
+ * TODO JBRULES-2238 remove this class when the rule that sums the final score can be written as a single rule and it is dead
  */
 public interface ScoreHolder {
 
     /**
-     * Calculates the score: the solution (encountered at a step)
-     * with the highest score will be seen as the the best solution.
+     * Extracts the {@link Score}, calculated by the {@link WorkingMemory} for {@link DroolsScoreDirector}.
      * </p>
-     * The step score calculation should be kept stable over all steps.
-     * </p>
-     * When the solution is modified during a Move,
-     * the WorkingMemory's FactHandles should have been correctly notified.
-     * Before the score is calculated, all rules are fired,
-     * which should trigger an update of this instance.
-     * @return never null, the score of the solution
+     * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
+     * @return never null, the  {@link Score} of the working {@link Solution}
      */
-    Score calculateScore();
+    Score extractScore();
 
 }

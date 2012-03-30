@@ -1,10 +1,9 @@
 package org.drools.planner.core.move.generic;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.junit.Test;
@@ -30,12 +29,10 @@ public class GenericChainedChangeMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         GenericChainedChangeMove move = new GenericChainedChangeMove(a3, variableDescriptor, b1, null, null);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a2.getChainedObject());
@@ -43,9 +40,9 @@ public class GenericChainedChangeMoveTest {
         assertEquals(b0, b1.getChainedObject());
         assertEquals(b1, a3.getChainedObject());
 
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -64,16 +61,10 @@ public class GenericChainedChangeMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a2FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a2)).thenReturn(a2FactHandle);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
-        FactHandle b1FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(b1)).thenReturn(b1FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         GenericChainedChangeMove move = new GenericChainedChangeMove(a2, variableDescriptor, b0, a3, b1);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a3.getChainedObject());
@@ -81,11 +72,13 @@ public class GenericChainedChangeMoveTest {
         assertEquals(b0, a2.getChainedObject());
         assertEquals(a2, b1.getChainedObject());
 
-        verify(workingMemory).update(a2FactHandle, a2);
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).update(b1FactHandle, b1);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
 }

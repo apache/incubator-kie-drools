@@ -16,9 +16,8 @@
 
 package org.drools.planner.examples.machinereassignment.solver.solution.initializer;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;
@@ -28,17 +27,17 @@ public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCo
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(SolutionDirector solutionDirector) {
-        MachineReassignment machineReassignment = (MachineReassignment) solutionDirector.getWorkingSolution();
-        initializeProcessAssignmentList(solutionDirector, machineReassignment);
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
+        MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
+        initializeProcessAssignmentList(scoreDirector, machineReassignment);
     }
 
-    private void initializeProcessAssignmentList(SolutionDirector solutionDirector,
+    private void initializeProcessAssignmentList(ScoreDirector scoreDirector,
             MachineReassignment machineReassignment) {
-        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
+            scoreDirector.beforeEntityAdded(processAssignment);
             processAssignment.setMachine(processAssignment.getOriginalMachine());
-            workingMemory.insert(processAssignment);
+            scoreDirector.afterEntityAdded(processAssignment);
         }
     }
 

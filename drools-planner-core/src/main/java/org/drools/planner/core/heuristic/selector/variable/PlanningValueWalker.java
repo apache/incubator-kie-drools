@@ -18,7 +18,6 @@ package org.drools.planner.core.heuristic.selector.variable;
 
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -27,6 +26,7 @@ import org.drools.planner.core.move.generic.GenericChangeMove;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 public class PlanningValueWalker implements SolverPhaseLifecycleListener {
@@ -34,8 +34,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private final PlanningVariableDescriptor planningVariableDescriptor;
     private final PlanningValueSelector planningValueSelector;
 
-    private WorkingMemory workingMemory;
-    private Solution workingSolution;
+    private ScoreDirector scoreDirector;
 
     private Object planningEntity;
     private Iterator<?> planningValueIterator;
@@ -59,8 +58,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         planningValueSelector.phaseStarted(solverPhaseScope);
-        workingMemory = solverPhaseScope.getWorkingMemory();
-        workingSolution = solverPhaseScope.getWorkingSolution();
+        scoreDirector = solverPhaseScope.getScoreDirector();
     }
 
     public void beforeDeciding(AbstractStepScope stepScope) {
@@ -73,7 +71,9 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         planningValueSelector.phaseEnded(solverPhaseScope);
-        workingMemory = null;
+        scoreDirector = null;
+        planningEntity = null;
+        isFirstValue = false;
         workingValue = null;
     }
 
@@ -86,7 +86,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         planningValueIterator = planningValueSelector.iterator(planningEntity);
         if (!planningValueIterator.hasNext()) {
             throw new IllegalStateException("The planningEntity (" + planningEntity + ") has a planning variable ("
-                    + planningVariableDescriptor.getVariablePropertyName() + ") which has no planning values.");
+                    + planningVariableDescriptor.getVariableName() + ") which has no planning values.");
         }
         Object value = planningValueIterator.next();
         planningVariableDescriptor.setValue(planningEntity, value);
@@ -118,8 +118,9 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     }
 
     private void changeWorkingValue(Object value) {
+        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         planningVariableDescriptor.setValue(planningEntity, value);
-        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
+        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         workingValue = value;
     }
 
@@ -162,13 +163,13 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     private Object findTrailingEntity(Object planningEntity) {
         Object trailingEntity = null;
         PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
-        for (Object suspectedTrailingEntity : entityDescriptor.extractEntities(workingSolution)) {
+        for (Object suspectedTrailingEntity : entityDescriptor.extractEntities(scoreDirector.getWorkingSolution())) {
             if (planningVariableDescriptor.getValue(suspectedTrailingEntity) == planningEntity) {
                 if (trailingEntity != null) {
                     throw new IllegalStateException("The planningEntity (" + planningEntity
                             + ") has multiple trailing entities (" + trailingEntity + ") ("
                             + suspectedTrailingEntity + ") pointing to it for chained planningVariable ("
-                            + planningVariableDescriptor.getVariablePropertyName() + ").");
+                            + planningVariableDescriptor.getVariableName() + ").");
                 }
                 trailingEntity = suspectedTrailingEntity;
             }

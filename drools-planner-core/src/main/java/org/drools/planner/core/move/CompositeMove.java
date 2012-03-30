@@ -23,7 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.WorkingMemory;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 /**
  * A CompositeMove is composed out of multiple other moves.
@@ -43,30 +43,30 @@ public class CompositeMove implements Move {
         this.moveList = moveList;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (Move move : moveList) {
-            if (!move.isMoveDoable(workingMemory)) {
+            if (!move.isMoveDoable(scoreDirector)) {
                 return false;
             }
         }
         return true;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         List<Move> undoMoveList = new ArrayList<Move>(moveList.size());
         for (Move move : moveList) {
             // Note: this undoMove doesn't have the affect of a previous move in the moveList
             // This could be made possible by merging the methods createUndoMove and doMove...
-            Move undoMove = move.createUndoMove(workingMemory);
+            Move undoMove = move.createUndoMove(scoreDirector);
             undoMoveList.add(undoMove);
         }
         Collections.reverse(undoMoveList);
         return new CompositeMove(undoMoveList);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         for (Move move : moveList) {
-            move.doMove(workingMemory);
+            move.doMove(scoreDirector);
         }
     }
 

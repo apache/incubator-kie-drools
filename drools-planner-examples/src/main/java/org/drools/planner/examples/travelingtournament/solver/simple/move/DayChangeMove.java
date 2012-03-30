@@ -22,11 +22,11 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
+import org.drools.planner.examples.travelingtournament.solver.move.TravelingTournamentMoveHelper;
 
 public class DayChangeMove implements Move {
 
@@ -38,18 +38,16 @@ public class DayChangeMove implements Move {
         this.toDay = toDay;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(match.getDay(), toDay);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new DayChangeMove(match, match.getDay());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        FactHandle matchHandle = workingMemory.getFactHandle(match);
-        match.setDay(toDay);
-        workingMemory.update(matchHandle, match);
+    public void doMove(ScoreDirector scoreDirector) {
+        TravelingTournamentMoveHelper.moveDay(scoreDirector, match, toDay);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

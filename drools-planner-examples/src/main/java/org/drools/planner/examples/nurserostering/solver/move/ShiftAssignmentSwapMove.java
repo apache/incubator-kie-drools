@@ -22,8 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
@@ -37,19 +37,19 @@ public class ShiftAssignmentSwapMove implements Move {
         this.rightShiftAssignment = rightShiftAssignment;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new ShiftAssignmentSwapMove(rightShiftAssignment, leftShiftAssignment);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         Employee oldLeftEmployee = leftShiftAssignment.getEmployee();
         Employee oldRightEmployee = rightShiftAssignment.getEmployee();
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftShiftAssignment, oldRightEmployee);
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightShiftAssignment, oldLeftEmployee);
+        NurseRosteringMoveHelper.moveEmployee(scoreDirector, leftShiftAssignment, oldRightEmployee);
+        NurseRosteringMoveHelper.moveEmployee(scoreDirector, rightShiftAssignment, oldLeftEmployee);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

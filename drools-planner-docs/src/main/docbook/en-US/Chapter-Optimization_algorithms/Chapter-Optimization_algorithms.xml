@@ -661,7 +661,7 @@
 
     <programlisting language="java">public interface CustomSolverPhaseCommand {
 
-    void changeWorkingSolution(SolutionDirector solutionDirector);
+    void changeWorkingSolution(ScoreDirector scoreDirector);
 
 }</programlisting>
 
@@ -669,15 +669,15 @@
 
     <programlisting language="java">public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
 
-    public void changeWorkingSolution(SolutionDirector solutionDirector) {
-        Examination examination = (Examination) solutionDirector.getWorkingSolution();
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
+        Examination examination = (Examination) scoreDirector.getWorkingSolution();
         for (Exam exam : examination.getExamList()) {
-            Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = scoreDirector.calculateScoreFromWorkingMemory();
             ...
             for (Period period : examination.getPeriodList()) {
                 exam.setPeriod(period)
                 workingMemory.update(examHandle, exam);
-                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                Score score = scoreDirector.calculateScoreFromWorkingMemory();
                 ...
             }
             ...
@@ -688,7 +688,7 @@
 
     <warning>
       <para>Any change on the planning entities in a <literal>CustomSolverPhaseCommand</literal> must be told to the
-      <literal>WorkingMemory</literal> of <literal>solutionDirector.getWorkingMemory()</literal>.</para>
+      <literal>WorkingMemory</literal> of <literal>scoreDirector.getWorkingMemory()</literal>.</para>
     </warning>
 
     <warning>

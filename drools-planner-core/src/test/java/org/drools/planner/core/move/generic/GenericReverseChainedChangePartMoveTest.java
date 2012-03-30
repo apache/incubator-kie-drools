@@ -3,10 +3,9 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.testdata.domain.TestdataChainedAnchor;
 import org.drools.planner.core.testdata.domain.TestdataChainedEntity;
 import org.junit.Test;
@@ -36,13 +35,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
-        FactHandle a4FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a4)).thenReturn(a4FactHandle);
-        FactHandle a5FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a5)).thenReturn(a5FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         List<Object> entitiesSubChain = new ArrayList<Object>();
         entitiesSubChain.add(a3);
@@ -51,7 +44,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
                 variableDescriptor, b1, null, null);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a2.getChainedObject());
@@ -61,11 +54,13 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a5, a4.getChainedObject());
         assertEquals(a4, a3.getChainedObject());
 
-        verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -84,13 +79,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
-        FactHandle a4FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a4)).thenReturn(a4FactHandle);
-        FactHandle a5FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a5)).thenReturn(a5FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         List<Object> entitiesSubChain = new ArrayList<Object>();
         entitiesSubChain.add(a3);
@@ -99,7 +88,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
                 variableDescriptor, a2, null, null);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a2.getChainedObject());
@@ -107,11 +96,13 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a5, a4.getChainedObject());
         assertEquals(a4, a3.getChainedObject());
 
-        verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -134,17 +125,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a2FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a2)).thenReturn(a2FactHandle);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
-        FactHandle a4FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a4)).thenReturn(a4FactHandle);
-        FactHandle a5FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a5)).thenReturn(a5FactHandle);
-        FactHandle b1FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(b1)).thenReturn(b1FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         List<Object> entitiesSubChain = new ArrayList<Object>();
         entitiesSubChain.add(a2);
@@ -153,7 +134,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
                 variableDescriptor, b0, a5, b1);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a5.getChainedObject());
@@ -163,13 +144,17 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a3, a2.getChainedObject());
         assertEquals(a2, b1.getChainedObject());
 
-        verify(workingMemory).update(a5FactHandle, a5);
-        verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).update(a2FactHandle, a2);
-        verify(workingMemory).update(b1FactHandle, b1);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -188,15 +173,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
-        WorkingMemory workingMemory = mock(WorkingMemory.class);
-        FactHandle a2FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a2)).thenReturn(a2FactHandle);
-        FactHandle a3FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a3)).thenReturn(a3FactHandle);
-        FactHandle a4FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a4)).thenReturn(a4FactHandle);
-        FactHandle a5FactHandle = mock(FactHandle.class);
-        when(workingMemory.getFactHandle(a5)).thenReturn(a5FactHandle);
+        ScoreDirector scoreDirector = mock(ScoreDirector.class);
 
         List<Object> entitiesSubChain = new ArrayList<Object>();
         entitiesSubChain.add(a2);
@@ -205,7 +182,7 @@ public class GenericReverseChainedChangePartMoveTest {
 
         GenericReverseChainedChangePartMove move = new GenericReverseChainedChangePartMove(entitiesSubChain,
                 variableDescriptor, a1, a5, a2);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
         assertEquals(a1, a4.getChainedObject());
@@ -213,12 +190,15 @@ public class GenericReverseChainedChangePartMoveTest {
         assertEquals(a3, a2.getChainedObject());
         assertEquals(a2, a5.getChainedObject());
 
-        verify(workingMemory, atLeast(1)).update(a5FactHandle, a5);
-        verify(workingMemory).update(a4FactHandle, a4);
-        verify(workingMemory).update(a3FactHandle, a3);
-        verify(workingMemory).update(a2FactHandle, a2);
-        verify(workingMemory, atLeast(0)).getFactHandle(anyObject());
-        verifyNoMoreInteractions(workingMemory);
+        verify(scoreDirector, atLeast(1)).beforeVariableChanged(a5, "chainedObject");
+        verify(scoreDirector, atLeast(1)).afterVariableChanged(a5, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
+        verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
+        verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
+        verifyNoMoreInteractions(scoreDirector);
     }
 
 }

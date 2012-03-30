@@ -22,8 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 
@@ -37,16 +37,16 @@ public class EmployeeChangeMove implements Move {
         this.toEmployee = toEmployee;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(shiftAssignment.getEmployee(), toEmployee);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new EmployeeChangeMove(shiftAssignment, shiftAssignment.getEmployee());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, shiftAssignment, toEmployee);
+    public void doMove(ScoreDirector scoreDirector) {
+        NurseRosteringMoveHelper.moveEmployee(scoreDirector, shiftAssignment, toEmployee);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

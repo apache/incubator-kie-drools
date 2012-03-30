@@ -184,7 +184,7 @@ public class PlanningVariableDescriptor {
         return planningEntityDescriptor;
     }
 
-    public String getVariablePropertyName() {
+    public String getVariableName() {
         return variablePropertyDescriptor.getName();
     }
 

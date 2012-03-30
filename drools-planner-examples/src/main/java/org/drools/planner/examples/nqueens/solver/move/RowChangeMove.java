@@ -22,9 +22,8 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
-import org.drools.FactHandle;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.domain.Row;
 
@@ -38,18 +37,18 @@ public class RowChangeMove implements Move {
         this.toRow = toRow;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(queen.getRow(), toRow);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new RowChangeMove(queen, queen.getRow());
     }
 
-    public void doMove(WorkingMemory workingMemory) {
-        FactHandle queenHandle = workingMemory.getFactHandle(queen);
+    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made
         queen.setRow(toRow);
-        workingMemory.update(queenHandle, queen); // after changes are made
+        scoreDirector.afterVariableChanged(queen, "row"); // after changes are made
     }
 
     public Collection<? extends Object> getPlanningEntities() {

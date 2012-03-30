@@ -24,8 +24,8 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
@@ -41,21 +41,21 @@ public class EmployeeMultipleChangeMove implements Move {
         this.toEmployee = toEmployee;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(fromEmployee, toEmployee);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new EmployeeMultipleChangeMove(toEmployee, shiftAssignmentList, fromEmployee);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
             if (!shiftAssignment.getEmployee().equals(fromEmployee)) {
                 throw new IllegalStateException("The shiftAssignment (" + shiftAssignment + ") should have the same employee ("
                         + fromEmployee + ") as the fromEmployee (" + fromEmployee + ").");
             }
-            NurseRosteringMoveHelper.moveEmployee(workingMemory, shiftAssignment, toEmployee);
+            NurseRosteringMoveHelper.moveEmployee(scoreDirector, shiftAssignment, toEmployee);
         }
     }
 

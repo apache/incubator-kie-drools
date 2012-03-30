@@ -29,9 +29,8 @@ import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
-import org.drools.planner.core.move.factory.CachedMoveFactory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 
 /**
  * Non-cacheable
@@ -39,12 +38,12 @@ import org.drools.planner.core.solution.director.SolutionDirector;
 public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
 
     private SolutionDescriptor solutionDescriptor;
-    private SolutionDirector solutionDirector;
+    private ScoreDirector scoreDirector;
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         solutionDescriptor = localSearchSolverPhaseScope.getSolutionDescriptor();
-        solutionDirector = localSearchSolverPhaseScope.getSolutionDirector();
+        scoreDirector = localSearchSolverPhaseScope.getScoreDirector();
         super.phaseStarted(localSearchSolverPhaseScope);
     }
 
@@ -58,7 +57,7 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
                 if (variableDescriptor.isChained()) {
                     throw new IllegalStateException("The planningEntityClass ("
                             + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                            + ")'s planningVariableDescriptor (" + variableDescriptor.getVariablePropertyName()
+                            + ")'s planningVariableDescriptor (" + variableDescriptor.getVariableName()
                             + ") is chained and can therefor not use the moveFactory (" + this.getClass() + ").");
                 }
             }
@@ -104,7 +103,7 @@ public class GenericSwapPillarMoveFactory extends AbstractMoveFactory {
     public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         super.phaseEnded(localSearchSolverPhaseScope);
         solutionDescriptor = null;
-        solutionDirector = null;
+        scoreDirector = null;
     }
 
 }

@@ -20,6 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
@@ -29,7 +30,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Specifies that a property on a {@link Solution} is a collection of planning entities.
  * <p/>
  * Every element in the planning entity collection should have the {@link PlanningEntity} annotation.
- * Every initialized element in the planning entity collection will be inserted in the WorkingMemory.
+ * Every initialized element in the planning entity collection will be added to the {@link ScoreDirector}.
  */
 @Target({METHOD})
 @Retention(RUNTIME)

@@ -24,12 +24,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
@@ -45,15 +43,14 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
 
     private boolean checkSameBedInSameNight = true;
 
-    public void changeWorkingSolution(SolutionDirector solutionDirector) {
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule)
-                solutionDirector.getWorkingSolution();
-        initializeBedDesignationList(solutionDirector, patientAdmissionSchedule);
+                scoreDirector.getWorkingSolution();
+        initializeBedDesignationList(scoreDirector, patientAdmissionSchedule);
     }
 
-    private void initializeBedDesignationList(SolutionDirector solutionDirector,
+    private void initializeBedDesignationList(ScoreDirector scoreDirector,
             PatientAdmissionSchedule patientAdmissionSchedule) {
-        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         Map<Bed, Set<Integer>> bedToTakenNightIndexSetMap = null;
@@ -64,14 +61,14 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
         // Assign one admissionPart at a time
         List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
         for (BedDesignation bedDesignation : bedDesignationList) {
-            Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = scoreDirector.calculateScore();
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE);
             Bed bestBed = null;
 
-            FactHandle bedDesignationHandle = null;
+            boolean added = false;
             // Try every bed for that admissionPart
             // TODO by reordening the beds so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
@@ -91,13 +88,17 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
                         continue;
                     }
                 }
-                bedDesignation.setBed(bed);
-                if (bedDesignationHandle == null) {
-                    bedDesignationHandle = workingMemory.insert(bedDesignation);
+                if (!added) {
+                    scoreDirector.beforeEntityAdded(bedDesignation);
+                    bedDesignation.setBed(bed);
+                    scoreDirector.afterEntityAdded(bedDesignation);
+                    added = true;
                 } else {
-                    workingMemory.update(bedDesignationHandle, bedDesignation);
+                    scoreDirector.beforeVariableChanged(bedDesignation, "bed");
+                    bedDesignation.setBed(bed);
+                    scoreDirector.afterVariableChanged(bedDesignation, "bed");
                 }
-                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                Score score = scoreDirector.calculateScore();
                 if (score.compareTo(unscheduledScore) < 0) {
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
@@ -144,8 +145,9 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
                 }
             }
             if (!perfectMatch) {
+                scoreDirector.beforeVariableChanged(bedDesignation, "bed");
                 bedDesignation.setBed(bestBed);
-                workingMemory.update(bedDesignationHandle, bedDesignation);
+                scoreDirector.afterVariableChanged(bedDesignation, "bed");
             }
             // put the occupied bed at the end of the list
             bedListInPriority.remove(bestBed);

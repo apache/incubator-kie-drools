@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nurserostering.solver.move;
+package org.drools.planner.examples.travelingtournament.solver.move;
 
 import org.drools.planner.core.score.director.ScoreDirector;
-import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
-import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.travelingtournament.domain.Day;
+import org.drools.planner.examples.travelingtournament.domain.Match;
 
-public class NurseRosteringMoveHelper {
+public class TravelingTournamentMoveHelper {
 
-    public static void moveEmployee(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment, Employee toEmployee) {
-        scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
-        shiftAssignment.setEmployee(toEmployee);
-        scoreDirector.afterVariableChanged(shiftAssignment, "employee");
+    public static void moveDay(ScoreDirector scoreDirector, Match match, Day toDay) {
+        scoreDirector.beforeVariableChanged(match, "day");
+        match.setDay(toDay);
+        scoreDirector.afterVariableChanged(match, "day");
     }
 
-    private NurseRosteringMoveHelper() {
+    private TravelingTournamentMoveHelper() {
     }
 
 }

@@ -16,14 +16,14 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <termination>
           <maximumStepCount>100</maximumStepCount>

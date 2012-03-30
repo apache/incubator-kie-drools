@@ -22,9 +22,9 @@ import java.util.Collections;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericChangeMove implements Move {
 
@@ -39,19 +39,20 @@ public class GenericChangeMove implements Move {
         this.toPlanningValue = toPlanningValue;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
         return !ObjectUtils.equals(oldPlanningValue, toPlanningValue);
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
         return new GenericChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
         planningVariableDescriptor.setValue(planningEntity, toPlanningValue);
-        workingMemory.update(workingMemory.getFactHandle(planningEntity), planningEntity);
+        scoreDirector.afterVariableChanged(planningEntity, planningVariableDescriptor.getVariableName());
     }
 
     public Collection<? extends Object> getPlanningEntities() {
@@ -69,8 +70,8 @@ public class GenericChangeMove implements Move {
             GenericChangeMove other = (GenericChangeMove) o;
             return new EqualsBuilder()
                     .append(planningEntity, other.planningEntity)
-                    .append(planningVariableDescriptor.getVariablePropertyName(),
-                            other.planningVariableDescriptor.getVariablePropertyName())
+                    .append(planningVariableDescriptor.getVariableName(),
+                            other.planningVariableDescriptor.getVariableName())
                     .append(toPlanningValue, other.toPlanningValue)
                     .isEquals();
         } else {
@@ -81,7 +82,7 @@ public class GenericChangeMove implements Move {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(planningEntity)
-                .append(planningVariableDescriptor.getVariablePropertyName())
+                .append(planningVariableDescriptor.getVariableName())
                 .append(toPlanningValue)
                 .toHashCode();
     }

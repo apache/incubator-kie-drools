@@ -20,12 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.manners2009.domain.Guest;
 import org.drools.planner.examples.manners2009.domain.Manners2009;
@@ -38,13 +36,12 @@ public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand 
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(SolutionDirector solutionDirector) {
-        Manners2009 manners2009 = (Manners2009) solutionDirector.getWorkingSolution();
-        initializeSeatDesignationList(solutionDirector, manners2009);
+    public void changeWorkingSolution(ScoreDirector scoreDirector) {
+        Manners2009 manners2009 = (Manners2009) scoreDirector.getWorkingSolution();
+        initializeSeatDesignationList(scoreDirector, manners2009);
     }
 
-    private void initializeSeatDesignationList(SolutionDirector solutionDirector, Manners2009 manners2009) {
-        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+    private void initializeSeatDesignationList(ScoreDirector scoreDirector, Manners2009 manners2009) {
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
         // Assign one guest at a time
@@ -53,19 +50,23 @@ public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand 
             Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
             Seat bestSeat = null;
 
-            FactHandle seatDesignationHandle = null;
+            boolean added = false;
             // Try every seat for that guest
             // TODO by reordening the seats so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
             for (Seat seat : undesignatedSeatList) {
                 if (seatDesignation.getGuest().getGender() == seat.getRequiredGender()) {
-                    seatDesignation.setSeat(seat);
-                    if (seatDesignationHandle == null) {
-                        seatDesignationHandle = workingMemory.insert(seatDesignation);
+                    if (!added) {
+                        scoreDirector.beforeEntityAdded(seatDesignation);
+                        seatDesignation.setSeat(seat);
+                        scoreDirector.afterEntityAdded(seatDesignation);
+                        added = true;
                     } else {
-                        workingMemory.update(seatDesignationHandle, seatDesignation);
+                        scoreDirector.beforeVariableChanged(seatDesignation, "seat");
+                        seatDesignation.setSeat(seat);
+                        scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     }
-                    Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                    Score score = scoreDirector.calculateScore();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
                         bestSeat = seat;
@@ -75,8 +76,9 @@ public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand 
             if (bestSeat == null) {
                 throw new IllegalStateException("The bestSeat (" + bestSeat + ") cannot be null.");
             }
+            scoreDirector.beforeVariableChanged(seatDesignation, "seat");
             seatDesignation.setSeat(bestSeat);
-            workingMemory.update(seatDesignationHandle, seatDesignation);
+            scoreDirector.afterVariableChanged(seatDesignation, "seat");
             // There will always be enough allowed seats: ok to do this for this problem, but not ok for most problems
             undesignatedSeatList.remove(bestSeat);
         }

@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.machinereassignment.swingui;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,10 +28,8 @@ import javax.swing.GroupLayout;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
@@ -141,24 +138,26 @@ public class MachineReassignmentPanel extends SolutionPanel {
     public void deleteMachine(final MrMachine machine) {
         logger.info("Scheduling delete of machine ({}).", machine);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(SolutionDirector solutionDirector) {
-                MachineReassignment machineReassignment = (MachineReassignment) solutionDirector.getWorkingSolution();
-                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+            public void doChange(ScoreDirector scoreDirector) {
+                MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
                 // First remove the planning fact from all planning entities that use it
                 for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
                     if (ObjectUtils.equals(processAssignment.getMachine(), machine)) {
-                        FactHandle processAssignmentHandle = workingMemory.getFactHandle(processAssignment);
+                        // TODO HACK we are removing it because it becomes uninitialized,
+                        // which means it has to be retracted
+                        // This is nonsense from a ProblemFactChange point of view, FIXME!
+                        scoreDirector.beforeEntityRemoved(processAssignment);
                         processAssignment.setMachine(null);
-                        workingMemory.retract(processAssignmentHandle);
+                        scoreDirector.afterEntityRemoved(processAssignment);
                     }
                 }
                 // Next remove it the planning fact itself
                 for (Iterator<MrMachine> it = machineReassignment.getMachineList().iterator(); it.hasNext(); ) {
-                    MrMachine workingMrMachine = it.next();
-                    if (ObjectUtils.equals(workingMrMachine, machine)) {
-                        FactHandle machineHandle = workingMemory.getFactHandle(workingMrMachine);
-                        workingMemory.retract(machineHandle);
+                    MrMachine workingMachine = it.next();
+                    if (ObjectUtils.equals(workingMachine, machine)) {
+                        scoreDirector.beforeProblemFactRemoved(workingMachine);
                         it.remove(); // remove from list
+                        scoreDirector.beforeProblemFactRemoved(workingMachine);
                         break;
                     }
                 }

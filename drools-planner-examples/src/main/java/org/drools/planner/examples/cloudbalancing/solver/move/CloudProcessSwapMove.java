@@ -22,8 +22,8 @@ import java.util.Collection;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
@@ -37,19 +37,19 @@ public class CloudProcessSwapMove implements Move {
         this.rightCloudProcess = rightCloudProcess;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         CloudComputer oldLeftCloudComputer = leftCloudProcess.getComputer();
         CloudComputer oldRightCloudComputer = rightCloudProcess.getComputer();
-        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, leftCloudProcess, oldRightCloudComputer);
-        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, rightCloudProcess, oldLeftCloudComputer);
+        CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, leftCloudProcess, oldRightCloudComputer);
+        CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, rightCloudProcess, oldLeftCloudComputer);
     }
 
     public Collection<? extends Object> getPlanningEntities() {

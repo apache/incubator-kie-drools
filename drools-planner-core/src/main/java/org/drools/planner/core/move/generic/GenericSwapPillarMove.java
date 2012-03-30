@@ -23,9 +23,9 @@ import java.util.List;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 
 /**
  * Non-cacheable
@@ -45,7 +45,7 @@ public class GenericSwapPillarMove implements Move {
         this.rightPlanningEntityList = rightPlanningEntityList;
     }
 
-    public boolean isMoveDoable(WorkingMemory workingMemory) {
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
             Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
@@ -56,23 +56,25 @@ public class GenericSwapPillarMove implements Move {
         return false;
     }
 
-    public Move createUndoMove(WorkingMemory workingMemory) {
+    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new GenericSwapPillarMove(planningVariableDescriptors,
                 rightPlanningEntityList, leftPlanningEntityList);
     }
 
-    public void doMove(WorkingMemory workingMemory) {
+    public void doMove(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
             Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
             Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
             if (!ObjectUtils.equals(leftValue, rightValue)) {
                 for (Object leftPlanningEntity : leftPlanningEntityList) {
+                    scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
                     planningVariableDescriptor.setValue(leftPlanningEntity, rightValue);
-                    workingMemory.update(workingMemory.getFactHandle(leftPlanningEntity), leftPlanningEntity);
+                    scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
                 }
                 for (Object rightPlanningEntity : rightPlanningEntityList) {
+                    scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
                     planningVariableDescriptor.setValue(rightPlanningEntity, leftValue);
-                    workingMemory.update(workingMemory.getFactHandle(rightPlanningEntity), rightPlanningEntity);
+                    scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
                 }
             }
         }

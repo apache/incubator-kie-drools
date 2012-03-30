@@ -176,9 +176,9 @@
       <termination>
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <selector>
           <selector>
@@ -217,9 +217,9 @@
       <termination>
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <selector>
           <selector>

@@ -18,15 +18,13 @@ package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import java.util.Iterator;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.forager.GreedyForager;
 import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,21 +93,21 @@ public class DefaultGreedyDecider implements GreedyDecider {
     }
 
     private void doMove(GreedyMoveScope moveScope) {
-        WorkingMemory workingMemory = moveScope.getWorkingMemory();
+        ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
-        Move undoMove = move.createUndoMove(workingMemory);
+        Move undoMove = move.createUndoMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
-        move.doMove(workingMemory);
+        move.doMove(scoreDirector);
         processMove(moveScope);
-        undoMove.doMove(workingMemory);
+        undoMove.doMove(scoreDirector);
         if (assertUndoMoveIsUncorrupted) {
             GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = moveScope.getGreedyFitStepScope()
                     .getGreedyFitSolverPhaseScope();
-            Score undoScore = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score undoScore = greedyFitSolverPhaseScope.calculateScore();
             Score lastCompletedStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 // First assert that are probably no corrupted score rules.
-                greedyFitSolverPhaseScope.getSolverScope().getSolutionDirector()
+                greedyFitSolverPhaseScope.getSolverScope().getScoreDirector()
                         .assertWorkingScore(undoScore);
                 throw new IllegalStateException(
                         "The moveClass (" + move.getClass() + ")'s move (" + move
@@ -126,7 +124,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
     }
 
     private void processMove(GreedyMoveScope moveScope) {
-        Score score = moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().calculateScoreFromWorkingMemory();
+        Score score = moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().calculateScore();
         if (assertMoveScoreIsUncorrupted) {
             moveScope.getGreedyFitStepScope().getGreedyFitSolverPhaseScope().assertWorkingScore(score);
         }

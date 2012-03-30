@@ -20,14 +20,12 @@ import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.drools.planner.examples.tsp.domain.Appearance;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.Visit;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
@@ -110,15 +108,17 @@ public class TspPanel extends SolutionPanel {
         newCity.setLatitude(latitude);
         logger.info("Scheduling insertion of newCity ({}).", newCity);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(SolutionDirector solutionDirector) {
-                TravelingSalesmanTour solution = (TravelingSalesmanTour) solutionDirector.getWorkingSolution();
-                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+            public void doChange(ScoreDirector scoreDirector) {
+                TravelingSalesmanTour solution = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
+                scoreDirector.beforeProblemFactAdded(newCity);
                 solution.getCityList().add(newCity);
-                workingMemory.insert(newCity);
+                scoreDirector.afterProblemFactAdded(newCity);
                 Visit newVisit = new Visit();
                 newVisit.setId(newCity.getId());
                 newVisit.setCity(newCity);
+                scoreDirector.beforeEntityAdded(newVisit);
                 solution.getVisitList().add(newVisit);
+                scoreDirector.afterEntityAdded(newVisit);
             }
         });
         updatePanel(solutionBusiness.getSolution());

@@ -1608,7 +1608,7 @@ After in *.java:
         Solution bestSolution = solver.getBestSolution();
         guiSolutionDirector.setWorkingSolution(bestSolution);
     }
-A future version will support this with a good API, something like SolverConfig.getScoreDirectorFactory().createSolverDirector()
+Important note: scroll below, this has been further improved during the ScoreDirector refactor.
 
 [MAJOR] The interface Move has gotten 2 new methods: getPlanningEntities() and getPlanningValues()
 The TabuPropertyEnabled interface has been removed:
@@ -1732,15 +1732,137 @@ Similarly for SimpleScoreHolder, SimpleDoubleScoreHolder and HardAndSoftLongScor
 [MINOR] If you have a custom ScoreDefinition:
 The method ScoreDefinition.buildScoreCalculator() has been renamed to buildScoreHolder().
 The package org.drools.planner.core.score.calculator has been renamed to org.drools.planner.core.score.holder
+The method ScoreHolder.calculateScore() has been renamed to extractScore().
 Before in *ScoreDefinition.java:
     import org.drools.planner.core.score.calculator...
     ...
-    public ScoreCalculator buildScoreCalculator() {
+    public ScoreHolder buildScoreCalculator() {
         ...
     }
 After in *ScoreDefinition.java:
     import org.drools.planner.core.score.holder...
     ...
-    public ScoreCalculator buildScoreHolder() {
+    public ScoreHolder buildScoreHolder() {
         ...
     }
+Before in *ScoreHolder.java:
+    public Score calculateScore() {...}
+After in *ScoreHolder.java:
+    public Score extractScore() {...}
+
+[MINOR] SolutionDirector has been renamed to ScoreDirector.
+
+[MINOR] ScoreDirectorFactory has been extracted from ScoreDirector.
+
+[README] Planner now supports score calculation with plain Java code, as an alternative to using Drools Expert.
+As a result of this, the Drools Expert specific code has been centralized around the class DroolsScoreDirector
+and does no longer leak into the rest of Planner's code or into your code.
+If at any point, you still want to have direct access to WorkingMemory, simply do:
+    ((DroolsScoreDirector) scoreDirector).getWorkingMemory()
+
+[MAJOR] Instead of notifying the WorkingMemory directly, changes must notified the ScoreDirector,
+before and after the entity or problem fact has been added, changed or removed.
+Migration table:
+    workingMemory.insert(entity)                -> beforeEntityAdded(entity) + afterEntityAdded(entity)
+    workingMemory.update(entityHandle, entity)  -> beforeVariableChanged(entity, "variableName") + afterVariableChanged(entity, "variableName")
+                                                or beforeAllVariablesChanged(entity) + afterAllVariablesChanged(entity)
+    workingMemory.retract(entityHandle)         -> beforeEntityRemoved(entity) + afterEntityRemoved(entity)
+    workingMemory.insert(problemFact)                     -> beforeProblemFactAdded(problemFact) + afterProblemFactAdded(problemFact)
+    workingMemory.update(problemFactHandle, problemFact)  -> beforeProblemFactChanged(problemFact) + afterProblemFactChanged(problemFact)
+    workingMemory.retract(problemFactHandle)              -> beforeProblemFactRemoved(problemFact) + afterProblemFactRemoved(problemFact)
+Hint: Look for all usages of org.drools.WorkingMemory in your planner related code
+to find all pieces of code that might be affected by these changes, which are described in detail below.
+
+[MAJOR] If you're using custom Move implementations (and don't use the generic move implementations):
+The class Move's methods with parameter WorkingMemory has been replaced by a parameter ScoreDirector.
+Before in *Move.java or *MoveHelper.java:
+    public class PeriodChangeMove implements Move {
+
+        public boolean isMoveDoable(WorkingMemory workingMemory) {...}
+
+        public Move createUndoMove(WorkingMemory workingMemory) {...}
+
+        public void doMove(WorkingMemory workingMemory) {
+            FactHandle factHandle = workingMemory.getFactHandle(exam);
+            exam.setPeriod(toPeriod);
+            workingMemory.update(factHandle, exam);
+        }
+
+    }
+After in *Move.java or *MoveHelper.java:
+    public class PeriodChangeMove implements Move {
+
+        public boolean isMoveDoable(ScoreDirector scoreDirector) {...}
+
+        public Move createUndoMove(ScoreDirector scoreDirector) {...}
+
+        public void doMove(ScoreDirector scoreDirector) {
+            scoreDirector.beforeVariableChanged(exam, "period");
+            exam.setPeriod(toPeriod);
+            scoreDirector.afterVariableChanged(exam, "period");
+        }
+
+    }
+Note: if multiple variables are changed at the same time, you might want to use before/afterAllVariablesChanged():
+    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeAllVariablesChanged(exam);
+        exam.setPeriod(toPeriod);
+        exam.setRoom(toRoom);
+        scoreDirector.afterAllVariablesChanged(exam);
+    }
+
+[MAJOR] If you use a CustomSolverPhaseCommand
+or still have a custom SolutionInitializer (and haven't switched to the construction heuristics yet):
+Before in *SolutionInitializer.java or *.java:
+    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+        public void changeWorkingSolution(SolutionDirector solutionDirector) {
+            ...
+            processAssignment.setMachine(processAssignment.getOriginalMachine());
+            workingMemory.insert(processAssignment);
+            ...
+        }
+    }
+After in *SolutionInitializer.java or *.java:
+    public class MrOriginalMachineSolutionInitializer implements CustomSolverPhaseCommand {
+        public void changeWorkingSolution(ScoreDirector scoreDirector) {
+            ...
+            scoreDirector.beforeEntityAdded(processAssignment);
+            processAssignment.setMachine(processAssignment.getOriginalMachine());
+            scoreDirector.afterEntityAdded(processAssignment);
+            ...
+        }
+    }
+
+[MAJOR] If you're using real-time planning with ProblemFactChange, the method doProblemFactChange's parameter changed
+from SolutionDirector to ScoreDirector.
+Before in *.java:
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(SolutionDirector solutionDirector) {
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                ...
+                        FactHandle computerHandle = workingMemory.getFactHandle(workingComputer);
+                        workingMemory.retract(computerHandle);
+                        it.remove(); // remove from list
+                ...
+            }
+        });
+After in *.java:
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                ...
+                        scoreDirector.beforeProblemFactRemoved(workingComputer);
+                        it.remove(); // remove from list
+                        scoreDirector.beforeProblemFactRemoved(workingComputer);
+                ...
+            }
+        });
+
+[MAJOR] If you copied the examples GUI's HACKs with DefaultSolverScope,
+the SolutionDirector.cloneWithoutWorkingSolution() has been removed already,
+use the ScoreDirectorFactory.buildScoreDirector() method instead.
+Before in *.java:
+    guiSolutionDirector = ((DefaultSolver) solver).getSolverScope()
+            .getSolutionDirector().cloneWithoutWorkingSolution();
+After in *.java:  TODO improve me before pushing
+    ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
+    guiScoreDirector = (DroolsScoreDirector) scoreDirectorFactory.buildScoreDirector();

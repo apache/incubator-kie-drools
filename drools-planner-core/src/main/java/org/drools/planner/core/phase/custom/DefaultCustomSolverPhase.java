@@ -47,8 +47,8 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
         Iterator<CustomSolverPhaseCommand> commandIterator = customSolverPhaseCommandList.iterator();
         while (!termination.isPhaseTerminated(customSolverPhaseScope) && commandIterator.hasNext()) {
             CustomSolverPhaseCommand customSolverPhaseCommand = commandIterator.next();
-            customSolverPhaseCommand.changeWorkingSolution(solverScope.getSolutionDirector());
-            Score score = customSolverPhaseScope.calculateScoreFromWorkingMemory();
+            customSolverPhaseCommand.changeWorkingSolution(solverScope.getScoreDirector());
+            Score score = customSolverPhaseScope.calculateScore();
             customStepScope.setScore(score);
             stepTaken(customStepScope);
             customStepScope = createNextStepScope(customSolverPhaseScope, customStepScope);

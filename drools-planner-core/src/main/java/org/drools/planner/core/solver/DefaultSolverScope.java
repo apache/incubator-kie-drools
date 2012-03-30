@@ -20,12 +20,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +32,10 @@ public class DefaultSolverScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected DefaultSolutionDirector solutionDirector;
-
     protected boolean restartSolver = false;
+
     protected long startingSystemTimeMillis;
+    protected ScoreDirector scoreDirector;
 
     protected Random workingRandom;
 
@@ -45,20 +44,8 @@ public class DefaultSolverScope {
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
 
-    public DefaultSolutionDirector getSolutionDirector() {
-        return solutionDirector;
-    }
-
-    public void setSolutionDirector(DefaultSolutionDirector solutionDirector) {
-        this.solutionDirector = solutionDirector;
-    }
-
-    public SolutionDescriptor getSolutionDescriptor() {
-        return solutionDirector.getSolutionDescriptor();
-    }
-
-    public ScoreDefinition getScoreDefinition() {
-        return solutionDirector.getScoreDefinition();
+    public boolean isRestartSolver() {
+        return restartSolver;
     }
 
     public long getStartingSystemTimeMillis() {
@@ -69,40 +56,44 @@ public class DefaultSolverScope {
         this.startingSystemTimeMillis = startingSystemTimeMillis;
     }
 
-    public boolean isRestartSolver() {
-        return restartSolver;
-    }
-
     public void setRestartSolver(boolean restartSolver) {
         this.restartSolver = restartSolver;
     }
 
-    public Solution getWorkingSolution() {
-        return solutionDirector.getWorkingSolution();
+    public ScoreDirector getScoreDirector() {
+        return scoreDirector;
     }
 
-    public Collection<Object> getWorkingFacts() {
-        return solutionDirector.getWorkingFacts();
+    public void setScoreDirector(ScoreDirector scoreDirector) {
+        this.scoreDirector = scoreDirector;
+    }
+
+    public SolutionDescriptor getSolutionDescriptor() {
+        return scoreDirector.getSolutionDescriptor();
+    }
+
+    public ScoreDefinition getScoreDefinition() {
+        return scoreDirector.getScoreDefinition();
+    }
+
+    public Solution getWorkingSolution() {
+        return scoreDirector.getWorkingSolution();
     }
 
     public List<Object> getWorkingPlanningEntityList() {
-        return solutionDirector.getWorkingPlanningEntityList();
+        return scoreDirector.getWorkingPlanningEntityList();
     }
 
     public boolean isWorkingSolutionInitialized() {
-        return solutionDirector.isWorkingSolutionInitialized();
+        return scoreDirector.isWorkingSolutionInitialized();
     }
 
-    public WorkingMemory getWorkingMemory() {
-        return solutionDirector.getWorkingMemory();
-    }
-
-    public Score calculateScoreFromWorkingMemory() {
-        return solutionDirector.calculateScoreFromWorkingMemory();
+    public Score calculateScore() {
+        return scoreDirector.calculateScore();
     }
 
     public void assertWorkingScore(Score workingScore) {
-        solutionDirector.assertWorkingScore(workingScore);
+        scoreDirector.assertWorkingScore(workingScore);
     }
 
     public Random getWorkingRandom() {
@@ -122,7 +113,7 @@ public class DefaultSolverScope {
     }
 
     public long getCalculateCount() {
-        return solutionDirector.getCalculateCount();
+        return scoreDirector.getCalculateCount();
     }
 
     public Solution getBestSolution() {
@@ -149,11 +140,6 @@ public class DefaultSolverScope {
     // Calculated methods
     // ************************************************************************
 
-    public void reset() {
-        startingSystemTimeMillis = System.currentTimeMillis();
-        solutionDirector.resetCalculateCount();
-    }
-
     public long calculateTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
@@ -161,7 +147,7 @@ public class DefaultSolverScope {
 
     public void setWorkingSolutionFromBestSolution() {
         // The workingSolution must never be the same instance as the bestSolution.
-        getSolutionDirector().setWorkingSolution(getBestSolution().cloneSolution());
+        scoreDirector.setWorkingSolution(getBestSolution().cloneSolution());
     }
 
 }

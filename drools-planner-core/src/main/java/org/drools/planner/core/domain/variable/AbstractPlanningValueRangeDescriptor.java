@@ -49,7 +49,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
             if (!assignableFrom) {
                 throw new IllegalArgumentException("The planningEntityClass ("
                         + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariablePropertyName()
+                        + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
                         + ") with excludeUninitializedPlanningEntity (true), but there is no planning entity class"
                         + " that extends the variablePropertyType (" + variablePropertyType + ").");
             }
@@ -69,7 +69,7 @@ public abstract class AbstractPlanningValueRangeDescriptor implements PlanningVa
                     throw new IllegalArgumentException("The planningEntityClass ("
                             + variableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass()
                             + ") has a PlanningVariable annotated property ("
-                            + variableDescriptor.getVariablePropertyName()
+                            + variableDescriptor.getVariableName()
                             + ") with excludeUninitializedPlanningEntity (true),"
                             + " but a planning value class (" + value.getClass()
                             + ") annotated with PlanningEntity is a non configured as a planning entity.");
