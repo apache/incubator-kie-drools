@@ -6,7 +6,10 @@ import java.util.List;
 
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.definition.rule.Global;
+import org.drools.definition.rule.Query;
 import org.drools.definition.rule.Rule;
+import org.drools.definition.type.FactType;
 
 public class ProcessPackage implements KnowledgePackage {
 
@@ -32,5 +35,21 @@ public class ProcessPackage implements KnowledgePackage {
 	public Collection<Process> getProcesses() {
 		return processes;
 	}
+
+    public Collection<FactType> getFactTypes() {
+        return null;
+    }
+
+    public Collection<Query> getQueries() {
+        return null;
+    }
+
+    public Collection<String> getFunctionNames() {
+        return null;
+    }
+
+    public Collection<Global> getGlobalVariables() {
+        return null;
+    }
 
 }
