@@ -69,11 +69,12 @@ public class BestScoreStatistic extends AbstractProblemStatistic {
         BestScoreStatisticListener bestScoreStatisticListener = new BestScoreStatisticListener();
         solver.addEventListener(bestScoreStatisticListener);
         bestScoreStatisticListenerMap.put(configName, bestScoreStatisticListener);
+        ScoreDefinition newScoreDefinition = solver.getScoreDirectorFactory().getScoreDefinition();
         if (scoreDefinition == null) {
-            scoreDefinition = solver.getScoreDefinition();
+            scoreDefinition = newScoreDefinition;
         } else {
-            if (!scoreDefinition.getClass().equals(solver.getScoreDefinition().getClass())) {
-                throw new IllegalStateException("The scoreDefinition (" + solver.getScoreDefinition()
+            if (!scoreDefinition.getClass().equals(newScoreDefinition.getClass())) {
+                throw new IllegalStateException("The new scoreDefinition (" + newScoreDefinition
                         + ") should be of the same class as the other scoreDefinition (" + scoreDefinition + ")");
             }
         }

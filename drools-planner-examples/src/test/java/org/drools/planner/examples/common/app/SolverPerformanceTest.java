@@ -93,7 +93,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         Solution bestSolution = solver.getBestSolution();
         assertNotNull(bestSolution);
         Score bestScore = bestSolution.getScore();
-        Score scoreAttained = solver.getScoreDefinition().parseScore(scoreAttainedString);
+        Score scoreAttained = solver.getScoreDirectorFactory().getScoreDefinition().parseScore(scoreAttainedString);
         assertTrue("The bestScore (" + bestScore + ") must be at least scoreAttained (" + scoreAttained + ").",
                 bestScore.compareTo(scoreAttained) >= 0);
     }

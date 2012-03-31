@@ -148,8 +148,7 @@ public class SolutionBusiness {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
-        // TODO HACK Planner internal API: don't do this
-        ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
+        ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();
         guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
     }
 

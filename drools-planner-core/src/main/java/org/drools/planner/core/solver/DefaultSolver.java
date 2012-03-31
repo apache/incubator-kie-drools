@@ -72,10 +72,6 @@ public class DefaultSolver implements Solver {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
-    public ScoreDefinition getScoreDefinition() {
-        return scoreDirectorFactory.getScoreDefinition();
-    }
-
     public void setBasicPlumbingTermination(BasicPlumbingTermination basicPlumbingTermination) {
         this.basicPlumbingTermination = basicPlumbingTermination;
     }

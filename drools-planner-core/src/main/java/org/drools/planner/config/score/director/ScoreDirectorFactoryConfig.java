@@ -51,6 +51,7 @@ public class ScoreDirectorFactoryConfig {
     protected Class<? extends ScoreDefinition> scoreDefinitionClass = null;
     protected ScoreDefinitionType scoreDefinitionType = null;
 
+    @XStreamOmitField
     protected SimpleScoreCalculator simpleScoreCalculator = null;
     protected Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = null;
 

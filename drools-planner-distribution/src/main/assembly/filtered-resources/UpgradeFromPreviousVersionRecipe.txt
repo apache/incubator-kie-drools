@@ -1863,9 +1863,18 @@ use the ScoreDirectorFactory.buildScoreDirector() method instead.
 Before in *.java:
     guiSolutionDirector = ((DefaultSolver) solver).getSolverScope()
             .getSolutionDirector().cloneWithoutWorkingSolution();
-After in *.java:  TODO improve me before pushing
-    ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
-    guiScoreDirector = (DroolsScoreDirector) scoreDirectorFactory.buildScoreDirector();
+After in *.java:
+    ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();
+    guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
+    // if (guiScoreDirector instanceof DroolsScoreDirector) {
+    //     ... = ((DroolsScoreDirector) guiScoreDirector).getWorkingMemory();
+    // }
+
+[MINOR] The method Solver.getScoreDirectorFactory() has been removed.
+Before in *.java:
+    ... = solver.getScoreDefinition();
+After in *.java:
+    ... = solver.getScoreDirectorFactory().getScoreDefinition();
 
 [MAJOR] <scoreDefinition> has been replaced by <scoreDirectorFactory> and <scoreDrl> has been moved under it.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
