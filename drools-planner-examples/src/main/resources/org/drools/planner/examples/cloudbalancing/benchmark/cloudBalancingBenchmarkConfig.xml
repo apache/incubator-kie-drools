@@ -19,10 +19,13 @@
     <solver>
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
       <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
-      <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -79,9 +82,6 @@
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <termination>
-          <maximumUnimprovedStepCount>50</maximumUnimprovedStepCount>
-        </termination>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>

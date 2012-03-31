@@ -13,10 +13,10 @@
     <solver>
       <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
-      <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
       <termination>
         <terminationCompositionStyle>OR</terminationCompositionStyle>
         <scoreAttained>0</scoreAttained>

@@ -36,6 +36,7 @@ import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
+import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.solution.Solution;
@@ -64,7 +65,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
-    private DroolsScoreDirector guiScoreDirector;
+    private ScoreDirector guiScoreDirector;
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -149,7 +150,7 @@ public class SolutionBusiness {
         this.solver = solver;
         // TODO HACK Planner internal API: don't do this
         ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
-        guiScoreDirector = (DroolsScoreDirector) scoreDirectorFactory.buildScoreDirector();
+        guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
     }
 
     public List<File> getUnsolvedFileList() {
@@ -195,8 +196,11 @@ public class SolutionBusiness {
     }
 
     public List<ScoreDetail> getScoreDetailList() {
+        if (!(guiScoreDirector instanceof DroolsScoreDirector)) {
+            return null;
+        }
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        WorkingMemory workingMemory = guiScoreDirector.getWorkingMemory();
+        WorkingMemory workingMemory = ((DroolsScoreDirector) guiScoreDirector).getWorkingMemory();
         if (workingMemory == null) {
             return Collections.emptyList();
         }

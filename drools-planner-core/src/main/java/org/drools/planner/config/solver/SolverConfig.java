@@ -34,8 +34,8 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
 import org.drools.planner.config.termination.TerminationConfig;
-import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
 import org.drools.planner.config.util.ConfigUtils;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
@@ -44,6 +44,7 @@ import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.BasicPlumbingTermination;
@@ -65,12 +66,8 @@ public class SolverConfig {
     @XStreamImplicit(itemFieldName = "planningEntityClass")
     protected Set<Class<?>> planningEntityClassSet = null;
 
-    @XStreamOmitField
-    protected RuleBase ruleBase = null;
-    @XStreamImplicit(itemFieldName = "scoreDrl")
-    protected List<String> scoreDrlList = null;
-    @XStreamAlias("scoreDefinition")
-    protected ScoreDefinitionConfig scoreDefinitionConfig = new ScoreDefinitionConfig();
+    @XStreamAlias("scoreDirectorFactory")
+    protected ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
 
     @XStreamAlias("termination")
     private TerminationConfig terminationConfig = new TerminationConfig();
@@ -110,28 +107,12 @@ public class SolverConfig {
         this.planningEntityClassSet = planningEntityClassSet;
     }
 
-    public RuleBase getRuleBase() {
-        return ruleBase;
+    public ScoreDirectorFactoryConfig getScoreDirectorFactoryConfig() {
+        return scoreDirectorFactoryConfig;
     }
 
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
-    }
-
-    public List<String> getScoreDrlList() {
-        return scoreDrlList;
-    }
-
-    public void setScoreDrlList(List<String> scoreDrlList) {
-        this.scoreDrlList = scoreDrlList;
-    }
-
-    public ScoreDefinitionConfig getScoreDefinitionConfig() {
-        return scoreDefinitionConfig;
-    }
-
-    public void setScoreDefinitionConfig(ScoreDefinitionConfig scoreDefinitionConfig) {
-        this.scoreDefinitionConfig = scoreDefinitionConfig;
+    public void setScoreDirectorFactoryConfig(ScoreDirectorFactoryConfig scoreDirectorFactoryConfig) {
+        this.scoreDirectorFactoryConfig = scoreDirectorFactoryConfig;
     }
 
     public TerminationConfig getTerminationConfig() {
@@ -166,12 +147,10 @@ public class SolverConfig {
             }
         }
         SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
-        DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
-        scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
-        scoreDirectorFactory.setRuleBase(buildRuleBase());
-        ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
-        scoreDirectorFactory.setScoreDefinition(scoreDefinition);
+        ScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig.buildScoreDirectorFactory(
+                solutionDescriptor);
         solver.setScoreDirectorFactory(scoreDirectorFactory);
+        ScoreDefinition scoreDefinition = scoreDirectorFactory.getScoreDefinition();
         Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
@@ -210,42 +189,6 @@ public class SolverConfig {
         return solutionDescriptor;
     }
 
-
-    private RuleBase buildRuleBase() {
-        if (ruleBase != null) {
-            if (scoreDrlList != null && !scoreDrlList.isEmpty()) {
-                throw new IllegalArgumentException("If ruleBase is not null, the scoreDrlList (" + scoreDrlList
-                        + ") must be empty.");
-            }
-            return ruleBase;
-        } else {
-            PackageBuilder packageBuilder = new PackageBuilder();
-            for (String scoreDrl : scoreDrlList) {
-                InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
-                if (scoreDrlIn == null) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.");
-                }
-                try {
-                    packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "UTF-8"));
-                } catch (DroolsParserException e) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-                } catch (IOException e) {
-                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-                } finally {
-                    IOUtils.closeQuietly(scoreDrlIn);
-                }
-            }
-            RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
-            RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
-            if (packageBuilder.hasErrors()) {
-                throw new IllegalStateException("There are errors in the scoreDrl's:\n"
-                        + packageBuilder.getErrors().toString());
-            }
-            ruleBase.addPackage(packageBuilder.getPackage());
-            return ruleBase;
-        }
-    }
-
     public void inherit(SolverConfig inheritedConfig) {
         if (environmentMode == null) {
             environmentMode = inheritedConfig.getEnvironmentMode();
@@ -261,25 +204,10 @@ public class SolverConfig {
         } else if (inheritedConfig.getPlanningEntityClassSet() != null) {
             planningEntityClassSet.addAll(inheritedConfig.getPlanningEntityClassSet());
         }
-        if (ruleBase == null) {
-            ruleBase = inheritedConfig.getRuleBase();
-        }
-        if (scoreDrlList == null) {
-            scoreDrlList = inheritedConfig.getScoreDrlList();
-        } else {
-            List<String> inheritedScoreDrlList = inheritedConfig.getScoreDrlList();
-            if (inheritedScoreDrlList != null) {
-                for (String inheritedScoreDrl : inheritedScoreDrlList) {
-                    if (!scoreDrlList.contains(inheritedScoreDrl)) {
-                        scoreDrlList.add(inheritedScoreDrl);
-                    }
-                }
-            }
-        }
-        if (scoreDefinitionConfig == null) {
-            scoreDefinitionConfig = inheritedConfig.getScoreDefinitionConfig();
-        } else if (inheritedConfig.getScoreDefinitionConfig() != null) {
-            scoreDefinitionConfig.inherit(inheritedConfig.getScoreDefinitionConfig());
+        if (scoreDirectorFactoryConfig == null) {
+            scoreDirectorFactoryConfig = inheritedConfig.getScoreDirectorFactoryConfig();
+        } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {
+            scoreDirectorFactoryConfig.inherit(inheritedConfig.getScoreDirectorFactoryConfig());
         }
         if (terminationConfig == null) {
             terminationConfig = inheritedConfig.getTerminationConfig();

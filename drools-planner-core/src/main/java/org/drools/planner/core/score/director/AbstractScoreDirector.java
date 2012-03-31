@@ -100,13 +100,16 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
             uncorruptedScoreDirector.dispose();
             throw new IllegalStateException(
                     "Score corruption: the workingScore (" + workingScore + ") is not the uncorruptedScore ("
-                            + uncorruptedScore + "):\n"
-                            + scoreCorruptionAnalysis);
+                            + uncorruptedScore + ")"
+                            + (scoreCorruptionAnalysis == null ? "." : ":\n" + scoreCorruptionAnalysis));
         } else {
             uncorruptedScoreDirector.dispose();
         }
     }
 
-    protected abstract String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector);
+    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+        // No analysis available
+        return null;
+    }
 
 }

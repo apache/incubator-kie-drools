@@ -26,7 +26,7 @@ import org.drools.planner.config.XmlSolverFactory;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.SolverPhaseConfig;
-import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
+import org.drools.planner.config.score.director.ScoreDirectorFactoryConfig;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
@@ -65,11 +65,10 @@ public class NQueensApp extends CommonApp {
         planningEntityClassSet.add(Queen.class);
         solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
 
-        solverConfig.setScoreDrlList(
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
+        scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
-        ScoreDefinitionConfig scoreDefinitionConfig = solverConfig.getScoreDefinitionConfig();
-        scoreDefinitionConfig.setScoreDefinitionType(
-                ScoreDefinitionConfig.ScoreDefinitionType.SIMPLE);
 
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
         terminationConfig.setScoreAttained("0");

@@ -4,10 +4,10 @@
   <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
 
-  <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
-  <scoreDefinition>
+  <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-  </scoreDefinition>
+    <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
 
   <termination>
     <!--

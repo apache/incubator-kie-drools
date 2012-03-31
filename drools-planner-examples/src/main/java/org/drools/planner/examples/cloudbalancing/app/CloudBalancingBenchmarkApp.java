@@ -23,11 +23,16 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
     public static final String DEFAULT_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml";
 
+    public static final String SCORE_DIRECTOR_BENCHMARK_CONFIG
+            = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml";
+
     public static void main(String[] args) {
         String benchmarkConfig;
         if (args.length > 0) {
             if (args[0].equals("default")) {
                 benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
+            } else if (args[0].equals("scoreDirector")) {
+                benchmarkConfig = SCORE_DIRECTOR_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }

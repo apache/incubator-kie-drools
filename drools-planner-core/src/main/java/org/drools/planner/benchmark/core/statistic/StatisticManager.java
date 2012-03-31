@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -92,7 +90,7 @@ public class StatisticManager {
     private CharSequence writeBestScoreSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
             for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 Score score = result.getScore();
@@ -140,7 +138,7 @@ public class StatisticManager {
     private CharSequence writeWinningScoreDifferenceSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
             for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 Score score = result.getWinningScoreDifference();
@@ -236,8 +234,6 @@ public class StatisticManager {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
-            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
-                    .buildScoreDefinition();
             for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long problemScale = result.getProblemScale();
                 long timeMillisSpend = result.getTimeMillisSpend();
@@ -279,8 +275,6 @@ public class StatisticManager {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
-            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
-                    .buildScoreDefinition();
             for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
                 long problemScale = result.getProblemScale();
                 long averageCalculateCountPerSecond = result.getAverageCalculateCountPerSecond();

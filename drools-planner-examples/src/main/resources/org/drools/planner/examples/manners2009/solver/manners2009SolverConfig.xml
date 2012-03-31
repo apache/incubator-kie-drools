@@ -4,10 +4,10 @@
   <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
   <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
 
-  <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
-  <scoreDefinition>
+  <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-  </scoreDefinition>
+    <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
 
   <termination>
     <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->

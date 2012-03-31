@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -54,29 +55,33 @@ public class ConstraintScoreMapDialog extends JDialog {
 
     public void resetContentPanel() {
         final List<ScoreDetail> scoreDetailList = solutionBusiness.getScoreDetailList();
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        final JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
-        JScrollPane tableScrollPane = new JScrollPane(table);
-        tableScrollPane.setPreferredSize(new Dimension(700, 300));
-        splitPane.setTopComponent(tableScrollPane);
-        final JTextArea detailTextArea = new JTextArea(10, 80);
-        JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
-        splitPane.setBottomComponent(detailScrollPane);
-        table.getSelectionModel().addListSelectionListener(
-                new ListSelectionListener() {
-                    public void valueChanged(ListSelectionEvent event) {
-                        int selectedRow = table.getSelectedRow();
-                        if (selectedRow < 0) {
-                            detailTextArea.setText("");
-                        } else {
-                            ScoreDetail scoreDetail = scoreDetailList.get(selectedRow);
-                            detailTextArea.setText(scoreDetail.buildConstraintOccurrenceListText());
+        if (scoreDetailList == null) {
+            setContentPane(new JLabel("Score details not support with this ScoreDirector."));
+        } else {
+            JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            final JTable table = new JTable(new ScoreDetailTableModel(scoreDetailList));
+            JScrollPane tableScrollPane = new JScrollPane(table);
+            tableScrollPane.setPreferredSize(new Dimension(700, 300));
+            splitPane.setTopComponent(tableScrollPane);
+            final JTextArea detailTextArea = new JTextArea(10, 80);
+            JScrollPane detailScrollPane = new JScrollPane(detailTextArea);
+            splitPane.setBottomComponent(detailScrollPane);
+            table.getSelectionModel().addListSelectionListener(
+                    new ListSelectionListener() {
+                        public void valueChanged(ListSelectionEvent event) {
+                            int selectedRow = table.getSelectedRow();
+                            if (selectedRow < 0) {
+                                detailTextArea.setText("");
+                            } else {
+                                ScoreDetail scoreDetail = scoreDetailList.get(selectedRow);
+                                detailTextArea.setText(scoreDetail.buildConstraintOccurrenceListText());
+                            }
                         }
                     }
-                }
-        );
-        splitPane.setResizeWeight(1.0);
-        setContentPane(splitPane);
+            );
+            splitPane.setResizeWeight(1.0);
+            setContentPane(splitPane);
+        }
         pack();
         setLocationRelativeTo(getParent());
     }

@@ -21,10 +21,10 @@
       <!--<environmentMode>DEBUG</environmentMode>-->
       <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
-      <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
       <termination>
         <!--
           Official benchmark maximumSecondsSpend allowed on:

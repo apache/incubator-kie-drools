@@ -14,38 +14,35 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.director.drools;
+package org.drools.planner.core.score.director.simple;
 
-import org.drools.RuleBase;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
-import org.drools.planner.core.score.director.ScoreDirector;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
+import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 
 /**
- * Drools implementation of {@link ScoreDirectorFactory}.
- * @see DroolsScoreDirector
+ * Simple implementation of {@link ScoreDirectorFactory}.
+ * @see SimpleScoreDirector
  * @see ScoreDirectorFactory
  */
-public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
+public class SimpleScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
-    protected RuleBase ruleBase;
+    private final SimpleScoreCalculator simpleScoreCalculator;
 
-    public RuleBase getRuleBase() {
-        return ruleBase;
+    public SimpleScoreDirectorFactory(SimpleScoreCalculator simpleScoreCalculator) {
+        this.simpleScoreCalculator = simpleScoreCalculator;
     }
 
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+    public SimpleScoreCalculator getSimpleScoreCalculator() {
+        return simpleScoreCalculator;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public DroolsScoreDirector buildScoreDirector() {
-        return new DroolsScoreDirector(this);
+    public SimpleScoreDirector buildScoreDirector() {
+        return new SimpleScoreDirector(this, simpleScoreCalculator);
     }
 
 }

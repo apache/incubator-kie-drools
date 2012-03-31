@@ -13,10 +13,10 @@
     <solver>
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
-      <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
       <termination>
         <maximumStepCount>100</maximumStepCount>
       </termination>

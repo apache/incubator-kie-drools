@@ -13,10 +13,10 @@
       <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
       <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
-      <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
     </solver>
   </inheritedSolverBenchmark>
 

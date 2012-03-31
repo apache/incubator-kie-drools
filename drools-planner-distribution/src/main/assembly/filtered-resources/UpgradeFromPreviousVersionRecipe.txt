@@ -1866,3 +1866,35 @@ Before in *.java:
 After in *.java:  TODO improve me before pushing
     ScoreDirectorFactory scoreDirectorFactory = ((DefaultSolver) solver).getScoreDirectorFactory();
     guiScoreDirector = (DroolsScoreDirector) scoreDirectorFactory.buildScoreDirector();
+
+[MAJOR] <scoreDefinition> has been replaced by <scoreDirectorFactory> and <scoreDrl> has been moved under it.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <solver>
+      ...
+      <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+      ...
+    </solver>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <solver>
+      ...
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      ...
+    </solver>
+If instead, you use API configuration (less likely):
+Before in *.java:
+        solverConfig.setScoreDrlList(
+                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+        ScoreDefinitionConfig scoreDefinitionConfig = solverConfig.getScoreDefinitionConfig();
+        scoreDefinitionConfig.setScoreDefinitionType(
+                ScoreDefinitionConfig.ScoreDefinitionType.SIMPLE);
+After in *.java:
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
+        scoreDirectorFactoryConfig.setScoreDrlList(
+                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));

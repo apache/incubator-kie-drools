@@ -4,10 +4,10 @@
   <solutionClass>org.drools.planner.examples.traindesign.domain.TrainDesign</solutionClass>
   <planningEntityClass>org.drools.planner.examples.traindesign.domain.CarBlockDesignation</planningEntityClass>
 
-  <scoreDrl>/org/drools/planner/examples/traindesign/solver/trainDesignScoreRules.drl</scoreDrl>
-  <scoreDefinition>
+  <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-  </scoreDefinition>
+    <scoreDrl>/org/drools/planner/examples/traindesign/solver/trainDesignScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
 
   <termination>
     <maximumMinutesSpend>5</maximumMinutesSpend>

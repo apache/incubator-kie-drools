@@ -116,11 +116,10 @@
         planningEntityClassSet.add(Queen.class);
         solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
 
-        solverConfig.setScoreDrlList(
-                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
-        ScoreDefinitionConfig scoreDefinitionConfig = solverConfig.getScoreDefinitionConfig();
-        scoreDefinitionConfig.setScoreDefinitionType(
-                ScoreDefinitionConfig.ScoreDefinitionType.SIMPLE);
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
+        scoreDirectorFactoryConfig.setScoreDrlList(
+        Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
 
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
         // ...

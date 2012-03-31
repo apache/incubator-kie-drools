@@ -7,10 +7,11 @@
   <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
 
   <!-- Score configuration -->
-  <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
-  <scoreDefinition>
+  <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-  </scoreDefinition>
+    <!--<simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
   <termination>

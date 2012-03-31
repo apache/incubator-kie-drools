@@ -19,10 +19,10 @@
       <solutionClass>org.drools.planner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
       <planningEntityClass>org.drools.planner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
 
-      <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
-      <scoreDefinition>
+      <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-      </scoreDefinition>
+        <scoreDrl>/org/drools/planner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
 
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
