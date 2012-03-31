@@ -62,10 +62,10 @@
   &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
 
   &lt;!-- Define the score function --&gt;
-  &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-  &lt;scoreDefinition&gt;
+  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-  &lt;/scoreDefinition&gt;
+    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+  &lt;/scoreDirectorFactory&gt;
 
   &lt;!-- Configure the optimization algorithm(s) --&gt;
   &lt;termination&gt;
@@ -119,7 +119,7 @@
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
-        Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
 
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
         // ...

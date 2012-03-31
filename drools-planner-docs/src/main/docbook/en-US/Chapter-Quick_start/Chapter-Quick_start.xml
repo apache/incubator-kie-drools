@@ -148,10 +148,11 @@
   &lt;planningEntityClass&gt;org.drools.planner.examples.cloudbalancing.domain.CloudProcess&lt;/planningEntityClass&gt;
 
   &lt;!-- Score configuration --&gt;
-  &lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
-  &lt;scoreDefinition&gt;
+  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
-  &lt;/scoreDefinition&gt;
+    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+    &lt;!--&lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
+  &lt;/scoreDirectorFactory&gt;
   
   &lt;!-- Optimization algorithms configuration --&gt;
   &lt;termination&gt;
@@ -221,8 +222,8 @@
 }</programlisting>
       </example>
 
-      <para>The class <literal>Process</literal> is a little bit special. Since Planner can change the field
-      <literal>computer</literal>, we need to annotate the class with <literal>@PlanningEntity</literal> and the getter
+      <para>The class <literal>Process</literal> is a little bit special. We need to tell Planner that it can change the
+      field <literal>computer</literal>, so we annotate the class with <literal>@PlanningEntity</literal> and the getter
       <literal>getComputer</literal> with <literal>@PlanningVariable</literal>:</para>
 
       <example>
@@ -268,8 +269,13 @@ public class CloudProcess ... {
 }</programlisting>
       </example>
 
-      <para>The class <literal>CloudBalance</literal> implements the <filename>Solution</filename> interface. It has a
-      property <literal>score</literal> and a method <literal>clone()</literal>:</para>
+      <para>The values that Planner can chose from for the field <literal>computer</literal>, are retrieved from a
+      method on the <literal>Solution</literal> implementation:
+      <literal>CloudBalance.getComputerList()</literal>.</para>
+
+      <para>The class <literal>CloudBalance</literal> implements the <filename>Solution</filename> interface. It holds a
+      list of all computers and processes. It has a property <literal>score</literal> which is the
+      <literal>Score</literal> of that <literal>Solution</literal> instance in it's current state:</para>
 
       <example>
         <title>CloudBalance.java</title>
@@ -335,22 +341,138 @@ public class CloudProcess ... {
 }</programlisting>
       </example>
 
-      <para>The method <literal>getProblemFacts()</literal> is needed for the score calculation:</para>
+      <para>The method <literal>getProblemFacts()</literal> is only needed for score calculation with Drools. It's not
+      needed with the other score calculation types.</para>
+
+      <para>The method <literal>clone()</literal> is required. Planner uses it to make a clone of the best
+      <literal>Solution</literal> in encounters during searching.</para>
     </section>
 
     <section>
       <title>Score configuration</title>
 
       <para>Planner will search for the <literal>Solution</literal> with the highest <literal>Score</literal>. We're
-      using a <literal>HardAndSoftScore</literal>.</para>
+      using a <literal>HardAndSoftScore</literal>, which means Planner will look for the solution with no hard
+      constraints broken (hardware requirements) and as little as possible soft constraints broken (maintenance
+      cost).</para>
 
-      <para>First want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their
-      processes, so we make those hard constraints:</para>
+      <para>There are several ways to implement the score function:</para>
 
-      <example>
-        <title>cloudBalancingScoreRules.drl - hard constraints</title>
+      <itemizedlist>
+        <listitem>
+          <para>Simple Java</para>
+        </listitem>
 
-        <programlisting>...
+        <listitem>
+          <para>Incremental Java</para>
+        </listitem>
+
+        <listitem>
+          <para>Drools</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Let's look at 2 of those:</para>
+
+      <section>
+        <title>Simple Java score configuration</title>
+
+        <para>One way to define a score function is to implement the interface <literal>SimpleScoreCalculator</literal>
+        in plain Java.</para>
+
+        <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;simpleScoreCalculatorClass&gt;org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator&lt;/simpleScoreCalculatorClass&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+        <para>Just implement the method <literal>calculateScore(Solution)</literal> to return a
+        <literal>DefaultHardAndSoftScore</literal> instance.</para>
+
+        <example>
+          <title>CloudBalance.java</title>
+
+          <programlisting language="java">public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculator&lt;CloudBalance&gt; {
+
+    public Score calculateScore(CloudBalance cloudBalance) {
+        Map&lt;CloudComputer, Integer&gt; cpuPowerUsageMap = new HashMap&lt;&gt;();
+        ...
+        for (CloudComputer computer : cloudBalance.getComputerList()) {
+            cpuPowerUsageMap.put(computer, 0);
+            ...
+        }
+        Set&lt;CloudComputer&gt; usedComputerSet = new HashSet&lt;&gt;();
+
+        visitProcessList(cpuPowerUsageMap, ...,
+                usedComputerSet, cloudBalance.getProcessList());
+
+        int hardScore = sumHardScore(cpuPowerUsageMap, ...);
+        int softScore = sumSoftScore(usedComputerSet);
+
+        return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
+    }
+
+    private void visitProcessList(Map&lt;CloudComputer, Integer&gt; cpuPowerUsageMap, ...
+            Set&lt;CloudComputer&gt; usedComputerSet, List&lt;CloudProcess&gt; processList) {
+        // We loop through the processList only once for performance
+        for (CloudProcess process : processList) {
+            CloudComputer computer = process.getComputer();
+            if (computer != null) {
+                int cpuPowerUsage = cpuPowerUsageMap.get(computer) + process.getRequiredCpuPower();
+                cpuPowerUsageMap.put(computer, cpuPowerUsage);
+                ...
+                usedComputerSet.add(computer);
+            }
+        }
+    }
+
+    private int sumHardScore(Map&lt;CloudComputer, Integer&gt; cpuPowerUsageMap, ...) {
+        int hardScore = 0;
+        for (Map.Entry&lt;CloudComputer, Integer&gt; usageEntry : cpuPowerUsageMap.entrySet()) {
+            CloudComputer computer = usageEntry.getKey();
+            int cpuPowerAvailable = computer.getCpuPower() - usageEntry.getValue();
+            if (cpuPowerAvailable &lt; 0) {
+                hardScore += cpuPowerAvailable;
+            }
+        }
+        ...
+        return hardScore;
+    }
+
+    private int sumSoftScore(Set&lt;CloudComputer&gt; usedComputerSet) {
+        int softScore = 0;
+        for (CloudComputer usedComputer : usedComputerSet) {
+            softScore -= usedComputer.getCost();
+        }
+        return softScore;
+    }
+
+}</programlisting>
+        </example>
+
+        <para>Despite that the code above is optimized with <literal>Map</literal>s to only go through the
+        <literal>processList</literal> once, <emphasis role="bold">it is still slow</emphasis> because it doesn't do
+        incremental score calculation. To fix that, either use an incremental Java score function or a Drools score
+        function.</para>
+      </section>
+
+      <section>
+        <title>Drools score configuration</title>
+
+        <para>To use Drools as a score function, simply add a <literal>scoreDrl</literal> resource in the
+        classpath:</para>
+
+        <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;HARD_AND_SOFT&lt;/scoreDefinitionType&gt;
+    &lt;scoreDrl&gt;/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+        <para>First, we want to make sure that all computers have enough CPU, RAM and network bandwidth to support all
+        their processes, so we make those hard constraints:</para>
+
+        <example>
+          <title>cloudBalancingScoreRules.drl - hard constraints</title>
+
+          <programlisting>...
 
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -400,15 +522,15 @@ rule "hardConstraintsBroken"
     then
         scoreHolder.setHardConstraintsBroken($hardTotal.intValue());
 end</programlisting>
-      </example>
+        </example>
 
-      <para>Next, if those constraints are met, we want to minimize the maintenance cost, so we add that as a soft
-      constraint:</para>
+        <para>Next, if those constraints are met, we want to minimize the maintenance cost, so we add that as a soft
+        constraint:</para>
 
-      <example>
-        <title>cloudBalancingScoreRules.drl - soft constraints</title>
+        <example>
+          <title>cloudBalancingScoreRules.drl - soft constraints</title>
 
-        <programlisting>// ############################################################################
+          <programlisting>// ############################################################################
 // Soft constraints
 // ############################################################################
 
@@ -437,7 +559,8 @@ rule "softConstraintsBroken"
     then
         scoreHolder.setSoftConstraintsBroken($softTotal.intValue());
 end</programlisting>
-      </example>
+        </example>
+      </section>
     </section>
 
     <section>

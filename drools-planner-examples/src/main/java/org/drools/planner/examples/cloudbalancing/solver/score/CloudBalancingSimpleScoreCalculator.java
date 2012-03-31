@@ -55,7 +55,7 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
     private void visitProcessList(Map<CloudComputer, Integer> cpuPowerUsageMap,
             Map<CloudComputer, Integer> memoryUsageMap, Map<CloudComputer, Integer> networkBandwidthUsageMap,
             Set<CloudComputer> usedComputerSet, List<CloudProcess> processList) {
-        // We only loop through the processList once for performance
+        // We loop through the processList only once for performance
         for (CloudProcess process : processList) {
             CloudComputer computer = process.getComputer();
             if (computer != null) {
@@ -73,20 +73,23 @@ public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculato
     private int sumHardScore(Map<CloudComputer, Integer> cpuPowerUsageMap, Map<CloudComputer, Integer> memoryUsageMap,
             Map<CloudComputer, Integer> networkBandwidthUsageMap) {
         int hardScore = 0;
-        for (Map.Entry<CloudComputer, Integer> entry : cpuPowerUsageMap.entrySet()) {
-            int cpuPowerAvailable = entry.getKey().getCpuPower() - entry.getValue();
+        for (Map.Entry<CloudComputer, Integer> usageEntry : cpuPowerUsageMap.entrySet()) {
+            CloudComputer computer = usageEntry.getKey();
+            int cpuPowerAvailable = computer.getCpuPower() - usageEntry.getValue();
             if (cpuPowerAvailable < 0) {
                 hardScore += cpuPowerAvailable;
             }
         }
-        for (Map.Entry<CloudComputer, Integer> entry : memoryUsageMap.entrySet()) {
-            int memoryAvailable = entry.getKey().getMemory() - entry.getValue();
+        for (Map.Entry<CloudComputer, Integer> usageEntry : memoryUsageMap.entrySet()) {
+            CloudComputer computer = usageEntry.getKey();
+            int memoryAvailable = computer.getMemory() - usageEntry.getValue();
             if (memoryAvailable < 0) {
                 hardScore += memoryAvailable;
             }
         }
-        for (Map.Entry<CloudComputer, Integer> entry : networkBandwidthUsageMap.entrySet()) {
-            int networkBandwidthAvailable = entry.getKey().getNetworkBandwidth() - entry.getValue();
+        for (Map.Entry<CloudComputer, Integer> usageEntry : networkBandwidthUsageMap.entrySet()) {
+            CloudComputer computer = usageEntry.getKey();
+            int networkBandwidthAvailable = computer.getNetworkBandwidth() - usageEntry.getValue();
             if (networkBandwidthAvailable < 0) {
                 hardScore += networkBandwidthAvailable;
             }
