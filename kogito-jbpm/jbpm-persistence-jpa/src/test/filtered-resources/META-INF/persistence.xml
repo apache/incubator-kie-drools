@@ -9,7 +9,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
         <mapping-file>META-INF/JBPMorm.xml</mapping-file>
-        <!-- madsfpping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file -->
+        <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
         
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
@@ -27,7 +27,7 @@
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
             <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
             
             <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
