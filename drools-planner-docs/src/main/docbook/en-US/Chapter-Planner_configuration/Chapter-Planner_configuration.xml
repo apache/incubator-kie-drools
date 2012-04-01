@@ -465,7 +465,8 @@ public class Queen {
         <literal>@ValueRange</literal> annotation.</para>
 
         <para>If <literal>null</literal> is a valid planning value, it should be included in the value range and the
-        default way to detect uninitialized planning variables must be changed.</para>
+        default way to detect uninitialized planning variables must be changed (TODO for now, a <link
+        xlink:href="https://issues.jboss.org/browse/JBRULES-3317">workaround</link> is needed).</para>
       </section>
 
       <section>
@@ -908,7 +909,10 @@ public class Visit ... implements Appearance {
       <section xml:id="getProblemFacts">
         <title>The getProblemFacts method</title>
 
-        <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the drools
+        <para>The method is only used if Drools is used for score calculation. Other score directors do not use
+        it.</para>
+
+        <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the Drools
         working memory, so the score rules can access them. For example, <literal>NQueens</literal> just returns all
         <literal>Column</literal> and <literal>Row</literal> instances.</para>
 
@@ -920,7 +924,7 @@ public class Visit ... implements Appearance {
         return facts;
     }</programlisting>
 
-        <para><emphasis>All planning entities are automatically inserted into the drools working memory.</emphasis> Do
+        <para><emphasis>All planning entities are automatically inserted into the Drools working memory.</emphasis> Do
         not add them in the method <literal>getProblemFacts()</literal>.</para>
 
         <para>The method <literal>getProblemFacts()</literal> is not called much: at most only once per solver phase per

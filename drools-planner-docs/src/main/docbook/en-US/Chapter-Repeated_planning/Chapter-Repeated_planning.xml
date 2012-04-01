@@ -64,7 +64,7 @@
     effort). Distant future planning windows are not planned at all.</para>
 
     <para>Past planning windows have <emphasis>locked</emphasis> planning entities: the planning entities can no longer
-    be changed (they are locked in place), but some of them are still needed in the working memory, as they might affect
+    be changed (they are locked in place), but some of them are still needed in the score calculation, as they might affect
     some of the score constraints that apply on the upcoming planning entities. For example: when an employee should not
     work more than 5 days in a row, he shouldn't work today and tomorrow if he worked the past 4 days already.</para>
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <chapter version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xml:id="localSearch" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xml:id="localSearch" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>Local search</title>
 
   <section>
@@ -109,11 +110,11 @@
 
       <programlisting language="java">public interface Move {
 
-    boolean isMoveDoable(EvaluationHandler evaluationHandler);
+    boolean isMoveDoable(ScoreDirector scoreDirector);
 
-    Move createUndoMove(EvaluationHandler evaluationHandler);
+    Move createUndoMove(ScoreDirector scoreDirector);
 
-    void doMove(EvaluationHandler evaluationHandler);
+    void doMove(ScoreDirector scoreDirector);
 
 }</programlisting>
 
@@ -137,22 +138,28 @@
       <para>An instance of <literal>RowChangeMove</literal> moves a queen from its current row to a different
       row.</para>
 
-      <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
-      <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
-      facts:</para>
+      <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move. The <literal>Move</literal>
+      implementation must notify the <literal>ScoreDirector</literal> of any changes it make to the planning entities's
+      variables:</para>
 
-      <programlisting language="java">    public void doMove(WorkingMemory workingMemory) {
-        FactHandle queenHandle = workingMemory.getFactHandle(queen);
+      <programlisting language="java">    public void doMove(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made
         queen.setRow(toRow);
-        workingMemory.update(queenHandle, queen); // after changes are made
+        scoreDirector.afterVariableChanged(queen, "row"); // after changes are made
     }</programlisting>
 
-      <para>You need to call the <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the
-      fact. Note that you can alter multiple facts in a single move and effectively create a big move (also known as a
-      coarse-grained move).</para>
+      <para>You need to call the methods <literal>scoreDirector.beforeVariableChanged(Object, String)</literal> and
+      <literal>scoreDirector.afterVariableChanged(Object, String)</literal> before and after modifying the entity.
+      Alternatively, you can also call the methods <literal>scoreDirector.beforeAllVariablesChanged(Object)</literal>
+      and <literal>scoreDirector.afterAllVariablesChanged(Object)</literal>.</para>
 
-      <para>Drools Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
-      <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
+      <note>
+        <para>You can alter multiple entities in a single move and effectively create a big move (also known as a
+        coarse-grained move). A move cannot change any of the problem facts.</para>
+      </note>
+
+      <para>Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
+      <literal>isDoable(ScoreDirector)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
       <itemizedlist>
         <listitem>
@@ -169,31 +176,32 @@
       <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
       doable:</para>
 
-      <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
+      <programlisting language="java">    public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !ObjectUtils.equals(queen.getRow(), toRow);
     }</programlisting>
 
       <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
-      A move that is currently not doable can become doable on a later solution.</para>
+      A move that is currently not doable could become doable on the working <literal>Solution</literal> of a later
+      step.</para>
 
-      <para>Each move has an <emphasis>undo move</emphasis>: a move (usually of the same type) which does the exact
-      opposite. In the above example the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
-      C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
-      solution.</para>
+      <para>Each move has an <emphasis>undo move</emphasis>: a move (normally of the same type) which does the exact
+      opposite. In the example above the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
+      C0</emphasis>. An undo move is created from a <literal>Move</literal>, before the <literal>Move</literal> has been
+      done on the current solution.</para>
 
-      <programlisting language="java">    public Move createUndoMove(WorkingMemory workingMemory) {
+      <programlisting language="java">    public Move createUndoMove(ScoreDirector scoreDirector) {
         return new RowChangeMove(queen, queen.getRow());
     }</programlisting>
 
       <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
       C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
 
-      <para>The local search solver can do and undo a move more than once, even on different (successive)
-      solutions.</para>
+      <para>The local search solver phase might do and undo the same <literal>Move</literal> more than once, even on
+      different (successive) solutions.</para>
 
-      <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and <literal>getPlanningValues()</literal>
-      methods. They are used by entity tabu and value tabu respectively. When they are called, the
-      <literal>Move</literal> is already been done.</para>
+      <para>A <literal>Move</literal> must implement the <literal>getPlanningEntities()</literal> and
+      <literal>getPlanningValues()</literal> methods. They are used by entity tabu and value tabu respectively. When
+      they are called, the <literal>Move</literal> has already been done.</para>
 
       <programlisting language="java">    public List&lt;? extends Object&gt; getPlanningEntities() {
         return Collections.singletonList(queen);
@@ -203,8 +211,9 @@
         return Collections.singletonList(toRow);
     }</programlisting>
 
-      <para>If your <literal>Move</literal> changes multiple planning entities, return all them in <literal>getPlanningEntities()</literal>
-      and return all their values (to which they are changing) in <literal>getPlanningValues()</literal>.</para>
+      <para>If your <literal>Move</literal> changes multiple planning entities, return all them in
+      <literal>getPlanningEntities()</literal> and return all their values (to which they are changing) in
+      <literal>getPlanningValues()</literal>.</para>
 
       <programlisting language="java">    public Collection&lt;? extends Object&gt; getPlanningEntities() {
         return Arrays.asList(leftCloudProcess, rightCloudProcess);
@@ -214,8 +223,8 @@
         return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }</programlisting>
 
-      <para>A <literal>Move</literal> must implement the <literal>equals()</literal> and <literal>hashCode()</literal> methods. 2 moves
-      which make the same change on a solution, must be equal.</para>
+      <para>A <literal>Move</literal> must implement the <literal>equals()</literal> and <literal>hashCode()</literal>
+      methods. 2 moves which make the same change on a solution, should be equal.</para>
 
       <programlisting language="java">    public boolean equals(Object o) {
         if (this == o) {
@@ -239,11 +248,11 @@
     }</programlisting>
 
       <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
-      <literal>equal()</literal> and <literal>hashCode()</literal> implementations. Notice that it checks if the other
-      move is an instance of the same move type. This is important because a move will be compared to a move with
-      another move type if you're using more then 1 move type.</para>
+      <literal>equals()</literal> and <literal>hashCode()</literal> implementations. Notice that it checks if the other
+      move is an instance of the same move type. This <literal>instanceof</literal> check is important because a move
+      will be compared to a move with another move type if you're using more then 1 move type.</para>
 
-      <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
+      <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read
       Planner's logging more easily:</para>
 
       <programlisting language="java">    public String toString() {
@@ -578,8 +587,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
           </listitem>
 
           <listitem>
-            <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu.
-            For example, for N queens it makes the recently moved queens tabu.</para>
+            <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For
+            example, for N queens it makes the recently moved queens tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
         &lt;planningEntityTabuSize&gt;7&lt;/planningEntityTabuSize&gt;
@@ -587,8 +596,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
           </listitem>
 
           <listitem>
-            <para><emphasis>Planning value tabu</emphasis> makes the planning values of recent steps tabu.
-            For example, for N queens it makes the recently moved to rows tabu.</para>
+            <para><emphasis>Planning value tabu</emphasis> makes the planning values of recent steps tabu. For example,
+            for N queens it makes the recently moved to rows tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
         &lt;planningValueTabuSize&gt;7&lt;/planningValueTabuSize&gt;
