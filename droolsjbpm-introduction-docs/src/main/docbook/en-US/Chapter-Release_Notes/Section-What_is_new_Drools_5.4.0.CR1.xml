@@ -584,6 +584,41 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     </section>
 
     <section>
+      <title>Score calculation with plain Java (no DRL)</title>
+
+      <para>Planner can now alternatively, use a score calculation written in plain Java. Just implement this
+      interface:</para>
+
+      <programlisting language="java">public interface SimpleScoreCalculator&lt;Sol extends Solution&gt; {
+
+    Score calculateScore(Sol solution);
+    
+}</programlisting>
+
+      <para>See the CloudBalance example for an implementation.</para>
+
+      <para>In this way, Planner does not use Drools at all. This allows you to:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Use Planner, even if your company forbids any other language than Java (including DRL).</para>
+        </listitem>
+
+        <listitem>
+          <para>Hook Planner up to an existing score calculation system, which you don't want to migrate to DRL at this
+          time.</para>
+        </listitem>
+
+        <listitem>
+          <para>Or just use Java if you prefer that over DRL.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Currently, there is only one Java way implemented: <literal>SimpleScoreCalculator</literal>, which is slow.
+      An <literal>IncrementalScoreCalculator</literal> will be implemented soon.</para>
+    </section>
+
+    <section>
       <title>Quick start tutorial</title>
 
       <para>The documentation now has a new chapter <emphasis>Quick start tutorial</emphasis>. It explains how to write
