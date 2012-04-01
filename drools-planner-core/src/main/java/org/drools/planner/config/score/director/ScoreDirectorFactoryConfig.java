@@ -58,8 +58,6 @@ public class ScoreDirectorFactoryConfig {
     protected SimpleScoreCalculator simpleScoreCalculator = null;
     protected Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = null;
 
-    @XStreamOmitField
-    protected IncrementalScoreCalculator incrementalScoreCalculator = null;
     protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
     @XStreamOmitField
@@ -105,14 +103,6 @@ public class ScoreDirectorFactoryConfig {
 
     public void setSimpleScoreCalculatorClass(Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass) {
         this.simpleScoreCalculatorClass = simpleScoreCalculatorClass;
-    }
-
-    public IncrementalScoreCalculator getIncrementalScoreCalculator() {
-        return incrementalScoreCalculator;
-    }
-
-    public void setIncrementalScoreCalculator(IncrementalScoreCalculator incrementalScoreCalculator) {
-        this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
     public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
@@ -212,22 +202,8 @@ public class ScoreDirectorFactoryConfig {
     }
 
     private AbstractScoreDirectorFactory buildIncrementalScoreDirectorFactory() {
-        if (incrementalScoreCalculator != null) {
-            return new IncrementalScoreDirectorFactory(incrementalScoreCalculator);
-        } else if (incrementalScoreCalculatorClass != null) {
-            IncrementalScoreCalculator incrementalScoreCalculator;
-            try {
-                incrementalScoreCalculator = incrementalScoreCalculatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
-                        + incrementalScoreCalculatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
-                        + incrementalScoreCalculatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
-            return new IncrementalScoreDirectorFactory(incrementalScoreCalculator);
+        if (incrementalScoreCalculatorClass != null) {
+            return new IncrementalScoreDirectorFactory(incrementalScoreCalculatorClass);
         } else {
             return null;
         }
@@ -286,9 +262,6 @@ public class ScoreDirectorFactoryConfig {
         }
         if (simpleScoreCalculatorClass == null) {
             simpleScoreCalculatorClass = inheritedConfig.getSimpleScoreCalculatorClass();
-        }
-        if (incrementalScoreCalculator == null) {
-            incrementalScoreCalculator = inheritedConfig.getIncrementalScoreCalculator();
         }
         if (incrementalScoreCalculatorClass == null) {
             incrementalScoreCalculatorClass = inheritedConfig.getIncrementalScoreCalculatorClass();

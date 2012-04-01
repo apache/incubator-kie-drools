@@ -103,7 +103,7 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     public Score calculateScore() {
-        Score score = incrementalScoreCalculator.calculateScore(workingSolution);
+        Score score = incrementalScoreCalculator.calculateScore();
         workingSolution.setScore(score);
         calculateCount++;
         return score;

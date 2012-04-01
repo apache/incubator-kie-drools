@@ -47,9 +47,8 @@ public interface IncrementalScoreCalculator<Sol extends Solution> {
     void afterEntityRemoved(Object entity);
 
     /**
-     * @param solution never null
      * @return never null
      */
-    Score calculateScore(Sol solution);
+    Score calculateScore();
     
 }

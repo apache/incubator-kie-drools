@@ -27,14 +27,14 @@ import org.drools.planner.core.score.director.simple.SimpleScoreDirector;
  */
 public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
-    private final IncrementalScoreCalculator incrementalScoreCalculator;
+    private Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass;
 
-    public IncrementalScoreDirectorFactory(IncrementalScoreCalculator incrementalScoreCalculator) {
-        this.incrementalScoreCalculator = incrementalScoreCalculator;
+    public IncrementalScoreDirectorFactory(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+        this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
     }
 
-    public IncrementalScoreCalculator getIncrementalScoreCalculator() {
-        return incrementalScoreCalculator;
+    public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
+        return incrementalScoreCalculatorClass;
     }
 
     // ************************************************************************
@@ -42,6 +42,18 @@ public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactor
     // ************************************************************************
 
     public IncrementalScoreDirector buildScoreDirector() {
+        IncrementalScoreCalculator incrementalScoreCalculator;
+        try {
+            incrementalScoreCalculator = incrementalScoreCalculatorClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
+                    + incrementalScoreCalculatorClass.getName()
+                    + ") does not have a public no-arg constructor", e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
+                    + incrementalScoreCalculatorClass.getName()
+                    + ") does not have a public no-arg constructor", e);
+        }
         return new IncrementalScoreDirector(this, incrementalScoreCalculator);
     }
 

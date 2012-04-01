@@ -25,7 +25,6 @@ import java.util.Set;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -161,13 +160,10 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
                 softScore += computer.getCost();
             }
             processCountMap.put(computer, newProcessCount);
-if (hardScore > 0 || softScore > 0) {
-    throw new IllegalArgumentException();
-}
         }
     }
 
-    public Score calculateScore(CloudBalance cloudBalance) {
+    public Score calculateScore() {
         return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
     }
 
