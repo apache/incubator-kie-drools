@@ -40,6 +40,9 @@ import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefin
 import org.drools.planner.core.score.director.AbstractScoreDirectorFactory;
 import org.drools.planner.core.score.director.ScoreDirectorFactory;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
+import org.drools.planner.core.score.director.incremental.IncrementalScoreCalculator;
+import org.drools.planner.core.score.director.incremental.IncrementalScoreDirector;
+import org.drools.planner.core.score.director.incremental.IncrementalScoreDirectorFactory;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.core.score.director.simple.SimpleScoreDirector;
 import org.drools.planner.core.score.director.simple.SimpleScoreDirectorFactory;
@@ -54,6 +57,10 @@ public class ScoreDirectorFactoryConfig {
     @XStreamOmitField
     protected SimpleScoreCalculator simpleScoreCalculator = null;
     protected Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = null;
+
+    @XStreamOmitField
+    protected IncrementalScoreCalculator incrementalScoreCalculator = null;
+    protected Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass = null;
 
     @XStreamOmitField
     protected RuleBase ruleBase = null;
@@ -100,6 +107,22 @@ public class ScoreDirectorFactoryConfig {
         this.simpleScoreCalculatorClass = simpleScoreCalculatorClass;
     }
 
+    public IncrementalScoreCalculator getIncrementalScoreCalculator() {
+        return incrementalScoreCalculator;
+    }
+
+    public void setIncrementalScoreCalculator(IncrementalScoreCalculator incrementalScoreCalculator) {
+        this.incrementalScoreCalculator = incrementalScoreCalculator;
+    }
+
+    public Class<? extends IncrementalScoreCalculator> getIncrementalScoreCalculatorClass() {
+        return incrementalScoreCalculatorClass;
+    }
+
+    public void setIncrementalScoreCalculatorClass(Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass) {
+        this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
+    }
+
     public RuleBase getRuleBase() {
         return ruleBase;
     }
@@ -125,6 +148,9 @@ public class ScoreDirectorFactoryConfig {
         AbstractScoreDirectorFactory scoreDirectorFactory;
         // TODO this should fail-fast if multiple scoreDirectorFactory's are configured
         scoreDirectorFactory = buildSimpleScoreDirectorFactory();
+        if (scoreDirectorFactory == null) {
+            scoreDirectorFactory = buildIncrementalScoreDirectorFactory();
+        }
         if (scoreDirectorFactory == null) {
             scoreDirectorFactory = buildDroolsScoreDirectorFactory();
         }
@@ -185,6 +211,28 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
+    private AbstractScoreDirectorFactory buildIncrementalScoreDirectorFactory() {
+        if (incrementalScoreCalculator != null) {
+            return new IncrementalScoreDirectorFactory(incrementalScoreCalculator);
+        } else if (incrementalScoreCalculatorClass != null) {
+            IncrementalScoreCalculator incrementalScoreCalculator;
+            try {
+                incrementalScoreCalculator = incrementalScoreCalculatorClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
+                        + incrementalScoreCalculatorClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("incrementalScoreCalculatorClass ("
+                        + incrementalScoreCalculatorClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            return new IncrementalScoreDirectorFactory(incrementalScoreCalculator);
+        } else {
+            return null;
+        }
+    }
+
     private AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
         scoreDirectorFactory.setRuleBase(buildRuleBase());
@@ -232,6 +280,18 @@ public class ScoreDirectorFactoryConfig {
             scoreDefinition = inheritedConfig.getScoreDefinition();
             scoreDefinitionClass = inheritedConfig.getScoreDefinitionClass();
             scoreDefinitionType = inheritedConfig.getScoreDefinitionType();
+        }
+        if (simpleScoreCalculator == null) {
+            simpleScoreCalculator = inheritedConfig.getSimpleScoreCalculator();
+        }
+        if (simpleScoreCalculatorClass == null) {
+            simpleScoreCalculatorClass = inheritedConfig.getSimpleScoreCalculatorClass();
+        }
+        if (incrementalScoreCalculator == null) {
+            incrementalScoreCalculator = inheritedConfig.getIncrementalScoreCalculator();
+        }
+        if (incrementalScoreCalculatorClass == null) {
+            incrementalScoreCalculatorClass = inheritedConfig.getIncrementalScoreCalculatorClass();
         }
         if (ruleBase == null) {
             ruleBase = inheritedConfig.getRuleBase();
