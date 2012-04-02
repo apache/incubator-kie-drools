@@ -24,6 +24,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -32,18 +33,18 @@ import org.drools.runtime.rule.FactHandle;
 public class RetractCommand
         implements GenericCommand<Object> {
 
-    private FactHandle handle;
+    private DisconnectedFactHandle handle;
 
     public RetractCommand() {
     }
 
     public RetractCommand(FactHandle handle) {
-        this.handle = handle;
+        this.handle = DisconnectedFactHandle.newFrom( handle );
     }
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() ).retract( handle );
+        ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() ).retract( handle );
         return null;
     }
 
@@ -53,7 +54,7 @@ public class RetractCommand
 
     @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-        handle = new DefaultFactHandle(factHandleId);
+        handle = new DisconnectedFactHandle(factHandleId);
     }
 
     public String getFactHandleFromString() {
