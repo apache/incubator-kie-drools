@@ -10061,4 +10061,29 @@ public class MiscTest extends CommonTestMethodBase {
             return args.length % 2 == 1;
         }
     }
+
+    @Test
+    public void testPackageImportWithMvelDialect() throws Exception {
+        // JBRULES-2244
+        String str = "package org.drools.test;\n" +
+                "import org.drools.*\n" +
+                "dialect \"mvel\"\n" +
+                "rule R1 no-loop when\n" +
+                "   $p : Person( )" +
+                "   $c : Cheese( )" +
+                "then\n" +
+                "   modify($p) { setCheese($c) };\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("Mario", 38);
+        ksession.insert(p);
+        Cheese c = new Cheese("Gorgonzola");
+        ksession.insert(c);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertSame(c, p.getCheese());
+    }
 }
