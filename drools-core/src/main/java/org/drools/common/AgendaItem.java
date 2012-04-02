@@ -28,7 +28,6 @@ import org.drools.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
-import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
@@ -71,9 +70,6 @@ public class AgendaItem
     /** The activation number */
     private long                activationNumber;
 
-    /** A reference to the PriorityQeue the item is on */
-    private Queue               queue;
-
     private int                 index;
 
     private LinkedList          justified;
@@ -91,9 +87,13 @@ public class AgendaItem
     private ActivationNode      activationNode;
     
     private InternalFactHandle  factHandle;
+
+    private transient boolean canceled;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+
     public AgendaItem() {
 
     }
@@ -227,7 +227,7 @@ public class AgendaItem
                     // the match is no longer blocked, so stage it
                     agenda.getStageActivationsGroup().addActivation( justified );
                 }                
-                dep =  ( LogicalDependency ) tmp;
+                dep = tmp;
             }
         }
         this.blocked = null;
@@ -408,5 +408,12 @@ public class AgendaItem
     public boolean isActive() {
         return isActivated();
     }
-    
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void cancel() {
+        this.canceled = true;
+    }
 }

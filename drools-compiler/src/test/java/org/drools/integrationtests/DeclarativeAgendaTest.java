@@ -7,9 +7,7 @@ import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceType;
 import org.drools.builder.conf.DeclarativeAgendaOption;
 import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
@@ -20,7 +18,6 @@ import org.drools.event.rule.AgendaGroupPushedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.RuleFlowGroupActivatedEvent;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
@@ -50,19 +47,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    list.add( kcontext.rule.name + ':' + $s ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -112,19 +99,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockActivation( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -328,19 +305,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockActivation( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         return ksession;
@@ -388,19 +355,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockActivation( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -490,19 +447,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.unblockAllActivations( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -573,19 +520,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.blockActivation( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -697,19 +634,9 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.cancelActivation( $i ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
         final List cancelled = new ArrayList();
@@ -799,20 +726,11 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         str += "    kcontext.halt( ); \n";
         str += "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -825,6 +743,97 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "1:2" ) );
         assertTrue( list.contains( "rule2:go1" ) );
         assertTrue( list.contains( "rule3:go1" ) );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testCancelMultipleActivations() {
+        String str = "package org.domain.test\n" +
+                "import " + Activation.class.getName() + "\n" +
+                "global java.util.List list\n" +
+                "rule sales1 @department('sales')\n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule sales2 @department('sales') \n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule salesCancel @activationListener('direct')\n" +
+                "when\n" +
+                "    $i : Activation( department == 'sales' )\n" +
+                "then\n" +
+                "    kcontext.cancelActivation($i);\n" +
+                "end";
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("fireRules");
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, list.size());
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testCancelActivationOnInsertAndUpdate() {
+        String str = "package org.domain.test\n" +
+                "import " + Activation.class.getName() + "\n" +
+                "global java.util.List list\n" +
+                "rule sales1 @department('sales') @category('special')\n" +
+                "salience 10\n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule sales2 @department('sales') \n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule salesCancel @activationListener('direct')\n" +
+                "when\n" +
+                "    String(this == 'fireCancelRule')\n" +
+                "    $i : Activation( department == 'sales', category == 'special' )\n" +
+                "then\n" +
+                "    kcontext.cancelActivation($i);\n" +
+                "end";
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle fireRules = ksession.insert("fireRules");
+        FactHandle fireCancelRule = ksession.insert("fireCancelRule");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        ksession.update(fireRules, "fireRules");
+        ksession.update(fireCancelRule, "fireCancelRule");
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
 
         ksession.dispose();
     }
