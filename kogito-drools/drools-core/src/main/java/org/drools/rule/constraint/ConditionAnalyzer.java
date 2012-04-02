@@ -321,8 +321,10 @@ public class ConditionAnalyzer {
 
         if (accessorNode instanceof MethodAccessor) {
             MethodAccessor methodAccessor = (MethodAccessor)accessorNode;
-            MethodInvocation invocation = new MethodInvocation(methodAccessor.getMethod());
-            readInvocationParams(invocation, methodAccessor.getParms(), methodAccessor.getParameterTypes());
+            Method method = methodAccessor.getMethod();
+            MethodInvocation invocation = new MethodInvocation(method);
+            boolean isVarArgs = method.isVarArgs();
+            readInvocationParams(invocation, methodAccessor.getParms(), methodAccessor.getParameterTypes(), isVarArgs);
             return invocation;
         }
 
@@ -330,7 +332,7 @@ public class ConditionAnalyzer {
             ConstructorAccessor constructorAccessor = (ConstructorAccessor)accessorNode;
             Constructor constructor = constructorAccessor.getConstructor();
             ConstructorInvocation invocation = new ConstructorInvocation(constructor);
-            readInvocationParams(invocation, constructorAccessor.getParameters(), constructorAccessor.getParameterTypes());
+            readInvocationParams(invocation, constructorAccessor.getParameters(), constructorAccessor.getParameterTypes(), constructor.isVarArgs());
             return invocation;
         }
 
@@ -421,11 +423,22 @@ public class ConditionAnalyzer {
         return null;
     }
 
-    private void readInvocationParams(Invocation invocation, ExecutableStatement[] params, Class[] paramTypes) {
-        if (params != null) {
-            for (int i = 0; i < params.length; i++) {
-                invocation.addArgument(statementToExpression(params[i], paramTypes[i]));
+    private void readInvocationParams(Invocation invocation, ExecutableStatement[] params, Class[] paramTypes, boolean isVarArgs) {
+        if (params == null) {
+            return;
+        }
+
+        for (int i = 0; i < (isVarArgs ? paramTypes.length-1 : paramTypes.length); i++) {
+            invocation.addArgument(statementToExpression(params[i], paramTypes[i]));
+        }
+
+        if (isVarArgs) {
+            Class<?> varargType = paramTypes[paramTypes.length-1];
+            ArrayCreationExpression varargParam = new ArrayCreationExpression(varargType);
+            for (int i = paramTypes.length-1; i < params.length; i++) {
+                varargParam.addItem(statementToExpression(params[i], varargType.getComponentType()));
             }
+            invocation.addArgument(varargParam);
         }
     }
 

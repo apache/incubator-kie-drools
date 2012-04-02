@@ -25,6 +25,7 @@ import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.IASTORE;
 
 public class ASMConditionEvaluatorJitter {
 
@@ -439,7 +440,7 @@ public class ASMConditionEvaluatorJitter {
                 mv.visitInsn(DUP);
                 mv.visitLdcInsn(i);
                 jitExpression(exp.items.get(i));
-                mv.visitInsn(AASTORE);
+                mv.visitInsn(getCodeForType(exp.getComponentType(), IASTORE));
             }
         }
 

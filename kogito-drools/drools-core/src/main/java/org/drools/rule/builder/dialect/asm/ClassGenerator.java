@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
+import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 import org.drools.base.TypeResolver;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
@@ -56,8 +57,17 @@ import static org.mvel2.asm.Opcodes.L2D;
 import static org.mvel2.asm.Opcodes.L2F;
 import static org.mvel2.asm.Opcodes.L2I;
 import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.NEWARRAY;
 import static org.mvel2.asm.Opcodes.PUTFIELD;
 import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.T_BOOLEAN;
+import static org.mvel2.asm.Opcodes.T_BYTE;
+import static org.mvel2.asm.Opcodes.T_CHAR;
+import static org.mvel2.asm.Opcodes.T_DOUBLE;
+import static org.mvel2.asm.Opcodes.T_FLOAT;
+import static org.mvel2.asm.Opcodes.T_INT;
+import static org.mvel2.asm.Opcodes.T_LONG;
+import static org.mvel2.asm.Opcodes.T_SHORT;
 import static org.mvel2.asm.Opcodes.V1_5;
 
 public class ClassGenerator {
@@ -509,7 +519,27 @@ public class ClassGenerator {
 
         protected final void createArray(Class<?> componentType, int size) {
             mv.visitLdcInsn(size);
-            mv.visitTypeInsn(ANEWARRAY, internalName(componentType));
+            if (componentType.isPrimitive()) {
+                int newPrimitiveArrayType = T_BOOLEAN;
+                if (componentType == int.class) {
+                    newPrimitiveArrayType = T_INT;
+                } else if (componentType == long.class) {
+                    newPrimitiveArrayType = T_LONG;
+                } else if (componentType == double.class) {
+                    newPrimitiveArrayType = T_DOUBLE;
+                } else if (componentType == float.class) {
+                    newPrimitiveArrayType = T_FLOAT;
+                } else if (componentType == char.class) {
+                    newPrimitiveArrayType = T_CHAR;
+                } else if (componentType == short.class) {
+                    newPrimitiveArrayType = T_SHORT;
+                } else if (componentType == byte.class) {
+                    newPrimitiveArrayType = T_BYTE;
+                }
+                mv.visitIntInsn(NEWARRAY, newPrimitiveArrayType);
+            } else {
+                mv.visitTypeInsn(ANEWARRAY, internalName(componentType));
+            }
         }
 
        protected final void push(Object obj) {
