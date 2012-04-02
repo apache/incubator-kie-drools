@@ -19,29 +19,31 @@ package org.drools.command.runtime.rule;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
 public class UpdateCommand
         implements GenericCommand<Object> {
 
-    private FactHandle handle;
+    private static final long serialVersionUID = 3255044102543531497L;
+    
+    private DisconnectedFactHandle handle;
     private Object     object;
     private String     entryPoint;
 
     public UpdateCommand(FactHandle handle,
                          Object object) {
-        this.handle = handle;
+        this.handle = DisconnectedFactHandle.newFrom( handle );
         this.object = object;
     }
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-        ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() ).update( handle,
-                        object );
+        ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() ).update( handle,
+                                                                                object );
         return null;
     }
     
