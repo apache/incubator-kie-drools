@@ -10025,4 +10025,40 @@ public class MiscTest extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    @Test
+    public void testVarargConstraint() throws Exception {
+        // JBRULES-3268
+        String str = "package org.drools.test;\n" +
+                "import org.drools.integrationtests.MiscTest.VarargBean;\n" +
+                " global java.util.List list;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "   VarargBean( isOddArgsNr(1, 2, 3) )\n" +
+                "then\n" +
+                "   list.add(\"odd\");\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   VarargBean( isOddArgsNr(1, 2, 3, 4) )\n" +
+                "then\n" +
+                "   list.add(\"even\");\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new VarargBean());
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertTrue(list.contains("odd"));
+    }
+
+    public static class VarargBean {
+        public boolean isOddArgsNr(int... args) {
+            return args.length % 2 == 1;
+        }
+    }
 }
