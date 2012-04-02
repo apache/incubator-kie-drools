@@ -16,7 +16,6 @@
 
 package org.drools.common;
 
-import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedList;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
