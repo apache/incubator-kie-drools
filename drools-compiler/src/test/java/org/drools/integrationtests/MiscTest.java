@@ -10138,25 +10138,6 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.execute(CommandFactory.newModify(fh, setterList));
     }
 
-    @Test @Ignore
-    public void testNumericValueForStringField() throws Exception {
-        // JBRULES-3080
-        String rule = "package org.drools\n" +
-                "declare Node\n" +
-                "    value: String\n" +
-                "end\n" +
-                "rule R1 when\n" +
-                "   $parent: Node( $value : value == 12 )\n" +
-                "then\n" +
-                "   System.out.println( $value );\n" +
-                "end";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
-
-        assertTrue( kbuilder.hasErrors() );
-    }
-
     @Test
     public void testMVELTypeCoercion() {
         String str = "package org.drools.test; \n" +
@@ -10660,14 +10641,14 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbConf.setOption(AssertBehaviorOption.EQUALITY);
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, str );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbConf, str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertTrue( list.contains( "OK" ) );
+        assertTrue(list.contains("OK"));
 
         ksession.dispose();
     }
@@ -10693,5 +10674,41 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.insert( a );
 
         assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testVarargConstraint() throws Exception {
+        // JBRULES-3268
+        String str = "package org.drools.test;\n" +
+                "import org.drools.integrationtests.MiscTest.VarargBean;\n" +
+                " global java.util.List list;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "   VarargBean( isOddArgsNr(1, 2, 3) )\n" +
+                "then\n" +
+                "   list.add(\"odd\");\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "   VarargBean( isOddArgsNr(1, 2, 3, 4) )\n" +
+                "then\n" +
+                "   list.add(\"even\");\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new VarargBean());
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertTrue(list.contains("odd"));
+    }
+
+    public static class VarargBean {
+        public boolean isOddArgsNr(int... args) {
+            return args.length % 2 == 1;
+        }
     }
 }
