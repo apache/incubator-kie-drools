@@ -6,50 +6,74 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
+import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DisconnectedFactHandle
-    implements
-    InternalFactHandle {
+        implements
+        InternalFactHandle {
 
-    private int  id;
-    private int  identityHashCode;
-    private int  objectHashCode;
-    private long recency;
+    private int    id;
+    private int    identityHashCode;
+    private int    objectHashCode;
+    private long   recency;
     private Object object;
+    private String entryPointId;
 
-    protected DisconnectedFactHandle() {}
+    protected DisconnectedFactHandle() {
+    }
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
+                                  String entryPointId,
                                   Object object) {
-        this( id, identityHashCode, objectHashCode, recency );
+        this.id = id;
+        this.identityHashCode = identityHashCode;
+        this.objectHashCode = objectHashCode;
+        this.recency = recency;
+        this.entryPointId = entryPointId;
         this.object = object;
     }
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
-                                  long recency) {
-        this.id = id;
-        this.identityHashCode = identityHashCode;
-        this.objectHashCode = objectHashCode;
-        this.recency = recency;
+                                  long recency,
+                                  Object object) {
+        this( id, 
+              identityHashCode, 
+              objectHashCode, 
+              recency, 
+              null, 
+              object );
     }
-    
+
+    public DisconnectedFactHandle(int id,
+                                  int identityHashCode,
+                                  int objectHashCode,
+                                  long recency) {
+        this( id, 
+              identityHashCode, 
+              objectHashCode, 
+              recency, 
+              null, 
+              null );
+    }
+
     public DisconnectedFactHandle(String externalFormat) {
         String[] elements = externalFormat.split( ":" );
-        if ( elements.length != 5 ) {
+        if ( elements.length < 6 ) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
         }
-        
+
         this.id = Integer.parseInt( elements[1] );
         this.identityHashCode = Integer.parseInt( elements[2] );
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
+        this.entryPointId = elements[5];
     }
 
     public int getId() {
@@ -132,31 +156,47 @@ public class DisconnectedFactHandle
     }
 
     public String toExternalForm() {
-        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency;
+        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId;
     }
-    
-    @XmlAttribute(name="external-form")
+
+    @XmlAttribute(name = "external-form")
     public String getExternalForm() {
         return toExternalForm();
     }
 
-    
     public LeftTuple getFirstLeftTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    
     public RightTuple getFirstRightTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    
     public RightTuple getLastRightTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
-
     
     public void setFirstRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public String toTupleTree(int indent) {
+        return null;
+    }
+
+    public boolean isDisconnected() {
+        return true;
+    }
+
+    public void disconnect() {
+        throw new UnsupportedOperationException( "Not supported yet." );
+    }
+
+    public void addLastLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public void removeLeftTuple(LeftTuple leftTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
@@ -170,16 +210,34 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public String toTupleTree(int indent) {
-        return null;
+    public void addFirstRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public boolean isDisconnected() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void addLastRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public void disconnect() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void removeRightTuple(RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public String getEntryPointId() {
+        return entryPointId;
+    }
+    
+    public static DisconnectedFactHandle newFrom( FactHandle handle ) {
+        if( handle instanceof DisconnectedFactHandle ) {
+            return (DisconnectedFactHandle) handle;
+        } else {
+            InternalFactHandle ifh = (InternalFactHandle) handle;
+            return new DisconnectedFactHandle(ifh.getId(), 
+                                              ifh.getIdentityHashCode(), 
+                                              ifh.getObjectHashCode(), 
+                                              ifh.getRecency(),
+                                              ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null, 
+                                                  null );
+        }
     }
 
 }

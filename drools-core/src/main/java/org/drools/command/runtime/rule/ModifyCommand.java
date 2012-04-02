@@ -18,12 +18,10 @@ package org.drools.command.runtime.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -34,13 +32,10 @@ import org.drools.command.Context;
 import org.drools.command.Setter;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalFactHandle;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.xml.jaxb.util.JaxbListAdapter;
-import org.drools.xml.jaxb.util.JaxbListWrapper;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -55,7 +50,7 @@ public class ModifyCommand
     public static boolean ALLOW_MODIFY_EXPRESSIONS = true;
 
 
-    private FactHandle       handle;
+    private DisconnectedFactHandle       handle;
 
 
     @XmlJavaTypeAdapter(JaxbSetterAdapter.class)
@@ -67,13 +62,13 @@ public class ModifyCommand
     
     public ModifyCommand(FactHandle handle,
                          List<Setter> setters) {
-        this.handle = handle;
+        this.handle = DisconnectedFactHandle.newFrom( handle );
         this.setters = setters;
     }
 
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        WorkingMemoryEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() );
+        WorkingMemoryEntryPoint wmep = ksession.getWorkingMemoryEntryPoint( handle.getEntryPointId() );
         
         Object object = wmep.getObject( this.handle );
         MVEL.eval( getMvelExpr(),
@@ -90,7 +85,7 @@ public class ModifyCommand
     
     @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-        handle = new DefaultFactHandle(factHandleId);
+        handle = new DisconnectedFactHandle(factHandleId);
     }
     
     public String getFactHandleFromString() {
