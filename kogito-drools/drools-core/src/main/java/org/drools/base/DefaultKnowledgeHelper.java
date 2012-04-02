@@ -249,6 +249,7 @@ public class DefaultKnowledgeHelper
     
     public void cancelActivation(org.drools.runtime.rule.Activation act) {
         AgendaItem match = ( AgendaItem ) act;
+        match.cancel();
         if ( match.isActive() ) {
             LeftTuple leftTuple = match.getTuple();
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) act.getPropagationContext(), workingMemory );
