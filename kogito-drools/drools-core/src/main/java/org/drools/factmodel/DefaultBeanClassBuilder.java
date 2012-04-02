@@ -950,7 +950,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
                             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    BuildUtils.getInternalType( field.getTypeName() ),
+                                    "java/lang/Object",
                                     "equals",
                                     "(Ljava/lang/Object;)Z" );
                         } else {
@@ -1110,7 +1110,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
                             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    BuildUtils.getInternalType( field.getTypeName() ),
+                                    "java/lang/Object",
                                     "hashCode",
                                     "()I" );
                         } else {
