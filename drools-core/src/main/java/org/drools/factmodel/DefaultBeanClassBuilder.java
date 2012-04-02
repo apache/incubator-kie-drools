@@ -941,10 +941,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         visitFieldOrGetter(mv, classDef, field);
 
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                BuildUtils.getInternalType( field.getTypeName() ),
-                                "equals",
-                                "(Ljava/lang/Object;)Z" );
+                        if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
+                            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    "java/lang/Object",
+                                    "equals",
+                                    "(Ljava/lang/Object;)Z" );
+                        } else {
+                            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                    "java/util/Arrays",
+                                    "equals",
+                                    "(" +
+                                            BuildUtils.arrayType( field.getTypeName() ) +
+                                            BuildUtils.arrayType( field.getTypeName() ) +
+                                    ")Z" );
+                        }
                         mv.visitJumpInsn( Opcodes.IFNE,
                                 goNext );
 
@@ -1091,10 +1101,17 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
                         visitFieldOrGetter(mv, classDef, field);
 
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                BuildUtils.getInternalType( field.getTypeName() ),
-                                "hashCode",
-                                "()I" );
+                        if ( ! BuildUtils.isArray( field.getTypeName() ) ) {
+                            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    "java/lang/Object",
+                                    "hashCode",
+                                    "()I" );
+                        } else {
+                            mv.visitMethodInsn( INVOKESTATIC,
+                                    "java/util/Arrays",
+                                    "hashCode",
+                                    "(" + BuildUtils.arrayType( field.getTypeName() ) + ")I");
+                        }
                         mv.visitLabel( olabel2 );
                     }
 

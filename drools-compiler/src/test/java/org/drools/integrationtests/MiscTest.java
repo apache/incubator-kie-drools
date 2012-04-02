@@ -9808,6 +9808,23 @@ public class MiscTest extends CommonTestMethodBase {
         public void setId(String id) {
             this.id = id;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ClassB classB = (ClassB) o;
+
+            if (id != null ? !id.equals(classB.id) : classB.id != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return Integer.valueOf( id );
+        }
     }
 
     @Test
@@ -10017,8 +10034,8 @@ public class MiscTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        FactType typeA = kbase.getFactType( "org.drools.test", "A" );
+		
+		FactType typeA = kbase.getFactType( "org.drools.test", "A" );
         Object a = typeA.newInstance();
         typeA.set( a, "field", "12" );
         ksession.insert( a );
