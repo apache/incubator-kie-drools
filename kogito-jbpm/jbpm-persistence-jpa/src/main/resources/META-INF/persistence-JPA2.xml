@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence" 
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+
+    <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>jdbc/testDS1</jta-data-source>        
+        <mapping-file>META-INF/JBPMorm-JPA2.xml</mapping-file>
+        <!-- This line MUST be commented and NOT active when using JPA 2: 
+        <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
+        -->
+        
+        <class>org.drools.persistence.info.SessionInfo</class>
+        <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+        <class>org.drools.persistence.info.WorkItemInfo</class>
+        
+        <properties>
+            <property name="hibernate.max_fetch_depth" value="3"/>
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <property name="hibernate.show_sql" value="false" />
+            <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+            <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+            
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+         
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="sasa" />
+        </properties>        
+    </persistence-unit>
+</persistence>
