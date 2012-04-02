@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -312,11 +311,10 @@ public class DefaultAgenda
             workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
             activation.setFactHandle( factHandle );
             
-            if ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) {
+            if ( !activation.isCanceled() && ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) ) {
                 // All activations started off staged, they are unstaged if they are blocked or 
                 // allowed to move onto the actual agenda for firing.
-                ActivationGroup activationGroup = getStageActivationsGroup();  
-                activationGroup.addActivation( activation );
+                getStageActivationsGroup().addActivation( activation );
             }
                
             return true;
@@ -360,7 +358,7 @@ public class DefaultAgenda
                 return;
             }
             
-            if ( activation.getBlockers() != null && activation.getBlockers().size() > 0 ) {
+            if ( activation.isCanceled() || ( activation.getBlockers() != null && activation.getBlockers().size() > 0 ) ) {
                 // it's blocked so do nothing
                 return;
             }
@@ -410,7 +408,7 @@ public class DefaultAgenda
             AgendaItem item = ( AgendaItem ) node.getActivation();
             item.setActivationGroupNode( null );
 
-            addActivation( item, false );                      
+            addActivation( item, false );
         }
         
         notifyHalt();
@@ -476,7 +474,7 @@ public class DefaultAgenda
         // ControlRules for now re-use the same PropagationContext
         if ( rtn.isFireDirect() ) {    
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item = null;
+            AgendaItem item;
             if ( reuseActivation ) {
                 item = ( AgendaItem ) tuple.getObject();
                 item.setPropagationContext( context );
@@ -502,7 +500,7 @@ public class DefaultAgenda
         }
 
         final Rule rule = rtn.getRule();
-        AgendaItem item = null;
+        AgendaItem item;
         final Timer timer = rule.getTimer();
         if ( timer != null ) {
             if ( reuseActivation ) {
@@ -580,7 +578,6 @@ public class DefaultAgenda
                                                                                       workingMemory ); 
         return true;
     }
-
 
     public void cancelActivation(final LeftTuple leftTuple,
                                  final PropagationContext context,
@@ -671,7 +668,7 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#getFocus()
      */
     public AgendaGroup getFocus() {
-        return (AgendaGroup) this.focusStack.getLast();
+        return this.focusStack.getLast();
     }
 
     /*
@@ -860,12 +857,14 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#getActivations()
      */
     public Activation[] getActivations() {
-        final List list = new ArrayList();
+        final List<Activation> list = new ArrayList<Activation>();
         for ( final java.util.Iterator it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
             final AgendaGroup group = (AgendaGroup) it.next();
-            list.addAll( Arrays.asList( group.getActivations() ) );
+            for ( org.drools.runtime.rule.Activation activation : group.getActivations() ) {
+                list.add((Activation) activation);
+            }
         }
-        return (Activation[]) list.toArray( new Activation[list.size()] );
+        return list.toArray( new Activation[list.size()] );
     }
 
     /*
@@ -874,11 +873,12 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#getScheduledActivations()
      */
     public Activation[] getScheduledActivations() {
-        final List list = new ArrayList( this.scheduledActivations.size() );
+        Activation[] scheduledActivations = new Activation[this.scheduledActivations.size()];
+        int i = 0;
         for ( LinkedListNode node = this.scheduledActivations.getFirst(); node != null; node = node.getNext() ) {
-            list.add( node );
+            scheduledActivations[i++] = (Activation) node;
         }
-        return (Activation[]) list.toArray( new Activation[list.size()] );
+        return scheduledActivations;
     }
 
     public org.drools.core.util.LinkedList getScheduledActivationsLinkedList() {
@@ -976,25 +976,24 @@ public class DefaultAgenda
 
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
-        final Activation[] queueable = ((InternalAgendaGroup) agendaGroup).getAndClear();        
-        for ( int i = 0, length = queueable.length; i < length; i++ ) {
-            final AgendaItem item = (AgendaItem) queueable[i];
-            if ( item == null ) {
+        for (Activation aQueueable : ((InternalAgendaGroup) agendaGroup).getAndClear()) {
+            final AgendaItem item = (AgendaItem) aQueueable;
+            if (item == null) {
                 continue;
             }
 
             // this must be set false before removal from the activationGroup.
             // Otherwise the activationGroup will also try to cancel the Actvation
             // Also modify won't work properly
-            item.setActivated( false );
+            item.setActivated(false);
 
-            if ( item.getActivationGroupNode() != null ) {
-                item.getActivationGroupNode().getActivationGroup().removeActivation( item );
+            if (item.getActivationGroupNode() != null) {
+                item.getActivationGroupNode().getActivationGroup().removeActivation(item);
             }
 
-            if ( item.getActivationNode() != null ) {
+            if (item.getActivationNode() != null) {
                 final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) item.getActivationNode().getParentContainer();
-                ruleFlowGroup.removeActivation( item );
+                ruleFlowGroup.removeActivation(item);
             }
 
             eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
@@ -1055,15 +1054,14 @@ public class DefaultAgenda
     public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
-            ActivationNode node = (ActivationNode) it.next();
+        for (ActivationNode node : ruleFlowGroup) {
             AgendaItem item = (AgendaItem) node.getActivation();
-            if ( item != null ) {
-                item.setActivated( false );
+            if (item != null) {
+                item.setActivated(false);
                 item.remove();
 
-                if ( item.getActivationGroupNode() != null ) {
-                    item.getActivationGroupNode().getActivationGroup().removeActivation( item );
+                if (item.getActivationGroupNode() != null) {
+                    item.getActivationGroupNode().getActivationGroup().removeActivation(item);
                 }
             }
 
@@ -1260,11 +1258,10 @@ public class DefaultAgenda
 
         RuleFlowGroup systemRuleFlowGroup = this.getRuleFlowGroup( ruleflowGroupName );
 
-        for ( Iterator<ActivationNode> activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-            Activation activation = activations.next().getActivation();
-            if ( ruleName.equals( activation.getRule().getName() ) ) {
-                if ( checkProcessInstance( activation,
-                                           processInstanceId ) ) {
+        for (ActivationNode aSystemRuleFlowGroup : systemRuleFlowGroup) {
+            Activation activation = aSystemRuleFlowGroup.getActivation();
+            if (ruleName.equals(activation.getRule().getName())) {
+                if (checkProcessInstance(activation, processInstanceId)) {
                     return true;
                 }
             }
@@ -1274,9 +1271,8 @@ public class DefaultAgenda
 
     private boolean checkProcessInstance(Activation activation,
                                          long processInstanceId) {
-        final Map< ? , ? > declarations = activation.getSubRule().getOuterDeclarations();
-        for ( Iterator< ? > it = declarations.values().iterator(); it.hasNext(); ) {
-            Declaration declaration = (Declaration) it.next();
+        final Map<String, Declaration> declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Declaration declaration : declarations.values() ) {
             if ( "processInstance".equals( declaration.getIdentifier() ) ) {
                 Object value = declaration.getValue( workingMemory,
                                                      ((InternalFactHandle) activation.getTuple().get( declaration )).getObject() );
@@ -1346,7 +1342,7 @@ public class DefaultAgenda
         return fireCount;
     }
 
-    private final boolean continueFiring(final int fireLimit) {
+    private boolean continueFiring(final int fireLimit) {
         return (!halt.get()) && (fireLimit != 0);
     }
 

@@ -67,7 +67,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -80,12 +80,12 @@ public class DeclarativeAgendaTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
         assertTrue( list.contains( "rule2:go2" ) );
         assertTrue( list.contains( "rule3:go2" ) );
@@ -95,7 +95,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
         assertTrue( list.contains( "rule2:go1" ) );
         assertTrue( list.contains( "rule3:go1" ) );
@@ -109,13 +109,13 @@ public class DeclarativeAgendaTest {
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go2 = ksession.insert( "go2" );
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
@@ -124,7 +124,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
@@ -134,17 +134,17 @@ public class DeclarativeAgendaTest {
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
         assertEquals( 0,
-                      list.size() );
+                list.size() );
 
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
@@ -153,7 +153,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
@@ -163,13 +163,13 @@ public class DeclarativeAgendaTest {
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go1 = ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
@@ -178,7 +178,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
@@ -188,21 +188,21 @@ public class DeclarativeAgendaTest {
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go1 = ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
 
         ksession.update( go2,
-                         "go2" );
+                "go2" );
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
@@ -211,7 +211,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
@@ -221,12 +221,12 @@ public class DeclarativeAgendaTest {
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go1 = ksession.insert( "go1" );
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
 
         list.clear();
@@ -235,16 +235,16 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
 
         ksession.update( go1,
-                         "go1" );
+                "go1" );
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go2" ) );
 
         list.clear();
@@ -253,7 +253,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
@@ -283,7 +283,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -343,7 +343,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -356,7 +356,7 @@ public class DeclarativeAgendaTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go0 = ksession.insert( "go0" );
         FactHandle go1 = ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
@@ -364,7 +364,7 @@ public class DeclarativeAgendaTest {
 
         ksession.fireAllRules();
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule0:go1" ) );
         assertTrue( list.contains( "rule0:go2" ) );
         assertTrue( list.contains( "rule0:go3" ) );
@@ -374,17 +374,17 @@ public class DeclarativeAgendaTest {
         ksession.retract( go3 );
         ksession.fireAllRules();
         assertEquals( 0,
-                      list.size() );
+                list.size() );
 
         ksession.retract( go2 );
         ksession.fireAllRules();
         assertEquals( 0,
-                      list.size() );
+                list.size() );
 
         ksession.retract( go1 );
         ksession.fireAllRules();
         assertEquals( 1,
-                      list.size() );
+                list.size() );
 
         assertTrue( list.contains( "rule0:go0" ) );
         ksession.dispose();
@@ -445,7 +445,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -458,7 +458,7 @@ public class DeclarativeAgendaTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         FactHandle go0 = ksession.insert( "go0" );
         FactHandle go1 = ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
@@ -466,7 +466,7 @@ public class DeclarativeAgendaTest {
 
         ksession.fireAllRules();
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         System.out.println( list );
         assertTrue( list.contains( "blockerAllSalesRules1:rule0:go1" ) );
         assertTrue( list.contains( "blockerAllSalesRules2:rule0:go2" ) );
@@ -477,7 +477,7 @@ public class DeclarativeAgendaTest {
         FactHandle go4 = ksession.insert( "go4" );
         ksession.fireAllRules();
         assertEquals( 5,
-                      list.size() );
+                list.size() );
 
         assertTrue( list.contains( "unblockAll:rule0:go4" ) );
         assertTrue( list.contains( "rule0:go0" ) );
@@ -528,7 +528,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -541,7 +541,7 @@ public class DeclarativeAgendaTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
 
         FactHandle rule0 = ksession.insert( "rule0" );
         FactHandle rule1 = ksession.insert( "rule1" );
@@ -549,7 +549,7 @@ public class DeclarativeAgendaTest {
 
         ksession.fireAllRules();
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule0" ) );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "rule2" ) );
@@ -558,11 +558,11 @@ public class DeclarativeAgendaTest {
 
         ArrayList l = new ArrayList();
         ksession.update( rule0,
-                         "rule0" );
+                "rule0" );
         ksession.update( rule1,
-                         "rule1" );
+                "rule1" );
         ksession.update( rule2,
-                         "rule2" );
+                "rule2" );
 
         l.add( "rule0" );
         FactHandle lh = ksession.insert( l );
@@ -570,7 +570,7 @@ public class DeclarativeAgendaTest {
         ksession.fireAllRules();
 
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "block:rule0" ) );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "rule2" ) );
@@ -578,25 +578,25 @@ public class DeclarativeAgendaTest {
         list.clear();
 
         ksession.update( rule0,
-                         "rule0" );
+                "rule0" );
         ksession.update( rule1,
-                         "rule1" );
+                "rule1" );
         ksession.update( rule2,
-                         "rule2" );
+                "rule2" );
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "block:rule0" ) );
 
         list.clear();
 
         l.set( 0,
-               "rule1" );
+                "rule1" );
         ksession.update( lh,
-                         l );
+                l );
         ksession.fireAllRules();
 
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule0" ) );
         assertTrue( list.contains( "block:rule1" ) );
         assertTrue( list.contains( "rule2" ) );
@@ -604,25 +604,25 @@ public class DeclarativeAgendaTest {
         list.clear();
 
         ksession.update( rule0,
-                         "rule0" );
+                "rule0" );
         ksession.update( rule1,
-                         "rule1" );
+                "rule1" );
         ksession.update( rule2,
-                         "rule2" );
+                "rule2" );
         assertEquals( 1,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "block:rule1" ) );
 
         list.clear();
 
         l.set( 0,
-               "rule2" );
+                "rule2" );
         ksession.update( lh,
-                         l );
+                l );
         ksession.fireAllRules();
 
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "rule0" ) );
         assertTrue( list.contains( "rule1" ) );
         assertTrue( list.contains( "block:rule2" ) );
@@ -652,7 +652,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -694,25 +694,25 @@ public class DeclarativeAgendaTest {
 
             public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
             }
-            
+
             public void activationCancelled(ActivationCancelledEvent event) {
                 cancelled.add( event );
-            }            
+            }
         } );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
         assertEquals( 0,
-                      list.size() );
+                list.size() );
 
         assertEquals( 1,
-                      cancelled.size() );
+                cancelled.size() );
         assertEquals( "rule1",
-                      ((ActivationCancelledEvent) cancelled.get( 0 )).getActivation().getRule().getName() );
+                ((ActivationCancelledEvent) cancelled.get( 0 )).getActivation().getRule().getName() );
         ksession.dispose();
     }
 
@@ -754,7 +754,7 @@ public class DeclarativeAgendaTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+                ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -767,16 +767,127 @@ public class DeclarativeAgendaTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );
+                list );
         ksession.insert( "go1" );
         FactHandle go2 = ksession.insert( "go2" );
         ksession.fireAllRules();
 
         assertEquals( 3,
-                      list.size() );
+                list.size() );
         assertTrue( list.contains( "1:2" ) );
         assertTrue( list.contains( "rule2:go1" ) );
         assertTrue( list.contains( "rule3:go1" ) );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testCancelMultipleActivations() {
+        String str = "package org.domain.test\n" +
+                "import " + Activation.class.getName() + "\n" +
+                "global java.util.List list\n" +
+                "rule sales1 @department('sales')\n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule sales2 @department('sales') \n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule salesCancel @activationListener('direct')\n" +
+                "when\n" +
+                "    $i : Activation( department == 'sales' )\n" +
+                "then\n" +
+                "    kcontext.cancelActivation($i);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert("fireRules");
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, list.size());
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testCancelActivationOnInsertAndUpdate() {
+        String str = "package org.domain.test\n" +
+                "import " + Activation.class.getName() + "\n" +
+                "global java.util.List list\n" +
+                "rule sales1 @department('sales') @category('special')\n" +
+                "salience 10\n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule sales2 @department('sales') \n" +
+                "when\n" +
+                "    String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(\"sales2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule salesCancel @activationListener('direct')\n" +
+                "when\n" +
+                "    String(this == 'fireCancelRule')\n" +
+                "    $i : Activation( department == 'sales', category == 'special' )\n" +
+                "then\n" +
+                "    kcontext.cancelActivation($i);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactHandle fireRules = ksession.insert("fireRules");
+        FactHandle fireCancelRule = ksession.insert("fireCancelRule");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        ksession.update(fireRules, "fireRules");
+        ksession.update(fireCancelRule, "fireCancelRule");
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
 
         ksession.dispose();
     }
