@@ -192,13 +192,11 @@
         <dependency>
           <groupId>org.hibernate</groupId>
           <artifactId>hibernate-core</artifactId>
-          <version>${hibernate.4.ORM.version}</version>
           <scope>compile</scope>
         </dependency>
         <dependency>
           <groupId>org.hibernate</groupId>
           <artifactId>hibernate-entitymanager</artifactId>
-          <version>${hibernate.4.ORM.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
