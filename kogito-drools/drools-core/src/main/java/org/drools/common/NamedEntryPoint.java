@@ -384,12 +384,13 @@ public class NamedEntryPoint
             this.ruleBase.executeQueuedActions();
             
             InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = handle.getObject();
 
             // the handle might have been disconnected, so reconnect if it has
             if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( factHandle );
             }
+
+            final Object originalObject = handle.getObject();
             
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
