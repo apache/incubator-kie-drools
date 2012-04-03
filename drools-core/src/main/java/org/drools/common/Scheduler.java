@@ -205,6 +205,6 @@ public final class Scheduler {
             JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
             item.setJobHandle( jobHandle );            
         }
-    }    
-        
+    }
+
 }

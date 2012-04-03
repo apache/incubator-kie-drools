@@ -267,10 +267,14 @@ public class DefaultAgenda
      *            The item to schedule.
      */
     public void scheduleItem(final ScheduledAgendaItem item, final InternalWorkingMemory wm) {
-
-        Scheduler.scheduleAgendaItem( item,
-                                      this,
-                                      wm );
+        if( item.getPropagationContext().getReaderContext() == null ) {
+            // this is not a serialization propagation, so schedule it
+            // otherwise the timer will be correlated with this activation later during the 
+            // deserialization of timers
+            Scheduler.scheduleAgendaItem( item,
+                                          this,
+                                          wm );
+        }
         this.scheduledActivations.add( item );
 
     }
