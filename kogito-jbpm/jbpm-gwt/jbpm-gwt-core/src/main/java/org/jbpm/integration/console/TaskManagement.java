@@ -37,6 +37,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
@@ -205,15 +206,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 	
 	public void skipTask(long taskId, String userId) {
 	    connect();
-	    if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
-            BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-            
-            client.skip(taskId, userId, responseHandler);
-            responseHandler.waitTillDone(5000);           
-        } else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
-            service.skip(taskId, userId);
-        }
-	    
+        service.skip(taskId, userId);
 	}
 
 }
