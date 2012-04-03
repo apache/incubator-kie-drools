@@ -64,6 +64,7 @@ import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.slf4j.Logger;
@@ -150,7 +151,7 @@ public class StatefulKnowledgeSessionUtil {
     /**
      * This method loads the jbpm console properties, if they haven't been loaded already. 
      */
-    private static Properties getJbpmConsoleProperties() { 
+    protected static Properties getJbpmConsoleProperties() { 
         if( ! _jbpmConsoleProperties.isEmpty() ) { 
             return _jbpmConsoleProperties;
         }
@@ -303,18 +304,19 @@ public class StatefulKnowledgeSessionUtil {
      * @param ksession The (stateful) knowledge session .
      */
     private static void registerWorkItemHandler( StatefulKnowledgeSession ksession, Properties consoleProperties ) { 
-        if ("Mina".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
-            CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
-            handler.setConnection(
-                    consoleProperties.getProperty("jbpm.console.task.service.host").trim(),
-                    new Integer(consoleProperties.getProperty("jbpm.console.task.service.port").trim()));
-            ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler);
-            handler.connect();
-        } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
+        if ("Local".equalsIgnoreCase(consoleProperties.getProperty("jbpm.console.task.service.strategy", TaskClientFactory.DEFAULT_TASK_SERVICE_STRATEGY))) {
             TaskService taskService = HumanTaskService.getService();
             SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService), ksession);
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        } else  {
+            CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
+            TaskClient client = TaskClientFactory.newAsyncInstance(consoleProperties, "org.drools.process.workitem.wsht.CommandBasedWSHumanTaskHandler");
+            
+            handler.configureClient(client);
+            ksession.getWorkItemManager().registerWorkItemHandler( "Human Task", handler);
+            handler.connect();
         }
+        
     }
     
     /**

@@ -75,6 +75,18 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 		this.port = port;
 	}
 	
+	public void configureClient(TaskClient clientIn) {
+	    this.client = clientIn;
+	    
+        TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
+        client.registerForEvent(key, false, eventResponseHandler);
+        key = new TaskEventKey(TaskFailedEvent.class, -1);           
+        client.registerForEvent(key, false, eventResponseHandler);
+        key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+        client.registerForEvent(key, false, eventResponseHandler);
+	}
+	
 	public void connect() {
 		if (client == null) {
 			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler", 

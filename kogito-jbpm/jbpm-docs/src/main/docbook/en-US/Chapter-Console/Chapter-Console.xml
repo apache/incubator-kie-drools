@@ -115,6 +115,58 @@
       update these files with your own entries before running ant install.demo.</para>
       
     </section>
+    
+    <section>
+    <title>Configure management console</title>
+    
+    <para>Management console can be configured to suit deployment needs of the environment.
+    Its main configuration is done via property file - jbpm.console.properties, which can
+    be found in jbpm-gwt-console-server.war/WEB-INF/classes. It allows administrators to 
+    configure following aspects of management console:
+      <itemizedlist>
+        <listitem>task server connectivity</listitem>
+        <listitem>Guvnor connectivity</listitem>
+        <listitem>console host and port numer</listitem>
+        <listitem>console resource directory (for local process, rules, etc repository)</listitem>
+      </itemizedlist>
+     </para>
+     
+     <para>Each of mentioned aspects can have one or more attributes that drive their behavior,
+     following is a complete list of supported properties for every aspect.</para>
+     <para>
+     Management console configuration
+     <itemizedlist>
+        <listitem>jbpm.console.server.host : host/ip address used to bind management console</listitem>
+        <listitem>jbpm.console.server.port : port used to bind management console</listitem>
+        <listitem>jbpm.console.directory : local directory used as process/rules repository</listitem>
+      </itemizedlist>
+     
+     Task server connectivity
+     <itemizedlist>
+        <listitem>jbpm.console.task.service.strategy : transport used to connect to task server (default Mina and accepts Mina|HornetQ|JMS)</listitem>
+        <listitem>jbpm.console.task.service.host : host where Task Server is deployed (default localhost) applies to all transports</listitem>
+        <listitem>jbpm.console.task.service.port : port where Task Server is deployed (default 9123) applies to all transports</listitem>
+        <listitem>JMSTaskClient.connectionFactory :  JNDI name of connection factory only for JMS (no default)</listitem>
+        <listitem>JMSTaskClient.acknowledgeMode : acknowledgment mode only for JMS (no default)</listitem>
+        <listitem>JMSTaskClient.transactedQueue :  transacted queue name only for JMS (no default)</listitem>
+        <listitem>JMSTaskClient.queueName : queue name only for JMS (no default)</listitem>
+        <listitem>JMSTaskClient.responseQueueName : response queue name only for JMS (no default)</listitem>
+      </itemizedlist>
+      
+     Guvnor connectivity
+     <itemizedlist>
+        <listitem>guvnor.protocol : protocol to access Guvnor (default http)</listitem>
+        <listitem>guvnor.host : host and port number where Guvnor is deployed (default localhost:8080)</listitem>
+        <listitem>guvnor.subdomain : subdomain/context root of Guvnor (default drools-guvnor)</listitem>
+        <listitem>guvnor.usr : user id to authenticate in Guvnor (default admin)</listitem>
+        <listitem>guvnor.pwd : password to authenticate in Guvnor (default admin)</listitem>
+        <listitem>guvnor.packages : comma separated list of packages to load from Guvnor</listitem>
+        <listitem>guvnor.connect.timeout : connect timeout (default 10000)</listitem>
+        <listitem>guvnor.read.timeout : read timeout (default 10000)</listitem>
+      </itemizedlist>
+     
+     </para>
+    </section>
 
   </section>
 
