@@ -1,11 +1,14 @@
 package org.jbpm.task.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -39,7 +42,6 @@ import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
@@ -125,18 +127,56 @@ public class HumanTaskServiceServlet extends HttpServlet {
 		}
         
         TaskServiceSession taskSession = taskService.createSession();
-        // Add users
-        Map vars = new HashMap();
-        Reader reader = new InputStreamReader( HumanTaskServiceServlet.class.getResourceAsStream( "LoadUsers.mvel" ) );     
-        Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
-        for ( User user : users.values() ) {
-            taskSession.addUser( user );
-        }           
-        reader = new InputStreamReader( HumanTaskServiceServlet.class.getResourceAsStream( "LoadGroups.mvel" ) );      
-        Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
-        for ( Group group : groups.values() ) {
-            taskSession.addGroup( group );
+        
+        String usersConfig = getConfigParameter("load.users", "");
+        String groupsConfig = getConfigParameter("load.groups", "");
+        try {
+            if (usersConfig != null && usersConfig.length() > 0) {
+                if (usersConfig.endsWith(".mvel")) {
+                   
+                    Map vars = new HashMap();
+                    Reader reader = new InputStreamReader(getConfigFileStream(usersConfig) );     
+                    Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
+                    for ( User user : users.values() ) {
+                        taskSession.addUser( user );
+                    }  
+                } else if (usersConfig.endsWith(".properties"))  {
+                    Properties props = new Properties();
+                    props.load(getConfigFileStream(usersConfig));
+                    
+                    Set<String> ids = props.stringPropertyNames();
+                    for (String id : ids) {
+                        taskSession.addUser( new User(id) );
+                    }
+                }
+            }
+    	} catch (Exception e) {
+            System.err.println("Problem loading users from specified file: " + usersConfig + " error message: " + e);
         }
+        try {
+            if (groupsConfig != null && groupsConfig.length() > 0) {
+                if (groupsConfig.endsWith(".mvel")) {
+                    Map vars = new HashMap();
+                    Reader reader = new InputStreamReader( getConfigFileStream(groupsConfig) );      
+                    Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
+                    for ( Group group : groups.values() ) {
+                        taskSession.addGroup( group );
+                    }
+                } else if (groupsConfig.endsWith(".properties"))  {
+                    Properties props = new Properties();
+                    props.load(getConfigFileStream(groupsConfig));
+                    
+                    Set<String> ids = props.stringPropertyNames();
+                    for (String id : ids) {
+                        taskSession.addGroup( new Group(id) );
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Problem loading groups from specified file: " + groupsConfig + " error message: " + e);
+        }
+                 
+        
         String activeConfig = getConfigParameter("active.config", "hornetq");
         
         
@@ -176,12 +216,17 @@ public class HumanTaskServiceServlet extends HttpServlet {
 				throw new ServletException("Error while starting JMS Task Service", e);
 			}
         }
-        String callbackClass = getConfigParameter("user.group.callback.class", DefaultUserGroupCallbackImpl.class.getName());
         
-		UserGroupCallback userGroupCallback = getInstance(callbackClass);
-		
-		UserGroupCallbackManager.getInstance().setCallback(userGroupCallback);
-		
+        UserGroupCallbackManager manager = UserGroupCallbackManager.getInstance();
+        
+        if (!manager.existsCallback()) {
+            String callbackClass = getConfigParameter("user.group.callback.class", "");
+            
+            
+        	UserGroupCallback userGroupCallback = getInstance(callbackClass);
+        		
+        	manager.setCallback(userGroupCallback);
+        }
         taskSession.dispose();
         System.out.println("Task service startup completed successfully !");
         
@@ -274,7 +319,12 @@ public class HumanTaskServiceServlet extends HttpServlet {
     }
     
     protected <T> T getInstance(String className) {
-    	Object instance;
+        if (className == null || "".equalsIgnoreCase(className)) {
+            
+            return null;
+        }
+        
+        Object instance;
 		try {
 			instance = Class.forName(className).newInstance();
 		
@@ -282,6 +332,23 @@ public class HumanTaskServiceServlet extends HttpServlet {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while creating instance of configurable class, class name: " + className, e);
 		}
+    }
+    
+    protected InputStream getConfigFileStream(String location) throws IOException {
+        if (location == null) {
+            return null;
+        }
+        
+        URL configLocation = null;
+
+        if (location.startsWith("classpath:")) {
+            String pathOnly = location.replaceFirst("classpath:", "");
+            configLocation = HumanTaskServiceServlet.class.getResource(pathOnly);
+        } else {
+            configLocation = new URL(location);
+        }
+                
+        return configLocation.openStream();
     }
 
     protected void doGet(HttpServletRequest request,

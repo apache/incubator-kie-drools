@@ -1,6 +1,7 @@
 package org.jbpm.task.servlet;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -20,11 +21,16 @@ import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class HumanTaskServiceSerlvetTest {
 
+    @Before
+    public void prepare() {
+        UserGroupCallbackManager.getInstance().setCallback(null);
+    }
 	
 	@Test
 	public void testDefaultMinaConfiguration() {
@@ -45,7 +51,7 @@ public class HumanTaskServiceSerlvetTest {
 			
 			// check user callback handler
 			UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
-			assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+			assertNull(callback);
 			
 			servlet.destroy();
 		} catch (Exception e) {
@@ -75,7 +81,7 @@ public class HumanTaskServiceSerlvetTest {
 			
 			// check user callback handler
 			UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
-			assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+			assertNull(callback);
 			
 			servlet.destroy();
 		} catch (Exception e) {
@@ -104,7 +110,7 @@ public class HumanTaskServiceSerlvetTest {
 			
 			// check user callback handler
 			UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
-			assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+			assertNull(callback);
 			
 			servlet.destroy();
 		} catch (Exception e) {
@@ -134,7 +140,7 @@ public class HumanTaskServiceSerlvetTest {
 			
 			// check user callback handler
 			UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
-			assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+			assertNull(callback);
 			servlet.destroy();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -161,7 +167,7 @@ public class HumanTaskServiceSerlvetTest {
 			
 			// check user callback handler
 			UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
-			assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+			assertNull(callback);
 			
 			TaskService service = getTaskService(servlet.getServer());
 			assertNotNull(service);
@@ -279,6 +285,36 @@ public class HumanTaskServiceSerlvetTest {
 			
 		}
 	}
+	
+	
+	
+    @Test
+    public void testDefaultConfigurationWithDefaultUserGroupCallbackImpl() {
+        String host = "localhost";
+        String port = "5446";
+        Properties parameters = new Properties();
+        parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
+        parameters.setProperty("user.group.callback.class", DefaultUserGroupCallbackImpl.class.getName());
+        
+        HumanTaskServiceServlet servlet = new JUnitHumanTaskServiceServlet(parameters);
+        try {
+            servlet.init();
+            Thread.sleep(1000);
+            TaskClient client = getHornetQTaskClient();
+            boolean connected = client.connect(host, Integer.parseInt(port));
+            assertTrue(connected);
+            
+            // check user callback handler
+            UserGroupCallback callback = UserGroupCallbackManager.getInstance().getCallback();
+            assertTrue(callback instanceof DefaultUserGroupCallbackImpl);
+            
+            servlet.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Test failed wiht exception " + e.getMessage());
+            
+        }
+    }
 	
 	private TaskClient getMinaTaskClient() {
 		
