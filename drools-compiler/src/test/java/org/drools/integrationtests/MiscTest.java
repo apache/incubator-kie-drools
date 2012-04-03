@@ -10086,4 +10086,21 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
         assertSame(c, p.getCheese());
     }
+
+    @Test
+    public void testNoMvelSyntaxInFunctions() throws Exception {
+        // JBRULES-3433
+        String str = "import java.util.*;\n" +
+                "dialect \"mvel\"\n" +
+                "function Integer englishToInt(String englishNumber) { \n" +
+                "   Map m = [\"one\":1, \"two\":2, \"three\":3, \"four\":4, \"five\":5]; \n" +
+                "   Object obj = m.get(englishNumber.toLowerCase()); \n" +
+                "   return Integer.parseInt(obj.toString()); \n" +
+                "}\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+
+        assertTrue(kbuilder.hasErrors());
+    }
 }

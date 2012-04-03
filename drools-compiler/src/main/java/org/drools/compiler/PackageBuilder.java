@@ -818,10 +818,10 @@ public class PackageBuilder {
                         // make sure namespace is set on components
                         functionDescr.setNamespace( packageDescr.getNamespace() );
                     }
-                    if (isEmpty( functionDescr.getDialect() )) {
-                        // make sure namespace is set on components
-                        functionDescr.setDialect( pkgRegistry.getDialect() );
-                    }
+
+                    // make sure functions are compiled in java
+                    functionDescr.setDialect( "java" );
+
                     preCompileAddFunction( functionDescr );
                 }
 
