@@ -39,13 +39,16 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
-public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
+public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
 	private static int clientCounter = 0;
     
 	private TaskService service;
-
 	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
+
+	public TaskManagement () {
+	    super();
+	}
 	
 	public void connect() {
 	    if (service == null) {

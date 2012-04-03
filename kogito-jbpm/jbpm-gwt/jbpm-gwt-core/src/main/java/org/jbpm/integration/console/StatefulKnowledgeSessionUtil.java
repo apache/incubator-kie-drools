@@ -16,8 +16,12 @@
 package org.jbpm.integration.console;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
@@ -133,10 +137,11 @@ public class StatefulKnowledgeSessionUtil {
 
             KnowledgeBase localKBase = loadKnowledgeBase();
             addProcessesFromConsoleDirectory(localKBase, jbpmConsoleProperties);
-
+            // try to restore known session id for reuse
+            ksessionId = getPersistedSessionId(jbpmConsoleProperties.getProperty("jbpm.console.tmp.dir", System.getProperty("jboss.server.temp.dir")));
             // Create knowledge session
             StatefulKnowledgeSession localKSession = createOrLoadStatefulKnowledgeSession(localKBase);
-
+            persistSessionId(jbpmConsoleProperties.getProperty("jbpm.console.tmp.dir", System.getProperty("jboss.server.temp.dir")));
             // Additional necessary modifications to the knowledge session
             new JPAWorkingMemoryDbLogger(localKSession);
             registerWorkItemHandler(localKSession, jbpmConsoleProperties);
@@ -352,5 +357,70 @@ public class StatefulKnowledgeSessionUtil {
                 .getCommandService().getContext()).getStatefulKnowledgesession() )
                 .session.addEventListener(agendaEventListener);
 
+    }
+    
+    private static int getPersistedSessionId(String location) {
+        File sessionIdStore = new File(location + File.separator + "jbpmSessionId.ser");
+        if (sessionIdStore.exists()) {
+            Integer knownSessionId = null; 
+            FileInputStream fis = null;
+            ObjectInputStream in = null;
+            try {
+                fis = new FileInputStream(sessionIdStore);
+                in = new ObjectInputStream(fis);
+                
+                knownSessionId = (Integer) in.readObject();
+                
+                return knownSessionId.intValue();
+                
+            } catch (Exception e) {
+                return 0;
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                    }
+                }
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+            
+        } else {
+            return 0;
+        }
+    }
+    
+    private static void persistSessionId(String location) {
+        if (location == null) {
+            return;
+        }
+        FileOutputStream fos = null;
+        ObjectOutputStream out = null;
+        try {
+            fos = new FileOutputStream(location + File.separator + "jbpmSessionId.ser");
+            out = new ObjectOutputStream(fos);
+            out.writeObject(Integer.valueOf(ksessionId));
+            out.close();
+        } catch (IOException ex) {
+            logger.warn("Error when persisting known session id", ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                }
+            }
+        }
     }
 }
