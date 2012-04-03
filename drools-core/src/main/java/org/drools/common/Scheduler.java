@@ -226,14 +226,18 @@ public final class Scheduler {
                                                                                                           _activation.getActivation().getRuleName(), 
                                                                                                           _activation.getActivation().getTuple() ) );
             ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getObject();
-            
+
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
                                                                    _activation.getTrigger() ); 
             
             DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
             ActivationTimerJob job = new ActivationTimerJob();
             ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
-                    
+
+            if (item.getJobHandle() != null) {
+                ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob(item.getJobHandle());
+            }
+
             JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
             item.setJobHandle( jobHandle );            
         }
