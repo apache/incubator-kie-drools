@@ -198,6 +198,10 @@ public class ClassPathResource extends BaseResource
         return this.classLoader;
     }
 
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public Class<?> getClazz() {
         return this.clazz;
     }
