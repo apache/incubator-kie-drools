@@ -98,6 +98,8 @@ public interface TaskService {
     List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId, String language);
 
     List<TaskSummary>  getTasksOwned(String userId, String language);
+    
+    List<TaskSummary>  getTasksOwned(String userId, List<Status> status, String language);
 
     void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners);
 

@@ -216,10 +216,11 @@ public class TaskPersistenceManager {
 
         return (List<TaskSummary>) resultListObject;
     }
-    public List<TaskSummary> queryTasksWithUserIdGroupsAndLanguage(String queryName, String userId, List<String> groupIds, String language) { 
+
+    public List<TaskSummary> queryTasksWithUserIdStatusAndLanguage(String queryName, String userId, List<Status> status, String language) { 
         Query query = createQuery(queryName);
         query.setParameter("userId", userId);
-        query.setParameter("groupIds", groupIds);
+        query.setParameter("status", status);
         query.setParameter("language", language);
         Object resultListObject = query.getResultList();
 

@@ -24,7 +24,14 @@ import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.EventTriggerTransport;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.*;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
+import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
@@ -204,6 +211,10 @@ public class LocalTaskService implements TaskService {
 
     public List<TaskSummary> getTasksOwned(String userId, String language) {
         return session.getTasksOwned(userId, language);
+    }
+    
+    public List<TaskSummary> getTasksOwned(String userId, List<Status> status, String language) {
+        return session.getTasksOwned(userId, status, language);
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {

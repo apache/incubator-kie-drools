@@ -725,6 +725,7 @@ where
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
+
     <named-query name="TasksByStatus">
         <query>
             select
@@ -921,6 +922,58 @@ where
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+
+      
+      <named-query name="TasksOwnedWithParticularStatus">
+          <query>
+select
+    new org.jbpm.task.query.TaskSummary(
+    t.id,
+    t.taskData.processInstanceId,
+    name.text,
+    subject.text,
+    description.text,
+    t.taskData.status,
+    t.priority,
+    t.taskData.skipable,
+    t.taskData.actualOwner,
+    t.taskData.createdBy,
+    t.taskData.createdOn,
+    t.taskData.activationTime,
+    t.taskData.expirationTime,
+    t.taskData.processId,
+    t.taskData.processSessionId)
+from
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name
+where
+    t.taskData.actualOwner.id = :userId and
+
+    t.taskData.status in (:status) and
+
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
+
+    (
+    subject.language = :language
+    or t.subjects.size = 0
+    ) and
+
+    (
+    description.language = :language
+    or t.descriptions.size = 0
+    ) and
+
+    t.taskData.expirationTime is null
+          </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+      </named-query>
+      
 	  <named-query name="UnescalatedDeadlines">
           <query>
 select

@@ -25,8 +25,12 @@ import java.util.Map;
 
 import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKey;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
-import org.jbpm.task.*;
+import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
+import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -268,6 +272,24 @@ public class TaskServerHandler {
                     List<TaskSummary> results = taskSession.getTasksOwned(
                             (String) cmd.getArguments().get(0),
                             (String) cmd.getArguments().get(1));
+
+                    // return
+                    List args = Arrays.asList((new List[] {results}));
+                    Command resultsCmnd = new Command(cmd.getId(),
+                            CommandName.QueryTaskSummaryResponse,
+                            args);
+                    session.write(resultsCmnd);
+                    break;
+                }
+                case QueryTasksOwnedWithParticularStatus: {
+                    // prepare
+                    response = CommandName.QueryTaskSummaryResponse;
+                    
+                    // execute
+                    List<TaskSummary> results = taskSession.getTasksOwned(
+                            (String) cmd.getArguments().get(0),
+                            (List<Status>) cmd.getArguments().get(1),
+                            (String) cmd.getArguments().get(2));
 
                     // return
                     List args = Arrays.asList((new List[] {results}));

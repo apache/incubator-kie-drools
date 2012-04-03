@@ -23,7 +23,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
-import org.jbpm.task.*;
+import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
+import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
 import org.jbpm.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
@@ -405,6 +410,22 @@ public class TaskClient implements AsyncTaskService{
         args.add( language );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.QueryTasksOwned,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        connector.write( cmd );
+    }
+    
+    public void getTasksOwned(String userId,
+                              List<Status> status,
+                              String language,
+                              TaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 3 );
+        args.add( userId );
+        args.add( status );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.QueryTasksOwnedWithParticularStatus,
                                    args );
         handler.addResponseHandler( cmd.getId(),
                                     responseHandler );

@@ -78,6 +78,7 @@ public enum CommandName {
     DeleteCommentResponse,    
     
     QueryTasksOwned,    
+    QueryTasksOwnedWithParticularStatus,    
     QueryTasksAssignedAsBusinessAdministrator,
     QueryTasksAssignedAsExcludedOwner,
     QueryTasksAssignedAsPotentialOwner,

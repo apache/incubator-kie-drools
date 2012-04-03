@@ -110,6 +110,8 @@ public interface AsyncTaskService {
     void getTasksAssignedAsTaskStakeholder(String userId, String language, TaskSummaryResponseHandler responseHandler);
 
     void getTasksOwned(String userId, String language, TaskSummaryResponseHandler responseHandler);
+    
+    void getTasksOwned(String userId, List<Status> status, String language, TaskSummaryResponseHandler responseHandler);
 
     void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners, TaskOperationResponseHandler responseHandler);
 
