@@ -42,7 +42,6 @@ import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
-import org.jbpm.task.service.DefaultUserGroupCallbackImpl;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
@@ -221,11 +220,12 @@ public class HumanTaskServiceServlet extends HttpServlet {
         UserGroupCallbackManager manager = UserGroupCallbackManager.getInstance();
         
         if (!manager.existsCallback()) {
-            String callbackClass = getConfigParameter("user.group.callback.class", DefaultUserGroupCallbackImpl.class.getName());
+            String callbackClass = getConfigParameter("user.group.callback.class", "");
             
-    		UserGroupCallback userGroupCallback = getInstance(callbackClass);
-    		
-    		manager.setCallback(userGroupCallback);
+            
+        	UserGroupCallback userGroupCallback = getInstance(callbackClass);
+        		
+        	manager.setCallback(userGroupCallback);
         }
         taskSession.dispose();
         System.out.println("Task service startup completed successfully !");
@@ -319,7 +319,12 @@ public class HumanTaskServiceServlet extends HttpServlet {
     }
     
     protected <T> T getInstance(String className) {
-    	Object instance;
+        if (className == null || "".equalsIgnoreCase(className)) {
+            
+            return null;
+        }
+        
+        Object instance;
 		try {
 			instance = Class.forName(className).newInstance();
 		

@@ -63,6 +63,7 @@
       	<param-name>task.persistence.unit</param-name>
       	<param-value></param-value>
       </init-param>
+      <!-- use org.jbpm.task.service.DefaultUserGroupCallbackImpl to configure sample user group callback for demo purpose-->
       <init-param>
       	<param-name>user.group.callback.class</param-name>
       	<param-value></param-value>
@@ -78,10 +79,14 @@
       <!-- allows to specify location of a files that will be used to initially populate task server db -->
       <!-- accepts two types of files: MVEL and properties must be suffixed with .mvel and .properties -->
       <!-- location of the files can be either on classpath (with prefix classpath:) or valid URL -->
+      <!-- NOTE: that with custom users files Administrator user must always be present!!! -->
+      <!-- use classpath:/org/jbpm/task/servlet/SampleUsers.mvel to configure sample users for demo purpose-->
+      <!-- DefaultUsers.mvel is used to insert Administrator as it is required for task server to operate -->
       <init-param>
         <param-name>load.users</param-name>
-        <param-value></param-value>
+        <param-value>classpath:/org/jbpm/task/servlet/DefaultUsers.mvel</param-value>
       </init-param>
+      <!-- use classpath:/org/jbpm/task/servlet/SampleGroups.mvel to configure sample users for demo purpose-->
       <init-param>
         <param-name>load.groups</param-name>
         <param-value></param-value>

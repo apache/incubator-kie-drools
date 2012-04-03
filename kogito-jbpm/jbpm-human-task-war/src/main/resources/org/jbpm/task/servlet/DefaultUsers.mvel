@@ -1,0 +1,4 @@
+users = [ 'admin': new User('Administrator')
+        ];       
+
+return users;
