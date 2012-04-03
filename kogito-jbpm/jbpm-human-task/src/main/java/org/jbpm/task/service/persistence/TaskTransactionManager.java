@@ -3,7 +3,7 @@ package org.jbpm.task.service.persistence;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-public abstract class TaskTransactionManager {
+abstract class TaskTransactionManager {
     
     enum TransactionStatus { 
         ACTIVE, COMMITTED, 

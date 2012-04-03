@@ -43,25 +43,27 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
             throw new IllegalArgumentException(
                 "An EndNode only accepts default incoming connections!");
         }
+        boolean hidden = false;
+        if (getNode().getMetaData().get("hidden") != null) {
+            hidden = true;
+        }
+        InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+        if (!hidden) {
+            ((InternalProcessRuntime) kruntime.getProcessRuntime())
+                .getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
+        }
         ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         if (getEndNode().isTerminate()) {
-        	boolean hidden = false;
-        	if (getNode().getMetaData().get("hidden") != null) {
-        		hidden = true;
-        	}
-        	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-        	if (!hidden) {
-        		((InternalProcessRuntime) kruntime.getProcessRuntime())
-        			.getProcessEventSupport().fireBeforeNodeLeft(this, kruntime);
-        	}
+        	
         	((ProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );
-            if (!hidden) {
-            	((InternalProcessRuntime) kruntime.getProcessRuntime())
-            		.getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
-            }
+            
         } else {
             ((NodeInstanceContainer) getNodeInstanceContainer())
                 .nodeInstanceCompleted(this, null);
+        }
+        if (!hidden) {
+            ((InternalProcessRuntime) kruntime.getProcessRuntime())
+                .getProcessEventSupport().fireAfterNodeLeft(this, kruntime);
         }
     }
 

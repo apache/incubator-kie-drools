@@ -39,12 +39,11 @@ import org.jbpm.task.event.TaskEventSupport;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
-import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
-public class TaskService {
+public class TaskService extends TaskPersistenceManagerAccessor {
 
     private EntityManagerFactory emf;
     
@@ -84,7 +83,7 @@ public class TaskService {
         scheduler = new ScheduledThreadPoolExecutor(3);
 
         long now = System.currentTimeMillis();
-        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        TaskPersistenceManager tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
         for (DeadlineSummary summary : tpm.getUnescalatedDeadlines() ) { 
             schedule(new ScheduledTaskDeadline(summary.getTaskId(),
                     summary.getDeadlineId(),
@@ -188,7 +187,7 @@ public class TaskService {
     public static Map<String, Class> getInputs() {
         synchronized (inputs) {
             if (inputs.isEmpty()) {
-                // org.drools.task
+                // org.jbpm.task
                 inputs.put("AccessType", AccessType.class);
                 inputs.put("AllowedToDelegate", AllowedToDelegate.class);
                 inputs.put("Attachment", Attachment.class);
@@ -216,7 +215,7 @@ public class TaskService {
                 inputs.put("UserInfo", UserInfo.class);
                 inputs.put("WorkItemNotification", WorkItemNotification.class);
 
-                // org.drools.task.service
+                // org.jbpm.task.service
                 inputs.put("Allowed", Allowed.class);
                 inputs.put("Command", Command.class);
                 inputs.put("CommandName", CommandName.class);
@@ -255,6 +254,7 @@ public class TaskService {
     	pconf.addPackageImport("org.jbpm.task.service");
     	pconf.addPackageImport("org.jbpm.task.query");
     	pconf.addPackageImport("java.util");
+    	
     	for(String entry : getInputs().keySet()){
     		pconf.addImport(entry, getInputs().get(entry));
         }

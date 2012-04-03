@@ -27,88 +27,88 @@ import javax.management.ObjectName;
 
 public class ConfigurationUtils {
 
-	private final static String UNDEFINED_HOSTNAME = "undefined.host";
+    private final static String UNDEFINED_HOSTNAME = "undefined.host";
 
-	private String webServiceHost;
-	private int webServicePort;
-	private MBeanServer mbeanServer;
-	
-	public String getWebServiceHost() {
-		return webServiceHost;
-	}
+    private String webServiceHost;
+    private int webServicePort;
+    private MBeanServer mbeanServer;
 
-	public void setWebServiceHost(String host) throws UnknownHostException {
-		if (host == null || host.trim().length() == 0) {
-			System.out.println("Using undefined host: " + UNDEFINED_HOSTNAME);
-			host = UNDEFINED_HOSTNAME;
-		}
-		if ("0.0.0.0".equals(host)) {
-			InetAddress localHost = InetAddress.getLocalHost();
-			System.out.println("Using local host: " + localHost.getHostName());
-			host = localHost.getHostName();
-		}
-		this.webServiceHost = host;
-	}
+    public String getWebServiceHost() {
+        return webServiceHost;
+    }
 
-	public int getWebServicePort() {
-		if (webServicePort <= 0)
-			webServicePort = getConnectorPort("HTTP/1.1", false);
+    public void setWebServiceHost(String host) throws UnknownHostException {
+        if (host == null || host.trim().length() == 0) {
+            System.out.println("Using undefined host: " + UNDEFINED_HOSTNAME);
+            host = UNDEFINED_HOSTNAME;
+        }
+        if ("0.0.0.0".equals(host)) {
+            InetAddress localHost = InetAddress.getLocalHost();
+            System.out.println("Using local host: " + localHost.getHostName());
+            host = localHost.getHostName();
+        }
+        this.webServiceHost = host;
+    }
 
-		int localPort = webServicePort;
-		if (localPort <= 0) {
-			// Do not initialize webServicePort with the default, the connector
-			// port may become available later
-			System.out.println("Unable to calculate 'WebServicePort', using default '8080'");
-			localPort = 8080;
-		}
+    public int getWebServicePort() {
+        if (webServicePort <= 0)
+            webServicePort = getConnectorPort("HTTP/1.1", false);
 
-		return localPort;
-	}
+        int localPort = webServicePort;
+        if (localPort <= 0) {
+            // Do not initialize webServicePort with the default, the connector
+            // port may become available later
+            System.out.println("Unable to calculate 'WebServicePort', using default '8080'");
+            localPort = 8080;
+        }
 
-	private int getConnectorPort(final String protocol, final boolean secure) {
-		int port = -1;
+        return localPort;
+    }
 
-		try {
-			ObjectName connectors = new ObjectName("jboss.web:type=Connector,*");
+    private int getConnectorPort(final String protocol, final boolean secure) {
+        int port = -1;
 
-			Set<?> connectorNames = getMbeanServer().queryNames(connectors, null);
-			for (Object current : connectorNames) {
-				ObjectName currentName = (ObjectName) current;
+        try {
+            ObjectName connectors = new ObjectName("jboss.web:type=Connector,*");
 
-				try {
-					int connectorPort = (Integer) getMbeanServer()
-							.getAttribute(currentName, "port");
-					boolean connectorSecure = (Boolean) getMbeanServer()
-							.getAttribute(currentName, "secure");
-					String connectorProtocol = (String) getMbeanServer()
-							.getAttribute(currentName, "protocol");
+            Set<?> connectorNames = getMbeanServer().queryNames(connectors, null);
+            for (Object current : connectorNames) {
+                ObjectName currentName = (ObjectName) current;
 
-					if (protocol.equals(connectorProtocol)
-							&& secure == connectorSecure) {
-						if (port > -1) {
-							System.out.println("Found multiple connectors for protocol='"
-								+ protocol + "' and secure='" + secure
-								+ "', using first port found '" + port + "'");
-						} else {
-							port = connectorPort;
-						}
-					}
-				} catch (AttributeNotFoundException ignored) {
-				}
-			}
+                try {
+                    int connectorPort = (Integer) getMbeanServer()
+                            .getAttribute(currentName, "port");
+                    boolean connectorSecure = (Boolean) getMbeanServer()
+                            .getAttribute(currentName, "secure");
+                    String connectorProtocol = (String) getMbeanServer()
+                            .getAttribute(currentName, "protocol");
 
-			return port;
-		} catch (JMException e) {
-			return -1;
-		}
-	}
+                    if (protocol.equals(connectorProtocol)
+                            && secure == connectorSecure) {
+                        if (port > -1) {
+                            System.out.println("Found multiple connectors for protocol='"
+                                    + protocol + "' and secure='" + secure
+                                    + "', using first port found '" + port + "'");
+                        } else {
+                            port = connectorPort;
+                        }
+                    }
+                } catch (AttributeNotFoundException ignored) {
+                }
+            }
 
-	public MBeanServer getMbeanServer() {
-		return mbeanServer;
-	}
+            return port;
+        } catch (JMException e) {
+            return -1;
+        }
+    }
 
-	public void setMbeanServer(MBeanServer mbeanServer) {
-		this.mbeanServer = mbeanServer;
-	}
+    public MBeanServer getMbeanServer() {
+        return mbeanServer;
+    }
+
+    public void setMbeanServer(MBeanServer mbeanServer) {
+        this.mbeanServer = mbeanServer;
+    }
 
 }

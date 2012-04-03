@@ -11,20 +11,118 @@
   </parent>
 
   <artifactId>jbpm-persistence-jpa</artifactId>
-
   <name>jBPM :: JPA Persistence</name>
   <description>jBPM JPA Persistence</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+    <dependency>
+       <groupId>org.hibernate</groupId>
+       <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Following 2 dependencies needed for making the build work with JDK5 -->
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- for BlobUserType.BlobImpl (hib 3 compatibility) -->
+    <dependency>
+      <groupId>net.sf.trove4j</groupId>
+      <artifactId>trove4j</artifactId>
+      <version>3.0.2</version>
+    </dependency>
+    
+    <!--  Test -->
+    <dependency>
+       <groupId>org.hibernate</groupId>
+       <artifactId>hibernate-entitymanager</artifactId>
+       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency> 
+  </dependencies>
+ 
   <build>
     <testResources>
-      <!--  for marshalling tests -->
       <testResource>
         <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
         <filtering>true</filtering>
       </testResource>
     </testResources>
   
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <components>
+            <component>
+                <name>hbm2ddl</name>
+                <implementation>jpaconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <persistenceUnit>org.jbpm.persistence.jpa</persistenceUnit>
+            <outputfilename>schema.ddl</outputfilename>
+            <drop>false</drop>
+            <create>true</create>
+            <export>false</export>
+            <format>true</format>
+          </componentProperties>
+        </configuration>
+      </plugin>    
+      
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <executions>
@@ -85,63 +183,24 @@
       </plugin>
     </plugins>
   </build>
-    
-  <dependencies>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-flow-builder</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-persistence-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-persistence-jpa</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>    
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.btm</groupId>
-      <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency> 
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- Following 2 dependencies needed for making the build work with JDK5 -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  
+
+  <profiles>
+    <profile>
+      <id>hibernate-4</id>
+      <dependencies>
+        <!-- necessary for HibernateException in BlobUserType (introduced for hib 3 compatibility) -->
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
 </project>

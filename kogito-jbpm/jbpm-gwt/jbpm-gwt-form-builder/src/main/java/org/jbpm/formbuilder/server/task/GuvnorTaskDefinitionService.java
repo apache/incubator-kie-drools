@@ -65,32 +65,32 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
     }
     
     public String getBaseUrl() {
-		return baseUrl;
-	}
+        return baseUrl;
+    }
 
-	public void setBaseUrl(String baseUrl) {
-		this.baseUrl = baseUrl;
-	}
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
-	public String getUser() {
-		return user;
-	}
+    public String getUser() {
+        return user;
+    }
 
-	public void setUser(String user) {
-		this.user = user;
-	}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	@Override
+    @Override
     public void afterPropertiesSet() throws Exception {
-    	this.helper = new GuvnorHelper(baseUrl, user, password);;
+        this.helper = new GuvnorHelper(baseUrl, user, password);;
     }
     
     public void setHelper(GuvnorHelper helper) {
@@ -106,7 +106,7 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
         HttpClient client = helper.getHttpClient();
         GetMethod method = null;
         try {
-        	method = helper.createGetMethod(helper.getApiSearchUrl(pkgName));
+            method = helper.createGetMethod(helper.getApiSearchUrl(pkgName));
             helper.setAuth(client, method);
             client.executeMethod(method);
             Properties props = new Properties();
@@ -138,9 +138,9 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
         } catch (Exception e) {
             throw new TaskServiceException("Unexpected error", e);
         } finally {
-        	if (method != null) {
-        		method.releaseConnection();
-        	}
+            if (method != null) {
+                method.releaseConnection();
+            }
         }
     }
     
@@ -155,8 +155,8 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
                 call.addRequestHeader("Accept", "application/xml");
                 client.executeMethod(call);
                 PackageListDTO dto = helper.jaxbTransformation(PackageListDTO.class, 
-                		call.getResponseBodyAsStream(), 
-                		PackageListDTO.RELATED_CLASSES);
+                        call.getResponseBodyAsStream(), 
+                        PackageListDTO.RELATED_CLASSES);
                 PackageDTO pkg = dto.getSelectedPackage(pkgName);
                 List<String> urls = new ArrayList<String>();
                 for (String url : pkg.getAssets()) {
@@ -166,8 +166,8 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
                         subCall.addRequestHeader("Accept", "application/xml");
                         client.executeMethod(subCall);
                         AssetDTO subDto = helper.jaxbTransformation(AssetDTO.class, 
-                        		subCall.getResponseBodyAsStream(), 
-                        		AssetDTO.RELATED_CLASSES);
+                                subCall.getResponseBodyAsStream(), 
+                                AssetDTO.RELATED_CLASSES);
                         if (subDto.getMetadata().getFormat().equals("bpmn2")) {
                             urls.add(subDto.getSourceLink());
                         }
@@ -232,8 +232,8 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
                 call.addRequestHeader("Accept", "application/xml");
                 client.executeMethod(call);
                 PackageListDTO dto = helper.jaxbTransformation(PackageListDTO.class,
-                		call.getResponseBodyAsStream(), 
-                		PackageListDTO.RELATED_CLASSES);
+                        call.getResponseBodyAsStream(), 
+                        PackageListDTO.RELATED_CLASSES);
                 String processUrl = null;
                 String format = null;
                 PackageDTO pkg = dto.getSelectedPackage(packageName);
@@ -244,8 +244,8 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
                         subCall.addRequestHeader("Accept", "application/xml");
                         client.executeMethod(subCall);
                         AssetDTO subDto = helper.jaxbTransformation(AssetDTO.class, 
-                        		subCall.getResponseBodyAsStream(), 
-                        		AssetDTO.RELATED_CLASSES);
+                                subCall.getResponseBodyAsStream(), 
+                                AssetDTO.RELATED_CLASSES);
                         if (subDto.getMetadata().getUuid().equals(uuid)) {
                             processUrl = subDto.getSourceLink();
                             format = subDto.getMetadata().getFormat();
@@ -312,10 +312,10 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
     private String getTaskDefinitionContent(String pkgName, String itemName) throws IOException {
         HttpClient client = helper.getHttpClient();
         if (itemName != null && !"".equals(itemName)) {
-        	
+            
             String getUrl = helper.getApiSearchUrl(pkgName) + 
-            		URLEncoder.encode(itemName, GuvnorHelper.ENCODING);
-			GetMethod method = helper.createGetMethod(getUrl);
+                    URLEncoder.encode(itemName, GuvnorHelper.ENCODING);
+            GetMethod method = helper.createGetMethod(getUrl);
             try {
                 helper.setAuth(client, method);
                 client.executeMethod(method);
@@ -337,8 +337,8 @@ public class GuvnorTaskDefinitionService implements TaskDefinitionService, Initi
         repo.clear();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         boolean isBPMN = processName.toLowerCase().endsWith("bpmn");
-		boolean isBPMN2 = processName.toLowerCase().endsWith("bpmn2");
-		ResourceType type = (isBPMN || isBPMN2) ? ResourceType.BPMN2 : ResourceType.DRF;
+        boolean isBPMN2 = processName.toLowerCase().endsWith("bpmn2");
+        ResourceType type = (isBPMN || isBPMN2) ? ResourceType.BPMN2 : ResourceType.DRF;
         kbuilder.add(new ByteArrayResource(bpmn2Content.getBytes()), type);
         if (!kbuilder.hasErrors()) {
             return new ArrayList<TaskRef>(repo.getTasks());

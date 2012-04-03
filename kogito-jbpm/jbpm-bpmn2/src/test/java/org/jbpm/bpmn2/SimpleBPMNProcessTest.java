@@ -38,6 +38,8 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
@@ -1171,6 +1173,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		ProcessInstance processInstance = ksession
 				.startProcess("CompensateEndEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent", "CompensateEvent2", "Compensate", "EndEvent");
 	}
 
 	public void testServiceTask() throws Exception {

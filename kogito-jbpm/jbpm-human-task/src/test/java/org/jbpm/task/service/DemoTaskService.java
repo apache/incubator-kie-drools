@@ -30,7 +30,6 @@ import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.mina.MinaTaskServer;
-import org.jbpm.task.service.persistence.TaskServiceSession;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;

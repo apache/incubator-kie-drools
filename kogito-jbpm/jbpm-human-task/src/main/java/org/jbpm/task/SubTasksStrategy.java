@@ -31,7 +31,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 
 /**
  *

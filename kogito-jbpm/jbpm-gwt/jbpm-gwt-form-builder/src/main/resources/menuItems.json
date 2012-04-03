@@ -567,48 +567,48 @@
         }
      ],
      "Server Components": [
-     	{	"className": "org.jbpm.formbuilder.client.menu.items.LoopBlockMenuItem",
+        {   "className": "org.jbpm.formbuilder.client.menu.items.LoopBlockMenuItem",
             "allowedEvents": [ ],
-     		"effects": [
-     			{ "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
+            "effects": [
+                { "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
+                { "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.CutFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.PasteFormEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
+                { "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.ResizeEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.MoveItemFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.EventHandlingFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect" }
-     		]
-     	},
-     	{	"className": "org.jbpm.formbuilder.client.menu.items.ConditionalBlockMenuItem",
+            ]
+        },
+        {   "className": "org.jbpm.formbuilder.client.menu.items.ConditionalBlockMenuItem",
             "allowedEvents": [ ],
-     		"effects": [
-     			{ "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
+            "effects": [
+                { "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
+                { "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.CutFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.PasteFormEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
+                 { "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.ResizeEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.MoveItemFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.EventHandlingFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect" }
-     		]
-     	},
-     	{	"className": "org.jbpm.formbuilder.client.menu.items.ServerTransformationMenuItem",
+             ]
+         },
+         {  "className": "org.jbpm.formbuilder.client.menu.items.ServerTransformationMenuItem",
             "allowedEvents": [ ],
-     		"effects": [
-     			{ "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
+            "effects": [
+                { "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
+                { "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.CutFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.PasteFormEffect" },
-     			{ "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
+                { "className": "org.jbpm.formbuilder.client.effect.DoneEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.ResizeEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.MoveItemFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.EventHandlingFormEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect" }
-     		]
-     	}
+             ]
+         }
      ],
      "Advanced Components": [
         {   "className": "org.jbpm.formbuilder.client.menu.items.RichTextEditorMenuItem",
@@ -690,11 +690,11 @@
         }
      ],
      "My Components": [
-     	{   "className": "org.jbpm.formbuilder.client.menu.items.CustomMenuItem",
+         {   "className": "org.jbpm.formbuilder.client.menu.items.CustomMenuItem",
             "allowedEvents": [ "onclick", "ondblclick", "onmousedown", "onmousemove", "onmouseout",
                 "onmouseover", "onmouseup", "onkeydown", "onkeypress", "onkeyup"
             ],
-     		"name": "Login template",
+             "name": "Login template",
             "effects": [
                 { "className": "org.jbpm.formbuilder.client.effect.RemoveEffect" },
                 { "className": "org.jbpm.formbuilder.client.effect.CopyFormEffect" },
@@ -711,61 +711,61 @@
                 { "className": "org.jbpm.formbuilder.client.effect.SaveAsMenuOptionFormEffect"}
             ],
             "itemRepresentation": {
-	            "width": "100%",
-	            "rows": 3,
-	            "columns": 2,
-	            "@className": "org.jbpm.formapi.shared.api.items.TableRepresentation",
-	            "typeId": "table",
-	            "cellPadding": 0,
-	            "height": "200px",
-	            "borderWidth": 1,
-	            "cellSpacing": 0,
-	            "elements": [
-	                [
-	                    {
-	                        "value": "User",
-	                        "typeId": "label",
-	                        "@className": "org.jbpm.formapi.shared.api.items.LabelRepresentation"
-	                    },
-	                    {
-	                        "typeId": "textField",
-	                        "@className": "org.jbpm.formapi.shared.api.items.TextFieldRepresentation",
-	                        "width": "160px",
-	                        "height": "21px",
-	                        "name": "usr"
-	                    }
-	                ],
-	                [
-	                    {
-	                        "typeId": "label",
-	                        "@className": "org.jbpm.formapi.shared.api.items.LabelRepresentation",
-	                        "value": "Password"
-	                    },
-	                    {
-	                        "typeId": "textField",
-	                        "@className": "org.jbpm.formapi.shared.api.items.TextFieldRepresentation",
-	                        "width": "160px",
-	                        "height": "21px",
-	                        "name": "pwd"
-	                    }
-	                ],
-	                [
-	                    null,
-	                    {
-	                        "onClickScript": {
-	                            "@className": "org.jbpm.formapi.shared.api.FBScript",
-	                            "type": "text/javascript",
-	                            "content": "document.forms[0].submit();"
-	                        },
-	                        "typeId": "completeButton",
-	                        "@className": "org.jbpm.formapi.shared.api.items.CompleteButtonRepresentation",
-	                        "text": "Login",
-	                        "width": "140px",
-	                        "height": "25px"
-	                    }
-	                ]
-	            ]
-        	}
+                "width": "100%",
+                "rows": 3,
+                "columns": 2,
+                "@className": "org.jbpm.formapi.shared.api.items.TableRepresentation",
+                "typeId": "table",
+                "cellPadding": 0,
+                "height": "200px",
+                "borderWidth": 1,
+                "cellSpacing": 0,
+                "elements": [
+                    [
+                        {
+                            "value": "User",
+                            "typeId": "label",
+                            "@className": "org.jbpm.formapi.shared.api.items.LabelRepresentation"
+                        },
+                        {
+                            "typeId": "textField",
+                            "@className": "org.jbpm.formapi.shared.api.items.TextFieldRepresentation",
+                            "width": "160px",
+                            "height": "21px",
+                            "name": "usr"
+                        }
+                    ],
+                    [
+                        {
+                            "typeId": "label",
+                            "@className": "org.jbpm.formapi.shared.api.items.LabelRepresentation",
+                            "value": "Password"
+                        },
+                        {
+                            "typeId": "textField",
+                            "@className": "org.jbpm.formapi.shared.api.items.TextFieldRepresentation",
+                            "width": "160px",
+                            "height": "21px",
+                            "name": "pwd"
+                        }
+                    ],
+                    [
+                        null,
+                        {
+                            "onClickScript": {
+                                "@className": "org.jbpm.formapi.shared.api.FBScript",
+                                "type": "text/javascript",
+                                "content": "document.forms[0].submit();"
+                            },
+                            "typeId": "completeButton",
+                            "@className": "org.jbpm.formapi.shared.api.items.CompleteButtonRepresentation",
+                            "text": "Login",
+                            "width": "140px",
+                            "height": "25px"
+                        }
+                    ]
+                ]
+            }
         }
      ]
  }

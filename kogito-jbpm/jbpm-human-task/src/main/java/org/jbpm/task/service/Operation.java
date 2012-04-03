@@ -30,5 +30,6 @@ public enum Operation {
     Fail,
     Register,
     Remove,
-    Activate
+    Activate,
+    Exit
 }

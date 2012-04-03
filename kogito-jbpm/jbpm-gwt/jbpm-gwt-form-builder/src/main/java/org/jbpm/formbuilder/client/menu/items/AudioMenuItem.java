@@ -31,32 +31,32 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class AudioMenuItem extends FBMenuItem {
 
-	public AudioMenuItem() {
-		super();
-	}
+    public AudioMenuItem() {
+        super();
+    }
 
-	public AudioMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
+    public AudioMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
 
-	@Override
-	public Label getDescription() {
+    @Override
+    public Label getDescription() {
         return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemAudio());
-	}
+    }
 
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.audio();
-	}
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.audio();
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new AudioMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new AudioMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new AudioFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new AudioFormItem());
+    }
 
 }

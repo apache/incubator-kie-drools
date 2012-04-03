@@ -40,13 +40,13 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormItem {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
 
-	private final I18NUtils utils = new I18NUtils();
-	
-	private String cssClassName;
-	private String id;
-	private String legend;
+    private final I18NUtils utils = new I18NUtils();
+    
+    private String cssClassName;
+    private String id;
+    private String legend;
 
     private FieldSetPanel panel = new FieldSetPanel() {
         @Override
@@ -57,21 +57,21 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
             return super.remove(w);
         }
     };
-	
-	public FieldSetLayoutFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public FieldSetLayoutFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		setSize("250px", "120px");
+    
+    public FieldSetLayoutFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public FieldSetLayoutFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        setSize("250px", "120px");
         panel.setSize(getWidth(), getHeight());
-		add(panel);
-	}
+        add(panel);
+    }
 
-	@Override
-	public void replacePhantom(FBFormItem item) {
-		PhantomPanel phantom = null;
+    @Override
+    public void replacePhantom(FBFormItem item) {
+        PhantomPanel phantom = null;
         for (Widget widget : panel) {
             if (widget instanceof PhantomPanel) {
                 phantom = (PhantomPanel) widget;
@@ -85,14 +85,14 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
         } else {
             add(item);
         }
-	}
+    }
 
-	@Override
-	public boolean add(FBFormItem item) {
-		this.panel.add(item);
-		return super.add(item);
-	}
-	
+    @Override
+    public boolean add(FBFormItem item) {
+        this.panel.add(item);
+        return super.add(item);
+    }
+    
     @Override
     public void add(PhantomPanel phantom, int x, int y) {
         for (int index = 0; index < panel.getWidgetCount(); index++) {
@@ -108,24 +108,24 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
         }
     }
 
-	@Override
-	public HasWidgets getPanel() {
-		return this.panel;
-	}
+    @Override
+    public HasWidgets getPanel() {
+        return this.panel;
+    }
 
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
-		Map<String, Object> formItemPropertiesMap = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
+        Map<String, Object> formItemPropertiesMap = new HashMap<String, Object>();
         formItemPropertiesMap.put("height", getHeight());
         formItemPropertiesMap.put("width", getWidth());
         formItemPropertiesMap.put("cssClassName", this.cssClassName);
         formItemPropertiesMap.put("legend", this.legend);
         formItemPropertiesMap.put("id", id);
         return formItemPropertiesMap;
-	}
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
         this.cssClassName = extractString(asPropertiesMap.get("cssClassName"));
@@ -134,27 +134,27 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
         
         populate(this.panel);
 
-	}
+    }
 
-	private void populate(FieldSetPanel panel) {
-		if (getHeight() != null) {
-			panel.setHeight(getHeight());
-		}
-		if (this.cssClassName != null) {
-			panel.setStyleName(cssClassName);
-		}
-		if (this.legend != null) {
-			panel.setLegend(legend);
-		}
-		if (this.id != null) {
-			panel.setId(id);
-		}
-		if (getWidth() != null) {
-			panel.setWidth(getWidth());
-		}
-	}
+    private void populate(FieldSetPanel panel) {
+        if (getHeight() != null) {
+            panel.setHeight(getHeight());
+        }
+        if (this.cssClassName != null) {
+            panel.setStyleName(cssClassName);
+        }
+        if (this.legend != null) {
+            panel.setLegend(legend);
+        }
+        if (this.id != null) {
+            panel.setId(id);
+        }
+        if (getWidth() != null) {
+            panel.setWidth(getWidth());
+        }
+    }
 
-	@Override
+    @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof FieldSetPanelRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "FieldSetPanelRepresentation"));
@@ -162,9 +162,9 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
         super.populate(rep);
         FieldSetPanelRepresentation fsrep = (FieldSetPanelRepresentation) rep;
         
-    	this.cssClassName = fsrep.getCssClassName();
-    	this.id = fsrep.getId();
-    	this.legend = fsrep.getLegend();
+        this.cssClassName = fsrep.getCssClassName();
+        this.id = fsrep.getId();
+        this.legend = fsrep.getLegend();
         if (fsrep.getWidth() != null && !"".equals(fsrep.getWidth())) {
             setWidth(fsrep.getWidth());
         }
@@ -182,26 +182,26 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
         
     }
 
-	@Override
-	public FormItemRepresentation getRepresentation() {
-		FieldSetPanelRepresentation rep = super.getRepresentation(new FieldSetPanelRepresentation());
-		rep.setCssClassName(this.cssClassName);
-		rep.setId(this.id);
-		rep.setHeight(getHeight());
-		rep.setWidth(getWidth());
-		rep.setLegend(this.legend);
-		List<FormItemRepresentation> items = new ArrayList<FormItemRepresentation>();
-		for (FBFormItem item : getItems()) {
-			items.add(item.getRepresentation());
-		}
-		rep.setI18n(getI18nMap());
-		rep.setItems(items);
-		return rep;
-	}
+    @Override
+    public FormItemRepresentation getRepresentation() {
+        FieldSetPanelRepresentation rep = super.getRepresentation(new FieldSetPanelRepresentation());
+        rep.setCssClassName(this.cssClassName);
+        rep.setId(this.id);
+        rep.setHeight(getHeight());
+        rep.setWidth(getWidth());
+        rep.setLegend(this.legend);
+        List<FormItemRepresentation> items = new ArrayList<FormItemRepresentation>();
+        for (FBFormItem item : getItems()) {
+            items.add(item.getRepresentation());
+        }
+        rep.setI18n(getI18nMap());
+        rep.setItems(items);
+        return rep;
+    }
 
-	@Override
-	public FBFormItem cloneItem() {
-		FieldSetLayoutFormItem clone = super.cloneItem(new FieldSetLayoutFormItem(getFormEffects()));
+    @Override
+    public FBFormItem cloneItem() {
+        FieldSetLayoutFormItem clone = super.cloneItem(new FieldSetLayoutFormItem(getFormEffects()));
         clone.cssClassName = this.cssClassName;
         clone.id = this.id;
         clone.legend = this.legend;
@@ -210,11 +210,11 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
             clone.add(item.cloneItem());
         }
         return clone;
-	}
+    }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		FieldSetPanel fsp = new FieldSetPanel();
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        FieldSetPanel fsp = new FieldSetPanel();
         populate(fsp);
         String value = (String) getInputValue(formData);
         if (value != null) {
@@ -234,35 +234,35 @@ public class FieldSetLayoutFormItem extends LayoutFormItem implements I18NFormIt
             fsp.add(item.cloneDisplay(formData));
         }
         return fsp;
-	}
+    }
 
-	@Override
-	public boolean containsLocale(String localeName) {
-		return utils.containsLocale(localeName);
-	}
-	
-	@Override
-	public Format getFormat() {
-		return utils.getFormat();
-	}
-	
-	@Override
-	public String getI18n(String key) {
-		return utils.getI18n(key);
-	}
-	
-	@Override
-	public Map<String, String> getI18nMap() {
-		return utils.getI18nMap();
-	}
-	
-	@Override
-	public void saveI18nMap(Map<String, String> i18nMap) {
-		utils.saveI18nMap(i18nMap);
-	}
-	
-	@Override
-	public void setFormat(Format format) {
-		utils.setFormat(format);
-	}
+    @Override
+    public boolean containsLocale(String localeName) {
+        return utils.containsLocale(localeName);
+    }
+    
+    @Override
+    public Format getFormat() {
+        return utils.getFormat();
+    }
+    
+    @Override
+    public String getI18n(String key) {
+        return utils.getI18n(key);
+    }
+    
+    @Override
+    public Map<String, String> getI18nMap() {
+        return utils.getI18nMap();
+    }
+    
+    @Override
+    public void saveI18nMap(Map<String, String> i18nMap) {
+        utils.saveI18nMap(i18nMap);
+    }
+    
+    @Override
+    public void setFormat(Format format) {
+        utils.setFormat(format);
+    }
 }

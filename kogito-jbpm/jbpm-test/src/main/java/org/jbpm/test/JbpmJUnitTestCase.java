@@ -289,7 +289,7 @@ public abstract class JbpmJUnitTestCase extends Assert {
 			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
 			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-				log = new JPAProcessInstanceDbLog(env);
+				JPAProcessInstanceDbLog.setEnvironment(env);
 				taskService = null;
 			} else {
 				env = ksession.getEnvironment();

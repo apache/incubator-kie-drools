@@ -4,43 +4,37 @@
 	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out"/>
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{dd/MM HH:mm:ss,SSS} %-5p %c{1}.%M - %m%n"/>
+			<param name="ConversionPattern" value="%-4r %d{dd/MM HH:mm:ss,SSS}[%t] %-5p %c{3}.%M %x - %m%n"/>
 		</layout>
 	</appender>
 
-	<logger name="org.drools">
-		<level value="DEBUG"/>
-	</logger>
-
 	<logger name="org.jbpm">
-		<level value="DEBUG"/>
+		<level value="WARN"/>
 	</logger>
-
-
-    <!-- limit hibernate -->	
+	
+	<logger name="org.hibernate">
+		<level value="INFO"/>
+	</logger>
     <logger name="org.hibernate.cfg">
         <level value="WARN"/>
     </logger>
-    <logger name="org.hibernate.cfg.annotations">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.AnnotationBinder">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.cfg.SettingsFactory">
-        <level value="WARN"/>
-    </logger>
-    <logger name="org.hibernate.tool.hbm2ddl">
-        <level value="WARN"/>
-    </logger>
-
-    <!-- limit bitronix -->
-    <logger name="bitronix.twm.twopc.Preparer">
-        <level value="ERROR"/>
-    </logger>
     
+    <!-- hibernate 4 verbosity -->
+	<logger name="org.hibernate.tool.hbm2ddl.DatabaseMetadata">
+		<level value="WARN"/>
+	</logger>
+	<logger name="org.hibernate.tool.hbm2ddl.TableMetadata">
+		<level value="WARN"/>
+	</logger>
+	<logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
+		<level value="FATAL"/>
+	</logger>
+	<logger name="java.sql.DatabaseMetaData">
+		<level value="WARN"/>
+	</logger>
+
 	<root>
-		<priority value="INFO"/>
+		<priority value="ERROR"/>
 		<appender-ref ref="CONSOLE"/>
 	</root>
 </log4j:configuration>

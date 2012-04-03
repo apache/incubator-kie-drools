@@ -37,31 +37,31 @@ import com.gwtent.reflection.client.Reflectable;
 
 @Reflectable
 public class MenuLayoutFormItem extends LayoutFormItem {
-	
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
-	
-	private final HorizontalPanel panel = new HorizontalPanel();
-	
-	private String type;
-	private String cssClassName;
-	private String id;
-	private String dir;
+    
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    
+    private final HorizontalPanel panel = new HorizontalPanel();
+    
+    private String type;
+    private String cssClassName;
+    private String id;
+    private String dir;
 
-	public MenuLayoutFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public MenuLayoutFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		this.panel.setBorderWidth(0);
-		setSize("200px", "90px");
-		this.panel.setSize(getWidth(), getHeight());
-		add(this.panel);
-	}
+    public MenuLayoutFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public MenuLayoutFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        this.panel.setBorderWidth(0);
+        setSize("200px", "90px");
+        this.panel.setSize(getWidth(), getHeight());
+        add(this.panel);
+    }
 
-	@Override
-	public void replacePhantom(FBFormItem item) {
-		PhantomPanel phantom = null;
+    @Override
+    public void replacePhantom(FBFormItem item) {
+        PhantomPanel phantom = null;
         for (Widget widget : panel) {
             if (widget instanceof PhantomPanel) {
                 phantom = (PhantomPanel) widget;
@@ -75,16 +75,16 @@ public class MenuLayoutFormItem extends LayoutFormItem {
         } else {
             add(item);
         }
-	}
+    }
 
-	@Override
-	public boolean add(FBFormItem item) {
-		this.panel.add(item);
-		return super.add(item);
-	}
-	
-	@Override
-	public void add(PhantomPanel phantom, int x, int y) {
+    @Override
+    public boolean add(FBFormItem item) {
+        this.panel.add(item);
+        return super.add(item);
+    }
+    
+    @Override
+    public void add(PhantomPanel phantom, int x, int y) {
         for (int index = 0; index < panel.getWidgetCount(); index++) {
             Widget item = panel.getWidget(index);
             int left = item.getAbsoluteLeft();
@@ -96,16 +96,16 @@ public class MenuLayoutFormItem extends LayoutFormItem {
                 break;
             }
         }
-	}
+    }
 
-	@Override
-	public HasWidgets getPanel() {
-		return this.panel;
-	}
+    @Override
+    public HasWidgets getPanel() {
+        return this.panel;
+    }
 
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
-		Map<String, Object> formItemPropertiesMap = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
+        Map<String, Object> formItemPropertiesMap = new HashMap<String, Object>();
         formItemPropertiesMap.put("height", getHeight());
         formItemPropertiesMap.put("width", getWidth());
         formItemPropertiesMap.put("cssClassName", this.cssClassName);
@@ -113,10 +113,10 @@ public class MenuLayoutFormItem extends LayoutFormItem {
         formItemPropertiesMap.put("id", this.id);
         formItemPropertiesMap.put("type", this.type);
         return formItemPropertiesMap;
-	}
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
         this.cssClassName = extractString(asPropertiesMap.get("cssClassName"));
@@ -126,41 +126,41 @@ public class MenuLayoutFormItem extends LayoutFormItem {
         
         populate(this.panel);
 
-	}
+    }
 
-	private void populate(HorizontalPanel panel) {
-		if (getHeight() != null) {
-			panel.setHeight(getHeight());
-		}
-		if (this.cssClassName != null) {
-			panel.setStyleName(cssClassName);
-		}
-		if (this.dir != null) {
-			panel.getElement().setDir(dir);
-		}
-		if (this.id != null) {
-			panel.getElement().setId(id);
-		}
-		if (getWidth() != null) {
-			panel.setWidth(getWidth());
-		}
-		if (this.type != null) {
-			panel.setStyleName(type + " " + panel.getStyleName());
-		}
-	}
+    private void populate(HorizontalPanel panel) {
+        if (getHeight() != null) {
+            panel.setHeight(getHeight());
+        }
+        if (this.cssClassName != null) {
+            panel.setStyleName(cssClassName);
+        }
+        if (this.dir != null) {
+            panel.getElement().setDir(dir);
+        }
+        if (this.id != null) {
+            panel.getElement().setId(id);
+        }
+        if (getWidth() != null) {
+            panel.setWidth(getWidth());
+        }
+        if (this.type != null) {
+            panel.setStyleName(type + " " + panel.getStyleName());
+        }
+    }
 
-	@Override
-	public void populate(FormItemRepresentation rep) throws FormBuilderException {
+    @Override
+    public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof MenuPanelRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "MenuPanelRepresentation"));
         }
         super.populate(rep);
         MenuPanelRepresentation mrep = (MenuPanelRepresentation) rep;
         
-    	this.cssClassName = mrep.getCssClassName();
-    	this.id = mrep.getId();
-    	this.dir = mrep.getDir();
-    	this.type = mrep.getType();
+        this.cssClassName = mrep.getCssClassName();
+        this.id = mrep.getId();
+        this.dir = mrep.getDir();
+        this.type = mrep.getType();
         if (mrep.getWidth() != null && !"".equals(mrep.getWidth())) {
             setWidth(mrep.getWidth());
         }
@@ -175,28 +175,28 @@ public class MenuLayoutFormItem extends LayoutFormItem {
                 add(super.createItem(item));
             }
         }
-	}
-	
-	@Override
-	public FormItemRepresentation getRepresentation() {
-		MenuPanelRepresentation rep = super.getRepresentation(new MenuPanelRepresentation());
-		rep.setCssClassName(this.cssClassName);
-		rep.setId(this.id);
-		rep.setHeight(getHeight());
-		rep.setWidth(getWidth());
-		rep.setDir(this.dir);
-		rep.setType(this.type);
-		List<FormItemRepresentation> items = new ArrayList<FormItemRepresentation>();
-		for (FBFormItem item : getItems()) {
-			items.add(item.getRepresentation());
-		}
-		rep.setItems(items);
-		return rep;
-	}
+    }
+    
+    @Override
+    public FormItemRepresentation getRepresentation() {
+        MenuPanelRepresentation rep = super.getRepresentation(new MenuPanelRepresentation());
+        rep.setCssClassName(this.cssClassName);
+        rep.setId(this.id);
+        rep.setHeight(getHeight());
+        rep.setWidth(getWidth());
+        rep.setDir(this.dir);
+        rep.setType(this.type);
+        List<FormItemRepresentation> items = new ArrayList<FormItemRepresentation>();
+        for (FBFormItem item : getItems()) {
+            items.add(item.getRepresentation());
+        }
+        rep.setItems(items);
+        return rep;
+    }
 
-	@Override
-	public FBFormItem cloneItem() {
-		MenuLayoutFormItem clone = super.cloneItem(new MenuLayoutFormItem(getFormEffects()));
+    @Override
+    public FBFormItem cloneItem() {
+        MenuLayoutFormItem clone = super.cloneItem(new MenuLayoutFormItem(getFormEffects()));
         clone.cssClassName = this.cssClassName;
         clone.id = this.id;
         clone.dir = this.dir;
@@ -206,18 +206,18 @@ public class MenuLayoutFormItem extends LayoutFormItem {
             clone.add(item.cloneItem());
         }
         return clone;
-	}
+    }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.setBorderWidth(0);
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setBorderWidth(0);
         populate(hp);
         super.populateActions(hp.getElement());
         for (FBFormItem item : getItems()) {
             hp.add(item.cloneDisplay(formData));
         }
-		return hp;
-	}
+        return hp;
+    }
 
 }

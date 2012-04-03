@@ -23,7 +23,7 @@ import javax.persistence.Entity;
 import org.jbpm.task.event.InternalTaskEventListener;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.persistence.TaskServiceSession;
+import org.jbpm.task.service.TaskServiceSession;
 
 /**
  *

@@ -31,7 +31,7 @@ public class OptionRepresentation extends FormItemRepresentation {
     public OptionRepresentation() {
         super("option");
     }
-    
+
     public String getLabel() {
         return label;
     }
@@ -47,7 +47,7 @@ public class OptionRepresentation extends FormItemRepresentation {
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -55,25 +55,31 @@ public class OptionRepresentation extends FormItemRepresentation {
         data.put("value", this.value);
         return data;
     }
-    
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);
-    	this.label = (String) data.get("label");
-    	this.value = (String) data.get("value");
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.label = (String) data.get("label");
+        this.value = (String) data.get("value");
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof OptionRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof OptionRepresentation))
+            return false;
         OptionRepresentation other = (OptionRepresentation) obj;
-        boolean equals = (this.label == null && other.label == null) || (this.label != null && this.label.equals(other.label));
-        if (!equals) return equals;
-        equals = (this.value == null && other.value == null) || (this.value != null && this.value.equals(other.value));
+        boolean equals = (this.label == null && other.label == null)
+                || (this.label != null && this.label.equals(other.label));
+        if (!equals)
+            return equals;
+        equals = (this.value == null && other.value == null)
+                || (this.value != null && this.value.equals(other.value));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

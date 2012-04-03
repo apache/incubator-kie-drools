@@ -25,27 +25,27 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class BorderPanelRepresentation extends FormItemRepresentation {
 
-	public static enum Position {
-		SOUTH, SOUTHWEST, WEST, NORTHWEST, NORTH, NORTHEAST, EAST, SOUTHEAST, CENTER;
-	}
-	
-	private Map<Position, FormItemRepresentation> items = new HashMap<Position, FormItemRepresentation>();
-	
-	public BorderPanelRepresentation() {
-		super("borderPanel");
-	}
+    public static enum Position {
+        SOUTH, SOUTHWEST, WEST, NORTHWEST, NORTH, NORTHEAST, EAST, SOUTHEAST, CENTER;
+    }
 
-	public Map<Position, FormItemRepresentation> getItems() {
-		return items;
-	}
+    private Map<Position, FormItemRepresentation> items = new HashMap<Position, FormItemRepresentation>();
 
-	public void setItems(Map<Position, FormItemRepresentation> items) {
-		this.items = items;
-	}
+    public BorderPanelRepresentation() {
+        super("borderPanel");
+    }
 
-	public FormItemRepresentation putItem(Position key, FormItemRepresentation value) {
-		return items.put(key, value);
-	}
-	
-	
+    public Map<Position, FormItemRepresentation> getItems() {
+        return items;
+    }
+
+    public void setItems(Map<Position, FormItemRepresentation> items) {
+        this.items = items;
+    }
+
+    public FormItemRepresentation putItem(Position key,
+            FormItemRepresentation value) {
+        return items.put(key, value);
+    }
+
 }

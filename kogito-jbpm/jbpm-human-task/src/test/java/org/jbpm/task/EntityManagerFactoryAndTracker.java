@@ -15,13 +15,18 @@
  */
 package org.jbpm.task;
 
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.metamodel.Metamodel;
 
 public class EntityManagerFactoryAndTracker implements EntityManagerFactory {
 
@@ -72,6 +77,46 @@ public class EntityManagerFactoryAndTracker implements EntityManagerFactory {
 
     public boolean isOpen() {
         return emf.isOpen();
+    }
+
+    /**
+     * JPA 2 method.
+     * {@inheritDoc}
+     */
+    public CriteriaBuilder getCriteriaBuilder() {
+        return this.emf.getCriteriaBuilder();
+    }
+
+    /**
+     * JPA 2 method.
+     * {@inheritDoc}
+     */
+    public Metamodel getMetamodel() {
+        return this.emf.getMetamodel();
+    }
+
+    /**
+     * JPA 2 method.
+     * {@inheritDoc}
+     */
+    public Map<String, Object> getProperties() {
+        return this.emf.getProperties();
+    }
+
+    /**
+     * JPA 2 method.
+     * {@inheritDoc}
+     */
+    public Cache getCache() {
+        return this.emf.getCache();
+    }
+
+    /**
+     * JPA 2 method.
+     * {@inheritDoc}
+     */
+    public PersistenceUnitUtil getPersistenceUnitUtil() {
+        return this.emf.getPersistenceUnitUtil();
     }
 
 }

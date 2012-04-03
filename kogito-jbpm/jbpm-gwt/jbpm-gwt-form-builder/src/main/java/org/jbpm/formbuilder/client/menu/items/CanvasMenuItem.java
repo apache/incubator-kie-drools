@@ -31,32 +31,32 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class CanvasMenuItem extends FBMenuItem {
 
-	public CanvasMenuItem() {
-		super();
-	}
+    public CanvasMenuItem() {
+        super();
+    }
 
-	public CanvasMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
+    public CanvasMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
 
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.canvas();
-	}
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.canvas();
+    }
 
-	@Override
-	public Label getDescription() {
+    @Override
+    public Label getDescription() {
         return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemCanvas());
-	}
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new CanvasMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new CanvasMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new CanvasFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new CanvasFormItem());
+    }
 
 }

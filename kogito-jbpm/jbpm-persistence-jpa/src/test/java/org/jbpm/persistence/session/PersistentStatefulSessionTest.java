@@ -1,6 +1,6 @@
 package org.jbpm.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -38,7 +38,9 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,15 +51,31 @@ public class PersistentStatefulSessionTest {
     private HashMap<String, Object> context;
     private Environment env;
 
+    @Rule
+    public TestName testName = new TestName();
+    
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        String methodName = testName.getMethodName();
+        // Rules marshalling uses ObjectTypeNodes which screw up marshalling. 
+        if( "testLocalTransactionPerStatement".equals(methodName) 
+            || "testUserTransactions".equals(methodName) 
+            || "testPersistenceRuleSet".equals(methodName)
+            || "testSetFocus".equals(methodName)
+            // Constraints in ruleflows are rules as well (I'm guessing?), so OTN's again.. 
+            || "testPersistenceState".equals(methodName) ) { 
+            context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        }
+        else { 
+            context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        }
+        
         env = PersistenceUtil.createEnvironment(context);
     }
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
     }
 
     @AfterClass
@@ -65,21 +83,21 @@ public class PersistentStatefulSessionTest {
         MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
     }
 
+    private static String ruleString = ""
+        + "package org.drools.test\n"
+        + "global java.util.List list\n"
+        + "rule rule1\n"
+        + "when\n"
+        + "  Integer(intValue > 0)\n"
+        + "then\n"
+        + "  list.add( 1 );\n"
+        + "end\n"
+        + "\n";
+        
     @Test
     public void testLocalTransactionPerStatement() {
-        String str = "";
-        str += "package org.drools.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( 1 );\n";
-        str += "end\n";
-        str += "\n";
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource( ruleString.getBytes() ),
                       ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -108,19 +126,8 @@ public class PersistentStatefulSessionTest {
 
     @Test
     public void testUserTransactions() throws Exception {
-        String str = "";
-        str += "package org.drools.test\n";
-        str += "global java.util.List list\n";
-        str += "rule rule1\n";
-        str += "when\n";
-        str += "  $i : Integer(intValue > 0)\n";
-        str += "then\n";
-        str += "  list.add( $i );\n";
-        str += "end\n";
-        str += "\n";
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource( ruleString.getBytes() ),
                       ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -554,7 +561,7 @@ public class PersistentStatefulSessionTest {
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
-        assertNull( processInstance );
+        assertNull( "Process did not complete.", processInstance );
     }
     
     @Test

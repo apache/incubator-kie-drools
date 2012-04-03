@@ -87,7 +87,7 @@ public class ToolBarPresenter {
             @Override
             public void onEvent(final GetFormRepresentationResponseEvent event) {
                 if (LOAD_TYPE.equals(event.getSaveType())) {
-                	view.showDialog(i18n.RefreshButtonWarning(), new ClickHandler() {
+                    view.showDialog(i18n.RefreshButtonWarning(), new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
                             if (LOAD_TYPE.equals(event.getSaveType())) {
@@ -111,11 +111,11 @@ public class ToolBarPresenter {
         bus.addHandler(TaskSelectedEvent.TYPE, new TaskSelectedHandler() {
             @Override
             public void onSelectedTask(TaskSelectedEvent event) {
-            	if (event.getSelectedTask() == null) {
-            		for (ToolRegistration messageRef : messageRefs) {
-            			messageRef.remove();
-            		}
-            	} else {
+                if (event.getSelectedTask() == null) {
+                    for (ToolRegistration messageRef : messageRefs) {
+                        messageRef.remove();
+                    }
+                } else {
                     messageRefs.add(view.addMessage(i18n.PackageLabel(), event.getSelectedTask().getPackageName()));
                     messageRefs.add(view.addMessage(i18n.ProcessLabel(), event.getSelectedTask().getProcessId()));
                     messageRefs.add(view.addMessage(i18n.TaskNameLabel(), event.getSelectedTask().getTaskName()));

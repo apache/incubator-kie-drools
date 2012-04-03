@@ -37,36 +37,36 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class VideoFormItem extends FBFormItem implements HasSourceReference {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
-	
-	private final Video video = Video.createIfSupported();
-	private final Label notSupported = new Label(i18n.VideoNotSupported());
-	
-	private String cssClassName;
-	private String id;
-	private String dataType;
-	private String videoUrl;
-	
-	public VideoFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public VideoFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		if (video == null) {
-			add(notSupported);
-		} else {
-			add(video);
-		}
-		video.setWidth("300px");
-		video.setHeight("200px");
-		video.setControls(true);
-		setWidth("300px");
-		setHeight("200px");
-	}
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    
+    private final Video video = Video.createIfSupported();
+    private final Label notSupported = new Label(i18n.VideoNotSupported());
+    
+    private String cssClassName;
+    private String id;
+    private String dataType;
+    private String videoUrl;
+    
+    public VideoFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public VideoFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        if (video == null) {
+            add(notSupported);
+        } else {
+            add(video);
+        }
+        video.setWidth("300px");
+        video.setHeight("200px");
+        video.setControls(true);
+        setWidth("300px");
+        setHeight("200px");
+    }
 
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("cssClassName", this.cssClassName);
         map.put("dataType", this.dataType);
@@ -74,11 +74,11 @@ public class VideoFormItem extends FBFormItem implements HasSourceReference {
         map.put("width", this.getWidth());
         map.put("videoUrl", this.videoUrl);
         map.put("id", this.id);
-		return map;
-	}
+        return map;
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
         this.cssClassName = extractString(asPropertiesMap.get("cssClassName"));
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
@@ -86,40 +86,40 @@ public class VideoFormItem extends FBFormItem implements HasSourceReference {
         this.id = extractString(asPropertiesMap.get("id"));
         this.dataType = extractString(asPropertiesMap.get("dataType"));
         populate(this.video);
-	}
-	
-	private void populate(Video video) {
-		if (video != null) {
-	        if (this.cssClassName != null) {
-	        	video.setStyleName(this.cssClassName);
-	        }
-	        if (this.getHeight() != null) {
-	        	video.setHeight(this.getHeight());
-	        }
-	        if (this.getWidth() != null) {
-	        	video.setWidth(this.getWidth());
-	        }
-	        if (this.videoUrl != null && !"".equals(this.videoUrl)) {
-	        	video.setSrc(this.videoUrl);
-	        }
-	        if (this.dataType != null) {
-	        	video.getElement().setPropertyObject("type", this.dataType);
-	        }
-	        video.setControls(true);
-		}
+    }
+    
+    private void populate(Video video) {
+        if (video != null) {
+            if (this.cssClassName != null) {
+                video.setStyleName(this.cssClassName);
+            }
+            if (this.getHeight() != null) {
+                video.setHeight(this.getHeight());
+            }
+            if (this.getWidth() != null) {
+                video.setWidth(this.getWidth());
+            }
+            if (this.videoUrl != null && !"".equals(this.videoUrl)) {
+                video.setSrc(this.videoUrl);
+            }
+            if (this.dataType != null) {
+                video.getElement().setPropertyObject("type", this.dataType);
+            }
+            video.setControls(true);
+        }
     }
 
-	@Override
-	public FormItemRepresentation getRepresentation() {
-		VideoRepresentation rep = super.getRepresentation(new VideoRepresentation());
-		rep.setVideoUrl(this.videoUrl);
-		rep.setCssClassName(this.cssClassName);
-		rep.setDataType(this.dataType);
-		rep.setId(this.id);
-		return rep;
-	}
-	
-	@Override
+    @Override
+    public FormItemRepresentation getRepresentation() {
+        VideoRepresentation rep = super.getRepresentation(new VideoRepresentation());
+        rep.setVideoUrl(this.videoUrl);
+        rep.setCssClassName(this.cssClassName);
+        rep.setDataType(this.dataType);
+        rep.setId(this.id);
+        return rep;
+    }
+    
+    @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof VideoRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "VideoRepresentation"));
@@ -134,9 +134,9 @@ public class VideoFormItem extends FBFormItem implements HasSourceReference {
         populate(this.video);
     }
 
-	@Override
-	public FBFormItem cloneItem() {
-		VideoFormItem clone = super.cloneItem(new VideoFormItem());
+    @Override
+    public FBFormItem cloneItem() {
+        VideoFormItem clone = super.cloneItem(new VideoFormItem());
         clone.setHeight(this.getHeight());
         clone.setWidth(this.getWidth());
         clone.videoUrl = this.videoUrl;
@@ -144,52 +144,52 @@ public class VideoFormItem extends FBFormItem implements HasSourceReference {
         clone.dataType = this.dataType;
         clone.id = this.id;
         clone.populate(clone.video);
-		return clone;
-	}
+        return clone;
+    }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		Video v = Video.createIfSupported();
-		if (v == null) {
-			return new Label(notSupported.getText());
-		}
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        Video v = Video.createIfSupported();
+        if (v == null) {
+            return new Label(notSupported.getText());
+        }
         populate(v);
         Object input = getInputValue(formData);
         if (v != null && input != null) {
-        	String url = input.toString();
-			v.setSrc(url);
-        	if (url.endsWith(".ogv")) {
-        		v.getElement().setPropertyString("type", "video/ogg");
-        	} else if (url.endsWith(".mpeg") || url.endsWith(".mpg")) {
-        		v.getElement().setPropertyString("type", "video/mpeg");
-        	} else if (url.endsWith(".avi")) {
-        		v.getElement().setPropertyString("type", "video/avi");
-        	}
+            String url = input.toString();
+            v.setSrc(url);
+            if (url.endsWith(".ogv")) {
+                v.getElement().setPropertyString("type", "video/ogg");
+            } else if (url.endsWith(".mpeg") || url.endsWith(".mpg")) {
+                v.getElement().setPropertyString("type", "video/mpeg");
+            } else if (url.endsWith(".avi")) {
+                v.getElement().setPropertyString("type", "video/avi");
+            }
         }
         super.populateActions(v.getElement());
         return v;
-	}
+    }
 
-	@Override
-	public void setSourceReference(String sourceReference) {
-		this.videoUrl = sourceReference;
-		if (video != null) {
-			this.video.setSrc(sourceReference);
-		}
-	}
+    @Override
+    public void setSourceReference(String sourceReference) {
+        this.videoUrl = sourceReference;
+        if (video != null) {
+            this.video.setSrc(sourceReference);
+        }
+    }
 
-	@Override
-	public String getSourceReference() {
-		return this.videoUrl;
-	}
+    @Override
+    public String getSourceReference() {
+        return this.videoUrl;
+    }
 
-	@Override
-	public List<String> getAllowedTypes() {
-		ArrayList<String> retval = new ArrayList<String>();
+    @Override
+    public List<String> getAllowedTypes() {
+        ArrayList<String> retval = new ArrayList<String>();
         retval.add("mpeg");
         retval.add("mpg");
         retval.add("avi");
         retval.add("ogv");
         return retval;
-	}
+    }
 }

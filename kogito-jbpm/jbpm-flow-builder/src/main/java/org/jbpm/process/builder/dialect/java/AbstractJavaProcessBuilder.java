@@ -126,7 +126,7 @@ public class AbstractJavaProcessBuilder {
         final String invokerClassName = context.getPkg().getName() + "." + context.getProcessDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker";
 
         context.getInvokers().put(invokerClassName,
-                TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
+                (String)TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
         );
 
         context.getInvokerLookups().put(invokerClassName,

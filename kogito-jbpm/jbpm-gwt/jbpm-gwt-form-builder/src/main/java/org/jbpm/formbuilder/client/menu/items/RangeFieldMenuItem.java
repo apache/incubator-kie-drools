@@ -31,32 +31,32 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class RangeFieldMenuItem extends FBMenuItem {
 
-	public RangeFieldMenuItem() {
-		super();
-	}
-	
-	public RangeFieldMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
-	
-	@Override
-	public Label getDescription() {
-		return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemRangeField());
-	}
+    public RangeFieldMenuItem() {
+        super();
+    }
+    
+    public RangeFieldMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
+    
+    @Override
+    public Label getDescription() {
+        return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemRangeField());
+    }
 
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.rangeField();
-	}
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.rangeField();
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new RangeFieldMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new RangeFieldMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new RangeFieldFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new RangeFieldFormItem());
+    }
 
 }

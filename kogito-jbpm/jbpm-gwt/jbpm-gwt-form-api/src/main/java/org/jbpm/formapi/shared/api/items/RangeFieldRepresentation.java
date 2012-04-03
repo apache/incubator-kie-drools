@@ -25,65 +25,65 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class RangeFieldRepresentation extends FormItemRepresentation {
 
-	private Double defaultValue;
-	private String name;
+    private Double defaultValue;
+    private String name;
     private String id;
     private Double min;
     private Double max;
     private Double step;
-	
-	public RangeFieldRepresentation() {
-		super("rangeField");
-	}
 
-	public Double getDefaultValue() {
-		return defaultValue;
-	}
+    public RangeFieldRepresentation() {
+        super("rangeField");
+    }
 
-	public void setDefaultValue(Double defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+    public Double getDefaultValue() {
+        return defaultValue;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setDefaultValue(Double defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public Double getMin() {
-		return min;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public void setMin(Double min) {
-		this.min = min;
-	}
+    public Double getMin() {
+        return min;
+    }
 
-	public Double getMax() {
-		return max;
-	}
+    public void setMin(Double min) {
+        this.min = min;
+    }
 
-	public void setMax(Double max) {
-		this.max = max;
-	}
+    public Double getMax() {
+        return max;
+    }
 
-	public Double getStep() {
-		return step;
-	}
+    public void setMax(Double max) {
+        this.max = max;
+    }
 
-	public void setStep(Double step) {
-		this.step = step;
-	}
-	
+    public Double getStep() {
+        return step;
+    }
+
+    public void setStep(Double step) {
+        this.step = step;
+    }
+
     @Override
     public Map<String, Object> getDataMap() {
         Map<String, Object> data = super.getDataMap();
@@ -95,50 +95,64 @@ public class RangeFieldRepresentation extends FormItemRepresentation {
         data.put("step", this.step);
         return data;
     }
-	
+
     @Override
-    public void setDataMap(Map<String, Object> data) throws FormEncodingException {
-    	super.setDataMap(data);    
-    	this.name = (String) data.get("name");
-    	this.id = (String) data.get("id");
-    	Object obj = data.get("max");
-    	if (obj != null) {
-    		this.max = ((Number) obj).doubleValue();
-    	}
-    	obj = data.get("min");
-    	if (obj != null) {
-    		this.min = ((Number) obj).doubleValue();
-    	}
-    	obj = data.get("step");
-    	if (obj != null) {
-    		this.step = ((Number) obj).doubleValue();
-    	}
-    	obj = data.get("defaultValue");
-    	if (obj != null) {
-    		this.defaultValue = ((Number) obj).doubleValue();
-    	}
+    public void setDataMap(Map<String, Object> data)
+            throws FormEncodingException {
+        super.setDataMap(data);
+        this.name = (String) data.get("name");
+        this.id = (String) data.get("id");
+        Object obj = data.get("max");
+        if (obj != null) {
+            this.max = ((Number) obj).doubleValue();
+        }
+        obj = data.get("min");
+        if (obj != null) {
+            this.min = ((Number) obj).doubleValue();
+        }
+        obj = data.get("step");
+        if (obj != null) {
+            this.step = ((Number) obj).doubleValue();
+        }
+        obj = data.get("defaultValue");
+        if (obj != null) {
+            this.defaultValue = ((Number) obj).doubleValue();
+        }
     }
-    
+
     @Override
     public boolean equals(Object obj) {
-        if (!super.equals(obj)) return false;
-        if (!(obj instanceof RangeFieldRepresentation)) return false;
+        if (!super.equals(obj))
+            return false;
+        if (!(obj instanceof RangeFieldRepresentation))
+            return false;
         RangeFieldRepresentation other = (RangeFieldRepresentation) obj;
-        boolean equals = (this.defaultValue == null && other.defaultValue == null) || 
-            (this.defaultValue != null && this.defaultValue.equals(other.defaultValue));
-        if (!equals) return equals;
-        equals = (this.name == null && other.name == null) || (this.name != null && this.name.equals(other.name));
-        if (!equals) return equals;
-        equals = (this.id == null && other.id == null) || (this.id != null && this.id.equals(other.id));
-        if (!equals) return equals;
-        equals = (this.max == null && other.max == null) || (this.max != null && this.max.equals(other.max));
-        if (!equals) return equals;
-        equals = (this.min == null && other.min == null) || (this.min != null && this.min.equals(other.min));
-        if (!equals) return equals;
-        equals = (this.step == null && other.step == null) || (this.step != null && this.step.equals(other.step));
+        boolean equals = (this.defaultValue == null && other.defaultValue == null)
+                || (this.defaultValue != null && this.defaultValue
+                        .equals(other.defaultValue));
+        if (!equals)
+            return equals;
+        equals = (this.name == null && other.name == null)
+                || (this.name != null && this.name.equals(other.name));
+        if (!equals)
+            return equals;
+        equals = (this.id == null && other.id == null)
+                || (this.id != null && this.id.equals(other.id));
+        if (!equals)
+            return equals;
+        equals = (this.max == null && other.max == null)
+                || (this.max != null && this.max.equals(other.max));
+        if (!equals)
+            return equals;
+        equals = (this.min == null && other.min == null)
+                || (this.min != null && this.min.equals(other.min));
+        if (!equals)
+            return equals;
+        equals = (this.step == null && other.step == null)
+                || (this.step != null && this.step.equals(other.step));
         return equals;
     }
-    
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

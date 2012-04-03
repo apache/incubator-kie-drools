@@ -28,11 +28,11 @@ public class RestServiceScriptHelperView extends FlexTable {
 
     private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
 
-	public RestServiceScriptHelperView(RestServiceScriptHelper helper) {
-		populateMethodList();
-		populateResultStatusList();
-		populateResponseLanguageList();
-		readDataFrom(helper);
+    public RestServiceScriptHelperView(RestServiceScriptHelper helper) {
+        populateMethodList();
+        populateResultStatusList();
+        populateResponseLanguageList();
+        readDataFrom(helper);
         setWidget(0, 0, new Label(i18n.RestServiceScriptHelperUrl()));
         setWidget(0, 1, url);
         setWidget(1, 0, new Label(i18n.RestServiceScriptHelperMethod()));
@@ -54,7 +54,7 @@ public class RestServiceScriptHelperView extends FlexTable {
         }));
         setWidget(7, 0, headerViewPanel);
         getFlexCellFormatter().setColSpan(7, 0, 2);
-	}
+    }
 
     private void populateResponseLanguageList() {
         responseLanguage.addItem("xml");
@@ -76,7 +76,7 @@ public class RestServiceScriptHelperView extends FlexTable {
     }
 
     public void readDataFrom(RestServiceScriptHelper helper) {
-    	this.url.setValue(helper.getUrl());
+        this.url.setValue(helper.getUrl());
         for (int index = 0; index < this.method.getItemCount(); index++) {
             if (this.method.getValue(index).equals(helper.getMethod())) {
                 this.method.setSelectedIndex(index);
@@ -106,7 +106,7 @@ public class RestServiceScriptHelperView extends FlexTable {
     }
     
     public void writeDataTo(RestServiceScriptHelper helper) {
-    	
+        
     }
     
 }

@@ -24,12 +24,15 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
 
 @Entity
 public class EmailNotification extends Notification {
+    
     @OneToMany(cascade = CascadeType.ALL)
+    @MapKeyColumn(name="mapkey")
     private Map<String, EmailNotificationHeader> emailHeaders;
     
     @Override

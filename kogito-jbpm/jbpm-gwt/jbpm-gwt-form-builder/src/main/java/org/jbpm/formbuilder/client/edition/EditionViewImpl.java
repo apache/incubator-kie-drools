@@ -116,8 +116,8 @@ public class EditionViewImpl extends ScrollPanel implements EditionView {
         Map<String, Object> map = new HashMap<String, Object>();
         for (int row = 1; row < grid.getRowCount() - 1; row++) {
             map.put(
-            	((Label) grid.getWidget(row, 0)).getText(), 
-            	((HasValue<?>) grid.getWidget(row, 1)).getValue()
+                ((Label) grid.getWidget(row, 0)).getText(), 
+                ((HasValue<?>) grid.getWidget(row, 1)).getValue()
             );
         }
         return map;

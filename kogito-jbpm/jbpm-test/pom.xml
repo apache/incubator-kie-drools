@@ -28,6 +28,7 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -36,6 +37,11 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.mina</groupId>
+      <artifactId>mina-core</artifactId>
+      <version>2.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -47,19 +53,11 @@
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-commons-annotations</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.codehaus.btm</groupId>
@@ -92,13 +90,13 @@
       <plugin>
         <!--  ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
         <configuration>
          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
                 <include>btm*</include>
+                <include>JPADroolsFlow.h2.db</include>
               </includes>
             </fileset>
          </filesets>
@@ -106,5 +104,23 @@
       </plugin>
     </plugins>
   </build>
-  
+
+  <profiles>
+    <profile>
+      <id>hibernate-4</id>
+       <dependencies>
+         <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-core</artifactId>
+           <scope>compile</scope>
+         </dependency>
+         <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-entitymanager</artifactId>
+           <scope>compile</scope>
+         </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+ 
 </project>

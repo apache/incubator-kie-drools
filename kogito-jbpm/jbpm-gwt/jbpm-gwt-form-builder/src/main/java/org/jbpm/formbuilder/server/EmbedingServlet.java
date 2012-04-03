@@ -132,29 +132,29 @@ public class EmbedingServlet extends HttpServlet {
     }
 
     protected FormDefinitionService createFormService(HttpServletRequest request, String usr, String pwd) {
-    	GuvnorFormDefinitionService service = (GuvnorFormDefinitionService) WebApplicationContextUtils.
-    		getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorFormService");
-    	if (usr != null && pwd != null) {
-    		service.setUser(usr);
-    		service.setPassword(pwd);
-    		try {
-    			service.afterPropertiesSet();
-    		} catch (Exception e) { }
-    	}
-    	return service;
+        GuvnorFormDefinitionService service = (GuvnorFormDefinitionService) WebApplicationContextUtils.
+            getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorFormService");
+        if (usr != null && pwd != null) {
+            service.setUser(usr);
+            service.setPassword(pwd);
+            try {
+                service.afterPropertiesSet();
+            } catch (Exception e) { }
+        }
+        return service;
     }
 
     protected TaskDefinitionService createTaskService(HttpServletRequest request, String usr, String pwd) {
-    	GuvnorTaskDefinitionService service = (GuvnorTaskDefinitionService) WebApplicationContextUtils.
-			getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorTaskService");
-    	if (usr != null && pwd != null) {
-    		service.setUser(usr);
-    		service.setPassword(pwd);
-    		try {
-    			service.afterPropertiesSet();
-    		} catch (Exception e) { }
-    	}
-    	return service;
+        GuvnorTaskDefinitionService service = (GuvnorTaskDefinitionService) WebApplicationContextUtils.
+            getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorTaskService");
+        if (usr != null && pwd != null) {
+            service.setUser(usr);
+            service.setPassword(pwd);
+            try {
+                service.afterPropertiesSet();
+            } catch (Exception e) { }
+        }
+        return service;
     }
 
     private JsonObject toJsonObject(TaskRef task) {

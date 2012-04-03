@@ -1,6 +1,5 @@
 package org.jbpm.task.service.persistence;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -12,6 +11,8 @@ import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.persistence.TaskTransactionManager.TransactionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,33 +24,29 @@ public class TaskPersistenceManager {
     private TaskTransactionManager ttxm;
     private EntityManager em;
     private final EntityManagerFactory emf;
+
+    static { 
+        TaskServiceSession.setTaskPersistenceManagerFactory(new TaskPersistenceManagerFactory());
+        TaskService.setTaskPersistenceManagerFactory(new TaskPersistenceManagerFactory());
+    }
     
-    public TaskPersistenceManager(EntityManagerFactory entityManagerFactory) { 
+    TaskPersistenceManager(EntityManagerFactory entityManagerFactory) { 
         this.emf = entityManagerFactory;
         this.ttxm = TaskTransactionManager.getInstance(emf);
         this.em = emf.createEntityManager();
     }
     
     TaskPersistenceManager(TaskPersistenceManager tpm) { 
-        this.emf = tpm.getEntityManagerFactory();
+        this.emf = tpm.emf;
         this.ttxm = TaskTransactionManager.getInstance(emf);
         this.em = emf.createEntityManager();
     }
     
-    /**
-     * This has purposely been made private: 
-     * - if you make this protected or public, you willl be in trouble! 
-     * @return The EntityManagerFactory
-     */
-    private EntityManagerFactory getEntityManagerFactory() { 
-        return this.emf;
-    }
-
     //=====
     // dealing with transactions
     //=====
     
-    boolean beginTransaction() { 
+    public boolean beginTransaction() { 
         boolean txOwner = this.ttxm.ownsTransaction(em);
         if( txOwner ) {  
             this.ttxm.begin(em);
@@ -89,7 +86,7 @@ public class TaskPersistenceManager {
      * @param em The EntityManager: neccessary for local/entity transactions.
      * @param txOwner Whether or not the caller started this transaction.
      */
-    void endTransaction(boolean txOwner) { 
+    public void endTransaction(boolean txOwner) { 
         if( txOwner ) { 
             boolean rollbackAttempted = false;
             try { 
@@ -113,7 +110,7 @@ public class TaskPersistenceManager {
         }
     }
     
-    void rollBackTransaction(boolean txOwner) { 
+    public void rollBackTransaction(boolean txOwner) { 
         try { 
             if( ttxm.getStatus(em) == TransactionStatus.ACTIVE ) { 
                 this.ttxm.rollback(em, txOwner);
@@ -171,7 +168,7 @@ public class TaskPersistenceManager {
      * @param taskId
      * @param taskStatus
      */
-    void setTaskStatusInTransaction(final Object taskId, Status taskStatus) { 
+    public void setTaskStatusInTransaction(final Object taskId, Status taskStatus) { 
         boolean txOwner = beginTransaction();
         
         Task task = (Task) em.find(Task.class, taskId);
@@ -187,38 +184,38 @@ public class TaskPersistenceManager {
     //=====
     
     @SuppressWarnings("unchecked")
-    List<DeadlineSummary> getUnescalatedDeadlinesList() { 
+    public List<DeadlineSummary> getUnescalatedDeadlinesList() { 
         return em.createNamedQuery("UnescalatedDeadlines").getResultList();
     }
     
-    Object findEntity(Class<?> entityClass, Object primaryKey) { 
+    public Object findEntity(Class<?> entityClass, Object primaryKey) { 
         return this.em.find(entityClass, primaryKey);
     }
     
-    void deleteEntity(Object entity) { 
+    public void deleteEntity(Object entity) { 
         em.remove(entity);
     }
     
-    void saveEntity(Object entity) { 
+    public void saveEntity(Object entity) { 
         em.persist(entity);
     }
     
-    Query createQuery(String queryName) { 
+    public Query createQuery(String queryName) { 
         return em.createNamedQuery(queryName);
     }
     
-    Query createNewQuery(String queryString ) { 
+    public Query createNewQuery(String queryString ) { 
         return em.createQuery(queryString);
     }
     
-    boolean userExists(String userId) { 
+    public boolean userExists(String userId) { 
         if( em.find(User.class, userId) == null ) { 
             return false;
         }
         return true;
     }
     
-    List<TaskSummary> queryTasksWithUserIdAndLanguage(String queryName, String userId, String language) { 
+    public List<TaskSummary> queryTasksWithUserIdAndLanguage(String queryName, String userId, String language) { 
         Query query = createQuery(queryName);
         query.setParameter("userId", userId);
         query.setParameter("language", language);
@@ -226,26 +223,7 @@ public class TaskPersistenceManager {
 
         return (List<TaskSummary>) resultListObject;
     }
+
+
  
-    // =============
-    // DEBUG methods
-    // =============
-    private static final HashMap<String, Integer> threadEmMap = new HashMap<String, Integer>();
-    
-    private void debug( String s ) { 
-        String name =  Thread.currentThread().getName();
-        Integer hashCode = threadEmMap.get(name); 
-        if( hashCode == null ) { 
-            threadEmMap.put(name, em.hashCode());
-            System.out.println( s + " " + name + "< " + em.hashCode() );
-        }
-        else { 
-            System.out.println( s + " " + name + ": " + hashCode );
-            if( ! hashCode.equals(em.hashCode()) ) { 
-                System.out.println( name + ": " + hashCode + " ? " + em.hashCode() );
-                (new Throwable()).printStackTrace();
-            }
-        }
-    }
-    
 }

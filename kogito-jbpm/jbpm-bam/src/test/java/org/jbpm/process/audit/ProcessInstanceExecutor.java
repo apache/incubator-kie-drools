@@ -34,7 +34,7 @@ public class ProcessInstanceExecutor {
             RuleBase ruleBase = createKnowledgeBase();
             // create a new session
             StatefulSession session = ruleBase.newStatefulSession();
-            new WorkingMemoryDbLogger(session);
+            new JPAWorkingMemoryDbLogger(session);
             UIWorkItemHandler uiHandler = new UIWorkItemHandler();
             session.getWorkItemManager().registerWorkItemHandler("Human Task", uiHandler);
             uiHandler.setVisible(true);

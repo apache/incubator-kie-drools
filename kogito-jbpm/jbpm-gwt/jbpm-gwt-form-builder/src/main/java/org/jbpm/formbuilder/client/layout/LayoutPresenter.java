@@ -70,7 +70,7 @@ public class LayoutPresenter {
     private final LayoutView layoutView;
     
     public LayoutPresenter(LayoutView view) {
-    	final PickupDragController dragController = CommonGlobals.getInstance().getDragController();
+        final PickupDragController dragController = CommonGlobals.getInstance().getDragController();
         this.layoutView = view;
         this.layoutView.startDropController(dragController, layoutView);
         

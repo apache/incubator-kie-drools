@@ -97,13 +97,13 @@ public class RESTMenuService extends RESTBaseService {
     public Response saveMenuItem(SaveMenuItemDTO dto, @Context HttpServletRequest request) {
         init();
         try {
-        	if (RESTUserService.hasDesignerPrivileges(request)) {
-        		MenuItemDescription menuItem = toMenuItemDescription(dto, true);
-        		menuService.saveMenuItem(dto.getGroupName(), menuItem);
-        		return Response.status(Status.CREATED).build();
-        	} else {
-        		return Response.status(Status.UNAUTHORIZED).build();
-        	}
+            if (RESTUserService.hasDesignerPrivileges(request)) {
+                MenuItemDescription menuItem = toMenuItemDescription(dto, true);
+                menuService.saveMenuItem(dto.getGroupName(), menuItem);
+                return Response.status(Status.CREATED).build();
+            } else {
+                return Response.status(Status.UNAUTHORIZED).build();
+            }
         } catch (MenuServiceException e) {
             return Response.status(Status.CONFLICT).build();
         }
@@ -147,28 +147,28 @@ public class RESTMenuService extends RESTBaseService {
     public Response deleteMenuItem(SaveMenuItemDTO dto, @Context HttpServletRequest request) {
         init();
         try {
-        	if (RESTUserService.hasDesignerPrivileges(request)) {
-        		MenuItemDescription menuItem = toMenuItemDescription(dto, false);
-        		Map<String, List<MenuItemDescription>> items = menuService.listMenuItems();
-        		List<MenuItemDescription> group = items.get(dto.getGroupName());
-        		if (group == null || group.isEmpty()) {
-        			return Response.noContent().build();
-        		}
-        		boolean found = false;
-        		for (MenuItemDescription desc : group) {
-        			if (desc.getName().equals(dto.getName())) {
-        				found = true;
-        				break;
-        			}
-        		}
-        		if (!found) {
-        			return Response.status(Status.CONFLICT).build();
-        		}
-        		menuService.deleteMenuItem(dto.getGroupName(), menuItem);
-        		return Response.status(Status.ACCEPTED).build();
-        	} else {
-        		return Response.status(Status.UNAUTHORIZED).build();
-        	}
+            if (RESTUserService.hasDesignerPrivileges(request)) {
+                MenuItemDescription menuItem = toMenuItemDescription(dto, false);
+                Map<String, List<MenuItemDescription>> items = menuService.listMenuItems();
+                List<MenuItemDescription> group = items.get(dto.getGroupName());
+                if (group == null || group.isEmpty()) {
+                    return Response.noContent().build();
+                }
+                boolean found = false;
+                for (MenuItemDescription desc : group) {
+                    if (desc.getName().equals(dto.getName())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return Response.status(Status.CONFLICT).build();
+                }
+                menuService.deleteMenuItem(dto.getGroupName(), menuItem);
+                return Response.status(Status.ACCEPTED).build();
+            } else {
+                return Response.status(Status.UNAUTHORIZED).build();
+            }
         } catch (MenuServiceException e) {
             return error("Couldn't delete menu item " + dto.getGroupName() + ":" + dto.getName(), e);
         }

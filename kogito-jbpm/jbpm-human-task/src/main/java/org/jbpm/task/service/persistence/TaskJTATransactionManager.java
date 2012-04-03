@@ -10,7 +10,7 @@ import javax.transaction.UserTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskJTATransactionManager extends TaskTransactionManager {
+class TaskJTATransactionManager extends TaskTransactionManager {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

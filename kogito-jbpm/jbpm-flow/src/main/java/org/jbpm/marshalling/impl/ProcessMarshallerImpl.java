@@ -192,7 +192,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
     }
 
     public void readProcessTimers(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
-        inCtx.readersByInt.put( PersisterEnums.PROCESS_TIMER,  new TimerManager.ProcessTimerInputMarshaller());
+        inCtx.readersByInt.put( (int) PersisterEnums.PROCESS_TIMER,  new TimerManager.ProcessTimerInputMarshaller());
         
         ObjectInputStream stream = inCtx.stream;
 
@@ -230,6 +230,11 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
             timer.setLastTriggered( new Date( stream.readLong() ) );
         }
         return timer;
+    }
+
+    public void init(MarshallerReaderContext context) {
+        // nothing to do
+        
     }
 
 }

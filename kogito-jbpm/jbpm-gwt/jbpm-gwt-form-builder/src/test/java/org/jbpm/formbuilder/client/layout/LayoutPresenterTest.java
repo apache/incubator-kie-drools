@@ -51,92 +51,92 @@ import com.google.gwt.event.shared.SimpleEventBus;
 
 public class LayoutPresenterTest extends TestCase {
 
-	private CommonGlobals cg;
-	private LayoutView view;
-	private EventBus bus;
-	private PickupDragController drag;
-	
-	@Before
-	@Override
-	protected void setUp() throws Exception {
-		cg = CommonGlobals.getInstance();
-		bus = new SimpleEventBus();
-		drag = EasyMock.createMock(PickupDragController.class);
-		cg.registerEventBus(bus);
-		cg.registerDragController(drag);
-		view = EasyMock.createMock(LayoutView.class);
-		view.startDropController(EasyMock.anyObject(PickupDragController.class), EasyMock.same(view));
-		EasyMock.expectLastCall().once();
-	}
-	
-	@After
-	@Override
-	protected void tearDown() throws Exception {
-		view = null;
-		cg.registerDragController(null);
-		cg.registerEventBus(null);
-		drag = null;
-		bus = null;
-		cg = null;
-	}
-	
-	@Test
-	public void testLayoutStartUp() throws Exception {
-		EasyMock.replay(view, drag);
-		new LayoutPresenter(view);
-		EasyMock.verify(view, drag);
-	}
-	
-	@Test
-	public void testRegisterLayout() throws Exception {
-		LayoutFormItem layout = EasyMock.createMock(LayoutFormItem.class);
-		view.startDropController(EasyMock.same(drag), EasyMock.same(layout));
-		EasyMock.expectLastCall().once();
-		EasyMock.replay(view, drag, layout);
-		new LayoutPresenter(view);
-		bus.fireEvent(new RegisterLayoutEvent(layout));
-		EasyMock.verify(view, drag, layout);
-	}
-	
-	@Test
-	public void testGetFormRepresentation() throws Exception {
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm);
-		final FormRepresentation formRep = new FormRepresentation();
-		final String saveType = "ANYTHING";
-		EasyMock.expect(mockForm.createRepresentation()).andReturn(formRep);
-		EasyMock.replay(view, drag, mockForm);
-		bus.addHandler(GetFormRepresentationResponseEvent.TYPE, new GetFormRepresentationResponseHandler() {
-			@Override
-			public void onEvent(GetFormRepresentationResponseEvent event) {
-				assertEquals("both forms should be the same", event.getRepresentation(), formRep);
-				assertEquals("both saveTypes should be the same", event.getSaveType(), saveType);
-			}
-		});
-		new LayoutPresenter(view);
-		bus.fireEvent(new GetFormRepresentationEvent(saveType));
-		EasyMock.verify(view, drag, mockForm);
-	}
-	
-	@Test
-	public void testGetFormDisplay() throws Exception {
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm);
-		EasyMock.replay(view, drag, mockForm);
-		new LayoutPresenter(view);
-		GetFormDisplayEvent event = new GetFormDisplayEvent();
-		bus.fireEvent(event);
-		EasyMock.verify(view, drag, mockForm);
-		assertEquals("mockForm and formDisplay should be the same", mockForm, event.getFormDisplay());
-	}
+    private CommonGlobals cg;
+    private LayoutView view;
+    private EventBus bus;
+    private PickupDragController drag;
     
-	@Test
-	public void testFormDataPopulated() throws Exception {
-		final String name = "name", action = "action", method = "method",	
-			taskId = "taskId", processId = "processId", enctype = "enctype"; 
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(mockForm.getName()).andReturn(name);
-		EasyMock.expect(mockForm.getAction()).andReturn(action);
+    @Before
+    @Override
+    protected void setUp() throws Exception {
+        cg = CommonGlobals.getInstance();
+        bus = new SimpleEventBus();
+        drag = EasyMock.createMock(PickupDragController.class);
+        cg.registerEventBus(bus);
+        cg.registerDragController(drag);
+        view = EasyMock.createMock(LayoutView.class);
+        view.startDropController(EasyMock.anyObject(PickupDragController.class), EasyMock.same(view));
+        EasyMock.expectLastCall().once();
+    }
+    
+    @After
+    @Override
+    protected void tearDown() throws Exception {
+        view = null;
+        cg.registerDragController(null);
+        cg.registerEventBus(null);
+        drag = null;
+        bus = null;
+        cg = null;
+    }
+    
+    @Test
+    public void testLayoutStartUp() throws Exception {
+        EasyMock.replay(view, drag);
+        new LayoutPresenter(view);
+        EasyMock.verify(view, drag);
+    }
+    
+    @Test
+    public void testRegisterLayout() throws Exception {
+        LayoutFormItem layout = EasyMock.createMock(LayoutFormItem.class);
+        view.startDropController(EasyMock.same(drag), EasyMock.same(layout));
+        EasyMock.expectLastCall().once();
+        EasyMock.replay(view, drag, layout);
+        new LayoutPresenter(view);
+        bus.fireEvent(new RegisterLayoutEvent(layout));
+        EasyMock.verify(view, drag, layout);
+    }
+    
+    @Test
+    public void testGetFormRepresentation() throws Exception {
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm);
+        final FormRepresentation formRep = new FormRepresentation();
+        final String saveType = "ANYTHING";
+        EasyMock.expect(mockForm.createRepresentation()).andReturn(formRep);
+        EasyMock.replay(view, drag, mockForm);
+        bus.addHandler(GetFormRepresentationResponseEvent.TYPE, new GetFormRepresentationResponseHandler() {
+            @Override
+            public void onEvent(GetFormRepresentationResponseEvent event) {
+                assertEquals("both forms should be the same", event.getRepresentation(), formRep);
+                assertEquals("both saveTypes should be the same", event.getSaveType(), saveType);
+            }
+        });
+        new LayoutPresenter(view);
+        bus.fireEvent(new GetFormRepresentationEvent(saveType));
+        EasyMock.verify(view, drag, mockForm);
+    }
+    
+    @Test
+    public void testGetFormDisplay() throws Exception {
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm);
+        EasyMock.replay(view, drag, mockForm);
+        new LayoutPresenter(view);
+        GetFormDisplayEvent event = new GetFormDisplayEvent();
+        bus.fireEvent(event);
+        EasyMock.verify(view, drag, mockForm);
+        assertEquals("mockForm and formDisplay should be the same", mockForm, event.getFormDisplay());
+    }
+    
+    @Test
+    public void testFormDataPopulated() throws Exception {
+        final String name = "name", action = "action", method = "method",    
+            taskId = "taskId", processId = "processId", enctype = "enctype"; 
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(mockForm.getName()).andReturn(name);
+        EasyMock.expect(mockForm.getAction()).andReturn(action);
         EasyMock.expect(mockForm.getProcessId()).andReturn(processId);
         EasyMock.expect(mockForm.getTaskId()).andReturn(taskId);
         EasyMock.expect(mockForm.getMethod()).andReturn(method);
@@ -155,49 +155,49 @@ public class LayoutPresenterTest extends TestCase {
         mockForm.setEnctype(EasyMock.eq(enctype));
         EasyMock.expectLastCall().once();
         
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
-		EasyMock.replay(view, drag, mockForm);
-		bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
-			@Override
-			public void undoAction(UndoableEvent event) { }
-			@Override
-			public void doAction(UndoableEvent event) { }
-			@Override
-			public void onEvent(UndoableEvent event) {
-				assertEquals("name and event.name should be the same", name, event.getData("oldName"));
-				assertEquals("action and event.action should be the same", action, event.getData("oldAction"));
-				assertEquals("method and event.method should be the same", method, event.getData("oldMethod"));
-				assertEquals("taskId and event.taskId should be the same", taskId, event.getData("oldTaskId"));
-				assertEquals("processId and event.processId should be the same", processId, event.getData("oldProcessId"));
-				assertEquals("enctype and event.enctype should be the same", enctype, event.getData("oldEnctype"));
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
+        EasyMock.replay(view, drag, mockForm);
+        bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
+            @Override
+            public void undoAction(UndoableEvent event) { }
+            @Override
+            public void doAction(UndoableEvent event) { }
+            @Override
+            public void onEvent(UndoableEvent event) {
+                assertEquals("name and event.name should be the same", name, event.getData("oldName"));
+                assertEquals("action and event.action should be the same", action, event.getData("oldAction"));
+                assertEquals("method and event.method should be the same", method, event.getData("oldMethod"));
+                assertEquals("taskId and event.taskId should be the same", taskId, event.getData("oldTaskId"));
+                assertEquals("processId and event.processId should be the same", processId, event.getData("oldProcessId"));
+                assertEquals("enctype and event.enctype should be the same", enctype, event.getData("oldEnctype"));
 
-				assertEquals("name and event.name should be the same", name, event.getData("newName"));
-				assertEquals("action and event.action should be the same", action, event.getData("newAction"));
-				assertEquals("method and event.method should be the same", method, event.getData("newMethod"));
-				assertEquals("taskId and event.taskId should be the same", taskId, event.getData("newTaskId"));
-				assertEquals("processId and event.processId should be the same", processId, event.getData("newProcessId"));
-				assertEquals("enctype and event.enctype should be the same", enctype, event.getData("newEnctype"));
-			}
-		});
-		new LayoutPresenter(view);
-		bus.fireEvent(new FormDataPopulatedEvent(action, method, taskId, processId, enctype, name));
-		EasyMock.verify(view, drag, mockForm);
-	}
-	
-	@Test
-	@SuppressWarnings("unchecked")
-	public void testTaskSelected() throws Exception {
-		final String taskId = "taskId", processId = "processId"; 
-		TaskRef ioRef = new TaskRef();
-		ioRef.setTaskId(taskId);
-		ioRef.setProcessId(processId);
-		ioRef.setInputs(new ArrayList<TaskPropertyRef>());
-		ioRef.setOutputs(new ArrayList<TaskPropertyRef>());
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(mockForm.getTaskId()).andReturn(taskId).once();
-		EasyMock.expect(mockForm.getProcessId()).andReturn(processId).once();
-		EasyMock.expect(mockForm.getInputs()).andReturn(new HashMap<String, InputData>()).once();
-		EasyMock.expect(mockForm.getOutputs()).andReturn(new HashMap<String, OutputData>()).once();
+                assertEquals("name and event.name should be the same", name, event.getData("newName"));
+                assertEquals("action and event.action should be the same", action, event.getData("newAction"));
+                assertEquals("method and event.method should be the same", method, event.getData("newMethod"));
+                assertEquals("taskId and event.taskId should be the same", taskId, event.getData("newTaskId"));
+                assertEquals("processId and event.processId should be the same", processId, event.getData("newProcessId"));
+                assertEquals("enctype and event.enctype should be the same", enctype, event.getData("newEnctype"));
+            }
+        });
+        new LayoutPresenter(view);
+        bus.fireEvent(new FormDataPopulatedEvent(action, method, taskId, processId, enctype, name));
+        EasyMock.verify(view, drag, mockForm);
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testTaskSelected() throws Exception {
+        final String taskId = "taskId", processId = "processId"; 
+        TaskRef ioRef = new TaskRef();
+        ioRef.setTaskId(taskId);
+        ioRef.setProcessId(processId);
+        ioRef.setInputs(new ArrayList<TaskPropertyRef>());
+        ioRef.setOutputs(new ArrayList<TaskPropertyRef>());
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(mockForm.getTaskId()).andReturn(taskId).once();
+        EasyMock.expect(mockForm.getProcessId()).andReturn(processId).once();
+        EasyMock.expect(mockForm.getInputs()).andReturn(new HashMap<String, InputData>()).once();
+        EasyMock.expect(mockForm.getOutputs()).andReturn(new HashMap<String, OutputData>()).once();
         mockForm.setTaskId(EasyMock.eq(taskId));
         EasyMock.expectLastCall().once();
         mockForm.setProcessId(EasyMock.eq(processId));
@@ -206,73 +206,73 @@ public class LayoutPresenterTest extends TestCase {
         EasyMock.expectLastCall().once();
         mockForm.setOutputs(EasyMock.anyObject(Map.class));
         EasyMock.expectLastCall().once();
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
-		
-		bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
-			@Override
-			public void doAction(UndoableEvent event) { }
-			@Override
-			public void undoAction(UndoableEvent event) { }
-			@Override
-			public void onEvent(UndoableEvent event) {
-				assertEquals("taskId and event.oldTaskID should be the same", 
-						taskId, event.getData("oldTaskID"));
-				assertEquals("processId and event.oldProcessID should be the same", 
-						processId, event.getData("oldProcessID"));
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
+        
+        bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
+            @Override
+            public void doAction(UndoableEvent event) { }
+            @Override
+            public void undoAction(UndoableEvent event) { }
+            @Override
+            public void onEvent(UndoableEvent event) {
+                assertEquals("taskId and event.oldTaskID should be the same", 
+                        taskId, event.getData("oldTaskID"));
+                assertEquals("processId and event.oldProcessID should be the same", 
+                        processId, event.getData("oldProcessID"));
 
-				assertEquals("taskId and event.newTaskID should be the same", 
-						taskId, event.getData("newTaskID"));
-				assertEquals("processId and event.newProcessID should be the same", 
-						processId, event.getData("newProcessID"));
-			}
-		});
-		
-		EasyMock.replay(view, drag, mockForm);
-		new LayoutPresenter(view); 
-		bus.fireEvent(new TaskSelectedEvent(ioRef));
-		EasyMock.verify(view, drag, mockForm);
-	}
-	
-	@Test
-	public void testFormSaved() throws Exception {
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).once();
-		mockForm.setSaved(EasyMock.eq(true));
-		EasyMock.expectLastCall().once();
-		FormRepresentation formRep = new FormRepresentation();
-		
-		EasyMock.replay(view, drag, mockForm);
-		new LayoutPresenter(view);
-		bus.fireEvent(new FormSavedEvent(formRep));
-		EasyMock.verify(view, drag, mockForm);
-	}
+                assertEquals("taskId and event.newTaskID should be the same", 
+                        taskId, event.getData("newTaskID"));
+                assertEquals("processId and event.newProcessID should be the same", 
+                        processId, event.getData("newProcessID"));
+            }
+        });
+        
+        EasyMock.replay(view, drag, mockForm);
+        new LayoutPresenter(view); 
+        bus.fireEvent(new TaskSelectedEvent(ioRef));
+        EasyMock.verify(view, drag, mockForm);
+    }
+    
+    @Test
+    public void testFormSaved() throws Exception {
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).once();
+        mockForm.setSaved(EasyMock.eq(true));
+        EasyMock.expectLastCall().once();
+        FormRepresentation formRep = new FormRepresentation();
+        
+        EasyMock.replay(view, drag, mockForm);
+        new LayoutPresenter(view);
+        bus.fireEvent(new FormSavedEvent(formRep));
+        EasyMock.verify(view, drag, mockForm);
+    }
 
-	@Test
-	public void testUpdateFormView() throws Exception {
-		final FormRepresentation formRep = new FormRepresentation();
-		FBForm mockForm = EasyMock.createMock(FBForm.class);
-		EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
-		EasyMock.expect(mockForm.createRepresentation()).andReturn(formRep);
-		mockForm.populate(formRep);
-		EasyMock.expectLastCall().once();
-		
-		bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
-			@Override
-			public void undoAction(UndoableEvent event) { }
-			@Override
-			public void doAction(UndoableEvent event) { }
-			@Override
-			public void onEvent(UndoableEvent event) {
-				assertNotNull("oldForm shouldn't be null", event.getData("oldForm"));
-				assertNotNull("newForm shouldn't be null", event.getData("newForm"));
-				assertEquals("oldForm and newForm should be the same",
-						event.getData("oldForm"), event.getData("newForm"));
-			}
-		});
-		
-		EasyMock.replay(view, drag, mockForm);
-		new LayoutPresenter(view);
-		bus.fireEvent(new UpdateFormViewEvent(formRep));
-		EasyMock.verify(view, drag, mockForm);
-	}
+    @Test
+    public void testUpdateFormView() throws Exception {
+        final FormRepresentation formRep = new FormRepresentation();
+        FBForm mockForm = EasyMock.createMock(FBForm.class);
+        EasyMock.expect(view.getFormDisplay()).andReturn(mockForm).anyTimes();
+        EasyMock.expect(mockForm.createRepresentation()).andReturn(formRep);
+        mockForm.populate(formRep);
+        EasyMock.expectLastCall().once();
+        
+        bus.addHandler(UndoableEvent.TYPE, new UndoableHandler() {
+            @Override
+            public void undoAction(UndoableEvent event) { }
+            @Override
+            public void doAction(UndoableEvent event) { }
+            @Override
+            public void onEvent(UndoableEvent event) {
+                assertNotNull("oldForm shouldn't be null", event.getData("oldForm"));
+                assertNotNull("newForm shouldn't be null", event.getData("newForm"));
+                assertEquals("oldForm and newForm should be the same",
+                        event.getData("oldForm"), event.getData("newForm"));
+            }
+        });
+        
+        EasyMock.replay(view, drag, mockForm);
+        new LayoutPresenter(view);
+        bus.fireEvent(new UpdateFormViewEvent(formRep));
+        EasyMock.verify(view, drag, mockForm);
+    }
 }

@@ -33,7 +33,7 @@ public class ProcessMarshallerRegistry {
 	private ProcessMarshallerRegistry() {
 		this.registry = new HashMap<String, ProcessInstanceMarshaller>();
 		register(RuleFlowProcess.RULEFLOW_TYPE,
-                 RuleFlowProcessInstanceMarshaller.INSTANCE);
+                 ProtobufRuleFlowProcessInstanceMarshaller.INSTANCE);
 	}
 
 	public void register(String type, ProcessInstanceMarshaller marchaller) {

@@ -24,41 +24,43 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.ValueBox;
 
 public class RangeBox extends ValueBox<Double> {
-	
-	private static class ElementBuilder {
-		private final Element ret;
-		public ElementBuilder() {
-			ret = DOM.createInputCheck();
-		}
-		public ElementBuilder setType(String type) {
-			ret.setAttribute("type", type);
-			return this;
-		}
-		public Element build() {
-			return ret;
-		}
-	}
-	
-	public RangeBox() {
-		this(new ElementBuilder().setType("range").build(), 
-				DoubleRenderer.instance(), 
-				DoubleParser.instance()
-			);
-	}
-	
-	protected RangeBox(Element element, Renderer<Double> renderer, Parser<Double> parser) {
-		super(element, renderer, parser);
-	}
-	
-	public void setMin(Double min) {
-		DOM.setElementProperty(getElement(), "min", String.valueOf(min));
-	}
-	
-	public void setMax(Double max) {
-		DOM.setElementProperty(getElement(), "max", String.valueOf(max));
-	}
-	
-	public void setStep(Double step) {
-		DOM.setElementProperty(getElement(), "step", String.valueOf(step));
-	}
+
+    private static class ElementBuilder {
+        private final Element ret;
+
+        public ElementBuilder() {
+            ret = DOM.createInputCheck();
+        }
+
+        public ElementBuilder setType(String type) {
+            ret.setAttribute("type", type);
+            return this;
+        }
+
+        public Element build() {
+            return ret;
+        }
+    }
+
+    public RangeBox() {
+        this(new ElementBuilder().setType("range").build(), DoubleRenderer
+                .instance(), DoubleParser.instance());
+    }
+
+    protected RangeBox(Element element, Renderer<Double> renderer,
+            Parser<Double> parser) {
+        super(element, renderer, parser);
+    }
+
+    public void setMin(Double min) {
+        DOM.setElementProperty(getElement(), "min", String.valueOf(min));
+    }
+
+    public void setMax(Double max) {
+        DOM.setElementProperty(getElement(), "max", String.valueOf(max));
+    }
+
+    public void setStep(Double step) {
+        DOM.setElementProperty(getElement(), "step", String.valueOf(step));
+    }
 }

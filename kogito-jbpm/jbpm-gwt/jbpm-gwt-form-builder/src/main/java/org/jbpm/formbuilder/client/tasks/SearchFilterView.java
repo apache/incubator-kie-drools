@@ -59,11 +59,11 @@ public class SearchFilterView extends VerticalPanel {
         add(tooglePanel);
     }
 
-	public AdvancedSearchView getAdvancedView() {
-		return advanced;
-	}
-	
-	public SimpleSearchView getSimpleView() {
-		return simple;
-	}
+    public AdvancedSearchView getAdvancedView() {
+        return advanced;
+    }
+    
+    public SimpleSearchView getSimpleView() {
+        return simple;
+    }
 }

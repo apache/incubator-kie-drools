@@ -31,7 +31,6 @@ import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.persistence.TaskServiceSession;
 
 public class TaskServerHandler {
 

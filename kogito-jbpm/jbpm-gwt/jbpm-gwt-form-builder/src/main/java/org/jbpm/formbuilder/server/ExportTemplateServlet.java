@@ -81,13 +81,13 @@ public class ExportTemplateServlet extends HttpServlet {
     }
 
     protected TaskDefinitionService createTaskService(HttpServletRequest request) {
-    	return (TaskDefinitionService) WebApplicationContextUtils.
-    		getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorTaskService");
+        return (TaskDefinitionService) WebApplicationContextUtils.
+            getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorTaskService");
     }
     
     protected FormDefinitionService createFormService(HttpServletRequest request) {
-    	return (FormDefinitionService) WebApplicationContextUtils.
-		getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorFormService");
+        return (FormDefinitionService) WebApplicationContextUtils.
+            getWebApplicationContext(request.getSession().getServletContext()).getBean("guvnorFormService");
     }
 
     private boolean notEmpty(String value) {

@@ -65,32 +65,7 @@ public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
             addTaskResponseHandler.waitTillDone( 3000 );
         }
 
-        handler.wait( 3, 8000 );
-        
-        assertEquals(3, handler.getList().size());
-
-        boolean firstDeadlineMet = false;
-        boolean secondDeadlineMet = false;
-        boolean thirdDeadlineMet = false;
-        for( Item item : handler.getList() ) { 
-            long deadlineTime = item.getDeadline().getDate().getTime();
-            if( deadlineTime == now + 2000 ) { 
-                firstDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 4000 ) { 
-                secondDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 6000 ) { 
-                thirdDeadlineMet = true;
-            }
-            else { 
-                fail( deadlineTime + " is not an expected deadline time." );
-            }
-        }
-        
-        assertTrue( "First deadline was not met." , firstDeadlineMet );
-        assertTrue( "Second deadline was not met." , secondDeadlineMet );
-        assertTrue( "Third deadline was not met." , thirdDeadlineMet );      
+        testDeadlines(now, handler);
     }
     
     public void testUnescalatedDeadlinesOnStartup() throws Exception {
@@ -116,30 +91,7 @@ public abstract class TaskServiceEscalationBaseAsyncTest extends BaseTest {
         MockEscalatedDeadlineHandler handler = new MockEscalatedDeadlineHandler();
         new TaskService(emf, SystemEventListenerFactory.getSystemEventListener(), handler);      
                 
-        handler.wait( 3, 8000 );
-        
-        boolean firstDeadlineMet = false;
-        boolean secondDeadlineMet = false;
-        boolean thirdDeadlineMet = false;
-        for( Item item : handler.getList() ) { 
-            long deadlineTime = item.getDeadline().getDate().getTime();
-            if( deadlineTime == now + 2000 ) { 
-                firstDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 4000 ) { 
-                secondDeadlineMet = true;
-            }
-            else if( deadlineTime == now + 6000 ) { 
-                thirdDeadlineMet = true;
-            }
-            else { 
-                fail( deadlineTime + " is not an expected deadline time." );
-            }
-        }
-        
-        assertTrue( "First deadline was not met." , firstDeadlineMet );
-        assertTrue( "Second deadline was not met." , secondDeadlineMet );
-        assertTrue( "Third deadline was not met." , thirdDeadlineMet );            
+        testDeadlines(now, handler);
     }
     
 }

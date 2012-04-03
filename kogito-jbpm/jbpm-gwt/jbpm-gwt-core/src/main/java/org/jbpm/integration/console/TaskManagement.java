@@ -46,7 +46,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
+public class TaskManagement extends SessionInitializer implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
 	public static String TASK_SERVICE_STRATEGY = "Mina";
     
@@ -55,6 +55,10 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 	private TaskService service;
 	private TaskClient client;
 	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
+	
+	public TaskManagement () {
+	    super();
+	}
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -199,8 +203,12 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 
 	@SuppressWarnings("unchecked")
 	public void completeTask(long taskId, String outcome, Map data, String userId) {
-		data.put("outcome", outcome);
-		completeTask(taskId, data, userId);
+	    if ("jbpm_skip_task".equalsIgnoreCase(outcome)) {
+	        skipTask(taskId, userId);
+	    } else {
+    		data.put("outcome", outcome);
+    		completeTask(taskId, data, userId);
+	    }
 	}
 
 	public void releaseTask(long taskId, String userId) {
@@ -268,6 +276,19 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 			t.printStackTrace();
 		}
 		return result;
+	}
+	
+	public void skipTask(long taskId, String userId) {
+	    connect();
+	    if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+            BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+            
+            client.skip(taskId, userId, responseHandler);
+            responseHandler.waitTillDone(5000);           
+        } else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+            service.skip(taskId, userId);
+        }
+	    
 	}
 
 }

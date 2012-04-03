@@ -35,34 +35,34 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class RangeFieldFormItem extends FBFormItem {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
-	
-	private final RangeBox rangeBox = new RangeBox();
-	
-	private Double defaultValue = null;
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    
+    private final RangeBox rangeBox = new RangeBox();
+    
+    private Double defaultValue = null;
     private String name = null;
     private String id = null;
     private String title = null;
     private Double max = null;
     private Double min = null;
     private Double step = null;
-	
-	public RangeFieldFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public RangeFieldFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		add(rangeBox);
+    
+    public RangeFieldFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public RangeFieldFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        add(rangeBox);
         setWidth("150px");
         setHeight("25px");
         rangeBox.setWidth(getWidth());
         rangeBox.setHeight(getHeight());
-	}
-	
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
-		Map<String, Object> map = new HashMap<String, Object>();
+    }
+    
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("defaultValue", this.defaultValue);
         map.put("name", this.name);
         map.put("height", getHeight());
@@ -73,11 +73,11 @@ public class RangeFieldFormItem extends FBFormItem {
         map.put("title", this.title);
         map.put("id", this.id);
         return map;
-	}
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> asPropertiesMap) {
-		this.defaultValue = extractDouble(asPropertiesMap.get("defaultValue"));
+    @Override
+    public void saveValues(Map<String, Object> asPropertiesMap) {
+        this.defaultValue = extractDouble(asPropertiesMap.get("defaultValue"));
         this.name = extractString(asPropertiesMap.get("name"));
         this.setHeight(extractString(asPropertiesMap.get("height")));
         this.setWidth(extractString(asPropertiesMap.get("width")));
@@ -88,9 +88,9 @@ public class RangeFieldFormItem extends FBFormItem {
         this.id = extractString(asPropertiesMap.get("id"));
         
         populate(this.rangeBox);
-	}
-	
-	private void populate(RangeBox rangeBox) {
+    }
+    
+    private void populate(RangeBox rangeBox) {
         if (this.defaultValue != null) {
             rangeBox.setValue(this.defaultValue);
         }
@@ -117,7 +117,7 @@ public class RangeFieldFormItem extends FBFormItem {
         }
     }
 
-	@Override
+    @Override
     public FormItemRepresentation getRepresentation() {
         RangeFieldRepresentation rep = super.getRepresentation(new RangeFieldRepresentation());
         rep.setDefaultValue(this.defaultValue);
@@ -129,7 +129,7 @@ public class RangeFieldFormItem extends FBFormItem {
         return rep;
     }
 
-	@Override
+    @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
         if (!(rep instanceof RangeFieldRepresentation)) {
             throw new FormBuilderException(i18n.RepNotOfType(rep.getClass().getName(), "RangeFieldRepresentation"));
@@ -150,8 +150,8 @@ public class RangeFieldFormItem extends FBFormItem {
         }
         populate(this.rangeBox);
     }
-	
-	@Override
+    
+    @Override
     public FBFormItem cloneItem() {
         RangeFieldFormItem clone = new RangeFieldFormItem(getFormEffects());
         clone.defaultValue = this.defaultValue;
@@ -167,20 +167,20 @@ public class RangeFieldFormItem extends FBFormItem {
         return clone;
     }
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		RangeBox tb = new RangeBox();
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        RangeBox tb = new RangeBox();
         populate(tb);
         Object input = getInputValue(formData);
         if (input != null) {
             String inputValue = input.toString();
-			tb.setValue(inputValue.equals("") ? null : Double.valueOf(inputValue));
+            tb.setValue(inputValue.equals("") ? null : Double.valueOf(inputValue));
         }
         if (getOutput() != null && getOutput().getName() != null) {
             tb.setName(getOutput().getName());
         }
         super.populateActions(tb.getElement());
         return tb;
-	}
+    }
 
 }

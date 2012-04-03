@@ -39,26 +39,12 @@
       <version>1.1</version>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.subethamail</groupId>
-      <artifactId>subethasmtp-wiser</artifactId>
-      <version>1.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
     </dependency>
     <dependency>
       <groupId>dom4j</groupId>
@@ -77,6 +63,18 @@
       <artifactId>antlr</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+   
+    <!-- test --> 
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <version>1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.netty</groupId>
       <artifactId>netty</artifactId>
       <version>3.2.0.Final</version>
@@ -84,13 +82,18 @@
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -109,5 +112,57 @@
       <version>3.0</version>
       <scope>test</scope>
     </dependency>
+    <!--
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.4-702.jdbc3</version>
+    </dependency>
+    -->
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <components>
+            <component>
+                <name>hbm2ddl</name>
+                <implementation>jpaconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <persistenceUnit>org.jbpm.task</persistenceUnit>
+            <outputfilename>schema.ddl</outputfilename>
+            <drop>false</drop>
+            <create>true</create>
+            <export>false</export>
+            <format>true</format>
+          </componentProperties>
+        </configuration>
+      </plugin>    
+    </plugins>  
+  </build>
+
+  <profiles>
+    <profile>
+      <id>hibernate-4</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+          <scope>test</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
 </project>

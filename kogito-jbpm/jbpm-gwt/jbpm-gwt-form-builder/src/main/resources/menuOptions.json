@@ -9,7 +9,7 @@
                     {   "html": "As FTL",
                         "commandClass": "org.jbpm.formbuilder.client.command.PreviewFormAsFtlCommand"
                     },
-                    {	"html": "As FTL for HTML5",
+                    {   "html": "As FTL for HTML5",
                         "commandClass": "org.jbpm.formbuilder.client.command.PreviewFormAsHTML5FtlCommand"
                     },
                     {   "html": "As GWT",
@@ -61,7 +61,7 @@
     {   "html": "Language",
         "commandClass": "org.jbpm.formbuilder.client.command.LanguageCommand"
     },
-    {	"html": "Logout",
-    	"commandClass": "org.jbpm.formbuilder.client.command.LogoutCommand"
+    {   "html": "Logout",
+        "commandClass": "org.jbpm.formbuilder.client.command.LogoutCommand"
     }
 ]

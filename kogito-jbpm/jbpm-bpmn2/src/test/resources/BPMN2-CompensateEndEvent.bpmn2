@@ -26,7 +26,7 @@
     <endEvent id="_3" name="CompensateEvent" >
       <compensateEventDefinition activityRef="_2"/>
     </endEvent>
-    <boundaryEvent id="_5" name="CompensateEvent" attachedToRef="_2" >
+    <boundaryEvent id="_5" name="CompensateEvent2" attachedToRef="_2" >
       <compensateEventDefinition/>
     </boundaryEvent>
     <scriptTask id="_6" name="Compensate" >

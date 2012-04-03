@@ -49,8 +49,8 @@ import org.jbpm.formbuilder.shared.form.FormServiceException;
 
 public class GuvnorFormDefinitionServiceTest extends TestCase {
 
-	private String baseUrl = "http://www.redhat.com";
-	private GuvnorHelper helper = new GuvnorHelper(baseUrl, "", "");
+    private String baseUrl = "http://www.redhat.com";
+    private GuvnorHelper helper = new GuvnorHelper(baseUrl, "", "");
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -328,7 +328,7 @@ public class GuvnorFormDefinitionServiceTest extends TestCase {
         responses.put("GET " + helper.getApiSearchUrl("somePackage") + "form1AutoForm.formdef", jsonForm);
         EasyMock.expect(client.executeMethod(EasyMock.anyObject(MockGetMethod.class))).
             andAnswer(new MockAnswer(responses, new IllegalArgumentException("Unexpected call"))).anyTimes();
-		GuvnorFormDefinitionService service = createService(baseUrl, "", "");
+        GuvnorFormDefinitionService service = createService(baseUrl, "", "");
         service.getHelper().setClient(client);
         
         EasyMock.replay(client);

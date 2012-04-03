@@ -82,7 +82,7 @@ public class IoBindingEffect extends FBFormEffect {
                 }
                 @Override
                 public Map<String, Object> getDataMap() {
-                	return new HashMap<String, Object>();
+                    return new HashMap<String, Object>();
                 }
             });
         }
@@ -100,7 +100,7 @@ public class IoBindingEffect extends FBFormEffect {
                 }
                 @Override
                 public Map<String, Object> getDataMap() {
-                	return new HashMap<String, Object>();
+                    return new HashMap<String, Object>();
                 }
             });
         }

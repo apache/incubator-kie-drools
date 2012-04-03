@@ -22,13 +22,16 @@ import com.gwtent.reflection.client.TypeOracle;
 public class ReflectionHelper {
 
     public static Object newInstance(String klass) throws Exception {
-    	if (TypeOracle.Instance == null) { //TypeOracle.Instance is null on server side
-    		Class<?> clazz = com.google.gwt.user.client.rpc.impl.ReflectionHelper.loadClass(klass);
-    		return com.google.gwt.user.client.rpc.impl.ReflectionHelper.newInstance(clazz);
-    	} else {
-	   		ClassType<?> classType = TypeOracle.Instance.getClassType(klass);
-	        Constructor<?> constructor = classType.findConstructor();
-	        return constructor.newInstance();
-    	}
+        if (TypeOracle.Instance == null) { // TypeOracle.Instance is null on
+                                           // server side
+            Class<?> clazz = com.google.gwt.user.client.rpc.impl.ReflectionHelper
+                    .loadClass(klass);
+            return com.google.gwt.user.client.rpc.impl.ReflectionHelper
+                    .newInstance(clazz);
+        } else {
+            ClassType<?> classType = TypeOracle.Instance.getClassType(klass);
+            Constructor<?> constructor = classType.findConstructor();
+            return constructor.newInstance();
+        }
     }
 }

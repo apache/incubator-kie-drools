@@ -31,31 +31,31 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class VideoMenuItem extends FBMenuItem {
 
-	public VideoMenuItem() {
-		super();
-	}
+    public VideoMenuItem() {
+        super();
+    }
 
-	public VideoMenuItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-	}
+    public VideoMenuItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+    }
 
-	@Override
-	public Label getDescription() {
-		return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemVideo());
-	}
+    @Override
+    public Label getDescription() {
+        return new Label(FormBuilderGlobals.getInstance().getI18n().MenuItemVideo());
+    }
 
-	@Override
-	protected ImageResource getIconUrl() {
-		return FormBuilderResources.INSTANCE.video();
-	}
+    @Override
+    protected ImageResource getIconUrl() {
+        return FormBuilderResources.INSTANCE.video();
+    }
 
-	@Override
-	public FBMenuItem cloneWidget() {
-		return clone(new VideoMenuItem());
-	}
+    @Override
+    public FBMenuItem cloneWidget() {
+        return clone(new VideoMenuItem());
+    }
 
-	@Override
-	public FBFormItem buildWidget() {
-		return build(new VideoFormItem());
-	}
+    @Override
+    public FBFormItem buildWidget() {
+        return build(new VideoFormItem());
+    }
 }

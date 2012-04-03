@@ -19,7 +19,7 @@ package org.jbpm.process.audit;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class HibernateUtil {
+class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
 

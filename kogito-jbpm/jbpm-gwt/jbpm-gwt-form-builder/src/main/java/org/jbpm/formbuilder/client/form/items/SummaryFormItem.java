@@ -39,28 +39,28 @@ import com.gwtent.reflection.client.Reflectable;
 @Reflectable
 public class SummaryFormItem extends OptionsFormItem implements I18NFormItem {
 
-	private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
-	
-	private final ListWidget listWidget = new ListWidget();
-	private final I18NUtils utils = new I18NUtils();
+    private final I18NConstants i18n = FormBuilderGlobals.getInstance().getI18n();
+    
+    private final ListWidget listWidget = new ListWidget();
+    private final I18NUtils utils = new I18NUtils();
 
-	private int scrollTop;
-	private int scrollLeft;
-	private String id;
-	private String dir;
-	private String cssClassName;
+    private int scrollTop;
+    private int scrollLeft;
+    private String id;
+    private String dir;
+    private String cssClassName;
 
-	public SummaryFormItem() {
-		this(new ArrayList<FBFormEffect>());
-	}
-	
-	public SummaryFormItem(List<FBFormEffect> formEffects) {
-		super(formEffects);
-		add(listWidget);
-	}
+    public SummaryFormItem() {
+        this(new ArrayList<FBFormEffect>());
+    }
+    
+    public SummaryFormItem(List<FBFormEffect> formEffects) {
+        super(formEffects);
+        add(listWidget);
+    }
 
-	@Override
-	public Map<String, Object> getFormItemPropertiesMap() {
+    @Override
+    public Map<String, Object> getFormItemPropertiesMap() {
         Map<String, Object> formItemPropertiesMap = new HashMap<String, Object>();
         formItemPropertiesMap.put("scrollTop", String.valueOf(scrollTop));
         formItemPropertiesMap.put("scrollLeft", String.valueOf(scrollLeft));
@@ -70,20 +70,20 @@ public class SummaryFormItem extends OptionsFormItem implements I18NFormItem {
         formItemPropertiesMap.put("height", getHeight());
         formItemPropertiesMap.put("cssClassName", cssClassName);
         return formItemPropertiesMap;
-	}
+    }
 
-	@Override
-	public void saveValues(Map<String, Object> propertiesMap) {
+    @Override
+    public void saveValues(Map<String, Object> propertiesMap) {
         this.id = extractString(propertiesMap.get("id"));
         this.setWidth(extractString(propertiesMap.get("width")));
         this.setHeight(extractString(propertiesMap.get("height")));
         this.cssClassName = extractString(propertiesMap.get("cssClassName"));
         this.dir = extractString(propertiesMap.get("dir"));
-    	this.scrollTop = extractInt(propertiesMap.get("scrollTop"));
-    	this.scrollLeft = extractInt(propertiesMap.get("scrollLeft"));
+        this.scrollTop = extractInt(propertiesMap.get("scrollTop"));
+        this.scrollLeft = extractInt(propertiesMap.get("scrollLeft"));
         
         populate(listWidget);
-	}
+    }
 
     private void populate(ListWidget list) {
         if (this.getWidth() != null) {
@@ -96,31 +96,31 @@ public class SummaryFormItem extends OptionsFormItem implements I18NFormItem {
             list.setStyleName(this.cssClassName);
         }
         if (this.id != null) {
-        	list.setId(this.id);
+            list.setId(this.id);
         }
         if (this.dir != null) {
-        	list.setDir(this.dir);
+            list.setDir(this.dir);
         }
         if (this.scrollTop >= 0) {
-        	list.setScrollTop(this.scrollTop);
+            list.setScrollTop(this.scrollTop);
         }
         if (this.scrollLeft >= 0) {
-        	list.setScrollLeft(this.scrollLeft);
+            list.setScrollLeft(this.scrollLeft);
         }
     }
     
-	@Override
-	public FormItemRepresentation getRepresentation() {
-		SummaryRepresentation rep = super.getRepresentation(new SummaryRepresentation());
-		rep.setCssClassName(this.cssClassName);
-		rep.setDir(this.dir);
-		rep.setId(this.id);
-		rep.setScrollLeft(this.scrollLeft);
-		rep.setScrollTop(this.scrollTop);
-		rep.setI18n(this.getI18nMap());
-		rep.setItems(this.listWidget.getItems());
-		return rep;
-	}
+    @Override
+    public FormItemRepresentation getRepresentation() {
+        SummaryRepresentation rep = super.getRepresentation(new SummaryRepresentation());
+        rep.setCssClassName(this.cssClassName);
+        rep.setDir(this.dir);
+        rep.setId(this.id);
+        rep.setScrollLeft(this.scrollLeft);
+        rep.setScrollTop(this.scrollTop);
+        rep.setI18n(this.getI18nMap());
+        rep.setItems(this.listWidget.getItems());
+        return rep;
+    }
 
     @Override
     public void populate(FormItemRepresentation rep) throws FormBuilderException {
@@ -147,53 +147,53 @@ public class SummaryFormItem extends OptionsFormItem implements I18NFormItem {
     }
 
 
-	@Override
-	public Widget cloneDisplay(Map<String, Object> formData) {
-		ListWidget lw = new ListWidget();
+    @Override
+    public Widget cloneDisplay(Map<String, Object> formData) {
+        ListWidget lw = new ListWidget();
         populate(lw);
         Object value = getInputValue(formData);
         if (value != null) {
-        	if (value.getClass().isArray()) {
-        		Object[] arr = (Object[]) value;
-        		for (Object obj : arr) {
-        			lw.addItem(String.valueOf(obj));
-        		}
-        	} else if (value instanceof Collection) {
-        		Collection<?> coll = (Collection<?>) value;
-        		for (Object obj : coll) {
-        			lw.addItem(String.valueOf(obj));
-        		}
-        	} else if (value instanceof Map) {
-        		Map<?,?> map = (Map<?,?>) value;
-        		for (Object obj : map.values()) {
-        			lw.addItem(String.valueOf(obj));
-        		}
-        	}
+            if (value.getClass().isArray()) {
+                Object[] arr = (Object[]) value;
+                for (Object obj : arr) {
+                    lw.addItem(String.valueOf(obj));
+                }
+            } else if (value instanceof Collection) {
+                Collection<?> coll = (Collection<?>) value;
+                for (Object obj : coll) {
+                    lw.addItem(String.valueOf(obj));
+                }
+            } else if (value instanceof Map) {
+                Map<?,?> map = (Map<?,?>) value;
+                for (Object obj : map.values()) {
+                    lw.addItem(String.valueOf(obj));
+                }
+            }
         } else {
             String locale = (String) formData.get(FormBuilderGlobals.BASE_LOCALE);
             if (locale == null) {
-            	for (String item : this.listWidget.getItems()) {
-            		lw.addItem(item);
-            	}
+                for (String item : this.listWidget.getItems()) {
+                    lw.addItem(item);
+                }
             } else {
                 String i18nText = getI18n(locale);
                 if (i18nText != null && !"".equals(i18nText)) {
-                	String[] items = i18nText.split(","); //TODO specify i18n items should be comma separated
-                	if (items != null) {
-                		for (String item : items) {
-                			lw.addItem(item);
-                		}
-                	}
+                    String[] items = i18nText.split(","); //TODO specify i18n items should be comma separated
+                    if (items != null) {
+                        for (String item : items) {
+                            lw.addItem(item);
+                        }
+                    }
                 }
             }
         }
         super.populateActions(lw.getElement());
         return lw;
-	}
+    }
 
-	@Override
-	public FBFormItem cloneItem() {
-		SummaryFormItem clone = super.cloneItem(new SummaryFormItem());
+    @Override
+    public FBFormItem cloneItem() {
+        SummaryFormItem clone = super.cloneItem(new SummaryFormItem());
         clone.cssClassName = this.cssClassName;
         clone.id = this.id;
         clone.dir = this.dir;
@@ -205,54 +205,54 @@ public class SummaryFormItem extends OptionsFormItem implements I18NFormItem {
         clone.saveI18nMap(getI18nMap());
         clone.setFormat(getFormat());
         return clone;
-	}
+    }
 
-	@Override
-	public boolean containsLocale(String localeName) {
-		return utils.containsLocale(localeName);
-	}
-	
-	@Override
-	public Format getFormat() {
-		return utils.getFormat();
-	}
-	
-	@Override
-	public String getI18n(String key) {
-		return utils.getI18n(key);
-	}
-	
-	@Override
-	public Map<String, String> getI18nMap() {
-		return utils.getI18nMap();
-	}
-	
-	@Override
-	public void saveI18nMap(Map<String, String> i18nMap) {
-		utils.saveI18nMap(i18nMap);
-	}
-	
-	@Override
-	public void setFormat(Format format) {
-		utils.setFormat(format);
-	}
-	
-	@Override
-	public void addItem(String label, String value) {
-		this.listWidget.addItem(label);
-	}
-	
-	@Override
-	public void deleteItem(String label) {
-		this.listWidget.removeItem(label);
-	}
-	
-	@Override
-	public Map<String, String> getItems() {
-		Map<String, String> items = new HashMap<String, String>();
-		for (String label : this.listWidget.getItems()) {
-			items.put(label, label);
-		}
-		return items;
-	}
+    @Override
+    public boolean containsLocale(String localeName) {
+        return utils.containsLocale(localeName);
+    }
+    
+    @Override
+    public Format getFormat() {
+        return utils.getFormat();
+    }
+    
+    @Override
+    public String getI18n(String key) {
+        return utils.getI18n(key);
+    }
+    
+    @Override
+    public Map<String, String> getI18nMap() {
+        return utils.getI18nMap();
+    }
+    
+    @Override
+    public void saveI18nMap(Map<String, String> i18nMap) {
+        utils.saveI18nMap(i18nMap);
+    }
+    
+    @Override
+    public void setFormat(Format format) {
+        utils.setFormat(format);
+    }
+    
+    @Override
+    public void addItem(String label, String value) {
+        this.listWidget.addItem(label);
+    }
+    
+    @Override
+    public void deleteItem(String label) {
+        this.listWidget.removeItem(label);
+    }
+    
+    @Override
+    public Map<String, String> getItems() {
+        Map<String, String> items = new HashMap<String, String>();
+        for (String label : this.listWidget.getItems()) {
+            items.put(label, label);
+        }
+        return items;
+    }
 }

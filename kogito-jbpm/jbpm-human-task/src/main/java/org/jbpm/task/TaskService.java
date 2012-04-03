@@ -16,7 +16,6 @@
 package org.jbpm.task;
 
 import java.util.List;
-import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
@@ -61,6 +60,8 @@ public interface TaskService {
     void deleteOutput(long taskId, String userId);
 
     void disconnect() throws Exception;
+    
+    void exit(long taskId, String userId);
 
     void fail(long taskId, String userId, FaultData faultData);
 

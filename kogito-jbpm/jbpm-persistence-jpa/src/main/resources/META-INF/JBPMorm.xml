@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_1_0.xsd"
-               version="1.0">  
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_1_0.xsd"
+                 version="1.0">
       <named-query name="ProcessInstancesWaitingForEvent">
           <query>
 select 
@@ -13,4 +13,44 @@ where
     eventTypes = :type
           </query>
       </named-query>
+      
+      <!-- ProcessInstanceInfo mapping override placeholder (needed for JPA 2) -->
+      <!--:JPA2 REMOVE ME:
+      <entity class="org.jbpm.persistence.processinstance.ProcessInstanceInfo"
+              metadata-complete="true">
+        <pre-update method-name="update" />
+        <attributes>
+            <id name="processInstanceId">
+                <column name="InstanceId" />
+                <generated-value strategy="AUTO"/>
+            </id>
+            <basic name="processId" access="FIELD" />
+            <basic name="startDate" access="FIELD" >
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="lastReadDate" access="FIELD" >
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="lastModificationDate" access="FIELD" >
+                <temporal>DATE</temporal>
+            </basic>
+            <basic name="state" access="FIELD" />
+            <basic name="processInstanceByteArray" access="FIELD" >
+                <lob/>
+            </basic>
+            <version name="version" access="FIELD" >
+                <column name="OPTLOCK" />
+            </version>
+            <element-collection name="eventTypes" target-class="java.lang.String" access="FIELD" >
+                <collection-table name="EventTypes">
+                    <join-column name="InstanceId"/>
+                </collection-table> 
+            </element-collection>
+            <transient name="processInstance" />
+            <transient name="env" />
+        </attributes>
+      </entity>
+      :JPA2 REMOVE ME:-->
+
+      
 </entity-mappings>
