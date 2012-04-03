@@ -186,9 +186,9 @@ end
     <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 Applicant applicant = new Applicant( "Mr John Smith", 16 );
 Application application = new Application();
-assertTrue( application() );
+assertTrue( application.isValid() );
 ksession.execute( Arrays.asList( new Object[] { application, applicant } ) );
-assertFalse( application() );
+assertFalse( application.isValid() );
 </programlisting>
 
     <para>The two execute methods <code>execute(Object object)</code> and
@@ -286,7 +286,7 @@ assertEquals( new Person( "Mr John Smith" ), results.getValue( "mrSmith" ) );
     private String name
     // getter and setter methods here
 }
-public classs Sprinkler {
+public class Sprinkler {
     private Room room;
     private boolean on;
     // getter and setter methods here
@@ -300,7 +300,7 @@ public class Alarm {
 </programlisting>
 
     <para>In the previous section on Stateless Sessions the concepts of
-    inserting and matching against data was introduced. That example assumed
+    inserting and matching against data were introduced. That example assumed
     that only a single instance of each object type was ever inserted and thus
     only used literal constraints. However, a house has many rooms, so rules
     must express relationships between objects, such as a sprinkler being in a
@@ -411,7 +411,7 @@ end</programlisting>
 kbuilder.add( ResourceFactory.newClassPathResource( "fireAlarm.drl", getClass() ),
               ResourceType.DRL );
 if ( kbuilder.hasErrors() ) {
-    System.err.println( builder.getErrors().toString() );
+    System.err.println( kbuilder.getErrors().toString() );
 }
 kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
@@ -433,7 +433,7 @@ for( String name: names ){
     ksession.insert( sprinkler );
 }
 
-ksession.fireAllRules()
+ksession.fireAllRules();
 </programlisting>
 
     <programlisting>&gt; Everything is ok</programlisting>
@@ -467,9 +467,9 @@ ksession.retract( officeFireHandle );
 
 ksession.fireAllRules();</programlisting>
 
-    <programlisting>&gt; Turn on the sprinkler for room office
-&gt; Turn on the sprinkler for room kitchen
-&gt; Cancel the alarm
+    <programlisting>&gt; Cancel the alarm
+&gt; Turn off the sprinkler for room office
+&gt; Turn off the sprinkler for room kitchen
 &gt; Everything is ok</programlisting>
 
     <para>Everyone still with me? That wasn't so hard and already I'm hoping
