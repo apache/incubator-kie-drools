@@ -96,7 +96,7 @@ public class Transform {
 			task.getProcessId() == null ? "" : task.getProcessId(),
 			task.getName(),
 			task.getActualOwner() == null ? null : task.getActualOwner().getId(),
-			false,
+			!task.isSkipable(),
 			false);
 	}
 
@@ -113,7 +113,7 @@ public class Transform {
 			task.getTaskData().getProcessId() == null ? "" : task.getTaskData().getProcessId(),
 			name,
 			task.getTaskData().getActualOwner() == null ? null : task.getTaskData().getActualOwner().getId(),
-			false,
+			!task.getTaskData().isSkipable(),
 			false);
 	}
 
