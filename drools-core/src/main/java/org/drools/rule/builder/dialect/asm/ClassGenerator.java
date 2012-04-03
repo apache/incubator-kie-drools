@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.asm;
 
-import com.sun.org.apache.bcel.internal.generic.NEWARRAY;
 import org.drools.base.TypeResolver;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
