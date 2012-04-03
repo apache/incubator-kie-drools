@@ -131,7 +131,7 @@ public class KnowledgeAgentImpl
             this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
             this.useKBaseClassLoaderForCompiling = ((KnowledgeAgentConfigurationImpl) configuration).isUseKBaseClassLoaderForCompiling();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
-            if ( ((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents() ) {
+            if ( configuration.isMonitorChangeSetEvents() ) {
                 monitor = true;
             }
 
@@ -1143,6 +1143,10 @@ public class KnowledgeAgentImpl
 
         boolean isNewDefinition = true;
 
+        if ( resource instanceof ClassPathResource && ((ClassPathResource)resource).getClassLoader() == null ) {
+            ((ClassPathResource)resource).setClassLoader( ((InternalRuleBase)((KnowledgeBaseImpl) kbase).getRuleBase()).getRootClassLoader() );
+        }
+
         if ( definition != null ) {
             isNewDefinition = this.registeredResources.putDefinition( resource,
                                                                       definition );
@@ -1378,6 +1382,7 @@ public class KnowledgeAgentImpl
      */
     @Override
     protected void finalize() throws Throwable {
+        super.finalize();
         // users should turn off monitoring, but just in case when this class is
         // GC'd we turn off the thread
         if ( this.changeSetNotificationDetector != null ) {

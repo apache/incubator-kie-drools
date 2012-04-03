@@ -16,7 +16,6 @@
 
 package org.drools.io.impl;
 
-import java.io.Externalizable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
