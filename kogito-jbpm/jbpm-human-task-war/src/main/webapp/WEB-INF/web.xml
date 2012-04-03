@@ -75,6 +75,17 @@
       	<param-name>user.info.class</param-name>
       	<param-value></param-value>
       </init-param>
+      <!-- allows to specify location of a files that will be used to initially populate task server db -->
+      <!-- accepts two types of files: MVEL and properties must be suffixed with .mvel and .properties -->
+      <!-- location of the files can be either on classpath (with prefix classpath:) or valid URL -->
+      <init-param>
+        <param-name>load.users</param-name>
+        <param-value></param-value>
+      </init-param>
+      <init-param>
+        <param-name>load.groups</param-name>
+        <param-value></param-value>
+      </init-param>
       
     <load-on-startup>2</load-on-startup>
   </servlet>

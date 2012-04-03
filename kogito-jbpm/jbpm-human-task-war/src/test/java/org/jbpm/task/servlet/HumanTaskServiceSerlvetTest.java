@@ -20,11 +20,16 @@ import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class HumanTaskServiceSerlvetTest {
 
+    @Before
+    public void prepare() {
+        UserGroupCallbackManager.getInstance().setCallback(null);
+    }
 	
 	@Test
 	public void testDefaultMinaConfiguration() {
