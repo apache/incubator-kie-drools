@@ -1064,6 +1064,7 @@ abstract public class AbstractRuleBase
         lock();
         try {
             this.processes.remove( id );
+            this.pkgs.get(process.getPackageName()).removeRuleFlow(id);
         } finally {
             unlock();
         }
