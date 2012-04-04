@@ -183,148 +183,60 @@ public class RuleTerminalNode extends BaseNode
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        boolean fire = createActivations(leftTuple, context, workingMemory, false);
+        //check if the rule is not effective or
+        // if the current Rule is no-loop and the origin rule is the same then return
+        if ( (!this.rule.isEffective( leftTuple,
+                                      workingMemory )) ||
+             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+            return;
+        }
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+       
+        boolean fire = ((DefaultAgenda)agenda).createActivation( leftTuple, 
+                                                                 context, 
+                                                                 workingMemory, 
+                                                                 this, 
+                                                                 false );
+        
         // Can be null if no Activation was created, only add it to the agenda if it's not a control rule.
         if ( fire && !fireDirect) {
-            final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
             agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
         }
     }
     
-    public boolean createActivations(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory,
-                                     final boolean reuseActivation) {        
-        //check if the rule is effective
-        if ( !this.rule.isEffective( tuple,
-                                     workingMemory ) ) {
-            return false;
-        }
-
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-        // if the current Rule is no-loop and the origin rule is the same then return
-        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
-            return false;
-        }
-        
-        
-        // First process control rules
-        // Control rules do increase ActivationCountForEvent and agenda ActivateActivations, they do not currently fire events
-        // ControlRules for now re-use the same PropagationContext
-        if ( fireDirect ) {    
-            // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item = null;
-            if ( reuseActivation ) {
-                item = ( AgendaItem ) tuple.getObject();
-            } else {
-                item = agenda.createAgendaItem( tuple,
-                                                0,
-                                                context,
-                                                this);
-            }
-            tuple.setObject( item );            
-            item.setActivated( true );
-            tuple.increaseActivationCountForEvents();  
-            agenda.increaseActiveActivations();
-            agenda.fireActivation( item );  // Control rules fire straight away.       
-            return true;
-        }
-
-
-        AgendaItem item = null;
-        final Timer timer = this.rule.getTimer();
-        if ( timer != null ) {
-            if ( reuseActivation ) {
-                item = ( AgendaItem ) tuple.getObject();                
-            } else {
-                item = agenda.createScheduledAgendaItem( tuple,
-                                                         context,
-                                                         this );                
-            }            
-        } else {
-            if ( rule.getCalendars() != null ) {
-                // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
-                long timestamp = workingMemory.getSessionClock().getCurrentTime();
-                for ( String cal : rule.getCalendars() ) {
-                    if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
-                        return false;
-                    }
-                }
-            }                                
-            
-            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( rule.getAgendaGroup() );            
-            if ( rule.getRuleFlowGroup() == null ) {
-                // No RuleFlowNode so add it directly to the Agenda
-                // do not add the activation if the rule is "lock-on-active" and the
-                // AgendaGroup is active
-                if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
-                    return false;
-                }
-            } else {
-                // There is a RuleFlowNode so add it there, instead of the Agenda
-                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) agenda.getRuleFlowGroup( rule.getRuleFlowGroup() );
-
-                // do not add the activation if the rule is "lock-on-active" and the
-                // RuleFlowGroup is active
-                if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
-                    return false;
-                }
-            }            
-            
-            if ( reuseActivation ) {
-                item = ( AgendaItem ) tuple.getObject();
-                item.setSalience( rule.getSalience().getValue( tuple,
-                                                               this.rule,
-                                                               workingMemory ) );
-                item.setPropagationContext( context );                                
-            } else {
-                item = agenda.createAgendaItem( tuple,
-                                                rule.getSalience().getValue( tuple,
-                                                                             this.rule,
-                                                                             workingMemory ),
-                                                context,
-                                                this);
-            }              
-            
-            item.setAgendaGroup( agendaGroup );   
-        }
-        
-
-        tuple.setObject( item );            
-        item.setActivated( true );
-        tuple.increaseActivationCountForEvents();  
-        agenda.increaseActiveActivations();        
-        item.setSequenence( this.sequence );                
-        
-        ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
-                                                                                      workingMemory ); 
-        return true;
-    }
-
-
-
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {        
+    	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+    	
         // we need the inserted facthandle so we can update the network with new Activation
-        Activation match  = ( Activation ) leftTuple.getObject();
+    	Object o = leftTuple.getObject();
+    	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
+    		AgendaItem match = (AgendaItem) o;       
+	        if ( match != null && match.isActivated() ) {
+	            // already activated, do nothing
+	            // although we need to notify the inserted Activation, as it's declarations may have changed.
+	            agenda.modifyActivation( match, true );
+	            return;
+	        }
+    	}
 
-        InternalAgenda agenda = ( InternalAgenda ) workingMemory.getAgenda();
-        if ( match != null && match.isActivated() ) {
-            // already activated, do nothing
-            // although we need to notify the inserted Activation, as it's declarations may have changed.
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), true );            
-            return;
-        }   
-        
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
             agenda.increaseDormantActivations();
             return;
-        }        
-        
-        boolean fire = createActivations(leftTuple, context, workingMemory, true);
-        if ( fire && !fireDirect ) {                        
+        }
+
+        boolean reuseActivation = true;
+        if ( o  == Boolean.TRUE ) {
+        	// set to Boolean.TRUE when lock-on-active stops an Activation being created
+        	// We set this instead of doing a null check, as it's a little safer due to intent.
+        	reuseActivation = false;
+        	leftTuple.setObject( null );
+        }
+        boolean fire = ((DefaultAgenda)agenda).createActivation( leftTuple, context, workingMemory, this, reuseActivation );
+        if ( fire && !isFireDirect() ) {
             // This activation is currently dormant and about to reactivated, so decrease the dormant count.
             agenda.decreaseDormantActivations();
             
@@ -606,5 +518,9 @@ public class RuleTerminalNode extends BaseNode
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }            
+    }
+    
+    public boolean isFireDirect() {
+        return this.fireDirect;
+    }    
 }

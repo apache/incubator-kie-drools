@@ -181,6 +181,7 @@ public class LeftTupleIterator
                 leftTuple = leftTuple.getLeftParentNext();
                 
                 for ( ; leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+                    // Iterate to find the next left tuple for this sink, skip tuples for other sinks due to sharing split
                     if ( leftTuple.getLeftTupleSink() == sink ) {
                         return leftTuple;
                     }
