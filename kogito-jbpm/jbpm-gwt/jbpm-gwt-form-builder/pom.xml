@@ -116,10 +116,10 @@
       <artifactId>gwtx</artifactId>
       <version>1.5.3</version>
     </dependency>
-    <dependency>
+    <!-- dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
-    </dependency>
+    </dependency -->
     <dependency>
       <groupId>com.allen-sauer.gwt.dnd</groupId>
       <artifactId>gwt-dnd</artifactId>
