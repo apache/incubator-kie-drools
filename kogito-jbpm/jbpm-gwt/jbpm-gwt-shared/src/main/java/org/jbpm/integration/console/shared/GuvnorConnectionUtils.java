@@ -386,7 +386,25 @@ public class GuvnorConnectionUtils {
                 applyAuth(checkConnection);
                 checkConnection.connect();
                 if(checkConnection.getResponseCode() == 200) {
-                    return true;
+                    
+                    XMLInputFactory factory = XMLInputFactory.newInstance();
+                    XMLStreamReader reader = factory
+                            .createXMLStreamReader(checkConnection.getInputStream());
+                    
+                    boolean foundFormFormat = false;
+                    while (reader.hasNext()) {
+                        if (reader.next() == XMLStreamReader.START_ELEMENT) {
+                            if ("format".equals(reader.getLocalName())) {
+                                reader.next();
+                                String pname = reader.getElementText();
+                                if ("flt".equalsIgnoreCase(pname)) {
+                                    foundFormFormat = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    return foundFormFormat;
                 }
             }
         } catch (Exception e) {
