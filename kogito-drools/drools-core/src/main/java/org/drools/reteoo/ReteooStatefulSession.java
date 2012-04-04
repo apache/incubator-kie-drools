@@ -140,8 +140,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     public Future asyncUpdate(final FactHandle factHandle,
                               final Object object) {
-        return this.executor.submit( new UpdateObject( (org.drools.FactHandle)factHandle,
-                                                       object ) );
+        return this.executor.submit( new UpdateObject( factHandle, object ) );
     }
 
     public Future asyncInsert(final Object[] array) {
@@ -182,6 +181,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     @Override
     protected void finalize() throws Throwable {
+        super.finalize();
         dispose();
     }
 

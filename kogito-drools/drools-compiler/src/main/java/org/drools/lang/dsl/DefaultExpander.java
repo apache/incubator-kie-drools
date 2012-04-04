@@ -60,6 +60,8 @@ public class DefaultExpander
                                                                  Pattern.compile( ruleOrQuery,
                                                                                   Pattern.DOTALL | Pattern.MULTILINE | Pattern.COMMENTS );
 
+    private static final Pattern        comments     = Pattern.compile( "(?:/\\*(?:[^*]|(?:\\*+[^*/]))*\\*+/)" );
+
     // This pattern finds a statement's modify body
     private static final Pattern        modifyFinder = Pattern.compile( "\\{(.*?)\\}" );
 
@@ -161,6 +163,7 @@ public class DefaultExpander
             useThen = new HashMap<String, Integer>();
         }
 
+        drl = removeComments( drl );
         drl = expandKeywords( drl );
         drl = cleanupExpressions( drl );
         final StringBuffer buf = expandConstructions( drl );
@@ -183,7 +186,7 @@ public class DefaultExpander
             while ( (nlPos = buf.indexOf( "\n",
                                           offset )) >= 0 ) {
                 fmt.format( "%4d  %s%n",
-                            Integer.valueOf( iLine++ ),
+                            iLine++,
                             buf.substring( offset,
                                            nlPos ) );
                 offset = nlPos + 1;
@@ -317,6 +320,10 @@ public class DefaultExpander
     //        return n;
     //    }
 
+    private String removeComments(String drl) {
+        return comments.matcher(drl).replaceAll("");
+    }
+
     /**
      * Expand all configured keywords
      * 
@@ -432,12 +439,11 @@ public class DefaultExpander
             Pattern kp = entry.getKeyPattern();
             Matcher m = kp.matcher( exp );
             int startPos = 0;
-            boolean match = false;
-            Integer count = null;
+            boolean match;
+            Integer count;
             if ( showUsage ) {
                 count = use.get( mappingKey );
-                if ( count == null ) use.put( mappingKey,
-                                              Integer.valueOf( 0 ) );
+                if ( count == null ) use.put( mappingKey, 0 );
             }
             while ( startPos < exp.length() && m.find( startPos ) ) {
                 match = true;
@@ -678,7 +684,7 @@ public class DefaultExpander
     private String loadDrlFile(final Reader drl) throws IOException {
         final StringBuilder buf = new StringBuilder();
         final BufferedReader input = new BufferedReader( drl );
-        String line = null;
+        String line;
         while ( (line = input.readLine()) != null ) {
             buf.append( line );
             buf.append( "\n" );

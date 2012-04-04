@@ -12,9 +12,6 @@ import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -218,4 +215,91 @@ public class DslTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testDSL() {
+        String dsl = "[when]There is a Person=Person()\n"
+                + "[when]-named {name}=name == \"{name}\"\n"
+                + "[when]-aged less than {age}=age < {age}\n"
+                + "[then]Log {message}=list.add({message});";
+
+        String drl = "import org.drools.Person;\n"
+                + "global java.util.List list\n"
+                + "rule R1\n"
+                + "when\n"
+                + "There is a Person\n"
+                + "-named Mario\n"
+                + "-aged less than 40\n"
+                + "then\n"
+                // + "System.out.println(\"OK\");\n"
+                + "Log \"OK\"\n"
+                + "end\n";
+
+        assertTrue(doTest(dsl, drl).contains("OK"));
+    }
+
+    @Test
+    public void testDSLWithVariableBinding() {
+        String dsl = "[when]There is a Person=$p : Person()\n"
+                + "[when]-named {name}=name == \"{name}\"\n"
+                + "[when]-aged less than {age}=age < {age}\n"
+                + "[then]Log person name=list.add($p.getName());";
+
+        String drl = "import org.drools.Person;\n"
+                + "global java.util.List list\n"
+                + "rule R1\n"
+                + "when\n"
+                + "There is a Person\n"
+                + "-named Mario\n"
+                + "-aged less than 40\n"
+                + "then\n"
+                + "Log person name\n"
+                + "end\n";
+
+        assertTrue(doTest(dsl, drl).contains("Mario"));
+    }
+
+    @Test
+    public void testDSLWithCommentedBlock() {
+        // JBRULES-3445
+        String dsl = "[when]There is a Person=Person()\n"
+                + "[when]-named {name}=name == \"{name}\"\n"
+                + "[when]-aged less than {age}=age < {age}\n"
+                + "[then]Log {message}=list.add({message});";
+
+        String drl = "import org.drools.Person;\n"
+                + "global java.util.List list\n"
+                + "rule R1\n"
+                + "when\n"
+                + "/*There is a Cheese\n"
+                + "-of type Gorgonzola*/\n"
+                + "There is a Person\n"
+                + "-named Mario\n"
+                + "-aged less than 40\n"
+                + "then\n"
+                + "Log \"OK\"\n"
+                + "end\n";
+
+        assertTrue(doTest(dsl, drl).contains("OK"));
+    }
+
+    private List doTest(String dsl, String drl) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DSLR );
+
+        assertFalse(kbuilder.hasErrors());
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mario", 38));
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        return list;
+    }
 }
