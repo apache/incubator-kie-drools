@@ -296,18 +296,7 @@ public class DefaultExpanderTest {
 
     @Test
     public void testExpandComplex() throws Exception {
-        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        String dsl = "[when]There is an TestObject=TestObject()\n"
-                     + "[when]-startDate is before {date}=startDate>DateUtils.parseDate(\"{date}\")\n"
-                     + "[when]-endDate is after {date}=endDate>DateUtils.parseDate(\"{date}\")";
-        file.parseAndLoad( new StringReader( dsl ) );
-        assertEquals( 0,
-                      file.getErrors().size() );
-
-        DefaultExpander ex = new DefaultExpander();
-        ex.addDSLMapping( file.getMapping() );
-
-        String source = "rule \"q\"\n"
+        String source = "rule \"R\"\n"
                         + "dialect \"mvel\"\n"
                         + "when\n"
                         + "There is an TestObject\n"
@@ -316,19 +305,77 @@ public class DefaultExpanderTest {
                         + "then\n"
                         + "end\n";
 
-        String expected = "rule \"q\"\n"
+        String expected = "rule \"R\"\n"
                           + "dialect \"mvel\"\n"
                           + "when\n"
                           + "TestObject(startDate>DateUtils.parseDate(\"01-Jul-2011\"), endDate>DateUtils.parseDate(\"01-Jul-2011\"))\n"
                           + "then\n"
                           + "end\n";
 
+        checkExpansion(source, expected);
+    }
+
+    @Test
+    public void testDontExpandCommentedLines() throws Exception {
+        String source = "rule \"R\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "// There is an TestObject\n"
+                + "// -startDate is before 01-Jul-2011\n"
+                + "// -endDate is after 01-Jul-2011\n"
+                + "then\n"
+                + "end\n";
+
+        String expected = "rule \"R\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "// There is an TestObject\n"
+                + "// -startDate is before 01-Jul-2011\n"
+                + "// -endDate is after 01-Jul-2011\n"
+                + "then\n"
+                + "end\n";
+
+        checkExpansion(source, expected);
+    }
+
+    @Test
+    public void testDontExpandCommentedBlocks() throws Exception {
+        String source = "rule \"R\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "/*\n"
+                + "There is an TestObject\n"
+                + "-startDate is before 01-Jul-2011\n"
+                + "-endDate is after 01-Jul-2011\n"
+                + "*/\n"
+                + "then\n"
+                + "end\n";
+
+        String expected = "rule \"R\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "\n"
+                + "then\n"
+                + "end\n";
+
+        checkExpansion(source, expected);
+    }
+
+    private void checkExpansion(String source, String expected) throws Exception {
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]There is an TestObject=TestObject()\n"
+                + "[when]-startDate is before {date}=startDate>DateUtils.parseDate(\"{date}\")\n"
+                + "[when]-endDate is after {date}=endDate>DateUtils.parseDate(\"{date}\")";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,
+                file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+
         String drl = ex.expand( source );
         assertFalse( ex.hasErrors() );
 
-        assertEquals( expected,
-                      drl );
-
+        assertEquals( expected, drl );
     }
-
 }
