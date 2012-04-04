@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.lang.ExpanderException;
 
@@ -200,8 +201,8 @@ public class DefaultExpanderTest {
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
         assertFalse( ex.hasErrors() );
-        assertEquals( expected,
-                      drl );
+        assertEquals(expected,
+                drl);
     }
 
     @Test
@@ -366,6 +367,66 @@ public class DefaultExpanderTest {
         String dsl = "[when]There is an TestObject=TestObject()\n"
                 + "[when]-startDate is before {date}=startDate>DateUtils.parseDate(\"{date}\")\n"
                 + "[when]-endDate is after {date}=endDate>DateUtils.parseDate(\"{date}\")";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,
+                file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+
+        String drl = ex.expand( source );
+        assertFalse( ex.hasErrors() );
+
+        assertEquals( expected, drl );
+    }
+
+    @Test
+    public void testExpandQuery() throws Exception {
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]There is a person=Person()\n" +
+                "[when]- {field:\\w*} {operator} {value:\\d*}={field} {operator} {value}\n" +
+                "[when]is greater than=>";
+
+        String source = "query \"isMature\"\n" +
+                "There is a person\n" +
+                "- age is greater than 18\n" +
+                "end\n";
+
+        String expected = "query \"isMature\"\n" +
+                "Person(age  >  18)\n" +
+                "end\n";
+
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,
+                file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+
+        String drl = ex.expand( source );
+        assertFalse( ex.hasErrors() );
+
+        assertEquals( expected, drl );
+    }
+
+    @Test
+    public void testExpandQueryWithParams() throws Exception {
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]There is a person=Person()\n" +
+                "[when]- {field:\\w*} {operator} {value:\\d*}={field} {operator} {value}\n" +
+                "[when]- equals {variable}=this == {variable}\n" +
+                "[when]is greater than=>";
+
+        String source = "query \"isMature\"(Person p)\n" +
+                "There is a person\n" +
+                "- age is greater than 18\n" +
+                "- equals p\n" +
+                "end\n";
+
+        String expected = "query \"isMature\"(Person p)\n" +
+                "Person(age  >  18, this == p)\n" +
+                "end\n";
+
         file.parseAndLoad( new StringReader( dsl ) );
         assertEquals( 0,
                 file.getErrors().size() );
