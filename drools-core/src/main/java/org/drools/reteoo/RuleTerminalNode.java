@@ -202,16 +202,19 @@ public class RuleTerminalNode extends BaseNode
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
+    	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+    	
         // we need the inserted facthandle so we can update the network with new Activation
-        AgendaItem match = (AgendaItem) leftTuple.getObject();
-
-        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-        if ( match != null && match.isActivated() ) {
-            // already activated, do nothing
-            // although we need to notify the inserted Activation, as it's declarations may have changed.
-            agenda.modifyActivation( match, true );
-            return;
-        }
+    	Object o = leftTuple.getObject();
+    	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
+    		AgendaItem match = (AgendaItem) o;       
+	        if ( match != null && match.isActivated() ) {
+	            // already activated, do nothing
+	            // although we need to notify the inserted Activation, as it's declarations may have changed.
+	            agenda.modifyActivation( match, true );
+	            return;
+	        }
+    	}
 
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
@@ -219,7 +222,14 @@ public class RuleTerminalNode extends BaseNode
             return;
         }
 
-        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, true );
+        boolean reuseActivation = true;
+        if ( o  == Boolean.TRUE ) {
+        	// set to Boolean.TRUE when lock-on-active stops an Activation being created
+        	// We set this instead of doing a null check, as it's a little safer due to intent.
+        	reuseActivation = false;
+        	leftTuple.setObject( null );
+        }
+        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, reuseActivation );
         if ( fire && !isFireDirect() ) {
             // This activation is currently dormant and about to reactivated, so decrease the dormant count.
             agenda.decreaseDormantActivations();
