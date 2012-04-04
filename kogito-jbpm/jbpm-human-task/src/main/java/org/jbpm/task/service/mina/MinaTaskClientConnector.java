@@ -100,7 +100,7 @@ public class MinaTaskClientConnector implements TaskClientConnector {
                                                        new ObjectSerializationCodecFactory()));
 
             ConnectFuture future1 = connector.connect( address );
-            future1.join();
+            future1.awaitUninterruptibly();
             if (!future1.isConnected()) {
                 return false;
             }
@@ -113,26 +113,28 @@ public class MinaTaskClientConnector implements TaskClientConnector {
     }
 
     public void disconnect() {
-        if ( session!= null && session.isConnected() ) {
-            session.close();
-            session.getCloseFuture().join();
+        if (session != null && session.isConnected()) {
+            session.close(true).awaitUninterruptibly();
+        }
+        if (this.connector != null && this.connector.isActive()) {
+            this.connector.dispose();
+            this.connector = null;
         }
     }
 
-	public void write(Object message) {
-		session.write(message);
-	}
+    public void write(Object message) {
+        session.write(message);
+    }
 
-	public BaseHandler getHandler() {
-		return handler;
-	}
+    public BaseHandler getHandler() {
+        return handler;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public AtomicInteger getCounter() {
-		return counter;
-	}
-
+    public AtomicInteger getCounter() {
+        return counter;
+    }
 }
