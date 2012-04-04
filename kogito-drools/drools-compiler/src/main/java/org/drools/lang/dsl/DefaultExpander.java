@@ -50,8 +50,8 @@ public class DefaultExpander
                                                                          "(.*?)                       " + // 4: consequence
                                                                          "(^\\s*end.*?$)              " + // 5: end starts a line
                                                                          "|\\s*(query\\s+             " +
-                                                                         "(?:\"[^\"]+\"|'[^']+'|\\S+)" +
-                                                                         "(?:\\s+\\([^)]+)?)        " + // 6: query, name, arguments
+                                                                         "(?:\"[^\"]+\"|'[^']+'|\\S+) " +
+                                                                         "(?:\\s*\\([^)]+\\))?)       " + // 6: query, name, arguments
                                                                          "(.*?)                       " + // 7: condition
                                                                          "(^\\s*end.*?$)              " + // 8: end starts a line
                                                                          ")";
