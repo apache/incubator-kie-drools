@@ -121,7 +121,7 @@ public class DefaultAgenda
 
     private volatile boolean                                    isFiringActivation = false;
 
-    private volatile boolean                                    mustNotifyHalt     = false;
+    private volatile boolean                                    mustNotifyHalt     = false;                          
 
     // ------------------------------------------------------------
     // Constructors
@@ -528,6 +528,9 @@ public class DefaultAgenda
                 // do not add the activation if the rule is "lock-on-active" and the
                 // AgendaGroup is active
                 if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                	if ( tuple.getObject() == null ) {
+                		tuple.setObject( Boolean.TRUE ); // this is so we can do a check with a bit more intent than a null check on modify
+                	}
                     return false;
                 }
             } else {
@@ -537,6 +540,9 @@ public class DefaultAgenda
                 // do not add the activation if the rule is "lock-on-active" and the
                 // RuleFlowGroup is active
                 if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
+                	if ( tuple.getObject() == null ) {
+                		tuple.setObject( Boolean.TRUE ); // this is so we can do a check with a bit more intent than a null check on modify
+                	}
                     return false;
                 }
             }            
