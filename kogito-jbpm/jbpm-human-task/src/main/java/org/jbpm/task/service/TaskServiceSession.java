@@ -539,8 +539,28 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         });
     }
 
+    /**
+     * This method should only be called from a ServerHandler or TaskService implementation. 
+     * </p>
+     * If you need a Content object (and are already running within a tx), then just use
+     * tpm.findEntity(...). 
+     * 
+     * @param contentId The id of the Content object. 
+     * @return The requested Content object. 
+     */
     public Content getContent(final long contentId) {
-        return getEntity(Content.class, contentId);
+        // The Content object contains a LOB which requires a tx in some db's
+        
+        final Content [] result = new Content[1];
+        result[0] = null;
+                
+        doOperationInTransaction(new TransactedOperation() {
+            public void doOperation() {
+                result[0] = (Content) tpm.findEntity(Content.class, contentId);
+            }
+        });
+        
+        return result[0];
     }
 
     public void deleteAttachment(final long taskId, final long attachmentId, final long contentId) {
