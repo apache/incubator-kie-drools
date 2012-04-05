@@ -1053,65 +1053,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
  
         //System.err.println(reportWMObjects(kSession));
     }
-
-    @Test @Ignore
-    public void testTMSWithLateUpdate() {
-        // This is not actually fixable, as noted here, JBRULES-3416
-        // facts must be updated, before changing other facts, as they act as HEAD in buckets.
-        // leaving test here as @ignore here for future reference.
-        String str =""+
-                "package org.drools.test;\n" +
-                "\n" +
-                "import org.drools.Father;\n" +
-                "import org.drools.YoungestFather;\n" +
-                "\n" +
-                "rule \"findMarriedCouple\"\n" +
-                "when\n" +
-                "    $h: Father()\n" +
-                "    not Father(father == $h)\n" +
-                "then\n" +
-                "    insertLogical(new YoungestFather($h));\n" +
-                "end";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        StatefulKnowledgeSession kSession = createKnowledgeSession(kbase);
-
-        Father abraham = new Father("abraham");
-        Father bart = new Father("bart");
-        Collection<Object> youngestFathers;
-
-        bart.setFather(abraham);
-        FactHandle abrahamHandle = kSession.insert(abraham);
-        FactHandle bartHandle = kSession.insert(bart);
-        kSession.fireAllRules();
-        
-        youngestFathers = kSession.getObjects( new ClassObjectFilter(YoungestFather.class) );
-        assertEquals( 1, youngestFathers.size() );
-        assertEquals( bart, ((YoungestFather) youngestFathers.iterator().next()).getMan() );
-
-        Father homer = new Father("homer");
-        FactHandle homerHandle = kSession.insert(homer);
-
-        homer.setFather(abraham);
-        // If we do kSession.update(homerHandle, homer) here instead of after bart.setFather(homer) it works
-        // But in some use cases we cannot do this because fact fields are actually called
-        // while the facts are in an invalid temporary state
-        bart.setFather(homer);
-        // Late update call for homer, after bart has been changed too, but before fireAllRules
-        kSession.update(homerHandle, homer);
-        kSession.update(bartHandle, bart);
-        kSession.fireAllRules();
-        
-        youngestFathers = kSession.getObjects( new ClassObjectFilter(YoungestFather.class) );
-        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
-        assertEquals(1, youngestFathers.size());
-
-        //System.err.println(reportWMObjects(kSession));
-    }
+    
     
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             StatefulSession session) {
