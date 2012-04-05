@@ -128,17 +128,17 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
 
 
 
-    private void buildClassHeader(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildClassHeader(ClassWriter cw, EnumClassDefinition classDef) {
         cw.visit( V1_5,
                 ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM,
                 BuildUtils.getInternalType( classDef.getClassName() ),
                 "Ljava/lang/Enum<" + BuildUtils.getTypeDescriptor( classDef.getClassName() ) + ">;",
                 BuildUtils.getInternalType( classDef.getSuperClass() ),
-                null);
+                BuildUtils.getInternalTypes( classDef.getInterfaces() ) );
 
     }
 
-    private void buildLiterals(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildLiterals(ClassWriter cw, EnumClassDefinition classDef) {
         FieldVisitor fv;
         for ( EnumLiteralDefinition lit : classDef.getEnumLiterals() ) {
             fv = cw.visitField( ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM,
@@ -160,7 +160,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
     }
 
 
-    private void buildFields(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildFields(ClassWriter cw, EnumClassDefinition classDef) {
         FieldVisitor fv;
         for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL,
@@ -178,7 +178,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
     }
 
 
-    private void buildConstructors(ClassWriter cw, EnumClassDefinition classDef) throws IOException, ClassNotFoundException {
+    protected void buildConstructors(ClassWriter cw, EnumClassDefinition classDef) throws IOException, ClassNotFoundException {
         MethodVisitor mv;
         String argTypes = "";
         int size = 0;
@@ -326,7 +326,7 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
 
 
 
-    private void buildGettersAndSetters(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildGettersAndSetters(ClassWriter cw, EnumClassDefinition classDef) {
         MethodVisitor mv;
         {
             mv = cw.visitMethod( ACC_PUBLIC + ACC_STATIC,
@@ -399,12 +399,12 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder {
         }
     }
 
-    private void buildToString(ClassWriter cw, EnumClassDefinition classDef) {
+    protected void buildToString(ClassWriter cw, EnumClassDefinition classDef) {
 
 
     }
 
-    private void buildEqualityMethods(ClassWriter cw, ClassDefinition classDef) {
+    protected void buildEqualityMethods(ClassWriter cw, ClassDefinition classDef) {
 
 
     }
