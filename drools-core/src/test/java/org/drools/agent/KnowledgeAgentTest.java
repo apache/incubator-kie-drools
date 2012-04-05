@@ -7,15 +7,13 @@ import java.io.StringReader;
 
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListenerFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentConfiguration;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.agent.impl.PrintStreamSystemEventListener;
 import org.drools.definition.process.Process;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KnowledgeAgentTest {
@@ -29,7 +27,8 @@ public class KnowledgeAgentTest {
             "</add>" + 
     "</change-set>";
 	
-//	@Test
+	@Test
+	@Ignore
 	public void FIXMEtestRemoveRuleFlow() throws Exception {
 		File tempDir = RuleBaseAssemblerTest.getTempDirectory();
 		String location = tempDir.getAbsolutePath() +File.separator + "p1.pkg";
