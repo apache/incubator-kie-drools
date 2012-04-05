@@ -1508,6 +1508,16 @@ public class PackageBuilderTest extends DroolsTestCase {
         public LinkedList getBlockers() {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        public boolean isMatched() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void setMatched(boolean matched) {
+            // TODO Auto-generated method stub
+            
         }            
     }
 
