@@ -30,10 +30,10 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class EmailNotification extends Notification {
-    
+
     @OneToMany(cascade = CascadeType.ALL)
     @MapKeyColumn(name="mapkey")
-    private Map<String, EmailNotificationHeader> emailHeaders;
+    private Map<Language, EmailNotificationHeader> emailHeaders;
     
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -54,11 +54,11 @@ public class EmailNotification extends Notification {
         super.readExternal( in );
         int size = in.readInt();
         if ( size > 0 ) {
-            emailHeaders = new HashMap<String, EmailNotificationHeader>(size);
+            emailHeaders = new HashMap<Language, EmailNotificationHeader>(size);
             for ( int i = 0; i < size; i++ ) {
                 EmailNotificationHeader header = new EmailNotificationHeader();
                 header.readExternal( in );
-                emailHeaders.put( header.getLanguage(), header);
+                emailHeaders.put( new Language(header.getLanguage()), header);
             }
         }
     }
@@ -67,11 +67,11 @@ public class EmailNotification extends Notification {
         return NotificationType.Email;
     }        
 
-    public Map<String, EmailNotificationHeader> getEmailHeaders() {
+    public Map<Language, EmailNotificationHeader> getEmailHeaders() {
         return emailHeaders;
     }
 
-    public void setEmailHeaders(Map<String, EmailNotificationHeader> emailHeaders) {
+    public void setEmailHeaders(Map<Language, EmailNotificationHeader> emailHeaders) {
         this.emailHeaders = emailHeaders;
     }    
 

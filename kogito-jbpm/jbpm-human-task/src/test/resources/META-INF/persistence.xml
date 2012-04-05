@@ -32,20 +32,14 @@
     <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
     <class>org.jbpm.task.User</class>
     <properties>
-    <!-- testing with postgresql local
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-      <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/jbpm5" />
-      <property name="hibernate.connection.username" value="jbpm5"/>
-      <property name="hibernate.connection.password" value="jbpm5"/>
-    -->
+    <!-- testing with H2 in memory -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
       <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
       <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
       <property name="hibernate.connection.username" value="sa"/>
       <property name="hibernate.connection.password" value="sasa"/>
       <property name="hibernate.connection.autocommit" value="false" />
-      
+
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />

@@ -21,7 +21,7 @@
         <property name="state" type="integer" not-null="true" access="field" />
         
         <property name="processInstanceByteArray" type="org.jbpm.persistence.processinstance.BlobUserType" 
-            column="processInstanceByteArray" access="field" />
+            column="processInstanceByteArray" access="field" length="2147483647" />
 
         <set name="eventTypes" table="EventTypes" access="field" >
             <key column="InstanceId"/>

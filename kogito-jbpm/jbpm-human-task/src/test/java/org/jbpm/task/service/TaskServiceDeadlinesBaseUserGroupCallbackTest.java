@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -52,6 +53,8 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackTest extends Base
     private Properties conf;
     private Wiser wiser;
 
+    private String emailAddressTony = "tony@domain.com"; 
+    private String emailAddressDarth = "darth@domain.com"; 
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         Map  vars = new HashMap();     
         vars.put( "users", users );
@@ -63,8 +66,8 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackTest extends Base
         notificationHandler.setManager( manager );
         
         MockUserInfo userInfo = new MockUserInfo();
-        userInfo.getEmails().put( users.get("tony"), "tony@domain.com" );
-        userInfo.getEmails().put( users.get("darth"), "darth@domain.com" );
+        userInfo.getEmails().put( users.get("tony"), emailAddressTony );
+        userInfo.getEmails().put( users.get("darth"), emailAddressDarth );
         
         userInfo.getLanguages().put(  users.get("tony"), "en-UK" );
         userInfo.getLanguages().put(  users.get("darth"), "en-UK" );
@@ -115,8 +118,8 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackTest extends Base
         list.add( getWiser().getMessages().get( 0 ).getEnvelopeReceiver() );
         list.add( getWiser().getMessages().get( 1 ).getEnvelopeReceiver() );
         
-        assertTrue( list.contains("tony@domain.com"));
-        assertTrue( list.contains("darth@domain.com"));
+        assertTrue( list.contains(emailAddressTony) );
+        assertTrue( list.contains(emailAddressDarth) );
         
         
         MimeMessage msg = (( WiserMessage  ) getWiser().getMessages().get( 0 )).getMimeMessage();
@@ -124,8 +127,20 @@ public abstract class TaskServiceDeadlinesBaseUserGroupCallbackTest extends Base
         assertEquals( "My Subject", msg.getSubject() );
         assertEquals( "from@domain.com", ((InternetAddress)msg.getFrom()[0]).getAddress() );
         assertEquals( "replyTo@domain.com", ((InternetAddress)msg.getReplyTo()[0]).getAddress() );
-        assertEquals( "tony@domain.com", ((InternetAddress)msg.getRecipients( RecipientType.TO )[0]).getAddress() );
-        assertEquals( "darth@domain.com", ((InternetAddress)msg.getRecipients( RecipientType.TO )[1]).getAddress() );        
+        boolean tonyMatched = false;
+        boolean darthMatched = false;
+        
+        for( int i = 0; i < msg.getRecipients( RecipientType.TO ).length; ++i ) { 
+            String emailAddress = ((InternetAddress)msg.getRecipients( RecipientType.TO )[i]).getAddress();
+            if( emailAddressTony.equals(emailAddress) ) { 
+                tonyMatched = true;
+            }
+            else if ( emailAddressDarth.equals(emailAddress) ) { 
+                darthMatched = true;
+            }
+        }
+        assertTrue(tonyMatched);
+        assertTrue(darthMatched);
     }
     
     public void testDelayedReassignmentOnDeadline() throws Exception {

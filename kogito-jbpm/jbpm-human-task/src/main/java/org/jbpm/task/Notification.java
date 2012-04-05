@@ -30,7 +30,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
@@ -66,7 +65,6 @@ public class Notification implements Externalizable  {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Notification_Descriptions_Id", nullable = true)
-    @Lob
     private List<I18NText> descriptions = Collections.emptyList();  
     
     public void writeExternal(ObjectOutput out) throws IOException {

@@ -38,6 +38,7 @@ import org.jbpm.task.EmailNotification;
 import org.jbpm.task.EmailNotificationHeader;
 import org.jbpm.task.Escalation;
 import org.jbpm.task.Group;
+import org.jbpm.task.Language;
 import org.jbpm.task.Notification;
 import org.jbpm.task.NotificationType;
 import org.jbpm.task.OrganizationalEntity;
@@ -154,7 +155,6 @@ public class DefaultEscalatedDeadlineHandler
     public void executeEmailNotification(EmailNotification notification,
                                          Task task,
                                          Content content) {
-        Map<String, EmailNotificationHeader> headers = notification.getEmailHeaders();
 
         // group users into languages
         Map<String, List<User>> users = new HashMap<String, List<User>>();
@@ -185,9 +185,11 @@ public class DefaultEscalatedDeadlineHandler
             doc = Collections.emptyMap();
         }
 
+        Map<Language, EmailNotificationHeader> headers = notification.getEmailHeaders();
+        
         for ( Iterator<Entry<String, List<User>>> it = users.entrySet().iterator(); it.hasNext(); ) {
             Entry<String, List<User>> entry = it.next();
-            EmailNotificationHeader header = headers.get( entry.getKey()  );
+            EmailNotificationHeader header = headers.get( new Language(entry.getKey())  );
 
             Map<String, Object> email = new HashMap<String, Object>();
             StringBuilder to = new StringBuilder();
