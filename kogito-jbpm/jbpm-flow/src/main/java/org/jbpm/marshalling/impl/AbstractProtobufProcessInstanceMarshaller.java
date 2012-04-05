@@ -287,7 +287,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                                   } );
                 for ( Map.Entry<String, Object> variable : variables ) {
                     
-                    _composite.addVariable( ProtobufProcessMarshaller.marshallVariableSerializableStrategy( context, variable.getKey(), variable.getValue() ) );
+                    _composite.addVariable( ProtobufProcessMarshaller.marshallVariable( context, variable.getKey(), variable.getValue() ) );
                 }
             }
             

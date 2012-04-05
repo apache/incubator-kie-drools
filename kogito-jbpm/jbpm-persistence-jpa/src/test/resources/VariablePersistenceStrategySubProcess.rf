@@ -8,6 +8,8 @@
     <imports>
       <import name="org.jbpm.persistence.session.objects.MyEntity" />
       <import name="org.jbpm.persistence.session.objects.MyVariableSerializable" />
+      <import name="javax.persistence.EntityManager" />
+      <import name="org.drools.runtime.EnvironmentName" />
     </imports>
     <variables>
       <variable name="x" >
@@ -48,9 +50,16 @@
     </variables>
       <nodes>
     <actionNode id="1" name="Action" x="31" y="62" >
-        <action type="expression" dialect="mvel" >kcontext.setVariable("x", "new String");
-kcontext.setVariable("y", new MyEntity("This is a new test Entity"));
-kcontext.setVariable("z", new MyVariableSerializable("This is a new test SerializableObject"));</action>
+        <action type="expression" dialect="java" >
+        kcontext.setVariable("x", "new String");
+        EntityManager em = (EntityManager)kcontext.getKnowledgeRuntime().getEnvironment().get(EnvironmentName.APP_SCOPED_ENTITY_MANAGER);
+        MyEntity newEntity = new MyEntity("This is a new test Entity");
+        em.persist(newEntity);
+        kcontext.setVariable("y", newEntity);
+        MyVariableSerializable newSerializable = new MyVariableSerializable("This is a new test SerializableObject");
+        kcontext.setVariable("z", newSerializable);
+        
+        </action>
     </actionNode>
     <humanTask id="2" name="Human Task" x="122" y="61" >
       <work name="Human Task" >
@@ -75,7 +84,7 @@ kcontext.setVariable("z", new MyVariableSerializable("This is a new test Seriali
       </work>
     </humanTask>
     <actionNode id="3" name="Action" x="211" y="61" >
-        <action type="expression" dialect="mvel" >System.out.println("v = " + v);
+        <action type="expression" dialect="java" >System.out.println("v = " + v);
 System.out.println("w = " + w);
 System.out.println("x = " + x);
 System.out.println("y = " + y);
@@ -94,7 +103,7 @@ System.out.println("z = " + z);</action>
     </variables>
       <nodes>
     <actionNode id="1" name="Action" x="18" y="55" >
-        <action type="expression" dialect="mvel" >System.out.println("a = " + a);
+        <action type="expression" dialect="java" >System.out.println("a = " + a);
 System.out.println("v = " + v);
 System.out.println("w = " + w);
 System.out.println("x = " + x);
@@ -124,7 +133,7 @@ System.out.println("z = " + z);</action>
       </work>
     </humanTask>
     <actionNode id="3" name="Action" x="163" y="112" >
-        <action type="expression" dialect="mvel" >System.out.println("a = " + a);
+        <action type="expression" dialect="java" >System.out.println("a = " + a);
 System.out.println("v = " + v);
 System.out.println("w = " + w);
 System.out.println("x = " + x);
