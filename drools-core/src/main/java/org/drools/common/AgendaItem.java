@@ -53,14 +53,14 @@ public class AgendaItem
     private static final long   serialVersionUID = 510l;
 
     /** The tuple. */
-    private LeftTuple               tuple;
-    
+    private LeftTuple           tuple;
+
     /** The salience */
     private int                 salience;
 
     /** Used for sequential mode */
     private int                 sequenence;
-    
+
     /** Rule terminal node, gives access to SubRule **/
     private RuleTerminalNode    rtn;
 
@@ -73,9 +73,9 @@ public class AgendaItem
     private int                 index;
 
     private LinkedList          justified;
-    
+
     private LinkedList          blocked;
-    
+
     private LinkedList          blockers;
 
     private boolean             activated;
@@ -85,10 +85,12 @@ public class AgendaItem
     private ActivationGroupNode activationGroupNode;
 
     private ActivationNode      activationNode;
-    
+
     private InternalFactHandle  factHandle;
 
-    private transient boolean canceled;
+    private transient boolean   canceled;
+    
+    private boolean             matched;
 
     // ------------------------------------------------------------
     // Constructors
@@ -117,6 +119,7 @@ public class AgendaItem
         this.rtn = rtn;
         this.activationNumber = activationNumber;
         this.index = -1;
+        this.matched = true;
     }
 
     // ------------------------------------------------------------
@@ -416,4 +419,13 @@ public class AgendaItem
     public void cancel() {
         this.canceled = true;
     }
+
+    public boolean isMatched() {
+        return matched;
+    }
+
+    public void setMatched(boolean matched) {
+        this.matched = matched;
+    }
+    
 }
