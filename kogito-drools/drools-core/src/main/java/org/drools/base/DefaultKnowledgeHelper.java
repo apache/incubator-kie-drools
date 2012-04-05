@@ -195,6 +195,11 @@ public class DefaultKnowledgeHelper
 
     public void insertLogical(final Object object,
                               final boolean dynamic) {
+        
+        if ( !activation.isMatched() ) {
+            // Activation is already unmatched, can't do logical insertions against it
+            return;
+        }
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
