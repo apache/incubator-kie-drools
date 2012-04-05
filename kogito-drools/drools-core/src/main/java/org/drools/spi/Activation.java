@@ -116,4 +116,8 @@ public interface Activation
     
     InternalFactHandle getFactHandle();
     
+    public boolean isMatched();
+
+    public void setMatched(boolean matched);    
+    
 }

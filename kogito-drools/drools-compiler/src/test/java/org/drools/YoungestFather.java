@@ -43,4 +43,11 @@ public class YoungestFather {
         return man == null ? 0 : man.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return "YoungestFather [man=" + man + "]";
+    }
+    
+    
+
 }

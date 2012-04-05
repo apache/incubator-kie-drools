@@ -373,6 +373,8 @@ public class RuleTerminalNode extends BaseNode
             return;
         }
 
+        activation.setMatched( false );
+        
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         agenda.cancelActivation( leftTuple, 

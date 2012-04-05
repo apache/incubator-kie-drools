@@ -944,9 +944,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       temperatureList.size() );
     }
 
-    @Test @Ignore
+    @Test
     public void testLogicalInsertOrder() throws Exception {
         // JBRULES-1602
+        // "rule 1" is never logical inserted, as it's rule is unmatched prior to calling logical insert
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertOrder.drl",
                                                             getClass() ),
@@ -972,16 +973,16 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 2, count );
 
         ArgumentCaptor<ObjectInsertedEvent> insertsCaptor = ArgumentCaptor.forClass( ObjectInsertedEvent.class );
-        verify( wmel, times(4) ).objectInserted( insertsCaptor.capture() );
+        verify( wmel, times(3) ).objectInserted( insertsCaptor.capture() );
         List<ObjectInsertedEvent> inserts = insertsCaptor.getAllValues();
-        assertThat( inserts.get( 2 ).getObject(), is( (Object) "rule 1" ) );
-        assertThat( inserts.get( 3 ).getObject(), is( (Object) "rule 2" ) );
+        assertThat( inserts.get( 0 ).getObject(), is(  (Object) bob ) );
+        assertThat( inserts.get( 1 ).getObject(), is(  (Object) mark) );
+        assertThat( inserts.get( 2 ).getObject(), is( (Object) "rule 2" ) );
         
         ArgumentCaptor<ObjectRetractedEvent> retractsCaptor = ArgumentCaptor.forClass( ObjectRetractedEvent.class );
-        verify( wmel, times(2) ).objectRetracted( retractsCaptor.capture() );
+        verify( wmel, times(1) ).objectRetracted( retractsCaptor.capture() );
         List<ObjectRetractedEvent> retracts = retractsCaptor.getAllValues();
-        assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 1" ) );
-        assertThat( retracts.get( 1 ).getOldObject(), is( (Object) "rule 2" ) );
+        assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 2" ) );
     }
     
     @Test
@@ -1041,8 +1042,11 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         //System.err.println(reportWMObjects(kSession));
     }
 
-    @Test @Ignore("FIXME")
+    @Test @Ignore
     public void testTMSWithLateUpdate() {
+        // This is not actually fixable, as noted here, JBRULES-3416
+        // facts must be updated, before changing other facts, as they act as HEAD in buckets.
+        // leaving test here as @ignore here for future reference.
         String str =""+
                 "package org.drools.test;\n" +
                 "\n" +
@@ -1072,10 +1076,10 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         FactHandle abrahamHandle = kSession.insert(abraham);
         FactHandle bartHandle = kSession.insert(bart);
         kSession.fireAllRules();
-        youngestFathers = kSession.getObjects(
-                new ClassObjectFilter(YoungestFather.class));
-        assertEquals(1, youngestFathers.size());
-        assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
+        
+        youngestFathers = kSession.getObjects( new ClassObjectFilter(YoungestFather.class) );
+        assertEquals( 1, youngestFathers.size() );
+        assertEquals( bart, ((YoungestFather) youngestFathers.iterator().next()).getMan() );
 
         Father homer = new Father("homer");
         FactHandle homerHandle = kSession.insert(homer);
@@ -1089,8 +1093,8 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kSession.update(homerHandle, homer);
         kSession.update(bartHandle, bart);
         kSession.fireAllRules();
-        youngestFathers = kSession.getObjects(
-                new ClassObjectFilter(YoungestFather.class));
+        
+        youngestFathers = kSession.getObjects( new ClassObjectFilter(YoungestFather.class) );
         assertEquals(bart, ((YoungestFather) youngestFathers.iterator().next()).getMan());
         assertEquals(1, youngestFathers.size());
 
