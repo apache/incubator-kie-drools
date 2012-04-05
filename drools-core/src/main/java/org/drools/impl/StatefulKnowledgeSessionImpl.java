@@ -577,6 +577,7 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public void objectRetracted(ObjectRetractedEvent event) {
+            System.out.println( "retract:" + event );
             listener.objectRetracted( new ObjectRetractedEventImpl( event ) );
         }
 

@@ -595,7 +595,7 @@ public class DefaultAgenda
                                  final Activation activation,
                                  final RuleTerminalNode rtn ) {
         AgendaItem item = (AgendaItem) activation;
-        item.removeAllBlockersAndBlocked( this );
+        item.removeAllBlockersAndBlocked( this );               
 
         if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
