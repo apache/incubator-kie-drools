@@ -19,12 +19,12 @@ package org.drools.agent;
 import org.drools.PropertiesConfiguration;
 
 /**
- * <p>
- * drools.agent.scanResources = &lt;true|false&gt;<br/>
- * drools.agent.scanDirectories = &lt;true|false&gt;<br/>
- * drools.agent.newInstance = &lt;true|false&gt; // currently this is hard coded to true<br/>
- * drools.agent.monitorChangeSetEvents = &lt;true|false&gt;<br/>
- * </p>
+ * <ul>
+ * <li>drools.agent.scanResources = &lt;true|false&gt;</li>
+ * <li>drools.agent.scanDirectories = &lt;true|false&gt;</li>
+ * <li>drools.agent.newInstance = &lt;true|false&gt;</li>
+ * <li>drools.agent.monitorChangeSetEvents = &lt;true|false&gt;</li>
+ * </ul>
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgentConfiguration 
  */
@@ -38,6 +38,9 @@ public interface KnowledgeAgentConfiguration
 
     public boolean isMonitorChangeSetEvents();
 
+    /**
+     * @return true create a KnowledgeBase each time, false for incremental rebuilding of the KnowledgeBase
+     */
     public boolean isNewInstance();
 
     public boolean isUseKBaseClassLoaderForCompiling();
