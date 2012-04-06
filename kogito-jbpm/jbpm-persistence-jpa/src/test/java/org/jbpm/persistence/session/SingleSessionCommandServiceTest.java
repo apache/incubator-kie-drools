@@ -83,11 +83,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         PersistenceUtil.tearDown(context);
     }
 
-    @AfterClass
-    public static void compareMarshallingData() throws Exception {
-       MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
-    }
-
     @Test
     public void testPersistenceWorkItems() throws Exception {
         setUp();

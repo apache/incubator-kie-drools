@@ -81,11 +81,6 @@ public class WorkItemPersistenceTest {
        PersistenceUtil.tearDown(context); 
     }
    
-    @AfterClass
-    public static void compareMarshalledData() { 
-        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
-    }
-
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );
     }
@@ -255,22 +250,22 @@ public class WorkItemPersistenceTest {
         int state = processInstance.getState();
         switch(state) { 
         case ProcessInstance.STATE_ABORTED:
-            logger.info("STATE_ABORTED");
+            logger.debug("STATE_ABORTED");
             break;
         case ProcessInstance.STATE_ACTIVE:
-            logger.info("STATE_ACTIVE");
+            logger.debug("STATE_ACTIVE");
             break;
         case ProcessInstance.STATE_COMPLETED:
-            logger.info("STATE_COMPLETED");
+            logger.debug("STATE_COMPLETED");
             break;
         case ProcessInstance.STATE_PENDING:
-            logger.info("STATE_PENDING");
+            logger.debug("STATE_PENDING");
             break;
         case ProcessInstance.STATE_SUSPENDED:
-            logger.info("STATE_SUSPENDED");
+            logger.debug("STATE_SUSPENDED");
             break;
         default: 
-            logger.info("Unknown state: " + state );
+            logger.debug("Unknown state: " + state );
         }
        
         procInstInfoList = retrieveProcessInstanceInfo(emf);

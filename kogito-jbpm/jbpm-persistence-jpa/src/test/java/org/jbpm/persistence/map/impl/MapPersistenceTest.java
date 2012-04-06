@@ -51,9 +51,7 @@ public abstract class MapPersistenceTest {
 
         long process1Id = ksession.startProcess(processId).getId();
 
-        LoggerFactory.getLogger(this.getClass()).info("DISPOSE..");
         ksession = disposeAndReloadSession(ksession, ksessionId, kbase);
-        LoggerFactory.getLogger(this.getClass()).info("..AND RELOAD");
         ksession.getWorkItemManager().registerWorkItemHandler(workName, handler);
 
         long workItemId = handler.getLatestWorkItem().getId();

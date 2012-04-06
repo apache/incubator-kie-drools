@@ -94,11 +94,6 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         PersistenceUtil.tearDown(context);
     }
 
-    @AfterClass
-    public static void compareMarshalledData() { 
-        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
-    }
-
     @Test
     public void testExtendingInterfaceVariablePersistence() throws Exception {
         // Setup
@@ -212,7 +207,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         KnowledgeBase kbase = createKnowledgeBase( "VariablePersistenceStrategyProcess.rf" );
         StatefulKnowledgeSession ksession = createSession( kbase, env );
 
-        logger.info("### Starting process ###");
+        logger.debug("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
         parameters.put("y", myEntity);
@@ -235,7 +230,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         result = emf.createEntityManager().createQuery("select i from MyEntityOnlyFields i").getResultList();
         assertEquals(origNumMyEntityOnlyFields + 1, result.size());
 
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase, env );
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) 
         	ksession.getProcessInstance( processInstanceId );
@@ -248,7 +243,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         assertNull(processInstance.getVariable("a"));
         assertNull(processInstance.getVariable("b"));
         assertNull(processInstance.getVariable("c"));
-        logger.info("### Completing first work item ###");
+        logger.debug("### Completing first work item ###");
         ksession.getWorkItemManager().completeWorkItem( workItem.getId(), null );
 
         workItem = handler.getWorkItem();
@@ -256,7 +251,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         
 
         
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase , env );
 		processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
@@ -269,14 +264,14 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         assertEquals("Some new String", processInstance.getVariable("a"));
         assertEquals("This is a new test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
         assertEquals("This is a new test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
-        logger.info("### Completing second work item ###");
+        logger.debug("### Completing second work item ###");
 		ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         
 
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase, env);
         processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance(processInstanceId);
@@ -289,7 +284,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         assertEquals("Some changed String", processInstance.getVariable("a"));
         assertEquals("This is a changed test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
         assertEquals("This is a changed test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
-        logger.info("### Completing third work item ###");
+        logger.debug("### Completing third work item ###");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 
         workItem = handler.getWorkItem();
@@ -448,7 +443,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
        
        
         
-        logger.info("### Starting process ###");
+        logger.debug("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("x", "SomeString");
         parameters.put("y", myEntity);
@@ -459,7 +454,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         WorkItem workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase , env);
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance( processInstanceId );
@@ -471,7 +466,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         assertNull(processInstance.getVariable("b"));
         assertNull(processInstance.getVariable("c"));
 
-        logger.info("### Completing first work item ###");
+        logger.debug("### Completing first work item ###");
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("zeta", processInstance.getVariable("z"));
         results.put("equis", processInstance.getVariable("x")+"->modifiedResult");
@@ -481,19 +476,19 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         workItem = handler.getWorkItem();
         assertNotNull( workItem );
 
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase, env );
 		processInstance = (WorkflowProcessInstance)
 			ksession.getProcessInstance(processInstanceId);
 		assertNotNull(processInstance);
-        logger.info("######## Getting the already Persisted Variables #########");
+        logger.debug("######## Getting the already Persisted Variables #########");
         assertEquals("SomeString->modifiedResult", processInstance.getVariable("x"));
         assertEquals("This is a test Entity", ((MyEntity) processInstance.getVariable("y")).getTest());
         assertEquals("This is a test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("z")).getText());
         assertEquals("Some new String", processInstance.getVariable("a"));
         assertEquals("This is a new test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
         assertEquals("This is a new test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
-        logger.info("### Completing second work item ###");
+        logger.debug("### Completing second work item ###");
         results = new HashMap<String, Object>();
         results.put("zeta", processInstance.getVariable("z"));
         results.put("equis", processInstance.getVariable("x"));
@@ -503,7 +498,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
 
-        logger.info("### Retrieving process instance ###");
+        logger.debug("### Retrieving process instance ###");
         ksession = reloadSession( ksession, kbase, env );
         processInstance = (WorkflowProcessInstance)
         	ksession.getProcessInstance(processInstanceId);
@@ -514,7 +509,7 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
         assertEquals("Some changed String", processInstance.getVariable("a"));
         assertEquals("This is a changed test Entity", ((MyEntity) processInstance.getVariable("b")).getTest());
         assertEquals("This is a changed test SerializableObject", ((MyVariableSerializable) processInstance.getVariable("c")).getText());
-        logger.info("### Completing third work item ###");
+        logger.debug("### Completing third work item ###");
         results = new HashMap<String, Object>();
         results.put("zeta", processInstance.getVariable("z"));
         results.put("equis", processInstance.getVariable("x"));

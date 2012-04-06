@@ -46,11 +46,6 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
        PersistenceUtil.tearDown(context); 
     }
     
-    @AfterClass
-    public static void compareMarshallingData() throws Exception {
-       MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
-    }
-   
     @Override
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );

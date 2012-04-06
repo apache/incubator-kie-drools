@@ -78,11 +78,6 @@ public class PersistentStatefulSessionTest {
         cleanUp(context);
     }
 
-    @AfterClass
-    public static void compareMarshalledData() { 
-        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
-    }
-
     private static String ruleString = ""
         + "package org.drools.test\n"
         + "global java.util.List list\n"
