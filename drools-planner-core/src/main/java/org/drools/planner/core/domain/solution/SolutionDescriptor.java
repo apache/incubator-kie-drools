@@ -33,6 +33,7 @@ import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.api.domain.solution.PlanningEntityProperty;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 public class SolutionDescriptor {
@@ -137,6 +138,19 @@ public class SolutionDescriptor {
                 "If that class (" + planningEntityImplementationClass.getSimpleName() + ") is not a " +
                 "planningEntityClass (or subclass thereof), check your Solution implementation's annotated methods.\n" +
                 "If it is, check your solver configuration.");
+    }
+    
+    public Collection<PlanningVariableDescriptor> getChainedVariableDescriptors() {
+        Collection<PlanningVariableDescriptor> chainedVariableDescriptors
+                = new ArrayList<PlanningVariableDescriptor>();
+        for (PlanningEntityDescriptor entityDescriptor : planningEntityDescriptorMap.values()) {
+            for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
+                if (variableDescriptor.isChained()) {
+                    chainedVariableDescriptors.add(variableDescriptor);
+                }
+            }
+        }
+        return chainedVariableDescriptors;
     }
 
     public Collection<Object> getAllFacts(Solution solution) {

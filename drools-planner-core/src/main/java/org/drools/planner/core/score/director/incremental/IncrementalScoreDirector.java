@@ -49,8 +49,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void beforeEntityAdded(Object entity) {
-        super.beforeEntityAdded(entity);
         incrementalScoreCalculator.beforeEntityAdded(entity);
+        super.beforeEntityAdded(entity);
     }
 
     @Override
@@ -61,8 +61,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void beforeAllVariablesChanged(Object entity) {
-        super.beforeAllVariablesChanged(entity);
         incrementalScoreCalculator.beforeAllVariablesChanged(entity);
+        super.beforeAllVariablesChanged(entity);
     }
 
     @Override
@@ -73,8 +73,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void beforeVariableChanged(Object entity, String variableName) {
-        super.beforeVariableChanged(entity, variableName);
         incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
+        super.beforeVariableChanged(entity, variableName);
     }
 
     @Override
@@ -85,8 +85,8 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
 
     @Override
     public void beforeEntityRemoved(Object entity) {
-        super.beforeEntityRemoved(entity);
         incrementalScoreCalculator.beforeEntityRemoved(entity);
+        super.beforeEntityRemoved(entity);
     }
 
     @Override
@@ -98,7 +98,6 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     @Override
     public void beforeProblemFactAdded(Object problemFact) {
         super.beforeProblemFactAdded(problemFact);
-        // Do nothing
     }
 
     @Override
@@ -110,7 +109,6 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     @Override
     public void beforeProblemFactChanged(Object problemFact) {
         super.beforeProblemFactChanged(problemFact);
-        // Do nothing
     }
 
     @Override
@@ -122,7 +120,6 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     @Override
     public void beforeProblemFactRemoved(Object problemFact) {
         super.beforeProblemFactRemoved(problemFact);
-        // Do nothing
     }
 
     @Override

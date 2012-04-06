@@ -182,6 +182,10 @@ public class PlanningEntityDescriptor {
     public Class<?> getPlanningEntityClass() {
         return planningEntityClass;
     }
+    
+    public boolean appliesToPlanningEntity(Object entity) {
+        return entity.getClass().isAssignableFrom(planningEntityClass);
+    }
 
     public PlanningEntitySorter getPlanningEntitySorter() {
         return planningEntitySorter;
