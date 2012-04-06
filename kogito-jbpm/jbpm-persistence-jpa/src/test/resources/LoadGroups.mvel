@@ -1,0 +1,6 @@
+groups = [ 'GroupA' : new Group( "GroupA" ),
+           'GroupB' : new Group( "GroupB" )
+         ];
+
+return groups;
+        

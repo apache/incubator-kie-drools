@@ -15,6 +15,9 @@
 	<logger name="org.drools.marshalling.util">
 		<level value="DEBUG"/>
 	</logger>
+        <logger name="org.jbpm.persistence">
+		<level value="INFO"/>
+	</logger>
 	
     <!-- bitronix -->	
     <logger name="bitronix.tm">

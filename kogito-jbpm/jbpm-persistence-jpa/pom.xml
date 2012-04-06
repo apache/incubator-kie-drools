@@ -85,7 +85,19 @@
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task</artifactId>
+      <scope>test</scope>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <scope>test</scope>
+      <type>jar</type>
+    </dependency>
   </dependencies>
  
   <build>
