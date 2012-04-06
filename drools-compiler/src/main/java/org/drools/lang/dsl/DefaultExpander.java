@@ -574,7 +574,7 @@ public class DefaultExpander
                         if ( c.start > -1 ) {
                             // rebuilding previous pattern structure
                             expanded[lastPattern] = expanded[lastPattern].substring( 0,
-                                                                                     c.start ) + c.constraints + ((c.constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + expanded[lastPattern].substring( c.end );
+                                                                                     c.start ) + c.constraints + ((c.constraints.trim().length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + expanded[lastPattern].substring( c.end );
                         } else {
                             // error, pattern not found to add constraint to
                             this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i].trim(),

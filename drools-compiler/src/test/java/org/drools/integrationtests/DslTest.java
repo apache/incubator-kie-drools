@@ -235,8 +235,9 @@ public class DslTest {
     }
 
     @Test
-    public void testDSL() {
-        String dsl = "[when]There is a Person=Person()\n"
+    public void testDSLWithSpaceBetweenParenthesis() {
+        // JBRULES-3438
+        String dsl = "[when]There is a Person=Person( )\n"
                 + "[when]-named {name}=name == \"{name}\"\n"
                 + "[when]-aged less than {age}=age < {age}\n"
                 + "[then]Log {message}=list.add({message});";
@@ -249,7 +250,6 @@ public class DslTest {
                 + "-named Mario\n"
                 + "-aged less than 40\n"
                 + "then\n"
-                // + "System.out.println(\"OK\");\n"
                 + "Log \"OK\"\n"
                 + "end\n";
 
