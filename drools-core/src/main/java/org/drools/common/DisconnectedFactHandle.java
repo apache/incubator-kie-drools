@@ -1,5 +1,10 @@
 package org.drools.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -12,7 +17,8 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 @XmlAccessorType(XmlAccessType.NONE)
 public class DisconnectedFactHandle
         implements
-        InternalFactHandle {
+        InternalFactHandle,
+        Externalizable {
 
     private int    id;
     private int    identityHashCode;
@@ -21,7 +27,7 @@ public class DisconnectedFactHandle
     private Object object;
     private String entryPointId;
 
-    protected DisconnectedFactHandle() {
+    public DisconnectedFactHandle() {
     }
 
     public DisconnectedFactHandle(int id,
@@ -64,6 +70,10 @@ public class DisconnectedFactHandle
     }
 
     public DisconnectedFactHandle(String externalFormat) {
+        parseExternalForm( externalFormat );
+    }
+
+    private void parseExternalForm(String externalFormat) {
         String[] elements = externalFormat.split( ":" );
         if ( elements.length < 6 ) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
@@ -238,6 +248,16 @@ public class DisconnectedFactHandle
                                               ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null, 
                                                   null );
         }
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( toExternalForm() );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        String externalForm = (String) in.readObject();
+        parseExternalForm( externalForm );
     }
 
 }
