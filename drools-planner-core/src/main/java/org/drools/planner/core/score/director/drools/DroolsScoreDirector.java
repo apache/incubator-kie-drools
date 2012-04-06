@@ -53,11 +53,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return scoreDirectorFactory.getRuleBase();
     }
 
-    public void setWorkingSolution(Solution workingSolution) {
-        this.workingSolution = workingSolution;
-        resetWorkingMemory();
-    }
-
     /**
      * @return never null
      */
@@ -68,6 +63,12 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @Override
+    public void setWorkingSolution(Solution workingSolution) {
+        super.setWorkingSolution(workingSolution);
+        resetWorkingMemory();
+    }
 
     private void resetWorkingMemory() {
         if (workingMemory != null) {
@@ -85,11 +86,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
-    public void beforeEntityAdded(Object entity) {
-        // Do nothing
-    }
+    // public void beforeEntityAdded(Object entity) // Do nothing
 
+    @Override
     public void afterEntityAdded(Object entity) {
+        super.afterEntityAdded(entity);
         if (entity == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") cannot be added to the ScoreDirector.");
         }
@@ -100,11 +101,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingMemory.insert(entity);
     }
 
-    public void beforeAllVariablesChanged(Object entity) {
-        // Do nothing
-    }
+    // public void beforeAllVariablesChanged(Object entity) // Do nothing
 
+    @Override
     public void afterAllVariablesChanged(Object entity) {
+        super.afterAllVariablesChanged(entity);
         FactHandle factHandle = workingMemory.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
@@ -112,19 +113,19 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingMemory.update(factHandle, entity);
     }
 
-    public void beforeVariableChanged(Object entity, String variableName) {
-        beforeAllVariablesChanged(entity);
-    }
+    // public void beforeVariableChanged(Object entity, String variableName) // Do nothing
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
+        super.afterVariableChanged(entity, variableName);
         afterAllVariablesChanged(entity);
     }
 
-    public void beforeEntityRemoved(Object entity) {
-        // Do nothing
-    }
+    // public void beforeEntityRemoved(Object entity) // Do nothing
 
+    @Override
     public void afterEntityRemoved(Object entity) {
+        super.afterEntityRemoved(entity);
         FactHandle factHandle = workingMemory.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
@@ -132,19 +133,19 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingMemory.retract(factHandle);
     }
 
-    public void beforeProblemFactAdded(Object problemFact) {
-        // Do nothing
-    }
+    // public void beforeProblemFactAdded(Object problemFact) // Do nothing
 
+    @Override
     public void afterProblemFactAdded(Object problemFact) {
+        super.afterProblemFactAdded(problemFact);
         workingMemory.insert(problemFact);
     }
 
-    public void beforeProblemFactChanged(Object problemFact) {
-        // Do nothing
-    }
+    // public void beforeProblemFactChanged(Object problemFact) // Do nothing
 
+    @Override
     public void afterProblemFactChanged(Object problemFact) {
+        super.afterProblemFactChanged(problemFact);
         FactHandle factHandle = workingMemory.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
@@ -153,11 +154,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingMemory.update(factHandle, problemFact);
     }
 
-    public void beforeProblemFactRemoved(Object problemFact) {
-        // Do nothing
-    }
+    // public void beforeProblemFactRemoved(Object problemFact) // Do nothing
 
+    @Override
     public void afterProblemFactRemoved(Object problemFact) {
+        super.afterProblemFactRemoved(problemFact);
         FactHandle factHandle = workingMemory.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
@@ -169,8 +170,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     public Score calculateScore() {
         workingMemory.fireAllRules();
         Score score = workingScoreHolder.extractScore();
-        workingSolution.setScore(score);
-        calculateCount++;
+        setCalculatedScore(score);
         return score;
     }
 

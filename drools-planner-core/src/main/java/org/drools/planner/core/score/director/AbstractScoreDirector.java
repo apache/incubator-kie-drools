@@ -67,6 +67,66 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
     // Complex methods
     // ************************************************************************
 
+    public void setWorkingSolution(Solution workingSolution) {
+        this.workingSolution = workingSolution;
+    }
+
+    public void beforeEntityAdded(Object entity) {
+        // Do nothing
+    }
+
+    public void afterEntityAdded(Object entity) {
+        // Do nothing
+    }
+
+    public void beforeAllVariablesChanged(Object entity) {
+        // Do nothing
+    }
+
+    public void afterAllVariablesChanged(Object entity) {
+        // Do nothing
+    }
+
+    public void beforeVariableChanged(Object entity, String variableName) {
+        // Do nothing
+    }
+
+    public void afterVariableChanged(Object entity, String variableName) {
+        // Do nothing
+    }
+
+    public void beforeEntityRemoved(Object entity) {
+        // Do nothing
+    }
+
+    public void afterEntityRemoved(Object entity) {
+        // Do nothing
+    }
+
+    public void beforeProblemFactAdded(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactAdded(Object problemFact) {
+        // Do nothing
+    }
+
+    public void beforeProblemFactChanged(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactChanged(Object problemFact) {
+        // Do nothing
+    }
+
+    public void beforeProblemFactRemoved(Object problemFact) {
+        // Do nothing
+    }
+
+    public void afterProblemFactRemoved(Object problemFact) {
+        // Do nothing
+    }
+
     public List<Object> getWorkingPlanningEntityList() {
         return getSolutionDescriptor().getPlanningEntityList(workingSolution);
     }
@@ -74,6 +134,16 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
     public boolean isWorkingSolutionInitialized() {
         return getSolutionDescriptor().isInitialized(workingSolution);
     }
+
+    protected void setCalculatedScore(Score score) {
+        workingSolution.setScore(score);
+        calculateCount++;
+    }
+
+//    public Map<Object, Object> getChainedVariableToTrailingEntityMap(
+//            PlanningVariableDescriptor chainedVariableDescriptor) {
+//
+//    }
 
     public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
         List<Object> entityList = variableDescriptor.getPlanningEntityDescriptor().extractEntities(

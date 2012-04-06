@@ -37,75 +37,103 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
-    public void setWorkingSolution(Solution workingSolution) {
-        this.workingSolution = workingSolution;
-        incrementalScoreCalculator.resetWorkingSolution(workingSolution);
-    }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
+    @Override
+    public void setWorkingSolution(Solution workingSolution) {
+        super.setWorkingSolution(workingSolution);
+        incrementalScoreCalculator.resetWorkingSolution(workingSolution);
+    }
+
+    @Override
     public void beforeEntityAdded(Object entity) {
+        super.beforeEntityAdded(entity);
         incrementalScoreCalculator.beforeEntityAdded(entity);
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
+        super.afterEntityAdded(entity);
         incrementalScoreCalculator.afterEntityAdded(entity);
     }
 
+    @Override
     public void beforeAllVariablesChanged(Object entity) {
+        super.beforeAllVariablesChanged(entity);
         incrementalScoreCalculator.beforeAllVariablesChanged(entity);
     }
 
+    @Override
     public void afterAllVariablesChanged(Object entity) {
+        super.afterAllVariablesChanged(entity);
         incrementalScoreCalculator.afterAllVariablesChanged(entity);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
+        super.beforeVariableChanged(entity, variableName);
         incrementalScoreCalculator.beforeVariableChanged(entity, variableName);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
+        super.afterVariableChanged(entity, variableName);
         incrementalScoreCalculator.afterVariableChanged(entity, variableName);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
+        super.beforeEntityRemoved(entity);
         incrementalScoreCalculator.beforeEntityRemoved(entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
+        super.afterEntityRemoved(entity);
         incrementalScoreCalculator.afterEntityRemoved(entity);
     }
 
+    @Override
     public void beforeProblemFactAdded(Object problemFact) {
+        super.beforeProblemFactAdded(problemFact);
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactAdded(Object problemFact) {
+        super.afterProblemFactAdded(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
     }
 
+    @Override
     public void beforeProblemFactChanged(Object problemFact) {
+        super.beforeProblemFactChanged(problemFact);
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactChanged(Object problemFact) {
+        super.afterProblemFactChanged(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
     }
 
+    @Override
     public void beforeProblemFactRemoved(Object problemFact) {
+        super.beforeProblemFactRemoved(problemFact);
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactRemoved(Object problemFact) {
+        super.afterProblemFactRemoved(problemFact);
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
     }
 
     public Score calculateScore() {
         Score score = incrementalScoreCalculator.calculateScore();
-        workingSolution.setScore(score);
-        calculateCount++;
+        setCalculatedScore(score);
         return score;
     }
 

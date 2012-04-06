@@ -36,74 +36,13 @@ public class SimpleScoreDirector extends AbstractScoreDirector<SimpleScoreDirect
         this.simpleScoreCalculator = simpleScoreCalculator;
     }
 
-    public void setWorkingSolution(Solution workingSolution) {
-        this.workingSolution = workingSolution;
-    }
-
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public void beforeEntityAdded(Object entity) {
-        // Do nothing
-    }
-
-    public void afterEntityAdded(Object entity) {
-        // Do nothing
-    }
-
-    public void beforeAllVariablesChanged(Object entity) {
-        // Do nothing
-    }
-
-    public void afterAllVariablesChanged(Object entity) {
-        // Do nothing
-    }
-
-    public void beforeVariableChanged(Object entity, String variableName) {
-        // Do nothing
-    }
-
-    public void afterVariableChanged(Object entity, String variableName) {
-        // Do nothing
-    }
-
-    public void beforeEntityRemoved(Object entity) {
-        // Do nothing
-    }
-
-    public void afterEntityRemoved(Object entity) {
-        // Do nothing
-    }
-
-    public void beforeProblemFactAdded(Object problemFact) {
-        // Do nothing
-    }
-
-    public void afterProblemFactAdded(Object problemFact) {
-        // Do nothing
-    }
-
-    public void beforeProblemFactChanged(Object problemFact) {
-        // Do nothing
-    }
-
-    public void afterProblemFactChanged(Object problemFact) {
-        // Do nothing
-    }
-
-    public void beforeProblemFactRemoved(Object problemFact) {
-        // Do nothing
-    }
-
-    public void afterProblemFactRemoved(Object problemFact) {
-        // Do nothing
-    }
-
     public Score calculateScore() {
         Score score = simpleScoreCalculator.calculateScore(workingSolution);
-        workingSolution.setScore(score);
-        calculateCount++;
+        setCalculatedScore(score);
         return score;
     }
 
