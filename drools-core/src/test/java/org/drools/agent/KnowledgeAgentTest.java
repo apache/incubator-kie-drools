@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.KnowledgeBase;
 import org.drools.SystemEventListenerFactory;
@@ -49,7 +49,9 @@ public class KnowledgeAgentTest {
 		p1.addProcess(process2);
 		 
 		RuleBaseAssemblerTest.writePackage(p1, new File(location));
-		final List<String> updated = new ArrayList<String>();
+		
+		final CountDownLatch latch = new CountDownLatch(2);
+		
 		String changeset = CHANGE_SET.replaceFirst("\\{0\\}", "file:"+location);
 		ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 	    sconf.setProperty( "drools.resource.scanner.interval", "1" );
@@ -69,7 +71,7 @@ public class KnowledgeAgentTest {
 			
 			public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
 				System.out.println("Knowledge Base updated");
-				updated.add(event.toString());
+				latch.countDown();
 			}
 			
 			public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
@@ -102,12 +104,7 @@ public class KnowledgeAgentTest {
 		assertEquals(1, p1.getRuleFlows().size());
 		RuleBaseAssemblerTest.writePackage(p1, new File(location));
 		
-		// wait until two knowledge base updated events (one for creation and second after change is pkg was discovered by scanner
-		// note that thread sleep time cannot be 1 sec as it will clash with scanner intervals
-		while(updated.size() < 2) {
-			System.out.println("Waiting for knowledge base to be updated");
-			Thread.sleep(2000);
-		}
+		latch.await(20, TimeUnit.SECONDS);
 		
 		kbase = agent.getKnowledgeBase();
 		assertEquals(1, kbase.getProcesses().size());
