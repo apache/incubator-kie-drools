@@ -230,6 +230,12 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         return trailingEntities.get(0);
     }
 
+    /**
+     * Use {@link #getTrailingEntity} instead.
+     * @param variableDescriptor never null
+     * @return never null
+     */
+    @Deprecated
     public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
         List<Object> entityList = variableDescriptor.getPlanningEntityDescriptor().extractEntities(
                 workingSolution);

@@ -119,12 +119,6 @@ public interface ScoreDirector {
     Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
-     * @param variableDescriptor never null, must be known to the {@link SolutionDescriptor}
-     * @return never null
-     */
-    Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor);
-
-    /**
      * @param workingScore never null
      */
     void assertWorkingScore(Score workingScore);

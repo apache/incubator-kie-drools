@@ -52,8 +52,6 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
         for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getPlanningEntityDescriptors()) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
                 if (variableDescriptor.isChained()) {
-                    Map<Object,List<Object>> variableToEntitiesMap = scoreDirector.getVariableToEntitiesMap(
-                            variableDescriptor);
                     Collection<?> values = variableDescriptor.extractAllPlanningValues(workingSolution);
                     if (values.size() > 500) {
                         // TODO https://issues.jboss.org/browse/JBRULES-3371
@@ -64,17 +62,10 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                         if (!entityDescriptor.getPlanningEntityClass().isAssignableFrom(anchor.getClass())) {
                             List<Object> anchorWithChain = new ArrayList<Object>(values.size());
                             anchorWithChain.add(anchor);
-                            List<Object> trailingEntities = variableToEntitiesMap.get(anchor);
-                            while (trailingEntities != null) {
-                                if (trailingEntities.size() > 1) {
-                                    throw new IllegalStateException("The planningValue (" + anchor
-                                            + ") has multiple trailing entities (" + trailingEntities
-                                            + ") pointing to it for chained planningVariable ("
-                                            + variableDescriptor.getVariableName() + ").");
-                                }
-                                Object trailingEntity = trailingEntities.get(0);
+                            Object trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, anchor);
+                            while (trailingEntity != null) {
                                 anchorWithChain.add(trailingEntity);
-                                trailingEntities = variableToEntitiesMap.get(trailingEntity);
+                                trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, trailingEntity);
                             }
 
                             int chainSize = anchorWithChain.size();
@@ -91,7 +82,7 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
                                     for (Object toValue : values) {
                                         // Subchains can only be moved into other (sub)chains
                                         if (!entitiesSubChain.contains(toValue)) {
-                                            Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap,
+                                            Object newTrailingEntity = scoreDirector.getTrailingEntity(
                                                     variableDescriptor, toValue);
                                             // Moving to the same oldToValue has no effect
                                             // TODO also filter out moves done by GenericChainedChangeMoveFactory
@@ -118,21 +109,6 @@ public class GenericChainedChangePartMoveFactory extends AbstractMoveFactory {
             }
         }
         return moveList;
-    }
-
-    private Object findTrailingEntity(Map<Object, List<Object>> variableToEntitiesMap,
-            PlanningVariableDescriptor variableDescriptor, Object planningValue) {
-        List<Object> trailingEntities = variableToEntitiesMap.get(planningValue);
-        if (trailingEntities == null) {
-            return null;
-        }
-        if (trailingEntities.size() > 1) {
-            throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple trailing entities (" + trailingEntities
-                    + ") pointing to it for chained planningVariable ("
-                    + variableDescriptor.getVariableName() + ").");
-        }
-        return trailingEntities.get(0);
     }
 
     @Override
