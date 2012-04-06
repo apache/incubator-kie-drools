@@ -25,8 +25,9 @@ import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 import org.drools.planner.api.domain.variable.ValueRanges;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
 
-@PlanningEntity
+@PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
 public class VrpCustomer extends AbstractPersistable implements VrpAppearance {
 

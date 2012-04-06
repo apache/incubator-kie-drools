@@ -13,7 +13,7 @@
     <maximumMinutesSpend>2</maximumMinutesSpend>
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
     <selector>
