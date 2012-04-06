@@ -94,11 +94,15 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
     }
 
     public void addUser(final User user) {
-        persistInTransaction(user);
+        if (!this.tpm.userExists(user.getId())) {
+            persistInTransaction(user);
+        }
     }
 
     public void addGroup(final Group group) {
-        persistInTransaction(group);
+        if (!this.tpm.groupExists(group.getId())) {
+            persistInTransaction(group);
+        }
     }
 
     /**

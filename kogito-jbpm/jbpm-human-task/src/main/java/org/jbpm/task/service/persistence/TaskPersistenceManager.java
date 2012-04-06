@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
+import org.jbpm.task.Group;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
@@ -208,6 +209,13 @@ public class TaskPersistenceManager {
     
     public boolean userExists(String userId) { 
         if( em.find(User.class, userId) == null ) { 
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean groupExists(String groupId) { 
+        if( em.find(Group.class, groupId) == null ) { 
             return false;
         }
         return true;
