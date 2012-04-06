@@ -239,4 +239,10 @@ public class PlanningVariableDescriptor {
         return valueRangeDescriptor.getProblemScale(solution, planningEntity);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + variablePropertyDescriptor.getName()
+                + " of " + planningEntityDescriptor.getPlanningEntityClass().getName() + ")";
+    }
+
 }

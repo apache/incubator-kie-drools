@@ -295,4 +295,9 @@ public class SolutionDescriptor {
         return entityCollection;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + solutionClass.getName() + ")";
+    }
+
 }

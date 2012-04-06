@@ -235,4 +235,9 @@ public class PlanningEntityDescriptor {
         }
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + planningEntityClass.getName() + ")";
+    }
+
 }
