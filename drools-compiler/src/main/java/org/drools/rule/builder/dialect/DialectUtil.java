@@ -113,7 +113,7 @@ public final class DialectUtil {
         int lastAdded = 0;
 
         for (JavaBlockDescr block : blocks) {
-            if (block.getEnd() == 0) {
+            if (block.getEnd() == 0 || block.getEnd() > originalCode.length() ) {
                 // do nothing, it was incorrectly parsed, but this error should be picked up else where
                 continue;
             }
