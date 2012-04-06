@@ -28,6 +28,9 @@ import org.apache.mina.transport.socket.SocketConnector;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClientConnector;
+import org.jbpm.task.service.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MinaTaskClientConnector implements TaskClientConnector {
 
@@ -40,6 +43,8 @@ public class MinaTaskClientConnector implements TaskClientConnector {
     protected SocketConnector connector; 
     protected SocketAddress address;
 
+    private static final Logger logger = LoggerFactory.getLogger(MinaTaskClientConnector.class);
+    
     public MinaTaskClientConnector(String name, BaseMinaHandler handler) {
         if (name == null) {
             throw new IllegalArgumentException("Name can not be null");
@@ -102,7 +107,7 @@ public class MinaTaskClientConnector implements TaskClientConnector {
             session = future1.getSession();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return false;
         }
     }

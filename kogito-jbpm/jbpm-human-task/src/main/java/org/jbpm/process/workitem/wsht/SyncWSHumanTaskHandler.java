@@ -60,15 +60,17 @@ import org.slf4j.LoggerFactory;
 
 public class SyncWSHumanTaskHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
+    
     private String ipAddress = "127.0.0.1";
     private int port = 9123;
+    
     private TaskService client;
     private WorkItemManager manager = null;
     private KnowledgeRuntime session;
     private boolean local = false;
     private OnErrorAction action;
     
-    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
 	private boolean initialized = false;
     
     public SyncWSHumanTaskHandler() {
@@ -257,7 +259,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
                 content.setContent(bos.toByteArray());
                 content.setAccessType(AccessType.Inline);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -277,12 +279,10 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 				}
 				
 			} else if (action.equals(OnErrorAction.LOG)) {
-				StringBuffer log = new StringBuffer();
-				log.append(new Date() + ": Error when creating task on task server for work item id " + workItem.getId());
-				log.append(". Error reported by task server: " + e.getMessage() + ". ");
-				log.append("Stack trace:\n");
-				System.err.println(log);
-				e.printStackTrace(System.err);
+				StringBuffer logMsg = new StringBuffer();
+				logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItem.getId());
+				logMsg.append(". Error reported by task server: " + e.getMessage() ); 
+                logger.error(logMsg.toString(), e);
 			}
 		}
 
@@ -357,9 +357,9 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 							manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
+		                logger.error(e.getMessage(), e);
 					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+		                logger.error(e.getMessage(), e);
 					}
 				} else {
 					if (session != null) {

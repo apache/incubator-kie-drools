@@ -61,17 +61,21 @@ import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.OnErrorAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WSHumanTaskHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
+    
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
+	
 	private TaskClient client;
 	private WorkItemManager manager = null;
 	private boolean initialized = false;
 	private KnowledgeRuntime session;
 	private OnErrorAction action;
-
 
 	public WSHumanTaskHandler() { 
 		this.action = OnErrorAction.LOG;
@@ -240,7 +244,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				content.setContent(bos.toByteArray());
 				content.setAccessType(AccessType.Inline);
 			} catch (IOException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			}
 		}
 
@@ -284,12 +288,10 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				throw getError();
 				
 			} else if (action.equals(OnErrorAction.LOG)) {
-				StringBuffer log = new StringBuffer();
-				log.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
-				log.append(". Error reported by task server: " + getError().getMessage() + ". ");
-				log.append("Stack trace:\n");
-				System.err.println(log);
-				getError().printStackTrace(System.err);
+				StringBuffer logMsg = new StringBuffer();
+				logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
+				logMsg.append(". Error reported by task server: " + getError().getMessage() );
+				logger.error(logMsg.toString(), getError());
 			}
 		}
 	
@@ -377,9 +379,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				}
 				manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
 			} catch (IOException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			}
 		}
     }

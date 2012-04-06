@@ -95,7 +95,7 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 			this.connection.start();
 			return true;
 		} catch (Exception e) {
-                    e.printStackTrace();
+            logger.error(e.getMessage(), e);
 		}
 		return false;
 	}
@@ -116,8 +116,8 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 				this.consumerSession.close();
 			if (this.connection != null)
 				this.connection.close();
-		} catch(Exception x){
-			x.printStackTrace();
+		} catch(Exception e){
+            logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -207,7 +207,7 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 					try {
 						consumer.close();
 					} catch (Exception e) {
-						e.printStackTrace();
+		                logger.error(e.getMessage(), e);
 					}
 				}
 			}

@@ -919,15 +919,11 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
             else if( !operationSuccessful ) { message = "Operation failed"; }
             else { message = "Could not commit transaction"; }
             
-            
             if (e instanceof TaskException) {
                 throw (TaskException) e;
             } else {
-                long timestamp = System.currentTimeMillis();
-                String errorCode = "WS-HTError-" + timestamp;
-                throw new RuntimeException(errorCode + " : " + message, e);
+                throw new RuntimeException(message, e);
             }
-            
         }
         
     }

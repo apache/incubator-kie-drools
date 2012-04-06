@@ -42,6 +42,8 @@ import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskService extends TaskPersistenceManagerAccessor {
 
@@ -56,6 +58,8 @@ public class TaskService extends TaskPersistenceManagerAccessor {
     private TaskEventSupport eventSupport;
     private EventKeys eventKeys;
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskService.class);
+    
     /**
      * Listener used for logging
      */
@@ -297,7 +301,7 @@ public class TaskService extends TaskPersistenceManagerAccessor {
                 service.executeEscalatedDeadline(taskId,
                         deadlineId);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
             return null;
         }

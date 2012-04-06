@@ -61,11 +61,16 @@ import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.OnErrorAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(AsyncWSHumanTaskHandler.class);
+    
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
+	
 	private TaskClient client;
 	private KnowledgeRuntime session;
 	private OnErrorAction action;
@@ -219,32 +224,32 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 				content.setContent(bos.toByteArray());
 				content.setAccessType(AccessType.Inline);
 			} catch (IOException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			}
 		}
-                // If the content is not set we will automatically copy all the input objects into 
-                // the task content
-                else {
-                    contentObject = workItem.getParameters();
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(contentObject);
-				out.close();
-				content = new ContentData();
-				content.setContent(bos.toByteArray());
-				content.setAccessType(AccessType.Inline);
-                                content.setType("java.util.map");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-                }
+		// If the content is not set we will automatically copy all the input objects into 
+		// the task content
+		else {
+		    contentObject = workItem.getParameters();
+		    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		    ObjectOutputStream out;
+		    try {
+		        out = new ObjectOutputStream(bos);
+		        out.writeObject(contentObject);
+		        out.close();
+		        content = new ContentData();
+		        content.setContent(bos.toByteArray());
+		        content.setAccessType(AccessType.Inline);
+		        content.setType("java.util.map");
+		    } catch (IOException e) {
+		        logger.error(e.getMessage(), e);
+		    }
+		}
 
 		client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
 
 	}
-	
+
 	public void dispose() throws Exception {
 		if (client != null) {
 			client.disconnect();
@@ -277,12 +282,10 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 				throw getError();
 				
 			} else if (action.equals(OnErrorAction.LOG)) {
-				StringBuffer log = new StringBuffer();
-				log.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
-				log.append(". Error reported by task server: " + getError().getMessage() + ". ");
-				log.append("Stack trace:\n");
-				System.err.println(log);
-				getError().printStackTrace(System.err);
+				StringBuffer logMsg = new StringBuffer();
+				logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
+				logMsg.append(". Error reported by task server: " + getError().getMessage() );
+				logger.error(logMsg.toString(), getError());
 			}
 			
 		}
@@ -354,9 +357,9 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 				}
 				session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
 			} catch (IOException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+                logger.error(e.getMessage(), e);
 			}
 		}
     }

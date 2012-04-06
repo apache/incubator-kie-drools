@@ -25,15 +25,20 @@ import java.util.Map;
 
 import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKey;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskServerHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskServerHandler.class);
+    
 	private final TaskService service;
     private final Map<String, SessionWriter> clients;
 
@@ -576,10 +581,10 @@ public class TaskServerHandler {
             }
         } catch (RuntimeException e) {
             systemEventListener.exception(e.getMessage(),e);
-            e.printStackTrace(System.err);
-            List<Object> list = new ArrayList<Object>(1);
-            
+            logger.error(e.getMessage(), e);
+
             String errorMessage = "Command " + cmd.getName() + " faild due to " + e.getMessage() + ". Please contact task server administrator.";
+            List<Object> list = new ArrayList<Object>(1);
             if (e instanceof TaskException) {
                 list.add(e);
             } else {
