@@ -10753,4 +10753,22 @@ public class MiscTest extends CommonTestMethodBase {
 
         assertTrue(kbuilder.hasErrors());
     }
+
+    @Test
+    public void testMissingClosingBraceOnModify() throws Exception {
+        // JBRULES-3436
+        String str = "package org.drools.test;\n" +
+                "import org.drools.*\n" +
+                "rule R1 when\n" +
+                "   $p : Person( )" +
+                "   $c : Cheese( )" +
+                "then\n" +
+                "   modify($p) { setCheese($c) ;\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+
+        assertTrue( kbuilder.hasErrors() );
+    }
 }
