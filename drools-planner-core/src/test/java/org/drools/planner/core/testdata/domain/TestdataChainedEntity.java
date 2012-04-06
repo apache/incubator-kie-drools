@@ -28,7 +28,7 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         super(code);
     }
 
-    @PlanningVariable
+    @PlanningVariable(chained = true)
     @ValueRange(type = ValueRangeType.UNDEFINED)
     public TestdataChainedObject getChainedObject() {
         return chainedObject;
@@ -36,6 +36,17 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
 
     public void setChainedObject(TestdataChainedObject chainedObject) {
         this.chainedObject = chainedObject;
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public TestdataChainedEntity clone() {
+        TestdataChainedEntity clone = new TestdataChainedEntity();
+        clone.code = code;
+        clone.chainedObject = chainedObject;
+        return clone;
     }
 
 }

@@ -60,7 +60,6 @@ public class GenericReverseChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -102,7 +101,6 @@ public class GenericReverseChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -154,7 +152,6 @@ public class GenericReverseChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -198,7 +195,6 @@ public class GenericReverseChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(a2, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a2, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
 }

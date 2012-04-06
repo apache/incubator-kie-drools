@@ -16,6 +16,8 @@
 
 package org.drools.planner.core.move.generic;
 
+import java.util.Map;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.move.Move;
@@ -23,31 +25,30 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericChainedChangeMove extends GenericChangeMove {
 
-    private final Object oldTrailingEntity;
-    private final Object newTrailingEntity;
-
     public GenericChainedChangeMove(Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor,
-            Object toPlanningValue, Object oldTrailingEntity, Object newTrailingEntity) {
+            Object toPlanningValue) {
         super(planningEntity, planningVariableDescriptor, toPlanningValue);
-        this.oldTrailingEntity = oldTrailingEntity;
-        this.newTrailingEntity = newTrailingEntity;
     }
 
     @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return super.isMoveDoable(scoreDirector) && !ObjectUtils.equals(planningEntity, toPlanningValue);
+        return super.isMoveDoable(scoreDirector)
+                && !ObjectUtils.equals(planningEntity, toPlanningValue);
     }
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
-        return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue,
-                newTrailingEntity, oldTrailingEntity);
+        return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, oldPlanningValue);
     }
 
     @Override
     public void doMove(ScoreDirector scoreDirector) {
         Object oldPlanningValue = planningVariableDescriptor.getValue(planningEntity);
+        Object oldTrailingEntity = scoreDirector.getTrailingEntity(planningVariableDescriptor, planningEntity);
+        // If chaining == true then toPlanningValue == null guarantees an uninitialized entity
+        Object newTrailingEntity = toPlanningValue == null ? null
+                : scoreDirector.getTrailingEntity(planningVariableDescriptor, toPlanningValue);
 
         // Close the old chain
         if (oldTrailingEntity != null) {

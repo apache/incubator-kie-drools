@@ -38,4 +38,15 @@ public class TestdataEntity extends TestdataObject {
         this.value = value;
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    public TestdataEntity clone() {
+        TestdataEntity clone = new TestdataEntity();
+        clone.code = code;
+        clone.value = value;
+        return clone;
+    }
+
 }

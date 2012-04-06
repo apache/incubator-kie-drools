@@ -58,9 +58,7 @@ public class GenericChainedSwapMoveFactory extends AbstractMoveFactory {
                         leftEntity.getClass());
                 if (leftEntityDescriptor.getPlanningEntityClass().equals(
                         rightEntityDescriptor.getPlanningEntityClass())) {
-                    throw new UnsupportedOperationException("Not yet implemented");
-//                    moveList.add(new GenericChainedSwapMove(variableDescriptors,
-//                            leftEntity, rightEntity));
+                    moveList.add(new GenericChainedSwapMove(variableDescriptors, leftEntity, rightEntity));
                 }
             }
         }

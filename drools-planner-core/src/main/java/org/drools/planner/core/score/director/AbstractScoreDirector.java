@@ -48,7 +48,9 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
 
     protected Solution workingSolution;
     protected boolean hasChainedVariables;
-    protected Map<PlanningVariableDescriptor, Map<Object, Object>> chainedVariableToTrailingEntityMap;
+    // TODO it's unproven that this caching system is actually faster:
+    // it happens for every step for every move, but is only needed for every step (with correction for composite moves)
+    protected Map<PlanningVariableDescriptor, Map<Object, List<Object>>> chainedVariableToTrailingEntitiesMap;
 
     protected long calculateCount = 0L;
 
@@ -57,10 +59,10 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         Collection<PlanningVariableDescriptor> chainedVariableDescriptors = getSolutionDescriptor()
                 .getChainedVariableDescriptors();
         hasChainedVariables = !chainedVariableDescriptors.isEmpty();
-        chainedVariableToTrailingEntityMap = new HashMap<PlanningVariableDescriptor, Map<Object, Object>>(
+        chainedVariableToTrailingEntitiesMap = new HashMap<PlanningVariableDescriptor, Map<Object, List<Object>>>(
                 chainedVariableDescriptors.size());
         for (PlanningVariableDescriptor chainedVariableDescriptor : chainedVariableDescriptors) {
-            chainedVariableToTrailingEntityMap.put(chainedVariableDescriptor, null);
+            chainedVariableToTrailingEntitiesMap.put(chainedVariableDescriptor, null);
         }
     }
 
@@ -92,11 +94,12 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
     private void resetTrailingEntityMap() {
         if (hasChainedVariables) {
             List<Object> entityList = getSolutionDescriptor().getPlanningEntityList(workingSolution);
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Object>> entry
-                    : chainedVariableToTrailingEntityMap.entrySet()) {
-                entry.setValue(new HashMap<Object, Object>(entityList.size()));
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
+                entry.setValue(new HashMap<Object, List<Object>>(entityList.size()));
             }
-            for (Object entity : entityList){
+            // TODO Remove when uninitialized entities get added automatically too (and call afterEntityAdded)
+            for (Object entity : entityList) {
                 insertInTrailingEntityMap(entity);
             }
         }
@@ -104,20 +107,18 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
 
     private void insertInTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Object>> entry
-                    : chainedVariableToTrailingEntityMap.entrySet()) {
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity.getClass())) {
+                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
-                    Map<Object, Object> valueToTrailingEntityMap = entry.getValue();
-                    Object previousValue = valueToTrailingEntityMap.put(value, entity);
-                    if (previousValue != null) {
-                        throw new IllegalArgumentException("The chainedPlanningVariable ("
-                                + variableDescriptor.getVariableName()
-                                + ") for the entity (" + entity
-                                + ") is trailing multiple values (" + value + ") (" + previousValue + ")."
-                                + " This is a theoretically impossible and a bug in Planner.");
+                    Map<Object, List<Object>> valueToTrailingEntityMap = entry.getValue();
+                    List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
+                    if (trailingEntities == null) {
+                        trailingEntities = new ArrayList<Object>();
+                        valueToTrailingEntityMap.put(value, trailingEntities);
                     }
+                    trailingEntities.add(entity);
                 }
             }
         }
@@ -125,13 +126,20 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
 
     private void retractFromTrailingEntityMap(Object entity) {
         if (hasChainedVariables) {
-            for (Map.Entry<PlanningVariableDescriptor, Map<Object, Object>> entry
-                    : chainedVariableToTrailingEntityMap.entrySet()) {
+            for (Map.Entry<PlanningVariableDescriptor, Map<Object, List<Object>>> entry
+                    : chainedVariableToTrailingEntitiesMap.entrySet()) {
                 PlanningVariableDescriptor variableDescriptor = entry.getKey();
-                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity.getClass())) {
+                if (variableDescriptor.getPlanningEntityDescriptor().appliesToPlanningEntity(entity)) {
                     Object value = variableDescriptor.getValue(entity);
-                    Map<Object, Object> valueToTrailingEntityMap = entry.getValue();
-                    valueToTrailingEntityMap.put(value, null);
+                    Map<Object, List<Object>> valueToTrailingEntityMap = entry.getValue();
+                    List<Object> trailingEntities = valueToTrailingEntityMap.get(value);
+                    boolean removeSucceeded = trailingEntities.remove(entity);
+                    if (!removeSucceeded) {
+                        throw new IllegalStateException("The ScoreDirector (" + getClass() + ") is corrupted.");
+                    }
+                    if (trailingEntities.isEmpty()) {
+                        valueToTrailingEntityMap.put(value, null);
+                    }
                 }
             }
         }
@@ -205,10 +213,21 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         workingSolution.setScore(score);
         calculateCount++;
     }
-
-    public Map<Object, Object> getChainedValueToTrailingEntityMap(
-            PlanningVariableDescriptor chainedVariableDescriptor) {
-        return chainedVariableToTrailingEntityMap.get(chainedVariableDescriptor);
+    
+    public Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue) {
+        List<Object> trailingEntities = chainedVariableToTrailingEntitiesMap.get(chainedVariableDescriptor)
+                .get(planningValue);
+        if (trailingEntities == null) {
+            return null;
+        }
+        // trailingEntities can never be an empty list
+        if (trailingEntities.size() > 1) {
+            throw new IllegalStateException("The planningValue (" + planningValue
+                    + ") has multiple trailing entities (" + trailingEntities
+                    + ") pointing to it for chained planningVariable ("
+                    + chainedVariableDescriptor.getVariableName() + ").");
+        }
+        return trailingEntities.get(0);
     }
 
     public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
@@ -246,6 +265,10 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
     protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
         // No analysis available
         return null;
+    }
+
+    public void dispose() {
+        // Do nothing
     }
 
 }

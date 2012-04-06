@@ -111,7 +111,15 @@ public interface ScoreDirector {
     long getCalculateCount();
 
     /**
-     * @param variableDescriptor never null
+     * @param chainedVariableDescriptor never null, must be {@link PlanningVariableDescriptor#isChained()} true
+     * and known to the {@link SolutionDescriptor}
+     * @param planningValue sometimes null
+     * @return never null
+     */
+    Object getTrailingEntity(PlanningVariableDescriptor chainedVariableDescriptor, Object planningValue);
+
+    /**
+     * @param variableDescriptor never null, must be known to the {@link SolutionDescriptor}
      * @return never null
      */
     Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor);

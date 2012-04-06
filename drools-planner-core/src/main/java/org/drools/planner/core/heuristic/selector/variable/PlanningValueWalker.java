@@ -130,8 +130,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
         if (!planningVariableDescriptor.isChained()) {
             return new ChangeMoveIterator(planningValueIterator, planningEntity);
         } else {
-            Object oldTrailingEntity = findTrailingEntity(planningEntity);
-            return new ChainedChangeMoveIterator(planningValueIterator, planningEntity, oldTrailingEntity);
+            return new ChainedChangeMoveIterator(planningValueIterator, planningEntity);
         }
     }
 
@@ -160,39 +159,16 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     }
 
-    private Object findTrailingEntity(Object planningEntity) {
-        Object trailingEntity = null;
-        PlanningEntityDescriptor entityDescriptor = planningVariableDescriptor.getPlanningEntityDescriptor();
-        for (Object suspectedTrailingEntity : entityDescriptor.extractEntities(scoreDirector.getWorkingSolution())) {
-            if (planningVariableDescriptor.getValue(suspectedTrailingEntity) == planningEntity) {
-                if (trailingEntity != null) {
-                    throw new IllegalStateException("The planningEntity (" + planningEntity
-                            + ") has multiple trailing entities (" + trailingEntity + ") ("
-                            + suspectedTrailingEntity + ") pointing to it for chained planningVariable ("
-                            + planningVariableDescriptor.getVariableName() + ").");
-                }
-                trailingEntity = suspectedTrailingEntity;
-            }
-        }
-        return trailingEntity;
-    }
-
     private class ChainedChangeMoveIterator extends ChangeMoveIterator {
 
-        private final Object oldTrailingEntity;
-
-        public ChainedChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity,
-                Object oldTrailingEntity) {
+        public ChainedChangeMoveIterator(Iterator<?> planningValueIterator, Object planningEntity) {
             super(planningValueIterator, planningEntity);
-            this.oldTrailingEntity = oldTrailingEntity;
         }
 
         @Override
         public Move next() {
             Object toPlanningValue = planningValueIterator.next();
-            Object newTrailingEntity = findTrailingEntity(toPlanningValue);
-            return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue,
-                    oldTrailingEntity, newTrailingEntity);
+            return new GenericChainedChangeMove(planningEntity, planningVariableDescriptor, toPlanningValue);
         }
 
     }

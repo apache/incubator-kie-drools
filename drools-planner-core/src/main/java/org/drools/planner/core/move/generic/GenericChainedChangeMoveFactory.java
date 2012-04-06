@@ -47,8 +47,6 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
         Solution workingSolution = scoreDirector.getWorkingSolution();
         for (PlanningEntityDescriptor entityDescriptor : solutionDescriptor.getPlanningEntityDescriptors()) {
             for (PlanningVariableDescriptor variableDescriptor : entityDescriptor.getPlanningVariableDescriptors()) {
-                Map<Object,List<Object>> variableToEntitiesMap = scoreDirector.getVariableToEntitiesMap(
-                        variableDescriptor);
                 // TODO this fetches the list twice
                 List<Object> entityList =  entityDescriptor.extractEntities(workingSolution);
                 for (Object entity : entityList) {
@@ -58,34 +56,15 @@ public class GenericChainedChangeMoveFactory extends AbstractMoveFactory {
                             moveList.add(new GenericChangeMove(entity, variableDescriptor, toPlanningValue));
                         }
                     } else {
-                        Object oldTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor, entity);
                         for (Object toPlanningValue : variableDescriptor.extractPlanningValues(
                                 workingSolution, entity)) {
-                            Object newTrailingEntity = findTrailingEntity(variableToEntitiesMap, variableDescriptor,
-                                    toPlanningValue);
-                            moveList.add(new GenericChainedChangeMove(entity, variableDescriptor, toPlanningValue,
-                                    oldTrailingEntity, newTrailingEntity));
+                            moveList.add(new GenericChainedChangeMove(entity, variableDescriptor, toPlanningValue));
                         }
                     }
                 }
             }
         }
         return moveList;
-    }
-
-    private Object findTrailingEntity(Map<Object, List<Object>> variableToEntitiesMap,
-            PlanningVariableDescriptor variableDescriptor, Object planningValue) {
-        List<Object> trailingEntities = variableToEntitiesMap.get(planningValue);
-        if (trailingEntities == null) {
-            return null;
-        }
-        if (trailingEntities.size() > 1) {
-            throw new IllegalStateException("The planningValue (" + planningValue
-                    + ") has multiple trailing entities (" + trailingEntities
-                    + ") pointing to it for chained planningVariable ("
-                    + variableDescriptor.getVariableName() + ").");
-        }
-        return trailingEntities.get(0);
     }
 
     @Override

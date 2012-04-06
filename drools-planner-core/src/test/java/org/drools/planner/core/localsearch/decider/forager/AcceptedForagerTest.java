@@ -19,6 +19,7 @@ package org.drools.planner.core.localsearch.decider.forager;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
@@ -31,6 +32,7 @@ import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -176,6 +178,7 @@ public class AcceptedForagerTest {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
+        scoreDirectorFactory.setSolutionDescriptor(TestdataSolution.buildSolutionDescriptor());
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         solverScope.setWorkingRandom(new Random() {

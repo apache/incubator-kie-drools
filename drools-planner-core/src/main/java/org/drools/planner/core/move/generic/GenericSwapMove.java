@@ -30,11 +30,10 @@ import org.drools.planner.core.score.director.ScoreDirector;
 
 public class GenericSwapMove implements Move {
 
-    private final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
+    protected final Collection<PlanningVariableDescriptor> planningVariableDescriptors;
 
-    private final Object leftPlanningEntity;
-
-    private final Object rightPlanningEntity;
+    protected final Object leftPlanningEntity;
+    protected final Object rightPlanningEntity;
 
     public GenericSwapMove(Collection<PlanningVariableDescriptor> planningVariableDescriptors,
             Object leftPlanningEntity, Object rightPlanningEntity) {
@@ -61,18 +60,19 @@ public class GenericSwapMove implements Move {
 
     public void doMove(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
-            Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
-            if (!ObjectUtils.equals(leftValue, rightValue)) {
+            Object oldLeftValue = planningVariableDescriptor.getValue(leftPlanningEntity);
+            Object oldRightValue = planningVariableDescriptor.getValue(rightPlanningEntity);
+            if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(leftPlanningEntity, rightValue);
+                planningVariableDescriptor.setValue(leftPlanningEntity, oldRightValue);
                 scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
                 scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
-                planningVariableDescriptor.setValue(rightPlanningEntity, leftValue);
+                planningVariableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
                 scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
             }
         }
     }
+
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftPlanningEntity, rightPlanningEntity);
     }

@@ -20,13 +20,13 @@
       <selector>
         <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangeMoveFactory</moveFactoryClass>
       </selector>
-      <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>-->
-      <!--</selector>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedSwapMoveFactory</moveFactoryClass>
+      </selector>
       <selector>
         <moveFactoryClass>org.drools.planner.core.move.generic.GenericChainedChangePartMoveFactory</moveFactoryClass>
       </selector>
-      <!-- TODO needs a GenericChainedSwapMoveFactory and probably even a GenericChainedSwapPartMoveFactory -->
+      <!-- TODO could use a GenericChainedSwapPartMoveFactory -->
     </selector>
     <acceptor>
       <planningEntityTabuSize>9</planningEntityTabuSize>

@@ -75,9 +75,14 @@ public class DefaultGreedyDecider implements GreedyDecider {
             Move move = moveIterator.next();
             GreedyMoveScope moveScope = new GreedyMoveScope(stepScope);
             moveScope.setMove(move);
-            doMove(moveScope);
-            if (forager.isQuitEarly()) {
-                break;
+            // Filter out not doable moves
+            if (move.isMoveDoable(stepScope.getScoreDirector())) {
+                doMove(moveScope);
+                if (forager.isQuitEarly()) {
+                    break;
+                }
+            } else {
+                logger.trace("        Ignoring not doable move ({}).", move);
             }
         }
         GreedyMoveScope pickedMoveScope = forager.pickMove(stepScope);

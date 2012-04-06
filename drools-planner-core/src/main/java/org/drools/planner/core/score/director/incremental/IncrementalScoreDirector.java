@@ -134,8 +134,4 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
         return score;
     }
 
-    public void dispose() {
-        // Do nothing
-    }
-
 }

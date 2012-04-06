@@ -63,17 +63,17 @@ public class GenericSwapPillarMove implements Move {
 
     public void doMove(ScoreDirector scoreDirector) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptors) {
-            Object leftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
-            Object rightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
-            if (!ObjectUtils.equals(leftValue, rightValue)) {
+            Object oldLeftValue = planningVariableDescriptor.getValue(leftPlanningEntityList.get(0));
+            Object oldRightValue = planningVariableDescriptor.getValue(rightPlanningEntityList.get(0));
+            if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 for (Object leftPlanningEntity : leftPlanningEntityList) {
                     scoreDirector.beforeVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
-                    planningVariableDescriptor.setValue(leftPlanningEntity, rightValue);
+                    planningVariableDescriptor.setValue(leftPlanningEntity, oldRightValue);
                     scoreDirector.afterVariableChanged(leftPlanningEntity, planningVariableDescriptor.getVariableName());
                 }
                 for (Object rightPlanningEntity : rightPlanningEntityList) {
                     scoreDirector.beforeVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
-                    planningVariableDescriptor.setValue(rightPlanningEntity, leftValue);
+                    planningVariableDescriptor.setValue(rightPlanningEntity, oldLeftValue);
                     scoreDirector.afterVariableChanged(rightPlanningEntity, planningVariableDescriptor.getVariableName());
                 }
             }

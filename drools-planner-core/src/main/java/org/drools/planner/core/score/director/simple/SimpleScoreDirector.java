@@ -46,8 +46,4 @@ public class SimpleScoreDirector extends AbstractScoreDirector<SimpleScoreDirect
         return score;
     }
 
-    public void dispose() {
-        // Do nothing
-    }
-
 }

@@ -60,7 +60,6 @@ public class GenericChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(a5, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a5, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -112,7 +111,6 @@ public class GenericChainedChangePartMoveTest {
         verify(scoreDirector).afterVariableChanged(a4, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
 }

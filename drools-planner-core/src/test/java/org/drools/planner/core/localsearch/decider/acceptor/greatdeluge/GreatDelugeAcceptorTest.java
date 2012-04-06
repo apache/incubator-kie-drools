@@ -29,6 +29,7 @@ import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirector;
 import org.drools.planner.core.score.director.drools.DroolsScoreDirectorFactory;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.testdata.domain.TestdataSolution;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -73,6 +74,7 @@ public class GreatDelugeAcceptorTest {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope phaseScope = new LocalSearchSolverPhaseScope(solverScope);
         DroolsScoreDirectorFactory scoreDirectorFactory = new DroolsScoreDirectorFactory();
+        scoreDirectorFactory.setSolutionDescriptor(TestdataSolution.buildSolutionDescriptor());
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector());
         solverScope.setWorkingRandom(new Random() {

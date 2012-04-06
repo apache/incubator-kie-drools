@@ -77,6 +77,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         workingMemory = getRuleBase().newStatefulSession();
         workingScoreHolder = getScoreDefinition().buildScoreHolder();
         workingMemory.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
+        // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)
         for (Object fact : getWorkingFacts()) {
             workingMemory.insert(fact);
         }
@@ -118,7 +119,11 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
         super.afterVariableChanged(entity, variableName);
-        afterAllVariablesChanged(entity);
+        FactHandle factHandle = workingMemory.getFactHandle(entity);
+        if (factHandle == null) {
+            throw new IllegalArgumentException("The entity (" + entity + ") was never added to this ScoreDirector.");
+        }
+        workingMemory.update(factHandle, entity);
     }
 
     // public void beforeEntityRemoved(Object entity) // Do nothing
@@ -238,6 +243,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         return analysis.toString();
     }
 
+    @Override
     public void dispose() {
         if (workingMemory != null) {
             workingMemory.dispose();

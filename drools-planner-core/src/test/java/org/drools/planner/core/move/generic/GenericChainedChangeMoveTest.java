@@ -1,5 +1,8 @@
 package org.drools.planner.core.move.generic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
@@ -30,8 +33,12 @@ public class GenericChainedChangeMoveTest {
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a3, variableDescriptor, b1, null, null);
+        GenericChainedChangeMove move = new GenericChainedChangeMove(a3, variableDescriptor, b1);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
@@ -42,7 +49,6 @@ public class GenericChainedChangeMoveTest {
 
         verify(scoreDirector).beforeVariableChanged(a3, "chainedObject");
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
     @Test
@@ -62,8 +68,12 @@ public class GenericChainedChangeMoveTest {
         PlanningEntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         PlanningVariableDescriptor variableDescriptor = entityDescriptor.getPlanningVariableDescriptor("chainedObject");
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a0)).thenReturn(a1);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a1)).thenReturn(a2);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, a2)).thenReturn(a3);
+        when(scoreDirector.getTrailingEntity(variableDescriptor, b0)).thenReturn(b1);
 
-        GenericChainedChangeMove move = new GenericChainedChangeMove(a2, variableDescriptor, b0, a3, b1);
+        GenericChainedChangeMove move = new GenericChainedChangeMove(a2, variableDescriptor, b0);
         move.doMove(scoreDirector);
 
         assertEquals(a0, a1.getChainedObject());
@@ -78,7 +88,6 @@ public class GenericChainedChangeMoveTest {
         verify(scoreDirector).afterVariableChanged(a3, "chainedObject");
         verify(scoreDirector).beforeVariableChanged(b1, "chainedObject");
         verify(scoreDirector).afterVariableChanged(b1, "chainedObject");
-        verifyNoMoreInteractions(scoreDirector);
     }
 
 }

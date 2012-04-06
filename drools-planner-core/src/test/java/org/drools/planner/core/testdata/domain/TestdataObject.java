@@ -2,7 +2,7 @@ package org.drools.planner.core.testdata.domain;
 
 public class TestdataObject {
 
-    private String code;
+    protected String code;
 
     public TestdataObject() {
     }
