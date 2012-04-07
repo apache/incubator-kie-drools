@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AsyncTaskService;
@@ -41,6 +42,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.OnErrorAction;
 
 public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
 
@@ -49,6 +51,15 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
     private static final int MANAGER_ABORT_WAIT_TIME = DEFAULT_WAIT_TIME;
     private AsyncTaskService client;
     private WorkItemHandler handler;
+    protected TestStatefulKnowledgeSession ksession;
+
+    protected TestStatefulKnowledgeSession getSession() {
+        return ksession;
+    }
+
+    protected void setSession(TestStatefulKnowledgeSession ksession) {
+        this.ksession = ksession;
+    }
 
     public void setClient(AsyncTaskService client) {
         this.client = client;
@@ -511,6 +522,47 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         assertEquals("Darth Vader", results.get("ActorId"));
         assertEquals("This is the result", results.get("Result"));
     }
+    
+    public void testTaskCreateFailedWithLog() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        if (handler instanceof AsyncWSHumanTaskHandler) {
+            ((AsyncWSHumanTaskHandler) handler).setAction(OnErrorAction.LOG);
+        }
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        manager.registerWorkItemHandler("Human Task", getHandler());
+        
+        getHandler().executeWorkItem(workItem, manager);
+        assertFalse(manager.waitTillCompleted(1000));
+        assertFalse(manager.isAborted());
+    }
+    
+    public void testTaskCreateFailedWithAbort() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        if (handler instanceof AsyncWSHumanTaskHandler) {
+            ((AsyncWSHumanTaskHandler) handler).setAction(OnErrorAction.ABORT);
+        }
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        
+        getHandler().executeWorkItem(workItem, manager);
+        assertTrue(manager.waitTillAborted(1000));
+        assertTrue(manager.isAborted());
+    }
+    
 
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {
 

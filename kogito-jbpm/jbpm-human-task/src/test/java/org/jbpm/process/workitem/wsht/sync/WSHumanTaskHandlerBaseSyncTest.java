@@ -28,6 +28,7 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.MyObject;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
@@ -37,6 +38,7 @@ import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
+import org.jbpm.task.utils.OnErrorAction;
 
 public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
@@ -452,6 +454,67 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertNotNull(results);
         assertEquals("Darth Vader", results.get("ActorId"));
         assertEquals("This is the result", results.get("Result"));
+    }
+    
+    public void testTaskCreateFailedWithLog() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        if (handler instanceof SyncWSHumanTaskHandler) {
+            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.LOG);
+        }
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        
+        handler.executeWorkItem(workItem, manager);
+        assertFalse(manager.isAborted());
+    }
+    
+    public void testTaskCreateFailedWithAbort() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        if (handler instanceof SyncWSHumanTaskHandler) {
+            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.ABORT);
+        }
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        
+        handler.executeWorkItem(workItem, manager);
+        assertTrue(manager.isAborted());
+    }
+    
+    public void testTaskCreateFailedWithRethrow() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        if (handler instanceof SyncWSHumanTaskHandler) {
+            ((SyncWSHumanTaskHandler) handler).setAction(OnErrorAction.RETHROW);
+        }
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "DoesNotExist");
+        workItem.setProcessInstanceId(10);
+        
+        try {
+            handler.executeWorkItem(workItem, manager);
+            fail("Should fail due to OnErroAction set to rethrow");
+        } catch (Exception e) {
+            // do nothing
+            
+        }
     }
 
     public void TODOtestOnAllSubTasksEndParentEndStrategy() throws Exception {

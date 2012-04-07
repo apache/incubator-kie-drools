@@ -42,10 +42,11 @@ public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAs
         }
         setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
                 new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        
-        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession());
+        TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
+        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient(), ksession);
         handler.setConnection("127.0.0.1", 5446);
         setHandler(handler);
+        setSession(ksession);
     }
 
     protected void tearDown() throws Exception {

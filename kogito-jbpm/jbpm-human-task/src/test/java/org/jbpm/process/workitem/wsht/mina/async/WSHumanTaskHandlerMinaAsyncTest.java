@@ -42,8 +42,9 @@ public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsync
         }
         setClient(new TaskClient(new MinaTaskClientConnector("client 1",
                 new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        
-        setHandler(new AsyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession()));
+        TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
+        setHandler(new AsyncWSHumanTaskHandler(getClient(), ksession));
+        setSession(ksession);
     }
 
     protected void tearDown() throws Exception {
