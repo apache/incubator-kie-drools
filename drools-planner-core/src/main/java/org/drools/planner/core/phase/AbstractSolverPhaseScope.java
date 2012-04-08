@@ -131,4 +131,9 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getBestScore();
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName(); // TODO add + "(" + phaseIndex + ")"
+    }
+
 }

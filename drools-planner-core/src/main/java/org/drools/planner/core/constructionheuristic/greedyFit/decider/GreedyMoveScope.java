@@ -27,6 +27,7 @@ import org.drools.planner.core.solution.Solution;
 public class GreedyMoveScope {
 
     private final GreedyFitStepScope greedyFitStepScope;
+    private int moveIndex;
     private Move move = null;
     private Move undoMove = null;
     private Score score = null;
@@ -37,6 +38,14 @@ public class GreedyMoveScope {
 
     public GreedyFitStepScope getGreedyFitStepScope() {
         return greedyFitStepScope;
+    }
+
+    public int getMoveIndex() {
+        return moveIndex;
+    }
+
+    public void setMoveIndex(int moveIndex) {
+        this.moveIndex = moveIndex;
     }
 
     public Move getMove() {
@@ -77,6 +86,11 @@ public class GreedyMoveScope {
 
     public Random getWorkingRandom() {
         return greedyFitStepScope.getWorkingRandom();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + moveIndex + ")";
     }
 
 }

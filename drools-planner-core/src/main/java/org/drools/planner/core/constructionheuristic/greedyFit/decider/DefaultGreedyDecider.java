@@ -70,10 +70,12 @@ public class DefaultGreedyDecider implements GreedyDecider {
 
     public void decideNextStep(GreedyFitStepScope stepScope) {
         Object planningEntity = stepScope.getPlanningEntity();
+        int moveIndex = 0;
         Iterator<Move> moveIterator = planningVariableWalker.moveIterator(planningEntity);
         while (moveIterator.hasNext()) {
             Move move = moveIterator.next();
             GreedyMoveScope moveScope = new GreedyMoveScope(stepScope);
+            moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
             // Filter out not doable moves
             if (move.isMoveDoable(stepScope.getScoreDirector())) {
@@ -84,6 +86,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
             } else {
                 logger.trace("        Ignoring not doable move ({}).", move);
             }
+            moveIndex++;
         }
         GreedyMoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {

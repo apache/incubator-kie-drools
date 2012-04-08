@@ -93,10 +93,12 @@ public class DefaultDecider implements Decider {
 
     public void decideNextStep(LocalSearchStepScope stepScope) {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
+        int moveIndex = 0;
         Iterator<Move> moveIterator = selector.moveIterator(stepScope);
         while (moveIterator.hasNext()) {
             Move move = moveIterator.next();
             MoveScope moveScope = new MoveScope(stepScope);
+            moveScope.setMoveIndex(moveIndex);
             moveScope.setMove(move);
             // Filter out not doable moves
             if (move.isMoveDoable(scoreDirector)) {
@@ -107,6 +109,7 @@ public class DefaultDecider implements Decider {
             } else {
                 logger.trace("        Ignoring not doable move ({}).", move);
             }
+            moveIndex++;
         }
         MoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {

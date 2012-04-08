@@ -98,4 +98,9 @@ public abstract class AbstractStepScope {
         return clonedSolution;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + stepIndex + ")";
+    }
+
 }

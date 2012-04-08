@@ -27,6 +27,7 @@ import org.drools.planner.core.solution.Solution;
 public class MoveScope {
 
     private final LocalSearchStepScope localSearchStepScope;
+    private int moveIndex;
     private Move move = null;
     private Move undoMove = null;
     private Score score = null;
@@ -38,6 +39,14 @@ public class MoveScope {
 
     public LocalSearchStepScope getLocalSearchStepScope() {
         return localSearchStepScope;
+    }
+
+    public int getMoveIndex() {
+        return moveIndex;
+    }
+
+    public void setMoveIndex(int moveIndex) {
+        this.moveIndex = moveIndex;
     }
 
     public Move getMove() {
@@ -86,6 +95,11 @@ public class MoveScope {
 
     public Random getWorkingRandom() {
         return localSearchStepScope.getWorkingRandom();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + moveIndex + ")";
     }
 
 }
