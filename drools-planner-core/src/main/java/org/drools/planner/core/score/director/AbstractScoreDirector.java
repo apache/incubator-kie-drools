@@ -277,4 +277,9 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         // Do nothing
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + calculateCount + ")";
+    }
+
 }
