@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
+  <benchmarkDirectory>local/data/nqueens/scoreDirector</benchmarkDirectory>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
