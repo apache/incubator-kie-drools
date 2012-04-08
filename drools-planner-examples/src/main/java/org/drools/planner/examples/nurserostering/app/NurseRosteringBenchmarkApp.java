@@ -30,23 +30,23 @@ public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
             = "/org/drools/planner/examples/nurserostering/benchmark/nurseRosteringStepLimitBenchmarkConfig.xml";
 
     public static void main(String[] args) {
-        String solverConfig;
+        String benchmarkConfig;
         if (args.length > 0) {
             if (args[0].equals("sprint")) {
-                solverConfig = SPRINT_BENCHMARK_CONFIG;
+                benchmarkConfig = SPRINT_BENCHMARK_CONFIG;
             } else if (args[0].equals("medium")) {
-                solverConfig = MEDIUM_BENCHMARK_CONFIG;
+                benchmarkConfig = MEDIUM_BENCHMARK_CONFIG;
             } else if (args[0].equals("long")) {
-                solverConfig = LONG_BENCHMARK_CONFIG;
+                benchmarkConfig = LONG_BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
-                solverConfig = STEP_LIMIT_BENCHMARK_CONFIG;
+                benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }
         } else {
-            solverConfig = MEDIUM_BENCHMARK_CONFIG;
+            benchmarkConfig = MEDIUM_BENCHMARK_CONFIG;
         }
-        new NurseRosteringBenchmarkApp(solverConfig).process();
+        new NurseRosteringBenchmarkApp(benchmarkConfig).process();
     }
 
     public NurseRosteringBenchmarkApp(String benchmarkConfig) {

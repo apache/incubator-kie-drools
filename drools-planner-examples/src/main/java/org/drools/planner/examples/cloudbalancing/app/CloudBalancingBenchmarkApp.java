@@ -22,7 +22,6 @@ public class CloudBalancingBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfig.xml";
-
     public static final String SCORE_DIRECTOR_BENCHMARK_CONFIG
             = "/org/drools/planner/examples/cloudbalancing/benchmark/cloudBalancingScoreDirectorBenchmarkConfig.xml";
 

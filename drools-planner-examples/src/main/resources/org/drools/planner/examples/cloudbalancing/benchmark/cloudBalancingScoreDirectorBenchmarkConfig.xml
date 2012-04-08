@@ -32,7 +32,6 @@
     <name>TS with Simple Java</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <simpleScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingSimpleScoreCalculator</simpleScoreCalculatorClass>
       </scoreDirectorFactory>
       <constructionHeuristic>
@@ -62,7 +61,6 @@
     <name>TS with Incremental Java</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <incrementalScoreCalculatorClass>org.drools.planner.examples.cloudbalancing.solver.score.CloudBalancingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
       <constructionHeuristic>
@@ -92,7 +90,6 @@
     <name>TS with Drools</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <constructionHeuristic>
