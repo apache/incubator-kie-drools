@@ -22,16 +22,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 
 public class NQueensSimpleScoreCalculator implements SimpleScoreCalculator<NQueens> {
 
-    public Score calculateScore(NQueens nQueens) {
+    public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
         

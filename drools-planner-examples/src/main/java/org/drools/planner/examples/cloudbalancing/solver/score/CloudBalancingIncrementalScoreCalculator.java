@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -64,6 +65,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
     }
 
     public void afterEntityAdded(Object entity) {
+        // TODO the maps should probably be adjusted
         insert((CloudProcess) entity);
     }
 
@@ -89,6 +91,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
 
     public void afterEntityRemoved(Object entity) {
         // Do nothing
+        // TODO the maps should probably be adjusted
     }
 
     private void insert(CloudProcess process) {
@@ -163,7 +166,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    public Score calculateScore() {
+    public HardAndSoftScore calculateScore() {
         return DefaultHardAndSoftScore.valueOf(hardScore, softScore);
     }
 

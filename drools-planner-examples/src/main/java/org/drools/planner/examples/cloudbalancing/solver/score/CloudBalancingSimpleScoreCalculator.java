@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -31,7 +32,7 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudBalancingSimpleScoreCalculator implements SimpleScoreCalculator<CloudBalance> {
 
-    public Score calculateScore(CloudBalance cloudBalance) {
+    public HardAndSoftScore calculateScore(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
         Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
         Map<CloudComputer, Integer> memoryUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);

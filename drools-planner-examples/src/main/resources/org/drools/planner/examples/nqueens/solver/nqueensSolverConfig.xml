@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>DEBUG</environmentMode>
+  <environmentMode>TRACE</environmentMode>
   <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <!--<simpleScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
