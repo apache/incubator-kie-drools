@@ -168,6 +168,10 @@ public class SolutionBusiness {
         return guiScoreDirector.getWorkingSolution();
     }
 
+    public void setSolution(Solution solution) {
+        guiScoreDirector.setWorkingSolution(solution);
+    }
+
     public Score getScore() {
         return guiScoreDirector.calculateScore();
     }
@@ -260,11 +264,17 @@ public class SolutionBusiness {
         }
     }
 
-    public void solve() {
-        solver.setPlanningProblem(guiScoreDirector.getWorkingSolution());
+    /**
+     * Can be called on any thread.
+     * <p/>
+     * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
+     * @param planningProblem never null
+     * @return never null
+     */
+    public Solution solve(Solution planningProblem) {
+        solver.setPlanningProblem(planningProblem);
         solver.solve();
-        Solution bestSolution = solver.getBestSolution();
-        guiScoreDirector.setWorkingSolution(bestSolution);
+        return solver.getBestSolution();
     }
 
     public void terminateSolvingEarly() {

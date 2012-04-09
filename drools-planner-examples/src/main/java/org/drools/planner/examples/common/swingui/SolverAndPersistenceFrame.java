@@ -228,7 +228,7 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private class SolveAction extends AbstractAction {
 
-        // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
+        // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
         private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
 
         public SolveAction() {
@@ -237,17 +237,24 @@ public class SolverAndPersistenceFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             setSolvingState(true);
+            final Solution planningProblem = solutionBusiness.getSolution(); // In event thread
             // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
             solvingExecutor.submit(new Runnable() {
                 public void run() {
+                    Solution bestSolution;
                     try {
-                        solutionBusiness.solve();
+                        bestSolution = solutionBusiness.solve(planningProblem); // Not in event thread
                     } catch (final Throwable e) {
                         // Otherwise the newFixedThreadPool will eat the exception...
                         logger.error("Solving failed.", e);
+                        bestSolution = null;
                     }
+                    final Solution newSolution = bestSolution;
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
+                            if (newSolution != null) {
+                                solutionBusiness.setSolution(newSolution); // In event thread
+                            }
                             setSolvingState(false);
                             resetScreen();
                         }
