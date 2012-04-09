@@ -47,7 +47,7 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
             descendingDiagonalIndexMap.put(i, new ArrayList<Queen>(n));
             if (i != 0) {
                 ascendingDiagonalIndexMap.put(n - 1 + i, new ArrayList<Queen>(n));
-                descendingDiagonalIndexMap.put(-i, new ArrayList<Queen>(n));
+                descendingDiagonalIndexMap.put((-i), new ArrayList<Queen>(n));
             }
         }
         score = 0;
@@ -93,7 +93,8 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
     private void insert(Queen queen) {
         Row row = queen.getRow();
         if (row != null) {
-            List<Queen> rowIndexList = rowIndexMap.get(queen.getRowIndex());
+            int rowIndex = queen.getRowIndex();
+            List<Queen> rowIndexList = rowIndexMap.get(rowIndex);
             score -= rowIndexList.size();
             rowIndexList.add(queen);
             List<Queen> ascendingDiagonalIndexList = ascendingDiagonalIndexMap.get(queen.getAscendingDiagonalIndex());
