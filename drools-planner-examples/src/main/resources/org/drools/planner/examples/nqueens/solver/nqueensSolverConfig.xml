@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <environmentMode>TRACE</environmentMode>
+  <environmentMode>DEBUG</environmentMode>
   <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
 
@@ -8,6 +8,7 @@
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <!--<simpleScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator</simpleScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensBasicIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+    <!--<incrementalScoreCalculatorClass>org.drools.planner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
