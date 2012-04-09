@@ -85,6 +85,8 @@ public class Task implements Externalizable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Task_Id", nullable = true)
     private List<SubTasksStrategy> subTaskStrategies = Collections.emptyList();
+    
+    private boolean archived = false;
 
     public Task() {
     }
@@ -92,7 +94,7 @@ public class Task implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
         out.writeInt( priority );
-
+        out.writeBoolean( archived );
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
@@ -136,7 +138,7 @@ public class Task implements Externalizable {
                                             ClassNotFoundException {
         id = in.readLong();
         priority = in.readInt();
-
+        archived = in.readBoolean();
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
@@ -172,7 +174,7 @@ public class Task implements Externalizable {
        subTaskStrategies = list;
 
     }
-
+    
     public Long getId() {
         return id;
     }
@@ -181,6 +183,14 @@ public class Task implements Externalizable {
         this.id = id;
     }
 
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+    
     public int getVersion() {
         return this.version;
     }
