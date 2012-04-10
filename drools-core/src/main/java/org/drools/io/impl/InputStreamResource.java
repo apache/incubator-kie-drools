@@ -28,21 +28,37 @@ import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
 public class InputStreamResource  extends BaseResource implements InternalResource {
+
     private transient InputStream stream;
-    
+    private String encoding;
+
     public InputStreamResource(InputStream stream) {
+        this(stream, null);
+    }
+
+    public InputStreamResource(InputStream stream,
+                               String encoding) {
         if ( stream == null ) {
             throw new IllegalArgumentException( "stream cannot be null" );
         }
         this.stream = stream;
+        this.encoding = encoding;
     }
 
     public InputStream getInputStream() throws IOException {
         return stream;
     }
-    
+
+    public String getEncoding() {
+        return encoding;
+    }
+
     public Reader getReader() throws IOException {
-        return new InputStreamReader( getInputStream() );
+        if (encoding == null) {
+            return new InputStreamReader( getInputStream() );
+        } else {
+            return new InputStreamReader( getInputStream(), encoding );
+        }
     }
 
     public URL getURL() throws IOException {
