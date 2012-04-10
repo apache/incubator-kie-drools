@@ -2248,6 +2248,39 @@ public class AverageAccumulateFunction implements AccumulateFunction {
         </section>
 
         <section>
+
+          <title>Alternate Syntax: single function with return type</title>
+
+          <para>The accumulate syntax evolved over time with the goal of
+          becoming more compact and expressive. Nevertheless, Drools still
+          supports previous sintaxes for backward compatibility
+          purposes.</para>
+
+          <para>In case the rule is using a single accumulate function on a
+          given accumulate, the author may add a pattern for the result object
+          and use the "from" keyword to link it to the accumulate result.
+          Example: a rule to apply a 10% discount on orders over $100 could be
+          written in the following way:</para>
+
+          <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue &gt; 100 ) 
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              sum( $value ) )
+then
+    # apply discount to $order
+end</programlisting>
+
+          <para>In the above example, the accumulate element is using only one
+          function (sum), and so, the rules author opted to explicitly write a
+          pattern for the result type of the accumulate function (Number) and
+          write the constraints inside it. There are no problems in using this
+          syntax over the compact syntax presented before, except that is is a
+          bit more verbose.</para>
+        </section>
+
+        <section>
           <title>Accumulate with inline custom code</title>
 
           <warning>
@@ -2941,7 +2974,10 @@ eval( isValid( p1, p2 ) )</programlisting>
       for you, via an identity check, for the passed object. (Note that if you
       provide Property Change Listeners to your Java beans that you are
       inserting into the engine, you can avoid the need to call
-      <code>update()</code> when the object changes.)</para>
+      <code>update()</code> when the object changes.). After a fact's field
+      values have changed you must call update before changing another fact,
+      or you will cause problems with the indexing within the rule engine. The
+      modify keyword avoids this problem.</para>
 
       <para><literal>insert(new</literal>
       <emphasis>Something</emphasis><literal>());</literal> will place a new
