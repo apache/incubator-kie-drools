@@ -163,19 +163,17 @@ ksession.retract( stiltonHandle );            </programlisting>
         <title>Update</title>
 
         <para>The Rule Engine must be notified of modified facts, so that they
-        can be reprocessed. Internally, modification is actually a retract
-        followed by an insert; the Rule Engine removes the fact from the
-        <code>WorkingMemory</code> and inserts it again. You must use the
-        <code>update()</code> method to notify the <code>WorkingMemory</code>
-        of changed objects for those objects that are not able to notify the
-        <code>WorkingMemory</code> themselves. Notice that
-        <code>update()</code> always takes the modified object as a second
-        parameter, which allows you to specify new instances for immutable
-        objects. The <code>update()</code> method can only be used with
-        objects that have shadow proxies turned on. The update method is only
-        available within Java code. On the right hand side of a rule, also the
-        <literal>modify</literal> statement is supported, providing simplified
-        calls to the object's setters.</para>
+        can be reprocessed. You must use the <code>update()</code> method to
+        notify the <code>WorkingMemory</code> of changed objects for those
+        objects that are not able to notify the <code>WorkingMemory</code>
+        themselves. Notice that <code>update()</code> always takes the
+        modified object as a second parameter, which allows you to specify new
+        instances for immutable objects. On the right hand side of a rule the
+        <literal>modify</literal> statement is recommended, as it makes the
+        changes and notifies the engine in a single statement. After a fact's
+        field values have changed you must call update before changing another
+        fact, or you will cause problems with the indexing within the rule
+        engine. The modify keyword avoids this problem.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );
