@@ -21,7 +21,9 @@ import org.drools.compiler.DecisionTableFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
+import org.junit.Ignore;
 
+@Ignore
 public class UnicodeInXLSTest {
 
 	@Test
