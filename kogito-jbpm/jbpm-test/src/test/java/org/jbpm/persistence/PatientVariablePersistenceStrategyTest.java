@@ -1,17 +1,35 @@
-package org.jbpm.persistence.session;
+package org.jbpm.persistence;
 
-import java.io.*;
-import java.util.*;
-import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static junit.framework.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListenerFactory;
-import org.drools.builder.*;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -24,11 +42,10 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
-import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.session.objects.MedicalRecord;
-import org.jbpm.persistence.session.objects.MockUserInfo;
-import org.jbpm.persistence.session.objects.Patient;
-import org.jbpm.persistence.session.objects.RecordRow;
+import org.jbpm.persistence.objects.MedicalRecord;
+import org.jbpm.persistence.objects.MockUserInfo;
+import org.jbpm.persistence.objects.Patient;
+import org.jbpm.persistence.objects.RecordRow;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
@@ -40,31 +57,39 @@ import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
+public class PatientVariablePersistenceStrategyTest {
 
     private static Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
     private HashMap<String, Object> context;
+    
     private EntityManagerFactory emf;
     private EntityManagerFactory emfDomain;
     private EntityManagerFactory emfTasks;
+    
     protected Map<String, User> users;
     protected Map<String, Group> groups;
+    
     protected TaskService taskService;
     protected LocalTaskService localTaskService;
     protected TaskServiceSession taskSession;
+    
     protected MockUserInfo userInfo;
     protected Properties conf;
 
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        context = setupWithPoolingDataSource("org.jbpm.runtime", false);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
 
         conf = new Properties();
@@ -73,6 +98,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
         conf.setProperty("from", "from@domain.com");
         conf.setProperty("replyTo", "replyTo@domain.com");
         conf.setProperty("defaultLanguage", "en-UK");
+        
         SendIcal.initInstance(conf);
 
         // Use persistence.xml configuration
@@ -120,7 +146,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        cleanUp(context);
         
         if(localTaskService != null){
             System.out.println("Disposing Local Task Service session");
@@ -130,11 +156,6 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
             System.out.println("Disposing session");
             taskSession.dispose();
         }
-    }
-
-    @AfterClass
-    public static void compareMarshalledData() {
-        MarshallingTestUtil.compareMarshallingDataFromTest(JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @Test

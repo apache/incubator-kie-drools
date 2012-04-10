@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.persistence.session.objects;
+package org.jbpm.persistence.objects;
 
 import java.util.HashMap;
 import java.util.Iterator;
