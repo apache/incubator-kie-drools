@@ -2260,8 +2260,8 @@ public class AverageAccumulateFunction implements org.drools.runtime.rule.TypedA
 
           <para>The accumulate syntax evolved over time with the goal of
           becoming more compact and expressive. Nevertheless, Drools still
-          supports previous sintaxes for backward compatibility purposes.
-          </para>
+          supports previous sintaxes for backward compatibility
+          purposes.</para>
 
           <para>In case the rule is using a single accumulate function on a
           given accumulate, the author may add a pattern for the result object
@@ -3148,7 +3148,10 @@ eval( isValid( p1, p2 ) )</programlisting>
       for you, via an identity check, for the passed object. (Note that if you
       provide Property Change Listeners to your Java beans that you are
       inserting into the engine, you can avoid the need to call
-      <code>update()</code> when the object changes.)</para>
+      <code>update()</code> when the object changes.). After a fact's field
+      values have changed you must call update before changing another fact,
+      or you will cause problems with the indexing within the rule engine. The
+      modify keyword avoids this problem.</para>
 
       <para><literal>insert(new</literal>
       <emphasis>Something</emphasis><literal>());</literal> will place a new
