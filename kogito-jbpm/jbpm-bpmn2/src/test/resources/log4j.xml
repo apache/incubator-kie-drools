@@ -9,16 +9,7 @@
 	</appender>
 
 	<logger name="org.jbpm">
-		<level value="DEBUG"/>
-	</logger>
-
-    <!--  marshalling utils -->
-	<logger name="org.drools.marshalling.util.CompareViaReflectionUtil">
 		<level value="INFO"/>
-	</logger>
-  
-	<logger name="org.drools.marshalling.util">
-		<level value="DEBUG"/>
 	</logger>
 
     <!-- bitronix -->	
