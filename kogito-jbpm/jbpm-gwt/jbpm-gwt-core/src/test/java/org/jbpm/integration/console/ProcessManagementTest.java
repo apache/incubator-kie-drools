@@ -6,14 +6,14 @@ import java.util.List;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
-import org.jbpm.integration.JbpmTestCase;
+import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class ProcessManagementTest extends JbpmTestCase {
+public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 
 	ProcessManagement processManager = new ProcessManagement();
 

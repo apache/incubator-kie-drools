@@ -48,11 +48,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a.. wacky test (suite). 
  * 
- * ! Adding a @AfterClass method will mess up the tests. 
+ * ! Adding an @AfterClass method will mess up the tests. 
  */
-public abstract class JbpmTestCase extends Assert {
+public abstract class JbpmGwtCoreTestCase extends Assert {
 
-    private static Logger logger = LoggerFactory.getLogger(JbpmTestCase.class);
+    private static Logger logger = LoggerFactory.getLogger(JbpmGwtCoreTestCase.class);
     
 	private static HashMap<String, Object> context = null;
 	private static EntityManagerFactory emf;
@@ -110,11 +110,7 @@ public abstract class JbpmTestCase extends Assert {
  	
 	@SuppressWarnings("rawtypes")
 	public static Object eval(Reader reader, Map vars) {
-        try {
-            return eval( readerToString( reader ), vars );
-        } catch ( IOException e ) {
-            throw new RuntimeException( "Exception Thrown", e );
-        }
+	    return TaskService.eval(reader, vars);
     }
     
     public static String readerToString(Reader reader) throws IOException {
@@ -127,37 +123,6 @@ public abstract class JbpmTestCase extends Assert {
         return sb.toString();
     }
 
-    @SuppressWarnings({ "deprecation", "rawtypes" })
-	public static Object eval(String str, Map vars) {
-        ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
-
-        ParserContext context = new ParserContext();
-        context.addPackageImport( "org.jbpm.task" );
-        context.addPackageImport( "java.util" );
-        
-        context.addImport( "AccessType", AccessType.class );
-        context.addImport( "AllowedToDelegate", AllowedToDelegate.class );
-        context.addImport( "Attachment", Attachment.class );
-        context.addImport( "BooleanExpression", BooleanExpression.class );
-        context.addImport( "Comment", Comment.class );
-        context.addImport( "Deadline", Deadline.class );
-        context.addImport( "Deadlines", Deadlines.class );
-        context.addImport( "Delegation", Delegation.class );
-        context.addImport( "Escalation", Escalation.class );
-        context.addImport( "Group", Group.class );
-        context.addImport( "I18NText", I18NText.class );
-        context.addImport( "Notification", Notification.class );
-        context.addImport( "OrganizationalEntity", OrganizationalEntity.class );
-        context.addImport( "PeopleAssignments", PeopleAssignments.class );
-        context.addImport( "Reassignment", Reassignment.class );
-        context.addImport( "Status", Status.class );
-        context.addImport( "Task", Task.class );
-        context.addImport( "TaskData", TaskData.class );
-        context.addImport( "TaskSummary", TaskSummary.class );
-        context.addImport( "User", User.class );
-
-        return MVEL.executeExpression( compiler.compile( context ), vars );
-    }
 
 }
 

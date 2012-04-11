@@ -6,12 +6,12 @@ import java.util.List;
 import org.drools.runtime.process.NodeInstance;
 import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
-import org.jbpm.integration.JbpmTestCase;
+import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class TransformTest extends JbpmTestCase {
+public class TransformTest extends JbpmGwtCoreTestCase {
 
 	@Test
 	public void testProcessDefinition(){

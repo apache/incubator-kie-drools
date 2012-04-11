@@ -1,11 +1,11 @@
 package org.jbpm.integration.console;
 
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.integration.JbpmTestCase;
+import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class StatefulKnowledgeSessionUtilTest extends JbpmTestCase {
+public class StatefulKnowledgeSessionUtilTest extends JbpmGwtCoreTestCase {
 
     @Test
     public void generalTest() { 

@@ -1,6 +1,6 @@
 package org.jbpm.integration.console;
 
-import org.jbpm.integration.JbpmTestCase;
+import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientConnector;
@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class TaskManagementTest extends JbpmTestCase {
+public class TaskManagementTest extends JbpmGwtCoreTestCase {
 	
 	TaskManagement taskManager;
 	

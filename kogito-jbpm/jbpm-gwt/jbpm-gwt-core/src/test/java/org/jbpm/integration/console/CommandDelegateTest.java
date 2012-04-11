@@ -2,12 +2,12 @@ package org.jbpm.integration.console;
 
 import java.util.HashMap;
 
-import org.jbpm.integration.JbpmTestCase;
+import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Test;
 
 
-public class CommandDelegateTest extends JbpmTestCase {
+public class CommandDelegateTest extends JbpmGwtCoreTestCase {
     
 	@Test
 	public void testGetProcesses() {
