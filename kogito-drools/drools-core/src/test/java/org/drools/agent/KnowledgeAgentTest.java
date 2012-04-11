@@ -25,7 +25,9 @@ import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.Ignore;
 
+@Ignore
 public class KnowledgeAgentTest {
 
 	private static final String CHANGE_SET = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " +
