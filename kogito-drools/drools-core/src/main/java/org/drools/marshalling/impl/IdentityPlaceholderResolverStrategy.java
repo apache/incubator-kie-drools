@@ -63,6 +63,7 @@ public class IdentityPlaceholderResolverStrategy
     }
 
     public byte[] marshal(Context context,
+                          ObjectOutputStream os,
                           Object object) {
         Integer id = ( Integer ) objects.get( object );
         if ( id == null ) {
@@ -74,6 +75,7 @@ public class IdentityPlaceholderResolverStrategy
     }
 
     public Object unmarshal(Context context,
+                            ObjectInputStream is,
                             byte[] object, 
                             ClassLoader classloader ) {
         return ids.get( byteArrayToInt( object ) );

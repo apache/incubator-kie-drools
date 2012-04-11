@@ -498,6 +498,7 @@ public class ProtobufInputMarshaller {
         if ( _handle.hasStrategyIndex() ) {
             strategy = context.usedStrategies.get( _handle.getStrategyIndex() );
             object = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                         context,
                                          _handle.getObject().toByteArray(), 
                                          (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
         }

@@ -565,6 +565,7 @@ public class ProtobufOutputMarshaller {
             Integer index = context.getStrategyIndex( strategy );
             _handle.setStrategyIndex( index.intValue() );
             _handle.setObject( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                      context,
                                                                       object ) ) );
         }
 

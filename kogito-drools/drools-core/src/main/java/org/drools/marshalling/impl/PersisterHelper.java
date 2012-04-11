@@ -321,5 +321,29 @@ public class PersisterHelper {
                 + (b[3] & 0xFF);
     }
     
-    
+    // more efficient than instantiating byte buffers and opening streams
+    public static final byte[] longToByteArray(long value) {
+        return new byte[]{
+                (byte) ((value >>> 56) & 0xFF),
+                (byte) ((value >>> 48) & 0xFF),
+                (byte) ((value >>> 40) & 0xFF),
+                (byte) ((value >>> 32) & 0xFF),
+                (byte) ((value >>> 24) & 0xFF),
+                (byte) ((value >>> 16) & 0xFF),
+                (byte) ((value >>> 8) & 0xFF),
+                (byte) (value & 0xFF)};
+    }
+
+    public static final long byteArrayToLong(byte[] b) {
+        return ((((long)b[0]) & 0xFF) << 56)
+               + ((((long)b[1]) & 0xFF) << 48)
+               + ((((long)b[2]) & 0xFF) << 40)
+               + ((((long)b[3]) & 0xFF) << 32)
+               + ((((long)b[4]) & 0xFF) << 24)
+               + ((((long)b[5]) & 0xFF) << 16)
+               + ((((long)b[6]) & 0xFF) << 8)
+               + (((long)b[7]) & 0xFF);
+    }    
+
+
 }
