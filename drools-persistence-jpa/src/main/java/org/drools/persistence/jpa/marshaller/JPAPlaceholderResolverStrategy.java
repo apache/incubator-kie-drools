@@ -61,7 +61,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return em.find(Class.forName(canonicalName), id);
     }
 
-    public byte[] marshal(ObjectOutputStream os,
+    public byte[] marshal(Context context,
                           Object object) throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
@@ -71,7 +71,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         return buff.toByteArray();
     }
 
-    public Object unmarshal(ObjectInputStream os,
+    public Object unmarshal(Context context,
                             byte[] object,
                             ClassLoader classloader) throws IOException,
                                                     ClassNotFoundException {
@@ -81,6 +81,11 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
         EntityManager em = emf.createEntityManager();
         return em.find(Class.forName(canonicalName), id);
+    }
+    
+    public Context createContext() {
+        // no need for context
+        return null;
     }
     
     public static Serializable getClassIdValue(Object o)  {
