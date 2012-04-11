@@ -211,6 +211,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     <section>
       <title>Fluent simulation testing</title>
 
+      <para><emphasis>This API is experimental: future backwards incompatible changes are possible.</emphasis></para>
+
       <para>Using the new fluent simulation testing, you can test your rules in unit tests more easily:</para>
 
       <programlisting language="java">    @Test
