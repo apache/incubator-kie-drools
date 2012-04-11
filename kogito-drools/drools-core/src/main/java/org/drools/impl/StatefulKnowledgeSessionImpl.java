@@ -161,11 +161,12 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
+        // TODO incompatible with the javadoc of the implemented method which states "Returns all event listeners"
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
         for ( Object listener : this.session.getWorkingMemoryEventListeners() ) {
             if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
                 listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
-            } else {
+            } else if (listener instanceof WorkingMemoryEventListener) {
                 listeners.add( (WorkingMemoryEventListener) listener );
             }
         }
@@ -178,11 +179,12 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
+        // TODO incompatible with the javadoc of the implemented method which states "Returns all event listeners"
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
         for ( Object listener : this.session.getAgendaEventListeners() ) {
             if ( listener instanceof AgendaEventListenerWrapper ) {
                 listeners.add( ((AgendaEventListenerWrapper) listener).unWrap() );
-            } else {
+            } else if (listener instanceof AgendaEventListener) {
                 listeners.add( (AgendaEventListener) listener );
             }
         }
