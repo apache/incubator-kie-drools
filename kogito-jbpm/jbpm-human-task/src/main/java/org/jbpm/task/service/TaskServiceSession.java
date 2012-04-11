@@ -96,12 +96,16 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
     public void addUser(final User user) {
         if (!this.tpm.userExists(user.getId())) {
             persistInTransaction(user);
+        } else {
+            logger.warn("User " + user.getId() + " already exist in Task Server");
         }
     }
 
     public void addGroup(final Group group) {
         if (!this.tpm.groupExists(group.getId())) {
             persistInTransaction(group);
+        } else {
+            logger.warn("Group " + group.getId() + " already exist in Task Server");
         }
     }
 
