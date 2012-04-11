@@ -34,25 +34,42 @@ public interface ObjectMarshallingStrategy {
      * of writing the object into an output stream, it returns
      * the marshalled object as a byte[].
      * 
-     * @param os the context for the marshalling
+     * @param the context for this strategy created by the method #createContext()
      * @param object the object to be marshalled
      * 
      * @return the marshalled byte[] of the input object
      */
-    public byte[] marshal( ObjectOutputStream os,
+    public byte[] marshal( Context context,
                            Object object ) throws IOException;
     
     /**
      * This method is analogous to the read method, but instead of reading it from an 
      * input stream, it reads it from a byte[]
      * 
-     * @param os the context for the unmarshalling
+     * @param the context for this strategy created by the method #createContext()
      * @param object the marshalled object in a byte[]
      * 
      * @return the unmarshalled Object
      */
-    public Object unmarshal( ObjectInputStream os,
+    public Object unmarshal( Context context,
                              byte[] object,
                              ClassLoader classloader ) throws IOException, ClassNotFoundException;
+
+    /**
+     * Creates a new marshalling context
+     */
+    public Context createContext();
+    
+    public static interface Context {
+        /**
+         * Loads the context from the given object input stream
+         */
+        public void read(ObjectInputStream ois) throws IOException, ClassNotFoundException;
+
+        /**
+         * Writes the context to the given object output stream 
+         */
+        public void write(ObjectOutputStream oos) throws IOException;
+    }
 
 }
