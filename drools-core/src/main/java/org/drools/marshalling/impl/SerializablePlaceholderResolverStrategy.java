@@ -60,6 +60,7 @@ public class SerializablePlaceholderResolverStrategy
     }
 
     public byte[] marshal(Context context,
+                          ObjectOutputStream os,
                           Object object) throws IOException {
         
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
@@ -69,6 +70,7 @@ public class SerializablePlaceholderResolverStrategy
     }
 
     public Object unmarshal(Context context,
+                            ObjectInputStream is,
                             byte[] object, 
                             ClassLoader classloader) throws IOException, ClassNotFoundException {
         SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
