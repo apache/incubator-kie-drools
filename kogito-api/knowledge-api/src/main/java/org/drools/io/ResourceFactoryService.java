@@ -47,6 +47,9 @@ public interface ResourceFactoryService extends Service {
 
     Resource newInputStreamResource(InputStream stream);
 
+    Resource newInputStreamResource(InputStream stream,
+                                    String encoding);
+
     Resource newReaderResource(Reader reader);
 
     Resource newReaderResource(Reader reader,
@@ -58,6 +61,17 @@ public interface ResourceFactoryService extends Service {
                                   ClassLoader classLoader);
 
     Resource newClassPathResource(String path,
+                                  Class<?> clazz);
+
+    Resource newClassPathResource(String path,
+                                  String encoding);
+
+    Resource newClassPathResource(String path,
+                                  String encoding,
+                                  ClassLoader classLoader);
+
+    Resource newClassPathResource(String path,
+                                  String encoding,
                                   Class<?> clazz);
 
     Resource newDescrResource( KnowledgeDescr descr );
