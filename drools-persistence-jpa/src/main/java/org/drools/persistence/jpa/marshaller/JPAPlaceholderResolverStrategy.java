@@ -62,6 +62,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public byte[] marshal(Context context,
+                          ObjectOutputStream os, 
                           Object object) throws IOException {
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
@@ -72,6 +73,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
     }
 
     public Object unmarshal(Context context,
+                            ObjectInputStream ois,
                             byte[] object,
                             ClassLoader classloader) throws IOException,
                                                     ClassNotFoundException {
