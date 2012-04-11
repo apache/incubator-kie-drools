@@ -38,6 +38,7 @@ public class HelloWorldTest extends CommonTestMethodBase {
         testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
                  "target/test-tmp/testHelloWorld" );
+        ksession.getAgendaEventListeners().size();
         // go !
         Message message = new Message();
         message.setMessage("Hello World");
