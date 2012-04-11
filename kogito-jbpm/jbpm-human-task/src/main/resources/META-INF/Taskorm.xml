@@ -30,6 +30,7 @@ from
     left join t.names as name,
     OrganizationalEntity businessAdministrator
 where
+    t.archived = false and
     businessAdministrator.id = :userId and
     businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and
 
@@ -79,6 +80,7 @@ from
     left join t.names as name,
     OrganizationalEntity excludedOwners
 where
+    t.archived = false and
     excludedOwners.id = :userId and
     excludedOwners in elements ( t.peopleAssignments.excludedOwners  )  and
 
@@ -129,6 +131,7 @@ from
     left join t.names as name,
     OrganizationalEntity potentialOwners
 where
+    t.archived = false and
     potentialOwners.id = :userId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
@@ -181,6 +184,7 @@ from
     left join t.names as name,
     OrganizationalEntity potentialOwners
 where
+    t.archived = false and
     ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
 
@@ -234,6 +238,7 @@ from
     left join t.names as name,
     OrganizationalEntity potentialOwners
 where
+    t.archived = false and
     potentialOwners.id = :groupId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
@@ -287,6 +292,7 @@ from
     left join t.names as name,
     OrganizationalEntity potentialOwners
 where
+    t.archived = false and
     t.taskData.parentId = :parentId and
     potentialOwners.id = :userId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
@@ -338,6 +344,7 @@ from
     left join t.descriptions as description
     left join t.names as name
 where
+    t.archived = false and
     t.taskData.parentId = :parentId and
     
     (
@@ -390,6 +397,7 @@ from
     left join t.names as name,
     OrganizationalEntity recipients
 where
+    t.archived = false and
     recipients.id = :userId and
     recipients in elements ( t.peopleAssignments.recipients  )  and
 
@@ -439,6 +447,7 @@ from
     left join t.names as name,
     OrganizationalEntity taskInitiator
 where
+    t.archived = false and
     taskInitiator.id = :userId and
     taskInitiator = t.peopleAssignments.taskInitiator and
 
@@ -488,6 +497,7 @@ from
     left join t.names as name,
     OrganizationalEntity taskStakeholder
 where
+    t.archived = false and
     taskStakeholder.id = :userId and
     taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  and
 
@@ -536,6 +546,7 @@ from
     left join t.descriptions as description
     left join t.names as name
 where
+    t.archived = false and
     t.taskData.actualOwner.id = :userId and
 
     (
@@ -583,8 +594,57 @@ where
             left join t.descriptions as description
             left join t.names as name
             where
+            t.archived = false and
             t.taskData.status = :status and
 
+            (
+            name.language = :language
+            or t.names.size = 0
+            ) and
+
+            (
+            subject.language = :language
+            or t.subjects.size = 0
+            ) and
+
+            (
+            description.language = :language
+            or t.descriptions.size = 0
+            ) and
+
+            t.taskData.expirationTime is null
+        </query>
+          <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="TasksByStatusByProcessId">
+        <query>
+            select
+            new org.jbpm.task.query.TaskSummary(
+            t.id,
+            t.taskData.processInstanceId,
+            name.text,
+            subject.text,
+            description.text,
+            t.taskData.status,
+            t.priority,
+            t.taskData.skipable,
+            t.taskData.actualOwner,
+            t.taskData.createdBy,
+            t.taskData.createdOn,
+            t.taskData.activationTime,
+            t.taskData.expirationTime,
+            t.taskData.processId,
+            t.taskData.processSessionId)
+            from
+            Task t 
+            left join t.taskData.createdBy
+            left join t.subjects as subject
+            left join t.descriptions as description
+            left join t.names as name
+            where
+            t.archived = false and
+            t.taskData.status = :status and
+            t.taskData.processInstanceId = :processId and
             (
             name.language = :language
             or t.names.size = 0
@@ -630,8 +690,9 @@ where
             left join t.descriptions as description
             left join t.names as name
             where
+            t.archived = false and
             t.taskData.status = :status and
-
+            
             (
             name.language = :language
             or t.names.size = 0
@@ -714,6 +775,7 @@ from
     Task t,
     Deadline d
 where
+    t.archived = false and
     (d in elements( t.deadlines.startDeadlines ) or d in elements( t.deadlines.endDeadlines ) ) and
     d.escalated = false
 order by
@@ -728,6 +790,7 @@ select
 from
     Task t
 where
+    t.archived = false and
     t.taskData.workItemId = :workItemId
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->

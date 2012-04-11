@@ -30,33 +30,38 @@ import org.slf4j.LoggerFactory;
 
 public class TasksAdminImpl extends TaskPersistenceManagerAccessor implements TasksAdmin {
 
-    protected EntityManagerFactory emf;
+    
     protected TaskPersistenceManager tpm;
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
 
     public TasksAdminImpl(EntityManagerFactory emf) {
-        this.emf = emf;
+        
         this.tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
     }
 
     public List<TaskSummary> getActiveTasks() {
-        EntityManager em = emf.createEntityManager();
-        return em.createNamedQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").getResultList();
+        
+        return tpm.createQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").getResultList();
     }
 
     public List<TaskSummary> getActiveTasks(Date since) {
-        EntityManager em = emf.createEntityManager();
-        return em.createNamedQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").setParameter("since", since).getResultList();
+        
+        return tpm.createQuery("TasksByStatus").setParameter("status", Status.InProgress).setParameter("language", "en-UK").setParameter("since", since).getResultList();
     }
 
     public List<TaskSummary> getCompletedTasks() {
-        EntityManager em = emf.createEntityManager();
-        return em.createNamedQuery("TasksByStatus").setParameter("status", Status.Completed).setParameter("language", "en-UK").getResultList();
+        return tpm.createQuery("TasksByStatus").setParameter("status", Status.Completed).setParameter("language", "en-UK").getResultList();
     }
 
     public List<TaskSummary> getCompletedTasks(Date since) {
-        EntityManager em = emf.createEntityManager();
-        return em.createNamedQuery("TasksByStatusSince").setParameter("status", Status.Completed).setParameter("language", "en-UK").setParameter("since", since).getResultList();
+        return tpm.createQuery("TasksByStatusSince").setParameter("status", Status.Completed).setParameter("language", "en-UK").setParameter("since", since).getResultList();
+    }
+    public List<TaskSummary> getCompletedTasksByProcessId(Long processId) {
+        
+        return tpm.createQuery("TasksByStatusByProcessId")
+                .setParameter("status", Status.Completed)
+                .setParameter("language", "en-UK")
+                .setParameter("processId", processId).getResultList();
     }
 
     public int archiveTasks(List<TaskSummary> tasks) {
@@ -94,7 +99,12 @@ public class TasksAdminImpl extends TaskPersistenceManagerAccessor implements Ta
     }
 
     public List<TaskSummary> getArchivedTasks() {
-        EntityManager em = emf.createEntityManager();
-        return em.createNamedQuery("ArchivedTasks").setParameter("language", "en-UK").getResultList();
+        return tpm.createQuery("ArchivedTasks").setParameter("language", "en-UK").getResultList();
     }
+
+    public void dispose() {
+        this.tpm.endPersistenceContext();
+    }
+    
+    
 }

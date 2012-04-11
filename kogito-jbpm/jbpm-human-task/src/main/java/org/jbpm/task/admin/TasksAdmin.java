@@ -25,7 +25,9 @@ public interface TasksAdmin {
     public List<TaskSummary> getActiveTasks(Date since);
     public List<TaskSummary> getCompletedTasks();
     public List<TaskSummary> getCompletedTasks(Date since); 
+    public List<TaskSummary> getCompletedTasksByProcessId(Long processId); 
     public int archiveTasks(List<TaskSummary> tasks);
     public List<TaskSummary> getArchivedTasks(); 
     public int removeTasks(List<TaskSummary> tasks);
+    public void dispose();
 }

@@ -1,4 +1,4 @@
-package org.jbpm.persistence;
+package org.jbpm.tasks.admin;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -30,16 +29,13 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
-import org.drools.marshalling.util.MarshallingTestUtil;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.persistence.objects.MedicalRecord;
@@ -51,6 +47,8 @@ import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
+import org.jbpm.task.admin.TasksAdmin;
+import org.jbpm.task.admin.TasksAdminImpl;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.SendIcal;
@@ -58,7 +56,6 @@ import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,25 +65,21 @@ import org.mvel2.compiler.ExpressionCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PatientVariablePersistenceStrategyTest {
+public class AdminAPIsWithListenerTest {
 
-    private static Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
+    private static Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
     private HashMap<String, Object> context;
-    
     private EntityManagerFactory emf;
     private EntityManagerFactory emfDomain;
     private EntityManagerFactory emfTasks;
-    
     protected Map<String, User> users;
     protected Map<String, Group> groups;
-    
     protected TaskService taskService;
     protected LocalTaskService localTaskService;
     protected TaskServiceSession taskSession;
-    
     protected MockUserInfo userInfo;
     protected Properties conf;
-
+    protected TasksAdmin admin;
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource("org.jbpm.runtime", false);
@@ -98,12 +91,14 @@ public class PatientVariablePersistenceStrategyTest {
         conf.setProperty("from", "from@domain.com");
         conf.setProperty("replyTo", "replyTo@domain.com");
         conf.setProperty("defaultLanguage", "en-UK");
-        
+
         SendIcal.initInstance(conf);
 
         // Use persistence.xml configuration
-        emfDomain = Persistence.createEntityManagerFactory("org.jbpm.persistence.patient.example");
+
         emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
+        
+        admin = new TasksAdminImpl(emfTasks);
         Reader reader = null;
         Map vars = new HashMap();
         try {
@@ -148,121 +143,100 @@ public class PatientVariablePersistenceStrategyTest {
     public void tearDown() throws Exception {
         cleanUp(context);
         
-        if(localTaskService != null){
+        if (localTaskService != null) {
             System.out.println("Disposing Local Task Service session");
             localTaskService.disconnect();
         }
-        if(taskSession != null){
+        if (taskSession != null) {
             System.out.println("Disposing session");
             taskSession.dispose();
         }
+        
+        admin.dispose();
+        
         if(emfTasks != null && emfTasks.isOpen()){
             emfTasks.close();
-        }
-        if(emfDomain != null && emfDomain.isOpen()){
-            emfDomain.close();
         }
     }
 
     @Test
-    public void simplePatientMedicalRecordTest() throws Exception {
-        Patient salaboy = new Patient("salaboy");
-        MedicalRecord medicalRecord = new MedicalRecord("Last Three Years Medical Hisotry", salaboy);
-
-        EntityManager em = emfDomain.createEntityManager();
+    public void automaticCleanUpTest() throws Exception {
         
-        em.getTransaction().begin();
-        em.persist(medicalRecord);
-        em.getTransaction().commit();
+
+
         Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
         StatefulKnowledgeSession ksession = createSession(kbase, env);
+        KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
         SyncWSHumanTaskHandler htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
         htHandler.setLocal(true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
+        ksession.addEventListener(new DefaultProcessEventListener(){
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                System.out.println(" ### PROCESS COMPLETED: "+event.getProcessInstance().getId());
+                List<TaskSummary> completedTasksByProcessId = admin.getCompletedTasksByProcessId(event.getProcessInstance().getId());
+                System.out.println(" ### Completed Tasks:" + completedTasksByProcessId.size());
+                for(TaskSummary t : completedTasksByProcessId){
+                    System.out.println("/t ### Completed Task Id:" + t.getId() +" - Name: "+t.getName());
+                }
+                int archiveTasks = admin.archiveTasks(completedTasksByProcessId);
+                assertEquals(3, archiveTasks);
+                int removeTasks = admin.removeTasks(completedTasksByProcessId);
+                assertEquals(3, removeTasks);
+            }
+        });
+        
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("medicalRecord", medicalRecord);
-        ProcessInstance process = ksession.startProcess("org.jbpm.PatientAppointment", parameters); 
+        
+        ProcessInstance process = ksession.startProcess("org.jbpm.PatientAppointment", parameters);
         long processInstanceId = process.getId();
 
         //The process is in the first Human Task waiting for its completion
         Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
-        
+
         //gets frontDesk's tasks
         List<TaskSummary> frontDeskTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("frontDesk", "en-UK");
         Assert.assertEquals(1, frontDeskTasks.size());
-        
-         //doctor doesn't have any task
+
+        //doctor doesn't have any task
         List<TaskSummary> doctorTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
         Assert.assertTrue(doctorTasks.isEmpty());
-        
+
         //manager doesn't have any task
         List<TaskSummary> managerTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertTrue(managerTasks.isEmpty());
-        
-        
+
+
         this.localTaskService.start(frontDeskTasks.get(0).getId(), "frontDesk");
-        //frontDesk completes its task
-        MedicalRecord taskMedicalRecord = getTaskContent(frontDeskTasks.get(0));
-        Assert.assertNotNull(taskMedicalRecord.getId());
-        taskMedicalRecord.setDescription("Initial Description of the Medical Record");
-        
-        em.getTransaction().begin();
-        em.merge(taskMedicalRecord);
-        em.getTransaction().commit();
-        
-        
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        
+       
         this.localTaskService.complete(frontDeskTasks.get(0).getId(), "frontDesk", null);
-        
+
         //Now doctor has 1 task
         doctorTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("doctor", "en-UK");
         Assert.assertEquals(1, doctorTasks.size());
-        
-         //No tasks for manager yet
+
+        //No tasks for manager yet
         managerTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertTrue(managerTasks.isEmpty());
-        
-        taskMedicalRecord = getTaskContent(doctorTasks.get(0));
-        
+
+
         this.localTaskService.start(doctorTasks.get(0).getId(), "doctor");
-        //Check that we have the Modified Document
-        Assert.assertEquals("Initial Description of the Medical Record", taskMedicalRecord.getDescription());
-        em.getTransaction().begin();
-        taskMedicalRecord.setDescription("Medical Record Validated by Doctor");
-        List<RecordRow> rows = new ArrayList<RecordRow>();
-        rows.add(new RecordRow("CODE-999", "Just a regular Cold"));
-        taskMedicalRecord.setRows(rows);
-        taskMedicalRecord.setPriority(1);
-        
-        em.getTransaction().commit();
-        
-       
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        
+
         this.localTaskService.complete(doctorTasks.get(0).getId(), "doctor", null);
-        
-         // tasks for manager 
+
+        // tasks for manager 
         managerTasks = this.localTaskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertEquals(1, managerTasks.size());
         this.localTaskService.start(managerTasks.get(0).getId(), "manager");
-        
-        em.getTransaction().begin();
-        Patient patient = taskMedicalRecord.getPatient();
-        patient.setNextAppointment(new Date());
-        
-        em.getTransaction().commit();
-       
-        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        
+
         this.localTaskService.complete(managerTasks.get(0).getId(), "manager", null);
-        
+
         Assert.assertEquals(ProcessInstance.STATE_COMPLETED, process.getState());
-        
-        
-        
+
+        Assert.assertEquals(0,emfTasks.createEntityManager().createQuery("select t from Task t").getResultList().size());
+
     }
 
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase, Environment env) {
@@ -296,10 +270,7 @@ public class PatientVariablePersistenceStrategyTest {
 
     private Environment createEnvironment() {
         Environment env = PersistenceUtil.createEnvironment(context);
-        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
-                    new JPAPlaceholderResolverStrategy(env),
-                    new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)
-                });
+        
         return env;
     }
 
@@ -336,40 +307,40 @@ public class PatientVariablePersistenceStrategyTest {
         vars.put("now", new Date());
         return MVEL.executeExpression(compiler.compile(context), vars);
     }
-    
-    private MedicalRecord getTaskContent(TaskSummary summary) throws IOException, ClassNotFoundException{
-        logger.info(" >>> Getting Task Content = "+summary.getId());
+
+    private MedicalRecord getTaskContent(TaskSummary summary) throws IOException, ClassNotFoundException {
+        logger.info(" >>> Getting Task Content = " + summary.getId());
         Content content = this.localTaskService.getContent(summary.getId());
-        
+
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content.getContent()));
         Object readObject = ois.readObject();
-        logger.info(" >>> Object = "+readObject);
-        return (MedicalRecord)readObject;
+        logger.info(" >>> Object = " + readObject);
+        return (MedicalRecord) readObject;
     }
-    
+
     /**
      * Convert a Map<String, Object> into a ContentData object.
+     *
      * @param data
-     * @return 
+     * @return
      */
-    private ContentData prepareContentData(Map data){
+    private ContentData prepareContentData(Map data) {
         ContentData contentData = null;
         if (data != null) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream out;
-                try {
-                        out = new ObjectOutputStream(bos);
-                        out.writeObject(data);
-                        out.close();
-                        contentData = new ContentData();
-                        contentData.setContent(bos.toByteArray());
-                        contentData.setAccessType(AccessType.Inline);
-                }
-                catch (IOException e) {
-                        System.err.print(e);
-                }
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out;
+            try {
+                out = new ObjectOutputStream(bos);
+                out.writeObject(data);
+                out.close();
+                contentData = new ContentData();
+                contentData.setContent(bos.toByteArray());
+                contentData.setAccessType(AccessType.Inline);
+            } catch (IOException e) {
+                System.err.print(e);
+            }
         }
-        
+
         return contentData;
     }
 }
