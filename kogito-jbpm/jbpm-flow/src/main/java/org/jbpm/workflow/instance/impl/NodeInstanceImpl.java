@@ -39,6 +39,7 @@ import org.jbpm.process.instance.context.exclusive.ExclusiveGroupInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 
 /**
@@ -119,7 +120,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		((InternalProcessRuntime) kruntime.getProcessRuntime())
     			.getProcessEventSupport().fireBeforeNodeTriggered(this, kruntime);
     	}
-        internalTrigger(from, type);
+        try {
+            internalTrigger(from, type);
+        }
+        catch (WorkflowRuntimeException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new WorkflowRuntimeException(this, e);
+        }
         if (!hidden) {
         	((InternalProcessRuntime) kruntime.getProcessRuntime())
         		.getProcessEventSupport().fireAfterNodeTriggered(this, kruntime);

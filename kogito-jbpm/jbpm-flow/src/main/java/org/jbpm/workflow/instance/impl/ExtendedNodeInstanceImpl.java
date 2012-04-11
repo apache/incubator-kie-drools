@@ -59,24 +59,21 @@ public abstract class ExtendedNodeInstanceImpl extends NodeInstanceImpl {
 			}
 		}
 	}
-	
+
 	protected void executeAction(DroolsAction droolsAction) {
 		Action action = (Action) droolsAction.getMetaData("Action");
 		ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
 		context.setNodeInstance(this);
 		try {
 			action.execute(context);
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			String exceptionName = exception.getClass().getName();
+		} catch (Exception e) {
+			String exceptionName = e.getClass().getName();
 			ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
 				resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, exceptionName);
 			if (exceptionScopeInstance == null) {
-				exception.printStackTrace();
-				throw new IllegalArgumentException(
-					"Could not find exception handler for " + exceptionName + " while executing node " + getNodeId());
+				throw new RuntimeException("unable to execute Action: " + e.getMessage(), e);
 			}
-			exceptionScopeInstance.handleException(exceptionName, exception);
+			exceptionScopeInstance.handleException(exceptionName, e);
 		}
 	}
 	

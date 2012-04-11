@@ -46,7 +46,7 @@ public class ActionNodeInstance extends NodeInstanceImpl {
 		    context.setNodeInstance(this);
 	        action.execute(context);		    
 		} catch (Exception e) {
-		    throw new RuntimeException("unable to execute Action", e);
+		    throw new RuntimeException("unable to execute Action: " + e.getMessage(), e);
 		}
     	triggerCompleted();
     }
