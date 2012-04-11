@@ -46,7 +46,9 @@ public class ClassPathResource extends BaseResource
     implements
     InternalResource,
     Externalizable {
+
     private String      path;
+    private String      encoding;
     private ClassLoader classLoader;
     private Class< ? >  clazz;
     private long        lastRead;
@@ -58,12 +60,14 @@ public class ClassPathResource extends BaseResource
     public ClassPathResource(String path) {
         this( path,
               null,
+              null,
               null );
     }
 
     public ClassPathResource(String path,
                              Class<?> clazz) {
         this( path,
+              null,
               clazz,
               null );
     }
@@ -72,16 +76,45 @@ public class ClassPathResource extends BaseResource
                              ClassLoader classLoader) {
         this( path,
               null,
+              null,
               classLoader );
     }
 
     public ClassPathResource(String path,
+                             String encoding) {
+        this( path,
+              encoding,
+              null,
+              null );
+    }
+
+    public ClassPathResource(String path,
+                             String encoding,
+                             Class<?> clazz) {
+        this( path,
+              encoding,
+              clazz,
+              null );
+    }
+
+    public ClassPathResource(String path,
+                             String encoding,
+                             ClassLoader classLoader) {
+        this( path,
+              encoding,
+              null,
+              classLoader );
+    }
+
+    public ClassPathResource(String path,
+                             String encoding,
                              Class<?> clazz,
                              ClassLoader classLoader) {
         if ( path == null ) {
             throw new IllegalArgumentException( "path cannot be null" );
         }
         this.path = path;
+        this.encoding = encoding;
         this.clazz = clazz;
         this.classLoader = ClassLoaderUtil.getClassLoader( classLoader == null ? null : new ClassLoader[] { classLoader },
                                                            clazz,
@@ -152,8 +185,16 @@ public class ClassPathResource extends BaseResource
         return this.lastRead;
     }
 
+    public String getEncoding() {
+        return encoding;
+    }
+
     public Reader getReader() throws IOException {
-        return new InputStreamReader( getInputStream() );
+        if ( this.encoding != null ) {
+            return new InputStreamReader( getInputStream(), encoding );
+        } else {
+            return new InputStreamReader( getInputStream() );
+        }
     }
 
     public boolean isDirectory() {
