@@ -40,6 +40,7 @@ public interface ObjectMarshallingStrategy {
      * @return the marshalled byte[] of the input object
      */
     public byte[] marshal( Context context,
+                           ObjectOutputStream os,
                            Object object ) throws IOException;
     
     /**
@@ -52,6 +53,7 @@ public interface ObjectMarshallingStrategy {
      * @return the unmarshalled Object
      */
     public Object unmarshal( Context context,
+                             ObjectInputStream is,
                              byte[] object,
                              ClassLoader classloader ) throws IOException, ClassNotFoundException;
 
