@@ -16,13 +16,12 @@
 
 package org.drools.marshalling.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
 
@@ -60,19 +59,41 @@ public class SerializablePlaceholderResolverStrategy
         return acceptor.accept( object );
     }
 
-    public byte[] marshal(ObjectOutputStream os,
+    public byte[] marshal(Context context,
                           Object object) throws IOException {
-        ByteArrayOutputStream buff = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( buff );
-        oos.writeObject( object );
-        oos.close();
-        return buff.toByteArray();
+        
+        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
+        int index = ctx.data.size();
+        ctx.data.add( object );
+        return PersisterHelper.intToByteArray( index );
     }
 
-    public Object unmarshal(ObjectInputStream is,
+    public Object unmarshal(Context context,
                             byte[] object, 
                             ClassLoader classloader) throws IOException, ClassNotFoundException {
-        return new DroolsObjectInputStream( new ByteArrayInputStream( object ), classloader ).readObject();
+        SerializablePlaceholderStrategyContext ctx = (SerializablePlaceholderStrategyContext)context;
+        return ctx.data.get( PersisterHelper.byteArrayToInt( object ) );
     }
+    
+    public Context createContext() {
+        return new SerializablePlaceholderStrategyContext();
+    }
+    
+    protected static class SerializablePlaceholderStrategyContext implements Context {
+        // this data map is used when marshalling out objects in order
+        // to preserve graph references without cloning objects all over
+        // the place.
+        public List<Object> data = new ArrayList<Object>();
 
+        @SuppressWarnings("unchecked")
+        public void read(ObjectInputStream ois) throws IOException,
+                                               ClassNotFoundException {
+            this.data = (List<Object>) ois.readObject();
+        }
+
+        public void write(ObjectOutputStream oos) throws IOException {
+            oos.writeObject( this.data );
+        }
+    }
+    
 }

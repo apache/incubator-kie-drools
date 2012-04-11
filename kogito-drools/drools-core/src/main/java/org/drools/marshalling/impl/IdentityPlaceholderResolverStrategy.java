@@ -62,7 +62,7 @@ public class IdentityPlaceholderResolverStrategy
         return this.acceptor.accept( object );
     }
 
-    public byte[] marshal(ObjectOutputStream os,
+    public byte[] marshal(Context context,
                           Object object) {
         Integer id = ( Integer ) objects.get( object );
         if ( id == null ) {
@@ -73,7 +73,7 @@ public class IdentityPlaceholderResolverStrategy
         return intToByteArray( id.intValue() );
     }
 
-    public Object unmarshal(ObjectInputStream os,
+    public Object unmarshal(Context context,
                             byte[] object, 
                             ClassLoader classloader ) {
         return ids.get( byteArrayToInt( object ) );
@@ -92,5 +92,11 @@ public class IdentityPlaceholderResolverStrategy
                 + ((b[1] & 0xFF) << 16)
                 + ((b[2] & 0xFF) << 8)
                 + (b[3] & 0xFF);
-    }    
+    }
+    
+    public Context createContext() {
+        // no need for context
+        return null;
+    }
+
 }

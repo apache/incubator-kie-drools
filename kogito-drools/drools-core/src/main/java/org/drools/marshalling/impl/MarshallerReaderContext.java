@@ -40,36 +40,36 @@ import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
 
 public class MarshallerReaderContext extends ObjectInputStream {
-    public final MarshallerReaderContext                 stream;
-    public final InternalRuleBase                        ruleBase;
-    public InternalWorkingMemory                         wm;
-    public KnowledgeRuntime                              kruntime;
-    public final Map<Integer, BaseNode>                  sinks;
+    public final MarshallerReaderContext                                           stream;
+    public final InternalRuleBase                                                  ruleBase;
+    public InternalWorkingMemory                                                   wm;
+    public KnowledgeRuntime                                                        kruntime;
+    public final Map<Integer, BaseNode>                                            sinks;
 
-    public Map<Integer, InternalFactHandle>              handles;
+    public Map<Integer, InternalFactHandle>                                        handles;
 
-    public final Map<RightTupleKey, RightTuple>          rightTuples;
-    public final Map<Integer, LeftTuple>                 terminalTupleMap;
-    public final PBActivationsFilter                     filter;
-    
+    public final Map<RightTupleKey, RightTuple>                                    rightTuples;
+    public final Map<Integer, LeftTuple>                                           terminalTupleMap;
+    public final PBActivationsFilter                                               filter;
 
-    public final ObjectMarshallingStrategyStore          resolverStrategyFactory;
-    public final Map<Integer, ObjectMarshallingStrategy> usedStrategies;
+    public final ObjectMarshallingStrategyStore                                    resolverStrategyFactory;
+    public final Map<Integer, ObjectMarshallingStrategy>                           usedStrategies;
+    public final Map<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context> strategyContexts;
 
-    public final Map<String, EntryPoint>                 entryPoints;
+    public final Map<String, EntryPoint>                                           entryPoints;
 
-    public final Map<Integer, TimersInputMarshaller>     readersByInt;
+    public final Map<Integer, TimersInputMarshaller>                               readersByInt;
 
-    public final Map<Long, PropagationContext>           propagationContexts;
+    public final Map<Long, PropagationContext>                                     propagationContexts;
 
-    public final boolean                                 marshalProcessInstances;
-    public final boolean                                 marshalWorkItems;
-    public final Environment                             env;
-    
+    public final boolean                                                           marshalProcessInstances;
+    public final boolean                                                           marshalWorkItems;
+    public final Environment                                                       env;
+
     // this is a map to store node memory data indexed by node ID
-    public final Map<Integer, Object>                    nodeMemories;
-    
-    public Object parameterObject;
+    public final Map<Integer, Object>                                              nodeMemories;
+
+    public Object                                                                  parameterObject;
 
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
@@ -83,8 +83,8 @@ public class MarshallerReaderContext extends ObjectInputStream {
               resolverStrategyFactory,
               timerReaders,
               true,
-              true, 
-              env    );
+              true,
+              env );
     }
 
     public MarshallerReaderContext(InputStream stream,
@@ -93,49 +93,50 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                    ObjectMarshallingStrategyStore resolverStrategyFactory,
                                    Map<Integer, TimersInputMarshaller> timerReaders,
                                    boolean marshalProcessInstances,
-                                   boolean marshalWorkItems, 
+                                   boolean marshalWorkItems,
                                    Environment env) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
         this.sinks = sinks;
-        
+
         this.readersByInt = timerReaders;
-        
+
         this.handles = new HashMap<Integer, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.filter = new PBActivationsFilter();
         this.entryPoints = new HashMap<String, EntryPoint>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
-        if(resolverStrategyFactory == null){
-            ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        if ( resolverStrategyFactory == null ) {
+            ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
             if ( strats == null ) {
-                strats = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() } ;
+                strats = new ObjectMarshallingStrategy[]{MarshallerFactory.newSerializeMarshallingStrategy()};
             }
-            this.resolverStrategyFactory = new ObjectMarshallingStrategyStoreImpl(strats);
+            this.resolverStrategyFactory = new ObjectMarshallingStrategyStoreImpl( strats );
         }
-        else{
+        else {
             this.resolverStrategyFactory = resolverStrategyFactory;
         }
         this.usedStrategies = new HashMap<Integer, ObjectMarshallingStrategy>();
-        
+        this.strategyContexts = new HashMap<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context>();
+
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
-        
+
         this.nodeMemories = new HashMap<Integer, Object>();
-        
+
         this.parameterObject = null;
     }
-    
+
     @Override
     protected Class< ? > resolveClass(ObjectStreamClass desc) throws IOException,
                                                              ClassNotFoundException {
         String name = desc.getName();
         try {
-            return Class.forName(name, false, (this.ruleBase == null)?null:this.ruleBase.getRootClassLoader());
-        } catch (ClassNotFoundException ex) {
+            return Class.forName( name, false, (this.ruleBase == null) ? null : this.ruleBase.getRootClassLoader() );
+        } catch ( ClassNotFoundException ex ) {
             return super.resolveClass( desc );
         }
     }

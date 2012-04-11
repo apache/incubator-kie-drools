@@ -41,28 +41,29 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
-    public final MarshallerWriteContext              stream;
-    public final InternalRuleBase                    ruleBase;
-    public final InternalWorkingMemory               wm;
-    public final Map<Integer, BaseNode>              sinks;
-    
-    public long clockTime;
+    public final MarshallerWriteContext                                            stream;
+    public final InternalRuleBase                                                  ruleBase;
+    public final InternalWorkingMemory                                             wm;
+    public final Map<Integer, BaseNode>                                            sinks;
 
-    public final Map<Class<?>, TimersOutputMarshaller>   writersByClass;
+    public long                                                                    clockTime;
 
-    public final PrintStream                         out = System.out;
+    public final Map<Class< ? >, TimersOutputMarshaller>                           writersByClass;
 
-    public final ObjectMarshallingStrategyStore      objectMarshallingStrategyStore;
-    public final Map<String, Integer>                usedStrategies;
+    public final PrintStream                                                       out = System.out;
 
-    public final Map<LeftTuple, Integer>             terminalTupleMap;
+    public final ObjectMarshallingStrategyStore                                    objectMarshallingStrategyStore;
+    public final Map<ObjectMarshallingStrategy, Integer>                           usedStrategies;
+    public final Map<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context> strategyContext;
 
-    public final boolean                             marshalProcessInstances;
-    public final boolean                             marshalWorkItems;
-    public final Environment                         env;
-    
-    public Object parameterObject;
-    
+    public final Map<LeftTuple, Integer>                                           terminalTupleMap;
+
+    public final boolean                                                           marshalProcessInstances;
+    public final boolean                                                           marshalWorkItems;
+    public final Environment                                                       env;
+
+    public Object                                                                  parameterObject;
+
     public MarshallerWriteContext(OutputStream stream,
                                   InternalRuleBase ruleBase,
                                   InternalWorkingMemory wm,
@@ -92,13 +93,13 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.ruleBase = ruleBase;
         this.wm = wm;
         this.sinks = sinks;
-        this.writersByClass = new HashMap<Class<?>, TimersOutputMarshaller>();
-        
+        this.writersByClass = new HashMap<Class< ? >, TimersOutputMarshaller>();
+
         this.writersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerOutputMarshaller() );
-        
+
         this.writersByClass.put( ActivationTimerJobContext.class, new ActivationTimerOutputMarshaller() );
-        
-        this.writersByClass.put( ExpireJobContext.class, new ExpireJobContextTimerOutputMarshaller() );        
+
+        this.writersByClass.put( ExpireJobContext.class, new ExpireJobContextTimerOutputMarshaller() );
 
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );
@@ -110,14 +111,25 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         else {
             this.objectMarshallingStrategyStore = resolverStrategyFactory;
         }
-        this.usedStrategies = new HashMap<String, Integer>();
+        this.usedStrategies = new HashMap<ObjectMarshallingStrategy, Integer>();
+        this.strategyContext = new HashMap<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context>();
 
         this.terminalTupleMap = new IdentityHashMap<LeftTuple, Integer>();
 
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
         this.env = env;
-        
+
+    }
+
+    public Integer getStrategyIndex(ObjectMarshallingStrategy strategy) {
+        Integer index = usedStrategies.get( strategy );
+        if ( index == null ) {
+            index = Integer.valueOf( usedStrategies.size() );
+            usedStrategies.put( strategy, index );
+            strategyContext.put( strategy, strategy.createContext() );
+        }
+        return index;
     }
 
 }

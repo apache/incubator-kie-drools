@@ -15,11 +15,15 @@
  */
 package org.drools.persistence.session;
 
-import static org.junit.Assert.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,6 +32,7 @@ import javax.transaction.UserTransaction;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -340,6 +345,33 @@ public class JpaPersistentStatefulSessionTest {
         assertEquals( 3,
                       list.size() );
     }
+    
+    @Test
+    public void testSharedReferences() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+        Person x = new Person( "test" );
+        List test = new ArrayList();
+        List test2 = new ArrayList();
+        test.add( x );
+        test2.add( x );
+
+        assertSame( test.get( 0 ), test2.get( 0 ) );
+
+        ksession.insert( test );
+        ksession.insert( test2 );
+        ksession.fireAllRules();
+
+        StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+
+        Iterator c = ksession2.getObjects().iterator();
+        List ref1 = (List) c.next();
+        List ref2 = (List) c.next();
+
+        assertSame( ref1.get( 0 ), ref2.get( 0 ) );
+
+    }    
 
     
 }

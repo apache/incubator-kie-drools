@@ -40,6 +40,7 @@ message Header {
     message StrategyIndex {
         optional int32 id = 1;
         optional string name = 2;
+        optional bytes data = 3;
     }
 }
 
