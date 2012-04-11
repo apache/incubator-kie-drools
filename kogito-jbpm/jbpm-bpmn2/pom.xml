@@ -15,56 +15,6 @@
   <name>jBPM :: BPMN2</name>
   <description>jBPM BPMN2</description>
 
-  <build>
-    <testResources>
-        <testResource>
-            <directory>src/test/resources</directory>
-            <filtering>false</filtering>
-        </testResource>
-        <testResource>
-            <directory>src/test/filtered-resources</directory>
-            <filtering>true</filtering>
-        </testResource>
-    </testResources>
-    
-    <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
-            <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
-            <Export-Package>org.jbpm.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -144,6 +94,73 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>false</filtering>
+        </testResource>
+        <testResource>
+            <directory>src/test/filtered-resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+    
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
+            <Export-Package>org.jbpm.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+       <plugin>
+        <!--  ensure that db files are deleted before _any_ run
+              otherwise we get tests failing because of leftover db's -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+         <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+                <include>JPADroolsFlow.*.db</include>
+              </includes>
+            </fileset>
+         </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <profiles>
     <profile>

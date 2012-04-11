@@ -41,10 +41,10 @@
 
     <!-- connections -->
     <sequenceFlow id="_7-_5" sourceRef="_7" targetRef="_5" name="default" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >not org.jbpm.bpmn2.Person()</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >not org.jbpm.bpmn2.objects.Person()</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_7-_6" sourceRef="_7" targetRef="_6" name="Person" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.Person()</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.objects.Person()</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_4-_7" sourceRef="_4" targetRef="_7" />
 

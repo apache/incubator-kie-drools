@@ -9,7 +9,7 @@
 	</appender>
 
 	<logger name="org.jbpm">
-		<level value="INFO"/>
+		<level value="DEBUG"/>
 	</logger>
 
     <!--  marshalling utils -->

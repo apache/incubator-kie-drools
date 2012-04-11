@@ -34,7 +34,7 @@
     </intermediateCatchEvent>
     <intermediateCatchEvent id="_4" name="condition" >
       <conditionalEventDefinition>
-        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.Person(name == "Jack")</condition>
+        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.objects.Person(name == "Jack")</condition>
       </conditionalEventDefinition>
     </intermediateCatchEvent>
     <exclusiveGateway id="_5" name="Join" gatewayDirection="Converging" />

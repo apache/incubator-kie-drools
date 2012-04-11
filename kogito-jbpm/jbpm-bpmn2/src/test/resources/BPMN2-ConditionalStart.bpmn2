@@ -14,7 +14,7 @@
   <process processType="Private" isExecutable="true" id="Minimal" name="Minimal Process" tns:packageName="com.sample" >
 
     <extensionElements>
-      <tns:import name="org.jbpm.bpmn2.Person" />
+      <tns:import name="org.jbpm.bpmn2.objects.Person" />
     </extensionElements>
 
     <!-- nodes -->

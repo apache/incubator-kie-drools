@@ -15,7 +15,7 @@
 
   <itemDefinition id="_2_InMessageType" structureRef="java.lang.String"/>
   <message id="_2_InMessage" itemRef="_2_InMessageType" />
-  <interface id="_2_ServiceInterface" name="org.jbpm.bpmn2.HelloService">
+  <interface id="_2_ServiceInterface" name="org.jbpm.bpmn2.objects.HelloService">
     <operation id="_2_ServiceOperation" name="hello">
       <inMessageRef>_2_InMessage</inMessageRef>
     </operation>

@@ -22,7 +22,7 @@
     <startEvent id="_1" name="StartProcess" />
     <intermediateCatchEvent id="_3" name="timer" >
       <conditionalEventDefinition>
-        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.Person(name == "Jack")</condition>
+        <condition xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.objects.Person(name == "Jack")</condition>
       </conditionalEventDefinition>
     </intermediateCatchEvent>
     <scriptTask id="_4" name="Event" >

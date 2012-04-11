@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package org.jbpm.bpmn2;
+package org.jbpm.bpmn2.objects;
 
-import java.io.Serializable;
-
-public class Person implements Serializable {
+public class HelloService {
     
-	private static final long serialVersionUID = 5L;
-	
-	private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String hello(String name) {
+        return "Hello " + name + "!";
     }
 
 }

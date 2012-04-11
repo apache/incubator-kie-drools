@@ -34,7 +34,7 @@
     </endEvent>
     <intermediateCatchEvent id="_4" name="Timer" >
       <timerEventDefinition>
-        <timeDuration xsi:type="tFormalExpression">1000</timeDuration>
+        <timeDuration xsi:type="tFormalExpression">100</timeDuration>
       </timerEventDefinition>
     </intermediateCatchEvent>
 

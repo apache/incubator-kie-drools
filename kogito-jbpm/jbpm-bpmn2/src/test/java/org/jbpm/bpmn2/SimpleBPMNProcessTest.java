@@ -57,6 +57,7 @@ import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -71,7 +72,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
+public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 
     private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
     

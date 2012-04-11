@@ -41,7 +41,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
  * Please keep this test class in the org.jbpm.bpmn2 package or otherwise give it a unique name. 
  *
  */
-public abstract class JbpmJUnitTestCase extends TestCase {
+public abstract class JbpmBpmn2TestCase extends TestCase {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
@@ -53,11 +53,11 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	
 	private WorkingMemoryInMemoryLogger logger;
 
-	public JbpmJUnitTestCase() {
+	public JbpmBpmn2TestCase() {
 		this(false);
 	}
 	
-	public JbpmJUnitTestCase(boolean persistence) {
+	public JbpmBpmn2TestCase(boolean persistence) {
 		this.persistence = persistence;
 	}
 	

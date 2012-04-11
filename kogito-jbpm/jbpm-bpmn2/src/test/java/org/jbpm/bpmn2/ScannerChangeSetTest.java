@@ -57,7 +57,7 @@ public class ScannerChangeSetTest {
         
         // first file
         File ruleFile = new File(TMP_DIR + "temporary.bpmn");
-        copy(getClass().getResourceAsStream("RuleFlow.bpmn"), new FileOutputStream(ruleFile));        
+        copy(getClass().getResourceAsStream("/BPMN2-ScannerChangeSet.bpmn"), new FileOutputStream(ruleFile));        
 
         // changeset
         String BPMN_CHANGESET = 
@@ -93,7 +93,7 @@ public class ScannerChangeSetTest {
         Thread.sleep(1500);
         ruleFile.delete();
         ruleFile = new File(TMP_DIR + "temporary.bpmn");
-        copy(getClass().getResourceAsStream("RuleFlow2.bpmn"), new FileOutputStream(ruleFile));        
+        copy(getClass().getResourceAsStream("/BPMN2-ScannerChangeSet2.bpmn"), new FileOutputStream(ruleFile));        
 
         // now the knowledge agent should have updated knowledge base
         Thread.sleep(1000);

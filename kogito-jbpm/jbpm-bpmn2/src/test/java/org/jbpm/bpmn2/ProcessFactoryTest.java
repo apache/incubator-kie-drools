@@ -26,7 +26,7 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 
-public class ProcessFactoryTest extends JbpmJUnitTestCase {
+public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 	
 	public void testProcessFactory() {
 		RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
