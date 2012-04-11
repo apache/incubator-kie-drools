@@ -25,6 +25,7 @@ import org.drools.definition.process.Process;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterHelper;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
@@ -149,46 +150,29 @@ public class ProcessInstanceResolverStrategy
         return kruntime;
     }
 
-    public byte[] marshal(ObjectOutputStream os,
+    public byte[] marshal(Context context,
+                          ObjectOutputStream os,
                           Object object) throws IOException {
         ProcessInstance processInstance = (ProcessInstance) object;
         connectProcessInstanceToRuntimeAndProcess( processInstance, os );
-        return longToByteArray( processInstance.getId() );
+        return PersisterHelper.longToByteArray( processInstance.getId() );
     }
 
-    public Object unmarshal(ObjectInputStream is,
+    public Object unmarshal(Context context,
+                            ObjectInputStream is,
                             byte[] object,
                             ClassLoader classloader) throws IOException,
                                                     ClassNotFoundException {
-        long processInstanceId = byteArrayToLong( object );
+        long processInstanceId = PersisterHelper.byteArrayToLong( object );
         ProcessInstanceManager pim = retrieveProcessInstanceManager( is );
         ProcessInstance processInstance = pim.getProcessInstance( processInstanceId );
         connectProcessInstanceToRuntimeAndProcess( processInstance, is );
         return processInstance;
     }
 
-    // more efficient than instantiating byte buffers and opening streams
-    private final byte[] longToByteArray(long value) {
-        return new byte[]{
-                (byte) ((value >>> 56) & 0xFF),
-                (byte) ((value >>> 48) & 0xFF),
-                (byte) ((value >>> 40) & 0xFF),
-                (byte) ((value >>> 32) & 0xFF),
-                (byte) ((value >>> 24) & 0xFF),
-                (byte) ((value >>> 16) & 0xFF),
-                (byte) ((value >>> 8) & 0xFF),
-                (byte) (value & 0xFF)};
+    public Context createContext() {
+        // no context needed
+        return null;
     }
-
-    private final long byteArrayToLong(byte[] b) {
-        return ((((long)b[0]) & 0xFF) << 56)
-               + ((((long)b[1]) & 0xFF) << 48)
-               + ((((long)b[2]) & 0xFF) << 40)
-               + ((((long)b[3]) & 0xFF) << 32)
-               + ((((long)b[4]) & 0xFF) << 24)
-               + ((((long)b[5]) & 0xFF) << 16)
-               + ((((long)b[6]) & 0xFF) << 8)
-               + (((long)b[7]) & 0xFF);
-    }    
 
 }

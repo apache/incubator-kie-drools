@@ -217,16 +217,12 @@ public class ProtobufProcessMarshaller
                                             Object value) throws IOException {
         ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( value );
 
-        String strategyClassName = strategy.getClass().getName();
-        Integer index = context.usedStrategies.get( strategyClassName );
-        if( index == null ) {
-            index = Integer.valueOf( context.usedStrategies.size() );
-            context.usedStrategies.put( strategyClassName, index );
-        }
+        Integer index = context.getStrategyIndex( strategy );
         return JBPMMessages.Variable.newBuilder()
                 .setName( name )
                 .setStrategyIndex( index )
-                .setValue( ByteString.copyFrom( strategy.marshal( context,
+                .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                  context,
                                                                   value ) ) )
                 .build();
     }
@@ -237,16 +233,12 @@ public class ProtobufProcessMarshaller
         String sn = SerializablePlaceholderResolverStrategy.class.getName();
         ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( sn );
 
-        String strategyClassName = strategy.getClass().getName();
-        Integer index = context.usedStrategies.get( strategyClassName );
-        if( index == null ) {
-            index = Integer.valueOf( context.usedStrategies.size() );
-            context.usedStrategies.put( strategyClassName, index );
-        }
+        Integer index = context.getStrategyIndex( strategy );
         return JBPMMessages.Variable.newBuilder()
                 .setName( name )
                 .setStrategyIndex( index )
-                .setValue( ByteString.copyFrom( strategy.marshal( context,
+                .setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
+                                                                  context,
                                                                   value ) ) )
                 .build();
     }
@@ -255,7 +247,8 @@ public class ProtobufProcessMarshaller
                                                   JBPMMessages.Variable _variable) throws IOException,
                                                                                   ClassNotFoundException {
         ObjectMarshallingStrategy strategy = context.usedStrategies.get( _variable.getStrategyIndex() );
-        Object value = strategy.unmarshal( context,
+        Object value = strategy.unmarshal( context.strategyContexts.get( strategy ),
+                                           context,
                                            _variable.getValue().toByteArray(), 
                                            (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
         return value;

@@ -354,7 +354,12 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if( _instance == null ) {
             // try to parse from the stream
             ExtensionRegistry registry = PersisterHelper.buildRegistry( context, null ); 
-            Header _header = PersisterHelper.readFromStreamWithHeader( context, registry );
+            Header _header;
+            try {
+                _header = PersisterHelper.readFromStreamWithHeader( context, registry );
+            } catch ( ClassNotFoundException e ) {
+                throw new IOException( "Error deserializing process instance.", e );
+            }
             _instance = JBPMMessages.ProcessInstance.parseFrom( _header.getPayload(), registry );
         }
 
