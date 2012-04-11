@@ -14,7 +14,7 @@ with ( new Task() ) {
                         notifications = [ 
                             (with (new EmailNotification()) {
                                 recipients = [ users['tony' ], users['darth' ] ],
-                                emailHeaders = [ 'en-UK' : (with (new EmailNotificationHeader()) { 
+                                emailHeaders = [ new Language("en-UK") : (with (new EmailNotificationHeader()) { 
                                     language = 'en-UK',
                                     subject = "@{doc.subject}",
                                     body = "@{doc.body}"
