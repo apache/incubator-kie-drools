@@ -562,14 +562,9 @@ public class ProtobufOutputMarshaller {
         if ( object != null ) {
             ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
 
-            String strategyClassName = strategy.getClass().getName();
-            Integer index = context.usedStrategies.get( strategyClassName );
-            if( index == null ) {
-                index = Integer.valueOf( context.usedStrategies.size() );
-                context.usedStrategies.put( strategyClassName, index );
-            }
+            Integer index = context.getStrategyIndex( strategy );
             _handle.setStrategyIndex( index.intValue() );
-            _handle.setObject( ByteString.copyFrom( strategy.marshal( context,
+            _handle.setObject( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                       object ) ) );
         }
 

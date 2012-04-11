@@ -215,7 +215,7 @@ public class ProtobufInputMarshaller {
         return session;
     }
 
-    private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException {
+    private static ProtobufMessages.KnowledgeSession loadAndParseSession(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         ExtensionRegistry registry = PersisterHelper.buildRegistry( context, processMarshaller );
 
         ProtobufMessages.Header _header = PersisterHelper.readFromStreamWithHeader( context, registry );
@@ -497,7 +497,7 @@ public class ProtobufInputMarshaller {
         ObjectMarshallingStrategy strategy = null;
         if ( _handle.hasStrategyIndex() ) {
             strategy = context.usedStrategies.get( _handle.getStrategyIndex() );
-            object = strategy.unmarshal( context,
+            object = strategy.unmarshal( context.strategyContexts.get( strategy ),
                                          _handle.getObject().toByteArray(), 
                                          (context.ruleBase == null)?null:context.ruleBase.getRootClassLoader() );
         }

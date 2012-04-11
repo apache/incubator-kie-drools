@@ -24,12 +24,16 @@ import java.security.SignatureException;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.ObjectMarshallingStrategy.Context;
 import org.drools.marshalling.impl.ProtobufMessages.Header;
+import org.drools.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
@@ -37,6 +41,7 @@ import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.ByteString.Output;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 
@@ -193,12 +198,19 @@ public class PersisterHelper {
     }
     
     private static void writeStrategiesIndex(MarshallerWriteContext context,
-                                             ProtobufMessages.Header.Builder _header) {
-        for( Entry<String,Integer> entry : context.usedStrategies.entrySet() ) {
-            _header.addStrategy( ProtobufMessages.Header.StrategyIndex.newBuilder()
+                                             ProtobufMessages.Header.Builder _header) throws IOException {
+        for( Entry<ObjectMarshallingStrategy,Integer> entry : context.usedStrategies.entrySet() ) {
+            Builder _strat = ProtobufMessages.Header.StrategyIndex.newBuilder()
                                      .setId( entry.getValue().intValue() )
-                                     .setName( entry.getKey() )
-                                 .build() );
+                                     .setName( entry.getKey().getClass().getName() );
+            Context ctx = context.strategyContext.get( entry.getKey() );
+            if( ctx != null ) {
+                Output os = ByteString.newOutput();
+                ctx.write( new DroolsObjectOutputStream( os ) );
+                _strat.setData( os.toByteString() );
+                os.close();
+            }
+            _header.addStrategy( _strat.build() );
         }
     }
 
@@ -218,7 +230,7 @@ public class PersisterHelper {
         }
     }
     
-    public static ProtobufMessages.Header readFromStreamWithHeader( MarshallerReaderContext context, ExtensionRegistry registry ) throws IOException {
+    public static ProtobufMessages.Header readFromStreamWithHeader( MarshallerReaderContext context, ExtensionRegistry registry ) throws IOException, ClassNotFoundException {
         ProtobufMessages.Header _header = ProtobufMessages.Header.parseFrom( context.stream, registry );
 
         loadStrategiesIndex( context, _header );
@@ -233,13 +245,18 @@ public class PersisterHelper {
     }
     
     private static void loadStrategiesIndex(MarshallerReaderContext context,
-                                            ProtobufMessages.Header _header) {
+                                            ProtobufMessages.Header _header) throws IOException, ClassNotFoundException {
         for ( ProtobufMessages.Header.StrategyIndex _entry : _header.getStrategyList() ) {
             ObjectMarshallingStrategy strategyObject = context.resolverStrategyFactory.getStrategyObject( _entry.getName() );
             if ( strategyObject == null ) {
                 throw new IllegalStateException( "No strategy of type " + _entry.getName() + " available." );
             }
             context.usedStrategies.put( _entry.getId(), strategyObject );
+            Context ctx = strategyObject.createContext();
+            context.strategyContexts.put( strategyObject, ctx );
+            if( _entry.hasData() && ctx != null ) {
+                ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), context.ruleBase.getRootClassLoader() ) );
+            }
         }
     }
 
@@ -288,7 +305,21 @@ public class PersisterHelper {
         }
         return registry;
     }
-
+    
+    public static final byte[] intToByteArray(int value) {
+        return new byte[] {
+                (byte) ((value >>> 24) & 0xFF),
+                (byte) ((value >>> 16) & 0xFF),
+                (byte) ((value >>> 8) & 0xFF),
+                (byte) (value  & 0xFF) };
+    }    
+    
+    public static final int byteArrayToInt(byte [] b) {
+        return (b[0] << 24)
+                + ((b[1] & 0xFF) << 16)
+                + ((b[2] & 0xFF) << 8)
+                + (b[3] & 0xFF);
+    }
     
     
 }
