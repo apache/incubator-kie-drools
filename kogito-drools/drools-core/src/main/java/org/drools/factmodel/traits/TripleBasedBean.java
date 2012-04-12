@@ -24,31 +24,23 @@ public class TripleBasedBean extends TripleBasedStruct {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        System.out.println(" written a " + this.getClass().getName() + " >>  " + object );
 
         int N = getTriplesForSubject( getObject() ).size();
         out.writeInt( N );
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
-            System.out.println("Exting " + t );
             out.writeObject( new TripleImpl( null, t.getProperty(), t.getValue() ) );
         }
-
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );
 
-        System.out.println(" ridden a " + this.getClass().getName() + " >> " + object + " ! " + store);
-
         int N = in.readInt( );
         for ( int j = 0; j < N; j++ ) {
             Triple t = (Triple) in.readObject();
             ((TripleImpl) t).setInstance( getObject() );
-            System.out.println("Inned " + t );
             store.put( t, false );
         }
-
-
     }
 
     public Object getObject() {
