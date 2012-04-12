@@ -9,7 +9,7 @@ users = [ 'darth'  : new User('Darth Vader'),
           'krisv'  : new User('krisv'),          'john'       : new User('john'),
           'mary'   : new User('mary'),           'sales'      : new User('sales-rep'),
           'doctor'   : new User('doctor'),     'frontDesk'   : new User('frontDesk'),           
-          'manager'   : new User('manager')          
+          'manager'   : new User('manager'),   'salaboy'   : new User('salaboy'),                     
         ];       
 
 return users;
