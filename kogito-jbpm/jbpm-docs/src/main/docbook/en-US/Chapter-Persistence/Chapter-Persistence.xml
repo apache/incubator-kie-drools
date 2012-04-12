@@ -574,8 +574,13 @@ ds.init();</programlisting>
     <section>
       <title>Transactions</title>
 
+    <para>The jBPM engine supports JTA transactions. It also supports local transactions 
+    <emphasis>only</emphasis> when using Spring. It does not support pure local transactions 
+    at the moment. For more information about using Spring to set up persistence, please 
+    see the Spring chapter in the Drools integration guide.</para>
+
     <para>Whenever you do not provide transaction boundaries inside your application,
-    the engine  will automatically execute each method invocation on the engine
+    the engine will automatically execute each method invocation on the engine
     in a separate transaction.  If this behavior is acceptable, you don't need to do
     anything else.  You can, however, also specify the transaction boundaries yourself.
     This allows you, for example, to combine multiple commands into one transaction.</para>
