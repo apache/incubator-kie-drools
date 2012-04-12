@@ -6,13 +6,28 @@ import org.drools.core.util.TripleImpl;
 import org.drools.core.util.TripleStore;
 import org.drools.runtime.rule.Variable;
 
+import java.io.*;
 import java.util.*;
 
-public abstract class TripleBasedStruct implements Map<String, Object> {
+public abstract class TripleBasedStruct implements Map<String, Object>, Externalizable {
 
 
-    protected TripleStore store;
+    protected transient TripleStore store;
 
+    protected String storeId;
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( storeId );
+
+        out.writeObject( getObject() );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        storeId = (String) in.readObject();
+        store = TripleStoreRegistry.getRegistry( storeId );
+
+        setObject( in.readObject() );
+    }
 
     protected TripleImpl propertyKey( Object property ) {
         return new TripleImpl( getObject(), property.toString(), Variable.v );
@@ -99,9 +114,9 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
     public Set<Entry<String, Object>> entrySet() {
         Set<Entry<String, Object>> set = new HashSet<Entry<String, Object>>();
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
-                set.add( TraitProxy.buildEntry( (String) t.getProperty(), t.getValue() ) );
-            } 
-        return set;      
+            set.add( TraitProxy.buildEntry( (String) t.getProperty(), t.getValue() ) );
+        }
+        return set;
     }
 
 
@@ -125,8 +140,8 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
         }
         return true;
     }
-    
-    
+
+
     protected Collection<Triple> getTriplesForSubject( Object subj ) {
         Collection<Triple> coll = store.getAll( new TripleImpl( subj, Variable.v, Variable.v ) );
         Iterator<Triple> iter = coll.iterator();
@@ -137,6 +152,15 @@ public abstract class TripleBasedStruct implements Map<String, Object> {
         }
         return coll;
     }
-    
+
     protected abstract Object getObject();
+    protected abstract void setObject( Object o );
+
+    @Override
+    public String toString() {
+        return "TripleBasedStruct{" +
+                "store=" + store +
+                ", storeId='" + storeId + '\'' +
+                '}';
+    }
 }

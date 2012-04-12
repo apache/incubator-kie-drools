@@ -23,6 +23,9 @@ import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.*;
 
 public class StudentProxyWrapper3 extends TripleBasedStruct {
@@ -51,6 +54,8 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
         this.store.put( property( "school" , null ) );
 
     }
+
+
 
     public int size() {
         return super.size() +
@@ -190,6 +195,9 @@ public class StudentProxyWrapper3 extends TripleBasedStruct {
         return object;
     }
 
+    public void setObject( Object object ) {
+        this.object = (Imp2) object;
+    }
 
     public boolean equals(Object o) {
         if (this == o) return true;

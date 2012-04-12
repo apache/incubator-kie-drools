@@ -39,12 +39,16 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
             String superType = BuildUtils.getInternalType( "java.lang.Object" );
             String[] intfaces = null;
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
-                intfaces = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-            } else {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
                 intfaces = new String[ tmp.length + 1 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
-                intfaces[ intfaces.length - 1 ] = BuildUtils.getInternalType( classDef.getSuperClass() );
+                intfaces[ tmp.length ] = "java/io/Serializable";
+            } else {
+                String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
+                intfaces = new String[ tmp.length + 2 ];
+                System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
+                intfaces[ tmp.length ] = BuildUtils.getInternalType( classDef.getSuperClass() );
+                intfaces[ tmp.length +1 ] = "java/io/Serializable";
             }
 
             cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,

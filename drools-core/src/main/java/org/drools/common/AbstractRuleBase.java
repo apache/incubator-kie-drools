@@ -45,10 +45,12 @@ import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.TripleStore;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
+import org.drools.factmodel.traits.TripleStoreRegistry;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.rule.DialectRuntimeRegistry;
@@ -1349,4 +1351,9 @@ abstract public class AbstractRuleBase
         }
         return entryPointIds;
     }
+
+    public TripleStore getTripleStore() {
+        return TripleStoreRegistry.getRegistry( id );
+    }
+
 }

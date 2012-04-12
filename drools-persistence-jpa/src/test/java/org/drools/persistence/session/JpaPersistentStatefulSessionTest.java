@@ -17,14 +17,14 @@ package org.drools.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
@@ -371,7 +371,6 @@ public class JpaPersistentStatefulSessionTest {
 
         assertSame( ref1.get( 0 ), ref2.get( 0 ) );
 
-    }    
+    }
 
-    
 }
