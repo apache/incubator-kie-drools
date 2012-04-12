@@ -413,7 +413,7 @@ Comment:&lt;BR/&gt;
     
     <para>The list URLS that the REST interface exposes can be inspected if you navigate
     to the following URL (after installing and starting the console):</para>
-    <para><ulink url="http://localhost:8080/gwt-console-server/rs/server/resources">http://localhost:8080/gwt-console-server/rs/server/resources</ulink></para>
+    <para><ulink url="http://localhost:8080/gwt-console-server/rs/server/resources/jbpm">http://localhost:8080/gwt-console-server/rs/server/resources/jbpm</ulink></para>
     
     <para>For example, this allows you to close a task using</para>
     <para>/gwt-console-server/rs/task/{taskId}/close</para>
