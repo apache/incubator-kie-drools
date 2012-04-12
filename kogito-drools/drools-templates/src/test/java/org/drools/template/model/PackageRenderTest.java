@@ -68,7 +68,7 @@ public class PackageRenderTest {
         System.out.println( drl );
         assertTrue( drl.indexOf( "rule \"myrule\"" ) > -1 );
         assertTrue( drl.indexOf( "salience 42" ) > -1 );
-        assertTrue( drl.indexOf( "#rule comments" ) > -1 );
+        assertTrue( drl.indexOf( "//rule comments" ) > -1 );
         assertTrue( drl.indexOf( "my functions" ) > -1 );
         assertTrue( drl.indexOf( "package my_ruleset;" ) > -1 );
         assertTrue( drl.indexOf( "rule \"other rule\"" ) > drl.indexOf( "rule \"myrule\"" ) );

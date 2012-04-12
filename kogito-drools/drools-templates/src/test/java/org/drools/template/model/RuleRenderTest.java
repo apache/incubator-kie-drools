@@ -59,7 +59,7 @@ public class RuleRenderTest {
         assertTrue( drl.indexOf( "cons snippet;" ) > drl.indexOf( "then" ) );
         assertTrue( drl.indexOf( "rule" ) != -1 );
         assertTrue( drl.indexOf( "end" ) > drl.indexOf( "rule " ) );
-        assertTrue( drl.indexOf( "#rule comments" ) > -1 );
+        assertTrue( drl.indexOf( "//rule comments" ) > -1 );
 
     }
 
