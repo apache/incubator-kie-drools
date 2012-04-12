@@ -72,8 +72,13 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 	private int port = 9123;
 	
 	private TaskClient client;
-	private KnowledgeRuntime session;
+    private KnowledgeRuntime session;
 	private OnErrorAction action;
+
+	public CommandBasedWSHumanTaskHandler() {
+		this.session = null;
+		this.action = OnErrorAction.LOG;
+	}
 	
 	public CommandBasedWSHumanTaskHandler(KnowledgeRuntime session) {
 		this.session = session;
@@ -85,7 +90,11 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 		this.action = action;
 	}
 
-	public void setConnection(String ipAddress, int port) {
+    public void setSession(KnowledgeRuntime session) {
+        this.session = session;
+    }
+
+    public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
