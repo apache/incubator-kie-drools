@@ -72,7 +72,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 internalWrapper,
                 null,
                 "org/drools/factmodel/traits/TripleBasedStruct",
-                null );
+                new String[] { "java/io/Serializable" } );
 
         cw.visitInnerClass("java/util/Map$Entry", "java/util/Map", "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
 
@@ -89,6 +89,26 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         {
             fv = cw.visitField(0, "object", descrCore, null, null);
             fv.visitEnd();
+        }
+
+
+        {
+            mv = cw.visitMethod(ACC_PUBLIC,
+                    "<init>",
+                    "()V",
+                    null,
+                    null);
+
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "<init>", "()V");
+//            mv.visitVarInsn(ALOAD, 0);
+//            mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "initSoftFields", "()V");
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+
+
         }
 
 
@@ -113,6 +133,11 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             mv.visitVarInsn(ALOAD, 2);
             mv.visitFieldInsn(PUTFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
 
+
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "getId", "()Ljava/lang/String;" );
+            mv.visitFieldInsn( PUTFIELD, internalWrapper, "storeId", "Ljava/lang/String;" );
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKESPECIAL, internalWrapper, "initSoftFields", "()V");
@@ -780,6 +805,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             mv.visitEnd();
         }
 
+
     }
 
 
@@ -807,6 +833,17 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
             mv.visitInsn(ARETURN);
             mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "setObject", "(Ljava/lang/Object;)V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( core.getName() ) );
+            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ) );
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
             mv.visitEnd();
         }
 

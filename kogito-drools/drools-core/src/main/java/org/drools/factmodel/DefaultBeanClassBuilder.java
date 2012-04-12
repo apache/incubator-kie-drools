@@ -96,11 +96,117 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         this.buildToString( cw,
                 classDef );
 
+        if ( classDef.isTraitable() ) {
+            // must guarantee serialization order when enhancing fields are present
+            this.buildSerializationMethods(cw,
+                    classDef);
+        }
+
         cw.visitEnd();
 
         byte[] serializedClass = cw.toByteArray();
 
         return serializedClass;
+    }
+
+    private void buildSerializationMethods(ClassWriter cw, ClassDefinition classDef) {
+        MethodVisitor mv;
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "writeExternal", "(Ljava/io/ObjectOutput;)V", null, new String[]{"java/io/IOException"});
+            mv.visitCode();
+
+            for (  FieldDefinition field : classDef.getFieldsDefinitions() ) {
+
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitVarInsn( ALOAD, 0 );
+                visitFieldOrGetter( mv, classDef, field );
+                mv.visitMethodInsn( INVOKEINTERFACE, 
+                                    "java/io/ObjectOutput", 
+                                    BuildUtils.serializationWriterName( field.getTypeName() ),
+                                    "(" + ( BuildUtils.isPrimitive( field.getTypeName() ) ?
+                                            BuildUtils.getTypeDescriptor( field.getTypeName() ) :
+                                            "Ljava/lang/Object;" ) + ")V");
+                               
+            }
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                    BuildUtils.getInternalType( classDef.getClassName() ),
+                    TraitableBean.MAP_FIELD_NAME,
+                    "Ljava/util/Map;" );
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                    "java/io/ObjectOutput",
+                    "writeObject",
+                    "(Ljava/lang/Object;)V" );
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                    BuildUtils.getInternalType( classDef.getClassName() ),
+                    TraitableBean.TRAITSET_FIELD_NAME,
+                    "Ljava/util/Map;" );
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                    "java/io/ObjectOutput",
+                    "writeObject",
+                    "(Ljava/lang/Object;)V" );
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "readExternal", "(Ljava/io/ObjectInput;)V", null, new String[]{"java/io/IOException", "java/lang/ClassNotFoundException"});
+            mv.visitCode();
+
+            for (  FieldDefinition field : classDef.getFieldsDefinitions() ) {
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    "java/io/ObjectInput",
+                                    BuildUtils.serializationReaderName( field.getTypeName() ),
+                                    "()" + ( BuildUtils.isPrimitive( field.getTypeName() ) ?
+                                             BuildUtils.getTypeDescriptor( field.getTypeName() ) :
+                                             "Ljava/lang/Object;" ) );
+                if  ( !  BuildUtils.isPrimitive( field.getTypeName() ) ) {
+                    mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( field.getTypeName() ) );
+                }
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    BuildUtils.getInternalType( classDef.getName() ),
+                                    BuildUtils.setterName( field.getName(), field.getTypeName() ),
+                                    "(" + BuildUtils.getTypeDescriptor( field.getTypeName() )+ ")V");
+            }
+
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                    "java/io/ObjectInput",
+                    "readObject",
+                    "()Ljava/lang/Object;");
+            mv.visitTypeInsn( CHECKCAST, "java/util/Map" );
+            mv.visitFieldInsn( Opcodes.PUTFIELD,
+                    BuildUtils.getInternalType( classDef.getClassName() ),
+                    TraitableBean.MAP_FIELD_NAME,
+                    "Ljava/util/Map;" );
+//
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                    "java/io/ObjectInput",
+                    "readObject",
+                    "()Ljava/lang/Object;");
+            mv.visitTypeInsn( CHECKCAST, "java/util/Map" );
+            mv.visitFieldInsn( Opcodes.PUTFIELD,
+                    BuildUtils.getInternalType( classDef.getClassName() ),
+                    TraitableBean.TRAITSET_FIELD_NAME,
+                    "Ljava/util/Map;" );
+
+
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 3, 2 );
+            mv.visitEnd();
+        }
+
     }
 
     protected void buildGettersAndSetters(ClassWriter cw, ClassDefinition classDef) {
@@ -207,7 +313,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
         MethodVisitor mv;
 
-        mv = cw.visitMethod(ACC_PROTECTED, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
+        mv = cw.visitMethod(ACC_PUBLIC, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");

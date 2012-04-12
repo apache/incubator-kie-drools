@@ -10807,7 +10807,7 @@ public class MiscTest extends CommonTestMethodBase {
 
         assertTrue( kbuilder.hasErrors() );
     }
-}
+
 
 	@Test
     public void testKeyedInterfaceField() {

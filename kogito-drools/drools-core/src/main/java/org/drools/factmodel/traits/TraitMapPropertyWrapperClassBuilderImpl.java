@@ -69,7 +69,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 internalWrapper,
                 "Ljava/lang/Object;Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;Lorg/drools/factmodel/traits/MapWrapper;",
                 "java/lang/Object",
-                new String[]{"java/util/Map", "org/drools/factmodel/traits/MapWrapper"});
+                new String[]{"java/util/Map", "org/drools/factmodel/traits/MapWrapper", "java/io/Serializable" });
 
         cw.visitInnerClass("java/util/Map$Entry", "java/util/Map", "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
 

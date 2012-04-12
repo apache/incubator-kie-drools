@@ -16,6 +16,7 @@
 
 package org.drools.factmodel.traits;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Traitable
-public class Entity implements TraitableBean {
+public class Entity implements TraitableBean, Serializable {
 
 
     private String id;

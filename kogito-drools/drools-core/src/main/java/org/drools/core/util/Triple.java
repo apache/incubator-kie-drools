@@ -1,6 +1,8 @@
 package org.drools.core.util;
 
-public interface Triple extends Entry {
+import java.io.Serializable;
+
+public interface Triple extends Entry, Serializable {
 
     public abstract Object getInstance();
 

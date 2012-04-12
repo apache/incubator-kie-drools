@@ -34,7 +34,9 @@ public class TripleStore extends AbstractHashTable {
     public static final String PROXY = "drools:proxy";
     public static final String VALUE = "drools:hasValue";
 
-    public TripleStore() {
+    private String id;
+
+    public TripleStore( ) {
         super();
         this.comparator = new TripleKeyComparator();
     }
@@ -54,6 +56,14 @@ public class TripleStore extends AbstractHashTable {
                        final Entry[] table) {
         super( loadFactor, table );
         this.comparator = new TripleKeyComparator();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public boolean put(final Triple triple) {
@@ -126,7 +136,9 @@ public class TripleStore extends AbstractHashTable {
 
                 Triple current = t;
                 while ( current != null ) {
-                    list.add( current );
+                    if ( this.comparator.equal( triple,current ) ) {
+                        list.add( current );
+                    }
                     current = (Triple) current.getNext();
                 }
 

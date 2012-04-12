@@ -19,9 +19,12 @@ package org.drools.factmodel.traits;
 import org.drools.core.util.TripleImpl;
 import org.drools.runtime.rule.Variable;
 
+import java.io.*;
 import java.util.Map;
 
-public abstract class TraitProxy {
+public abstract class TraitProxy implements Externalizable {
+
+    public TraitProxy() { }
 
     protected Map<String, Object> fields;
 
@@ -33,6 +36,16 @@ public abstract class TraitProxy {
     protected void setFields( Map<String, Object> m ) {
         fields = m;
     }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( fields );
+    }
+
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        fields = (Map<String,Object>) in.readObject();
+    }
+
 
     public static Map.Entry<String, Object> buildEntry( final String k, final Object v ) {
         return new Map.Entry<String, Object>() {

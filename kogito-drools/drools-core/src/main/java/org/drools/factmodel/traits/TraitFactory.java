@@ -43,7 +43,7 @@ import java.util.Map;
 
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes {
 
-    private static TripleStore store = new TripleStore( 500, 0.6f );
+//    private static TripleStore store = new TripleStore( 500, 0.6f );
 
     public enum VirtualPropertyMode { MAP, TRIPLES }
 
@@ -55,22 +55,14 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     private static Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 
-    private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache;
+    private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
     private AbstractRuleBase ruleBase;
 
 
-
-    public static TripleStore getStore() {
-        return store;
-    }
-
-    public static void clearStore() {
-        store = new TripleStore();
-    }
-
     public static void reset() {
         factoryCache.clear();
+        wrapperCache.clear();
     }
 
     public static void setMode( VirtualPropertyMode newMode ) {
@@ -119,7 +111,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
             switch ( mode ) {
                 case MAP    :   proxy = konst.newInstance( core, core.getDynamicProperties() );
                     break;
-                case TRIPLES:   proxy = konst.newInstance( core, store );
+                case TRIPLES:   proxy = konst.newInstance( core, ruleBase.getTripleStore() );
                     break;
                 default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
             }
