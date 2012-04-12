@@ -16,6 +16,7 @@
 
 package org.drools.factmodel.traits;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +34,17 @@ import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -1135,4 +1141,72 @@ public class TraitTest {
 
     }
 
+    @Test
+    // BZ #748752
+    public void testTraitsInBatchExecution() {
+        String str = "package org.jboss.qa.brms.traits\n" +
+                "import org.drools.Person;\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "" +
+                "global java.util.List list;" +
+                "" +
+                "declare Person \n" +
+                "  @Traitable \n" +
+                "end \n" +
+                "" +
+                "declare trait Student\n" +
+                "  school : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"create student\" \n" +
+                "  when\n" +
+                "    $student : Person( age < 26 )\n" +
+                "  then\n" +
+                "    Student s = don( $student, Student.class );\n" +
+                "    s.setSchool(\"Masaryk University\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"print student\"\n" +
+                "  when\n" +
+                "    student : Person( this isA Student )\n" +
+                "  then" +
+                "    list.add( 1 );\n" +
+                "    System.out.println(\"Person is a student: \" + student);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"print school\"\n" +
+                "  when\n" +
+                "    Student( $school : school )\n" +
+                "  then\n" +
+                "    list.add( 2 );\n" +
+                "    System.out.println(\"Student is attending \" + $school);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException(kbuilder.getErrors().toString());
+        }
+
+        List list = new ArrayList();
+
+        KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+        ksession.setGlobal( "list", list );
+
+        List<Command<?>> commands = new ArrayList<Command<?>>();
+        Person student = new Person("student", 18);
+        commands.add(CommandFactory.newInsert(student));
+
+        System.out.println("Starting execution...");
+        commands.add(CommandFactory.newFireAllRules());
+        ksession.execute(CommandFactory.newBatchExecution(commands));
+
+        System.out.println("Finished...");
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+    }
 }

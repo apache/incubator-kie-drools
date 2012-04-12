@@ -22,6 +22,8 @@ import org.mvel2.MVEL;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 
+import java.io.ObjectOutput;
+
 public class BuildUtils {
 
     public static String[] getInternalTypes( String[] superClasses ) {
@@ -129,6 +131,28 @@ public class BuildUtils {
                     '/' ) + ";";
         }
         return internalType;
+    }
+
+    public static String arrayType( String type ) {
+        if ( isArray( type ) )
+            if ( type.length() == arrayDimSize(type) +1  ) {
+                return type;
+            } else {
+                String ans = "Ljava/lang/Object;";
+                for ( int j = 0; j < arrayDimSize( type ); j++ ) {
+                    ans = "[" + ans;
+                }
+                return ans;
+            }
+        return null;
+    }
+
+    public static int arrayDimSize(String type) {
+        int j = 0;
+        while ( type.charAt( j ) == '[' ) {
+            j++;
+        }
+        return j;
     }
 
     /**
@@ -448,7 +472,7 @@ public class BuildUtils {
         } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
             return "longValue";
         } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
-            return "shortBalue";
+            return "shortValue";
         } else {
             throw new RuntimeDroolsException("Not a numeric type " + type);
         }
@@ -472,4 +496,56 @@ public class BuildUtils {
             default : mv.visitIntInsn( Opcodes.BIPUSH, j );
         }
     }
+
+    public static String serializationWriterName( String type ) {
+        if ( isPrimitive( type ) ) {
+            if ( "byte".equals( type ) ) {
+                return "writeByte";
+            } else if ( "char".equals( type ) ) {
+                return "writeChar";
+            } else if ( "double".equals( type ) ) {
+                return "writeDouble";
+            } else if ( "float".equals( type ) ) {
+                return "writeFloat";
+            } else if ( "int".equals( type ) ) {
+                return "writeInt";
+            } else if ( "long".equals( type ) ) {
+                return "writeLong";
+            } else if ( "short".equals( type ) ) {
+                return "writeShort";
+            } else if ( "boolean".equals( type ) ) {
+                return "writeBoolean";
+            } else {
+                throw new RuntimeDroolsException( "No serialization method found for " + type );
+            }
+        } else {
+            return "writeObject";
+        }
+    }
+
+    public static String serializationReaderName( String type ) {
+            if ( isPrimitive( type ) ) {
+                if ( "byte".equals( type ) ) {
+                    return "readByte";
+                } else if ( "char".equals( type ) ) {
+                    return "readChar";
+                } else if ( "double".equals( type ) ) {
+                    return "readDouble";
+                } else if ( "float".equals( type ) ) {
+                    return "readFloat";
+                } else if ( "int".equals( type ) ) {
+                    return "readInt";
+                } else if ( "long".equals( type ) ) {
+                    return "readLong";
+                } else if ( "short".equals( type ) ) {
+                    return "readShort";
+                } else if ( "boolean".equals( type ) ) {
+                    return "readBoolean";
+                } else {
+                    throw new RuntimeDroolsException( "No serialization method found for " + type );
+                }
+            } else {
+                return "readObject";
+            }
+        }
 }

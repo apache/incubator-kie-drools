@@ -126,22 +126,18 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
                   internalProxy,
                   null,
                   "org/drools/factmodel/traits/TraitProxy",
-                  new String[]{internalTrait} );
+                  new String[] { internalTrait, "java/io/Externalizable" } );
 
         {
-            fv = cw.visitField( ACC_PUBLIC + ACC_FINAL,
-                                "object",
-                                descrCore,
-                                null,
-                                null );
+            fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_TRANSIENT, "object", descrCore, null, null);
             fv.visitEnd();
         }
         {
-            fv = cw.visitField( ACC_PRIVATE,
-                                "store",
-                                "Lorg/drools/core/util/TripleStore;",
-                                null,
-                                null );
+            fv = cw.visitField(ACC_PRIVATE + ACC_TRANSIENT, "store", "Lorg/drools/core/util/TripleStore;", null, null);
+            fv.visitEnd();
+        }
+        {
+            fv = cw.visitField(ACC_PRIVATE, "storeId", "Ljava/lang/String;", null, null);
             fv.visitEnd();
         }
         if (mixinClass != null) {
@@ -155,25 +151,31 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             }
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC,
-                                 "<init>",
-                                 "(" + descrCore + "Lorg/drools/core/util/TripleStore;)V",
-                                 null,
-                                 null );
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
 
-            buildConstructorCore( cw,
-                                  mv,
-                                  internalProxy,
-                                  internalWrapper,
-                                  internalCore,
-                                  descrCore,
-                                  mixin,
-                                  mixinClass );
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
 
-            mv.visitInsn( RETURN );
-            mv.visitMaxs( 5,
-                          3 );
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + descrCore + "Lorg/drools/core/util/TripleStore;)V", null, null);
+            mv.visitCode();
+
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 2 );
+            mv.visitMethodInsn( INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "getId", "()Ljava/lang/String;" );
+            mv.visitFieldInsn( PUTFIELD, internalProxy, "storeId", "Ljava/lang/String;" );
+
+
+            buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(5, 3);
             mv.visitEnd();
         }
         {
@@ -195,23 +197,26 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC,
-                                 "getObject",
-                                 "()Ljava/lang/Object;",
-                                 null,
-                                 null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getObject", "()Ljava/lang/Object;", null, null );
             mv.visitCode();
-            mv.visitVarInsn( ALOAD,
-                             0 );
-            mv.visitFieldInsn( GETFIELD,
-                               internalProxy,
-                               "object",
-                               descrCore );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
             mv.visitInsn( ARETURN );
-            mv.visitMaxs( 1,
-                          1 );
+            mv.visitMaxs( 1, 1 );
             mv.visitEnd();
         }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "setObject", "(Ljava/lang/Object;)V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitTypeInsn( CHECKCAST, internalCore );
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore );
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+
 
         {
             mv = cw.visitMethod( ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC,
@@ -232,11 +237,75 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitEnd();
         }
 
-        buildProxyAccessors( mask,
-                             cw,
-                             masterName,
-                             core,
-                             mixinGetSet );
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "writeExternal", "(Ljava/io/ObjectOutput;)V", null, new String[]{"java/io/IOException"});
+            mv.visitCode();
+
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, internalProxy, "getObject", "()Ljava/lang/Object;");
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectOutput", "writeObject", "(Ljava/lang/Object;)V");
+
+
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, internalProxy, "storeId", "Ljava/lang/String;");
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectOutput", "writeObject", "(Ljava/lang/Object;)V");
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "writeExternal", "(Ljava/io/ObjectOutput;)V");
+
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "readExternal", "(Ljava/io/ObjectInput;)V", null, new String[]{"java/io/IOException", "java/lang/ClassNotFoundException"});
+            mv.visitCode();
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectInput", "readObject", "()Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, internalCore );
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore );
+
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectInput", "readObject", "()Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, "java/lang/String");
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "storeId", "Ljava/lang/String;");
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, internalProxy, "storeId", "Ljava/lang/String;");
+            mv.visitMethodInsn(INVOKESTATIC, "org/drools/factmodel/traits/TripleStoreRegistry", "getRegistry", "(Ljava/lang/String;)Lorg/drools/core/util/TripleStore;");
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "store", "Lorg/drools/core/util/TripleStore;");
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "readExternal", "(Ljava/io/ObjectInput;)V");
+
+
+            mv.visitVarInsn( ALOAD, 0);
+            mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
+//            mv.visitTypeInsn( CHECKCAST, "org/drools/factmodel/traits/TraitableBean" );
+            mv.visitMethodInsn( INVOKEINTERFACE, "org/drools/factmodel/traits/TraitableBean", "getTraitMap", "()Ljava/util/Map;" );
+            mv.visitLdcInsn( getTrait().getClassName() );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitInsn( POP );
+
+
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 3, 2 );
+            mv.visitEnd();
+        }
+
+
+        buildProxyAccessors( mask, cw, masterName, core, mixinGetSet );
 
         boolean hasKeys = false;
         for (FactField ff : getTrait().getFields()) {

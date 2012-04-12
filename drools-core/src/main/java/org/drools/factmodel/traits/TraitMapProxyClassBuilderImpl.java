@@ -72,6 +72,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
         String internalProxy    = BuildUtils.getInternalType(masterName);
 
         String descrCore        = BuildUtils.getTypeDescriptor(core.getClassName());
+        String internalCore     = BuildUtils.getInternalType(core.getClassName());
         String internalTrait    = BuildUtils.getInternalType(trait.getClassName());
 
 
@@ -109,7 +110,11 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
 
 
-        cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, internalProxy, null, "org/drools/factmodel/traits/TraitProxy", new String[]{internalTrait});
+        cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
+                  internalProxy,
+                  null,
+                  "org/drools/factmodel/traits/TraitProxy",
+                  new String[]{ internalTrait, "java/io/Serializable" } );
 
         {
             fv = cw.visitField(ACC_PUBLIC + ACC_FINAL, "object", descrCore, null, null);
@@ -127,6 +132,17 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
                         null, null);
                 fv.visitEnd();
             }
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
+            mv.visitCode();
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
         }
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + descrCore + "Ljava/util/Map;)V", "(" + descrCore + "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V", null);
@@ -206,6 +222,60 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitMaxs(1, 1);
             mv.visitEnd();
         }
+
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "writeExternal", "(Ljava/io/ObjectOutput;)V", null, new String[]{"java/io/IOException"});
+            mv.visitCode();
+
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, internalProxy, "getObject", "()Ljava/lang/Object;");
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectOutput", "writeObject", "(Ljava/lang/Object;)V");
+
+
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, internalProxy, "map", "Ljava/util/Map;");
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectOutput", "writeObject", "(Ljava/lang/Object;)V");
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "writeExternal", "(Ljava/io/ObjectOutput;)V");
+
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "readExternal", "(Ljava/io/ObjectInput;)V", null, new String[]{"java/io/IOException", "java/lang/ClassNotFoundException"});
+            mv.visitCode();
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectInput", "readObject", "()Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, internalCore );
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore );
+
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/io/ObjectInput", "readObject", "()Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, "java/util/Map");
+            mv.visitFieldInsn(PUTFIELD, internalProxy, "map", "Ljava/util/Map;");
+
+
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "readExternal", "(Ljava/io/ObjectInput;)V");
+
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 3, 2 );
+            mv.visitEnd();
+        }
+
+
+
 
 
         int j = 0;

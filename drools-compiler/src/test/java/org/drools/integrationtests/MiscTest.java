@@ -10138,4 +10138,53 @@ public class MiscTest extends CommonTestMethodBase {
 
         assertTrue( kbuilder.hasErrors() );
     }
+
+	@Test
+    public void testKeyedInterfaceField() {
+        //JBRULES-3441
+        String str = "package org.drools.integrationtest; \n" +
+                "\n" +
+                "import org.drools.integrationtests.MiscTest.*; \n" +
+                "" +
+                "global java.util.List list;" +
+                "" +
+                "declare Bean\n" +
+                "  id    : InterfaceB @key\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when  \n" +
+                "then\n" +
+                "  insert( new Bean( new ClassB() ) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Check\"\n" +
+                "when\n" +
+                "  $b : Bean( )\n" +
+                "then\n" +
+                "  list.add( $b.hashCode() ); \n" +
+                "  list.add( $b.equals( new Bean( new ClassB() ) ) ); \n" +
+                "end";
+
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        java.util.List list = new java.util.ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertTrue( list.contains( 31 + 123 ) );
+        assertTrue( list.contains( true ) );
+
+        ksession.dispose();
+    }
+
+
 }
