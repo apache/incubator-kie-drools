@@ -491,6 +491,7 @@ public class DefaultKnowledgeHelper
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
         TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
+        boolean needsUpdate = false;
 
         TraitableBean inner;
         if ( core instanceof TraitableBean) {
@@ -503,7 +504,7 @@ public class DefaultKnowledgeHelper
             wrapper.init( core );
             inner = wrapper;
 
-            this.update( getFactHandle( core ), inner );
+            needsUpdate = true;
         }
 
 
@@ -512,6 +513,10 @@ public class DefaultKnowledgeHelper
             return (T) inner.getTrait( trait.getName() );
         } else {
             thing = (T) builder.getProxy( inner, trait );
+        }
+
+        if ( needsUpdate ) {
+            this.update( getFactHandle( core ), inner );
         }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
