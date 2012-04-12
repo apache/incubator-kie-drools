@@ -60,6 +60,7 @@ import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.io.ResourcedObject;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
 import org.drools.rule.Function;
@@ -797,7 +798,13 @@ public class KnowledgeAgentImpl
 
         //puts all the resources as added in the changeSet.
         changeSetState.addedResources.clear();
-        changeSetState.addedResources.addAll( this.registeredResources.getAllResources() );
+        for (Resource resource : this.registeredResources.getAllResources()) {
+            // Ignore the HACKs created by org.drools.agent.impl.KnowledgeAgentImpl.autoBuildResourceMapping()
+            if (!(resource instanceof  ReaderResource)
+                    || ((ReaderResource) resource).getReader() != null) {
+                changeSetState.addedResources.add(resource);
+            }
+        }
         addResourcesToKnowledgeBase( changeSetState );
 
         this.listener.info( "KnowledgeAgent new KnowledgeBase now built and in use" );
