@@ -97,7 +97,7 @@ public class Package extends AttributedDRLElement
             out.writeLine( "package " + this._name.replace( ' ',
                                                             '_' ) + ";" );
         }
-        out.writeLine( "#generated from Decision Table" );
+        out.writeLine( "//generated from Decision Table" );
         renderDRL( this._imports,
                    out );
         renderDRL( this._variables,
