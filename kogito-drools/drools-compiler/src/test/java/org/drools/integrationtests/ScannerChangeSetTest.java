@@ -26,22 +26,22 @@ public class ScannerChangeSetTest {
 
     public static final String TMP_DIR = "target/classes/";
     
-	@Test
-	public void testPKGByResourceChangeScanner() throws Exception {
-	    
+    @Test
+    public void testPKGByResourceChangeScanner() throws Exception {
+        
         SystemEventListenerFactory.setSystemEventListener(new PrintStreamSystemEventListener(System.out));        
 
         // create a PKG file
-	    PackageBuilder builder = new PackageBuilder();
-	    builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "Sample.drl" ) ) );
-	    Package pkg = builder.getPackage();
-	    
-	    byte[] blob1 = DroolsStreamUtils.streamOut( pkg );
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "Sample.drl" ) ) );
+        Package pkg = builder.getPackage();
+        
+        byte[] blob1 = DroolsStreamUtils.streamOut( pkg );
         File file = new File( TMP_DIR + "rules.pkg");
         writeBinaryFile( file,
                          blob1 );
         Thread.sleep(1100);
-	    
+        
         // changeset
         String XLS_CHANGESET = 
             "<change-set xmlns=\"http://drools.org/drools-5.0/change-set\"\n" +
@@ -69,31 +69,31 @@ public class ScannerChangeSetTest {
         ResourceFactory.getResourceChangeScannerService().start();
 
         assertEquals(1, kbase.getKnowledgePackages().size());
-		assertEquals(2, kbase.getKnowledgePackages().iterator().next()
-				.getRules().size());
+        assertEquals(2, kbase.getKnowledgePackages().iterator().next()
+                .getRules().size());
 
-		// after some waiting we change number of rules in the file
-		Rule hw = pkg.getRule( "Hello World" );
-		pkg.removeRule( hw );
+        // after some waiting we change number of rules in the file
+        Rule hw = pkg.getRule( "Hello World" );
+        pkg.removeRule( hw );
         byte[] blob2 = DroolsStreamUtils.streamOut( pkg );
-		
-		// scanner should notice the change
-		Thread.sleep(1500);
+        
+        // scanner should notice the change
+        Thread.sleep(1500);
         writeBinaryFile( file,
                          blob2 );
         Thread.sleep(1500);
-		try {
-			kbase = kagent.getKnowledgeBase();
-			assertEquals(1, kbase.getKnowledgePackages().size());
-			assertEquals(1, kbase.getKnowledgePackages().iterator().next()
-					.getRules().size());
-		} finally {
-			ResourceFactory.getResourceChangeNotifierService().stop();
-			ResourceFactory.getResourceChangeScannerService().stop();
-			file.delete();
-			kagent.dispose();
-		}
-	}
+        try {
+            kbase = kagent.getKnowledgeBase();
+            assertEquals(1, kbase.getKnowledgePackages().size());
+            assertEquals(1, kbase.getKnowledgePackages().iterator().next()
+                    .getRules().size());
+        } finally {
+            ResourceFactory.getResourceChangeNotifierService().stop();
+            ResourceFactory.getResourceChangeScannerService().stop();
+            file.delete();
+            kagent.dispose();
+        }
+    }
 
     private void writeBinaryFile( File file, byte[] blob1 ) throws FileNotFoundException, IOException {
         file.delete();
@@ -101,7 +101,7 @@ public class ScannerChangeSetTest {
         out.write( blob1 );
         out.close();
     }
-	
+    
     private static void writeToFile(File file, String content) throws Exception {
         FileWriter fw = null;
 
