@@ -48,6 +48,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -1142,6 +1143,7 @@ public class TraitTest {
     }
 
     @Test
+    @Ignore
     // BZ #748752
     public void testTraitsInBatchExecution() {
         String str = "package org.jboss.qa.brms.traits\n" +

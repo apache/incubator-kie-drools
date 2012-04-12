@@ -169,9 +169,15 @@ public class BuildUtils {
         return isPrimitive;
     }
 
-
-
-
+    /**
+     * Returns true if the provided type is an arrayType
+     *
+     * @param type
+     * @return
+     */
+    public static boolean isArray( String type ) {
+        return type.startsWith( "[" );
+    }
 
     public static Object getDefaultValue( FieldDefinition fld ) {
         String type = fld.getTypeName();
