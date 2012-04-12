@@ -71,11 +71,11 @@ public class Rule extends AttributedDRLElement
 
     public void renderDRL(final DRLOutput out) {
         if ( isCommented() ) {
-            out.writeLine( "#" + getComment() );
+            out.writeLine( "//" + getComment() );
         }
         out.writeLine( "rule " + this._name );
         if ( this._description != null ) {
-            out.writeLine( "\t# " + this._description );
+            out.writeLine( "\t// " + this._description );
         }
         
         // metadata
