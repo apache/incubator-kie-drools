@@ -47,6 +47,7 @@ import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
+import org.jbpm.task.admin.TaskCleanUpProcessEventListener;
 import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.admin.TasksAdminImpl;
 import org.jbpm.task.query.TaskSummary;
@@ -171,21 +172,7 @@ public class AdminAPIsWithListenerTest {
         SyncWSHumanTaskHandler htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
         htHandler.setLocal(true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
-        ksession.addEventListener(new DefaultProcessEventListener(){
-            @Override
-            public void afterProcessCompleted(ProcessCompletedEvent event) {
-                System.out.println(" ### PROCESS COMPLETED: "+event.getProcessInstance().getId());
-                List<TaskSummary> completedTasksByProcessId = admin.getCompletedTasksByProcessId(event.getProcessInstance().getId());
-                System.out.println(" ### Completed Tasks:" + completedTasksByProcessId.size());
-                for(TaskSummary t : completedTasksByProcessId){
-                    System.out.println("/t ### Completed Task Id:" + t.getId() +" - Name: "+t.getName());
-                }
-                int archiveTasks = admin.archiveTasks(completedTasksByProcessId);
-                assertEquals(3, archiveTasks);
-                int removeTasks = admin.removeTasks(completedTasksByProcessId);
-                assertEquals(3, removeTasks);
-            }
-        });
+        ksession.addEventListener(new TaskCleanUpProcessEventListener(admin));
         
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
