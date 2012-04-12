@@ -151,14 +151,16 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 			task.setNames(names);
 		}
 		String comment = (String) workItem.getParameter("Comment");
-		if (comment != null) {
-			List<I18NText> descriptions = new ArrayList<I18NText>();
-			descriptions.add(new I18NText("en-UK", comment));
-			task.setDescriptions(descriptions);
-			List<I18NText> subjects = new ArrayList<I18NText>();
-			subjects.add(new I18NText("en-UK", comment));
-			task.setSubjects(subjects);
-		}
+		if (comment == null) {
+                    comment = "";
+                }
+                List<I18NText> descriptions = new ArrayList<I18NText>();
+                descriptions.add(new I18NText("en-UK", comment));
+                task.setDescriptions(descriptions);
+		List<I18NText> subjects = new ArrayList<I18NText>();
+		subjects.add(new I18NText("en-UK", comment));
+		task.setSubjects(subjects);
+		
 		String priorityString = (String) workItem.getParameter("Priority");
 		int priority = 0;
 		if (priorityString != null) {
