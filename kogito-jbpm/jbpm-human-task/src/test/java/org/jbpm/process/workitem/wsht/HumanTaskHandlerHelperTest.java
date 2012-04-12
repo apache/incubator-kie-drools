@@ -12,6 +12,7 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.jbpm.task.Deadlines;
 import org.jbpm.task.EmailNotification;
 import org.jbpm.task.EmailNotificationHeader;
+import org.jbpm.task.Language;
 import org.jbpm.task.Notification;
 import org.jbpm.task.Reassignment;
 import org.junit.Test;
@@ -243,7 +244,7 @@ public class HumanTaskHandlerHelperTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new Language("en-UK"));
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -283,7 +284,7 @@ public class HumanTaskHandlerHelperTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new Language("en-UK"));
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -322,7 +323,7 @@ public class HumanTaskHandlerHelperTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new Language("en-UK"));
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -344,7 +345,7 @@ public class HumanTaskHandlerHelperTest {
 		
 		emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		header = emailNotification.getEmailHeaders().get("en-UK");
+		header = emailNotification.getEmailHeaders().get(new Language("en-UK"));
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -392,7 +393,7 @@ public class HumanTaskHandlerHelperTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new Language("en-UK"));
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertTrue((header.getBody().indexOf("http://localhost:8080/taskserver-url") != -1));

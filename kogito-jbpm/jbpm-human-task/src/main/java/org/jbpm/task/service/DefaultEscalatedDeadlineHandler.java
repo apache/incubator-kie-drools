@@ -197,7 +197,7 @@ public class DefaultEscalatedDeadlineHandler
                 oIn.close();
                 bs.close();
             } catch (Exception e) {
-                throw new RuntimeException("Error when accessing task content, e");
+            	 doc = (Map<String, Object>) TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
             }
         } else {
             doc = Collections.emptyMap();
