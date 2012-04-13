@@ -45,6 +45,7 @@ import org.mvel2.ParserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("unchecked")
 public class TaskService extends TaskPersistenceManagerAccessor {
 
     private EntityManagerFactory emf;
@@ -65,9 +66,15 @@ public class TaskService extends TaskPersistenceManagerAccessor {
      */
     private SystemEventListener systemEventListener;
 
-    Map<Operation, List<OperationCommand>> operations;
+    private Map<Operation, List<OperationCommand>> operations;
 
-    public TaskService(EntityManagerFactory emf,SystemEventListener systemEventListener) {
+    /**
+     * Constructor in which no EscalatedDeadlineHandler is given. 
+     * 
+     * @param emf the EntityManagerFactory
+     * @param systemEventListener the Drools SystemEventListener
+     */
+    public TaskService(EntityManagerFactory emf, SystemEventListener systemEventListener) {
         this(emf, systemEventListener, null);
     }
 
@@ -80,7 +87,15 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         else { 
             this.escalatedDeadlineHandler = new DefaultEscalatedDeadlineHandler();
         }
-
+        init();
+    }
+    
+    /**
+     * The method in which everything is initialized. 
+     * </p>
+     * The constructor has been split into two methods in order to use Spring with human-task.
+     */
+    public void init() { 
         eventSupport = new TaskEventSupport();
         eventKeys = new EventKeys();
         eventSupport.addEventListener(new MessagingTaskEventListener(eventKeys));
@@ -96,11 +111,11 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         }
         tpm.endPersistenceContext();
 
-        Map vars = new HashMap();
+        Map<String, Object> vars = new HashMap<String, Object>();
 
         // Search operations-dsl.mvel, if necessary using superclass if TaskService is subclassed
         InputStream is = null;
-        for (Class c = getClass(); c != null; c = c.getSuperclass()) {
+        for (Class<?> c = getClass(); c != null; c = c.getSuperclass()) {
             is = c.getResourceAsStream("operations-dsl.mvel");
             if (is != null) {
                 break;
@@ -115,6 +130,29 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         } catch (IOException e) {
             throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
         }
+    }
+    
+    /**
+     * Default constructor needed for Spring
+     */
+    public TaskService() { 
+        super();
+    }
+    
+    /**
+     * Setter of the EntityManagerFactory field for Spring.
+     * @param emf an {@link EntityManagerFactory} instance
+     */
+    public void setEntityManagerFactory(EntityManagerFactory emf) { 
+        this.emf = emf;
+    }
+    
+    /**
+     * Setter of the {@link SystemEventListener} field for Spring.
+     * @param emf an {@link SystemEventListener} instance
+     */
+    public void setSystemEventListener(SystemEventListener systemEventListener) { 
+        this.systemEventListener = systemEventListener;
     }
 
     public TaskServiceSession createSession() {
@@ -186,9 +224,9 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         return sb.toString();
     }
 
-    private static Map<String, Class> inputs = new HashMap<String, Class>();
+    private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();
 
-    public static Map<String, Class> getInputs() {
+    public static Map<String, Class<?>> getInputs() {
         synchronized (inputs) {
             if (inputs.isEmpty()) {
                 // org.jbpm.task
@@ -244,7 +282,7 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         }
     }
     
-    public static Object eval(Reader reader, Map vars) {
+    public static Object eval(Reader reader, Map<String, Object> vars) {
         try {
             return eval(toString(reader), vars);
         } catch (IOException e) {
@@ -252,7 +290,7 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         }
     }
     
-    public static Object eval(String str, Map vars) {
+    public static Object eval(String str, Map<String, Object> vars) {
     	ParserConfiguration pconf = new ParserConfiguration();
     	pconf.addPackageImport("org.jbpm.task");
     	pconf.addPackageImport("org.jbpm.task.service");

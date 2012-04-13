@@ -25,8 +25,10 @@ import java.util.Map;
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
+import org.jbpm.task.Group;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.User;
 import org.jbpm.task.event.TaskCompletedEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.query.TaskSummary;
@@ -41,13 +43,17 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
 	protected TaskServer server;
 	protected TaskClient client;
 
-    @SuppressWarnings("unchecked")
-	public void testLifeCycle() throws Exception {      
-        Map<String, Object> vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
-
+	public void testLifeCycle() throws Exception {    
+        runTestLifeCycle(client, users, groups);
+	}
+	
+	public static void runTestLifeCycle(TaskClient client, Map<String, User> users,Map<String, Group> groups ) { 
+        Map<String, Object> vars = fillVariables(users, groups);
+        
+        BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
+        int initialNumTasks = taskSummaryResponseHandler.getResults().size();
+        
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba']], }),";                        
@@ -65,11 +71,11 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
         
-        BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+        taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         List<TaskSummary> tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
-        assertEquals(Status.Reserved, tasks.get(0).getStatus());
+        assertEquals(initialNumTasks + 1, tasks.size());
+        assertEquals(Status.Reserved, tasks.get(tasks.size()-1).getStatus());
         
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "bobba" ).getId(), responseHandler );  
@@ -77,8 +83,8 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
-        assertEquals(Status.InProgress, tasks.get(0).getStatus());
+        assertEquals(initialNumTasks + 1, tasks.size());
+        assertEquals(Status.InProgress, tasks.get(tasks.size()-1).getStatus());
         
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
@@ -86,7 +92,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(0, tasks.size());
+        assertEquals(initialNumTasks, tasks.size());
         
         Payload payload = handler.getPayload();
         TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
@@ -98,13 +104,17 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         assertEquals( Status.Completed , task1.getTaskData().getStatus() );         
     }
   
-    @SuppressWarnings("unchecked")
-	public void testLifeCycleMultipleTasks() throws Exception {      
-        Map<String, Object> vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
-        vars.put( "now", new Date() );                
+	public void testLifeCycleMultipleTasks() throws Exception { 
+	    runTestLifeCycle(client, users, groups);
+	}
+	
+	public static void runTestLifeCycleMultipleTasks(TaskClient client, Map<String, User> users,Map<String, Group> groups ) { 
+        Map<String, Object> vars = fillVariables(users, groups);
 
+        BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
+        int initialNumTasks = taskSummaryResponseHandler.getResults().size();
+        
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba']], }),";                        
@@ -121,11 +131,11 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
         client.registerForEvent( key, true, handler );
         
-        BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
+        taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         List<TaskSummary> tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
-        assertEquals(Status.Reserved, tasks.get(0).getStatus());
+        assertEquals(initialNumTasks + 1, tasks.size());
+        assertEquals(Status.Reserved, tasks.get(tasks.size()-1).getStatus());
         
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "bobba" ).getId(), responseHandler );  
@@ -133,8 +143,8 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
-        assertEquals(Status.InProgress, tasks.get(0).getStatus());
+        assertEquals(initialNumTasks + 1, tasks.size());
+        assertEquals(Status.InProgress, tasks.get(tasks.size()-1).getStatus());
         
         BlockingAddTaskResponseHandler addTaskResponseHandler2 = new BlockingAddTaskResponseHandler();
         Task task2 = ( Task )  eval( new StringReader( str ), vars );
@@ -148,7 +158,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(2, tasks.size());
+        assertEquals(initialNumTasks + 2, tasks.size());
         
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
@@ -159,7 +169,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
         tasks = taskSummaryResponseHandler.getResults(); 
-        assertEquals(1, tasks.size());
+        assertEquals(initialNumTasks + 1, tasks.size());
         
         Payload payload = handler.getPayload();
         TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();

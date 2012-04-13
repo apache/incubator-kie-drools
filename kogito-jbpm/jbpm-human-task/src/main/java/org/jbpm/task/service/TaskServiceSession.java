@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.drools.RuleBase;
@@ -97,7 +98,7 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         if (!this.tpm.userExists(user.getId())) {
             persistInTransaction(user);
         } else {
-            logger.warn("User " + user.getId() + " already exist in Task Server");
+            logger.warn("User " + user.getId() + " already exists in Task Server");
         }
     }
 
@@ -105,7 +106,7 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         if (!this.tpm.groupExists(group.getId())) {
             persistInTransaction(group);
         } else {
-            logger.warn("Group " + group.getId() + " already exist in Task Server");
+            logger.warn("Group " + group.getId() + " already exists in Task Server");
         }
     }
 

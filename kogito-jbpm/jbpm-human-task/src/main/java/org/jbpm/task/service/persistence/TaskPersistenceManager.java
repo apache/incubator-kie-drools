@@ -18,13 +18,37 @@ import org.jbpm.task.service.persistence.TaskTransactionManager.TransactionStatu
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * From the Hibernate docs: 
+ * </p>
+ * <pre>
+ * An EntityManager is an inexpensive, non-threadsafe object that 
+ * should be used once, for a single business process, a single unit 
+ * of work, and then discarded. An EntityManager will not obtain 
+ * a JDBC Connection (or a Datasource) unless it is needed, so 
+ * you may safely open and close an EntityManager even if you are 
+ * not sure that data access will be needed to serve a particular request.
+ * </pre>
+ * </p>
+ * 
+ * This class is a wrapper around the entity manager that handles 
+ * all persistence operations. This way, the persistence functionality
+ * can be isolated from the human-task server functionality. 
+ * </p>
+ * 
+ * This class is only mean to be used in one thread: with every request
+ * handled by the human-task server, a TaskServiceSession is created
+ * with an instance of this class. Once the request has been handled, 
+ * the TaskServiceSession instance and the TaskPersistenceManager
+ * instance are disposed of. 
+ * </p>
+ */
 public class TaskPersistenceManager {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     
     private TaskTransactionManager ttxm;
     private EntityManager em;
-    private final EntityManagerFactory emf;
 
     static { 
         TaskServiceSession.setTaskPersistenceManagerFactory(new TaskPersistenceManagerFactory());
@@ -32,17 +56,10 @@ public class TaskPersistenceManager {
     }
     
     TaskPersistenceManager(EntityManagerFactory entityManagerFactory) { 
-        this.emf = entityManagerFactory;
-        this.ttxm = TaskTransactionManager.getInstance(emf);
-        this.em = emf.createEntityManager();
+        this.ttxm = TaskTransactionManager.getInstance(entityManagerFactory);
+        this.em = entityManagerFactory.createEntityManager();
     }
-    
-    TaskPersistenceManager(TaskPersistenceManager tpm) { 
-        this.emf = tpm.emf;
-        this.ttxm = TaskTransactionManager.getInstance(emf);
-        this.em = emf.createEntityManager();
-    }
-    
+
     //=====
     // dealing with transactions
     //=====

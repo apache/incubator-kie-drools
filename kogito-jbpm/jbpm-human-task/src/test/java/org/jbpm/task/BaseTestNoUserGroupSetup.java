@@ -34,6 +34,7 @@ public abstract class BaseTestNoUserGroupSetup extends BaseTest {
         if(!UserGroupCallbackManager.getInstance().existsCallback()) {
         	UserGroupCallbackManager.getInstance().setCallback(new UserGroupCallbackOneImpl());
         }
+        taskSession.addUser(new User("Administrator"));
     }
     
     @Override
@@ -52,26 +53,4 @@ public abstract class BaseTestNoUserGroupSetup extends BaseTest {
         // do not disable
     }
     
-    @Override
-    public void loadUsersAndGroups(TaskService taskService) throws Exception {
-        // does not add users and groups to taskSession
-        Map vars = new HashMap();
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(BaseTest.class.getResourceAsStream("LoadUsers.mvel"));
-            users = (Map<String, User>) eval(reader, vars);
-        } finally {
-            if (reader != null) reader.close();
-            reader = null;
-        }
-
-        try {
-            reader = new InputStreamReader(BaseTest.class.getResourceAsStream("LoadGroups.mvel"));
-            groups = (Map<String, Group>) eval(reader,  vars);
-        } finally {
-            if (reader != null) reader.close();
-        }
-        
-        taskSession.addUser(new User("Administrator"));
-    }
 }

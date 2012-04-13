@@ -18,6 +18,7 @@ package org.jbpm.task;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,8 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.drools.SystemEventListenerFactory;
+import org.h2.tools.DeleteDbFiles;
+import org.h2.tools.Server;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.SendIcal;
@@ -40,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class BaseTest extends TestCase {
 
-    protected Logger logger;
+    protected static Logger logger = LoggerFactory.getLogger(BaseTest.class);
     
     protected EntityManagerFactory emf;
 
@@ -70,7 +73,9 @@ public abstract class BaseTest extends TestCase {
         taskSession = taskService.createSession();
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
-        loadUsersAndGroups(taskService);
+        users = fillUsersOrGroups("LoadUsers.mvel");
+        groups = fillUsersOrGroups("LoadGroups.mvel");
+        loadUsersAndGroups(taskSession, users, groups);
         disableUserGroupCallback();
         
         logger = LoggerFactory.getLogger(getClass());
@@ -85,30 +90,29 @@ public abstract class BaseTest extends TestCase {
         UserGroupCallbackManager.getInstance().setCallback(null);
     }
     
-    public void loadUsersAndGroups(TaskService taskService) throws Exception {
-        Map vars = new HashMap();
-
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static Map fillUsersOrGroups(String mvelFileName) throws Exception { 
+        Map<String, Object> vars = new HashMap<String, Object>();
         Reader reader = null;
-
+        Map<String, Object> result = null;
+        
         try {
-            reader = new InputStreamReader(BaseTest.class.getResourceAsStream("LoadUsers.mvel"));
-            users = (Map<String, User>) eval(reader, vars);
-            for (User user : users.values()) {
-                taskSession.addUser(user);
-            }
+            reader = new InputStreamReader(BaseTest.class.getResourceAsStream(mvelFileName));
+            result = (Map<String, Object>) eval(reader, vars);
         } finally {
             if (reader != null) reader.close();
-            reader = null;
+        }
+        
+        return result;
+    }
+    
+    public static void loadUsersAndGroups(TaskServiceSession taskSession, Map<String, User> users, Map<String, Group> groups) throws Exception {
+        for (User user : users.values()) {
+            taskSession.addUser(user);
         }
 
-        try {
-            reader = new InputStreamReader(BaseTest.class.getResourceAsStream("LoadGroups.mvel"));
-            groups = (Map<String, Group>) eval(reader,  vars);
-            for (Group group : groups.values()) {
-                taskSession.addGroup(group);
-            }
-        } finally {
-            if (reader != null) reader.close();
+        for (Group group : groups.values()) {
+            taskSession.addGroup(group);
         }
     }
 
@@ -123,6 +127,10 @@ public abstract class BaseTest extends TestCase {
     }
     
     protected Map<String, Object> fillVariables() { 
+        return fillVariables(users, groups);
+    }
+    
+    public static Map<String, Object> fillVariables(Map<String, User> users, Map<String, Group> groups ) { 
         Map <String, Object> vars = new HashMap<String, Object>();
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -162,4 +170,5 @@ public abstract class BaseTest extends TestCase {
         // Wait for deadlines to finish
         Thread.sleep(1000);
     }
+    
 }
