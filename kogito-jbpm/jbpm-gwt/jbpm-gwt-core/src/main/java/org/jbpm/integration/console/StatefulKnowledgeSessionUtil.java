@@ -328,9 +328,10 @@ public class StatefulKnowledgeSessionUtil {
      * This method attaches an agenda event listener to the given knowledge session .
      * @param ksession The (stateful) knowledge session .
      */
-    private static void addAgendaEventListener(StatefulKnowledgeSession ksession) { 
+    private static void addAgendaEventListener(final StatefulKnowledgeSession ksession) { 
         final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {
             public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory){
+            	ksession.fireAllRules();
             }
             public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory){
             }
@@ -356,7 +357,7 @@ public class StatefulKnowledgeSessionUtil {
         ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
                 .getCommandService().getContext()).getStatefulKnowledgesession() )
                 .session.addEventListener(agendaEventListener);
-
+    	ksession.fireAllRules();
     }
     
     private static int getPersistedSessionId(String location) {
