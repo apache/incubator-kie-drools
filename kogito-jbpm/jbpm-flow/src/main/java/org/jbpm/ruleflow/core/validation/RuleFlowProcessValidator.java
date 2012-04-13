@@ -267,6 +267,11 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 	                	validateTimer(timer, node, process, errors);
 	                }
                 }
+                if(!subProcess.isIndependent() && subProcess.isWaitForCompletion()){
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "SubProcess node '" + node.getName() + "' [" + node.getId() + "] you can only set" +
+                         "independent to 'false' only when 'Wait for completion' is set to true."));
+                }
             } else if (node instanceof ActionNode) {
                 final ActionNode actionNode = (ActionNode) node;
                 if (actionNode.getFrom() == null && !acceptsNoIncomingConnections(node)) {
