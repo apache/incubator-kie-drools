@@ -467,6 +467,31 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
         </mediaobject>
       </figure>
     </section>
+
+    <section>
+      <title>New Service Editor</title>
+
+      <para>A new editor to create services was added in Guvnor. Service is a
+        special asset that enables users configure KnowledgeBases and KSessions
+        to be executed remotely for any sort of client application (via REST
+        or SOAP).</para>
+      <para>In order to expose those services, the editor generates automatically a
+        war file that can be deployed on most platforms on most containers.
+        For further information refer to the documentation.</para>
+
+      <figure>
+        <title>The new Service Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/NewServiceConfig1.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
   </section>
 
   <section>
