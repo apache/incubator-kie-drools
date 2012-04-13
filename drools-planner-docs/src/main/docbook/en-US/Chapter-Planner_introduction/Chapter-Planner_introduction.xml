@@ -10,8 +10,9 @@
   <section>
     <title>What is Drools Planner?</title>
 
-    <para><emphasis role="bold"><link xlink:href="http://www.jboss.org/drools/drools-planner">Drools Planner</link>
-    optimizes planning problems.</emphasis> It solves use cases, such as:</para>
+    <para><emphasis role="bold"><link xlink:href="http://www.jboss.org/drools/drools-planner">Drools Planner</link> is a
+    lightweight, embeddable planning engine that optimizes planning problems.</emphasis> It solves use cases, such
+    as:</para>
 
     <itemizedlist>
       <listitem>
@@ -61,14 +62,13 @@
     <para>Every organization faces planning problems: provide products and services with a limited set of
     <emphasis>constrained</emphasis> resources (employees, assets, time and money).</para>
 
-    <para>Drools Planner enables normal Java<superscript>TM</superscript> programmers to solve planning problems
-    efficiently. Under the hood, it combines optimization algorithms (including <emphasis>Metaheuristics</emphasis> such
-    as <emphasis>Tabu Search</emphasis> and <emphasis>Simulated Annealing</emphasis>) with the power of score
-    calculation by a rule engine.</para>
+    <para>Drools Planner helps normal Java<superscript>TM</superscript> programmers solve planning problems efficiently.
+    Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.</para>
 
     <para>Drools Planner, like the rest of Drools, is business-friendly <emphasis>open source</emphasis> software under
     <link xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
-    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>).</para>
+    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>). It is
+    100% pure Java<superscript>TM</superscript> and runs on any JVM.</para>
   </section>
 
   <section>
@@ -113,7 +113,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>By using advanced optimization algorithms, <emphasis role="bold">Drools Planner does find a good solution in
+      <para>By using advanced optimization algorithms, <emphasis role="bold">Planner does find a good solution in
       reasonable time for such planning problems.</emphasis></para>
     </section>
 
@@ -143,15 +143,13 @@
         </listitem>
       </itemizedlist>
 
-      <para>In practice, these are just like negative soft constraints, but with a positive weight.</para>
-
       <para>Some toy problems (such as N Queens) only have hard constraints. Some problems have 3 or more levels of
       constraints, for example hard, medium and soft constraints.</para>
 
-      <para>These constraints define the <emphasis>score function</emphasis> (AKA <emphasis>fitness function</emphasis>)
-      of a planning problem. Each solution of a planning problem can be graded with a score. Because we 'll define these
-      constraints as rules in the Drools Expert rule engine, <emphasis role="bold">adding constraints in Drools Planner
-      is easy and scalable</emphasis>.</para>
+      <para>These constraints define the <emphasis>score calculation</emphasis> (AKA <emphasis>fitness
+      function</emphasis>) of a planning problem. Each solution of a planning problem can be graded with a score.
+      <emphasis role="bold">With Planner, score constraints are written in an Object Orientated language, such as Java
+      code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
     </section>
 
     <section>
@@ -162,7 +160,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>A <emphasis>possible solution</emphasis> is any solution, wheter or not it breaks any number of
+          <para>A <emphasis>possible solution</emphasis> is any solution, whether or not it breaks any number of
           constraints. Planning problems tend to have a incredibly large number of possible solutions. Many of those
           solutions are worthless.</para>
         </listitem>
@@ -192,9 +190,9 @@
       implementation is forced to evaluate at least a subset of all those possible solutions.</para>
 
       <para>Drools Planner supports several optimization algorithms to efficiently wade through that incredibly large
-      number of possible solutions. Depending on the use case, some optimization algorithms perform better than others.
-      <emphasis role="bold">In Drools Planner it is easy to switch the optimization algorithm</emphasis>, by changing
-      the solver configuration in a few XML lines or by API.</para>
+      number of possible solutions. Depending on the use case, some optimization algorithms perform better than others,
+      but it's impossible to tell in advance. <emphasis role="bold">With Planner, it is easy to switch the optimization
+      algorithm</emphasis>, by changing the solver configuration in a few lines of XML or code.</para>
     </section>
   </section>
 
@@ -204,8 +202,8 @@
     <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can occur. With
     the recipe called <link
     xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
-    you can easily upgrade and deal with any backwards incompatible changes between versions. That recipe file is
-    included in every release.</para>
+    you can easily upgrade to a newer version and quickly deal with any backwards incompatible changes. That recipe file
+    is included in every release.</para>
   </section>
 
   <section xml:id="downloadAndRunTheExamples">
@@ -214,17 +212,45 @@
     <section>
       <title>Get the release zip and run the examples</title>
 
-      <para>You can download a release zip of Drools Planner from <link
-      xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. Unzip it. To run an
-      example, just open the directory <filename>examples</filename> and run the script
-      (<filename>runExamples.sh</filename> on Linux and Mac or <filename>runExamples.bat</filename> on Windows) and pick
-      an example in the GUI:</para>
+      <para>To try it now:</para>
 
-      <programlisting>$ cd examples
+      <itemizedlist>
+        <listitem>
+          <para>Download a release zip of Drools Planner from <link
+          xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. </para>
+        </listitem>
+
+        <listitem>
+          <para>Unzip it.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open the directory <filename>examples</filename> and run the script.</para>
+
+          <para>Linux or Mac:</para>
+
+          <programlisting>$ cd examples
 $ ./runExamples.sh</programlisting>
 
-      <programlisting>$ cd examples
+          <para>Windows:</para>
+
+          <programlisting>$ cd examples
 $ runExamples.bat</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <para>The Examples GUI application will open. Just pick an example:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Planner_introduction/plannerExamplesAppScreenshot.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <note>
+        <para>Planner itself has no GUI dependencies. It runs just as well on a server or a mobile JVM as on the
+        desktop.</para>
+      </note>
     </section>
 
     <section>
@@ -249,7 +275,7 @@ $ runExamples.bat</programlisting>
             </listitem>
 
             <listitem>
-              <para>Add the java source directory <filename>src/main/java</filename> and the java resources directory
+              <para>Add the Java source directory <filename>src/main/java</filename> and the Java resources directory
               <filename>src/main/resources</filename>.</para>
             </listitem>
           </itemizedlist>

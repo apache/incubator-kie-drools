@@ -44,7 +44,7 @@
     </section>
 
     <section>
-      <title>Domain model</title>
+      <title>Domain model diagram</title>
 
       <para>The domain model is pretty simple:</para>
 
@@ -203,7 +203,7 @@
     </section>
 
     <section>
-      <title>Domain model</title>
+      <title>Domain model implementation</title>
 
       <para>The class <literal>Computer</literal> is a POJO (Plain Old Java Object), nothing special. Usually, you'll
       have more of these kind of classes.</para>

@@ -617,7 +617,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         the walls. Use the benchmarker to fine tweak your configuration. Experiments teach us that it is generally best
         to use a prime number for the move tabu, undo move tabu, entity tabu or value tabu size.</para>
 
-        <para>A tabu search acceptor should be combined with a high or no subset selection.</para>
+        <para>A tabu search acceptor should be combined with a high subset selection, such as
+        <literal>1000</literal>.</para>
       </section>
 
       <section>

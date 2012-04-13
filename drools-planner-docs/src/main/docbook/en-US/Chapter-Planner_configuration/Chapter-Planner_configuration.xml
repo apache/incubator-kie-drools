@@ -499,7 +499,7 @@ public class Queen {
 }</programlisting>
         </section>
 
-        <section>
+        <section xml:id="valueRangeFromPlanningEntity">
           <title><literal>ValueRange</literal> from planning entity</title>
 
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
@@ -822,8 +822,8 @@ public class Visit ... implements Appearance {
         <literal>Solution</literal>. Therefor, that wrapping class must implement the <literal>Solution</literal>
         interface. For example in n queens, that <literal>NQueens</literal> class implements
         <literal>Solution</literal>, yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is
-        assigned to a <literal>Row</literal> yet. So it's not a feasible solution. It's not even a possible solution.
-        It's an uninitialized solution.</para>
+        not yet assigned to a <literal>Row</literal> (their <literal>row</literal> property is <literal>null</literal>).
+        So it's not a feasible solution. It's not even a possible solution. It's an uninitialized solution.</para>
       </section>
 
       <section>
@@ -866,9 +866,9 @@ public class Visit ... implements Appearance {
         <title>The getScore and setScore methods</title>
 
         <para>A <literal>Solution</literal> requires a score property. The score property is <literal>null</literal> if
-        the <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The score
-        property is usually typed to the specific <literal>Score</literal> implementation you use. For example,
-        <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
+        the <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The
+        <literal>score</literal> property is usually typed to the specific <literal>Score</literal> implementation you
+        use. For example, <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
 
         <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
