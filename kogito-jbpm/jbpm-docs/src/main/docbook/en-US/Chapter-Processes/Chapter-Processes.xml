@@ -851,7 +851,9 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
             child process will not be terminated if this parent process is completed (or
             this sub-process node is cancelled for some other reason);
             otherwise the active sub-process will be cancelled on termination of the parent
-            process (or cancellation of the sub-process node).</para>
+            process (or cancellation of the sub-process node).  Note that you can only set
+            independent to "false" only when "Wait for completion" is set to true.
+            </para>
           </listitem>
           <listitem>
             <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are 
