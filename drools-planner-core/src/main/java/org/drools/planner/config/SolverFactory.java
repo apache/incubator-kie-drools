@@ -16,12 +16,20 @@
 
 package org.drools.planner.config;
 
+import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 
 /**
  * Builds a {@link Solver}.
+ * @see XmlSolverFactory
  */
 public interface SolverFactory {
+
+    /**
+     * Allows you to problematically change the {@link SolverConfig} at runtime before building the {@link Solver}.
+     * @return never null
+     */
+    SolverConfig getSolverConfig();
 
     /**
      * Creates a new {@link Solver} instance.
