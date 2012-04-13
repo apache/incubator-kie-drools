@@ -571,7 +571,7 @@ end</programlisting>
       <itemizedlist>
         <listitem>
           <para>Each <literal>Process</literal> belongs to a <literal>Service</literal>. A computer can crash, so
-          processes running the same service should be assigned to different Computers.</para>
+          processes running the same service should be assigned to different computers.</para>
         </listitem>
 
         <listitem>
