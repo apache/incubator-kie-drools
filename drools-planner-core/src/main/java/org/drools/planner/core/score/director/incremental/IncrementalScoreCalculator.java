@@ -23,6 +23,8 @@ import org.drools.planner.core.solution.Solution;
 /**
  * Used for incremental java {@link Score} calculation.
  * This is much faster than {@link SimpleScoreCalculator} but requires much more code to implement too.
+ * <p/>
+ * Any implementation is naturally stateful.
  * @param <Sol>
  * @see IncrementalScoreDirector
  */

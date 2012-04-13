@@ -21,6 +21,8 @@ import org.drools.planner.core.solution.Solution;
 
 /**
  * Used for simple java {@link Score} calculation. This is non-incremental calculation, which is slow.
+ * <p/>
+ * Any implementation must be stateless.
  * @param <Sol>
  * @see SimpleScoreDirector
  */
