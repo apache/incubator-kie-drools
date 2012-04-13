@@ -268,12 +268,43 @@ public class GuvnorConnectionUtils {
         }
     }
     
+    public List<String> getBuiltPackageNames() {
+    	List<String> allPackageNames = getPackageNames();
+    	
+    	List<String> builtPackageNames = new ArrayList<String>();
+    	for(String nextPkg : allPackageNames) {
+    		if(canBuildPackage(nextPkg)) {
+    			builtPackageNames.add(nextPkg);
+    		} else {
+    			logger.info("Excluding package: " + nextPkg + " because it cannot be built.");
+    		}
+    	}
+    	
+    	return builtPackageNames;
+    }
+    
+    public boolean canBuildPackage(String packageName) {
+    	String packagesBinaryURL = getGuvnorProtocol()
+                + "://"
+                + getGuvnorHost()
+                + "/"
+                + getGuvnorSubdomain()
+                + "/rest/packages/" + packageName + "/binary";
+    	
+    	try {
+    		getInputStreamForURL(packagesBinaryURL, "GET");
+    		return true;
+    	} catch(Exception e) {
+    		return false;
+    	}
+    }
+    
     public StringReader createChangeSet() {
         try {
             StringTemplate changeSetTemplate = new StringTemplate(
                     readFile(GuvnorConnectionUtils.class.getResourceAsStream("/ChangeSet.st")));
             TemplateInfo info = new TemplateInfo(getGuvnorProtocol(), getGuvnorHost(), 
-                    getGuvnorUsr(), getGuvnorPwd(), getGuvnorSubdomain(), getPackageNames());
+                    getGuvnorUsr(), getGuvnorPwd(), getGuvnorSubdomain(), getBuiltPackageNames());
             changeSetTemplate.setAttribute("data",  info.getData());
             return new StringReader(changeSetTemplate.toString());
         } catch (IOException e) {
