@@ -839,14 +839,14 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
             be executed.</para>
           </listitem>
           <listitem>
-            <para><emphasis>Wait for completion</emphasis>: If this property is true,
+            <para><emphasis>Wait for completion</emphasis> (by default true): If this property is true,
             this sub-process node will only continue if the child process that was started
             has terminated its execution (completed or aborted); otherwise it will 
             continue immediately after starting the subprocess (so it will not wait for
             its completion).</para>
           </listitem>
           <listitem>
-            <para><emphasis>Independent</emphasis>: If this property is true, the
+            <para><emphasis>Independent</emphasis> (by default true): If this property is true, the
             child process is started as an independent process, which means that the
             child process will not be terminated if this parent process is completed (or
             this sub-process node is cancelled for some other reason);
