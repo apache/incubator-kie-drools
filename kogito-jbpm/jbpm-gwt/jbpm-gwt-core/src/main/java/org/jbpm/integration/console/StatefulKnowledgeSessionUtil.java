@@ -210,7 +210,7 @@ public class StatefulKnowledgeSessionUtil {
     private static void addProcessesFromConsoleDirectory(KnowledgeBase kbase, Properties consoleProperties) { 
         String directory = System.getProperty("jbpm.console.directory") == null ? consoleProperties.getProperty("jbpm.console.directory") : System.getProperty("jbpm.console.directory");
         if (directory == null || directory.length() < 1 ) {
-            logger.error("jbpm.console.directory property not found");
+            logger.info("jbpm.console.directory property not found - processes from local file system will not be loaded");
         } else {
             File file = new File(directory);
             if (!file.exists()) {
