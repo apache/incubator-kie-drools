@@ -52,7 +52,6 @@ public @interface ValueRange {
      */
     String planningEntityProperty() default "";
 
-
     /**
      * @return never true for {@link ValueRangeType#UNDEFINED}
      */
