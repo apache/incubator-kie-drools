@@ -44,7 +44,6 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
     }
 
     public void afterEntityAdded(Object entity) {
-        // TODO queenList should probably be adjusted
         insert((Queen) entity);
     }
 
@@ -70,7 +69,6 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
 
     public void afterEntityRemoved(Object entity) {
         // Do nothing
-        // TODO queenList should probably be adjusted
     }
 
     private void insert(Queen queen) {
