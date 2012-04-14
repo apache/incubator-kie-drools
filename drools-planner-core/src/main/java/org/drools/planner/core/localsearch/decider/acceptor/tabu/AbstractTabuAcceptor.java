@@ -160,6 +160,10 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
             Object oldTabu = it.next();
             Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
+            if (oldTabuStepIndexInteger == null) {
+                throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + oldTabu
+                        + ") probably changed since it was inserted in the tabu Map or Set.");
+            }
             int oldTabuStepCount = tabuStepIndex - oldTabuStepIndexInteger; // at least 1
             if (oldTabuStepCount < maximumTabuListSize) {
                 break;
