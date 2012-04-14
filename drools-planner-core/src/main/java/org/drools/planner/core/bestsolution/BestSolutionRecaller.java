@@ -55,6 +55,8 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
         }
         solverScope.setStartingInitializedScore(startingInitializedScore);
         solverScope.setBestScore(startingInitializedScore);
+        // The original bestSolution might be the final bestSolution and should have an accurate Score
+        solverScope.getBestSolution().setScore(startingInitializedScore);
     }
 
     public void extractBestSolution(AbstractStepScope stepScope) {
