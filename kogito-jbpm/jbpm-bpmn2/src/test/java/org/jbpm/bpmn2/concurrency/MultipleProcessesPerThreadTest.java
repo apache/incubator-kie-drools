@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 @Ignore
 public class MultipleProcessesPerThreadTest {
     
-    private static final int LOOPS = 100;
+    private static final int LOOPS = 1000;
     
     private static Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
     static { 
@@ -69,7 +69,7 @@ public class MultipleProcessesPerThreadTest {
     private static class HelloWorldProcessThread implements Runnable {
 
         private Thread thread;
-        Status status;
+        volatile Status status;
         private volatile CountDownLatch latch;
 
         public void start() {
@@ -78,6 +78,7 @@ public class MultipleProcessesPerThreadTest {
         }
 
         public void run() {
+            this.status = Status.SUCCESS;
             StatefulKnowledgeSession ksession = null;
             
             try { 
@@ -112,6 +113,7 @@ public class MultipleProcessesPerThreadTest {
                     t.printStackTrace();
                 }
             }
+            
         }
 
         public synchronized void join() throws InterruptedException {
@@ -122,7 +124,7 @@ public class MultipleProcessesPerThreadTest {
     private static class UserTaskProcessThread implements Runnable {
 
         private Thread thread;
-        Status status;
+        volatile Status status;
         private volatile CountDownLatch latch;
 
         public void start() {
@@ -131,6 +133,7 @@ public class MultipleProcessesPerThreadTest {
         }
 
         public void run() {
+            this.status = Status.SUCCESS;
             StatefulKnowledgeSession ksession = null;
             
             try { 
@@ -141,6 +144,7 @@ public class MultipleProcessesPerThreadTest {
 
                 ksession = createStatefulKnowledgeSession(kbase);
             } catch(Exception e) { 
+                e.printStackTrace();
                 logger.error("Unable to set up knowlede base or session.", e);
                 this.status = Status.FAIL;
             }
@@ -183,6 +187,7 @@ public class MultipleProcessesPerThreadTest {
                     t.printStackTrace();
                 }
             }
+            
 
         }
 

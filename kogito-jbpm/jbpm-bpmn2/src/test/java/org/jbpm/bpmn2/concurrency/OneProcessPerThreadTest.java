@@ -5,6 +5,7 @@ import static junit.framework.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
@@ -28,8 +29,8 @@ import org.slf4j.LoggerFactory;
 public class OneProcessPerThreadTest {
     
     private static final int THREAD_COUNT = 1000;
-    private static volatile int started = 0;
-    private static volatile int done = 0;
+    private static volatile AtomicInteger started = new AtomicInteger(0);
+    private static volatile AtomicInteger done = new AtomicInteger(0);
     
     private static Logger logger = LoggerFactory.getLogger(OneProcessPerThreadTest.class);
     
@@ -66,7 +67,7 @@ public class OneProcessPerThreadTest {
         }
         
         int i = 0;
-        while(started > done ) { 
+        while(started.get() > done.get() ) { 
             logger.info( started + " > " + done );
             Thread.sleep(10*1000);
             if( ++i > 10 ) { 
@@ -114,7 +115,7 @@ public class OneProcessPerThreadTest {
 	    }
 	
 	    public void run() {
-	        ++started;
+	        started.incrementAndGet();
 	        try {
 	        	Map<String, Object> params = new HashMap<String, Object>();
 	        	params.put("id", id);
@@ -124,7 +125,7 @@ public class OneProcessPerThreadTest {
 	            logger.error( Thread.currentThread().getName() + " failed: " + t.getMessage() );
 	            t.printStackTrace();
 	        }
-	        ++done;
+	        done.incrementAndGet();
 	    }
 	
 	    public long getId() {
