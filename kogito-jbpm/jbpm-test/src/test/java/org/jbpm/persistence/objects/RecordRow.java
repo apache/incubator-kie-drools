@@ -23,14 +23,14 @@ public class RecordRow implements Serializable{
     @Id @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     private String code;
-    private String desc;
+    private String description;
     @ManyToOne()
     @JoinColumn(name="MEDREC_ID", nullable=false, updatable=false)
     private MedicalRecord medicalRecord;
 
     public RecordRow(String code, String desc) {
         this.code = code;
-        this.desc = desc;
+        this.description = desc;
     }
 
     public MedicalRecord getMedicalRecord() {
@@ -50,12 +50,12 @@ public class RecordRow implements Serializable{
         this.code = code;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String desc) {
+        this.description = desc;
     }
 
     public Long getId() {
@@ -68,7 +68,7 @@ public class RecordRow implements Serializable{
 
     @Override
     public String toString() {
-        return "RecordRow{" + "id=" + id + ", code=" + code + ", desc=" + desc + ", medicalRecord=" + medicalRecord + '}';
+        return "RecordRow{" + "id=" + id + ", code=" + code + ", desc=" + description + ", medicalRecord=" + medicalRecord + '}';
     }
 
     @Override
@@ -86,7 +86,7 @@ public class RecordRow implements Serializable{
         if ((this.code == null) ? (other.code != null) : !this.code.equals(other.code)) {
             return false;
         }
-        if ((this.desc == null) ? (other.desc != null) : !this.desc.equals(other.desc)) {
+        if ((this.description == null) ? (other.description != null) : !this.description.equals(other.description)) {
             return false;
         }
         if (this.medicalRecord != other.medicalRecord && (this.medicalRecord == null || !this.medicalRecord.equals(other.medicalRecord))) {
@@ -100,7 +100,7 @@ public class RecordRow implements Serializable{
         int hash = 5;
         hash = 13 * hash + (this.id != null ? this.id.hashCode() : 0);
         hash = 13 * hash + (this.code != null ? this.code.hashCode() : 0);
-        hash = 13 * hash + (this.desc != null ? this.desc.hashCode() : 0);
+        hash = 13 * hash + (this.description != null ? this.description.hashCode() : 0);
         hash = 13 * hash + (this.medicalRecord != null ? this.medicalRecord.hashCode() : 0);
         return hash;
     }
