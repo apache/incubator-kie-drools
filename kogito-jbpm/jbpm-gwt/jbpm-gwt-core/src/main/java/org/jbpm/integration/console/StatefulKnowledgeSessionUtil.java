@@ -189,7 +189,7 @@ public class StatefulKnowledgeSessionUtil {
                 kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
                 kbase = kagent.getKnowledgeBase();
             } catch (Throwable t) {
-                logger.error("Could not load processes from Guvnor: " + t.getMessage());
+                logger.error("Could not load processes from Guvnor: " + t.getMessage(), t);
             }
         } else {
             logger.warn("Could not connect to Guvnor.");
