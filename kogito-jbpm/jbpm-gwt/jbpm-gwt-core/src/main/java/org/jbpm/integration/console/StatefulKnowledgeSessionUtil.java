@@ -439,7 +439,7 @@ public class StatefulKnowledgeSessionUtil {
     public static synchronized void checkPackagesFromGuvnor() {
         GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
         if(guvnorUtils.guvnorExists()) {
-            List<String> guvnorPackages = guvnorUtils.getPackageNames();
+            List<String> guvnorPackages = guvnorUtils.getBuiltPackageNames();
             
             guvnorPackages.removeAll(knownPackages);
             
