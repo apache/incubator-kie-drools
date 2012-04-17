@@ -23,6 +23,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     private Map<ResourceType, List<ResourceDescr>> resourcesByType = new HashMap<ResourceType, List<ResourceDescr>>();
 
+    private RuntimeException buildException = null;
+
     public ResourceType currentType = null;
 
     public CompositeKnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
@@ -68,11 +70,15 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     public void build() {
+        buildException = null;
         pkgBuilder.registerBuildResources(getResources());
         buildPackages();
         buildResources();
         buildOthers();
         resourcesByType.clear();
+        if (buildException != null) {
+            throw buildException;
+        }
     }
 
     private void buildPackages() {
@@ -82,60 +88,124 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     }
 
     private void buildResources() {
-        try {
-            List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DSL);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DSL);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addDsl(resourceDescr.resource);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addProcessFromXml(resourceDescr.resource);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.BPMN2);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.BPMN2);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     BPMN2ProcessFactory.configurePackageBuilder( pkgBuilder );
                     pkgBuilder.addProcessFromXml(resourceDescr.resource);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.PKG);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.PKG);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addPackageFromInputStream(resourceDescr.resource);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.CHANGE_SET);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.CHANGE_SET);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addPackageFromChangeSet(resourceDescr.resource);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.XSD);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.XSD);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addPackageFromXSD(resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
+        }
 
-            resourcesByType = this.resourcesByType.remove(ResourceType.PMML);
-            if (resourcesByType != null) {
-                for (ResourceDescr resourceDescr : resourcesByType) {
+        resourcesByType = this.resourcesByType.remove(ResourceType.PMML);
+        if (resourcesByType != null) {
+            for (ResourceDescr resourceDescr : resourcesByType) {
+                try {
                     pkgBuilder.addPackageFromPMML(resourceDescr.resource, ResourceType.PMML, resourceDescr.configuration);
+                } catch (RuntimeException e) {
+                    if (buildException == null) {
+                        buildException = e;
+                    }
+                } catch (Exception e) {
+                    if (buildException == null) {
+                        buildException = new RuntimeException( e );
+                    }
                 }
             }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException( e );
         }
     }
 
