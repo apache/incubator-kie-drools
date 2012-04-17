@@ -63,6 +63,7 @@ public class CommandDelegate {
     
     public static List<Process> getProcesses() {
         List<Process> result = new ArrayList<Process>();
+        StatefulKnowledgeSessionUtil.checkPackagesFromGuvnor();
         KnowledgeBase kbase = getSession().getKnowledgeBase();
         for (KnowledgePackage kpackage: kbase.getKnowledgePackages()) {
             result.addAll(kpackage.getProcesses());
