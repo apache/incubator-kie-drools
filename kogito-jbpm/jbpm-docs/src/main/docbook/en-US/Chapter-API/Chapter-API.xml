@@ -232,6 +232,32 @@ public interface ProcessEventListener {
 
 }</programlisting>
 
+    <para>A note about before and after events: these events typically act like a stack,
+    which means that any events that occur as a direct result of the previous event, will
+    occur between the before and the after of that event.  For example, if a subsequent node
+    is triggered as result of leaving a node, the node triggered events will occur inbetween
+    the beforeNodeLeftEvent and the afterNodeLeftEvent of the node that is left (as the
+    triggering of the second node is a direct result of leaving the first node).  Doing
+    that allows us to derive cause relationships between events more easily.  Similarly,
+    all node triggered and node left events that are the direct result of starting a process
+    will occur between the beforeProcessStarted and afterProcessStarted events.  In
+    general, if you just want to be notified when a particular event occurs, you should
+    be looking at the before events only (as they occur immediately before the event actually
+    occurs). When only looking at the after events, one might get the impression that the
+    events are fired in the wrong order, but because the after events are triggered as a 
+    stack (after events will only fire when all events that were triggered as a result
+    of this event have already fired).  After events should only be used if you want to make
+    sure that all processing related to this has ended (for example, when you want to be
+    notified when starting of a particular process instance has ended.</para>
+    
+    <para>Also note that not all nodes always generate node triggered and/or node left events.
+    Depending on the type of node, some nodes might only generate node left events, others might
+    only generate node triggered events.  Catching intermediate events for example are not
+    generating triggered events (they are only generating left events, as they are not really
+    triggered by another node, rather activated from outside).  Similarly, throwing
+    intermediate events are not generating left events (they are only generating 
+    triggered events, as they are not really left, as they have no outgoing connection).</para>
+
     <para>jBPM out-of-the-box provides a listener that can be used to create an audit log (either
     to the console or the a file on the file system).  This audit log contains all the different events
     that occurred at runtime so it's easy to figure out what happened. Note that these loggers should
