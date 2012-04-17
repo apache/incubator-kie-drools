@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
-  <itemDefinition id="_xItem" />
+  <itemDefinition id="_xItem"/>
   <process id="BoundarySignalOnTask" tns:packageName="defaultPackage" name="BoundarySignalOnTask" isExecutable="true" processType="Private">
-     <!-- process variables -->
     <property id="x" itemSubjectRef="_xItem"/>
     <startEvent id="_1" name="StartProcess">
       <outgoing>SequenceFlow_1</outgoing>
     </startEvent>
-    
     <scriptTask id="ScriptTask_1" name="Signal received">
       <incoming>SequenceFlow_5</incoming>
       <outgoing>SequenceFlow_4</outgoing>
@@ -15,11 +13,7 @@
     </scriptTask>
     <endEvent id="EndEvent_2" name="End2">
       <incoming>SequenceFlow_4</incoming>
-      <terminateEventDefinition/>
-    </endEvent>
-    <endEvent id="EndEvent_1" name="End1">
-      <incoming>SequenceFlow_2</incoming>
-      <terminateEventDefinition/>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
     </endEvent>
     <userTask id="UserTask_1" name="User Task">
       <incoming>SequenceFlow_1</incoming>
@@ -59,39 +53,93 @@
         <targetRef>_DataInput_7</targetRef>
       </dataInputAssociation>
       <potentialOwner id="PotentialOwner_1" name="john">
-        <resourceAssignmentExpression>
-          <formalExpression>john</formalExpression>
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">john</formalExpression>
         </resourceAssignmentExpression>
       </potentialOwner>
-      
     </userTask>
-    <boundaryEvent id="BoundaryEvent_2" name="Boundary event" attachedToRef="UserTask_1">
+    <boundaryEvent id="BoundaryEvent_2" name="Boundary event" attachedToRef="UserTask_2" cancelActivity="false">
       <outgoing>SequenceFlow_5</outgoing>
-      <dataOutput id="_4_Output" name="event" />
-      <dataOutputAssociation>
-      <sourceRef>_4_Output</sourceRef>
-      <targetRef>x</targetRef>
+      <dataOutput id="_4_Output" name="event"/>
+      <dataOutputAssociation id="DataOutputAssociation_1">
+        <sourceRef>_4_Output</sourceRef>
+        <targetRef>x</targetRef>
       </dataOutputAssociation>
-      <outputSet>
+      <outputSet id="OutputSet_1">
         <dataOutputRefs>_4_Output</dataOutputRefs>
       </outputSet>
       <signalEventDefinition id="SignalEventDefinition_2" signalRef="MyMessage"/>
     </boundaryEvent>
     <sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_1" targetRef="UserTask_1"/>
-    <sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="UserTask_1" targetRef="EndEvent_1"/>
+    <sequenceFlow id="SequenceFlow_2" tns:priority="1" sourceRef="UserTask_1" targetRef="UserTask_2"/>
     <sequenceFlow id="SequenceFlow_5" tns:priority="1" name="" sourceRef="BoundaryEvent_2" targetRef="ScriptTask_1"/>
     <sequenceFlow id="SequenceFlow_4" tns:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_2"/>
-    
-    
+    <endEvent id="EndEvent_1" name="End1">
+      <incoming>SequenceFlow_3</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_2"/>
+    </endEvent>
+    <userTask id="UserTask_2" name="User Task2">
+      <extensionElements>
+        <tns:onEntry-script tns:scriptFormat="">
+          <tns:script></tns:script>
+        </tns:onEntry-script>
+      </extensionElements>
+      <extensionElements>
+        <tns:onExit-script tns:scriptFormat="">
+          <tns:script></tns:script>
+        </tns:onExit-script>
+      </extensionElements>
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_3</outgoing>
+      <ioSpecification id="_InputOutputSpecification_3">
+        <dataInput id="_DataInput_8" name="TaskName"/>
+        <dataInput id="_DataInput_9" name="Priority"/>
+        <dataInput id="_DataInput_10" name="Comment"/>
+        <dataInput id="_DataInput_11" name="GroupId"/>
+        <dataInput id="_DataInput_12" name="Skippable"/>
+        <dataInput id="_DataInput_13" name="Content"/>
+        <inputSet id="_InputSet_3" name="  Input Set 3">
+          <dataInputRefs>_DataInput_8</dataInputRefs>
+          <dataInputRefs>_DataInput_9</dataInputRefs>
+          <dataInputRefs>_DataInput_10</dataInputRefs>
+          <dataInputRefs>_DataInput_11</dataInputRefs>
+          <dataInputRefs>_DataInput_12</dataInputRefs>
+          <dataInputRefs>_DataInput_13</dataInputRefs>
+        </inputSet>
+      </ioSpecification>
+      <dataInputAssociation id="_DataInputAssociation_8">
+        <targetRef>_DataInput_8</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_9">
+        <targetRef>_DataInput_9</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_10">
+        <targetRef>_DataInput_10</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_11">
+        <targetRef>_DataInput_11</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_12">
+        <targetRef>_DataInput_12</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_13">
+        <targetRef>_DataInput_13</targetRef>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_1" name="john">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="EndEvent_1"/>
   </process>
-  
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="BoundarySignalOnTask">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1" isHorizontal="true">
         <dc:Bounds height="48.0" width="48.0" x="45.0" y="54.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1" isHorizontal="true">
-        <dc:Bounds height="48.0" width="48.0" x="420.0" y="53.0"/>
+        <dc:Bounds height="48.0" width="48.0" x="720.0" y="46.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1" isHorizontal="true">
         <dc:Bounds height="50.0" width="110.0" x="370.0" y="152.0"/>
@@ -99,28 +147,35 @@
       <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="EndEvent_2" isHorizontal="true">
         <dc:Bounds height="48.0" width="48.0" x="530.0" y="153.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="UserTask_1">
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_1" bpmnElement="UserTask_1" isHorizontal="true">
         <dc:Bounds height="50.0" width="110.0" x="205.0" y="45.0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_2" bpmnElement="BoundaryEvent_2">
-        <dc:Bounds height="48.0" width="48.0" x="251.0" y="61.0"/>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_2" bpmnElement="BoundaryEvent_2" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="251.0" y="71.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_UserTask_2" bpmnElement="UserTask_2">
+        <dc:Bounds height="50.0" width="110.0" x="479.0" y="45.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_UserTask_1">
         <di:waypoint xsi:type="dc:Point" x="93.0" y="78.0"/>
-        <di:waypoint xsi:type="dc:Point" x="150.0" y="141.0"/>
+        <di:waypoint xsi:type="dc:Point" x="205.0" y="70.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_EndEvent_1">
-        <di:waypoint xsi:type="dc:Point" x="290.0" y="141.0"/>
-        <di:waypoint xsi:type="dc:Point" x="420.0" y="77.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_UserTask_1" targetElement="BPMNShape_UserTask_2">
+        <di:waypoint xsi:type="dc:Point" x="315.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="479.0" y="70.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_2">
         <di:waypoint xsi:type="dc:Point" x="480.0" y="177.0"/>
         <di:waypoint xsi:type="dc:Point" x="530.0" y="177.0"/>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" targetElement="BPMNShape_ScriptTask_1">
-        <di:waypoint xsi:type="dc:Point" x="299.0" y="85.0"/>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="SequenceFlow_5" sourceElement="BPMNShape_BoundaryEvent_2" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="275.0" y="119.0"/>
         <di:waypoint xsi:type="dc:Point" x="274.0" y="177.0"/>
         <di:waypoint xsi:type="dc:Point" x="370.0" y="177.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_UserTask_2" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="589.0" y="70.0"/>
+        <di:waypoint xsi:type="dc:Point" x="720.0" y="70.0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -149,6 +149,8 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         });
         ProcessInstance processInstance = ksession.startProcess("BoundarySignalOnTask");
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        ksession.signalEvent("MyMessage", "maciek");
+        ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
     
@@ -908,6 +910,51 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		// TODO: check for cancellation of task
 	}
 
+	public void testEscalationBoundaryEventOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("After node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("After node triggered " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("Before node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("Before node triggered " + event.getNodeInstance().getNodeName());
+            }
+           
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-EscalationBoundaryEventOnTask");
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertEquals(2, workItems.size());
+        
+        WorkItem workItem = workItems.get(0);
+        if (!"john".equalsIgnoreCase((String) workItem.getParameter("ActorId"))) {
+            workItem = workItems.get(1);
+        }
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+	
 	public void testErrorBoundaryEvent() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -917,6 +964,50 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				.startProcess("ErrorBoundaryEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
+	
+	public void testErrorBoundaryEventOnTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventOnTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                handler);
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("After node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("After node triggered " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                System.out.println("Before node left " + event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                System.out.println("Before node triggered " + event.getNodeInstance().getNodeName());
+            }
+           
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-ErrorBoundaryEventOnTask");
+        
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertEquals(2, workItems.size());
+        
+        WorkItem workItem = workItems.get(0);
+        if (!"john".equalsIgnoreCase((String) workItem.getParameter("ActorId"))) {
+            workItem = workItems.get(1);
+        }
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
 	public void testTimerBoundaryEventDuration() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");

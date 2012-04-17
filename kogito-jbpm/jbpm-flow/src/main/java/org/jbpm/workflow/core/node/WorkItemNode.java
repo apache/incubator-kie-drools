@@ -18,12 +18,15 @@ package org.jbpm.workflow.core.node;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.definition.process.Connection;
 import org.drools.process.core.Work;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
 
 /**
@@ -31,7 +34,7 @@ import org.jbpm.process.core.context.variable.Mappable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class WorkItemNode extends StateBasedNode implements Mappable {
+public class WorkItemNode extends StateBasedNode implements Mappable, ContextContainer {
 
 	private static final long serialVersionUID = 510l;
 	
@@ -147,6 +150,27 @@ public class WorkItemNode extends StateBasedNode implements Mappable {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one outgoing connection!");
         }
+    }
+    
+    public List<Context> getContexts(String contextType) {
+        return ((ContextContainer)this.getNodeContainer()).getContexts(contextType);
+    }
+    
+    public void addContext(Context context) {
+        ((ContextContainer)this.getNodeContainer()).addContext(context);
+        ((AbstractContext) context).setContextContainer(this);
+    }
+    
+    public Context getContext(String contextType, long id) {
+        return ((ContextContainer)this.getNodeContainer()).getContext(contextType, id);
+    }
+
+    public void setDefaultContext(Context context) {
+        ((ContextContainer)this.getNodeContainer()).setDefaultContext(context);
+    }
+    
+    public Context getDefaultContext(String contextType) {
+        return ((ContextContainer)this.getNodeContainer()).getDefaultContext(contextType);
     }
     
 }

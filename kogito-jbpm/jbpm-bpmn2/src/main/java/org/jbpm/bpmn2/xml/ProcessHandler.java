@@ -41,6 +41,7 @@ import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.Swimlane;
@@ -327,7 +328,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     public static void linkBoundaryEvents(NodeContainer nodeContainer) {
         for (Node node: nodeContainer.getNodes()) {
             if (node instanceof EventNode) {
-                String attachedTo = (String) node.getMetaData().get("AttachedTo");
+                final String attachedTo = (String) node.getMetaData().get("AttachedTo");
                 if (attachedTo != null) {
                 	String type = ((EventTypeFilter)
                         ((EventNode) node).getEventFilters().get(0)).getType();
@@ -352,7 +353,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     }
                     if (type.startsWith("Escalation-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
-                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        String escalationCode = (String) node.getMetaData().get("EscalationEvent");
+                        
+                        ContextContainer compositeNode = (ContextContainer) attachedNode;
                         ExceptionScope exceptionScope = (ExceptionScope) 
                             compositeNode.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
                         if (exceptionScope == null) {
@@ -360,14 +363,38 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             compositeNode.addContext(exceptionScope);
                             compositeNode.setDefaultContext(exceptionScope);
                         }
-                        String escalationCode = (String) node.getMetaData().get("EscalationEvent");
+                        
                         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
-                        exceptionHandler.setAction(new DroolsConsequenceAction("java",
-                            (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
-                            "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);"));
+                        DroolsConsequenceAction action = null;
+                        
+                        if (attachedNode instanceof CompositeContextNode) {
+                            action = new DroolsConsequenceAction("java",
+                                (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                                "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);");
+                        } else {
+                            long attachedToNodeId = attachedNode.getId();
+                            
+                            
+                            action = new DroolsConsequenceAction("java", 
+                                    (cancelActivity ? "org.drools.runtime.process.WorkflowProcessInstance pi = (org.drools.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    "long nodeInstanceId = -1;"+
+                                    "for (org.drools.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                     "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
+                                     "       nodeInstanceId = nodeInstance.getId();"+
+                                     "       break;"+
+                                     "   }"+
+                                    "}"+
+                                    "    ((org.jbpm.workflow.instance.NodeInstance)((org.jbpm.workflow.instance.NodeInstanceContainer) context.getProcessInstance()).getNodeInstance(nodeInstanceId)).cancel();"+
+                                    "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);" 
+                                    : "kcontext.getProcessInstance().signalEvent(\"Escalation-" + attachedTo + "-" + escalationCode + "\", null);"));
+                            
+                        }
+                        
+                        exceptionHandler.setAction(action);
                         exceptionScope.setExceptionHandler(escalationCode, exceptionHandler);
+                       
                     } else if (type.startsWith("Error-")) {
-                        CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        ContextContainer compositeNode = (ContextContainer) attachedNode;
                         ExceptionScope exceptionScope = (ExceptionScope) 
                             compositeNode.getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
                         if (exceptionScope == null) {
@@ -377,9 +404,33 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         }
                         String errorCode = (String) node.getMetaData().get("ErrorEvent");
                         ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
-                        exceptionHandler.setAction(new DroolsConsequenceAction("java",
-                            "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" +
-                            "kcontext.getProcessInstance().signalEvent(\"Error-" + attachedTo + "-" + errorCode + "\", null);"));
+
+                        DroolsConsequenceAction action = null;
+                        
+                        if (attachedNode instanceof CompositeContextNode) {
+                            action = new DroolsConsequenceAction("java",
+                                    "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" +
+                                    "kcontext.getProcessInstance().signalEvent(\"Error-" + attachedTo + "-" + errorCode + "\", null);");
+                        } else {
+                            long attachedToNodeId = attachedNode.getId();
+                            
+                            
+                            action = new DroolsConsequenceAction("java", 
+                                    "org.drools.runtime.process.WorkflowProcessInstance pi = (org.drools.runtime.process.WorkflowProcessInstance) kcontext.getProcessInstance();"+
+                                    "long nodeInstanceId = -1;"+
+                                    "for (org.drools.runtime.process.NodeInstance nodeInstance : pi.getNodeInstances()) {"+
+                                    
+                                     "   if (" +attachedToNodeId +" == nodeInstance.getNodeId()) {"+
+                                     "       nodeInstanceId = nodeInstance.getId();"+
+                                     "       break;"+
+                                     "   }"+
+                                    "}" +
+                                    "if (nodeInstanceId > -1) {((org.jbpm.workflow.instance.NodeInstance)((org.jbpm.workflow.instance.NodeInstanceContainer) kcontext.getProcessInstance()).getNodeInstance(nodeInstanceId)).cancel();}"+
+                                    "kcontext.getProcessInstance().signalEvent(\"Error-" + attachedTo + "-" + errorCode + "\", null);");
+                            
+                        }
+                        
+                        exceptionHandler.setAction(action);
                         exceptionScope.setExceptionHandler(errorCode, exceptionHandler);
                     } else if (type.startsWith("Timer-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
@@ -436,6 +487,26 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             });
                             actions.add(action);
                             ((EventNode)node).setActions(EndNode.EVENT_NODE_EXIT, actions);
+                            
+                            // cancel boundary event when node is completed by removing filter
+                            final long id = node.getId();
+                            StateBasedNode stateBasedNode = (StateBasedNode) attachedNode;
+                            
+                            List<DroolsAction> actionsAttachedTo = stateBasedNode.getActions(StateBasedNode.EVENT_NODE_EXIT);
+                            if (actionsAttachedTo == null) {
+                                actionsAttachedTo = new ArrayList<DroolsAction>();
+                            }
+                            DroolsConsequenceAction actionAttachedTo =  new DroolsConsequenceAction("java", "" +
+                            		"org.drools.definition.process.Node node = context.getNodeInstance().getNode().getNodeContainer().getNode(" +id+ ");" +
+                            		"if (node instanceof org.jbpm.workflow.core.node.EventNode) {" +
+                            		" ((org.jbpm.workflow.core.node.EventNode)node).getEventFilters().clear();" +
+                            		"((org.jbpm.workflow.core.node.EventNode)node).addEventFilter(new org.jbpm.process.core.event.EventFilter () " +
+                            		"{public boolean acceptsEvent(String type, Object event) { return false;}});" +
+                            		"}");
+                         
+
+                            actionsAttachedTo.add(actionAttachedTo);
+                            stateBasedNode.setActions(StateBasedNode.EVENT_NODE_EXIT, actionsAttachedTo);
                         }
                     }
                 }
