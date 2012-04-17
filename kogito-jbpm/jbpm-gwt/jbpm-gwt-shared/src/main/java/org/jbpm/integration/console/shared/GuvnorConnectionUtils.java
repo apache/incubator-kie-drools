@@ -304,11 +304,15 @@ public class GuvnorConnectionUtils {
 	}
     
     public StringReader createChangeSet() {
+        return createChangeSet(getPackageNames());
+    }
+    
+    public StringReader createChangeSet(List<String> packageNames) {
         try {
             StringTemplate changeSetTemplate = new StringTemplate(
                     readFile(GuvnorConnectionUtils.class.getResourceAsStream("/ChangeSet.st")));
             TemplateInfo info = new TemplateInfo(getGuvnorProtocol(), getGuvnorHost(), 
-                    getGuvnorUsr(), getGuvnorPwd(), getGuvnorSubdomain(), getBuiltPackageNames());
+                    getGuvnorUsr(), getGuvnorPwd(), getGuvnorSubdomain(), packageNames);
             changeSetTemplate.setAttribute("data",  info.getData());
             return new StringReader(changeSetTemplate.toString());
         } catch (IOException e) {

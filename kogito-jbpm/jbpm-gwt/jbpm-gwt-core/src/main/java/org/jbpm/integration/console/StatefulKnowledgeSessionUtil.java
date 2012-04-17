@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -42,6 +45,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.core.util.StringUtils;
+import org.drools.definition.KnowledgePackage;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -90,6 +94,8 @@ public class StatefulKnowledgeSessionUtil {
     
     private static int ksessionId = 0;
     private static Properties _jbpmConsoleProperties = new Properties();
+    private static KnowledgeAgent kagent;
+    private static Set<String> knownPackages;
    
     protected StatefulKnowledgeSessionUtil() {
     }
@@ -134,9 +140,14 @@ public class StatefulKnowledgeSessionUtil {
         try {
             // Prepare knowledge base to create the knowledge session
             Properties jbpmConsoleProperties = getJbpmConsoleProperties();
-
+            knownPackages = new CopyOnWriteArraySet<String>();
             KnowledgeBase localKBase = loadKnowledgeBase();
             addProcessesFromConsoleDirectory(localKBase, jbpmConsoleProperties);
+            
+            for (KnowledgePackage pkg : localKBase.getKnowledgePackages()) {
+                knownPackages.add(pkg.getName());
+            }
+            
             // try to restore known session id for reuse
             ksessionId = getPersistedSessionId(jbpmConsoleProperties.getProperty("jbpm.console.tmp.dir", System.getProperty("jboss.server.temp.dir")));
             // Create knowledge session
@@ -185,7 +196,7 @@ public class StatefulKnowledgeSessionUtil {
                 ResourceFactory.getResourceChangeNotifierService().start();
                 KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
                 aconf.setProperty("drools.agent.newInstance", "false");
-                KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
+                kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
                 kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
                 kbase = kagent.getKnowledgeBase();
             } catch (Throwable t) {
@@ -421,6 +432,20 @@ public class StatefulKnowledgeSessionUtil {
                     out.close();
                 } catch (IOException e) {
                 }
+            }
+        }
+    }
+    
+    public static synchronized void checkPackagesFromGuvnor() {
+        GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
+        if(guvnorUtils.guvnorExists()) {
+            List<String> guvnorPackages = guvnorUtils.getPackageNames();
+            
+            guvnorPackages.removeAll(knownPackages);
+            
+            if (guvnorPackages.size() > 0) {
+                kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet(guvnorPackages)));
+                knownPackages.addAll(guvnorPackages);
             }
         }
     }
