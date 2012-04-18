@@ -1,8 +1,11 @@
 package org.drools.integrationtests;
 
-import static org.drools.integrationtests.SerializationHelper.*;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -11,22 +14,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.Father;
-import org.drools.YoungestFather;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.ClassObjectFilter;
 import org.drools.CommonTestMethodBase;
+import org.drools.Father;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.Sensor;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.YoungestFather;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -128,30 +129,45 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                                                           true );        
 
         // check the packages are correctly populated
-        KnowledgePackage[] pkgs = (KnowledgePackage[]) kbase.getKnowledgePackages().toArray( new KnowledgePackage[]{} );
-        assertEquals( "org.drools.test",
-                      pkgs[0].getName() );
-        assertEquals( "org.drools.test2",
-                      pkgs[1].getName() );
+        assertEquals( 2, kbase.getKnowledgePackages().size() );
+        KnowledgePackage test = null, test2 = null;
+        // different JVMs return the package list in different order
+        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
+                test = kpkg;
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+                test2 = kpkg;
+            }
+        }
+        
+        assertNotNull( test );
+        assertNotNull( test2 );
         assertEquals( "rule1",
-                      pkgs[0].getRules().iterator().next().getName() );
+                      test.getRules().iterator().next().getName() );
         assertEquals( "rule2",
-                      pkgs[1].getRules().iterator().next().getName() );
+                      test2.getRules().iterator().next().getName() );
 
         // now remove the first rule
-        kbase.removeRule( pkgs[0].getName(),
-                          pkgs[0].getRules().iterator().next().getName() );
-        pkgs = (KnowledgePackage[]) kbase.getKnowledgePackages().toArray( new KnowledgePackage[]{} );
+        kbase.removeRule( test.getName(),
+                          test.getRules().iterator().next().getName() );
+        // different JVMs return the package list in different order
+        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
+                test = kpkg;
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+                test2 = kpkg;
+            }
+        }
+        assertNotNull( test );
+        assertNotNull( test2 );
 
         // Check the rule was correctly remove
         assertEquals( 0,
-                      pkgs[0].getRules().size() );
+                      test.getRules().size() );
         assertEquals( 1,
-                      pkgs[1].getRules().size() );
-        assertEquals( "org.drools.test2",
-                      pkgs[1].getName() );
+                      test2.getRules().size() );
         assertEquals( "rule2",
-                      pkgs[1].getRules().iterator().next().getName() );
+                      test2.getRules().iterator().next().getName() );
 
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
         assertEquals( "removal of the rule should result in retraction of c3's logical assertion",
@@ -179,15 +195,36 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertTrue( "The logical assertion  for c1 should exist",
                     list.contains( new Person( c1.getType() ) ) );
 
-        pkgs = (KnowledgePackage[]) kbase.getKnowledgePackages().toArray( new KnowledgePackage[]{} );
-        kbase.removeRule( pkgs[1].getName(),
-                          pkgs[1].getRules().iterator().next().getName() );
+        // different JVMs return the package list in different order
+        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
+                test = kpkg;
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+                test2 = kpkg;
+            }
+        }
+        assertNotNull( test );
+        assertNotNull( test2 );
+
+        kbase.removeRule( test2.getName(),
+                          test2.getRules().iterator().next().getName() );
         kbase = SerializationHelper.serializeObject( kbase );
-        pkgs = (KnowledgePackage[]) kbase.getKnowledgePackages().toArray( new KnowledgePackage[]{} );
+        
+        // different JVMs return the package list in different order
+        for( KnowledgePackage kpkg : kbase.getKnowledgePackages() ) {
+            if( kpkg.getName().equals( "org.drools.test" )) {
+                test = kpkg;
+            } else if( kpkg.getName().equals( "org.drools.test2" )) {
+                test2 = kpkg;
+            }
+        }
+        assertNotNull( test );
+        assertNotNull( test2 );
+        
         assertEquals( 0,
-                      pkgs[0].getRules().size() );
+                      test.getRules().size() );
         assertEquals( 0,
-                      pkgs[1].getRules().size() );
+                      test2.getRules().size() );
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
         assertEquals( 0,
                       list.size() );
