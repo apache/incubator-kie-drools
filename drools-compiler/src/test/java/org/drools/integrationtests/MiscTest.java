@@ -10186,5 +10186,68 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test @Ignore // remove @Ignore when mvel.2.1.0.drools13 will be released
+    public void testDeclaredTypeAsFieldForAnotherDeclaredType() {
+        // JBRULES-3468
+        String str = "package com.sample\n" +
+                "\n" +
+                "import com.sample.*;\n" +
+                "\n" +
+                "declare Item\n" +
+                "        id : int;\n" +
+                "end\n" +
+                "\n" +
+                "declare Priority\n" +
+                "        name : String;\n" +
+                "        priority : int;\n" +
+                "end\n" +
+                "\n" +
+                "declare Cap\n" +
+                "        item : Item;\n" +
+                "        name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"split cart into items\"\n" +
+                "when\n" +
+                "then\n" +
+                "        insert(new Item(1));\n" +
+                "        insert(new Item(2));\n" +
+                "        insert(new Item(3));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Priorities\"\n" +
+                "when\n" +
+                "then\n" +
+                "        insert(new Priority(\"A\", 3));\n" +
+                "        insert(new Priority(\"B\", 2));\n" +
+                "        insert(new Priority(\"C\", 5));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Caps\"\n" +
+                "when\n" +
+                "        $i : Item()\n" +
+                "        $p : Priority($name : name)\n" +
+                "then\n" +
+                "        insert(new Cap($i, $name));\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test\"\n" +
+                "when\n" +
+                "        $i : Item()\n" +
+                "        Cap(item.id == $i.id)\n" +
+                "then\n" +
+                "end";
 
+        KnowledgeBuilder kbuilder =  KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
 }
