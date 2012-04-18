@@ -9,6 +9,7 @@ import org.drools.rule.builder.dialect.asm.GeneratorHelper;
 import org.drools.rule.constraint.ConditionAnalyzer.*;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
+import org.mvel2.util.NullType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -739,6 +740,10 @@ public class ASMConditionEvaluatorJitter {
             Class<?> result = null;
             if (class1 == class2) {
                 result = class1;
+            } else if (class1 == NullType.class) {
+                result = convertFromPrimitiveType(class2);
+            } else if (class2 == NullType.class) {
+                result = convertFromPrimitiveType(class1);
             } else if (class1 == Object.class) {
                 result = convertFromPrimitiveType(class2);
             } else if (class2 == Object.class) {
