@@ -32,8 +32,12 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Transform {
+    
+    private static final Logger logger = LoggerFactory.getLogger(Transform.class);
 	
 	public static ProcessDefinitionRef processDefinition(Process process) {
 		long version = 0;
@@ -61,30 +65,34 @@ public class Transform {
 		result.setRootToken(token);
 		
 		if (activeNodes != null && !activeNodes.isEmpty()) {
-		    Iterator<NodeInstance> it = activeNodes.iterator();
-		    List<TokenReference> children = new ArrayList<TokenReference>();
-		    TokenReference childToken = null;
-		    StringBuffer nodeNames = new StringBuffer();
-		    while (it.hasNext()) {
-		        NodeInstance nodeInstance = (NodeInstance) it.next();
-		        childToken = new TokenReference(processInstance.getProcessInstanceId() +"", null, nodeInstance.getNodeName());
-		        if (nodeNames.length() > 0){
-		            nodeNames.append(", ");
-		        }
-		        nodeNames.append(nodeInstance.getNodeName());
-                if (nodeInstance instanceof EventNodeInstance) {
-                    String type = ((EventNodeInstance)nodeInstance).getEventNode().getType();
-                    if (type != null && !type.startsWith("Message-")) {
-                        childToken.setName(type);
-                        childToken.setCanBeSignaled(true);
+		    try {
+    		    Iterator<NodeInstance> it = activeNodes.iterator();
+    		    List<TokenReference> children = new ArrayList<TokenReference>();
+    		    TokenReference childToken = null;
+    		    StringBuffer nodeNames = new StringBuffer();
+    		    while (it.hasNext()) {
+    		        NodeInstance nodeInstance = (NodeInstance) it.next();
+    		        childToken = new TokenReference(processInstance.getProcessInstanceId() +"", null, nodeInstance.getNodeName());
+    		        if (nodeNames.length() > 0){
+    		            nodeNames.append(", ");
+    		        }
+    		        nodeNames.append(nodeInstance.getNodeName());
+                    if (nodeInstance instanceof EventNodeInstance) {
+                        String type = ((EventNodeInstance)nodeInstance).getEventNode().getType();
+                        if (type != null && !type.startsWith("Message-")) {
+                            childToken.setName(type);
+                            childToken.setCanBeSignaled(true);
+                        }
+                        
                     }
                     
+                    children.add(childToken);
                 }
-                
-                children.add(childToken);
+    		    token.setChildren(children);
+    		    token.setCurrentNodeName(nodeNames.toString());
+		    } catch (Exception e) {
+		        logger.error("Error when collecting node information", e);
             }
-		    token.setChildren(children);
-		    token.setCurrentNodeName(nodeNames.toString());
 		}
 		return result;
 	}

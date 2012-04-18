@@ -37,6 +37,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -201,13 +202,16 @@ public class CommandDelegate {
     }   
     
     public static void signalExecution(String executionId, String signalRef,  String signal) {
-        getSession().getProcessInstance(new Long(executionId)).signalEvent(signalRef, signal);
+        
+        getSession().signalEvent(signalRef, signal, Long.parseLong(executionId));
     }
     
     public static Collection<NodeInstance> getActiveNodeInstances(long processInstanceId) {
         
         ProcessInstance processInstance = getSession().getProcessInstance(processInstanceId);
+        
         if (processInstance != null){
+            ((ProcessInstanceImpl)processInstance).setProcess(getSession().getKnowledgeBase().getProcess(processInstance.getProcessId()));
             Collection<NodeInstance> activeNodes = ((WorkflowProcessInstance)processInstance).getNodeInstances();
             
             activeNodes.addAll(collectActiveNodeInstances(activeNodes));
