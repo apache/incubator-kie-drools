@@ -3,11 +3,6 @@ package org.drools.util.debug;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.KnowledgeBase;
@@ -22,6 +17,8 @@ import org.drools.core.util.debug.SessionReporter;
 import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class SessionInspectorTest {
 
@@ -108,6 +105,7 @@ public class SessionInspectorTest {
     }
     
     @Test
+    @Ignore("Does not work in the IBM JDK due to a bug in MVEL")
     public void testGetSessionInfoWithCustomTemplate() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),
