@@ -64,7 +64,7 @@ public class BaseClassFieldAccessorFactoryTest {
         final InternalReadAccessor ex = store.getReader( TestInterface.class,
                                                          "something",
                                                          getClass().getClassLoader() );
-        assertEquals( 0,
+        assertEquals( 1,
                       ex.getIndex() );
         assertEquals( "foo",
                       ex.getValue( null,
@@ -76,7 +76,7 @@ public class BaseClassFieldAccessorFactoryTest {
         final InternalReadAccessor ex = store.getReader( TestAbstract.class,
                                                          "something",
                                                          getClass().getClassLoader() );
-        assertEquals( 0,
+        assertEquals( 2,
                       ex.getIndex() );
         assertEquals( "foo",
                       ex.getValue( null,

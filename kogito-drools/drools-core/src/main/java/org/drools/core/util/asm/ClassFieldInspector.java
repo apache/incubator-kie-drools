@@ -22,8 +22,12 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -133,24 +137,34 @@ public class ClassFieldInspector {
 
     private void processClassWithoutByteCode( final Class< ? > clazz,
                                               final boolean includeFinalMethods ) {
-        final Method[] methods = clazz.getMethods();
-        for ( int i = 0; i < methods.length; i++ ) {
+        final List<Method> methods = Arrays.asList( clazz.getMethods() );
+        // different JVMs might return the methods in different order, so has to be sorted in order 
+        // to be compatible with all JVMs
+        Collections.sort( methods,  new Comparator<Method>() {
+            public int compare(Method m1,
+                               Method m2) {
+                return m1.getName().compareTo( m2.getName() );
+            }
+        });
+        
+        for ( int i = 0; i < methods.size(); i++ ) {
             // modifiers mask  
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
+            Method method = methods.get( i );
 
-            if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "<init>" )) && (!methods[i].getName().equals( "<clinit>" ))
-                    && (methods[i].getReturnType() != void.class) ) {
+            if ( ((method.getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (method.getParameterTypes().length == 0) && (!method.getName().equals( "<init>" )) && (!method.getName().equals( "<clinit>" ))
+                    && (method.getReturnType() != void.class) ) {
 
                 // want public methods that start with 'get' or 'is' and have no args, and return a value
                 final int fieldIndex = this.fieldNames.size();
-                addToMapping( methods[i],
+                addToMapping( method,
                               fieldIndex );
 
-            } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" )) ) {
+            } else if ( ((method.getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (method.getParameterTypes().length == 1) && (method.getName().startsWith( "set" )) ) {
 
                 // want public methods that start with 'set' and have one arg
                 final int fieldIndex = this.fieldNames.size();
-                addToMapping( methods[i],
+                addToMapping( method,
                               fieldIndex );
 
             }
