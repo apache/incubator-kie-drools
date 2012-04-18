@@ -1,7 +1,9 @@
 package org.jbpm.integration.console;
 
 import java.util.HashMap;
+import java.util.List;
 
+import org.drools.definition.process.Process;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.junit.Test;
@@ -11,7 +13,14 @@ public class CommandDelegateTest extends JbpmGwtCoreTestCase {
     
 	@Test
 	public void testGetProcesses() {
-		assertEquals("Minimal Process", CommandDelegate.getProcesses().get(1).getName());
+	    List<Process> processes = CommandDelegate.getProcesses();
+	    boolean minimalProcessFound = false;
+	    for( Process process : processes ) { 
+	        if( "Minimal Process".equals(process.getName()) ) {
+	            minimalProcessFound = true;
+	        }
+	    }
+	    assertTrue( minimalProcessFound );
 	}
 	
 	@Test

@@ -6,7 +6,6 @@ import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientConnector;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TaskManagementTest extends JbpmGwtCoreTestCase {
@@ -23,7 +22,7 @@ public class TaskManagementTest extends JbpmGwtCoreTestCase {
 		taskManager= null;
 	}
 	
-	@Test @Ignore
+	@Test 
 	public void testAssignTask(){
 		taskManager.connect();
 	}

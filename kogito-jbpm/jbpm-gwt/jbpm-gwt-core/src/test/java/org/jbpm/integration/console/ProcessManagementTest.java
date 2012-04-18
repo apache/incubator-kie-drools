@@ -1,13 +1,21 @@
 package org.jbpm.integration.console;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.drools.definition.process.Process;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.NodeInstance;
+import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
 import org.jbpm.integration.JbpmGwtCoreTestCase;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -29,14 +37,30 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 
 	@After
 	public void clearProcesses() {
-		new JPAProcessInstanceDbLog().clear();
+		JPAProcessInstanceDbLog.clear();
 		processManager = null;
+	}
+
+	@Test @Ignore
+	public void testSignalExecution() {
+		// TODO implement
 	}
 
 	@Test
 	public void testGetProcessDefinitions() {
-		assertEquals("UserTask", processManager.getProcessDefinitions().get(0).getId());
-		assertEquals("Minimal", processManager.getProcessDefinitions().get(1).getId());
+	    List<ProcessDefinitionRef> processes = processManager.getProcessDefinitions();
+	    boolean minimalProcessFound = false;
+	    boolean userTaskProcDefFound = false;
+	    for( ProcessDefinitionRef process : processes ) { 
+	        if( "Minimal".equals(process.getId()) ) { 
+	            minimalProcessFound = true;
+	        }
+	        else if( "UserTask".equals(process.getId()) ) { 
+	            userTaskProcDefFound = true;
+	        }
+	    }
+	    assertTrue("UserTask process definition not found", userTaskProcDefFound );
+	    assertTrue("Minimal process definition not found", minimalProcessFound );
 	}
 
 	@Test
@@ -49,7 +73,7 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 		assertEquals(1, processManager.removeProcessDefinition("Minimal").size());
 	}
 
-	@Test @Ignore
+	@Test 
 	public void testGetProcessInstances() {
 		List<ProcessInstanceRef> userTaskInstances = processManager.getProcessInstances("UserTask");
 		List<ProcessInstanceRef> minimalInstances = processManager.getProcessInstances("Minimal");
@@ -57,13 +81,13 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 		assertEquals(0, minimalInstances.size());
 	}
 
-	@Test @Ignore
+	@Test 
 	public void testNewProcessInstance() {
 		assertEquals("UserTask", processManager.newInstance("UserTask").getDefinitionId());
 		assertEquals(3, processManager.getProcessInstances("UserTask").size());
 	}
 
-	@Test @Ignore
+	@Test 
 	public void testNewProcessInstanceWithVariables() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
 		variables.put("key2", "variable2");
@@ -96,11 +120,6 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 		assertEquals(variables, processManager.getInstanceData(instanceID));
 	}
 
-	@Test @Ignore
-	public void testSignalExecution() {
-		// TODO implement
-	}
-
 	@Test(expected = IllegalArgumentException.class)
 	public void testDeleteInstance() {
 		HashMap<String, Object> variables = new HashMap<String, Object>();
@@ -119,4 +138,20 @@ public class ProcessManagementTest extends JbpmGwtCoreTestCase {
 		assertEquals(false, processManager.getInstanceData(instanceID).isEmpty());
 	}
 
+    @Test 
+    public void testNewInstance() throws Exception {
+        StatefulKnowledgeSession session = StatefulKnowledgeSessionUtil.getStatefulKnowledgeSession();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("employee", "krisv");
+        params.put("reason", "Yearly performance evaluation");
+        
+        String definitionId = "Evaluation";
+        
+        ProcessInstanceLog processInstance = CommandDelegate.startProcess(definitionId, params);
+        Collection<NodeInstance> activeNodes = CommandDelegate.getActiveNodeInstances(processInstance.getId());
+        assertNotNull(activeNodes);
+        Transform.processInstance(processInstance, activeNodes);
+    }
 }
