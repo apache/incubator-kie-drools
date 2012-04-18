@@ -23,11 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
@@ -39,6 +35,7 @@ import org.jbpm.task.service.TaskClientHandler.QueryGenericResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
 public class TaskClient implements AsyncTaskService{
 
@@ -774,5 +771,56 @@ public class TaskClient implements AsyncTaskService{
     
     public void disconnect() throws Exception {
     	connector.disconnect();
+    }
+
+    public void claimNextAvailable(String userId, String language, TaskOperationResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 2 );
+        args.add( userId );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.ClaimNextAvailableRequest,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        connector.write( cmd );
+    }
+
+    public void claimNextAvailable(String userId, List<String> groupIds, String language, TaskOperationResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 3 );
+        args.add( userId );
+        args.add( groupIds );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.ClaimNextAvailableRequest,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        connector.write( cmd );
+    }
+
+    public void getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 2 );
+        args.add( userId );
+        args.add( status );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.QueryTasksAssignedAsPotentialOwnerByStatus,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        connector.write( cmd );
+    }
+    public void getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 2 );
+        args.add( userId );
+        args.add( groupIds );
+        args.add( status );
+        args.add( language );
+        Command cmd = new Command( counter.getAndIncrement(),
+                                   CommandName.QueryTasksAssignedAsPotentialOwnerByStatusByGroup ,
+                                   args );
+        handler.addResponseHandler( cmd.getId(),
+                                    responseHandler );
+        connector.write( cmd );
     }
 }

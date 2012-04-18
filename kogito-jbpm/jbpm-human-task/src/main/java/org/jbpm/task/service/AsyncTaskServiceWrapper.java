@@ -23,13 +23,7 @@ import java.util.List;
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.process.workitem.wsht.BlockingAddTaskResponseHandler;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
@@ -707,6 +701,62 @@ public class AsyncTaskServiceWrapper implements TaskService {
         if (!responseHandler.isDone()) {
         	throw new RuntimeException("Task operation request timed out");
         }
+    }
+
+    public void claimNextAvailable(String userId, String language) {
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        taskService.claimNextAvailable(userId, language, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        if (!responseHandler.isDone()) {
+        	throw new RuntimeException("Task operation request timed out");
+        }
+    }
+
+    public void claimNextAvailable(String userId, List<String> groupIds, String language) {
+        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+        taskService.claimNextAvailable(userId, groupIds, language, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        if (!responseHandler.isDone()) {
+        	throw new RuntimeException("Task operation request timed out");
+        }
+    }
+
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        taskService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        return responseHandler.getResults();
+    }
+
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        taskService.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        return responseHandler.getResults();
     }
 
     

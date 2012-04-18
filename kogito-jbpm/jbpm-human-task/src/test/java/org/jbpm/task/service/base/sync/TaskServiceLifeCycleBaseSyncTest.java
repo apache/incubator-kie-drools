@@ -1699,5 +1699,96 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         List<TaskSummary> exitedTasks = client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK");
         assertEquals(0, exitedTasks.size());
         
+    }
+    
+     
+    public void testClaimConflictAndRetry() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy' ], users['bobba'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        // Create a local instance of the TaskService
+
+        // Deploy the Task Definition to the Task Component
+        client.addTask(( Task )  eval( new StringReader( str ), vars ), new ContentData());
+
+        // Because the Task contains a direct assignment we can query it for its Potential Owner
+        // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
+        List<TaskSummary> salaboyTasks = client.getTasksAssignedAsPotentialOwner(users.get( "salaboy" ).getId(), "en-UK");
+
+        // We know that there is just one task available so we get the first one
+        Long salaboyTaskId = salaboyTasks.get(0).getId();
+
+        // In order to check the task status we need to get the real task
+        // The task is in a Reserved status because it already have a well-defined Potential Owner
+        Task salaboyTask = client.getTask(salaboyTaskId);
+        assertEquals(Status.Ready, salaboyTask.getTaskData().getStatus());
+
+        // Because the Task contains a direct assignment we can query it for its Potential Owner
+        // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
+        List<TaskSummary> bobbaTasks = client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK");
+
+        // We know that there is just one task available so we get the first one
+        Long bobbaTaskId = bobbaTasks.get(0).getId();
+        assertEquals(bobbaTaskId, salaboyTaskId);
+        // In order to check the task status we need to get the real task
+        // The task is in a Reserved status because it already have a well-defined Potential Owner
+        Task bobbaTask = client.getTask(bobbaTaskId);
+        assertEquals(Status.Ready, bobbaTask.getTaskData().getStatus());
+
+        
+        client.claim(bobbaTask.getId(), users.get( "bobba" ).getId());
+        
+        try{
+            client.claim(salaboyTask.getId(), users.get( "salaboy" ).getId());
+        } catch(PermissionDeniedException ex){
+            // The Task is gone.. salaboy needs to retry
+            assertNotNull(ex);
+        }
+        
+        
+        
+        
+
+
+
+    }
+
+    
+    public void testClaimNextAvailable() {
+
+
+        
+       
+
+        Map <String, Object> vars = fillVariables();
+        // Create a local instance of the TaskService
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy' ], users['bobba'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+            
+
+        
+
+        // Deploy the Task Definition to the Task Component
+        client.addTask(( Task )  eval( new StringReader( str ), vars ), new ContentData());
+
+        // we don't need to query for our task to see what we will claim, just claim the next one available for us
+  
+        client.claimNextAvailable(users.get( "bobba" ).getId(), "en-UK");
+        
+        
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        List<TaskSummary> salaboyTasks = client.getTasksAssignedAsPotentialOwnerByStatus(users.get( "salaboy" ).getId(),status,  "en-UK");
+        assertEquals(0, salaboyTasks.size());
+        
+        
+
+
+
     } 
 }

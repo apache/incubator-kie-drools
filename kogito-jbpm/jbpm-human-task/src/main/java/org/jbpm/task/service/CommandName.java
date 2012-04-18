@@ -24,6 +24,8 @@ public enum CommandName {
     ClaimRequest,
     ClaimResponse,
     
+    ClaimNextAvailableRequest,
+    
     StartRequest,
     StartResponse,
     
@@ -81,6 +83,8 @@ public enum CommandName {
     QueryTasksAssignedAsPotentialOwner,
     QueryTasksAssignedAsPotentialOwnerWithGroup,
     QueryTasksAssignedAsPotentialOwnerByGroup,
+    QueryTasksAssignedAsPotentialOwnerByStatus,
+    QueryTasksAssignedAsPotentialOwnerByStatusByGroup,
     QuerySubTasksAssignedAsPotentialOwner,
     QueryGetSubTasksByParentTaskId,
     QueryTasksAssignedAsRecipient,
@@ -104,5 +108,6 @@ public enum CommandName {
     SetFaultRequest,
     SetPriorityRequest,
     DeleteOutputRequest,
-    DeleteFaultRequest
+    DeleteFaultRequest   
+    
 }

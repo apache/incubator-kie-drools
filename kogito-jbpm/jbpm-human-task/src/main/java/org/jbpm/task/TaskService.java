@@ -40,6 +40,10 @@ public interface TaskService {
     void claim(long taskId, String userId);
 
     void claim(long taskId, String userId, List<String> groupIds);
+    
+    void claimNextAvailable(String userId, String language);
+    
+    void claimNextAvailable(String userId, List<String> groupIds, String language);
 
     void complete(long taskId, String userId, ContentData outputData);
 
@@ -124,5 +128,9 @@ public interface TaskService {
     void stop(long taskId, String userId);
 
     void suspend(long taskId, String userId);
+
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String salaboy, List<Status> status, String language);
     
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language);
+
 }

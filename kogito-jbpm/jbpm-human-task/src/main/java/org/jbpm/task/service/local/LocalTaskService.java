@@ -24,13 +24,7 @@ import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.EventTriggerTransport;
 import org.jbpm.eventmessaging.Payload;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
-import org.jbpm.task.TaskService;
+import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
@@ -175,6 +169,14 @@ public class LocalTaskService implements TaskService {
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
         return session.getTasksAssignedAsPotentialOwner(userId, language);
     }
+    
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
+        return session.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
+    }
+    
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
+        return session.getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
+    }
 
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language) {
         return session.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
@@ -259,6 +261,15 @@ public class LocalTaskService implements TaskService {
 
     public void suspend(long taskId, String userId) {
         session.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
+    }
+
+    public void claimNextAvailable(String userId, String language) {
+        session.claimNextAvailable(userId, language);
+        
+    }
+
+    public void claimNextAvailable(String userId, List<String> groupIds, String language) {
+        session.claimNextAvailable(userId, groupIds, language);
     }
 
     private static class SimpleEventTransport implements EventTriggerTransport {

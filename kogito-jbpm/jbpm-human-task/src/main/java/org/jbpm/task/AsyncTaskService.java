@@ -36,6 +36,7 @@ import org.jbpm.task.service.TaskClientHandler.QueryGenericResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
 /**
  *
@@ -53,7 +54,11 @@ public interface AsyncTaskService {
     void claim(long taskId, String userId, TaskOperationResponseHandler responseHandler);
 
     void claim(long taskId, String userId, List<String> groupIds, TaskOperationResponseHandler responseHandler);
+    
+    void claimNextAvailable( String userId, String language, TaskOperationResponseHandler responseHandler);
 
+    void claimNextAvailable( String userId, List<String> groupIds, String language, TaskOperationResponseHandler responseHandler);
+    
     void complete(long taskId, String userId, ContentData outputData, TaskOperationResponseHandler responseHandler);
 
     boolean connect();
@@ -135,5 +140,8 @@ public interface AsyncTaskService {
     void stop(long taskId, String userId, TaskOperationResponseHandler responseHandler);
 
     void suspend(long taskId, String userId, TaskOperationResponseHandler responseHandler);
+
+    public void getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler);
     
+    public void getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language, BlockingTaskSummaryResponseHandler responseHandler);
 }

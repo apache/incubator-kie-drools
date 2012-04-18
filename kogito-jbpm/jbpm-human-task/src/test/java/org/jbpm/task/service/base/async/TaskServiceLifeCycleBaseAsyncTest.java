@@ -1975,4 +1975,107 @@ public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
         
     } 
     
+     
+    public void testClaimConflictAndRetry() {
+        Map <String, Object> vars = fillVariables();
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy'], users['bobba']], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        // Create a local instance of the TaskService
+
+        // Deploy the Task Definition to the Task Component
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        client.addTask(( Task )  eval( new StringReader( str ), vars ), new ContentData(), addTaskResponseHandler);
+
+        // Because the Task contains a direct assignment we can query it for its Potential Owner
+        // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "salaboy" ).getId(), "en-UK", responseHandler);
+        List<TaskSummary> salaboyTasks = responseHandler.getResults();
+
+        // We know that there is just one task available so we get the first one
+        Long salaboyTaskId = salaboyTasks.get(0).getId();
+
+        // In order to check the task status we need to get the real task
+        // The task is in a Reserved status because it already have a well-defined Potential Owner
+        BlockingGetTaskResponseHandler taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(salaboyTaskId, taskResponseHandler);
+        Task salaboyTask = taskResponseHandler.getTask();
+        
+        assertEquals(Status.Ready, salaboyTask.getTaskData().getStatus());
+
+        // Because the Task contains a direct assignment we can query it for its Potential Owner
+        // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
+        responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", responseHandler);
+        List<TaskSummary> bobbaTasks = responseHandler.getResults();
+
+        // We know that there is just one task available so we get the first one
+        Long bobbaTaskId = bobbaTasks.get(0).getId();
+        assertEquals(bobbaTaskId, salaboyTaskId);
+        // In order to check the task status we need to get the real task
+        // The task is in a Reserved status because it already have a well-defined Potential Owner
+        taskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(bobbaTaskId, taskResponseHandler);
+        Task bobbaTask = taskResponseHandler.getTask();
+        assertEquals(Status.Ready, bobbaTask.getTaskData().getStatus());
+
+        BlockingTaskOperationResponseHandler claimResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.claim(bobbaTask.getId(), users.get( "bobba" ).getId(), claimResponseHandler);
+        
+        try{
+            claimResponseHandler = new BlockingTaskOperationResponseHandler();
+            client.claim(salaboyTask.getId(), users.get( "salaboy" ).getId(), claimResponseHandler);
+        } catch(PermissionDeniedException ex){
+            // The Task is gone.. salaboy needs to retry
+            assertNotNull(ex);
+        }
+        
+        
+        
+        
+
+
+
+    }
+
+    
+    public void testClaimNextAvailable() {
+
+
+        
+       
+
+        Map <String, Object> vars = fillVariables();
+        // Create a local instance of the TaskService
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { skipable = false} ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['salaboy'], users['bobba']], businessAdministrators = [ users['admin']] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        
+
+        // Deploy the Task Definition to the Task Component
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        client.addTask(( Task )  eval( new StringReader( str ), vars ), new ContentData(), addTaskResponseHandler);
+
+        // we don't need to query for our task to see what we will claim, just claim the next one available for us
+        BlockingTaskOperationResponseHandler claimResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.claimNextAvailable(users.get( "bobba" ).getId(), "en-UK", claimResponseHandler);
+        
+        
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwnerByStatus(users.get( "salaboy" ).getId(),status,  "en-UK", responseHandler);
+        List<TaskSummary> salaboyTasks = responseHandler.getResults();
+        assertEquals(0, salaboyTasks.size());
+        
+        
+
+
+
+    } 
+    
 }

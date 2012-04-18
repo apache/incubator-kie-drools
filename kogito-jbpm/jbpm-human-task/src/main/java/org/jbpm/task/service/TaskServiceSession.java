@@ -645,7 +645,39 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         doCallbackUserOperation(userId);
         return tpm.queryTasksWithUserIdAndLanguage("TasksAssignedAsPotentialOwner", userId, language);
     }
-
+    
+    public void claimNextAvailable(final String userId, final String language) {
+        doCallbackUserOperation(userId);
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatus")
+                                         .setParameter("userId", userId)
+                                         .setParameter("language", language)
+                                         .setParameter("status", status);
+        List<TaskSummary> queryTasks = query.getResultList();
+        if(queryTasks.size() > 0){
+            taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null );
+        } else{
+            logger.info(" No Task Available to Assign");
+        }
+    }
+    
+    public void claimNextAvailable(final String userId, final List<String> groupIds, final String language) {
+        doCallbackUserOperation(userId);
+        List<Status> status = new ArrayList<Status>();
+        status.add(Status.Ready);
+        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusWithGroups")
+                                         .setParameter("userId", userId)
+                                         .setParameter("groupIds", groupIds)
+                                         .setParameter("language", language)
+                                         .setParameter("status", status);
+        List<TaskSummary> queryTasks = query.getResultList();
+        if(queryTasks.size() > 0){
+            taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, groupIds );
+        } else{
+            logger.info(" No Task Available to Assign");
+        }
+    }
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
                                                               final String language) {
     	return getTasksAssignedAsPotentialOwner(userId, groupIds, language, -1, -1);
@@ -935,6 +967,25 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
             }
         }
         
+    }
+
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(String userId, List<Status> status, String language) {
+        doCallbackUserOperation(userId);
+        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatus")
+                                         .setParameter("userId", userId)
+                                         .setParameter("language", language)
+                                         .setParameter("status", status);
+        return query.getResultList();
+    }
+
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatusByGroup(String userId, List<String> groupIds, List<Status> status, String language) {
+        doCallbackUserOperation(userId);
+        Query query = tpm.createQuery("TasksAssignedAsPotentialOwnerByStatusByGroup")
+                                         .setParameter("userId", userId)
+                                         .setParameter("groupIds", groupIds)
+                                         .setParameter("language", language)
+                                         .setParameter("status", status);
+        return query.getResultList();
     }
 
     private interface TransactedOperation {
