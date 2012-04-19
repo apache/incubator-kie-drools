@@ -70,7 +70,7 @@ public class JDKTimerService
     
     public TimerJobFactoryManager getTimerJobFactoryManager() {
         return this.jobFactoryManager;
-    }    
+    }
 
     /**
      * @inheritDoc

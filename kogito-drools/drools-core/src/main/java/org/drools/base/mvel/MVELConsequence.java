@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.drools.WorkingMemory;
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -76,7 +77,9 @@ public class MVELConsequence
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( knowledgeHelper, knowledgeHelper.getRule(), knowledgeHelper, (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        
+        VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getActivation()).getRuleTerminalNode().getDeclarations(),
+                                                           knowledgeHelper.getRule(), knowledgeHelper, (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -95,7 +98,6 @@ public class MVELConsequence
         try {
             if ( MVELDebugHandler.isDebugMode() ) {
                 if ( MVELDebugHandler.verbose ) {
-                    System.out.println( "Executing expression " + compexpr.getSourceName() );
                     System.out.println( DebugTools.decompile( compexpr ) );
                 }
                 MVEL.executeDebugger( compexpr,

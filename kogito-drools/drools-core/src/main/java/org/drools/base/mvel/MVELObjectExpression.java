@@ -20,8 +20,11 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
+import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.spi.Activation;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
@@ -60,15 +63,21 @@ public class MVELObjectExpression
         out.writeObject( unit );
         out.writeUTF( id );
     }
+    
+    public MVELCompilationUnit getMVELCompilationUnit() {
+        return this.unit;
+    }    
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expr = unit.getCompiledExpression( runtimeData );
     }
 
-    public Object getValue(final Tuple tuple,
-                        final Rule rule,
-                        final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( null, rule, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
+    public Object getValue(final Activation item,
+                           final Declaration[] declrs,
+                           final Rule rule,
+                           final WorkingMemory workingMemory) {
+        VariableResolverFactory factory = unit.getFactory( null, declrs,
+                                                           rule, null, (LeftTuple)item.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -78,7 +87,7 @@ public class MVELObjectExpression
         }
 
         return MVEL.executeExpression(this.expr,
-                factory);
+                                      factory);
     }
     
     public String toString() {

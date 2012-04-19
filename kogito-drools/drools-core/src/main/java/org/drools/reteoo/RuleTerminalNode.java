@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.mvel.MVELEnabledExpression;
+import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
@@ -50,6 +52,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Activation;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.time.impl.ExpressionIntervalTimer;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -79,6 +82,11 @@ public class RuleTerminalNode extends BaseNode
     private int                           subruleIndex;
     private LeftTupleSource               tupleSource;
     private Declaration[]                 declarations;
+    
+    private Declaration[]                 timerDelayDeclarations;
+    private Declaration[]                 timerPeriodDeclarations;
+    private Declaration[]                 salienceDeclarations;
+    private Declaration[]                 enabledDeclarations;
 
     private LeftTupleSinkNode             previousTupleSinkNode;
     private LeftTupleSinkNode             nextTupleSinkNode;
@@ -129,9 +137,59 @@ public class RuleTerminalNode extends BaseNode
         }
         Arrays.sort( this.declarations, SortDeclarations.instance );
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
+        
+        setDeclarations(decls);
 
         initDeclaredMask(context);        
         initInferredMask();
+    }
+    
+    public void setDeclarations(Map<String, Declaration> decls) {
+        if ( rule.getSalience() instanceof MVELSalienceExpression ) {
+            MVELSalienceExpression expr = ( MVELSalienceExpression ) rule.getSalience();
+            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
+            
+            this.salienceDeclarations = new Declaration[declrs.length];
+            int i = 0;
+            for ( Declaration declr : declrs ) {
+                this.salienceDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.salienceDeclarations, SortDeclarations.instance );            
+        }
+        
+        if ( rule.getEnabled() instanceof MVELEnabledExpression ) {
+            MVELEnabledExpression expr = ( MVELEnabledExpression ) rule.getEnabled();
+            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
+            
+            this.enabledDeclarations = new Declaration[declrs.length];
+            int i = 0;
+            for ( Declaration declr : declrs ) {
+                this.enabledDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.enabledDeclarations, SortDeclarations.instance );              
+        }        
+        
+        if ( rule.getTimer() instanceof ExpressionIntervalTimer ) {
+            ExpressionIntervalTimer expr = ( ExpressionIntervalTimer ) rule.getTimer();
+            
+            Declaration[] declrs = expr.getDelayMVELCompilationUnit().getPreviousDeclarations();            
+            this.timerDelayDeclarations = new Declaration[declrs.length];
+            int i = 0;
+            for ( Declaration declr : declrs ) {
+                this.timerDelayDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.timerDelayDeclarations, SortDeclarations.instance );      
+            
+            declrs = expr.getPeriodMVELCompilationUnit().getPreviousDeclarations();            
+            this.timerPeriodDeclarations = new Declaration[declrs.length];
+            i = 0;
+            for ( Declaration declr : declrs ) {
+                this.timerPeriodDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.timerPeriodDeclarations, SortDeclarations.instance );             
+        }
+        
+
     }
 
     public void initDeclaredMask(BuildContext context) {  
@@ -201,6 +259,12 @@ public class RuleTerminalNode extends BaseNode
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
+
+        timerDelayDeclarations = ( Declaration[]) in.readObject();
+        timerPeriodDeclarations = ( Declaration[]) in.readObject();
+        salienceDeclarations = ( Declaration[]) in.readObject();
+        enabledDeclarations = ( Declaration[]) in.readObject();        
+        
         fireDirect = rule.getActivationListener().equals( "direct" );
         
         declaredMask = in.readLong();
@@ -219,6 +283,12 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
+        
+        out.writeObject( timerDelayDeclarations );
+        out.writeObject( timerPeriodDeclarations );
+        out.writeObject( salienceDeclarations );
+        out.writeObject( enabledDeclarations );  
+        
         out.writeLong(declaredMask);
         out.writeLong(inferredMask);        
         out.writeLong(negativeMask);
@@ -280,6 +350,7 @@ public class RuleTerminalNode extends BaseNode
         //check if the rule is not effective or
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( (!this.rule.isEffective( leftTuple,
+                                      this,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
             return;
@@ -441,9 +512,47 @@ public class RuleTerminalNode extends BaseNode
 
     }
 
+    public void setDeclarations(Declaration[] declarations) {
+        this.declarations = declarations;
+    }
+
     public Declaration[] getDeclarations() {
         return this.declarations;
     }
+    
+    public Declaration[] getTimerDelayDeclarations() {
+        return timerDelayDeclarations;
+    }
+
+    public void setTimerDelayDeclarations(Declaration[] timerDelayDeclarations) {
+        this.timerDelayDeclarations = timerDelayDeclarations;
+    }
+
+    public Declaration[] getTimerPeriodDeclarations() {
+        return timerPeriodDeclarations;
+    }
+
+    public void setTimerPeriodDeclarations(Declaration[] timerPeriodDeclarations) {
+        this.timerPeriodDeclarations = timerPeriodDeclarations;
+    }
+
+    public Declaration[] getSalienceDeclarations() {
+        return salienceDeclarations;
+    }
+
+    public void setSalienceDeclarations(Declaration[] salienceDeclarations) {
+        this.salienceDeclarations = salienceDeclarations;
+    }
+
+    public Declaration[] getEnabledDeclarations() {
+        return enabledDeclarations;
+    }
+
+    public void setEnabledDeclarations(Declaration[] enabledDeclarations) {
+        this.enabledDeclarations = enabledDeclarations;
+    }
+
+
 
     public static class SortDeclarations
             implements

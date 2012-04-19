@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
 import org.drools.definition.rule.Rule;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 
@@ -50,7 +51,7 @@ public class SalienceInteger
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeInt(value);
     }
-    public int getValue(final Tuple tuple,
+    public int getValue(final KnowledgeHelper khelper,
                         final Rule rule,
                         final WorkingMemory workingMemory) {
         return this.value;

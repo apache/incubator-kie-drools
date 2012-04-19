@@ -19,6 +19,7 @@ package org.drools.time.impl;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -255,6 +256,12 @@ public class IntervalTrigger
     public void setCalendars(Calendars calendars) {
         this.calendars = calendars;
     }
+
+    @Override
+    public String toString() {
+        return "IntervalTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime=" + nextFireTime + ", period=" + period + ", calendarNames=" + Arrays.toString( calendarNames ) + ", calendars=" + calendars + "]";
+    }
+    
     
     
 }

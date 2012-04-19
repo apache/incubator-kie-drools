@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -67,15 +68,21 @@ public class MVELEnabledExpression
         out.writeObject( unit );
         out.writeUTF( id );
     }
+    
+    public MVELCompilationUnit getMVELCompilationUnit() {
+        return this.unit;
+    }    
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         expr = unit.getCompiledExpression( runtimeData );
     }
 
     public boolean getValue(final Tuple tuple,
+                            final Declaration[] declrs,
                             final Rule rule,
                             final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( null, rule, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        VariableResolverFactory factory = unit.getFactory( null, declrs,
+                                                           rule, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

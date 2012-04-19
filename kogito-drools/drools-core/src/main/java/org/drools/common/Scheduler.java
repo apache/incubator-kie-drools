@@ -63,7 +63,7 @@ public final class Scheduler {
     public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda, InternalWorkingMemory wm) {
 
         Trigger trigger = item.getRule().getTimer().createTrigger( item, wm );
-
+        
         ActivationTimerJob job = new ActivationTimerJob();
         ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                 
