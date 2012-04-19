@@ -95,6 +95,7 @@ public class MVELAction
         
         VariableResolverFactory factory 
             = unit.getFactory( context, 
+                               null, // No previous declarations
                                null, // No rule
                                null, // No "right object" 
                                null, // No (left) tuples
