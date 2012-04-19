@@ -55,6 +55,7 @@ public class TaskFormDispatcher extends AbstractFormDispatcher {
             }
 
             service =TaskClientFactory.newInstance(properties, "org.jbpm.integration.console.forms.TaskFormDispatcher"+clientCounter);
+	    clientCounter++;
         }
     }
 
