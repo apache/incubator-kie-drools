@@ -13,7 +13,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -21,6 +23,7 @@ import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTupleImpl;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -88,11 +91,16 @@ public class MVELSalienceBuilderTest {
                                      31 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
-                                               null,
-                                               true );
+                                                       null,
+                                                       true );
+
+        RuleTerminalNode rtn = new RuleTerminalNode();
+        rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
+        AgendaItem item = new AgendaItem(0, tuple, 0, null, rtn);       
+
 
         assertEquals( 25,
-                      context.getRule().getSalience().getValue( tuple,
+                      context.getRule().getSalience().getValue( new DefaultKnowledgeHelper( item, wm ),
                                                                 context.getRule(),
                                                                 wm ) );
 
@@ -104,7 +112,9 @@ public class MVELSalienceBuilderTest {
         final SalienceEvaluator[] evals = new SalienceEvaluator[tcount];
         final Thread[] threads = new Thread[tcount];
         for ( int i = 0; i < evals.length; i++ ) {
+                        
             evals[i] = new SalienceEvaluator( ruleBase,
+                                              context,
                                               context.getRule(),
                                               context.getRule().getSalience(),
                                               new Person( "bob" + i,
@@ -136,22 +146,26 @@ public class MVELSalienceBuilderTest {
     public static class SalienceEvaluator
         implements
         Runnable {
-        public static final int   iterations = 1000;
+        public static final int          iterations = 1000;
 
-        private Salience          salience;
-        private Rule              rule;
-        private LeftTupleImpl         tuple;
-        private WorkingMemory     wm;
-        private final int         result;
-        private transient boolean halt;
+        private Salience                 salience;
+        private Rule                     rule;
+        private LeftTupleImpl            tuple;
+        private WorkingMemory            wm;
+        private final int                result;
+        private transient boolean        halt;
+        private InstrumentedBuildContent context;
+        private AgendaItem               item;
 
-        private boolean           error;
+        private boolean                  error;
 
         public SalienceEvaluator(RuleBase ruleBase,
+                                 InstrumentedBuildContent context,
                                  Rule rule,
                                  Salience salience,
                                  Person person) {
             wm = ruleBase.newStatefulSession();
+            this.context = context;
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );
             tuple = new LeftTupleImpl( f0,
                                    null,
@@ -160,6 +174,10 @@ public class MVELSalienceBuilderTest {
             this.halt = false;
             this.error = false;
             this.result = (person.getAge() + 20) / 2;
+            
+            RuleTerminalNode rtn = new RuleTerminalNode();
+            rtn.setSalienceDeclarations( context.getDeclarationResolver().getDeclarations( context.getRule() ).values().toArray( new Declaration[1] ) );
+            item = new AgendaItem(0, tuple, 0, null, rtn);               
         }
 
         public void run() {
@@ -167,7 +185,7 @@ public class MVELSalienceBuilderTest {
                 Thread.sleep( 1000 );
                 for ( int i = 0; i < iterations && !halt; i++ ) {
                     assertEquals( result,
-                                  salience.getValue( tuple,
+                                  salience.getValue( new DefaultKnowledgeHelper( item, wm ),
                                                      rule,
                                                      wm ) );
                     Thread.currentThread().yield();

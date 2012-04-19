@@ -18,9 +18,12 @@ import java.util.concurrent.TimeUnit;
 import org.drools.Alarm;
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
+import org.drools.FactA;
 import org.drools.FactHandle;
+import org.drools.Foo;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -1233,7 +1236,73 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
 
+    @Test
+    public void testIntervalTimerExpressionWithOr() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        String text = "package org.drools.test\n"
+                      + "global java.util.List list\n"
+                      + "import " + FactA.class.getCanonicalName() + "\n"
+                      + "import " + Foo.class.getCanonicalName() + "\n"
+                      + "import " + Pet.class.getCanonicalName() + "\n"
+                      + "rule r1 timer (expr: f1.field2, f1.field2; repeat-limit=3)\n"
+                      + "when\n"                      
+                      + "    foo: Foo()\n" 
+                      + "    ( Pet()  and f1 : FactA( field1 == 'f1') ) or \n"
+                      + "    f1 : FactA(field1 == 'f2') \n"                      
+                      + "then\n"
+                      + "    list.add( f1 );\n"
+                      + "    foo.setId( 'xxx' );\n"
+                      + "end\n" + "\n";
 
+        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );        
+        ksession.insert ( new Foo(null, null) );
+        ksession.insert ( new Pet(null) );
+        
+        FactA fact1 = new FactA();
+        fact1.setField1( "f1" );
+        fact1.setField2( 250 );
+        
+        FactA fact3 = new FactA();
+        fact3.setField1( "f2" );
+        fact3.setField2( 1000 );
+        
+        ksession.insert( fact1 );
+        ksession.insert( fact3 );
+        
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 900, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertEquals( fact1, list.get( 0 ) );
+        assertEquals( fact1, list.get( 1 ) );
+        
+        timeService.advanceTime( 5000, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 4, list.size() );
+        assertEquals( fact3, list.get( 2 ) );
+        assertEquals( fact3, list.get( 3 ) );  
+    }
+    
+    
     @Test
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
         String drl = "package org.drools.test;" +
