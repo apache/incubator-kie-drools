@@ -17,7 +17,10 @@
 package org.drools.time.impl;
 
 import org.drools.WorkingMemory;
+import org.drools.base.DefaultKnowledgeHelper;
+import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELObjectExpression;
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
@@ -78,6 +81,14 @@ public class ExpressionIntervalTimer
         this.delay = (MVELObjectExpression) in.readObject();
         this.period = (MVELObjectExpression) in.readObject();
     }
+    
+    public MVELCompilationUnit getDelayMVELCompilationUnit() {
+        return this.delay.getMVELCompilationUnit();
+    }  
+    
+    public MVELCompilationUnit getPeriodMVELCompilationUnit() {
+        return this.period.getMVELCompilationUnit();
+    }       
 
     public Date getStartTime() {
         return startTime;
@@ -113,7 +124,8 @@ public class ExpressionIntervalTimer
     }
 
     private long evalPeriod( Activation item, WorkingMemory wm ) {
-        Object p = this.period.getValue( item.getTuple(), item.getRule(), wm );
+        Object p = this.period.getValue( item, ((AgendaItem)item).getRuleTerminalNode().getTimerPeriodDeclarations(),
+                                         item.getRule(), wm );
         if ( p instanceof Number ) {
             return ((Number) p).longValue();
         } else {
@@ -122,7 +134,8 @@ public class ExpressionIntervalTimer
     }
 
     private long evalDelay(Activation item, WorkingMemory wm) {
-        Object d = this.delay.getValue( item.getTuple(), item.getRule(), wm );
+        Object d = this.delay.getValue( item,  ((AgendaItem)item).getRuleTerminalNode().getTimerDelayDeclarations(), 
+                                        item.getRule(), wm );
         if ( d instanceof Number ) {
             return ((Number) d).longValue();
         } else {
