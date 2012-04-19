@@ -1,5 +1,7 @@
 package org.drools.util.debug;
 
+import static org.junit.Assert.*;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
 
