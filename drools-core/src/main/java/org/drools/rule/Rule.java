@@ -32,6 +32,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
 import org.drools.io.Resource;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -380,8 +381,10 @@ public class Rule
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
     public boolean isEffective(Tuple tuple,
+                               RuleTerminalNode rtn,
                                WorkingMemory workingMemory) {
         if ( !this.enabled.getValue( tuple,
+                                     rtn.getEnabledDeclarations(),
                                      this,
                                      workingMemory ) ) {
             return false;
@@ -719,10 +722,17 @@ public class Rule
     public void setEnabled(final Enabled b) {
         this.enabled = b;
     }
+    
+    public Enabled getEnabled() {
+        return enabled;
+    }
+    
 
     public boolean isEnabled(Tuple tuple,
+                             RuleTerminalNode rtn,
                              WorkingMemory workingMemory) {
         return this.enabled.getValue( tuple,
+                                      rtn.getEnabledDeclarations(),
                                       this,
                                       workingMemory );
     }

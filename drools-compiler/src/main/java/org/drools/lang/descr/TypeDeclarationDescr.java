@@ -90,8 +90,6 @@ public class TypeDeclarationDescr
     }
 
     public int compareTo(TypeDeclarationDescr descr) {
-        System.out.println("Comp");
-
         if ( ! this.getSuperTypes().isEmpty() && ! descr.getSuperTypes().isEmpty() ) {
             for ( QualifiedName q : descr.getSuperTypes() ) {
                 if ( this.getSuperTypes().contains( q ) ) {

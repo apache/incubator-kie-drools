@@ -271,6 +271,7 @@ public class MVELCompilationUnit
     }
     
     public VariableResolverFactory getFactory(final Object knowledgeHelper,
+                                              final Declaration[] prevDecl,
                                               final Rule rule,
                                               final Object rightObject,
                                               final LeftTuple tuples,
@@ -278,11 +279,23 @@ public class MVELCompilationUnit
                                               final InternalWorkingMemory workingMemory,
                                               final GlobalResolver globals) {
         VariableResolverFactory factory = createFactory();
-        updateFactory(knowledgeHelper, rule, rightObject, tuples, otherVars, workingMemory, globals, factory);
+        updateFactory(knowledgeHelper, prevDecl, rule, rightObject, tuples, otherVars, workingMemory, globals, factory);
         return factory;
     }
     
     public void updateFactory(Object knowledgeHelper,
+                              Rule rule,
+                              Object rightObject,
+                              LeftTuple leftTuple,
+                              Object[] localVars,
+                              InternalWorkingMemory workingMemory,
+                              GlobalResolver globalResolver,
+                              VariableResolverFactory factory) {
+        updateFactory(knowledgeHelper, null, rule, rightObject, leftTuple, localVars, workingMemory, globalResolver, factory);
+    }    
+    
+    public void updateFactory(Object knowledgeHelper,
+                              Declaration[] prevDecl,
                               Rule rule,
                               Object rightObject,
                               LeftTuple tuples,
@@ -344,11 +357,11 @@ public class MVELCompilationUnit
         if ( tuples != null ) {
             if ( this.previousDeclarations != null && this.previousDeclarations.length > 0 ) {
                 // Consequences with 'or's will have different declaration offsets, so use the one's from the RTN's subrule.
-                Declaration[] prevDecl = this.previousDeclarations;
-                if ( knowledgeHelper != null ) {
-                    // we know this is a rule
-                    prevDecl = ((AgendaItem)((KnowledgeHelper)knowledgeHelper).getActivation()).getRuleTerminalNode().getDeclarations();
-                }
+                if ( prevDecl == null ) {
+                    // allows the caller to override the member var
+                    // used for rules, salience and timers so they work with 'or' CEs
+                    prevDecl =  this.previousDeclarations;
+                }                
 
                 for ( int j = 0, length = prevDecl.length; j < length; j++ ) {
                     Declaration decl = prevDecl[j];
@@ -733,5 +746,4 @@ public class MVELCompilationUnit
             return propertyHandlerClass;
         }
     }
-
 }

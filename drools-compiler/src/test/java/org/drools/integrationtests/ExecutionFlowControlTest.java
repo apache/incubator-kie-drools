@@ -14,13 +14,17 @@ import junit.framework.Assert;
 
 import org.drools.Cell;
 import org.drools.Cheese;
+import org.drools.CommonTestMethodBase;
+import org.drools.FactA;
 import org.drools.FactHandle;
+import org.drools.Foo;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Neighbor;
 import org.drools.Person;
 import org.drools.PersonInterface;
+import org.drools.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -123,6 +127,64 @@ public class ExecutionFlowControlTest {
         assertEquals( "Rule 2 should have been fired second", "Rule 2",
                       list.get( 1 ) );
     }
+    
+    @Test
+    public void testSalienceExpressionWithOr() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        String text = "package org.drools.test\n"
+                      + "global java.util.List list\n"
+                      + "import " + FactA.class.getCanonicalName() + "\n"
+                      + "import " + Foo.class.getCanonicalName() + "\n"
+                      + "import " + Pet.class.getCanonicalName() + "\n"
+                      + "rule r1 salience (f1.field2)\n"
+                      + "when\n"                      
+                      + "    foo: Foo()\n" 
+                      + "    ( Pet()  and f1 : FactA( field1 == 'f1') ) or \n"
+                      + "    f1 : FactA(field1 == 'f2') \n"                      
+                      + "then\n"
+                      + "    list.add( f1 );\n"
+                      + "    foo.setId( 'xxx' );\n"
+                      + "end\n" + "\n";
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );        
+        ksession.insert ( new Foo(null, null) );
+        ksession.insert ( new Pet(null) );
+        
+        FactA fact1 = new FactA();
+        fact1.setField1( "f1" );
+        fact1.setField2( 10 );
+        
+        FactA fact2 = new FactA();
+        fact2.setField1( "f1" );
+        fact2.setField2( 30 );
+        
+        FactA fact3 = new FactA();
+        fact3.setField1( "f2" );
+        fact3.setField2( 20 );
+        
+        ksession.insert( fact1 );
+        ksession.insert( fact2 );
+        ksession.insert( fact3 );
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 3, list.size() );
+        assertEquals( fact2, list.get( 0 ) );
+        assertEquals( fact3, list.get( 1 ) );
+        assertEquals( fact1, list.get( 2 ) );     
+    }
 
     @Test
     public void testSalienceMinInteger() throws Exception {
@@ -160,6 +222,63 @@ public class ExecutionFlowControlTest {
 
         assertEquals( "b", list.get( 2 ) );
     }
+    
+    @Test
+    public void testEnabledExpressionWithOr() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        String text = "package org.drools.test\n"
+                      + "global java.util.List list\n"
+                      + "import " + FactA.class.getCanonicalName() + "\n"
+                      + "import " + Foo.class.getCanonicalName() + "\n"
+                      + "import " + Pet.class.getCanonicalName() + "\n"
+                      + "rule r1 salience(f1.field2) enabled(f1.field2 >= 20)\n"
+                      + "when\n"                      
+                      + "    foo: Foo()\n" 
+                      + "    ( Pet()  and f1 : FactA( field1 == 'f1') ) or \n"
+                      + "    f1 : FactA(field1 == 'f2') \n"                      
+                      + "then\n"
+                      + "    list.add( f1 );\n"
+                      + "    foo.setId( 'xxx' );\n"
+                      + "end\n" + "\n";
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );        
+        ksession.insert ( new Foo(null, null) );
+        ksession.insert ( new Pet(null) );
+        
+        FactA fact1 = new FactA();
+        fact1.setField1( "f1" );
+        fact1.setField2( 10 );
+        
+        FactA fact2 = new FactA();
+        fact2.setField1( "f1" );
+        fact2.setField2( 30 );
+        
+        FactA fact3 = new FactA();
+        fact3.setField1( "f2" );
+        fact3.setField2( 20 );
+        
+        ksession.insert( fact1 );
+        ksession.insert( fact2 );
+        ksession.insert( fact3 );
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 2, list.size() );
+        assertEquals( fact2, list.get( 0 ) );
+        assertEquals( fact3, list.get( 1 ) );   
+    }    
 
     @Test
     public void testNoLoop() throws Exception {

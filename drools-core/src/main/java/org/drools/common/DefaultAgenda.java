@@ -553,17 +553,18 @@ public class DefaultAgenda
             
             if ( reuseActivation ) {
                 item = ( AgendaItem ) tuple.getObject();
-                item.setSalience( rule.getSalience().getValue( tuple,
+                item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
                                                                rule,
                                                                workingMemory ) );
                 item.setPropagationContext( context );                                
             } else {
                 item = createAgendaItem( tuple,
-                                         rule.getSalience().getValue( tuple,
-                                                                      rule,
-                                                                      workingMemory ),
+                                         0,
                                          context,
                                          rtn);
+                item.setSalience( rule.getSalience().getValue( new DefaultKnowledgeHelper( item, workingMemory ),
+                                                               rule,
+                                                               workingMemory ) );
             }              
             
             item.setAgendaGroup( agendaGroup );   

@@ -18,8 +18,10 @@ import java.util.concurrent.TimeUnit;
 import org.drools.Alarm;
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.Foo;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Pet;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -1082,8 +1084,5 @@ public class TimerAndCalendarTest {
         } catch (InterruptedException e) {
             throw new RuntimeException( e );
         }
-    }    
-    
-    
-    
+    }        
 }

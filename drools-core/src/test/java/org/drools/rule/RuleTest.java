@@ -29,6 +29,7 @@ import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.time.impl.PseudoClockScheduler;
 
 public class RuleTest {
@@ -39,14 +40,14 @@ public class RuleTest {
 
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateEffective( earlier );
 
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
@@ -54,7 +55,7 @@ public class RuleTest {
         assertTrue( later.after( Calendar.getInstance() ) );
 
         rule.setDateEffective( later );
-        assertFalse( rule.isEffective(null, wm ) );
+        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
     }
 
@@ -64,20 +65,20 @@ public class RuleTest {
         
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateExpires( earlier );
 
-        assertFalse( rule.isEffective(null, wm ) );
+        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
 
         rule.setDateExpires( later );
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
     }
 
@@ -96,17 +97,17 @@ public class RuleTest {
         rule.setDateEffective( past );
         rule.setDateExpires( future );
 
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         rule.setDateExpires( past );
-        assertFalse( rule.isEffective(null, wm ) );
+        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         rule.setDateExpires( future );
         rule.setDateEffective( future );
 
 
 
-        assertFalse( rule.isEffective(null, wm ) );
+        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
     }
 
@@ -116,16 +117,16 @@ public class RuleTest {
         
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
-        assertFalse( rule.isEffective( null, wm ) );
+        assertFalse( rule.isEffective( null, new RuleTerminalNode(), wm ) );
 
         final Calendar past = Calendar.getInstance();
         past.setTimeInMillis( 10 );
 
         rule.setDateEffective( past );
-        assertFalse( rule.isEffective( null, wm ) );
+        assertFalse( rule.isEffective( null, new RuleTerminalNode(), wm ) );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
 
-        assertTrue( rule.isEffective( null, wm ) );
+        assertTrue( rule.isEffective( null, new RuleTerminalNode(), wm ) );
     }
 
     @Test
@@ -139,16 +140,16 @@ public class RuleTest {
         
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
-        assertTrue( rule.isEffective(null, wm ) );
+        assertTrue( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         
         future.setTimeInMillis( future.getTimeInMillis() + 100000000 );
         rule.setDateEffective(future);
-        assertFalse( rule.isEffective(null, wm ) );
+        assertFalse( rule.isEffective(null, new RuleTerminalNode(), wm ) );
 
         ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( 1000000000000L, TimeUnit.MILLISECONDS );
         
-        assertTrue(rule.isEffective(null, wm ));
+        assertTrue(rule.isEffective(null, new RuleTerminalNode(), wm ));
     }
 
 }

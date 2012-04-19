@@ -85,6 +85,13 @@ public class DefaultKnowledgeHelper
         this.identityMap = null;
 
     }
+    
+    public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
+        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+        this.activation = activation;
+        this.identityMap = null;
+
+    }    
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

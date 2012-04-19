@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 
+import org.drools.base.mvel.MVELEnabledExpression;
+import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
@@ -40,8 +42,6 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
-import org.drools.time.SessionClock;
-import org.drools.time.impl.Timer;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -71,6 +71,9 @@ public class RuleTerminalNode extends BaseNode
     private int                           subruleIndex;
     private LeftTupleSource               tupleSource;
     private Declaration[]                 declarations;
+    
+    private Declaration[]                 salienceDeclarations;
+    private Declaration[]                 enabledDeclarations;    
 
     private LeftTupleSinkNode             previousTupleSinkNode;
     private LeftTupleSinkNode             nextTupleSinkNode;
@@ -114,8 +117,38 @@ public class RuleTerminalNode extends BaseNode
             this.declarations[i++] = decls.get( str );
         }
         Arrays.sort( this.declarations, SortDeclarations.instance  );
+        
+        setDeclarations(decls);
+        
+        
         fireDirect = rule.getActivationListener().equals( "direct" );
     }
+    
+    public void setDeclarations(Map<String, Declaration> decls) {
+        if ( rule.getSalience() instanceof MVELSalienceExpression ) {
+            MVELSalienceExpression expr = ( MVELSalienceExpression ) rule.getSalience();
+            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
+            
+            this.salienceDeclarations = new Declaration[declrs.length];
+            int i = 0;
+            for ( Declaration declr : declrs ) {
+                this.salienceDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.salienceDeclarations, SortDeclarations.instance );            
+        }
+        
+        if ( rule.getEnabled() instanceof MVELEnabledExpression ) {
+            MVELEnabledExpression expr = ( MVELEnabledExpression ) rule.getEnabled();
+            Declaration[] declrs = expr.getMVELCompilationUnit().getPreviousDeclarations();
+            
+            this.enabledDeclarations = new Declaration[declrs.length];
+            int i = 0;
+            for ( Declaration declr : declrs ) {
+                this.enabledDeclarations[i++] = decls.get( declr.getIdentifier() );
+            }
+            Arrays.sort( this.enabledDeclarations, SortDeclarations.instance );              
+        }                
+    }    
 
     // ------------------------------------------------------------
     // Instance methods
@@ -132,6 +165,8 @@ public class RuleTerminalNode extends BaseNode
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
+        salienceDeclarations = ( Declaration[]) in.readObject();
+        enabledDeclarations = ( Declaration[]) in.readObject();         
         fireDirect = rule.getActivationListener().equals( "direct" );
     }
 
@@ -145,6 +180,8 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
+        out.writeObject( salienceDeclarations );
+        out.writeObject( enabledDeclarations );         
     }
 
     /**
@@ -182,6 +219,7 @@ public class RuleTerminalNode extends BaseNode
         //check if the rule is not effective or
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( (!this.rule.isEffective( leftTuple,
+                                      this,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
             return;
@@ -202,19 +240,19 @@ public class RuleTerminalNode extends BaseNode
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-    	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-    	
+        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        
         // we need the inserted facthandle so we can update the network with new Activation
-    	Object o = leftTuple.getObject();
-    	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
-    		AgendaItem match = (AgendaItem) o;       
-	        if ( match != null && match.isActivated() ) {
-	            // already activated, do nothing
-	            // although we need to notify the inserted Activation, as it's declarations may have changed.
-	            agenda.modifyActivation( match, true );
-	            return;
-	        }
-    	}
+        Object o = leftTuple.getObject();
+        if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
+            AgendaItem match = (AgendaItem) o;       
+            if ( match != null && match.isActivated() ) {
+                // already activated, do nothing
+                // although we need to notify the inserted Activation, as it's declarations may have changed.
+                agenda.modifyActivation( match, true );
+                return;
+            }
+        }
 
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
@@ -224,10 +262,10 @@ public class RuleTerminalNode extends BaseNode
 
         boolean reuseActivation = true;
         if ( o  == Boolean.TRUE ) {
-        	// set to Boolean.TRUE when lock-on-active stops an Activation being created
-        	// We set this instead of doing a null check, as it's a little safer due to intent.
-        	reuseActivation = false;
-        	leftTuple.setObject( null );
+            // set to Boolean.TRUE when lock-on-active stops an Activation being created
+            // We set this instead of doing a null check, as it's a little safer due to intent.
+            reuseActivation = false;
+            leftTuple.setObject( null );
         }
         boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this, reuseActivation );
         if ( fire && !isFireDirect() ) {
@@ -343,6 +381,22 @@ public class RuleTerminalNode extends BaseNode
     public Declaration[] getDeclarations() {
         return this.declarations;
     }
+    
+    public Declaration[] getSalienceDeclarations() {
+        return salienceDeclarations;
+    }
+
+    public void setSalienceDeclarations(Declaration[] salienceDeclarations) {
+        this.salienceDeclarations = salienceDeclarations;
+    }
+
+    public Declaration[] getEnabledDeclarations() {
+        return enabledDeclarations;
+    }
+
+    public void setEnabledDeclarations(Declaration[] enabledDeclarations) {
+        this.enabledDeclarations = enabledDeclarations;
+    }    
 
     public static class SortDeclarations
             implements
