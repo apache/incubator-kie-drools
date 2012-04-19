@@ -358,7 +358,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             try {
                 _header = PersisterHelper.readFromStreamWithHeader( context, registry );
             } catch ( ClassNotFoundException e ) {
-                throw new IOException( "Error deserializing process instance.", e );
+                // Java 5 does not accept [new IOException(String, Throwable)]
+                throw ((IOException) new Exception( "Error deserializing process instance.", (Throwable) e));
             }
             _instance = JBPMMessages.ProcessInstance.parseFrom( _header.getPayload(), registry );
         }

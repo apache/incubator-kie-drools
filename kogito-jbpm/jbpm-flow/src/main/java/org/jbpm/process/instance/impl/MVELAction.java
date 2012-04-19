@@ -21,19 +21,19 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.List;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.definition.KnowledgePackage;
-import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.process.ProcessContext;
 import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class MVELAction
     implements
@@ -83,7 +83,24 @@ public class MVELAction
             }
         }
 
-        VariableResolverFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
+        InternalWorkingMemory internalWorkingMemory = null;
+        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSession ) { 
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKnowledgeRuntime()).session;
+        } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSession ) { 
+            StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKnowledgeRuntime()).newWorkingMemory();
+            internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
+        } else { 
+            throw new RuntimeException("Unknown knowledge runtime when trying to execute MVEL command");
+        }
+        
+        VariableResolverFactory factory 
+            = unit.getFactory( context, 
+                               null, // No rule
+                               null, // No "right object" 
+                               null, // No (left) tuples
+                               vars, 
+                               internalWorkingMemory,
+                               (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
         
 //        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
 //        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
