@@ -31,6 +31,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.process.ProcessContext;
+import org.drools.runtime.process.StatefulProcessSession;
 import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
@@ -84,14 +85,12 @@ public class MVELAction
         }
 
         InternalWorkingMemory internalWorkingMemory = null;
-        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSession ) { 
+        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSessionImpl ) { 
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKnowledgeRuntime()).session;
-        } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSession ) { 
+        } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSessionImpl ) { 
             StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKnowledgeRuntime()).newWorkingMemory();
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
-        } else { 
-            throw new RuntimeException("Unknown knowledge runtime when trying to execute MVEL command");
-        }
+        } 
         
         VariableResolverFactory factory 
             = unit.getFactory( context, 

@@ -87,13 +87,11 @@ public class MVELReturnValueEvaluator
         }
 
         InternalWorkingMemory internalWorkingMemory = null;
-        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSession ) { 
+        if( context.getKnowledgeRuntime() instanceof StatefulKnowledgeSessionImpl ) { 
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) context.getKnowledgeRuntime()).session;
         } else if( context.getKnowledgeRuntime() instanceof StatelessKnowledgeSession ) { 
             StatefulKnowledgeSession statefulKnowledgeSession = ((StatelessKnowledgeSessionImpl) context.getKnowledgeRuntime()).newWorkingMemory();
             internalWorkingMemory = ((StatefulKnowledgeSessionImpl) statefulKnowledgeSession).session;
-        } else { 
-            throw new RuntimeException("Unknown knowledge runtime when trying to execute MVEL command");
         }
         
         VariableResolverFactory factory 
