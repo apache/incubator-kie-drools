@@ -449,4 +449,8 @@ public class StatefulKnowledgeSessionUtil {
             }
         }
     }
+    
+    public static KnowledgeAgent getKagent() {
+        return kagent;
+    }
 }

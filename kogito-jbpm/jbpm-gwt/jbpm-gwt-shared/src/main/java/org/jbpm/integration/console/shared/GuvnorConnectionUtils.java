@@ -89,7 +89,18 @@ public class GuvnorConnectionUtils {
                         + URLEncoder.encode(processId, "UTF-8")
                         + "-image.png";
                         
-                        return imageBinaryURL;
+                        URL checkURL = new URL(imageBinaryURL);
+                        HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
+                        checkConnection.setRequestMethod("GET");
+                        checkConnection.setRequestProperty("Accept", "text/plain,text/html,application/xhtml+xml,application/xml");
+                        checkConnection.setConnectTimeout(4000);
+                        applyAuth(checkConnection);
+                        checkConnection.connect();
+                       
+                        if (checkConnection.getResponseCode() == 200) {
+                            return imageBinaryURL;    
+                        }
+                        
                     } catch (Exception e) {
                        logger.error("Could not read process image: " + e.getMessage());
                        throw new RuntimeException("Could not read process image: " + e.getMessage());

@@ -30,8 +30,6 @@ import java.util.Map;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -49,6 +47,7 @@ import org.jboss.bpm.console.client.model.DiagramInfo;
 import org.jboss.bpm.console.client.model.DiagramNodeInfo;
 import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.integration.console.StatefulKnowledgeSessionUtil;
 import org.jbpm.integration.console.shared.GuvnorConnectionUtils;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
@@ -65,6 +64,7 @@ import org.slf4j.LoggerFactory;
 public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	private static final Logger logger = LoggerFactory.getLogger(GraphViewerPluginImpl.class);
 	private KnowledgeBase kbase;
+	
 
 	public List<ActiveNodeInfo> getActiveNodeInfo(String instanceId) {
 		ProcessInstanceLog processInstance = JPAProcessInstanceDbLog.findProcessInstance(new Long(instanceId));
@@ -84,12 +84,16 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			for (NodeInstanceLog nodeInstance: nodeInstances.values()) {
 				boolean found = false;
 				DiagramInfo diagramInfo = getDiagramInfo(processInstance.getProcessId());
-				for (DiagramNodeInfo nodeInfo: diagramInfo.getNodeList()) {
-					if (nodeInfo.getName().equals("id=" + nodeInstance.getNodeId())) {
-						result.add(new ActiveNodeInfo(diagramInfo.getWidth(), diagramInfo.getHeight(), nodeInfo));
-						found = true;
-						break;
-					}
+				if (diagramInfo != null) {
+    				for (DiagramNodeInfo nodeInfo: diagramInfo.getNodeList()) {
+    					if (nodeInfo.getName().equals("id=" + nodeInstance.getNodeId())) {
+    						result.add(new ActiveNodeInfo(diagramInfo.getWidth(), diagramInfo.getHeight(), nodeInfo));
+    						found = true;
+    						break;
+    					}
+    				}
+				} else {
+				    throw new IllegalArgumentException("Could not find info for diagram for process " + processInstance.getProcessId());
 				}
 				if (!found) {
 					throw new IllegalArgumentException("Could not find info for node "
@@ -106,10 +110,9 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			    GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
 			    if(guvnorUtils.guvnorExists()) {
 			    	try {
-						KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
-						kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
-						kagent.monitorResourceChangeEvents(false);
-						kbase = kagent.getKnowledgeBase();
+						
+    					kbase = StatefulKnowledgeSessionUtil.getKagent().getKnowledgeBase();
+						
 					} catch (Throwable t) {
 						logger.error("Could not build kbase from Guvnor assets: " + t.getMessage());
 					}
@@ -121,7 +124,7 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			}
 			String directory = System.getProperty("jbpm.console.directory");
 			if (directory == null) {
-				logger.error("jbpm.console.directory property not found");
+				logger.info("jbpm.console.directory property not found");
 			} else {
 				File file = new File(directory);
 				if (!file.exists()) {
@@ -146,7 +149,9 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		}
 		Process process = kbase.getProcess(processId);
 		if (process == null) {
-			return null;
+		    
+		    return null;
+		    
 		}
 
 		DiagramInfo result = new DiagramInfo();
