@@ -32,6 +32,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
 
@@ -299,6 +300,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
             for (MrService service : serviceList) {
                 serviceBag.put(service, 0);
             }
+            doBalancePenaltyCosts();
         }
 
         public void initOriginalProcessAssignment(MrProcessAssignment processAssignment) {
@@ -370,7 +372,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                     long minimumTargetAvailable = originAvailable * balancePenalty.getMultiplicand();
                     // targetAvailable might be negative, but that's ok (and even avoids score traps)
                     if (targetAvailable < minimumTargetAvailable) {
-                        softScore -= (minimumTargetAvailable - targetAvailable);
+                        softScore -= (minimumTargetAvailable - targetAvailable) * balancePenalty.getWeight();
                     }
                 }
             }
@@ -386,7 +388,7 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                     long minimumTargetAvailable = originAvailable * balancePenalty.getMultiplicand();
                     // targetAvailable might be negative, but that's ok (and even avoids score traps)
                     if (targetAvailable < minimumTargetAvailable) {
-                        softScore += (minimumTargetAvailable - targetAvailable);
+                        softScore += (minimumTargetAvailable - targetAvailable) * balancePenalty.getWeight();
                     }
                 }
             }
@@ -420,7 +422,8 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
         }
 
         private void addProcessAssignment(MrProcessAssignment processAssignment) {
-            long processUsage = processAssignment.getUsage(machineCapacity.getResource());
+            MrResource resource = machineCapacity.getResource();
+            long processUsage = processAssignment.getUsage(resource);
             if (!machineCapacity.isTransientlyConsumed() || processAssignment.isMoved()) {
                 // Capacity constraints + Transient usage constraints
                 hardScore -= Math.min(maximumAvailable, 0);
@@ -428,14 +431,15 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 hardScore += Math.min(maximumAvailable, 0);
             }
             // Load cost
-            softScore -= Math.min(safetyAvailable, 0);
+            softScore -= Math.min(safetyAvailable, 0) * resource.getLoadCostWeight();
             safetyAvailable -= processUsage;
-            softScore += Math.min(safetyAvailable, 0);
+            softScore += Math.min(safetyAvailable, 0) * resource.getLoadCostWeight();
             balanceAvailable -= processUsage;
         }
 
         private void removeProcessAssignment(MrProcessAssignment processAssignment) {
-            long processUsage = processAssignment.getUsage(machineCapacity.getResource());
+            MrResource resource = machineCapacity.getResource();
+            long processUsage = processAssignment.getUsage(resource);
             if (!machineCapacity.isTransientlyConsumed() || processAssignment.isMoved()) {
                 // Capacity constraints + Transient usage constraints
                 hardScore -= Math.min(maximumAvailable, 0);
@@ -443,9 +447,9 @@ public class MachineReassignmentIncrementalScoreCalculator extends AbstractIncre
                 hardScore += Math.min(maximumAvailable, 0);
             }
             // Load cost
-            softScore -= Math.min(safetyAvailable, 0);
+            softScore -= Math.min(safetyAvailable, 0) * resource.getLoadCostWeight();
             safetyAvailable += processUsage;
-            softScore += Math.min(safetyAvailable, 0);
+            softScore += Math.min(safetyAvailable, 0) * resource.getLoadCostWeight();
             balanceAvailable += processUsage;
         }
 
