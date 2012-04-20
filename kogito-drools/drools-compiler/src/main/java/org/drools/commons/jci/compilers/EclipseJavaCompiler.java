@@ -292,7 +292,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 // FIXME: this should not be tied to the extension
                 final String javaSource = pClazzName.replace('.', '/') + ".java";
                 final String classSource = pClazzName.replace('.', '/') + ".class";
-                return pReader.isAvailable(javaSource) || pReader.isAvailable(javaSource); 
+                return pReader.isAvailable(javaSource) || pReader.isAvailable(classSource); 
             }
 
             private boolean isPackage( final String pClazzName ) {
