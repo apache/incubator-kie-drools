@@ -373,4 +373,10 @@ public final class ClassUtils {
         if (type == Number.class) return double.class;
         throw new RuntimeException("Class not convertible to primitive: " + type.getName());
     }
+    
+    public static boolean isWindows() {
+        String os =  System.getProperty("os.name");
+        return os.toUpperCase().contains( "WINDOWS" );
+       
+    }
 }

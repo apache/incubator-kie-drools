@@ -19,6 +19,7 @@ package org.drools.commons.jci.compilers;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -230,10 +231,21 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
                 InputStream is = null;
                 ByteArrayOutputStream baos = null;
-                try {
+                try {                    
                     is = pClassLoader.getResourceAsStream(resourceName);
                     if (is == null) {
                         return null;
+                    }
+                    
+                    if ( ClassUtils.isWindows() ) {
+                        // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process
+                        try {
+                            pClassLoader.loadClass( pClazzName );
+                        } catch ( ClassNotFoundException e ) {
+                            return null;
+                        } catch ( NoClassDefFoundError e ) {
+                            return null;
+                        }
                     }
 
                     final byte[] buffer = new byte[8192];
@@ -278,15 +290,33 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
             private boolean isSourceAvailable(final String pClazzName, final ResourceReader pReader) {
                 // FIXME: this should not be tied to the extension
-                final String source = pClazzName.replace('.', '/') + ".java";
-                return pReader.isAvailable(source);
+                final String javaSource = pClazzName.replace('.', '/') + ".java";
+                final String classSource = pClazzName.replace('.', '/') + ".class";
+                return pReader.isAvailable(javaSource) || pReader.isAvailable(javaSource); 
             }
 
             private boolean isPackage( final String pClazzName ) {
                 InputStream is = null;
                 try {
                     is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
-                    return is == null && !isSourceAvailable(pClazzName, pReader);
+
+                    if ( ClassUtils.isWindows() ) {
+                        // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process                    
+                        if ( is != null ) {
+                            try {
+                                Class cls = pClassLoader.loadClass( pClazzName );
+                                if ( cls != null ) {
+                                    return true;
+                                }
+                            } catch ( ClassNotFoundException e ) {
+                                return true;
+                            } catch ( NoClassDefFoundError e ) {
+                                return true;
+                            }        
+                        }
+                    }
+                    boolean result = is == null && !isSourceAvailable(pClazzName, pReader); 
+                    return result;
                 } finally {
                     if ( is != null ) {
                         try {
