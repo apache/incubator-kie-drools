@@ -62,7 +62,7 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
         sb.append("http://");
         sb.append(properties.getProperty("jbpm.console.server.host").trim());
         sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port").trim()));
-        sb.append("/gwt-console-server/rs/form/" + getType(ref) + "/");
+        sb.append("/" + properties.getProperty("jbpm.console.server.context", "gwt-console-server") + "/rs/form/" + getType(ref) + "/");
         sb.append(ref.getReferenceId());
         sb.append("/render");
 
