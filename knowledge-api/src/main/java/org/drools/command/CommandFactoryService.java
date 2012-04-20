@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.rule.FactHandle;
 
 public interface CommandFactoryService {
@@ -89,9 +90,6 @@ public interface CommandFactoryService {
                            String type,
                            Object event);
 
-    Command newCompleteWorkItem(long workItemId,
-                                Map<String, Object> results);
-
     Command newQuery(String identifier,
                      String name);
 
@@ -101,9 +99,17 @@ public interface CommandFactoryService {
 
     BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup);
 
+    Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler, String workItemName);
+    
     Command newAbortWorkItem(long workItemId);
 
+    Command newCompleteWorkItem(long workItemId,
+                                Map<String, Object> results);
+    
+    @Deprecated
     public Command newKBuilderSetPropertyCommand(String id, String name, String value);
+    
+    public Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value);
 
     public Command newNewKnowledgeBuilderConfigurationCommand(String localId);
 
@@ -111,3 +117,4 @@ public interface CommandFactoryService {
 
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
 }
+
