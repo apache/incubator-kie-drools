@@ -8,11 +8,14 @@
 
   <title>Core Engine: Persistence and transactions</title>
 
-  <para>jBPM allows the persistent storage of certain information, i.e., the process runtime state (to
-  be able to continue execution of a process instance at any point, for example if something goes wrong),
-  the process definitions themselves, the history information (a log of current state and what happened
-  already), etc.  This chapter describes these different types of persistence, and how to configure
-  them.</para>
+  <para>jBPM allows the persistent storage of certain information. This chapter 
+  describes these different types of persistence, and how to configure them.
+  An example of the information stored is the process runtime state. Storing
+  the process runtime state is necessary in order to be able to continue execution 
+  of a process instance at any point, if something goes wrong. Also, the process 
+  definitions themselves, and the history information (logs of current and previous 
+  process states already) can also be persisted. 
+  </para>
 
   <section>
     <title>Runtime State</title>
@@ -630,6 +633,15 @@ ut.commit();</programlisting>
     <programlisting>&lt;property name="hibernate.transaction.manager_lookup_class"
              value="org.hibernate.transaction.JBossTransactionManagerLookup" /&gt;
     </programlisting>
+
+    </section>
+
+    <section>
+      <title>Persistence and concurrency</title>
+
+      <para>Please see the <emphasis>Multi-threading</emphasis> section of
+      <quote><link linkend='ch.core-basics' endterm="ch.core-basics.title"/></quote>
+      for more information.</para>
 
     </section>
 

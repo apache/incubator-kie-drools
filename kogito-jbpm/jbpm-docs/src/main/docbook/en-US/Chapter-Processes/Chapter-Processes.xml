@@ -5,7 +5,7 @@
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Core Engine: Basics</title>
+  <title id="ch.core-basics.title" >Core Engine: Basics</title>
 
   <figure>
     <mediaobject>
@@ -477,7 +477,7 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
           <listitem>
             <para><emphasis>Timer delay</emphasis>: The delay that the node should 
             wait before triggering the first time. The expression should be of the form
-            <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
+            <code>[#d][#h][#m][#s][#[ms]]</code>.  This allows you to specify the number of days,
             hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer.  The expression could also use #{expr} to
@@ -489,7 +489,7 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
             <para><emphasis>Timer period</emphasis>: The period
             between two subsequent triggers.  If the period is 0, the timer should
             only be triggered once.   The expression should be of the form
-            <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
+            <code>[#d][#h][#m][#s][#[ms]]</code>. You can specify the number of days,
             hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer again.  The expression could also use #{expr} to
@@ -884,23 +884,26 @@ ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
         </mediaobject>
       </figure>
 
-        <para>Represents a set
-        of rules that need to be evaluated.  The rules are evaluated when the node
-        is reached.  A Rule Task should have one incoming connection and
-        one outgoing connection.  Rules are defined in separate files using the
-        Drools rule format.  Rules can become part of a specific ruleflow group
-        using the <literal>ruleflow-group</literal> attribute in the header of the rule.
-        When a Rule Task is reached in the process, the engine will start executing rules that are
-        part of the corresponding ruleflow-group (if any).  Execution will
-        automatically continue to the next node if there are no more active rules in
-        this ruleflow group.  This means that, during the execution of a ruleflow group,
-        it is possible that new activations belonging to the currently active
-        ruleflow group are added to the Agenda due to changes made to the facts by
+        <para>A Business Rule Task Represents a set of rules that need to be 
+        evaluated.  The rules are evaluated when the node is reached.  A Rule 
+        Task should have one incoming connection and one outgoing connection.  
+        Rules are defined in separate files using the Drools rule format.  Rules 
+        can become part of a specific ruleflow group using the <literal>ruleflow-group</literal> 
+        attribute in the header of the rule.</para>
+
+        <para>When a Rule Task is reached in the process, the engine will start 
+        executing rules that are part of the corresponding ruleflow-group (if any).  
+        Execution will automatically continue to the next node if there are 
+        no more active rules in this ruleflow group. As a result, during the 
+        execution of a ruleflow group, new activations belonging to the currently active
+        ruleflow group can be added to the Agenda due to changes made to the facts by
         the other rules. Note that the process will immediately continue with the
         next node if it encounters a ruleflow group where there are no active rules
-        at that time.  If the ruleflow group was already active, the ruleflow group
+        at that time.</para>
+        
+        <para>If the ruleflow group was already active, the ruleflow group
         will remain active and execution will only continue if all active rules of the
-        ruleflow group has been completed.  It contains the following properties:</para>
+        ruleflow group has been completed. It contains the following properties:</para>
         <itemizedlist>
           <listitem>
             <para><emphasis>Id</emphasis>: The id of the node (which is unique within
@@ -1418,7 +1421,7 @@ System.out.println( person.name );
     subsequent trigger activations. A period of 0 results in a one-shot timer.</para>
     
     <para>The (period and delay) expression should be of the form
-    [#d][#h][#m][#s][#[ms]].  This means that you can specify the amount of days,
+    [#d][#h][#m][#s][#[ms]].  You can specify the amount of days,
     hours, minutes, seconds and milliseconds (which is the default if you don't
     specify anything).  For example, the expression "1h" will wait one hour
     before triggering the timer (again).</para>
@@ -1431,7 +1434,7 @@ System.out.println( person.name );
       <itemizedlist>
         <listitem><para>A Timer Event may be added to the process flow. Its activation
         starts the timer, and when it triggers, once or repeatedly, it activates the
-        Timer node's successor.  This means that the outgoing connection of a
+        Timer node's successor. Subsequently, the outgoing connection of a
         timer with a positive period is triggered multiple times. Cancelling a
         Timer node also cancels the associated timer, after which no more triggers
         will occur.</para></listitem>
@@ -1549,69 +1552,74 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
       
     <section>
       <title>Multi-threading</title>
+   
+    <para>In the following text, we will refer to two types of "multi-threading": 
+    <emphasis>logical</emphasis> and <emphasis>technical</emphasis>. 
+    <emphasis>Technical multi-threading</emphasis> is what happens when multiple 
+    threads or processes are started on a computer, for example by a Java or 
+    C program. <emphasis>Logical multi-threading</emphasis> is what we see in 
+    a BPM process after the process reaches a parallel gateway, for 
+    example. From a functional standpoint, the original process will then split 
+    into two processes that are executed in a parallel fashion.</para>
+
+    <para>Of course, the jBPM engine supports logical multi-threading: for example, 
+    processes that include a parallel gateway. We've chosen to implement logical 
+    multi-threading using one thread: a jBPM process that includes logical multi-threading 
+    will only be executed in one technical thread. The main reason for doing 
+    this is that multiple (technical) threads need to be be able to communicate 
+    state information with each other if they are working on the same process. 
+    This requirement brings with it a number of complications. While it might 
+    seem that multi-threading would bring performance benefits with it, the extra 
+    logic needed to make sure the different threads work together well means 
+    that this is not guaranteed. There is also the extra overhead incurred because 
+    we need to avoid race conditions and deadlocks.</para> 
+
+    <section>
+      <title>Engine execution</title>
+   
+    <para>In general, the jBPM engine executes actions in serial. For example, 
+    when the engine encounters a script task in a process, it will synchronously 
+    execute that script and wait for it to complete before continuing execution.  
+    Similarly, if a process encounters a parallel gateway, it will sequentially 
+    trigger each of the outgoing branches, one after the other. This is possible 
+    since execution is almost always instantaneous, meaning that it is extremely 
+    fast and produces almost no overhead. As a result, the user will usually 
+    not even notice this.  Similarly, action scripts in a process are also synchronously
+    executed, and the engine will wait for them to finish before continuing the 
+    process. For example, doing a <code>Thread.sleep(...)</code> as part of 
+    a script will not make the engine continue execution elsewhere but will 
+    block the engine thread during that period.</para>
     
-    <para>The engine itself allows you to run multiple threads on the same session.
-    A process instance itself however uses logical multi-threading to implement parallel
-    execution, not multiple real threads.  The main reason for doing this is that allowing
-    multiple threads to execute on the same process instance implicates that we have to
-    make sure that state is consistent across these threads, and that there are no race
-    conditions and deadlocks etc.  This can have a significant impact on performance, even
-    when multi-threading is not required.  Allowing real multi-threading on the same
-    process instance is also no guarantee on improved performance, as in general it leads
-    to decreased performance (due to overhead and conflicts).  Therefore, we only allow
-    one thread to be processing a specific process instance at each time.  It is however
-    simple to achieve logical multi-threading using asynchronous tasks, as explained below.
+    <para>The same principle applies to service tasks. When a service task is 
+    reached in a process, the engine will also invoke the handler of this service 
+    synchronously.  The engine will wait for the <code>completeWorkItem(...)</code> 
+    method to return before continuing execution. It is important that your 
+    service handler executes your service asynchronously if its execution is 
+    not instantaneous.</para>
+    
+    <para>An example of this would be a service task that invokes an external 
+    service.  Since the delay in invoking this service remotely and waiting for 
+    the results might be too long, it might be a good idea to invoke this service 
+    asynchronously. This means that the handler will only invoke the service 
+    and will notify the engine later when the results are available.  In the 
+    mean time, the process engine then continues execution of the process.  
     </para>
     
-    <para>In general, the engine executes the process sequentially.  For example, when
-    the engine encounters a script task in a process, it will synchronously execute that
-    script and wait for it to complete before continuing execution.  Similarly, if a process
-    encounters a parallel gateway, it will sequentially trigger each of the outgoing
-    branches, one after the other.  This is possible since execution is almost always
-    instantaneous, meaning that it is extremely fast and produces almost no overhead.
-    As a result, the user usually doesn't even notice this.</para>
+    <para>Human tasks are a typical example of a service that needs to be invoked 
+    asynchronously, as we don't want the engine to wait until a human actor 
+    has responded to the request. The human task handler will only create a new task 
+    (on the task list of the assigned actor) when the human task node is triggered. 
+    The engine will then be able to continue execution on the rest of the process 
+    (if necessary) and the handler will notify the engine asynchronously when 
+    the user has completed the task.</para>
     
-    <para>When a service task is reached in the process, the engine will also invoke the
-    handler of this service synchronously.  This means that the engine will wait for
-    the completeWorkItem(..) method to return before continuing execution.  Therefore,
-    it is important that your service handler executes your service asynchronously if
-    its execution is not instantaneous.  Imagine for example you want to invoke an external
-    service.  Since the delay of invoking this service remotely and waiting for the results
-    might be too high, it might be a good idea to invoke this service asynchronously.  This
-    means that the handler will only invoke the service asynchronously and will notify
-    the engine if the results are available.  In the mean time, the process engine can
-    then continue execution elsewhere.  Similarly, your action scripts should also be
-    instantaneous, as the engine will be waiting for them to execute.  For example, doing
-    Thread.sleep(..) as part of a script will not make the engine continue execution
-    elsewhere but will block the engine thread during that period.</para>
-    
-    <para>Human tasks are a typical example of a service that
-    needs to be invoked asynchronously, as we don't want the engine to wait until a human
-    actor has responded to the request.  Therefore, the human task handler will only
-    create a new task (on the task list of the assigned actor) when the human task node
-    is triggered.  The engine will then be able to continue execution on the rest of the
-    process (if necessary) and the handler will notify the engine asynchronously when the
-    user has completed the task.</para>
-    
-    <para>Imagine for example that you have a process that executes three services in
-    parallel using a parallel gateway.  The engine will first trigger the first service
-    when executing this process, in which case the first service will be invoked.  Since
-    the handler will invoke this service asynchronously, this service will be executing
-    separately.  The engine can in the mean while continue executing the rest of the
-    process, until the results of the service return.  So the engine will continue with
-    executing the second branch of the parallel gateway, triggering the second service
-    (asynchronously).  While the second service is also executing, it will then invoke the
-    third service as well.  At that point, all three services will be executing in parallel
-    and the engine will be waiting for the results to return.  As you can see, you can
-    achieve multi-threading and parallelism by making sure that the tasks that need to be
-    executed in parallel are invoked asynchronously</para>
-    
+    </section>
     <section>
       <title>Asynchronous handlers</title>
       
-      <para>How to implement an asynchronous service handler?  In general, this all
-      depends on the technology you're using.  If you're using only simple Java, you
-      can for example execute the actual service in a new thread:</para>
+      <para>How can we implement an asynchronous service handler? To start with, 
+      this depends on the technology you're using.  If you're only using 
+      Java, you could execute the actual service in a new thread:</para>
       
       <programlisting language="java">public class MyServiceTaskHandler implements WorkItemHandler {
         
@@ -1628,15 +1636,64 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
       
 }</programlisting>
 
-      <para>In general, a handler usually will not implement the business logic to
-      perform the work item, but would rather contact an existing service to do the
-      hard work.  For example, the human task handler simply invokes the human task
-      service to add a task there.  To implement an asynchronous handler, you usually
-      have to simply do an asynchronous invocation of this service.  This usually
-      depends on the technology you use to do the communication, but this might be
-      as simple as asynchronously invoking a web service, sending a JMS message to
-      the external service, etc.</para>
+      <para>It's advisable to have your handler contact a service that 
+      executes the business operation, instead of having it perform the actual 
+      work.  If anything goes wrong with a business operation, it doesn't affect 
+      your process. The loose coupling that this provides also gives you greater 
+      flexibility in reusing services and developing them. </para>
       
+      <para>For example, you can have your human task handler simply invoke the 
+      human task service to add a task there. To implement an asynchronous handler, 
+      you usually have to simply do an asynchronous invocation of this service.  
+      This usually depends on the technology you use to do the communication, 
+      but this might be as simple as asynchronously invoking a web service, 
+      or sending a JMS message to the external service.</para>
+
+    </section>
+    <section>
+      <title>Multiple knowledge sessions and persistence</title>
+
+    <para>The simplest way to run multiple processes is to run them all using 
+    one knowledge session. However, there are cases in which it's necessary
+    to run multiple processes in different knowledge sessions, even in
+    different (technical) threads. Both are supported by jBPM.</para>
+
+    <para>When we add persistence (using a database, for example) to a situation
+    in which we have multiple knowledge sessions (and processes), there is a 
+    guideline that users should be aware of. The following paragraphs explain 
+    why this guideline is important to follow. 
+    <itemizedlist>
+       <listitem>Please make sure to use a database that allows row-level locks 
+       as well as table-level locks.</listitem>
+    </itemizedlist>
+    </para> 
+
+    <para>For example, a user could have a situation in which there are 2 
+    (or more) threads running, each with its own knowledge session instance. 
+    On each thread, jBPM processes are being started using the local knowledge 
+    session instance.</para>
+
+    <para>In this use case, a race condition exists in which both thread A and 
+    thread B will have coincidentally simultaneously finished a process. At 
+    this point, because persistence is being used, both thread A and B will 
+    be commiting changes to the databse. If row-level locks are 
+    <emphasis>not</emphasis> possible, then the following situation can occur: 
+    <itemizedlist>
+       <listitem>Thread A has a lock on the <code>ProcessInstanceInfo</code> table, having just
+       committed a change to that table.</listitem>
+       <listitem>Thread A <emphasis>wants</emphasis> a lock on the <code>SessionInfo</code> table
+       in order to commit a change there.</listitem>
+       <listitem>Thread B has the opposite situation: it has a lock on the <code>SessionInfo</code>
+       table, having just committed a change there.</listitem>
+       <listitem>Thread B <emphasis>wants</emphasis> a lock on the <code>ProcessInstanceInfo</code>
+       table, even though Thread <emphasis>A</emphasis> already has a lock on it</listitem>
+    </itemizedlist>
+    This is a deadlock situation which the database and application will not be able to solve. 
+    </para> 
+
+    <para>However, if row-level locks are posible (and enabled!!) in the database (and tables used), 
+    then this situation will not occur.</para>
+    
     </section>
 
   </section>
