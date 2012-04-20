@@ -32,6 +32,7 @@ import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.KBuilderSetPropertyCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
@@ -45,6 +46,7 @@ import org.drools.command.runtime.rule.QueryCommand;
 import org.drools.command.runtime.rule.RetractCommand;
 import org.drools.command.runtime.rule.ModifyCommand.SetterImpl;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.rule.FactHandle;
 
 public class CommandFactoryServiceImpl implements CommandFactoryService {
@@ -184,6 +186,11 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
         return new AbortWorkItemCommand( workItemId);
     }
 
+    public Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler,
+                                                     String workItemName) {
+        return new RegisterWorkItemHandlerCommand( workItemName, handler );
+    }    
+    
     public Command newQuery(String identifier, String name) {
         return new QueryCommand(identifier, name, null);
     }
@@ -196,9 +203,14 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
         return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
     }
 
+    @Deprecated
     public Command newKBuilderSetPropertyCommand(String id, String name, String value) {
         return new KBuilderSetPropertyCommand(id, name, value);
     }
+    
+    public Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value) {
+        return new KBuilderSetPropertyCommand(id, name, value);
+    }    
     
     public Command newNewKnowledgeBuilderConfigurationCommand(String localId){
         return new NewKnowledgeBuilderConfigurationCommand(localId);
@@ -212,4 +224,6 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
             boolean disconnected) {
         return new FromExternalFactHandleCommand(factHandleExternalForm, disconnected);
     }
+
+
 }
