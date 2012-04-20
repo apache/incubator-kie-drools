@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.rule.FactHandle;
 
 /**
@@ -282,6 +283,12 @@ public class CommandFactory {
                                                            type,
                                                            event );
     }
+    
+    public static Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler,
+                                                     String workItemName) {
+        return getCommandFactoryProvider().newRegisterWorkItemHandlerCommand( handler,
+                                                                              workItemName );        
+    }
 
     public static Command newCompleteWorkItem(long workItemId,
                                               Map<String, Object> results) {
@@ -369,10 +376,15 @@ public class CommandFactory {
         }
     }
 
+    @Deprecated
     public static Command newKBuilderSetPropertyCommand(String id, String name, String value) {
         return getCommandFactoryProvider().newKBuilderSetPropertyCommand(id, name, value);
     }
 
+    public static Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value) {
+        return getCommandFactoryProvider().newKnowledgeBuilderSetPropertyCommand(id, name, value);
+    }
+    
     public static Command newNewKnowledgeBuilderConfigurationCommand(String localId) {
         return getCommandFactoryProvider().newNewKnowledgeBuilderConfigurationCommand(localId);
     }
