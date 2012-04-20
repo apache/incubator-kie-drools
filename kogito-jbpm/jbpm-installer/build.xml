@@ -373,6 +373,12 @@
     </copy>
     <!-- Fix for conflicting javassist jar -->
     <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.6.0.GA.jar"/>
+  	<!-- remove hornetq related libs as they are referenced from jboss module -->
+  	<delete>
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
+    </delete>
+  	<delete file="hornetq-core-2.2.10.Final.jar"/>
+  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/netty-3.1.5.GA.jar"/>
     <!-- Other configuration like work item handlers -->
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>

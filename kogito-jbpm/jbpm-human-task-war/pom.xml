@@ -42,10 +42,10 @@
     	<artifactId>hornetq-core</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.jboss.netty</groupId>
-    	<artifactId>netty</artifactId>
-    	<version>3.2.0.Final</version>
-    	<scope>runtime</scope>
+       <groupId>org.jboss.netty</groupId>
+       <artifactId>netty</artifactId>
+       <version>3.2.0.Final</version>
+       <scope>runtime</scope>
     </dependency>
 
     <!-- Test -->
@@ -60,4 +60,22 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <pluginManagement>
+     <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+                <archive>
+                    <manifestEntries>
+                        <Dependencies>org.hornetq</Dependencies>
+                    </manifestEntries>
+                </archive>
+               </configuration>
+          </plugin>
+       </plugins>
+    </pluginManagement>
+  </build>
 </project>
