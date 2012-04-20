@@ -59,7 +59,7 @@ public class MrProcess extends AbstractPersistable {
         return processRequirementList.get(resource.getIndex());
     }
 
-    public int getUsage(MrResource resource) {
+    public long getUsage(MrResource resource) {
         return processRequirementList.get(resource.getIndex()).getUsage();
     }
 

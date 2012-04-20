@@ -164,7 +164,7 @@ public class MrMachinePanel extends JPanel {
                 maximumCapacity = 0;
                 safetyCapacity = 0;
             }
-            int usedTotal = 0;
+            long usedTotal = 0;
             for (MrProcessAssignment processAssignment : processAssignmentList) {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
             }
@@ -202,8 +202,8 @@ public class MrMachinePanel extends JPanel {
                 assignmentsPanel.add(processAssignmentLabel);
 
                 for (MrResource resource : resourceList) {
-                    int usage = processAssignment.getProcess().getProcessRequirement(resource).getUsage();
-                    JTextField resourceField = new JTextField(usage);
+                    long usage = processAssignment.getProcess().getProcessRequirement(resource).getUsage();
+                    JTextField resourceField = new JTextField(Long.toString(usage));
                     resourceField.setEditable(false);
                     assignmentsPanel.add(resourceField);
                 }

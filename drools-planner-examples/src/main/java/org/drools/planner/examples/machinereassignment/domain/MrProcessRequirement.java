@@ -25,7 +25,7 @@ public class MrProcessRequirement extends AbstractPersistable {
     private MrProcess process;
     private MrResource resource;
 
-    private int usage;
+    private long usage;
 
     public MrProcess getProcess() {
         return process;
@@ -43,11 +43,11 @@ public class MrProcessRequirement extends AbstractPersistable {
         this.resource = resource;
     }
 
-    public int getUsage() {
+    public long getUsage() {
         return usage;
     }
 
-    public void setUsage(int usage) {
+    public void setUsage(long usage) {
         this.usage = usage;
     }
 

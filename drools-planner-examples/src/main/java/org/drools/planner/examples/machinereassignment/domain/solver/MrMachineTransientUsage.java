@@ -28,9 +28,9 @@ import org.drools.planner.examples.machinereassignment.domain.MrResource;
 public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
 
     private MrMachineCapacity machineCapacity;
-    private int usage;
+    private long usage;
 
-    public MrMachineTransientUsage(MrMachineCapacity machineCapacity, int usage) {
+    public MrMachineTransientUsage(MrMachineCapacity machineCapacity, long usage) {
         this.machineCapacity = machineCapacity;
         this.usage = usage;
     }
@@ -39,7 +39,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
         return machineCapacity;
     }
 
-    public int getUsage() {
+    public long getUsage() {
         return usage;
     }
 

@@ -90,7 +90,7 @@ public class MrProcessAssignment extends AbstractPersistable {
         return machine == null ? null : machine.getLocation();
     }
     
-    public int getUsage(MrResource resource) {
+    public long getUsage(MrResource resource) {
         return process.getUsage(resource);
     }
 
