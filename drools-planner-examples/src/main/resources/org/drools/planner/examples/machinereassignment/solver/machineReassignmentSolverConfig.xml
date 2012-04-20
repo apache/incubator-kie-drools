@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>DEBUG</environmentMode>-->
+  <environmentMode>DEBUG</environmentMode>
   <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
   <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
 
   <scoreDirectorFactory>
     <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-    <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+    <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
   </scoreDirectorFactory>
   <termination>
     <maximumMinutesSpend>5</maximumMinutesSpend>

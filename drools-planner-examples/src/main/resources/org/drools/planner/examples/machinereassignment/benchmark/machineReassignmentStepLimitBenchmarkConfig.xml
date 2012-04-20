@@ -15,7 +15,8 @@
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-        <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+        <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
       </scoreDirectorFactory>
     </solver>
   </inheritedSolverBenchmark>
@@ -27,7 +28,7 @@
       </customSolverPhase>
       <localSearch>
         <termination>
-          <maximumStepCount>100</maximumStepCount>
+          <maximumStepCount>1000</maximumStepCount>
         </termination>
         <selector>
           <selector>
