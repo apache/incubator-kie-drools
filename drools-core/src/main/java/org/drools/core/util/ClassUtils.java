@@ -17,6 +17,8 @@
 package org.drools.core.util;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -289,5 +291,27 @@ public final class ClassUtils {
         if (type == char.class) return Character.class;
         if (type == boolean.class) return Boolean.class;
         throw new RuntimeException("Class not convertible from primitive: " + type.getName());
+    }
+
+    public static Class<?> convertToPrimitiveType(Class<?> type) {
+        if (type.isPrimitive()) return type;
+        if (type == Integer.class) return int.class;
+        if (type == Long.class) return long.class;
+        if (type == Float.class) return float.class;
+        if (type == Double.class) return double.class;
+        if (type == Short.class) return short.class;
+        if (type == Byte.class) return byte.class;
+        if (type == Character.class) return char.class;
+        if (type == Boolean.class) return boolean.class;
+        if (type == BigInteger.class) return long.class;
+        if (type == BigDecimal.class) return double.class;
+        if (type == Number.class) return double.class;
+        throw new RuntimeException("Class not convertible to primitive: " + type.getName());
+    }
+    
+    public static boolean isWindows() {
+        String os =  System.getProperty("os.name");
+        return os.toUpperCase().contains( "WINDOWS" );
+       
     }
 }
