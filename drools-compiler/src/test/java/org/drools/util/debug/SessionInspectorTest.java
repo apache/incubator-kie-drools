@@ -107,7 +107,6 @@ public class SessionInspectorTest {
     }
     
     @Test
-    @Ignore("Does not work in the IBM JDK due to a bug in MVEL")
     public void testGetSessionInfoWithCustomTemplate() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),

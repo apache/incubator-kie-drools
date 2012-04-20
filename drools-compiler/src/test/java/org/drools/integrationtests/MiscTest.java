@@ -10186,7 +10186,7 @@ public class MiscTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test @Ignore // remove @Ignore when mvel.2.1.0.drools13 will be released
+    @Test
     public void testDeclaredTypeAsFieldForAnotherDeclaredType() {
         // JBRULES-3468
         String str = "package com.sample\n" +
