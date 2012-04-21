@@ -178,9 +178,9 @@ public class PlannerBenchmarkConfig {
             // no threads are requested; use just one
             return 1;
         } else if (getThreadsUse().equals("AUTO")) {
-            // "AUTO" threads are requested; use everything possible, leave one for the operating system
+            // "AUTO" threads are requested; use everything possible, leave some for the operating system
             int availableThreads = Runtime.getRuntime().availableProcessors();
-            int useThreads = Math.max(1, availableThreads - 1); // prevent 0
+            int useThreads = Math.max(1, availableThreads - 2); // prevent 0
             return useThreads;
         } else {
             // otherwise, we expect a number
