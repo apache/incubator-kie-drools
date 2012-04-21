@@ -134,7 +134,8 @@ public class JoinNode extends BetaNode {
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this );
 
-        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+        if ( !behavior.assertRightTuple( context,
+                                         memory.getBehaviorContext(),
                                          rightTuple,
                                          workingMemory ) ) {
             // destroy right tuple

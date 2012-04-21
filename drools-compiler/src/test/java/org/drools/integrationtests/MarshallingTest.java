@@ -3110,7 +3110,8 @@ public class MarshallingTest {
         
         list.clear();
         ksession.fireAllRules();
-        assertEquals( 2, ((List)list.get( 0 )).size() );        
+        assertEquals( 1, list.size() );
+        assertEquals( 2, ((List) list.get( 0 )).size() );
     }
     
     @Test

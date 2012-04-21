@@ -848,4 +848,8 @@ public class LeftTupleImpl
         }
     }
     
+    public boolean isExpired() {
+        return (handle.isEvent() && ((EventFactHandle)handle).isExpired()) ||
+               (parent!=null && parent.isExpired());
+    }
 }

@@ -95,7 +95,8 @@ public class SlidingLengthWindow
      *
      * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public boolean assertRightTuple(final Object context,
+    public boolean assertRightTuple(final PropagationContext pctx,
+                                    final Object context,
                                     final RightTuple rightTuple,
                                     final InternalWorkingMemory workingMemory) {
         SlidingLengthWindowContext window = (SlidingLengthWindowContext) context;

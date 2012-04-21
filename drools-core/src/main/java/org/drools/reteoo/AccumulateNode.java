@@ -248,7 +248,8 @@ public class AccumulateNode extends BetaNode {
 
         final RightTuple rightTuple = new RightTuple( factHandle,
                                                       this );
-        if ( !behavior.assertRightTuple( memory.betaMemory.getBehaviorContext(),
+        if ( !behavior.assertRightTuple( context,
+                                         memory.betaMemory.getBehaviorContext(),
                                          rightTuple,
                                          workingMemory ) ) {
             // destroy right tuple

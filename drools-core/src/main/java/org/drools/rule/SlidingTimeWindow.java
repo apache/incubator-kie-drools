@@ -118,19 +118,23 @@ public class SlidingTimeWindow
      *
      * @see org.drools.rule.Behavior#assertRightTuple(java.lang.Object, org.drools.reteoo.RightTuple, org.drools.common.InternalWorkingMemory)
      */
-    public boolean assertRightTuple(final Object context,
+    public boolean assertRightTuple(final PropagationContext pctx,
+                                    final Object context,
                                     final RightTuple rightTuple,
                                     final InternalWorkingMemory workingMemory) {
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        queue.queue.add( rightTuple );
-        if ( queue.queue.peek() == rightTuple ) {
-            // update next expiration time 
-            updateNextExpiration( rightTuple,
-                                  workingMemory,
-                                  this,
-                                  queue );
+        if( pctx.getReaderContext() != null || !isExpired( workingMemory.getTimerService().getCurrentTime(), rightTuple ) ) {
+            queue.queue.add( rightTuple );
+            if ( queue.queue.peek() == rightTuple ) {
+                // update next expiration time 
+                updateNextExpiration( rightTuple,
+                                      workingMemory,
+                                      this,
+                                      queue );
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -169,19 +173,23 @@ public class SlidingTimeWindow
             queue.expiringTuple = tuple;
             queue.queue.remove();
             final InternalFactHandle handle = tuple.getFactHandle();
-            if( handle.isValid()) {
-                // if not expired yet, expire it
-                final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                          PropagationContext.EXPIRATION,
-                                                                                          null,
-                                                                                          null,
-                                                                                          handle );
-                tuple.getRightTupleSink().retractRightTuple( tuple,
-                                                             propagationContext,
-                                                             workingMemory );
-                propagationContext.evaluateActionQueue( workingMemory );
+            if( handle != null ) {
+                // when a beta node is removed, the handle might be null
+                
+                if( handle.isValid()) {
+                    // if not expired yet, expire it
+                    final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                              PropagationContext.EXPIRATION,
+                                                                                              null,
+                                                                                              null,
+                                                                                              handle );
+                    tuple.getRightTupleSink().retractRightTuple( tuple,
+                                                                 propagationContext,
+                                                                 workingMemory );
+                    propagationContext.evaluateActionQueue( workingMemory );
+                }
+                tuple.unlinkFromRightParent();
             }
-            tuple.unlinkFromRightParent();
             queue.expiringTuple = null;
             tuple = queue.queue.peek();
         }
@@ -195,7 +203,7 @@ public class SlidingTimeWindow
 
     private boolean isExpired(final long currentTime,
                               final RightTuple rightTuple) {
-        return ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size <= currentTime;
+        return rightTuple.getFactHandle() == null || ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size <= currentTime;
     }
 
     /**

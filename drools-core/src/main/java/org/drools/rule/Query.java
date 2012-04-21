@@ -19,15 +19,6 @@ package org.drools.rule;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Calendar;
-import java.util.Map;
-
-import org.drools.io.Resource;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.Consequence;
-import org.drools.spi.Duration;
-import org.drools.spi.Enabled;
-import org.drools.spi.Salience;
 
 public class Query extends Rule {
 
@@ -68,6 +59,11 @@ public class Query extends Rule {
 
     public Declaration[] getParameters() {
         return this.parameters;
+    }
+    
+    @Override
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.QUERY;
     }
 
 }

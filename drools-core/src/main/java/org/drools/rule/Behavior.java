@@ -18,6 +18,7 @@ package org.drools.rule;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.RightTuple;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 
 /**
@@ -68,9 +69,10 @@ public interface Behavior extends RuleComponent, Cloneable {
      *         the behaviour has veto power over the fact propagation, and prevents
      *         the propagation to continue if returns false on this method. 
      */
-    public boolean assertRightTuple(Object context,
-                                 RightTuple tuple,
-                                 InternalWorkingMemory workingMemory);
+    public boolean assertRightTuple(PropagationContext pctx,
+                                    Object context,
+                                    RightTuple tuple,
+                                    InternalWorkingMemory workingMemory);
 
     /**
      * Removes a right tuple from the behavior's scope

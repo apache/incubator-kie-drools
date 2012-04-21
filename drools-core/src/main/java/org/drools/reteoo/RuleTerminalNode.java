@@ -187,7 +187,8 @@ public class RuleTerminalNode extends BaseNode
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( (!this.rule.isEffective( leftTuple,
                                       workingMemory )) ||
-             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ||
+             ( context.getReaderContext() == null && leftTuple.isExpired()) ) {
             return;
         }
 

@@ -827,4 +827,9 @@ public class RuleTerminalNodeLeftTuple
             }
         }
     }
+    
+    public boolean isExpired() {
+        return (handle.isEvent() && ((EventFactHandle)handle).isExpired()) ||
+               (parent!=null && parent.isExpired());
+    }
 }
