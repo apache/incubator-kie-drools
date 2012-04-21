@@ -20,5 +20,14 @@ package org.drools.definition;
  * Marker interface for all KnowlegeDefinition's
  */
 public interface KnowledgeDefinition {
+    
+    public KnowledgeType getKnowledgeType();
+    
+    public String getNamespace();
+    
+    public String getId();
 
+    public enum KnowledgeType {
+        RULE, TYPE, WINDOW, ENUM, PROCESS, FUNCTION, QUERY
+    }
 }
