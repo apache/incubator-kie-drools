@@ -30,12 +30,16 @@ import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
+    
+    private final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
@@ -162,16 +166,22 @@ public class PlannerBenchmarkConfig {
                     "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
         }
     }
-
+    
     private ExecutorService getExecutor() {
+        int threadCount = this.getExecutorThreadCount();
+        logger.debug("Benchmarking will use (" + threadCount + ") threads.");
+        return Executors.newFixedThreadPool(threadCount);
+    }
+
+    private int getExecutorThreadCount() {
         if (getThreadsUse() == null) {
             // no threads are requested; use just one
-            return Executors.newFixedThreadPool(1);
+            return 1;
         } else if (getThreadsUse().equals("AUTO")) {
-            // "AUTO" threads are requested; use everything possible, leave one for the system
+            // "AUTO" threads are requested; use everything possible, leave one for the operating system
             int availableThreads = Runtime.getRuntime().availableProcessors();
             int useThreads = Math.max(1, availableThreads - 1); // prevent 0
-            return Executors.newFixedThreadPool(useThreads);
+            return useThreads;
         } else {
             // otherwise, we expect a number
             try {
@@ -179,7 +189,7 @@ public class PlannerBenchmarkConfig {
                 if (numThreads < 1) {
                     throw new IllegalStateException("Number of threads must not be smaller than 1.");
                 }
-                return Executors.newFixedThreadPool(numThreads);
+                return numThreads;
             } catch (Exception ex) {
                 throw new IllegalStateException("Requested (" + getThreadsUse() + ") threads. Please use a positive integer or 'AUTO'.");
             }
