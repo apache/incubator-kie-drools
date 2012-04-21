@@ -33,22 +33,25 @@ public class WindowDeclaration extends BaseAnnotatedAsset
     Externalizable {
     
     private String               name;
+    private String               namespace;
     private Pattern              pattern;
 
     public WindowDeclaration() {
     }
 
-    public WindowDeclaration(String name) {
+    public WindowDeclaration(String name, String namespace) {
         this.name = name;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.name = (String) in.readObject();
+        this.namespace = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( name );
+        out.writeObject( namespace );
     }
     
     public String getName() {
@@ -96,5 +99,17 @@ public class WindowDeclaration extends BaseAnnotatedAsset
         } else if (!pattern.equals( other.pattern ))
             return false;
         return true;
+    }
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.WINDOW;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public String getId() {
+        return getName();
     }
 }

@@ -85,8 +85,8 @@ import org.drools.xml.XmlChangeSetReader;
  * rebuilds for new KnowledgeBases.
  */
 public class KnowledgeAgentImpl
-    implements
-    KnowledgeAgent,
+        implements
+        KnowledgeAgent,
         ResourceChangeListener {
 
     private String                         name;
@@ -182,7 +182,7 @@ public class KnowledgeAgentImpl
         if ( cs != null ) {
             applyChangeSet( cs );
         } else {
-            this.listener.warning(" Warning : KnowledgeAgent was requested to apply a Changeset, but no Changeset could be determined", resource);
+            this.listener.warning( " Warning : KnowledgeAgent was requested to apply a Changeset, but no Changeset could be determined", resource );
         }
     }
 
@@ -244,7 +244,7 @@ public class KnowledgeAgentImpl
                         this.retrieveDSLResource( resource );
                     } catch ( IOException ex ) {
                         this.listener.exception( "KnowledgeAgent Fails trying to read DSL Resource: "
-                                                         + resource,
+                                                 + resource,
                                                  ex );
                     }
                 } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
@@ -274,14 +274,14 @@ public class KnowledgeAgentImpl
                                                    true );
                         if ( this.addResourceMapping( child,
                                                       true )
-                                && changeSetState.incrementalBuild ) {
+                             && changeSetState.incrementalBuild ) {
                             changeSetState.addedResources.add( child );
                         }
                     }
                 } else {
                     if ( this.addResourceMapping( resource,
                                                   true )
-                            && changeSetState.incrementalBuild ) {
+                         && changeSetState.incrementalBuild ) {
                         changeSetState.addedResources.add( resource );
 
                     }
@@ -357,7 +357,7 @@ public class KnowledgeAgentImpl
                     continue;
                 } else if ( ((InternalResource) resource).isDirectory() ) {
                     if ( this.resourceDirectories.add( resource ) ) {
-                        this.listener.warning( "KnowledgeAgent is subscribing to a modified directory=" + resource+
+                        this.listener.warning( "KnowledgeAgent is subscribing to a modified directory=" + resource +
                                                " when it should have already been subscribed" );
                         this.notifier.subscribeResourceChangeListener( this,
                                                                        resource );
@@ -392,15 +392,15 @@ public class KnowledgeAgentImpl
                             changeSetState.addedResources.add( resource );
                         }
                     } else {
-                            Set<KnowledgeDefinition> definitions = this.removeResourceMapping( resource,
-                                                                                               false );
+                        Set<KnowledgeDefinition> definitions = this.removeResourceMapping( resource,
+                                                                                           false );
 
-                            changeSetState.modifiedResourceMappings.put( resource,
-                                                                         definitions );
+                        changeSetState.modifiedResourceMappings.put( resource,
+                                                                     definitions );
 
-                            //adds a new empty mapping that will be filled in buildKnowledgeBase()
-                            this.addResourceMapping( resource,
-                                                     false );
+                        //adds a new empty mapping that will be filled in buildKnowledgeBase()
+                        this.addResourceMapping( resource,
+                                                 false );
                     }
                 }
                 this.eventSupport.fireAfterResourceProcessed( changeSet,
@@ -596,13 +596,13 @@ public class KnowledgeAgentImpl
         }
     }
 
-    private boolean isNewDefinition( Resource resource, KnowledgeDefinition def ) {
-        if ( ! this.registeredResources.isResourceMapped( resource ) ) {
+    private boolean isNewDefinition(Resource resource,
+                                    KnowledgeDefinition def) {
+        if ( !this.registeredResources.isResourceMapped( resource ) ) {
             return true;
         }
-        return ! this.registeredResources.getDefinitions(resource).contains( def );
+        return !this.registeredResources.getDefinitions( resource ).contains( def );
     }
-
 
     /**
      * This indexes the rules, flows, type declarations, etc against their
@@ -717,7 +717,7 @@ public class KnowledgeAgentImpl
      * @return the package resulting of the compilation of resource.
      */
     private Collection<KnowledgePackage> createPackageFromResource(Resource resource,
-                                                          KnowledgeBuilder kbuilder) {
+                                                                   KnowledgeBuilder kbuilder) {
 
         if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
 
@@ -754,8 +754,8 @@ public class KnowledgeAgentImpl
                 for ( Rule rule : kpkg.pkg.getRules() ) {
                     rule.setResource( resource );
                 }
-                for ( Process process: kpkg.pkg.getRuleFlows().values() ) {
-                	((ResourcedObject) process).setResource( resource );
+                for ( Process process : kpkg.pkg.getRuleFlows().values() ) {
+                    ((ResourcedObject) process).setResource( resource );
                 }
 
             } catch ( Exception ex ) {
@@ -771,7 +771,7 @@ public class KnowledgeAgentImpl
                                                                    e ) );
                 }
             }
-            return Arrays.<KnowledgePackage>asList(kpkg);
+            return Arrays.<KnowledgePackage> asList( kpkg );
         }
     }
 
@@ -800,11 +800,11 @@ public class KnowledgeAgentImpl
 
         //puts all the resources as added in the changeSet.
         changeSetState.addedResources.clear();
-        for (Resource resource : this.registeredResources.getAllResources()) {
+        for ( Resource resource : this.registeredResources.getAllResources() ) {
             // Ignore the HACKs created by org.drools.agent.impl.KnowledgeAgentImpl.autoBuildResourceMapping()
-            if (!(resource instanceof  ReaderResource)
-                    || ((ReaderResource) resource).getReader() != null) {
-                changeSetState.addedResources.add(resource);
+            if ( !(resource instanceof ReaderResource)
+                 || ((ReaderResource) resource).getReader() != null ) {
+                changeSetState.addedResources.add( resource );
             }
         }
         addResourcesToKnowledgeBase( changeSetState );
@@ -854,7 +854,7 @@ public class KnowledgeAgentImpl
             this.listener.warning( "KnowledgeAgent incremental build of KnowledgeBase when newInstance is true" );
         }
 
-         KnowledgeBuilder kBuilder = createKBuilder();
+        KnowledgeBuilder kBuilder = createKBuilder();
 
         // Incrementally rebuild the resources
         synchronized ( this.registeredResources ) {
@@ -877,60 +877,59 @@ public class KnowledgeAgentImpl
 
                 Collection<KnowledgePackage> newPackages = createPackageFromResource( entry.getKey() );
 
-                if ( newPackages == null || newPackages.size() == 0 ) {
-                    this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey()+". Removing any existing knowledge definition of "+entry.getKey() );
-
-                    for ( KnowledgeDefinition kd : entry.getValue() ) {
-                        this.listener.debug( "KnowledgeAgent: Removing: " + kd );
-                        removeKnowledgeDefinitionFromBase( kd );
-                    }
+                removeDeletedPackages( entry, newPackages );
+                
+                if( newPackages == null ) {
                     continue;
                 }
 
-
                 for ( KnowledgePackage pkage : newPackages ) {
 
-                KnowledgePackageImp newPackage = (KnowledgePackageImp) pkage;
+                    KnowledgePackageImp newPackage = (KnowledgePackageImp) pkage;
+                    
+                    Set<KnowledgeDefinition> kdefs = getKnowledgeDefinitions( entry, newPackage );
 
-                KnowledgePackageImp oldPackage = (KnowledgePackageImp) this.kbase.getKnowledgePackage( newPackage.getName() );
-                AbstractRuleBase abstractRuleBase = (AbstractRuleBase)((KnowledgeBaseImpl)this.kbase).ruleBase;
-                CompositeClassLoader rootClassLoader = abstractRuleBase.getRootClassLoader();
+                    KnowledgePackageImp oldPackage = (KnowledgePackageImp) this.kbase.getKnowledgePackage( newPackage.getName() );
+                    AbstractRuleBase abstractRuleBase = (AbstractRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase;
+                    CompositeClassLoader rootClassLoader = abstractRuleBase.getRootClassLoader();
 
-                newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
-                newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
-                newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache());
-                newPackage.pkg.getClassFieldAccessorStore().wire();
+                    newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
+                    newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
+                    newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache() );
+                    newPackage.pkg.getClassFieldAccessorStore().wire();
 
-                this.listener.debug( "KnowledgeAgent: Diffing: " + entry.getKey() );
+                    this.listener.debug( "KnowledgeAgent: Diffing: " + entry.getKey() );
 
-                ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
+                    ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
 
-                //we suppose that the package definition didn't change in the resource.
-                //That's why we are serching the current package as
-                //this.kbase.getKnowledgePackage(kpkg.getName())
-                ResourceDiffResult diff = rdp.diff( entry.getValue(),
-                                                    newPackage,
-                                                    oldPackage );
+                    //we suppose that the package definition didn't change in the resource.
+                    //That's why we are serching the current package as
+                    //this.kbase.getKnowledgePackage(kpkg.getName())
+                    ResourceDiffResult diff = rdp.diff( kdefs,
+                                                        newPackage,
+                                                        oldPackage );
 
-                for ( KnowledgeDefinition kd : diff.getRemovedDefinitions() ) {
-                    this.listener.debug( "KnowledgeAgent: Removing: " + kd );
-                    removeKnowledgeDefinitionFromBase( kd );
-                }
+                    for ( KnowledgeDefinition kd : diff.getRemovedDefinitions() ) {
+                        this.listener.debug( "KnowledgeAgent: Removing: " + kd );
+                        removeKnowledgeDefinitionFromBase( kd );
+                    }
 
-                //because all the mappings for "resource" were removed, we
-                //need to map again the definitions that didn't change.
-                //Those modified or added will be mapped in addResourcesToKnowledgeBase()
-                for ( KnowledgeDefinition knowledgeDefinition : diff.getUnmodifiedDefinitions() ) {
-                    this.addDefinitionMapping( entry.getKey(),
-                                               knowledgeDefinition,
-                                               false );
-                }
+                    //because all the mappings for "resource" were removed, we
+                    //need to map again the definitions that didn't change.
+                    //Those modified or added will be mapped in addResourcesToKnowledgeBase()
+                    for ( KnowledgeDefinition knowledgeDefinition : diff.getUnmodifiedDefinitions() ) {
+                        this.addDefinitionMapping( entry.getKey(),
+                                                   knowledgeDefinition,
+                                                   false );
+                    }
 
-                Set<KnowledgePackage> set = new HashSet<KnowledgePackage>();
-                        set.add(diff.getPkg());
-                changeSetState.createdPackages.put( entry.getKey(),
-                                                    set );
-
+                    Set<KnowledgePackage> set = changeSetState.createdPackages.get(entry.getKey() );
+                    if( set == null ) {
+                        set = new HashSet<KnowledgePackage>(); 
+                        changeSetState.createdPackages.put( entry.getKey(),
+                                                            set );
+                    }
+                    set.add( diff.getPkg() );
                 }
             }
 
@@ -946,7 +945,7 @@ public class KnowledgeAgentImpl
                 }
 
                 changeSetState.createdPackages.put( resource,
-                                                    new HashSet<KnowledgePackage>(kpkgs) );
+                                                    new HashSet<KnowledgePackage>( kpkgs ) );
 
             }
 
@@ -959,6 +958,37 @@ public class KnowledgeAgentImpl
 
         }
         this.listener.info( "KnowledgeAgent incremental build of KnowledgeBase finished and in use" );
+    }
+
+    private void removeDeletedPackages(Map.Entry<Resource, Set<KnowledgeDefinition>> entry,
+                                       Collection<KnowledgePackage> newPackages) {
+        Set<String> newPkgNames = new HashSet<String>();
+
+        if ( newPackages == null || newPackages.size() == 0 ) {
+            this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey() + ". Removing any existing knowledge definition of " + entry.getKey() );
+        } else {
+            for( KnowledgePackage kp : newPackages ) {
+                newPkgNames.add( kp.getName() );
+            }
+        }
+        for( KnowledgeDefinition kd : entry.getValue() ) {
+            if( ! newPkgNames.contains( kd.getNamespace() ) ) {
+                // the package was removed, so remove the kd
+                this.listener.debug( "KnowledgeAgent: Removing: " + kd );
+                removeKnowledgeDefinitionFromBase( kd );
+            }
+        }
+    }
+
+    private Set<KnowledgeDefinition> getKnowledgeDefinitions(Map.Entry<Resource, Set<KnowledgeDefinition>> entry,
+                                                             KnowledgePackageImp newPackage) {
+        Set<KnowledgeDefinition> kdefs = new HashSet<KnowledgeDefinition>();
+        for( KnowledgeDefinition kdef : entry.getValue() ) {
+            if( kdef.getNamespace().equals( newPackage.getName() ) ) {
+                kdefs.add( kdef );
+            }
+        }
+        return kdefs;
     }
 
     /**
@@ -1021,24 +1051,24 @@ public class KnowledgeAgentImpl
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        if (changeSetState.addedResources.size() > 0) {
+        if ( changeSetState.addedResources.size() > 0 ) {
             KnowledgeBuilder builder = createKBuilder();
             for ( Resource resource : changeSetState.addedResources ) {
                 Collection<KnowledgePackage> createdPackages = this.createPackageFromResource( resource, builder );
-                Set<KnowledgePackage> packs = changeSetState.createdPackages.get(resource);
+                Set<KnowledgePackage> packs = changeSetState.createdPackages.get( resource );
                 if ( packs == null ) {
                     packs = new HashSet<KnowledgePackage>();
                     changeSetState.createdPackages.put( resource, packs );
                 }
-                packs.addAll(createdPackages);
+                packs.addAll( createdPackages );
             }
         }
 
         Set<KnowledgePackage> createdDistinctPackages = new HashSet<KnowledgePackage>();
         for ( Resource resource : changeSetState.createdPackages.keySet() ) {
-            createdDistinctPackages.addAll(changeSetState.createdPackages.get(resource));
+            createdDistinctPackages.addAll( changeSetState.createdPackages.get( resource ) );
         }
-        this.kbase.addKnowledgePackages(createdDistinctPackages);
+        this.kbase.addKnowledgePackages( createdDistinctPackages );
 
         autoBuildResourceMapping();
 
@@ -1086,15 +1116,15 @@ public class KnowledgeAgentImpl
             // we are running, but it wants to stop
             // this will stop the thread
             this.changeSetNotificationDetector.stop();
-            this.notificationDetectorExecutor.cancel(true);
+            this.notificationDetectorExecutor.cancel( true );
             this.changeSetNotificationDetector = null;
         } else if ( monitor && this.changeSetNotificationDetector == null ) {
             this.changeSetNotificationDetector = new ChangeSetNotificationDetector( this,
                                                                                     this.queue,
                                                                                     this.listener );
             this.notificationDetectorExecutor =
-                    ExecutorProviderFactory.getExecutorProvider().<Boolean>getCompletionService()
-                            .submit(this.changeSetNotificationDetector, true);
+                    ExecutorProviderFactory.getExecutorProvider().<Boolean> getCompletionService()
+                            .submit( this.changeSetNotificationDetector, true );
         }
     }
 
@@ -1146,12 +1176,12 @@ public class KnowledgeAgentImpl
         this.listener.debug( "KnowledgeAgent mapping resource="
                              + resource + " to KnowledgeDefinition=" + definition );
 
-        boolean isNewResource = ! this.registeredResources.isResourceMapped( resource );
+        boolean isNewResource = !this.registeredResources.isResourceMapped( resource );
 
         boolean isNewDefinition = true;
 
-        if ( resource instanceof ClassPathResource && ((ClassPathResource)resource).getClassLoader() == null ) {
-            ((ClassPathResource)resource).setClassLoader( ((InternalRuleBase)((KnowledgeBaseImpl) kbase).getRuleBase()).getRootClassLoader() );
+        if ( resource instanceof ClassPathResource && ((ClassPathResource) resource).getClassLoader() == null ) {
+            ((ClassPathResource) resource).setClassLoader( ((InternalRuleBase) ((KnowledgeBaseImpl) kbase).getRuleBase()).getRootClassLoader() );
         }
 
         if ( definition != null ) {
@@ -1195,8 +1225,8 @@ public class KnowledgeAgentImpl
      * ResourceChangeNotifier on a separate service (or process).
      */
     public static class ChangeSetNotificationDetector
-        implements
-        Runnable {
+            implements
+            Runnable {
 
         private LinkedBlockingQueue<ChangeSet> queue;
         private volatile boolean               monitor;
@@ -1329,7 +1359,7 @@ public class KnowledgeAgentImpl
         if ( this.builderConfiguration != null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
         } else if ( this.isUseKBaseClassLoaderForCompiling() ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.kbase);
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbase );
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }

@@ -809,4 +809,16 @@ public class Rule
         return trace.getText();
     }
 
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.RULE;
+    }
+
+    public String getNamespace() {
+        return getPackage();
+    }
+
+    public String getId() {
+        return getName();
+    }
+
 }

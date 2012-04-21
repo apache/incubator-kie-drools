@@ -1773,7 +1773,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     private void processWindowDeclarations( PackageRegistry pkgRegistry, PackageDescr packageDescr ) {
         for (WindowDeclarationDescr wd : packageDescr.getWindowDeclarations()) {
-            WindowDeclaration window = new WindowDeclaration( wd.getName() );
+            WindowDeclaration window = new WindowDeclaration( wd.getName(), packageDescr.getName() );
             // TODO: process annotations
 
             // process pattern

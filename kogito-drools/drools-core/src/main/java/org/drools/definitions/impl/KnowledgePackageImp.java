@@ -184,4 +184,9 @@ public class KnowledgePackageImp
     public int hashCode() {
         return pkg != null ? pkg.hashCode() : 0;
     }
+    
+    @Override
+    public String toString() {
+        return pkg != null ? pkg.toString() : "[EMPTY PACKAGE]";
+    }
 }

@@ -85,5 +85,17 @@ public class SerializedRule
     public Map<String, Object> getMetaData() {
         return Collections.unmodifiableMap( this.metaAttributes );
     }
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.RULE;
+    }
+
+    public String getNamespace() {
+        return getPackageName();
+    }
+
+    public String getId() {
+        return getName();
+    }
     
 }
