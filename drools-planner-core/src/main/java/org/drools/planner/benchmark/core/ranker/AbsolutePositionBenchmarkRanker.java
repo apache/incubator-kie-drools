@@ -7,7 +7,7 @@ import java.util.List;
 import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 
-public class DefaultBenchmarkRanker implements BenchmarkRanker {
+public class AbsolutePositionBenchmarkRanker implements BenchmarkRanker {
 
     private List<SolverBenchmark> rankedBenchmarks;
 

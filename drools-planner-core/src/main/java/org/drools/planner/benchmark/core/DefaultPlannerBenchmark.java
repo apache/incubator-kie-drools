@@ -27,7 +27,7 @@ import java.util.List;
 import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
-import org.drools.planner.benchmark.core.ranker.DefaultBenchmarkRanker;
+import org.drools.planner.benchmark.core.ranker.AbsolutePositionBenchmarkRanker;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -152,7 +152,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         initBenchmarkDirectoryAndSubdirs();
         if (solverBenchmarkRanker == null) {
-            solverBenchmarkRanker = new DefaultBenchmarkRanker();
+            solverBenchmarkRanker = new AbsolutePositionBenchmarkRanker();
         }
         if (solverBenchmarkComparator == null) {
             solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
