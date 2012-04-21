@@ -24,14 +24,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-
 import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
@@ -41,7 +41,7 @@ public class PlannerBenchmarkConfig {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
-    private BenchmarkRanker solverBenchmarkRanker = null;
+    private Class<BenchmarkRanker> solverBenchmarkRankerClass = null;
 
     private Long warmUpTimeMillisSpend = null;
     private Long warmUpSecondsSpend = null;
@@ -94,12 +94,12 @@ public class PlannerBenchmarkConfig {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
     }
 
-    public BenchmarkRanker getSolverBenchmarkRanker() {
-        return solverBenchmarkRanker;
+    public Class<BenchmarkRanker> getSolverBenchmarkRankerClass() {
+        return solverBenchmarkRankerClass;
     }
 
-    public void setSolverBenchmarkRanker(BenchmarkRanker solverBenchmarkRanker) {
-        this.solverBenchmarkRanker = solverBenchmarkRanker;
+    public void setSolverBenchmarkRanker(Class<BenchmarkRanker> solverBenchmarkRankerClass) {
+        this.solverBenchmarkRankerClass = solverBenchmarkRankerClass;
     }
 
     public Long getWarmUpTimeMillisSpend() {
@@ -163,8 +163,7 @@ public class PlannerBenchmarkConfig {
 
     private void generateSolverBenchmarkConfigNames() {
         Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
-                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             if (solverBenchmarkConfig.getName() != null) {
                 boolean unique = nameSet.add(solverBenchmarkConfig.getName());
@@ -196,17 +195,32 @@ public class PlannerBenchmarkConfig {
         }
     }
 
+    private static BenchmarkRanker buildBenchmarkRanker(Class<BenchmarkRanker> benchmarkRankerClass) {
+        if (benchmarkRankerClass != null) {
+            try {
+                return benchmarkRankerClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("solverBenchmarkRankerClass (" + benchmarkRankerClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("solverBenchmarkRankerClass (" + benchmarkRankerClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+        }
+        return null;
+    }
+
     public PlannerBenchmark buildPlannerBenchmark() {
         validate();
         generateSolverBenchmarkConfigNames();
         inherit();
-        
+
         DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
         plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
         plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
         plannerBenchmark.setStatisticDirectory(statisticDirectory);
-        plannerBenchmark.setSolverBenchmarkRanker(solverBenchmarkRanker);
+        plannerBenchmark.setSolverBenchmarkRanker(buildBenchmarkRanker(solverBenchmarkRankerClass));
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
