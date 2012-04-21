@@ -144,6 +144,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 logger.warn("One of the benchmarks failed.", e);
             }
         }
+        // all the threads are over, shut down the executor
+        unifiedProblemBenchmarkList.get(0).getExecutor().shutdownNow();
         benchmarkingEnded();
     }
 
