@@ -1,7 +1,5 @@
 package org.drools.agent;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
