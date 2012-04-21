@@ -26,6 +26,8 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
+import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
@@ -39,6 +41,7 @@ public class PlannerBenchmarkConfig {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private BenchmarkRanker solverBenchmarkRanker = null;
 
     private Long warmUpTimeMillisSpend = null;
     private Long warmUpSecondsSpend = null;
@@ -89,6 +92,14 @@ public class PlannerBenchmarkConfig {
 
     public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
+    }
+
+    public BenchmarkRanker getSolverBenchmarkRanker() {
+        return solverBenchmarkRanker;
+    }
+
+    public void setSolverBenchmarkRanker(BenchmarkRanker solverBenchmarkRanker) {
+        this.solverBenchmarkRanker = solverBenchmarkRanker;
     }
 
     public Long getWarmUpTimeMillisSpend() {
@@ -195,6 +206,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
         plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
         plannerBenchmark.setStatisticDirectory(statisticDirectory);
+        plannerBenchmark.setSolverBenchmarkRanker(solverBenchmarkRanker);
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
