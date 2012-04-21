@@ -10,8 +10,25 @@ import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
 
+/**
+ * This benchmark ranker will look into each benchmark's scores and for each of 
+ * these scores, it will determine how many other benchmark's scores this 
+ * benchmark beats. The best-ranking benchmark will have beaten the most scores 
+ * of the other benchmarks.
+ * 
+ * It should be more fair than rankers who rank benchmarks based on their total 
+ * score. When the scores for different problem benchmarks differ greatly 
+ * (e.g. 10 v. 10000), comparing in absolute terms is misleading. 
+ * 
+ * For that reason, using this ranker only makes sense when there are more 
+ * problem benchmarks inside one solver benchmark - otherwise, simple 
+ * comparator-based ranker will do exactly the same.
+ */
 public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
 
+    /**
+     * Compares benchmarks by how many times their scores beats other benchmarks' scores. 
+     */
     private final class BeatOthersBenchmarkComparator implements Comparator<SolverBenchmark> {
 
         private final Map<SolverBenchmark, Integer> numBeatOthers;
@@ -36,6 +53,11 @@ public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
     private final Map<SolverBenchmark, Integer> numBenchmarkBeatsOthers = new HashMap<SolverBenchmark, Integer>();
     private List<SolverBenchmark> rankedBenchmarks;
 
+    /**
+     * The comparator will only be used to decide the ranking of two benchmarks 
+     * in case that their scores beat exactly the same amount of other 
+     * benchmarks' scores.
+     */
     public void rank(List<SolverBenchmark> benchmarks, Comparator<SolverBenchmark> comparator) {
         numBenchmarkBeatsOthers.clear();
         // find out how many times a particular benchmark beat other benchmarks
@@ -54,7 +76,7 @@ public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
                         numBeatOthers++;
                     }
                 }
-                
+
             }
             numBenchmarkBeatsOthers.put(benchmark, numBeatOthers);
         }
@@ -64,6 +86,10 @@ public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
         Collections.reverse(rankedBenchmarks);
     }
 
+    /**
+     * The benchmark with the lowest ranking will be the benchmark whose scores
+     * beat most of the other benchmarks' scores.
+     */
     public int getRanking(SolverBenchmark benchmark) {
         return rankedBenchmarks.indexOf(benchmark);
     }
