@@ -17,17 +17,17 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * Represents one problem instance (a data set) benchmarked on multiple solvers.
@@ -119,31 +119,12 @@ public class ProblemBenchmark {
     public void benchmarkingStarted() {
     }
 
-    public void benchmark() {
+    public Collection<Future<Boolean>> benchmark() {
+        Collection<Future<Boolean>> benchmarks = new ArrayList<Future<Boolean>>(plannerBenchmarkResultList.size());
         for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            SolverBenchmark solverBenchmark = result.getSolverBenchmark();
-            // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
-            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-            for (ProblemStatistic statistic : problemStatisticList) {
-                statistic.addListener(solver, solverBenchmark.getName());
-            }
-
-            solver.setPlanningProblem(readPlanningProblem());
-            solver.solve();
-            Solution outputSolution = solver.getBestSolution();
-
-            result.setTimeMillisSpend(solver.getTimeMillisSpend());
-            DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-            result.setCalculateCount(solverScope.getCalculateCount());
-            result.setScore(outputSolution.getScore());
-            SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-            result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(outputSolution));
-            result.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
-            for (ProblemStatistic statistic : problemStatisticList) {
-                statistic.removeListener(solver, solverBenchmark.getName());
-            }
-            writeSolution(result, outputSolution);
+            benchmarks.add(executor.submit(new BenchmarkRunner(result, this)));
         }
+        return benchmarks;
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
@@ -170,14 +151,6 @@ public class ProblemBenchmark {
 
     public Solution readPlanningProblem() {
         return problemIO.read(inputSolutionFile);
-    }
-
-    private void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
-        String solverBenchmarkName = result.getSolverBenchmark().getName()
-                .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        String filename = name + "_" + solverBenchmarkName + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
-        problemIO.write(outputSolution, outputSolutionFile);
     }
 
     public void benchmarkingEnded() {

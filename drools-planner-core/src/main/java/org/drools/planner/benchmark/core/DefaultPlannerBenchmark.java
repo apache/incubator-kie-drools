@@ -19,11 +19,14 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
@@ -129,8 +132,22 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
+        // execute all benchmarks in pre-configured number of threads
+        Collection<Future<Boolean>> benchmarks = new ArrayList<Future<Boolean>>();
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            problemBenchmark.benchmark();
+            benchmarks.addAll(problemBenchmark.benchmark());
+        }
+        // wait for the benchmarks to complete
+        for (Future<Boolean> benchmark: benchmarks) {
+            try {
+                benchmark.get();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         benchmarkingEnded();
     }

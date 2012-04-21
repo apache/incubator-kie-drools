@@ -169,7 +169,9 @@ public class PlannerBenchmarkConfig {
             return Executors.newFixedThreadPool(1);
         } else if (getThreadsUse().equals("AUTO")) {
             // "AUTO" threads are requested; use everything possible, leave one for the system
-            return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() - 1);
+            int availableThreads = Runtime.getRuntime().availableProcessors();
+            int useThreads = Math.max(1, availableThreads - 1); // prevent 0
+            return Executors.newFixedThreadPool(useThreads);
         } else {
             // otherwise, we expect a number
             try {
