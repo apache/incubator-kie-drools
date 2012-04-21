@@ -18,12 +18,14 @@ package org.drools.planner.benchmark.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.config.solver.SolverConfig;
+
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig {
@@ -64,13 +66,13 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
+    public SolverBenchmark buildSolverBenchmark(List<ProblemBenchmark> unifiedProblemBenchmarkList, ExecutorService executor) {
         SolverBenchmark solverBenchmark = new SolverBenchmark();
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
         solverBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
         List<ProblemBenchmark> problemBenchmarkList = problemBenchmarksConfig
-                .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark);
+                .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark, executor);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
     }

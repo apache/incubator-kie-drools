@@ -19,9 +19,8 @@ package org.drools.planner.benchmark.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.api.ProblemIO;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
@@ -32,6 +31,9 @@ import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.config.util.ConfigUtils;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+
 @XStreamAlias("problemBenchmarks")
 public class ProblemBenchmarksConfig {
 
@@ -41,7 +43,7 @@ public class ProblemBenchmarksConfig {
 
     @XStreamImplicit(itemFieldName = "inputSolutionFile")
     private List<File> inputSolutionFileList = null;
-    
+
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
@@ -82,7 +84,7 @@ public class ProblemBenchmarksConfig {
     // ************************************************************************
 
     public List<ProblemBenchmark> buildProblemBenchmarkList(
-            List<ProblemBenchmark> unifiedProblemBenchmarkList, SolverBenchmark solverBenchmark) {
+            List<ProblemBenchmark> unifiedProblemBenchmarkList, SolverBenchmark solverBenchmark, ExecutorService executor) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
@@ -90,7 +92,7 @@ public class ProblemBenchmarksConfig {
         for (File inputSolutionFile : inputSolutionFileList) {
             // 2 SolverBenchmarks containing equal PProblemBenchmarks should contain the same instance
             ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(
-                    problemIO, inputSolutionFile);
+                    problemIO, inputSolutionFile, executor);
             ProblemBenchmark problemBenchmark;
             int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
             if (index < 0) {
@@ -140,9 +142,10 @@ public class ProblemBenchmarksConfig {
     }
 
     private ProblemBenchmark buildProblemBenchmark(
-            ProblemIO problemIO, File inputSolutionFile) {
+            ProblemIO problemIO, File inputSolutionFile, ExecutorService executor) {
         ProblemBenchmark problemBenchmark = new ProblemBenchmark();
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
+        problemBenchmark.setExecutor(executor);
         problemBenchmark.setName(name);
         problemBenchmark.setProblemIO(problemIO);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);

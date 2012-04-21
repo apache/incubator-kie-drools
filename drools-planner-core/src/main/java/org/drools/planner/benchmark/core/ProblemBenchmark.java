@@ -18,6 +18,7 @@ package org.drools.planner.benchmark.core;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import org.drools.planner.benchmark.api.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
@@ -35,6 +36,8 @@ public class ProblemBenchmark {
 
     private String name = null;
 
+    private ExecutorService executor = null;
+
     private ProblemIO problemIO = null;
     private File inputSolutionFile = null;
     private File outputSolutionFilesDirectory = null;
@@ -42,7 +45,7 @@ public class ProblemBenchmark {
     private List<ProblemStatistic> problemStatisticList = null;
 
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
-    
+
     private PlannerBenchmarkResult winningPlannerBenchmarkResult = null;
 
     public String getName() {
@@ -51,6 +54,14 @@ public class ProblemBenchmark {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ExecutorService getExecutor() {
+        return executor;
+    }
+
+    public void setExecutor(ExecutorService executor) {
+        this.executor = executor;
     }
 
     public ProblemIO getProblemIO() {
