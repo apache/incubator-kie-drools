@@ -129,5 +129,7 @@ public interface LeftTuple extends Entry, Tuple {
     void setIndex(int index);
 
     void setParent(LeftTuple parent);
+    
+    boolean isExpired();
 
 }

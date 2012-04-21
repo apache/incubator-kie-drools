@@ -2971,6 +2971,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         list.clear();
         ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         assertEquals( 2, ((List) list.get( 0 )).size() );
     }
 

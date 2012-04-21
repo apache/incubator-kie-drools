@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.RightTuple;
+import org.drools.spi.PropagationContext;
 
 /**
  * A class to encapsulate behavior management for a given beta node
@@ -76,12 +77,14 @@ public class BehaviorManager
      * @param tuple
      * @return
      */
-    public boolean assertRightTuple(final Object behaviorContext,
+    public boolean assertRightTuple(final PropagationContext pctx,
+                                    final Object behaviorContext,
                                     final RightTuple rightTuple,
                                     final InternalWorkingMemory workingMemory) {
         boolean result = true;
         for ( int i = 0; i < behaviors.length; i++ ) {
-            result = result && behaviors[i].assertRightTuple( ((Object[]) behaviorContext)[i],
+            result = result && behaviors[i].assertRightTuple( pctx,
+                                                              ((Object[]) behaviorContext)[i],
                                                               rightTuple,
                                                               workingMemory );
         }

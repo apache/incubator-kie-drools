@@ -86,6 +86,13 @@ public class Function implements  KnowledgeDefinition, Dialectable, Externalizab
     public String toString() {
         return "[Function " + name + "]";
     }
-    
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.FUNCTION;
+    }
+
+    public String getId() {
+        return getName();
+    }
     
 }

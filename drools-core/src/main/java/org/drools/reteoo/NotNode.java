@@ -113,7 +113,8 @@ public class NotNode extends BetaNode {
                                                         this );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !behavior.assertRightTuple( memory.getBehaviorContext(),
+        if ( !behavior.assertRightTuple( context,
+                                         memory.getBehaviorContext(),
                                          rightTuple,
                                          workingMemory ) ) {
             // destroy right tuple

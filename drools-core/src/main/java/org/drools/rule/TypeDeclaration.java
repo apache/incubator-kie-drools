@@ -451,4 +451,25 @@ public class TypeDeclaration
     public void setNovel(boolean novel) {
         this.novel = novel;
     }
+
+    public String toString() {
+        return "TypeDeclaration{" +
+                "typeName='" + typeName + '\'' +
+                ", role=" + role +
+                ", format=" + format +
+                ", kind=" + kind +
+                "}";
+    }
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.TYPE;
+    }
+
+    public String getNamespace() {
+        return this.typeClass != null ? this.typeClass.getPackage().getName() : "";
+    }
+
+    public String getId() {
+        return getTypeName();
+    }
 }
