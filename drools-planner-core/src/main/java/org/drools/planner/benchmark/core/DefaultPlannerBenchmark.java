@@ -19,14 +19,15 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.planner.benchmark.api.BenchmarkRanker;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
+import org.drools.planner.benchmark.core.ranker.DefaultBenchmarkRanker;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private List<ProblemStatisticType> problemStatisticTypeList = null;
+    private BenchmarkRanker solverBenchmarkRanker = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
     private Long warmUpTimeMillisSpend = null;
@@ -88,6 +90,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public void setProblemStatisticTypeList(List<ProblemStatisticType> problemStatisticTypeList) {
         this.problemStatisticTypeList = problemStatisticTypeList;
+    }
+
+    public BenchmarkRanker getSolverBenchmarkRanker() {
+        return solverBenchmarkRanker;
+    }
+
+    public void setSolverBenchmarkRanker(BenchmarkRanker solverBenchmarkRanker) {
+        this.solverBenchmarkRanker = solverBenchmarkRanker;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
@@ -141,6 +151,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
+        if (solverBenchmarkRanker == null) {
+            solverBenchmarkRanker = new DefaultBenchmarkRanker();
+        }
         if (solverBenchmarkComparator == null) {
             solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
         }
@@ -213,10 +226,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
-        Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
+        solverBenchmarkRanker.rank(sortedSolverBenchmarkList, solverBenchmarkComparator);
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            int ranking = sortedSolverBenchmarkList.indexOf(solverBenchmark);
+            int ranking = solverBenchmarkRanker.getRanking(solverBenchmark);
             solverBenchmark.setRanking(ranking);
             if (ranking == 0) {
                 winningSolverBenchmark = solverBenchmark;
@@ -225,20 +237,20 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
-//    public void writeBenchmarkResult(XStream xStream) {
-//        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
-//        OutputStreamWriter writer = null;
-//        try {
-//            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");
-//            xStream.toXML(this, writer);
-//        } catch (UnsupportedEncodingException e) {
-//            throw new IllegalStateException("This JVM does not support UTF-8 encoding.", e);
-//        } catch (FileNotFoundException e) {
-//            throw new IllegalArgumentException(
-//                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
-//        } finally {
-//            IOUtils.closeQuietly(writer);
-//        }
-//    }
+    //    public void writeBenchmarkResult(XStream xStream) {
+    //        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
+    //        OutputStreamWriter writer = null;
+    //        try {
+    //            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");
+    //            xStream.toXML(this, writer);
+    //        } catch (UnsupportedEncodingException e) {
+    //            throw new IllegalStateException("This JVM does not support UTF-8 encoding.", e);
+    //        } catch (FileNotFoundException e) {
+    //            throw new IllegalArgumentException(
+    //                    "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
+    //        } finally {
+    //            IOUtils.closeQuietly(writer);
+    //        }
+    //    }
 
 }
