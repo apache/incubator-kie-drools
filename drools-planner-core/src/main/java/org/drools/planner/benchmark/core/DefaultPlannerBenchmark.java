@@ -25,7 +25,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
@@ -141,12 +140,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         for (Future<Boolean> benchmark: benchmarks) {
             try {
                 benchmark.get();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            } catch (Exception e) {
+                logger.warn("One of the benchmarks failed.", e);
             }
         }
         benchmarkingEnded();
