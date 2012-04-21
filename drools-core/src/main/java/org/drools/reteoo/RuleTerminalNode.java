@@ -188,7 +188,7 @@ public class RuleTerminalNode extends BaseNode
         if ( (!this.rule.isEffective( leftTuple,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ||
-             ( context.getReaderContext() == null && leftTuple.isExpired()) ) {
+             leftTuple.isExpired() ) {
             return;
         }
 

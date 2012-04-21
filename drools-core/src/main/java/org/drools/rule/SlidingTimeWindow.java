@@ -123,7 +123,7 @@ public class SlidingTimeWindow
                                     final RightTuple rightTuple,
                                     final InternalWorkingMemory workingMemory) {
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        if( pctx.getReaderContext() != null || !isExpired( workingMemory.getTimerService().getCurrentTime(), rightTuple ) ) {
+        if( !isExpired( workingMemory.getTimerService().getCurrentTime(), rightTuple ) ) {
             queue.queue.add( rightTuple );
             if ( queue.queue.peek() == rightTuple ) {
                 // update next expiration time 

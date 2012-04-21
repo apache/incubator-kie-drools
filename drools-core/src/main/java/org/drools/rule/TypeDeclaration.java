@@ -411,7 +411,6 @@ public class TypeDeclaration
                 "typeName='" + typeName + '\'' +
                 ", role=" + role +
                 ", format=" + format +
-                ", kind=" + kind +
                 "}";
     }
 
