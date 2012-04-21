@@ -74,6 +74,18 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
         } else if ( !rule.equals( other.rule ) ) return false;
         return true;
     }
+
+    public KnowledgeType getKnowledgeType() {
+        return this.rule.getKnowledgeType();
+    }
+
+    public String getNamespace() {
+        return this.rule.getNamespace();
+    }
+
+    public String getId() {
+        return this.rule.getId();
+    }
     
 
 }

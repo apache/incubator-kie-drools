@@ -543,7 +543,7 @@ public class TypeDeclaration
 
     public void addRedeclaration( TypeDeclaration typeDeclaration ) {
         if ( redeclarations == null ) {
-            redeclarations = new ArrayList();
+            redeclarations = new ArrayList<TypeDeclaration>();
         }
         redeclarations.add( typeDeclaration );
     }
@@ -570,5 +570,17 @@ public class TypeDeclaration
                 ", kind=" + kind +
                 ", nature=" + nature +
                 '}';
+    }
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.TYPE;
+    }
+
+    public String getNamespace() {
+        return this.typeClass != null ? this.typeClass.getPackage().getName() : "";
+    }
+
+    public String getId() {
+        return getTypeName();
     }
 }

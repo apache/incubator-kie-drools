@@ -31,7 +31,6 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
@@ -263,10 +262,14 @@ public class WindowNode extends ObjectSource
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory( this );
 
         Iterator it = memory.events.iterator();
-        for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(),
-                               context,
-                               workingMemory );
+        try {
+            for (ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) it.next(); entry != null; entry = (ObjectHashMap.ObjectEntry) it.next()) {
+                sink.assertObject( (InternalFactHandle) entry.getValue(),
+                                   context,
+                                   workingMemory );
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
 
     }

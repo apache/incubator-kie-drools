@@ -73,4 +73,12 @@ public class DummyProcess implements WorkflowProcess, Serializable, ResourcedObj
 		return null;
 	}
 
+    public String getNamespace() {
+        return null;
+    }
+
+    public KnowledgeType getKnowledgeType() {
+        return null;
+    }
+
 }
