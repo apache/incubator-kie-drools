@@ -193,7 +193,7 @@ public class PlannerBenchmarkConfig {
 
     private int getRequestedThreadCount() {
         int cpuCount = Runtime.getRuntime().availableProcessors();
-        String request = this.getThreadsUse().trim();
+        String request = this.getThreadsUse();
         if (request == null) {
             // no threads are requested; use just one
             return 1;
