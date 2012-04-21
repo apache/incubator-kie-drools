@@ -92,8 +92,8 @@ public class GuvnorConnectionUtils {
                         URL checkURL = new URL(imageBinaryURL);
                         HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
                         checkConnection.setRequestMethod("GET");
-                        checkConnection.setRequestProperty("Accept", "text/plain,text/html,application/xhtml+xml,application/xml");
-                        checkConnection.setConnectTimeout(4000);
+                        checkConnection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+                        checkConnection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
                         applyAuth(checkConnection);
                         checkConnection.connect();
                        
@@ -559,7 +559,8 @@ public class GuvnorConnectionUtils {
             HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
             checkConnection.setRequestMethod("GET");
             checkConnection.setRequestProperty("Accept", "application/atom+xml");
-            checkConnection.setConnectTimeout(4000);
+            checkConnection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+            checkConnection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
             applyAuth(checkConnection);
             checkConnection.connect();
             return (checkConnection.getResponseCode() == 200);
