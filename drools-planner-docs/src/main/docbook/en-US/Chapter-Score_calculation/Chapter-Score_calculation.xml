@@ -60,7 +60,7 @@
         linkend="scoreTrap">score trap</link>. For example in cloud balance: if a <literal>Computer</literal> has 7 CPU
         too little for its <literal>Process</literal>es, then it must be weighted 7 times as much as if it had only 1
         CPU too little. This way, there is an incentive to move a <literal>Process</literal> with 6 CPU or less away
-        from that Computer. </para>
+        from that Computer.</para>
       </note>
     </section>
 
@@ -885,5 +885,25 @@ end</programlisting>
       calculation performance outright. Use the benchmarker to do a 1 minute run and check what happens if you comment
       out all but a few of the score constraints.</para>
     </section>
+  </section>
+
+  <section>
+    <title>Reusing the score calculation outside the Solver</title>
+
+    <para>Other parts of your application, for example your webUI, might need to calculate the score too. Do that by
+    reusing the <literal>ScoreDirectorFactory</literal> of the <literal>Solver</literal> to build a separate
+    <literal>ScoreDirector</literal> for that webUI:</para>
+
+    <programlisting language="java">ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();
+ScoreDirector guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</programlisting>
+
+    <para>Then use it when you need to calculate the <literal>Score</literal> of a <literal>Solution</literal>:</para>
+
+    <programlisting language="java">guiScoreDirector.setWorkingSolution(solution);
+Score score = guiScoreDirector.calculateScore();</programlisting>
+
+    <para>Currently it's not officially supported to get the specific constraint occurrences, so you can explain in the
+    GUI what entities are causing which part of the <literal>Score</literal>. But if you're using the
+    <literal>DroolsScoreDirector</literal>, it's possible. See the examples.</para>
   </section>
 </chapter>
