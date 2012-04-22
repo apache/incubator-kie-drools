@@ -191,5 +191,13 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
         }
         return result.toArray(new String[result.size()]);
     }
+
+    public KnowledgeType getKnowledgeType() {
+        return KnowledgeType.PROCESS;
+    }
+
+    public String getNamespace() {
+        return packageName;
+    }
     
 }

@@ -244,6 +244,14 @@ public class PackageBuilderTest extends JbpmTestCase {
 
         }
 
+        public KnowledgeType getKnowledgeType() {
+            return KnowledgeType.PROCESS;
+        }
+
+        public String getNamespace() {
+            return null;
+        }
+
     }
 
 }
