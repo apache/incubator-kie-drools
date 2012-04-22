@@ -16,25 +16,22 @@
 
 package org.drools.planner.benchmark.core.comparator;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.score.Score;
 
-class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
+/**
+ * This benchmark ranker simply ranks solver benchmarks by their total score.
+ */
+public class SimpleSolverBenchmarkComparatorFactory implements SolverBenchmarkComparatorFactory {
 
-    public int compare(SolverBenchmark a, SolverBenchmark b) {
-        List<Score> aScoreList = a.getScoreList();
-        Collections.sort(aScoreList); // Worst scores become first in the list
-        List<Score> bScoreList = b.getScoreList();
-        Collections.sort(bScoreList); // Worst scores become first in the list
-        return new CompareToBuilder()
-                .append(aScoreList.toArray(), bScoreList.toArray())
-                .toComparison();
+    /**
+     * Rank the benchmarks based on their total score.
+     */
+    public Comparator<SolverBenchmark> createSolverBenchmarkComparator(List<SolverBenchmark> benchmarks) {
+        return new TotalScoreSolverBenchmarkComparator();
     }
 
 }

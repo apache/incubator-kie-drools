@@ -19,15 +19,15 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.planner.benchmark.api.BenchmarkRanker;
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
-import org.drools.planner.benchmark.core.ranker.SimpleBenchmarkRanker;
+import org.drools.planner.benchmark.core.comparator.SimpleSolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -42,8 +42,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private List<ProblemStatisticType> problemStatisticTypeList = null;
-    private BenchmarkRanker solverBenchmarkRanker = null;
-    private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory = null;
 
     private Long warmUpTimeMillisSpend = null;
 
@@ -92,20 +91,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
-    public BenchmarkRanker getSolverBenchmarkRanker() {
-        return solverBenchmarkRanker;
+    public SolverBenchmarkComparatorFactory getSolverBenchmarkComparatorFactory() {
+        return solverBenchmarkComparatorFactory;
     }
 
-    public void setSolverBenchmarkRanker(BenchmarkRanker solverBenchmarkRanker) {
-        this.solverBenchmarkRanker = solverBenchmarkRanker;
-    }
-
-    public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
-        return solverBenchmarkComparator;
-    }
-
-    public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
-        this.solverBenchmarkComparator = solverBenchmarkComparator;
+    public void setSolverBenchmarkComparatorFactory(SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory) {
+        this.solverBenchmarkComparatorFactory = solverBenchmarkComparatorFactory;
     }
 
     public Long getWarmUpTimeMillisSpend() {
@@ -151,11 +142,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
-        if (solverBenchmarkRanker == null) {
-            solverBenchmarkRanker = new SimpleBenchmarkRanker();
-        }
-        if (solverBenchmarkComparator == null) {
-            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
+        if (solverBenchmarkComparatorFactory == null) {
+            solverBenchmarkComparatorFactory = new SimpleSolverBenchmarkComparatorFactory();
         }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
@@ -226,13 +214,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        solverBenchmarkRanker.rank(sortedSolverBenchmarkList, solverBenchmarkComparator);
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            int ranking = solverBenchmarkRanker.getRanking(solverBenchmark);
+        Comparator<SolverBenchmark> comparator = solverBenchmarkComparatorFactory.createSolverBenchmarkComparator(sortedSolverBenchmarkList);
+        Collections.sort(sortedSolverBenchmarkList, Collections.reverseOrder(comparator));
+        int ranking = 0;
+        for (SolverBenchmark solverBenchmark : sortedSolverBenchmarkList) {
             solverBenchmark.setRanking(ranking);
             if (ranking == 0) {
                 winningSolverBenchmark = solverBenchmark;
             }
+            ranking++;
         }
     }
 

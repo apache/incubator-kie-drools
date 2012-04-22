@@ -1,42 +1,58 @@
-package org.drools.planner.benchmark.core.ranker;
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.util.Collections;
+package org.drools.planner.benchmark.core.comparator;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.benchmark.api.BenchmarkRanker;
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
 
 /**
- * This benchmark ranker will look into each benchmark's scores and for each of 
- * these scores, it will determine how many other benchmark's scores this 
- * benchmark beats. The best-ranking benchmark will have beaten the most scores 
- * of the other benchmarks.
+ * This benchmark comparator factory will look into each benchmark's scores and 
+ * for each of these scores, it will determine how many other benchmark's scores
+ * this benchmark beats. The best-ranking benchmark will have beaten the most 
+ * scores of the other benchmarks.
  * 
- * It should be more fair than rankers who rank benchmarks based on their total 
+ * It should be more fair than those that rank benchmarks based on their total 
  * score. When the scores for different problem benchmarks differ greatly 
  * (e.g. 10 v. 10000), comparing in absolute terms is misleading. 
  * 
- * For that reason, using this ranker only makes sense when there are more 
+ * For that reason, using this factory only makes sense when there are more 
  * problem benchmarks inside one solver benchmark - otherwise, simple 
- * comparator-based ranker will do exactly the same.
+ * comparator-based factory will do exactly the same.
  */
-public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
+public class RelativePositionSolverBenchmarkComparatorFactory implements SolverBenchmarkComparatorFactory {
 
     /**
-     * Compares benchmarks by how many times their scores beats other benchmarks' scores. 
+     * Compares benchmarks by how many times their scores beat other benchmarks'
+     * scores. 
      */
     private final class BeatOthersBenchmarkComparator implements Comparator<SolverBenchmark> {
 
         private final Map<SolverBenchmark, Integer> numBeatOthers;
         private final Comparator<SolverBenchmark> whenBeatOthersEqualComparator;
 
-        public BeatOthersBenchmarkComparator(Map<SolverBenchmark, Integer> numBeatOthers, Comparator<SolverBenchmark> comparator) {
+        public BeatOthersBenchmarkComparator(Map<SolverBenchmark, Integer> numBeatOthers) {
             this.numBeatOthers = numBeatOthers;
-            whenBeatOthersEqualComparator = comparator;
+            whenBeatOthersEqualComparator = new TotalScoreSolverBenchmarkComparator();
         }
 
         public int compare(SolverBenchmark o1, SolverBenchmark o2) {
@@ -51,14 +67,8 @@ public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
     }
 
     private final Map<SolverBenchmark, Integer> numBenchmarkBeatsOthers = new HashMap<SolverBenchmark, Integer>();
-    private List<SolverBenchmark> rankedBenchmarks;
 
-    /**
-     * The comparator will only be used to decide the ranking of two benchmarks 
-     * in case that their scores beat exactly the same amount of other 
-     * benchmarks' scores.
-     */
-    public void rank(List<SolverBenchmark> benchmarks, Comparator<SolverBenchmark> comparator) {
+    public Comparator<SolverBenchmark> createSolverBenchmarkComparator(List<SolverBenchmark> benchmarks) {
         numBenchmarkBeatsOthers.clear();
         // find out how many times a particular benchmark beat other benchmarks
         for (SolverBenchmark benchmark : benchmarks) {
@@ -80,18 +90,7 @@ public class RelativePositionBenchmarkRanker implements BenchmarkRanker {
             }
             numBenchmarkBeatsOthers.put(benchmark, numBeatOthers);
         }
-        // and now sort the benchmarks based on that
-        rankedBenchmarks = benchmarks;
-        Collections.sort(rankedBenchmarks, new BeatOthersBenchmarkComparator(numBenchmarkBeatsOthers, comparator));
-        Collections.reverse(rankedBenchmarks);
-    }
-
-    /**
-     * The benchmark with the lowest ranking will be the benchmark whose scores
-     * beat most of the other benchmarks' scores.
-     */
-    public int getRanking(SolverBenchmark benchmark) {
-        return rankedBenchmarks.indexOf(benchmark);
+        return new BeatOthersBenchmarkComparator(numBenchmarkBeatsOthers);
     }
 
 }

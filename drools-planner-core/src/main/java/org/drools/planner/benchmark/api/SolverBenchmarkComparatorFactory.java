@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.comparator;
+package org.drools.planner.benchmark.api;
 
-import java.io.Serializable;
 import java.util.Comparator;
+import java.util.List;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 
-class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
+/**
+ * Defines an interface for classes that will be used to rank solver benchmarks 
+ * in order of their respective performance.
+ */
+public interface SolverBenchmarkComparatorFactory {
 
-    private WorstScoreSolverBenchmarkComparator worstScoreSolverBenchmarkComparator = new WorstScoreSolverBenchmarkComparator();
-
-    public int compare(SolverBenchmark a, SolverBenchmark b) {
-        return new CompareToBuilder()
-                .append(a.getTotalScore(), b.getTotalScore())
-                .append(a, b, worstScoreSolverBenchmarkComparator)
-                .toComparison();
-    }
+    /**
+     * The ranking function. Takes the provided benchmarks and ranks them.
+     * @param benchmarks Benchmarks to rank.
+     * @return Comparator for the benchmarks.
+     */
+    public Comparator<SolverBenchmark> createSolverBenchmarkComparator(List<SolverBenchmark> benchmarks);
 
 }
