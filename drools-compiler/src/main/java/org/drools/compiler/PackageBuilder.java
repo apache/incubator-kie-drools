@@ -611,7 +611,7 @@ public class PackageBuilder {
         }
 
         if ( ResourceType.DRF.equals( ( (InternalResource) resource ).getResourceType() ) ) {
-            System.err.println("RF format usage detected. This format is deprecated and will be removed in future");
+            this.results.add( new DeprecatedResourceTypeWarning(resource, "RF") );
         }
 
         this.resource = resource;
