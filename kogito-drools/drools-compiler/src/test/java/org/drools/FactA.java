@@ -2,10 +2,13 @@ package org.drools;
 
 import java.io.Serializable;
 
+import org.drools.definition.type.PropertyReactive;
+
 public class FactA implements Serializable {
     String  field1;
     Integer field2;
     Float   field3;
+    Integer field4;    
     TestEnum enumVal;
 
     public FactA() {
@@ -51,6 +54,14 @@ public class FactA implements Serializable {
         this.field3 = f;
     }
 
+    public Integer getField4() {
+        return field4;
+    }
+
+    public void setField4(Integer field4) {
+        this.field4 = field4;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -58,6 +69,7 @@ public class FactA implements Serializable {
         result = prime * result + ((field1 == null) ? 0 : field1.hashCode());
         result = prime * result + ((field2 == null) ? 0 : field2.hashCode());
         result = prime * result + ((field3 == null) ? 0 : field3.hashCode());
+        result = prime * result + ((field4 == null) ? 0 : field4.hashCode());
         return result;
     }
 
@@ -76,6 +88,9 @@ public class FactA implements Serializable {
         if ( field3 == null ) {
             if ( other.field3 != null ) return false;
         } else if ( !field3.equals( other.field3 ) ) return false;
+        if ( field4 == null ) {
+            if ( other.field4 != null ) return false;
+        } else if ( !field4.equals( other.field4 ) ) return false;        
         return true;
     }
 

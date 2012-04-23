@@ -1301,6 +1301,82 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( fact3, list.get( 2 ) );
         assertEquals( fact3, list.get( 3 ) );  
     }
+
+    @Test
+    public void testExprTimeRescheduled() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        
+        String text = "package org.drools.test\n"
+                      + "global java.util.List list\n"
+                      + "import " + FactA.class.getCanonicalName() + "\n"
+                      + "rule r1 timer (expr: f1.field2, f1.field4)\n"
+                      + "when\n"                      
+                      + "    f1 : FactA() \n"                      
+                      + "then\n"
+                      + "    list.add( f1 );\n"
+                      + "end\n" + "\n";
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( text.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        FactA fact1 = new FactA();
+        fact1.setField1( "f1" );
+        fact1.setField2( 500 );
+        fact1.setField4( 1000 );
+        FactHandle fh = (FactHandle) ksession.insert (fact1 );        
+                
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 2600, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+        assertEquals( fact1, list.get( 0 ) );
+        assertEquals( fact1, list.get( 1 ) );
+        assertEquals( fact1, list.get( 2 ) );
+        list.clear();
+        
+        fact1.setField2( 300 );
+        fact1.setField4( 2000 );     
+        ksession.update(  fh, fact1 );
+        
+        // 100 has passed of the 1000, from the previous schedule
+        // so that should be deducted from the 300 delay above, meaning 
+        //  we only need to increment another 250
+        timeService.advanceTime( 250, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( fact1, list.get( 0 ) );   
+        list.clear();        
+        
+        timeService.advanceTime( 1000, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );  
+        
+        timeService.advanceTime( 700, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );   
+        
+        timeService.advanceTime( 300, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );             
+        
+    }    
     
     
     @Test

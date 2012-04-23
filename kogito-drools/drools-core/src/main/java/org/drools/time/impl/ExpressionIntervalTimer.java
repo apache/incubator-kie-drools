@@ -22,6 +22,7 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELObjectExpression;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.ScheduledAgendaItem;
 import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
 import org.drools.time.TimeUtils;
@@ -112,12 +113,27 @@ public class ExpressionIntervalTimer
         long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        
+        long timeSinceLastFire = 0;
+        ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) item;
+        if ( schItem.getJobHandle() != null ) {
+            DefaultJobHandle jh = ( DefaultJobHandle) schItem.getJobHandle();
+            IntervalTrigger preTrig = ( IntervalTrigger ) jh.getTimerJobInstance().getTrigger();
+            if ( preTrig.hasNextFireTime() != null ) {
+                timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
+            }
+        }
+        
+        long newDelay = (delay  != null ? evalDelay( item, wm ) : 0) - timeSinceLastFire;
+        if ( newDelay < 0 ) {
+            newDelay = 0;
+        }        
 
         return new IntervalTrigger( timestamp,
                                     this.startTime,
                                     this.endTime,
                                     this.repeatLimit,
-                                    delay  != null ? evalDelay( item, wm ) : 0,
+                                    newDelay,
                                     period != null ? evalPeriod( item, wm ) : 0,
                                     calendarNames,
                                     calendars );

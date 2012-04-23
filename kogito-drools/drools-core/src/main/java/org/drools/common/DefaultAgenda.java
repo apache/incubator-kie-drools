@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,6 +53,8 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.time.impl.DefaultJobHandle;
+import org.drools.time.impl.ExpressionIntervalTimer;
 import org.drools.time.impl.Timer;
 
 /**
@@ -374,6 +377,15 @@ public class DefaultAgenda
         } else {
             if ( !previouslyActive ) {
                 addActivation( activation, true );
+            } else {
+                Timer timer = activation.getRule().getTimer();
+                if ( timer != null && timer instanceof ExpressionIntervalTimer ) {
+                    ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) activation;                    
+                    removeScheduleItem( schItem );
+                    
+                    scheduleItem( schItem,
+                                  workingMemory );
+                }
             }
         }
     }     
