@@ -1,0 +1,70 @@
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.KeyPressed
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import java.lang.Math
+
+import org.drools.runtime.StatefulKnowledgeSession
+import org.drools.logger.KnowledgeRuntimeLogger
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.event.KeyEvent
+
+global PongConfiguration pconf
+
+dialect "mvel"  
+
+rule "PlayerOne Win" when
+    ui : PongUI( ready == true )
+    td : TableDirty( )    
+    ball : Ball( x >= pconf.tableWidth + width )
+    player : Player( id == PlayerId.PlayerOne )    
+then
+    tableG = ui.getTablePanel().getTableG();
+    
+    copyX = 0 - (pconf.tableWidth - ball.x);
+    copyY = ball.y;
+
+    tableG.copyArea( pconf.tableWidth, 0,
+                     ball.width, ball.width,
+                     copyX,copyY );  
+                     
+    retract( ball );
+    modify( player ) { score = player.score + 1 };
+    insert( new PointWin( player ) );
+end
+
+rule "PlayerTwo Win" when
+    ui : PongUI( ready == true )
+    td : TableDirty( )    
+    ball : Ball( x <= 0 )
+    player : Player( id == PlayerId.PlayerTwo )
+then
+    tableG = ui.getTablePanel().getTableG();
+    
+    copyX = 0 - (pconf.tableWidth - ball.x);
+    copyY = ball.y;
+
+    tableG.copyArea( pconf.tableWidth, 0,
+                     ball.width, ball.width,
+                     copyX,copyY );  
+                     
+    retract( ball );
+    modify( player ) { score = player.score + 1 };  
+    insert( new PointWin( player ) );
+end
+
+rule "Remove PointWin" salience -25 when
+    pw : PointWin()
+then
+    retract( pw );
+end

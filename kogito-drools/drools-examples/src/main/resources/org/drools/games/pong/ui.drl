@@ -1,0 +1,131 @@
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.KeyPressed
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import java.lang.Math
+
+import org.drools.runtime.StatefulKnowledgeSession
+import org.drools.logger.KnowledgeRuntimeLogger
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.event.KeyEvent
+import java.awt.font.FontRenderContext
+import java.awt.font.TextLayout
+import java.awt.Font
+
+global PongConfiguration pconf
+
+dialect "mvel"  
+
+declare TableDirty
+	@propertyReactive
+    dirty : boolean
+end
+
+rule "Create GUI" when
+    not PongUI()
+then
+    PongUI ui = new PongUI(pconf);
+    ui.init( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
+    insert( ui );     
+end
+
+rule "Create TableDirty" when
+    not TableDirty()
+then
+    insert( new TableDirty() );
+end  
+
+rule "Draw Top and Bottom Lines and Net" salience 50 dialect "java" when
+    ui : PongUI( ready == true )  
+    td : TableDirty( )     
+then    
+    Graphics tableG = ui.getTablePanel().getTableG();
+    tableG.setColor( Color.WHITE ); // background
+     
+    int padding = pconf.getPadding();
+    int tableWidth = pconf.getTableWidth();
+    int tableHeight = pconf.getTableHeight();
+    int sideLineWidth = pconf.getSideLineWidth();
+     
+    tableG.fillRect( padding, padding, 
+                     tableWidth-(padding*2), sideLineWidth );     
+    tableG.fillRect( padding, tableHeight-padding-sideLineWidth, 
+                     tableWidth-(padding*2), sideLineWidth );
+     
+    // draw dash line net
+    int netWidth = pconf.getNetWidth();
+    int gap = pconf.getNetGap();
+    int dash = pconf.getNetDash();     
+    int x = (tableWidth/2) - (netWidth/2);     
+    for (int i = 0; i < tableHeight; i = i + dash + gap) {
+        tableG.fillRect( x, i, netWidth, dash );
+    }
+    modify( td ) { setDirty( true ) };    
+end 
+
+rule "Draw Ball"  salience 25 when
+     ui : PongUI( ready == true )  
+     ball : Ball()
+     td : TableDirty( )     
+then    
+    Graphics tableG = ui.getTablePanel().getTableG();
+     
+    int copyX = pconf.tableWidth - ball.x;
+    int copyY = 0 - ball.y;
+     
+    tableG.copyArea( ball.x, ball.y,
+            		 ball.width, ball.width,
+                     copyX, copyY );    
+                          
+    tableG.setColor( Color.WHITE ); // background                      
+    tableG.fillOval( ball.x, ball.y, ball.width, ball.width );                          
+end
+
+rule "Draw Bat" when
+     ui : PongUI(  ready == true )
+     td : TableDirty( )     
+     bat : Bat( )
+then
+     Graphics tableG = ui.getTablePanel().getTableG();
+     tableG.setColor( Color.WHITE ); // background
+     tableG.fillRect( bat.x, bat.y, bat.width, bat.height );
+     modify( td ) { dirty = true };
+end
+
+rule "Draw Score" when
+    ui : PongUI(  ready == true ) 
+    ( player : Player( id == PlayerId.PlayerOne ) @watch(score) and x : Integer() from 100) or 
+    ( player : Player( id == PlayerId.PlayerTwo ) @watch(score) and x : Integer() from (pconf.tableWidth-120) )        
+then
+     Graphics tableG = ui.getTablePanel().getTableG(); 
+     y = new Integer( (pconf.padding + pconf.sideLineWidth + 50) );
+     
+     tableG.setColor( Color.BLACK ); // background
+     tableG.fillRect( x, y-50, 80, 60 );
+     
+     FontRenderContext frc = ((Graphics2D)tableG).getFontRenderContext();
+     Font f = new Font("Monospaced",Font.BOLD, 70);
+     String s = "" + player.score;
+     TextLayout tl = new TextLayout(s, f, frc);
+     tableG.setColor( Color.WHITE );
+     tl.draw(((Graphics2D)tableG), x, y );
+end    
+
+rule "Redraw Cave" no-loop salience -100 when
+   gui : PongUI() 
+   td : TableDirty( dirty == true )
+then
+   gui.updateTable();
+   modify( td ) { dirty = false };
+end

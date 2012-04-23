@@ -1,0 +1,65 @@
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.KeyPressed
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import java.lang.Math
+
+import org.drools.runtime.StatefulKnowledgeSession
+import org.drools.logger.KnowledgeRuntimeLogger
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.event.KeyEvent
+
+global PongConfiguration pconf
+
+dialect "mvel"  
+
+rule "Create Players" when 
+then 
+    batY =  (pconf.tableHeight/2)-(pconf.batHeight/2);
+    bat1 = new Bat( pconf.padding, batY, pconf.batWidth, pconf.batHeight);
+    bat2 = new Bat( pconf.tableWidth - pconf.padding - pconf.batWidth, batY, pconf.batWidth, pconf.batHeight );
+    
+    bat1.speed = pconf.batSpeed;
+    bat2.speed = pconf.batSpeed;
+        
+    player1 = new Player(PlayerId.PlayerOne, bat1);
+    player2 = new Player(PlayerId.PlayerTwo, bat2);    
+    
+    pongGame = new PongGame(player1, player2);
+    
+    insert( bat1 );
+    insert( bat2 );
+    insert( player1 );
+    insert( player2 );
+    insert( pongGame );    
+end
+
+/**
+ * Creates the ball with an initial direction.
+ * For a new game it alway starts with a direction to the left, after that it goes
+ * In the direction of the person who lost the last point.
+ */ 
+rule "Create Ball" when
+     not Ball()
+     ( PointWin(player.id == PlayerId.PlayerOne ) and dx : Number() from 2 ) or 
+     ( PointWin(player.id == PlayerId.PlayerTwo ) and dx : Number() from -2 ) or 
+     ( not PointWin( ) and dx : Number() from -2 )           
+
+then
+    ball = new Ball( (pconf.tableWidth/2)-(pconf.ballWidth/2), 
+                     (pconf.tableHeight/2)-(pconf.ballWidth/2), 
+                      pconf.ballWidth);
+    ball.speed = pconf.ballStartingSpeed;                      
+    ball.dx = dx;
+    insert( ball );                          
+end

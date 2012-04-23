@@ -1,0 +1,48 @@
+package org.drools.games.pong
+
+import org.drools.games.pong.Ball
+import org.drools.games.pong.Bat
+import org.drools.games.pong.Player
+import org.drools.games.pong.PlayerId
+import org.drools.games.pong.PongGame
+import org.drools.games.pong.PointWin
+import org.drools.games.pong.KeyPressed
+import org.drools.games.pong.Collision
+import org.drools.games.pong.CollisionType
+
+import java.lang.Math
+
+import org.drools.runtime.StatefulKnowledgeSession
+import org.drools.logger.KnowledgeRuntimeLogger
+
+import java.awt.Color
+import java.awt.Graphics
+import java.awt.event.KeyEvent
+
+global PongConfiguration pconf
+
+dialect "mvel"  
+
+rule "Detect KeyPressed" when
+    ke : KeyEvent( ) from entry-point "KeyPressedStream"
+    not KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then 
+    kp = new KeyPressed( KeyEvent.getKeyText( ke.getKeyCode() ) );    
+    insert( kp );
+    retract( ke );
+end
+
+rule "Retract KeyPressed" when
+     ke : KeyEvent() from entry-point "KeyPressedStream"
+     exists KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )  
+then
+    retract( ke );
+end
+
+rule "Detect KeyReleased"  when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+    kp : KeyPressed( keyText == KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then
+    retract( ke );
+    retract( kp );
+end
