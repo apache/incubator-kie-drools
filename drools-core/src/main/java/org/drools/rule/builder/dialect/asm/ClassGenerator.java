@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.mvel2.asm.Opcodes.AASTORE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
 import static org.mvel2.asm.Opcodes.ACC_STATIC;
@@ -614,6 +615,28 @@ public class ClassGenerator {
                 return Byte.valueOf(value);
             }
             throw new RuntimeException("Unexpected type: " + primitiveType);
+        }
+
+        protected final void cast(Class<?> from, Class<?> to) {
+            if (from.isAssignableFrom(to)) {
+                return;
+            }
+            if (from.isPrimitive()) {
+                if (to.isPrimitive()) {
+                    castPrimitiveToPrimitive(from, to);
+                } else {
+                    castPrimitiveToPrimitive(from, convertToPrimitiveType(to));
+                    castFromPrimitive(from);
+                }
+            } else {
+                if (to.isPrimitive()) {
+                    Class<?> primitiveFrom = convertToPrimitiveType(from);
+                    castToPrimitive(primitiveFrom);
+                    castPrimitiveToPrimitive(primitiveFrom, to);
+                } else {
+                    cast(to);
+                }
+            }
         }
 
         protected final void cast(Class<?> clazz) {

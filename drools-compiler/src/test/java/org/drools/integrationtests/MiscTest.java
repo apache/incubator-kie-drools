@@ -10808,8 +10808,30 @@ public class MiscTest extends CommonTestMethodBase {
         assertTrue( kbuilder.hasErrors() );
     }
 
+    @Test
+    public void testPrimitiveToBoxedCoercionInMethodArgument() throws Exception {
+        String str = "package org.drools.test;\n" +
+                "import org.drools.integrationtests.MiscTest\n" +
+                "import org.drools.*\n" +
+                "rule R1 when\n" +
+                "   Person( $ag1 : age )" +
+                "   $p2 : Person( name == MiscTest.integer2String($ag1) )" +
+                "then\n" +
+                "end\n";
 
-	@Test
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("42", 42);
+        ksession.insert(p);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static String integer2String(Integer value) {
+        return "" + value;
+    }
+
+    @Test
     public void testKeyedInterfaceField() {
         //JBRULES-3441
         String str = "package org.drools.integrationtest; \n" +
