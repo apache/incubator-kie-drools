@@ -193,18 +193,14 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private void jitEvaluator(final Object object, final InternalWorkingMemory workingMemory, final LeftTuple leftTuple) {
         jitted = true;
-        try {
-            if (TEST_JITTING) {
-                executeJitting(object, workingMemory, leftTuple);
-            } else {
-                ExecutorHolder.executor.execute(new Runnable() {
-                    public void run() {
-                        executeJitting(object, workingMemory, leftTuple);
-                    }
-                });
-            }
-        } catch (Throwable t) {
-            throw new RuntimeException("Exception jitting: " + expression, t);
+        if (TEST_JITTING) {
+            executeJitting(object, workingMemory, leftTuple);
+        } else {
+            ExecutorHolder.executor.execute(new Runnable() {
+                public void run() {
+                    executeJitting(object, workingMemory, leftTuple);
+                }
+            });
         }
     }
 
@@ -217,7 +213,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         if (analyzedCondition == null) {
             analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(object, workingMemory, leftTuple);
         }
-        conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
+        try {
+            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
+        } catch (Throwable t) {
+            throw new RuntimeException("Exception jitting: " + expression, t);
+        }
     }
 
     public ContextEntry createContextEntry() {

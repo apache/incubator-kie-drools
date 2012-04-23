@@ -586,9 +586,12 @@ public class ConditionAnalyzer {
     }
 
     public interface Expression {
-        boolean isFixed();
         boolean canBeNull();
         Class<?> getType();
+    }
+
+    public static boolean isFixed(Expression expression) {
+        return expression instanceof FixedExpression;
     }
 
     public static class FixedExpression implements Expression {
@@ -604,10 +607,6 @@ public class ConditionAnalyzer {
 
         public String toString() {
             return typedValue.toString();
-        }
-
-        public boolean isFixed() {
-            return true;
         }
 
         public boolean canBeNull() {
@@ -628,10 +627,6 @@ public class ConditionAnalyzer {
             this.variableName = variableName;
             this.subsequentInvocations = subsequentInvocations;
             this.type = type;
-        }
-
-        public boolean isFixed() {
-            return false;
         }
 
         public boolean canBeNull() {
@@ -671,10 +666,6 @@ public class ConditionAnalyzer {
             return sb.toString();
         }
 
-        public boolean isFixed() {
-            return false;
-        }
-
         public boolean canBeNull() {
             return true;
         }
@@ -695,10 +686,6 @@ public class ConditionAnalyzer {
             this.operator = operator;
             this.right = right;
             this.type = inferType();
-        }
-
-        public boolean isFixed() {
-            return false;
         }
 
         public boolean canBeNull() {
@@ -743,10 +730,6 @@ public class ConditionAnalyzer {
 
         public ArrayCreationExpression(Class<?> arrayType) {
             this.arrayType = arrayType;
-        }
-
-        public boolean isFixed() {
-            return false;
         }
 
         public boolean canBeNull() {

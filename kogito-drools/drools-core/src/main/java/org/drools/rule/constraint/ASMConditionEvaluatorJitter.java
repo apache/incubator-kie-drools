@@ -25,6 +25,7 @@ import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
+import static org.drools.rule.constraint.ConditionAnalyzer.isFixed;
 import static org.mvel2.asm.Opcodes.*;
 import static org.mvel2.asm.Opcodes.IASTORE;
 
@@ -183,7 +184,7 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void jitPrimitiveBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
-            if (right.isFixed() && right.canBeNull()) {
+            if (isFixed(right) && right.canBeNull()) {
                 // a primitive cannot be null
                 mv.visitInsn(singleCondition.getOperation() == BooleanOperator.NE ? ICONST_1 : ICONST_0);
                 return;
@@ -196,17 +197,13 @@ public class ASMConditionEvaluatorJitter {
         }
 
         private void castExpressionResultToPrimitive(Expression expression, Class<?> type) {
-            if (!expression.isFixed()) {
-                if (expression.getType().isPrimitive()) {
-                    castPrimitiveToPrimitive(expression.getType(), type);
-                } else {
-                    castToPrimitive(type);
-                }
+            if (!isFixed(expression)) {
+                cast(expression.getType(), type);
             }
         }
 
         private void jitObjectBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
-            if (left.isFixed()) {
+            if (isFixed(left)) {
                 throw new RuntimeException("Unmanaged fixed left"); // TODO
             }
 
@@ -297,7 +294,7 @@ public class ASMConditionEvaluatorJitter {
             Label notNullLabel = new Label();
             load(RIGHT_OPERAND);
             mv.visitJumpInsn(IFNULL, nullLabel);
-            if (type != null && !right.isFixed() && rightType != type) {
+            if (type != null && !isFixed(right) && rightType != type) {
                 castOrCoerceTo(RIGHT_OPERAND, rightType, type, nullLabel);
             }
             mv.visitJumpInsn(GOTO, notNullLabel);
@@ -413,29 +410,28 @@ public class ASMConditionEvaluatorJitter {
             store(regNr, toType);
         }
 
-        private void jitExpression(Expression exp) {
-            jitExpression(exp, exp.getType());
+        private Class<?> jitExpression(Expression exp) {
+            return jitExpression(exp, exp.getType());
         }
 
-        private void jitExpression(Expression exp, Class<?> requiredClass) {
-            if (exp.isFixed()) {
+        private Class<?> jitExpression(Expression exp, Class<?> requiredClass) {
+            if (exp instanceof FixedExpression) {
                 push(((FixedExpression) exp).typedValue.value, requiredClass);
+                return exp.getType();
+            } else if (exp instanceof EvaluatedExpression) {
+                return jitEvaluatedExpression((EvaluatedExpression) exp, true);
+            } else if (exp instanceof VariableExpression) {
+                return jitVariableExpression((VariableExpression) exp);
+            } else if (exp instanceof AritmeticExpression) {
+                return jitAritmeticExpression((AritmeticExpression)exp);
+            } else if (exp instanceof ArrayCreationExpression) {
+                return jitArrayCreationExpression((ArrayCreationExpression) exp);
             } else {
-                if (exp instanceof EvaluatedExpression) {
-                    jitEvaluatedExpression((EvaluatedExpression) exp, true);
-                } else if (exp instanceof VariableExpression) {
-                    jitVariableExpression((VariableExpression) exp);
-                } else if (exp instanceof AritmeticExpression) {
-                    jitAritmeticExpression((AritmeticExpression)exp);
-                } else if (exp instanceof ArrayCreationExpression) {
-                    jitArrayCreationExpression((ArrayCreationExpression) exp);
-                } else {
-                    throw new RuntimeException("Unknown expression: " + exp);
-                }
+                throw new RuntimeException("Unknown expression: " + exp);
             }
         }
 
-        private void jitArrayCreationExpression(ArrayCreationExpression exp) {
+        private Class<?> jitArrayCreationExpression(ArrayCreationExpression exp) {
             createArray(exp.getComponentType(), exp.items.size());
             for (int i = 0; i < exp.items.size(); i++) {
                 mv.visitInsn(DUP);
@@ -443,9 +439,10 @@ public class ASMConditionEvaluatorJitter {
                 jitExpression(exp.items.get(i));
                 mv.visitInsn(getCodeForType(exp.getComponentType(), IASTORE));
             }
+            return exp.getType();
         }
 
-        private void jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation) {
+        private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation) {
             if (exp.firstExpression != null) {
                 jitExpression(exp.firstExpression, Object.class);
             }
@@ -454,13 +451,14 @@ public class ASMConditionEvaluatorJitter {
             while (invocations.hasNext()) {
                 currentClass = jitInvocation(invocations.next(), currentClass, false);
             }
+            return currentClass;
         }
 
-        private void jitVariableExpression(VariableExpression exp) {
+        private Class<?> jitVariableExpression(VariableExpression exp) {
             jitReadVariable(exp.variableName);
-            if (exp.subsequentInvocations != null) {
-                jitEvaluatedExpression(exp.subsequentInvocations, false);
-            }
+            return exp.subsequentInvocations != null ?
+                    jitEvaluatedExpression(exp.subsequentInvocations, false) :
+                    exp.getType();
         }
 
         private void jitReadVariable(String variableName) {
@@ -473,7 +471,7 @@ public class ASMConditionEvaluatorJitter {
             throw new RuntimeException("Unknown variable name: " + variableName);
         }
 
-        private void jitAritmeticExpression(AritmeticExpression aritmeticExpression) {
+        private Class<?> jitAritmeticExpression(AritmeticExpression aritmeticExpression) {
             if (aritmeticExpression.isStringConcat()) {
                 jitStringConcat(aritmeticExpression.left, aritmeticExpression.right);
             } else {
@@ -482,6 +480,7 @@ public class ASMConditionEvaluatorJitter {
                 jitExpressionToPrimitiveType(aritmeticExpression.right, aritmeticExpression.operator.isBitwiseOperation() ? int.class : operationType);
                 jitAritmeticOperation(operationType, aritmeticExpression.operator);
             }
+            return aritmeticExpression.getType();
         }
 
         private void jitStringConcat(Expression left, Expression right) {
@@ -495,12 +494,8 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitExpressionToPrimitiveType(Expression expression, Class<?> primitiveType) {
             jitExpression(expression, primitiveType);
-            if (!expression.isFixed()) {
-                if (expression.getType().isPrimitive()) {
-                    castPrimitiveToPrimitive(convertToPrimitiveType(expression.getType()), primitiveType);
-                } else {
-                    castToPrimitive(primitiveType);
-                }
+            if (!isFixed(expression)) {
+                cast(expression.getType(), primitiveType);
             }
         }
 
@@ -616,11 +611,7 @@ public class ASMConditionEvaluatorJitter {
 
             int argumentCounter = 0;
             for (Expression argument : invocation.getArguments()) {
-                jitExpression(argument);
-                Class<?> argumentClass = method.getParameterTypes()[argumentCounter++];
-                if (argument instanceof VariableExpression) {
-                    cast(argumentClass);
-                }
+                cast(jitExpression(argument), method.getParameterTypes()[argumentCounter++]);
             }
 
             invoke(method);
