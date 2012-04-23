@@ -34,9 +34,12 @@ public class IntervalTrigger
     private int       repeatLimit;
     private int       repeatCount;
     private Date      nextFireTime;
+    private Date      lastFireTime;
+    private long      delay;
     private long      period;
     private String[]  calendarNames;
     private Calendars calendars;
+
 
     public IntervalTrigger() {
 
@@ -50,6 +53,7 @@ public class IntervalTrigger
                            long period,
                            String[] calendarNames,
                            Calendars calendars) {
+        this.delay = delay;
         this.period = period;
 
         if ( startTime == null ) {
@@ -143,6 +147,10 @@ public class IntervalTrigger
         }
 
         this.endTime = endTime;
+    }        
+
+    public Date getLastFireTime() {
+        return lastFireTime;
     }
 
     public void setFirstFireTime() {
@@ -158,6 +166,7 @@ public class IntervalTrigger
         if ( getEndTime() != null && pot != null && pot.after( getEndTime() ) ) {
             this.nextFireTime = null;
         }
+        this.lastFireTime = this.nextFireTime;
     }
 
     public Date hasNextFireTime() {
@@ -177,6 +186,7 @@ public class IntervalTrigger
         } else if (  repeatLimit != -1 && repeatCount >= repeatLimit ) {
             this.nextFireTime = null;
         }
+        lastFireTime = date;
         return date;
     }
 
@@ -259,7 +269,7 @@ public class IntervalTrigger
 
     @Override
     public String toString() {
-        return "IntervalTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime=" + nextFireTime + ", period=" + period + ", calendarNames=" + Arrays.toString( calendarNames ) + ", calendars=" + calendars + "]";
+        return "IntervalTrigger [startTime=" + startTime + ", endTime=" + endTime + ", repeatLimit=" + repeatLimit + ", repeatCount=" + repeatCount + ", nextFireTime=" + nextFireTime + ", delay=" + delay + ", period=" + period + ", calendarNames=" + Arrays.toString( calendarNames ) + ", calendars=" + calendars + "]";
     }
     
     

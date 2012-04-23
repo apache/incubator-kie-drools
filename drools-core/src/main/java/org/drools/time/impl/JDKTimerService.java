@@ -89,11 +89,10 @@ public class JDKTimerService
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,
                                  Trigger trigger) {
-        JDKJobHandle jobHandle = new JDKJobHandle( idCounter.getAndIncrement() );
-
         Date date = trigger.hasNextFireTime();
-
         if ( date != null ) {
+            JDKJobHandle jobHandle = new JDKJobHandle( idCounter.getAndIncrement() );
+            
             TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job,
                                                                                      ctx,
                                                                                      trigger,
