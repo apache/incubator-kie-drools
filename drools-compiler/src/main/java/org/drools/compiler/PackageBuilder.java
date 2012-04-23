@@ -610,6 +610,10 @@ public class PackageBuilder {
             throw new RuntimeException( "Unable to instantiate a process builder", processBuilderCreationFailure );
         }
 
+        if ( ResourceType.DRF.equals( ( (InternalResource) resource ).getResourceType() ) ) {
+            System.err.println("RF format usage detected. This format is deprecated and will be removed in future");
+        }
+
         this.resource = resource;
 
         try {
