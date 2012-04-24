@@ -16,7 +16,6 @@
 
 package org.drools.factmodel;
 
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.traits.TraitableBean;
 import org.mvel2.asm.*;
 
@@ -226,7 +225,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
 
     protected void buildEqualityMethods(ClassWriter cw, ClassDefinition classDef) {
         boolean hasKey = false;
-        for ( FactField fld : classDef.getFields() ) {
+        for ( FieldDefinition fld : classDef.getFieldsDefinitions() ) {
             if ( fld.isKey() ) {
                 hasKey = true;
                 break;
@@ -1124,6 +1123,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         }
     }
 
+
+    protected void buildSystemHashCode(ClassWriter cw) {
+        {
+            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "identityHashCode", "(Ljava/lang/Object;)I");
+            mv.visitInsn(IRETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
+    }
+
+
     protected void buildHashCode(ClassVisitor cw,
                                ClassDefinition classDef) {
 
@@ -1325,65 +1338,8 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                     "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
             boolean previous = false;
-            for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
-                if ( previous ) {
-                    // buf.append(", ");
-                    mv.visitLdcInsn( ", " );
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( StringBuilder.class ),
-                            "append",
-                            "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
-                }
-                // buf.append(attrName)
-                mv.visitLdcInsn( field.getName() );
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                        Type.getInternalName( StringBuilder.class ),
-                        "append",
-                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
-                // buf.append("=");
-                mv.visitLdcInsn( "=" );
-                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                        Type.getInternalName( StringBuilder.class ),
-                        "append",
-                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
-
-                // buf.append(attrValue)
-                mv.visitVarInsn(Opcodes.ALOAD,
-                        0);
-
-                visitFieldOrGetter(mv,classDef,field);
-
-
-                if ( BuildUtils.isPrimitive(field.getTypeName()) ) {
-                    String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( StringBuilder.class ),
-                            "append",
-                            Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                    new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
-                } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
-
-
-                    mv.visitMethodInsn( INVOKESTATIC,
-                            "java/util/Arrays",
-                            "toString",
-                            "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
-
-                    mv.visitMethodInsn( INVOKEVIRTUAL,
-                            "java/lang/StringBuilder",
-                            "append",
-                            "(Ljava/lang/Object;)Ljava/lang/StringBuilder;" );
-
-                } else {
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( StringBuilder.class ),
-                            "append",
-                            Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                    new Type[]{Type.getType( Object.class )} ) );
-                }
-                previous = true;
-            }
+            previous = buildFieldsToString( classDef, mv, previous );
 
             mv.visitLdcInsn( " )" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
@@ -1419,7 +1375,74 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
         }
     }
 
+    protected boolean buildFieldsToString( ClassDefinition classDef, MethodVisitor mv, boolean previous ) {
 
+        for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
+            previous = buildFieldToString( field, classDef, mv, previous );
+        }
+        return previous;
+    }
+
+    protected boolean buildFieldToString(FieldDefinition field, ClassDefinition classDef, MethodVisitor mv, boolean previous) {
+        if ( previous ) {
+            // buf.append(", ");
+            mv.visitLdcInsn( ", " );
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+        }
+        // buf.append(attrName)
+        mv.visitLdcInsn( field.getName() );
+        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                Type.getInternalName( StringBuilder.class ),
+                "append",
+                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+
+        // buf.append("=");
+        mv.visitLdcInsn( "=" );
+        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                Type.getInternalName( StringBuilder.class ),
+                "append",
+                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+
+        // buf.append(attrValue)
+        mv.visitVarInsn(Opcodes.ALOAD,
+                0);
+
+        visitFieldOrGetter( mv, classDef, field );
+
+
+        if ( BuildUtils.isPrimitive(field.getTypeName()) ) {
+            String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
+                            new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
+        } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
+
+
+            mv.visitMethodInsn( INVOKESTATIC,
+                    "java/util/Arrays",
+                    "toString",
+                    "(" + BuildUtils.getTypeDescriptor( BuildUtils.arrayType( field.getTypeName() ) ) + ")Ljava/lang/String;" );
+
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                    "java/lang/StringBuilder",
+                    "append",
+                    "(Ljava/lang/Object;)Ljava/lang/StringBuilder;" );
+
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
+                            new Type[]{Type.getType( Object.class )} ) );
+        }
+        previous = true;
+        return previous;
+    }
 
 
     protected void buildClassAnnotations(ClassDefinition classDef, ClassVisitor cw) {
@@ -1559,17 +1582,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             );
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

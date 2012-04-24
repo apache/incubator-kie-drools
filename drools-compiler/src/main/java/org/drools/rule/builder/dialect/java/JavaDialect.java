@@ -82,44 +82,52 @@ public class JavaDialect
     implements
     Dialect {
 
-    public static final String                       ID                            = "java";
+    public static final String                   ID                            = "java";
 
-    private final static String                      EXPRESSION_DIALECT_NAME       = "mvel";
+    private final static String                  EXPRESSION_DIALECT_NAME       = "mvel";
 
     // builders
-    private static final PatternBuilder              PATTERN_BUILDER               = new PatternBuilder();
-    private static final QueryBuilder                QUERY_BUILDER                 = new QueryBuilder();
-    private static final SalienceBuilder             SALIENCE_BUILDER              = new MVELSalienceBuilder();
-    private static final EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
-    private static final JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
+    protected static PatternBuilder              PATTERN_BUILDER               = new PatternBuilder();
+    protected static QueryBuilder                QUERY_BUILDER                 = new QueryBuilder();
+    protected static SalienceBuilder             SALIENCE_BUILDER              = new MVELSalienceBuilder();
+    protected static EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
+    protected static JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
 
-//    private static final RuleConditionBuilder        EVAL_BUILDER                  = new JavaEvalBuilder();
-//    private static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalBuilder();
-    private static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
+//    public static RuleConditionBuilder        EVAL_BUILDER                  = new JavaEvalBuilder();
+//    public static RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalBuilder();
+    protected static RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
 
-//    private static final PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
-//    private static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateBuilder();
-    private static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
+//    public static PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
+//    public static PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateBuilder();
+    protected static PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
 
-//    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
-//    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueBuilder();
-    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
+//    public static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
+//    public static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueBuilder();
+    protected static ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
 
-//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
-//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
-    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
+//    public static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
+//    public static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
+    protected static ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
 
-    private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
-    private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
-    private static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
-    private static final CollectBuilder              COLLECT_BUIDER                = new CollectBuilder();
-    private static final ForallBuilder               FORALL_BUILDER                = new ForallBuilder();
-    private static final EntryPointBuilder           ENTRY_POINT_BUILDER           = new EntryPointBuilder();
-    private static final WindowReferenceBuilder      WINDOW_REFERENCE_BUILDER      = new WindowReferenceBuilder();
-    private static final GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
+    protected static JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
+    protected static MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
+    protected static JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
+    protected static CollectBuilder              COLLECT_BUIDER                = new CollectBuilder();
+    protected static ForallBuilder               FORALL_BUILDER                = new ForallBuilder();
+    protected static EntryPointBuilder           ENTRY_POINT_BUILDER           = new EntryPointBuilder();
+    protected static WindowReferenceBuilder      WINDOW_REFERENCE_BUILDER      = new WindowReferenceBuilder();
+    protected static GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
 
     // a map of registered builders
     private static Map<Class<?>, EngineElementBuilder> builders;
+
+    public static void setPatternBuilder( PatternBuilder PATTERN_BUILDER ) {
+        JavaDialect.PATTERN_BUILDER = PATTERN_BUILDER;
+    }
+
+    public static void setGEBuilder( GroupElementBuilder GE_BUILDER ) {
+        JavaDialect.GE_BUILDER = GE_BUILDER;
+    }
 
     static {
         initBuilder();
@@ -180,6 +188,11 @@ public class JavaDialect
         if ( builders != null ) {
             return;
         }
+        reinitBuilder();
+    }
+
+    public static synchronized void reinitBuilder() {
+
         // statically adding all builders to the map
         // but in the future we can move that to a configuration
         // if we want to
@@ -255,6 +268,18 @@ public class JavaDialect
                                             final BaseDescr descr,
                                             final Object content,
                                             final BoundIdentifiers availableIdentifiers) {
+        return analyzeExpression( context,
+                                  descr,
+                                  content,
+                                  availableIdentifiers,
+                                  null );
+    }
+
+    public AnalysisResult analyzeExpression(final PackageBuildContext context,
+                                            final BaseDescr descr,
+                                            final Object content,
+                                            final BoundIdentifiers availableIdentifiers,
+                                            final Map<String,Class<?>> localTypes ) {
         JavaAnalysisResult result = null;
         try {
             result = analyzer.analyzeExpression((String) content,

@@ -41,20 +41,16 @@ import org.drools.spi.DeclarationScopeResolver;
  * This class does not turn Exists into two Nots at this stage, that role is
  * delegated to the Builder.
  */
-class LogicTransformer {
+public class LogicTransformer {
     private final Map               orTransformations = new HashMap();
 
-    private static LogicTransformer INSTANCE          = null;
+    private static LogicTransformer INSTANCE          = new LogicTransformer();
 
-    static LogicTransformer getInstance() {
-        if ( LogicTransformer.INSTANCE == null ) {
-            LogicTransformer.INSTANCE = new LogicTransformer();
-        }
-
+    public static LogicTransformer getInstance() {
         return LogicTransformer.INSTANCE;
     }
 
-    LogicTransformer() {
+    protected LogicTransformer() {
         initialize();
     }
 
@@ -91,17 +87,7 @@ class LogicTransformer {
             ands = new GroupElement[]{cloned};
         } else if ( cloned.isOr() ) {
             // it is an OR, so each child is an AND branch
-            ands = new GroupElement[cloned.getChildren().size()];
-            int i = 0;
-            for (final RuleConditionElement branch : cloned.getChildren()) {
-                if ((branch instanceof GroupElement) && (((GroupElement) branch).isAnd())) {
-                    ands[i++] = (GroupElement) branch;
-                } else {
-                    ands[i] = GroupElementFactory.newAndInstance();
-                    ands[i].addChild(branch);
-                    i++;
-                }
-            }
+            ands = splitOr( cloned );
         } else {
             // no, so just wrap into an AND
             final GroupElement wrapper = GroupElementFactory.newAndInstance();
@@ -118,13 +104,29 @@ class LogicTransformer {
         return ands;
     }
 
+    protected GroupElement[] splitOr( final GroupElement cloned ) {
+        GroupElement[] ands = new GroupElement[cloned.getChildren().size()];
+        int i = 0;
+        for ( final Iterator it = cloned.getChildren().iterator(); it.hasNext(); ) {
+            final RuleConditionElement branch = (RuleConditionElement) it.next();
+            if ( (branch instanceof GroupElement) && (((GroupElement) branch).isAnd()) ) {
+                ands[i++] = (GroupElement) branch;
+            } else {
+                ands[i] = GroupElementFactory.newAndInstance();
+                ands[i].addChild( branch );
+                i++;
+            }
+        }
+        return ands;
+    }
+
     /**
      * During the logic transformation, we eventually clone CEs, 
      * specially patterns and corresponding declarations. So now
      * we need to fix any references to cloned declarations.
-     * @param ands
+     * @param and
      */
-    private void fixClonedDeclarations(GroupElement and) {
+    protected void fixClonedDeclarations(GroupElement and) {
         Stack contextStack = new Stack();
         DeclarationScopeResolver resolver = new DeclarationScopeResolver( Collections.<String, Class<?>>emptyMap(),
                                                                           contextStack );
@@ -288,7 +290,7 @@ class LogicTransformer {
      * 
      * @param ce
      */
-    void processTree(final GroupElement ce) throws InvalidPatternException {
+    protected void processTree(final GroupElement ce) throws InvalidPatternException {
 
         boolean hasChildOr = false;
 

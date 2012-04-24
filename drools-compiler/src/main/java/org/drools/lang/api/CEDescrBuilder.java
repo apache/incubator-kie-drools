@@ -17,7 +17,7 @@
 package org.drools.lang.api;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.AnnotatedBaseDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -25,8 +25,9 @@ import org.drools.lang.descr.OrDescr;
 /**
  *  A descriptor builder for Conditional Elements
  */
-public interface CEDescrBuilder<P extends DescrBuilder<?, ?>, T extends BaseDescr>
+public interface CEDescrBuilder<P extends DescrBuilder<?, ?>, T extends AnnotatedBaseDescr>
     extends
+    AnnotatedDescrBuilder<CEDescrBuilder<P, T>>,
     PatternContainerDescrBuilder<CEDescrBuilder<P, T>, T>,
     DescrBuilder< P, T > {
 

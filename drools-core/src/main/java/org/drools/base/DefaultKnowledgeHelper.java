@@ -309,7 +309,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void update(final FactHandle handle) {
-        update(handle, Long.MAX_VALUE);
+        update( handle, Long.MAX_VALUE );
     }
 
     public void update(final FactHandle handle, long mask) {
@@ -497,23 +497,43 @@ public class DefaultKnowledgeHelper
 
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
-        TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
-        boolean needsUpdate = false;
 
-        TraitableBean inner;
-        if ( core instanceof TraitableBean) {
-            inner = (TraitableBean) core;
+        T thing = applyTrait(core, trait);
+
+        return doInsertTrait( thing, logical );
+
+    }
+
+    protected <T> T doInsertTrait( T thing, boolean logical ) {
+        if ( logical ) {
+            insertLogical( thing );
         } else {
-            CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
-            if ( wrapper == null ) {
-                throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
-            }
-            wrapper.init( core );
-            inner = wrapper;
-
-            needsUpdate = true;
+            insert( thing );
         }
+        return thing;
+    }
 
+    protected <T, K> T applyTrait( K core, Class<T> trait ) {
+        TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
+
+        boolean needsWrapping = ! ( core instanceof TraitableBean );
+
+        TraitableBean inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean) core;
+
+        return processTraits( core, trait, builder, needsWrapping, inner );
+    }
+
+    protected <K> TraitableBean asTraitable( K core, TraitFactory builder ) {
+        CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
+        if ( wrapper == null ) {
+            throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
+        }
+        wrapper.init( core );
+        return wrapper;
+    }
+    
+    
+    protected <T,K> T processTraits( K core, Class<T> trait, TraitFactory builder, boolean needsUpdate, TraitableBean inner ) {
 
         T thing;
         if ( inner.hasTrait( trait.getName() ) ) {
@@ -528,12 +548,6 @@ public class DefaultKnowledgeHelper
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
             insert( don( inner, Thing.class, false ) );
-        }
-
-        if ( logical ) {
-            insertLogical( thing );
-        } else {
-            insert( thing );
         }
 
         return thing;

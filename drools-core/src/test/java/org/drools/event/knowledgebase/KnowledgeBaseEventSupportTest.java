@@ -77,7 +77,7 @@ public class KnowledgeBaseEventSupportTest {
                 "type",
                 getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue("cheddar");
+        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
@@ -110,7 +110,7 @@ public class KnowledgeBaseEventSupportTest {
         final Pattern pattern2 = new Pattern( 0,
                                               cheeseObjectType2 );
 
-        final FieldValue field2 = FieldFactory.getFieldValue( "stilton" );
+        final FieldValue field2 = FieldFactory.getInstance().getFieldValue( "stilton" );
 
         final MvelConstraint constraint2 = new MvelConstraintTestUtil("type == \"stilton\"", field, extractor);
 

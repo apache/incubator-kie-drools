@@ -76,7 +76,7 @@ public class AgendaEventSupportTest {
                 "type",
                 getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue("cheddar");
+        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 

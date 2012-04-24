@@ -28,7 +28,7 @@ import org.drools.core.util.MathUtils;
 import org.drools.spi.FieldValue;
 import org.drools.type.DateFormats;
 
-public class FieldFactory {
+public class FieldFactory implements FieldDataFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();
 
 
@@ -36,10 +36,10 @@ public class FieldFactory {
         return FieldFactory.INSTANCE;
     }
 
-    private FieldFactory() {
+    protected FieldFactory() {
     }
 
-    public static FieldValue getFieldValue(String value,
+    public FieldValue getFieldValue(String value,
                                            ValueType valueType,
                                            DateFormats dateFormats) {
         FieldValue field = null;
@@ -108,7 +108,7 @@ public class FieldFactory {
         return field;
     }
 
-    public static FieldValue getFieldValue(Object value,
+    public FieldValue getFieldValue(Object value,
                                            ValueType valueType,
                                            DateFormats dateFormats) {
         FieldValue field = null;
@@ -194,47 +194,47 @@ public class FieldFactory {
 
 
 
-    public static FieldValue getFieldValue(final Object value) {
+    public FieldValue getFieldValue(final Object value) {
         return new ObjectFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final byte value) {
+    public FieldValue getFieldValue(final byte value) {
         return new LongFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final short value) {
+    public FieldValue getFieldValue(final short value) {
         return new LongFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final char value) {
+    public FieldValue getFieldValue(final char value) {
         return new LongFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final int value) {
+    public FieldValue getFieldValue(final int value) {
         return new LongFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final long value) {
+    public FieldValue getFieldValue(final long value) {
         return new LongFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final boolean value) {
+    public FieldValue getFieldValue(final boolean value) {
         return new BooleanFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final float value) {
+    public FieldValue getFieldValue(final float value) {
         return new DoubleFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final double value) {
+    public FieldValue getFieldValue(final double value) {
         return new DoubleFieldImpl( value );
     }
 
-    public static FieldValue getFieldValue(final Class value) {
+    public FieldValue getFieldValue(final Class value) {
         return value == null ? new ObjectFieldImpl( null ) :  new ClassFieldImpl( value );
     }
 
-    private static String stripNumericType(String value) {
+    private String stripNumericType(String value) {
         // incase a user adds a f or l, strip it as its not needed
         if ( Character.getType( value.charAt( value.length() - 1 ) ) != Character.DECIMAL_DIGIT_NUMBER ) {
             value = value.substring( 0,

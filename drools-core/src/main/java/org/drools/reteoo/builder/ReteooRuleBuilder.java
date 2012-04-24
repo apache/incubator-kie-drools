@@ -26,8 +26,8 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.RuleBuilder;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
 import org.drools.rule.Accumulate;
@@ -47,9 +47,9 @@ import org.drools.time.TemporalDependencyMatrix;
 
 import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
-public class ReteooRuleBuilder {
+public class ReteooRuleBuilder implements RuleBuilder {
 
-    private BuildUtils utils;
+    protected BuildUtils utils;
 
     public ReteooRuleBuilder() {
         this.utils = new BuildUtils();

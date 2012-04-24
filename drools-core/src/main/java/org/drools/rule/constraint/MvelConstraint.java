@@ -55,18 +55,18 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     private transient boolean jitted = false;
 
     private String packageName;
-    private String expression;
+    protected String expression;
     private boolean isIndexable;
-    private Declaration[] declarations;
+    protected Declaration[] declarations;
     private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
     private boolean isUnification;
-    private boolean isDynamic;
+    protected boolean isDynamic;
     private FieldValue fieldValue;
 
-    private MVELCompilationUnit compilationUnit;
+    protected MVELCompilationUnit compilationUnit;
 
-    private transient volatile ConditionEvaluator conditionEvaluator;
+    protected transient volatile ConditionEvaluator conditionEvaluator;
     private transient volatile Condition analyzedCondition;
 
     public MvelConstraint() {}
@@ -164,7 +164,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return evaluate(mvelContextEntry.right, mvelContextEntry.workingMemory, tuple);
     }
 
-    private boolean evaluate(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+    protected boolean evaluate(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         if (!jitted) {
             if (conditionEvaluator == null) {
                 createMvelConditionEvaluator(workingMemory);
@@ -180,7 +180,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return conditionEvaluator.evaluate(object, workingMemory, leftTuple);
     }
 
-    private void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
+    protected void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
         if (compilationUnit != null) {
             MVELDialectRuntimeData data = getMVELDialectRuntimeData(workingMemory);
             ExecutableStatement statement = (ExecutableStatement)compilationUnit.getCompiledExpression(data);
@@ -193,7 +193,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
     }
 
-    private boolean forceJitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+    protected boolean forceJitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         boolean mvelValue;
         try {
             mvelValue = conditionEvaluator.evaluate(object, workingMemory, leftTuple);
@@ -204,7 +204,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return mvelValue;
     }
 
-    private void jitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
+    protected void jitEvaluator(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         jitted = true;
         if (TEST_JITTING) {
             executeJitting(object, workingMemory, leftTuple);
@@ -492,7 +492,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return getMVELDialectRuntimeData(workingMemory).getParserConfiguration();
     }
 
-    private MVELDialectRuntimeData getMVELDialectRuntimeData(InternalWorkingMemory workingMemory) {
+    protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalWorkingMemory workingMemory) {
         return ((MVELDialectRuntimeData)workingMemory.getRuleBase().getPackage(packageName).getDialectRuntimeRegistry().getDialectData( "mvel" ));
     }
 
@@ -552,6 +552,22 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             right = in.readObject();
             declarations = (Declaration[])in.readObject();
             next = (ContextEntry)in.readObject();
+        }
+
+        public LeftTuple getLeftTuple() {
+            return leftTuple;
+        }
+
+        public Object getRight() {
+            return right;
+        }
+
+        public Declaration[] getDeclarations() {
+            return declarations;
+        }
+
+        public InternalWorkingMemory getWorkingMemory() {
+            return workingMemory;
         }
     }
 

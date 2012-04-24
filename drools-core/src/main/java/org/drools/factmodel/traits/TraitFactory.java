@@ -20,6 +20,8 @@ import org.drools.KnowledgeBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
+import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.factmodel.BuildUtils;
@@ -27,6 +29,7 @@ import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
 import org.mvel2.asm.MethodVisitor;
@@ -58,7 +61,14 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     private static Map<Class, Class<? extends CoreWrapper<?>>> wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
 
     private AbstractRuleBase ruleBase;
+    
+    public static Class proxyBaseClass = TraitProxy.class;
 
+    public static TripleFactory tripleFactory = ReteooComponentFactory.getTripleFactory();
+
+    public static Class getProxyBaseClass() {
+        return proxyBaseClass;
+    }
 
     public static void reset() {
         factoryCache.clear();

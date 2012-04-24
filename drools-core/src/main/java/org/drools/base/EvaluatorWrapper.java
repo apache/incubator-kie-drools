@@ -288,4 +288,12 @@ public class EvaluatorWrapper
     public String toString() {
         return this.evaluator.toString();
     }
+
+    protected static SelfReferenceClassFieldReader getExtractor() {
+        return extractor;
+    }
+
+    protected Evaluator getEvaluator() {
+        return evaluator;
+    }
 }

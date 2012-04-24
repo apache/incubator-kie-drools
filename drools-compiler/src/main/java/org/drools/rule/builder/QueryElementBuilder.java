@@ -231,8 +231,8 @@ public class QueryElementBuilder
                 }
 
                 MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-                String expr = new MVELDumper().dump( bresult,
-                                                     mvelCtx );
+                String expr = DroolsCompilerComponentFactory.getExpressionProcessor().dump( bresult,
+                                                                                            mvelCtx );
                 try {
                 Object o = MVEL.eval( expr );
                 arguments.set( pos,
@@ -325,8 +325,8 @@ public class QueryElementBuilder
         } else {
             // it's an expression and thus an input
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String rewrittenExpr = new MVELDumper().dump( result,
-                                                          mvelCtx );
+            String rewrittenExpr = DroolsCompilerComponentFactory.getExpressionProcessor().dump( result,
+                                                                                                 mvelCtx );
             arguments.set( position,
                            MVEL.eval( rewrittenExpr ) ); // for now we just work with literals  
         }
