@@ -116,13 +116,24 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
       for agent's kbuilder or force the agent to use the same classloader that
       its kbase has.</para>
       <section>
-      <title>Custom ClassLoaders for KnowledgeBuilder</title>
+      <title>Custom ClassLoaders from KnowledgeBuilder</title>
         <para>Knowledge Agent uses KnowledgeBuilder internally in order to
         compile managed resources. If you need to pass custom configuration to
         these compilers you could pass a KnowledgeBuilderConfiguration object
         to KnowledgeAgentFactory.newKnowledgeAgent(). This object will be used
         in every builder the agent creates. Using a KnowledgeBuilderConfiguration
         you can specify a custom classloader.</para>
+        <important>
+            <para>The usage of a KnowledgeBuilder to specify the CL the agent
+            must use is discouraged. See the next section for the best solution
+            to this problem.</para>
+        </important>
+        <warning>
+            <para>If the agent is handling binary resources (packages), then
+            using a KnowledgeBuilder to specify the CL that must be used will
+            not work. In this case the only solution is to pass a kbase that 
+            uses the custom CL. See next section for more details.</para>
+        </warning>
       </section>
       <section>
       <title>Reuse KnowledgeBase ClassLoader</title>
