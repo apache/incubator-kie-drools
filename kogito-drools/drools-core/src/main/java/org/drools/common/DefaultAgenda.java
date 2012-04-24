@@ -679,7 +679,7 @@ public class DefaultAgenda
             return;
         } else {
             // we are retracting an actual Activation, so also remove it and it's handle from the WM. 
-            removeActivation( (AgendaItem) activation );
+            removeActivation( item );
         }
 
         if ( activation.isActivated() ) {
@@ -705,6 +705,10 @@ public class DefaultAgenda
             }
         } else {
             decreaseDormantActivations();
+        }
+        
+        if ( item.getActivationUnMatchListener() != null ) {
+            item.getActivationUnMatchListener().unMatch( workingMemory.getKnowledgeRuntime(), item );
         }
 
         workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
