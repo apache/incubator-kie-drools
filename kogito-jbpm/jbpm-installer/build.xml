@@ -16,7 +16,7 @@
   <property name="mysql.download.url" value="https://repository.jboss.org/nexus/service/local/repositories/central/content/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar" />
   <property name="postgresql.download.url" value="https://repository.jboss.org/nexus/service/local/repositories/deprecated/content/postgresql/postgresql/8.4-701.jdbc3/postgresql-8.4-701.jdbc3.jar" />
   <property name="slf4j.download.url" value="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.11/slf4j-jdk14-1.5.11.jar"/>
-  <property name="birt.download.url.as7" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-3_7_0-201106151818/birt-runtime-3_7_0.zip&amp;url=http://mirrors.ibiblio.org/pub/mirrors/eclipse/birt/downloads/drops/R-R1-3_7_0-201106151818/birt-runtime-3_7_0.zip&amp;mirror_id=187"/>
+  <property name="birt.download.url.as7" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-3_7_0-201106151818/birt-runtime-3_7_0.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-3_7_0-201106151818/birt-runtime-3_7_0.zip&amp;mirror_id=1"/>
   <property name="birt.download.url.as5" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;mirror_id=1"/>
   <property name="birt.version.as7" value="3_7_0"/>
   <property name="birt.version.as5" value="2_3_2_2"/>
