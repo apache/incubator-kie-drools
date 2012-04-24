@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
+
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -48,7 +49,6 @@ import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
@@ -59,12 +59,12 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Position;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.factmodel.AnnotationDefinition;
-import org.drools.definition.type.*;
-import org.drools.definition.type.FactField;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -78,13 +78,31 @@ import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
-import org.drools.lang.descr.*;
+import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.*;
+import org.drools.rule.Function;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
@@ -96,11 +114,6 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
-
-import java.beans.IntrospectionException;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -572,45 +585,10 @@ public class PackageBuilder {
                 String string = DecisionTableFactory.loadFromInputStream( resource.getInputStream(),
                                                                           dtableConfiguration );
                 addPackageFromDrl( new StringReader( string ) );
-            } else if ( ResourceType.PKG.equals( type ) ) {
-                InputStream is = resource.getInputStream();
-                Package pkg = (Package) DroolsStreamUtils.streamIn( is,
-                                                                    this.configuration.getClassLoader() );
-                is.close();
-                addPackage( pkg );
-            } else if ( ResourceType.CHANGE_SET.equals( type ) ) {
-                ((InternalResource) resource).setResourceType( type );
-                XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
-                if ( resource instanceof ClassPathResource ) {
-                    reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
-                                           ((ClassPathResource) resource).getClazz() );
-                } else {
-                    reader.setClassLoader( this.configuration.getClassLoader(),
-                                           null );
-                }
-                ChangeSet changeSet = reader.read( resource.getReader() );
-                if ( changeSet == null ) {
-                    // @TODO should log an error
-                }
-                for ( Resource nestedResource : changeSet.getResourcesAdded() ) {
-                    InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                    if ( iNestedResourceResource.isDirectory() ) {
-                        this.resourceDirectories.add( iNestedResourceResource );
-                        for ( Resource childResource : iNestedResourceResource.listResources() ) {
-                            if ( ((InternalResource) childResource).isDirectory() ) {
-                                continue; // ignore sub directories
-                            }
-                            ((InternalResource) childResource).setResourceType( iNestedResourceResource.getResourceType() );
-                            addKnowledgeResource( childResource,
-                                                  iNestedResourceResource.getResourceType(),
-                                                  iNestedResourceResource.getConfiguration() );
-                        }
-                    } else {
-                        addKnowledgeResource( iNestedResourceResource,
-                                              iNestedResourceResource.getResourceType(),
-                                              iNestedResourceResource.getConfiguration() );
-                    }
-                }
+            } else if (ResourceType.PKG.equals( type )) {
+                addPackageFromInputStream( resource );
+            } else if (ResourceType.CHANGE_SET.equals( type )) {
+                addPackageFromChangeSet( resource );
             } else if ( ResourceType.XSD.equals( type ) ) {
                 JaxbConfigurationImpl confImpl = (JaxbConfigurationImpl) configuration;
                 String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel( resource,
@@ -651,6 +629,99 @@ public class PackageBuilder {
     }
 
     private Set<Resource> resourceDirectories = new HashSet<Resource>();
+    void addPackageForExternalType(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
+        if (builder != null) {
+            builder.setPackageBuilder( this );
+            builder.addKnowledgeResource( resource,
+                                          type,
+                                          configuration );
+        } else {
+            throw new RuntimeException( "Unknown resource type: " + type );
+        }
+    }
+
+    void addPackageFromXSD(Resource resource, JaxbConfigurationImpl configuration) throws IOException {
+        String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
+                this,
+                configuration.getXjcOpts(),
+                configuration.getSystemId());
+        for (String cls : classes) {
+            configuration.getClasses().add( cls );
+        }
+    }
+
+    void addPackageFromChangeSet(Resource resource) throws SAXException, IOException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                                   ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                                   null );
+        }
+        ChangeSet changeSet = reader.read( resource.getReader() );
+        if (changeSet == null) {
+            // @TODO should log an error
+        }
+        for (Resource nestedResource : changeSet.getResourcesAdded()) {
+            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+            if (iNestedResourceResource.isDirectory()) {
+                for (Resource childResource : iNestedResourceResource.listResources()) {
+                    if (( (InternalResource) childResource ).isDirectory()) {
+                        continue; // ignore sub directories
+                    }
+                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                    addKnowledgeResource( childResource,
+                                          iNestedResourceResource.getResourceType(),
+                                          iNestedResourceResource.getConfiguration() );
+                }
+            } else {
+                addKnowledgeResource( iNestedResourceResource,
+                                      iNestedResourceResource.getResourceType(),
+                                      iNestedResourceResource.getConfiguration() );
+            }
+        }
+    }
+
+    void addPackageFromInputStream(final Resource resource) throws IOException, ClassNotFoundException {
+        InputStream is = resource.getInputStream();
+        Object object = DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
+        is.close();
+        if( object instanceof Collection ) {
+            // KnowledgeBuilder API
+            @SuppressWarnings("unchecked")
+            Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;             
+            for( KnowledgePackage kpkg : pkgs ) {
+                addPackage( ((KnowledgePackageImp)kpkg).pkg );
+            }
+        } else if( object instanceof KnowledgePackageImp ) {
+            // KnowledgeBuilder API
+            KnowledgePackageImp kpkg = (KnowledgePackageImp) object;
+            addPackage( kpkg.pkg );
+        } else if( object instanceof Package ) {
+            // Old Drools 4 API
+            Package pkg = (Package) object;             
+            addPackage( pkg );
+        } else if( object instanceof Package[] )  {
+            // Old Drools 4 API
+            Package[] pkgs = (Package[]) object;             
+            for( Package pkg : pkgs ) {
+                addPackage( pkg );
+            }
+        } else {
+            results.add( new DroolsError() {
+                @Override
+                public String getMessage() {
+                    return "Unknown binary format trying to load resource "+resource.toString();
+                }
+                @Override
+                public int[] getErrorLines() {
+                    return new int[0];
+                }
+            } );
+        }
+    }
 
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
