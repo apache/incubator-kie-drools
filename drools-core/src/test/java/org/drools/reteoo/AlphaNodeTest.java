@@ -72,7 +72,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                 "type",
                 getClass().getClassLoader());
 
-        final FieldValue field = FieldFactory.getFieldValue("cheddar");
+        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
@@ -149,7 +149,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                 "type",
                                                                 getClass().getClassLoader() );
 
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 
@@ -216,7 +216,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                 "type",
                                                                 getClass().getClassLoader() );
 
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"cheddar\"", field, extractor);
 

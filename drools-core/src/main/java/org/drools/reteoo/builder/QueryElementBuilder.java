@@ -17,7 +17,7 @@
 package org.drools.reteoo.builder;
 
 import org.drools.reteoo.LeftTupleSource;
-import org.drools.reteoo.QueryElementNode;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 
@@ -44,7 +44,8 @@ public class QueryElementBuilder
                                         qe.getRequiredDeclarations() );
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    new QueryElementNode( context.getNextId(),
+                                                                    ReteooComponentFactory.getNodeFactoryService().buildQueryElementNode(
+                                                                                          context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           qe,
                                                                                           context.isTupleMemoryEnabled(),

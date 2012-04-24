@@ -7,7 +7,7 @@ public class TripleImpl implements Triple {
     private Object property;
     private Object value;
 
-    public TripleImpl(Object instance,
+    protected TripleImpl(Object instance,
                   String property,
                   Object value) {
         super();
@@ -16,7 +16,7 @@ public class TripleImpl implements Triple {
         this.value = value;
     }
 
-    public TripleImpl(Object instance,
+    protected TripleImpl(Object instance,
                   Object property,
                   Object value) {
         super();

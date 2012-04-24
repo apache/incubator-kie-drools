@@ -214,7 +214,7 @@ public class AnnotationDefinition implements Externalizable {
 
         public AnnotationPropertyVal() { }
 
-        private AnnotationPropertyVal(String property, Class type, Object value, ValType valType) {
+        public AnnotationPropertyVal(String property, Class type, Object value, ValType valType) {
             this.property = property;
             this.type = type;
             this.value = value;

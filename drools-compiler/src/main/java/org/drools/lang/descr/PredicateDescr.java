@@ -18,6 +18,8 @@ package org.drools.lang.descr;
 
 import org.drools.io.Resource;
 
+import java.util.List;
+
 public class PredicateDescr extends RestrictionDescr {
     private static final long serialVersionUID = 510l;
     private Object            content;
@@ -25,6 +27,8 @@ public class PredicateDescr extends RestrictionDescr {
     private String[]          declarations;
 
     private String            classMethodName;
+
+    private List<String>      parameters;
 
     public PredicateDescr() { }
 
@@ -61,6 +65,14 @@ public class PredicateDescr extends RestrictionDescr {
         return this.declarations;
     }
 
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(List<String> parameters) {
+        this.parameters = parameters;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -68,7 +80,11 @@ public class PredicateDescr extends RestrictionDescr {
     public String toString() {
         return "predicate '" + content + "'";
     }
-    
-    
 
+
+    public void copyParameters( BaseDescr base ) {
+        if ( base instanceof RelationalExprDescr ) {
+            setParameters( ((RelationalExprDescr) base).getParameters() );
+        }
+    }
 }

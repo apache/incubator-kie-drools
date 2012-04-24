@@ -59,18 +59,18 @@ public class FromNode extends LeftTupleSource
     NodeMemory {
     private static final long          serialVersionUID = 510l;
 
-    private DataProvider               dataProvider;
-    private LeftTupleSource            tupleSource;
-    private AlphaNodeFieldConstraint[] alphaConstraints;
-    private BetaConstraints            betaConstraints;
+    protected DataProvider               dataProvider;
+    protected LeftTupleSource            tupleSource;
+    protected AlphaNodeFieldConstraint[] alphaConstraints;
+    protected BetaConstraints            betaConstraints;
 
-    private LeftTupleSinkNode          previousTupleSinkNode;
-    private LeftTupleSinkNode          nextTupleSinkNode;
+    protected LeftTupleSinkNode          previousTupleSinkNode;
+    protected LeftTupleSinkNode          nextTupleSinkNode;
     
-    private From                       from;
-    private Class<?>                   resultClass;
+    protected From                       from;
+    protected Class<?>                   resultClass;
 
-    protected boolean                  tupleMemoryEnabled;
+    protected boolean                    tupleMemoryEnabled;
 
     public FromNode() {
     }
@@ -177,10 +177,10 @@ public class FromNode extends LeftTupleSource
     }
 
     @SuppressWarnings("unchecked")
-    private RightTuple createRightTuple( final LeftTuple leftTuple,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final Object object ) {
+    protected RightTuple createRightTuple( final LeftTuple leftTuple,
+                                           final PropagationContext context,
+                                           final InternalWorkingMemory workingMemory,
+                                           final Object object ) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
@@ -211,9 +211,14 @@ public class FromNode extends LeftTupleSource
                                                                          null ); 
         }
 
-        RightTuple rightTuple = new RightTuple( handle,
-                                                null );
+        RightTuple rightTuple = newRightTuple( handle, null );
         return rightTuple;
+    }
+
+    protected RightTuple newRightTuple(InternalFactHandle handle, Object o) {
+        return new RightTuple( handle,
+                               null );
+
     }
 
     private void addToCreatedHandlesMap(final Map<Object, RightTuple> matches,
@@ -300,12 +305,12 @@ public class FromNode extends LeftTupleSource
         }
     }
 
-    private void checkConstraintsAndPropagate(final LeftTuple leftTuple,
-                                              final RightTuple rightTuple,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory,
-                                              final FromMemory memory,
-                                              final boolean useLeftMemory) {
+    protected void checkConstraintsAndPropagate( final LeftTuple leftTuple,
+                                                 final RightTuple rightTuple,
+                                                 final PropagationContext context,
+                                                 final InternalWorkingMemory workingMemory,
+                                                 final FromMemory memory,
+                                                 final boolean useLeftMemory ) {
         boolean isAllowed = true;
         if ( this.alphaConstraints != null ) {
             // First alpha node filters
@@ -348,10 +353,10 @@ public class FromNode extends LeftTupleSource
         }
     }
 
-    private void retractMatch(final LeftTuple leftTuple,
-                              final RightTuple rightTuple,
-                              final PropagationContext context,
-                              final InternalWorkingMemory workingMemory) {
+    protected void retractMatch(final LeftTuple leftTuple,
+                                final RightTuple rightTuple,
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
         if ( rightTuple.firstChild != null ) {
             // there was a previous match, so need to retract
             this.sink.propagateRetractChildLeftTuple( rightTuple.firstChild,

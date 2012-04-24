@@ -19,6 +19,7 @@ package org.drools.factmodel.traits;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 
@@ -56,6 +57,13 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
                     genericTypes,
                     superType,
                     intfaces );
+
+            {
+                if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {
+                    AnnotationVisitor av0 = cw.visitAnnotation("Lorg/drools/factmodel/traits/Trait;", true);
+                    av0.visitEnd();
+                }
+            }
 
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
                 buildField( cw, field );

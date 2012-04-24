@@ -16,13 +16,16 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.core.util.TripleImpl;
+import org.drools.core.util.Triple;
+import org.drools.core.util.TripleFactory;
 import org.drools.runtime.rule.Variable;
 
 import java.io.*;
 import java.util.Map;
 
 public abstract class TraitProxy implements Externalizable {
+
+    protected static TripleFactory tripleFactory = TraitFactory.tripleFactory;
 
     public TraitProxy() { }
 
@@ -91,16 +94,16 @@ public abstract class TraitProxy implements Externalizable {
     }
 
 
-    protected TripleImpl propertyKey( String property ) {
-        return new TripleImpl( getObject(), property, Variable.v );
+    protected Triple propertyKey( String property ) {
+        return tripleFactory.newTriple( getObject(), property, Variable.v );
     }
 
-    protected TripleImpl property( String property, Object value ) {
-        return new TripleImpl( getObject(), property, value );
+    protected Triple property( String property, Object value ) {
+        return tripleFactory.newTriple( getObject(), property, value );
     }
 
-    protected TripleImpl propertyKey( Object property ) {
-        return new TripleImpl( getObject(), property.toString(), Variable.v );
+    protected Triple propertyKey( Object property ) {
+        return tripleFactory.newTriple( getObject(), property.toString(), Variable.v );
     }
 
 

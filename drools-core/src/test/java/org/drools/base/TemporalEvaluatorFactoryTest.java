@@ -1023,7 +1023,7 @@ public class TemporalEvaluatorFactoryTest {
                                                     final InternalReadAccessor extractor,
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
-        final FieldValue value = FieldFactory.getFieldValue( row[2] );
+        final FieldValue value = FieldFactory.getInstance().getFieldValue( row[2] );
         RuntimeDroolsException exc = null;
         try {
             evaluator.evaluate( null,

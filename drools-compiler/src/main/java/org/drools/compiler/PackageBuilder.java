@@ -19,6 +19,7 @@ package org.drools.compiler;
 import static org.drools.core.util.BitMaskUtil.isSet;
 
 import java.beans.IntrospectionException;
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -1703,7 +1704,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 ClassDefinition classDef = superTypeDeclaration.getTypeClassDef();
                 // inherit fields
                 for (FactField fld : classDef.getFields()) {
-                    TypeFieldDescr inheritedFlDescr = TypeFieldDescr.buildInheritedFromDefinition( fld );
+                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld );
                     fieldMap.put( inheritedFlDescr.getFieldName(),
                                   inheritedFlDescr );
                 }
@@ -1799,6 +1800,23 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         return true;
     }
+
+    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(FactField fld) {
+        PatternDescr fldType = new PatternDescr();
+        TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
+            inheritedFldDescr.setFieldName( fld.getName() );
+            fldType.setObjectType( ( (FieldDefinition) fld ).getFieldAccessor().getExtractToClassName() );
+            inheritedFldDescr.setPattern( fldType );
+        if ( fld.isKey() ) {
+            inheritedFldDescr.getAnnotations().put( TypeDeclaration.ATTR_KEY,
+                                                    new AnnotationDescr( TypeDeclaration.ATTR_KEY ) );
+        }
+            inheritedFldDescr.setIndex( fld.getIndex() );
+            inheritedFldDescr.setInherited( true );
+            inheritedFldDescr.setInitExpr( ( (FieldDefinition) fld ).getInitExpr() );
+        return inheritedFldDescr;
+    }
+
 
     /**
      * @param packageDescr
@@ -2298,7 +2316,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         fullSuperTypes[j] = Thing.class.getName();
 
         List<String> interfaceList = new ArrayList<String>();
-        interfaceList.add( Serializable.class.getName() );
+        interfaceList.add(  traitable ? Externalizable.class.getName() : Serializable.class.getName() );
         if (traitable) {
             interfaceList.add( TraitableBean.class.getName() );
         }
@@ -2440,7 +2458,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                        PackageRegistry pkgRegistry,
                                        ClassDefinition def ) {
 
-        if (typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null) {
+        if ( typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null
+                || ( ! type.getKind().equals( TypeDeclaration.Kind.TRAIT ) && TraitRegistry.getInstance().getTraitables().containsKey( def.getSuperClass() ) ) ) {
             if (!isNovelClass( typeDescr )) {
                 try {
                     PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
@@ -2758,7 +2777,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-        int i = pkgs.length;
+//        int i = pkgs.length;
+        int i = 0 ;
         String errors = null;
         if (!getErrors().isEmpty()) {
             errors = getErrors().toString();
@@ -2769,7 +2789,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             if (errors != null) {
                 pkg.setError( errors );
             }
-            pkgs[--i] = pkg;
+//            pkgs[--i] = pkg;
+            pkgs[i++] = pkg;
         }
 
         return pkgs;

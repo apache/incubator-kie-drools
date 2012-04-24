@@ -39,6 +39,7 @@ import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -82,7 +83,7 @@ public class DefaultAgenda
     private static final long                                   serialVersionUID = 510l;
 
     /** Working memory of this Agenda. */
-    private InternalWorkingMemory                               workingMemory;
+    protected InternalWorkingMemory                             workingMemory;
 
     private org.drools.core.util.LinkedList                     scheduledActivations;
 
@@ -102,7 +103,7 @@ public class DefaultAgenda
 
     private AgendaGroupFactory                                  agendaGroupFactory;
 
-    private KnowledgeHelper                                     knowledgeHelper;
+    protected KnowledgeHelper                                   knowledgeHelper;
 
     public int                                                  activeActivations;
 
@@ -114,7 +115,7 @@ public class DefaultAgenda
 
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
-    private int                                                 activationCounter;
+    protected int                                               activationCounter;
     
     private boolean                                             declarativeAgenda;
     
@@ -207,9 +208,9 @@ public class DefaultAgenda
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         if ( ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
-            this.knowledgeHelper = new SequentialKnowledgeHelper( this.workingMemory );
+            this.knowledgeHelper = ReteooComponentFactory.getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
         } else {
-            this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
+            this.knowledgeHelper = ReteooComponentFactory.getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
         }
     }
 

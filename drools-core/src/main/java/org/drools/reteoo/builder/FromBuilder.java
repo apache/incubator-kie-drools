@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.FromNode;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -43,7 +44,7 @@ public class FromBuilder
         BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, (List<BetaNodeFieldConstraint>) context.getBetaconstraints(), true );
         
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                new FromNode( context.getNextId(),
+                ReteooComponentFactory.getNodeFactoryService().buildFromNode( context.getNextId(),
                                                                               from.getDataProvider(),
                                                                               context.getTupleSource(),
                                                                               (AlphaNodeFieldConstraint[]) context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),

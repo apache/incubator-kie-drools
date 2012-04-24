@@ -24,11 +24,11 @@ public class ClassBuilderFactory {
 
     // Generic beans
 
-    private static BeanClassBuilder beanClassBuilderProvider;
+    private static BeanClassBuilder beanClassBuilderProvider = new DefaultBeanClassBuilder();
 
-    public static synchronized ClassBuilder getBeanClassBuilderService( ) {
+    public static synchronized ClassBuilder getBeanClassBuilderService() {
         if ( beanClassBuilderProvider == null) {
-            loadBeanClassBuilderProvider( );
+            loadBeanClassBuilderProvider();
         }
         return beanClassBuilderProvider;
     }
@@ -38,7 +38,11 @@ public class ClassBuilderFactory {
         ClassBuilderFactory.beanClassBuilderProvider = provider;
     }
 
-    private static void loadBeanClassBuilderProvider( ) {
+    public static synchronized void setDefaultBeanClassBuilderService() {
+        ClassBuilderFactory.beanClassBuilderProvider = new DefaultBeanClassBuilder() ;
+    }
+
+    private static void loadBeanClassBuilderProvider() {
         String defaultName = "org.drools.factmodel.DefaultBeanClassBuilder";
         try {
             ServiceRegistryImpl.getInstance().addDefault( BeanClassBuilder.class, defaultName );
@@ -50,29 +54,33 @@ public class ClassBuilderFactory {
 
 
 
-    private static EnumClassBuilder enumClassBuilderProvider;
+    private static EnumClassBuilder enumClassBuilderProvider = new DefaultEnumClassBuilder();
 
-        public static synchronized EnumClassBuilder getEnumClassBuilderService( ) {
-            if ( enumClassBuilderProvider == null) {
-                loadEnumClassBuilderProvider( );
-            }
-            return enumClassBuilderProvider;
+    public static synchronized EnumClassBuilder getEnumClassBuilderService() {
+        if ( enumClassBuilderProvider == null) {
+            loadEnumClassBuilderProvider();
         }
+        return enumClassBuilderProvider;
+    }
 
 
-        public static synchronized void setEnumClassBuilderService( EnumClassBuilder provider ) {
-            ClassBuilderFactory.enumClassBuilderProvider = provider;
+    public static synchronized void setEnumClassBuilderService( EnumClassBuilder provider ) {
+        ClassBuilderFactory.enumClassBuilderProvider = provider;
+    }
+
+    public static synchronized void setDefaultEnumClassBuilderService() {
+        ClassBuilderFactory.enumClassBuilderProvider = new DefaultEnumClassBuilder();
+    }
+
+    private static void loadEnumClassBuilderProvider() {
+        String defaultName = "org.drools.factmodel.DefaultEnumClassBuilder";
+        try {
+            ServiceRegistryImpl.getInstance().addDefault( EnumClassBuilder.class, defaultName );
+            setEnumClassBuilderService( ServiceRegistryImpl.getInstance().get( EnumClassBuilder.class ) );
+        } catch ( Exception e ) {
+            e.printStackTrace();
         }
-
-        private static void loadEnumClassBuilderProvider( ) {
-            String defaultName = "org.drools.factmodel.DefaultEnumClassBuilder";
-            try {
-                ServiceRegistryImpl.getInstance().addDefault( EnumClassBuilder.class, defaultName );
-                setEnumClassBuilderService( ServiceRegistryImpl.getInstance().get( EnumClassBuilder.class ) );
-            } catch ( Exception e ) {
-                e.printStackTrace();
-            }
-        }
+    }
 
 
     // Trait interfaces
@@ -90,6 +98,11 @@ public class ClassBuilderFactory {
     public static synchronized void setTraitBuilderService( TraitClassBuilder provider ) {
         ClassBuilderFactory.traitBuilderProvider = provider;
     }
+
+    public static synchronized void setDefaultTraitBuilderService() {
+        ClassBuilderFactory.traitBuilderProvider = new TraitClassBuilderImpl();
+    }    
+    
 
     private static void loadTraitBuilderProvider() {
         ServiceRegistryImpl.getInstance().addDefault( TraitClassBuilder.class, "org.drools.factmodel.traits.TraitClassBuilderImpl" );
@@ -117,10 +130,14 @@ public class ClassBuilderFactory {
         ClassBuilderFactory.propertyWrapperBuilderProvider = provider;
     }
 
+    public static synchronized void setDefaultPropertyWrapperBuilderService() {
+        ClassBuilderFactory.propertyWrapperBuilderProvider = new TraitTriplePropertyWrapperClassBuilderImpl();
+    }
+
     private static void loadPropertyWrapperClassBuilderProvider() {
         try {
-           ServiceRegistryImpl.getInstance().addDefault( TraitPropertyWrapperClassBuilder.class, "org.drools.factmodel.TraitTriplePropertyWrapperClassBuilderImpl" );
-           setPropertyWrapperBuilderService(ServiceRegistryImpl.getInstance().get(TraitPropertyWrapperClassBuilder.class));
+            ServiceRegistryImpl.getInstance().addDefault( TraitPropertyWrapperClassBuilder.class, "org.drools.factmodel.TraitTriplePropertyWrapperClassBuilderImpl" );
+            setPropertyWrapperBuilderService(ServiceRegistryImpl.getInstance().get(TraitPropertyWrapperClassBuilder.class));
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -145,15 +162,21 @@ public class ClassBuilderFactory {
         ClassBuilderFactory.traitProxyBuilderProvider = provider;
     }
 
+    public static synchronized void setDefaultTraitProxyBuilderService() {
+        ClassBuilderFactory.traitProxyBuilderProvider = new TraitTripleProxyClassBuilderImpl();
+    }
+
     private static void loadTraitProxyClassBuilderProvider() {
         try {
-           ServiceRegistryImpl.getInstance().addDefault( TraitProxyClassBuilder.class, "org.drools.factmodel.TraitTripleProxyClassBuilderImpl" );
-           setTraitProxyBuilderService(ServiceRegistryImpl.getInstance().get(TraitProxyClassBuilder.class));
+            ServiceRegistryImpl.getInstance().addDefault( TraitProxyClassBuilder.class, "org.drools.factmodel.TraitTripleProxyClassBuilderImpl" );
+            setTraitProxyBuilderService(ServiceRegistryImpl.getInstance().get(TraitProxyClassBuilder.class));
         } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
 
+
+    
 
 
 

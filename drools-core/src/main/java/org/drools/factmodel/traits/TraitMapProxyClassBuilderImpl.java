@@ -114,7 +114,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
         cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
                   internalProxy,
                   null,
-                  "org/drools/factmodel/traits/TraitProxy",
+                  BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ),
                   new String[]{ internalTrait, "java/io/Serializable" } );
 
         {
@@ -139,7 +139,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitCode();
 
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "<init>", "()V");
 
             mv.visitInsn(RETURN);
             mv.visitMaxs(1, 1);
@@ -149,7 +149,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + descrCore + "Ljava/util/Map;)V", "(" + descrCore + "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V", null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "<init>", "()V");
             if ( mixinClass != null ) {
                 try {
                     Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
@@ -241,7 +241,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "writeExternal", "(Ljava/io/ObjectOutput;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "writeExternal", "(Ljava/io/ObjectOutput;)V");
 
 
             mv.visitInsn(RETURN);
@@ -268,7 +268,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "readExternal", "(Ljava/io/ObjectInput;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "readExternal", "(Ljava/io/ObjectInput;)V");
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 3, 2 );
@@ -547,13 +547,13 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder {
             mv.visitLabel(l2);
 
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/TraitProxy");
+            mv.visitTypeInsn(CHECKCAST, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ));
             mv.visitVarInsn(ASTORE, 2);
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, proxyType, "getFields", "()Ljava/util/Map;");
             mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/factmodel/traits/TraitProxy", "getFields", "()Ljava/util/Map;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "getFields", "()Ljava/util/Map;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
 
             mv.visitInsn(IRETURN);

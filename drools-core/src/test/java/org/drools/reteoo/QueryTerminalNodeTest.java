@@ -77,7 +77,7 @@ public class QueryTerminalNodeTest {
                 DroolsQuery.class.getClassLoader());
 
         MvelConstraint constraint = new MvelConstraintTestUtil( "name == \"query-1\"",
-                                                                FieldFactory.getFieldValue( "query-1" ),
+                                                                FieldFactory.getInstance().getFieldValue( "query-1" ),
                                                                 extractor );
 
         AlphaNode alphaNode = new AlphaNode( this.buildContext.getNextId(),
@@ -103,7 +103,7 @@ public class QueryTerminalNodeTest {
                                         getClass().getClassLoader() );
 
         constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
-                                                 FieldFactory.getFieldValue( "stilton" ),
+                                                 FieldFactory.getInstance().getFieldValue( "stilton" ),
                                                  extractor );
 
         alphaNode = new AlphaNode( this.buildContext.getNextId(),

@@ -77,6 +77,7 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -122,8 +123,6 @@ public class InputMarshaller {
      * 
      * @param session
      * @param context
-     * @param id
-     * @param executor
      * @return
      * @throws IOException
      * @throws ClassNotFoundException
@@ -200,8 +199,8 @@ public class InputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = new DefaultAgenda( context.ruleBase,
-                                                  false );
+        DefaultAgenda agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( context.ruleBase, false );
+
         readAgenda( context,
                     agenda );
         ReteooStatefulSession session = new ReteooStatefulSession( id,
