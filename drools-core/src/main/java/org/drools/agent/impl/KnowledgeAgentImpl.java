@@ -20,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -714,6 +713,7 @@ public class KnowledgeAgentImpl
      * is already a package, this builder is not used.
      * @return the package resulting of the compilation of resource.
      */
+    @SuppressWarnings("unchecked")
     private Collection<KnowledgePackage> createPackageFromResource(Resource resource,
                                                                    KnowledgeBuilder kbuilder) {
 
@@ -740,22 +740,35 @@ public class KnowledgeAgentImpl
         } else {
             // .pks are handled as a special case.
             InputStream is = null;
-            KnowledgePackageImp kpkg = null;
+            Collection<KnowledgePackage> kpkgs = null;
             try {
                 is = resource.getInputStream();
                 Object object = DroolsStreamUtils.streamIn( is );
-                if ( object instanceof KnowledgePackageImp ) {
-                    kpkg = ((KnowledgePackageImp) object);
+                if ( object instanceof Collection ) {
+                    kpkgs = (Collection<KnowledgePackage>) object;
+                } else if ( object instanceof KnowledgePackageImp ) {
+                    kpkgs = Collections.singletonList( (KnowledgePackage) object );
+                } else if( object instanceof Package ) {
+                    kpkgs = Collections.singletonList( (KnowledgePackage) new KnowledgePackageImp( (Package) object ) );
+                } else if( object instanceof Package[] ) {
+                    kpkgs = new ArrayList<KnowledgePackage>();
+                    for( Package pkg : (Package[]) object ) {
+                        kpkgs.add( new KnowledgePackageImp( pkg ) );
+                    }
                 } else {
-                    kpkg = new KnowledgePackageImp( (Package) object );
+                    throw new RuntimeException("Unknown binary format trying to load resource "+resource.toString());
                 }
-                for ( Rule rule : kpkg.pkg.getRules() ) {
-                    rule.setResource( resource );
+                for( KnowledgePackage kpkg : kpkgs ) {
+                    for ( Rule rule : ((KnowledgePackageImp)kpkg).pkg.getRules() ) {
+                        rule.setResource( resource );
+                    }
+                    for ( Process process : ((KnowledgePackageImp)kpkg).pkg.getRuleFlows().values() ) {
+                        ((ResourcedObject) process).setResource( resource );
+                    }
+                    for ( TypeDeclaration type : ((KnowledgePackageImp)kpkg).pkg.getTypeDeclarations().values() ) {
+                        type.setResource( resource );
+                    }
                 }
-                for ( Process process : kpkg.pkg.getRuleFlows().values() ) {
-                    ((ResourcedObject) process).setResource( resource );
-                }
-
             } catch ( Exception ex ) {
                 this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ",
                                                                ex ) );
@@ -769,7 +782,7 @@ public class KnowledgeAgentImpl
                                                                    e ) );
                 }
             }
-            return Arrays.<KnowledgePackage> asList( kpkg );
+            return kpkgs;
         }
     }
 
