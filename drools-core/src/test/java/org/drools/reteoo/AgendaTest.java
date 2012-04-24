@@ -24,11 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.SalienceInteger;
+import org.drools.common.AgendaItem;
 import org.drools.common.ArrayAgendaGroup;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
@@ -43,6 +45,7 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.event.rule.ActivationCancelledCause;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
@@ -190,6 +193,103 @@ public class AgendaTest extends DroolsTestCase {
                       agenda.getScheduledActivations().length );
     }
 
+    @Test
+    public void testActivationUnMatchListener() {
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+
+        final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+
+        final Rule rule1 = new Rule( "test-rule1" );
+
+        final RuleTerminalNode node1 = new RuleTerminalNode( 3,
+                                                             new MockTupleSource( 2 ),
+                                                             rule1,
+                                                             rule1.getLhs(),
+                                                             0,
+                                                             buildContext );
+
+        Cheese cheese = new Cheese();
+        cheese.setPrice( 50 );
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1, cheese),null,true );
+
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule1,
+                                                                        null,
+                                                                        null );
+
+        // Add consequence. Notice here the context here for the add to ageyunda
+        // is itself
+        rule1.setConsequence( new org.drools.spi.Consequence() {
+            private static final long serialVersionUID = 510l;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
+                AgendaItem item = ( AgendaItem ) knowledgeHelper.getActivation();
+                final Cheese cheese = ( Cheese ) item.getTuple().getHandle().getObject();
+                final int oldPrice = cheese.getPrice();
+                cheese.setPrice( 100 );
+                
+                item.setActivationUnMatchListener( new ActivationUnMatchListener() {
+                    
+                    public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                                        org.drools.runtime.rule.Activation activation) {
+                        cheese.setPrice( oldPrice );
+                    }
+                } );
+            }
+
+            public void readExternal(ObjectInput in) throws IOException,
+                                                    ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
+
+            public String getName() {
+                return "default";
+            }
+        } );
+
+        assertEquals( 50, cheese.getPrice() );
+        
+        node1.assertLeftTuple( tuple,
+                               context1,
+                               workingMemory );
+   
+        
+        agenda.unstageActivations();
+        agenda.fireNextItem( null );
+        assertEquals( 100, cheese.getPrice() );
+        
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.RETRACTION,
+                                                                        rule1,
+                                                                        null,
+                                                                        null );
+
+        node1.retractLeftTuple( tuple, context0, workingMemory );
+        
+        assertEquals( 50, cheese.getPrice() );
+//        // make sure we have an activation in the current focus
+//        assertEquals( 1,
+//                      agenda.getFocus().size() );
+//
+//        assertEquals( 1,
+//                      agenda.getScheduledActivations().length );
+//
+//        agenda.clearAndCancel();
+//
+//        assertEquals( 0,
+//                      agenda.getFocus().size() );
+//
+//        assertEquals( 0,
+//                      agenda.getScheduledActivations().length );
+    }
+    
+    
     @Test
     public void testFilters() throws Exception {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();

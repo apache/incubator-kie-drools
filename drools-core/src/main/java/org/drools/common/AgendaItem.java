@@ -29,6 +29,8 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queueable;
+import org.drools.event.rule.ActivationEvent;
+import org.drools.event.rule.ActivationUnMatchListener;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
@@ -50,48 +52,50 @@ public class AgendaItem
     // Instance members
     // ------------------------------------------------------------
 
-    private static final long   serialVersionUID = 510l;
+    private static final long         serialVersionUID = 510l;
 
     /** The tuple. */
-    private LeftTuple           tuple;
+    private LeftTuple                 tuple;
 
     /** The salience */
-    private int                 salience;
+    private int                       salience;
 
     /** Used for sequential mode */
-    private int                 sequenence;
+    private int                       sequenence;
 
     /** Rule terminal node, gives access to SubRule **/
-    private RuleTerminalNode    rtn;
+    private RuleTerminalNode          rtn;
 
     /** The propagation context */
-    private PropagationContext  context;
+    private PropagationContext        context;
 
     /** The activation number */
-    private long                activationNumber;
+    private long                      activationNumber;
 
-    private int                 index;
+    private int                       index;
 
-    private LinkedList          justified;
+    private LinkedList                justified;
 
-    private LinkedList          blocked;
+    private LinkedList                blocked;
 
-    private LinkedList          blockers;
+    private LinkedList                blockers;
 
-    private boolean             activated;
+    private boolean                   activated;
 
-    private InternalAgendaGroup agendaGroup;
+    private InternalAgendaGroup       agendaGroup;
 
-    private ActivationGroupNode activationGroupNode;
+    private ActivationGroupNode       activationGroupNode;
 
-    private ActivationNode      activationNode;
+    private ActivationNode            activationNode;
 
-    private InternalFactHandle  factHandle;
+    private InternalFactHandle        factHandle;
 
-    private transient boolean   canceled;
+    private transient boolean         canceled;
+
+    private boolean                   matched;
+
+    private ActivationUnMatchListener activationUnMatchListener;
     
-    private boolean             matched;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -362,6 +366,15 @@ public class AgendaItem
     
     public RuleTerminalNode getRuleTerminalNode() {
         return this.rtn;
+    }
+        
+    
+    public ActivationUnMatchListener getActivationUnMatchListener() {
+        return activationUnMatchListener;
+    }
+
+    public void setActivationUnMatchListener(ActivationUnMatchListener activationUnMatchListener) {
+        this.activationUnMatchListener = activationUnMatchListener;
     }
 
     public List<FactHandle> getFactHandles() {
