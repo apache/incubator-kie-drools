@@ -70,12 +70,14 @@ import org.drools.core.util.DeepCloneable;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
+import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.ClassReactive;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Modifies;
 import org.drools.definition.type.Position;
 import org.drools.definition.type.PropertyReactive;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassBuilderFactory;
@@ -774,11 +776,43 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    void addPackageFromInputStream(Resource resource) throws IOException, ClassNotFoundException {
+    void addPackageFromInputStream(final Resource resource) throws IOException, ClassNotFoundException {
         InputStream is = resource.getInputStream();
-        Package pkg = (Package) DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
+        Object object = DroolsStreamUtils.streamIn(is, this.configuration.getClassLoader());
         is.close();
-        addPackage( pkg );
+        if( object instanceof Collection ) {
+            // KnowledgeBuilder API
+            @SuppressWarnings("unchecked")
+            Collection<KnowledgePackage> pkgs = (Collection<KnowledgePackage>) object;             
+            for( KnowledgePackage kpkg : pkgs ) {
+                addPackage( ((KnowledgePackageImp)kpkg).pkg );
+            }
+        } else if( object instanceof KnowledgePackageImp ) {
+            // KnowledgeBuilder API
+            KnowledgePackageImp kpkg = (KnowledgePackageImp) object;
+            addPackage( kpkg.pkg );
+        } else if( object instanceof Package ) {
+            // Old Drools 4 API
+            Package pkg = (Package) object;             
+            addPackage( pkg );
+        } else if( object instanceof Package[] )  {
+            // Old Drools 4 API
+            Package[] pkgs = (Package[]) object;             
+            for( Package pkg : pkgs ) {
+                addPackage( pkg );
+            }
+        } else {
+            results.add( new DroolsError( resource ) {
+                @Override
+                public String getMessage() {
+                    return "Unknown binary format trying to load resource "+resource.toString();
+                }
+                @Override
+                public int[] getLines() {
+                    return new int[0];
+                }
+            } );
+        }
     }
 
     /**
