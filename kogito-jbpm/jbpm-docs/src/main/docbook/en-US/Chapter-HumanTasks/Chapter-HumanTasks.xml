@@ -768,6 +768,71 @@ jbpm.usergroup.callback=org.jbpm.task.service.DefaultUserGroupCallbackImpl
       <code>$jbpm-installer-dir$/task-service/resources/org/jbpm/jbpm.usergroup.callback.properties</code>
       directly to register your own callback implementation.
       </para>
+      
+      <section>
+      <title>Connecting Human Task server to LDAP</title>
+      <para>jBPM comes with a dedicated UserGroupCallback implementation for LDAP servers that allows task server
+      to retrieve user and group/role information directly from LDAP. To be able to use this callback it must be
+      configured according to specifics of LDAP server and its structure to collect proper information.
+      </para>
+      
+      LDAP UserGroupCallback properties
+     <itemizedlist>
+         <listitem>ldap.bind.user : username used to connect to the LDAP server (optional if LDAP server accepts anonymous access)</listitem>
+         <listitem>ldap.bind.pwd : password used to connect to the LDAP server(optional if LDAP server accepts anonymous access)</listitem>
+         <listitem>ldap.user.ctx : context in LDAP that will be used when searching for user information (mandatory)</listitem>
+         <listitem>ldap.role.ctx : context in LDAP that will be used when searching for group/role information (mandatory)</listitem>
+         <listitem>ldap.user.roles.ctx :  context in LDAP that will be used when searching for user group/role membership information  (optional, if not given ldap.role.ctx will be used)</listitem>
+         <listitem>ldap.user.filter : filter that will be used to search for user information, usually will contain substitution keys {0} to be replaced with parameters (mandatory)</listitem>
+         <listitem>ldap.role.filter : filter that will be used to search for group/role information, usually will contain substitution keys {0} to be replaced with parameters (mandatory)</listitem>
+         <listitem>ldap.user.roles.filter : filter that will be used to search for user group/role membership information, usually will contain substitution keys {0} to be replaced with parameters (mandatory)</listitem>
+         <listitem>ldap.user.attr.id : attribute name of the user id in LDAP (optional, if not given 'uid' will be used)</listitem>
+         <listitem>ldap.roles.attr.id : attribute name of the group/role id in LDAP (optional, if not given 'cn' will be used)</listitem>
+         <listitem>ldap.user.id.dn : is user id a DN, instructs the callback to query for user DN before searching for roles (optional, default false)</listitem>
+         <listitem>java.naming.factory.initial : initial conntext factory class name (default com.sun.jndi.ldap.LdapCtxFactory)</listitem>
+         <listitem>java.naming.security.authentication : authentication type (none, simple, strong where simple is default one)</listitem>
+         <listitem>java.naming.security.protocol : specifies security protocol to be used, for instance ssl</listitem>
+         <listitem>java.naming.provider.url : LDAP url to be used default is ldap://localhost:389, or if protocol is set to ssl ldap://localhost:636</listitem>
+      </itemizedlist>
+      Depending on how human task server is started LDAP callback can be configured in two ways:
+      <itemizedlist>
+         <listitem>programatically - build property object with all required attributes and register new callback
+         
+      
+      <programlisting language="java">
+Properties properties = new Properties();
+properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=my-domain,dc=com");
+properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=my-domain,dc=com");
+properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=my-domain,dc=com");
+properties.setProperty(LDAPUserGroupCallbackImpl.USER_FILTER, "(uid={0})");
+properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_FILTER, "(cn={0})");
+properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_FILTER, "(member={0})");
+
+UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(properties);
+
+UserGroupCallbackManager.getInstance().setCallback(ldapUserGroupCallback);
+      </programlisting>
+      </listitem>
+      <listitem>declaratively - create property file (jbpm.usergroup.callback.properties) with all 
+      required attributes, place it on the root of the classpath and declare LDAP callback to be registered 
+      (see section Starting the human task server for deatils). Alternatively, location of 
+      jbpm.usergroup.callback.properties can be specified via system property 
+      -Djbpm.usergroup.callback.properties=FILE_LOCATION_ON_CLASSPATH
+      <programlisting language="java">
+#ldap.bind.user=
+#ldap.bind.pwd=
+ldap.user.ctx=ou\=People,dc\=my-domain,dc\=com
+ldap.role.ctx=ou\=Roles,dc\=my-domain,dc\=com
+ldap.user.roles.ctx=ou\=Roles,dc\=my-domain,dc\=com
+ldap.user.filter=(uid\={0})
+ldap.role.filter=(cn\={0})
+ldap.user.roles.filter=(member\={0})
+#ldap.user.attr.id=
+#ldap.roles.attr.id=
+      </programlisting>
+      </listitem>
+      </itemizedlist>
+      </section>
     </section>
 
     <section>
@@ -924,6 +989,8 @@ public interface UserInfo {
       <code>$jbpm-installer-dir$/task-service/resources/org/jbpm/</code>, make sure that they are named email.properties
       and userinfo.properties.
       </para>
+      
+      
     </section>
 
     
@@ -949,6 +1016,15 @@ public interface UserInfo {
         (default DefaultEscalatedDeadlineHandler)</listitem>
         <listitem>user.info.class : implementation of UserInfo interface to be used to resolve 
         user/group information such as email address, prefered language</listitem>
+        <listitem>load.users : allows to specify location of a file that will be used to initially
+         populate task server db with users. Accepts two types of files: MVEL and properties; must 
+         be suffixed with .mvel or .properties. Location of the file can be either on classpath 
+         (with prefix classpath:) or valid URL. NOTE: that with custom users files Administrator 
+         user must always be present</listitem>
+        <listitem>load.groups : allows to specify location of a file that will be used to initially
+         populate task server db with groups. Accepts two types of files: MVEL and properties;file
+          must be suffixed with .mvel or .properties. Location of the file can be either on classpath 
+         (with prefix classpath:) or valid URL.</listitem>
       </itemizedlist>
     Transport settings
       <itemizedlist>

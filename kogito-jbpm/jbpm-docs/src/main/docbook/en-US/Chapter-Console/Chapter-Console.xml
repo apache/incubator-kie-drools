@@ -136,8 +136,9 @@
      <para>
      Management console configuration
      <itemizedlist>
-        <listitem>jbpm.console.server.host : host/ip address used to bind management console</listitem>
-        <listitem>jbpm.console.server.port : port used to bind management console</listitem>
+        <listitem>jbpm.console.server.host : host/ip address used to bind management console (default localhost)</listitem>
+        <listitem>jbpm.console.server.port : port used to bind management console (default 8080)</listitem>
+        <listitem>jbpm.console.server.context : context root that is used to bind console server web application (default gwt-console-server)</listitem>
         <listitem>jbpm.console.directory : local directory used as process/rules repository</listitem>
       </itemizedlist>
      
@@ -163,6 +164,7 @@
         <listitem>guvnor.packages : comma separated list of packages to load from Guvnor</listitem>
         <listitem>guvnor.connect.timeout : connect timeout (default 10000)</listitem>
         <listitem>guvnor.read.timeout : read timeout (default 10000)</listitem>
+        <listitem>guvnor.snapshot.name : configure package snapshot name (default LATEST)</listitem>
       </itemizedlist>
      
      </para>
