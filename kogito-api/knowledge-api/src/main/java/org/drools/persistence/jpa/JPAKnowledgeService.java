@@ -106,7 +106,7 @@ import org.drools.util.ServiceRegistryImpl;
  * </pre>
  * 
  * <p>
- * Bitronix also provides a simple embedded JNDI service, ideal for testing, to use it add a jndi.properties file to your META-INF and add the following line to it:
+ * Bitronix also provides a simple embedded JNDI service, ideal for testing, to use it add a jndi.properties file at the root of your classpath and add the following line to it:
  * </p>
  * 
  * <pre>
