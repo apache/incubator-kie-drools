@@ -232,7 +232,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 mv.visitFieldInsn(GETFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitLdcInsn( field.getName() );
-                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "get", "(Lorg/drools/core/util/Triple;)Lorg/drools/core/util/Triple;");
 
                 mv.visitVarInsn(ASTORE, 2);
@@ -304,7 +304,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
         mv.visitVarInsn(ALOAD, 0);
         mv.visitLdcInsn( field.getName() );
-        mv.visitMethodInsn(INVOKEVIRTUAL, wrapperName, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, wrapperName, "propertyKey", "(Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "contains", "(Lorg/drools/core/util/Triple;)Z");
         Label l0 = new Label();
         mv.visitJumpInsn(IFNE, l0);
@@ -327,7 +327,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitMethodInsn( INVOKEVIRTUAL,
                 wrapperName,
                 "property",
-                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
         mv.visitInsn(ICONST_1);
         mv.visitMethodInsn( INVOKEVIRTUAL,
                 "org/drools/core/util/TripleStore",
@@ -424,7 +424,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitMethodInsn(INVOKEVIRTUAL,
                 wrapperName,
                 "property",
-                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
         mv.visitInsn(ICONST_1);
         mv.visitMethodInsn(INVOKEVIRTUAL,
                 "org/drools/core/util/TripleStore",

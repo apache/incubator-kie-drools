@@ -116,27 +116,27 @@ public class ReteooRuleBase extends AbstractRuleBase {
     /**
      * @param factHandleFactory
      */
-    public ReteooRuleBase(final String id,
-                          final FactHandleFactory factHandleFactory) {
+    public ReteooRuleBase( final String id,
+                           final FactHandleFactory factHandleFactory ) {
         this( id,
               null,
               factHandleFactory );
     }
 
-    public ReteooRuleBase(final String id,
-                          final RuleBaseConfiguration config) {
+    public ReteooRuleBase( final String id,
+                           final RuleBaseConfiguration config ) {
         this( id,
               config,
-              new ReteooFactHandleFactory() );
+              ReteooComponentFactory.getFactHandleFactoryService() );
     }
 
     /**
      * @param config
      */
-    public ReteooRuleBase(final RuleBaseConfiguration config) {
+    public ReteooRuleBase( final RuleBaseConfiguration config ) {
         this( null,
               config,
-              new ReteooFactHandleFactory() );
+              ReteooComponentFactory.getFactHandleFactoryService() );
     }
 
     /**

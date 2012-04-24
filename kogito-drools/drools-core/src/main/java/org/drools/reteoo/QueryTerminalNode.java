@@ -40,7 +40,7 @@ import org.drools.spi.PropagationContext;
  *
  * @see org.drools.rule.Rule
  */
-public final class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
+public class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
 
     // ------------------------------------------------------------
     // Instance members
@@ -125,12 +125,10 @@ public final class QueryTerminalNode extends AbstractTerminalNode implements Lef
     /**
      * Assert a new <code>Tuple</code>.
      *
-     * @param tuple
+     * @param leftTuple
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,

@@ -31,6 +31,7 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
@@ -58,7 +59,7 @@ public class MVELExprAnalyzer {
      * 
      * @param expr
      *            The expression to analyze.
-     * @param availDecls
+     * @param availableIdentifiers
      *            Total set of declarations available.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
@@ -99,7 +100,13 @@ public class MVELExprAnalyzer {
                 parserContext1.addInput( "this",
                                          availableIdentifiers.getThisClass() );
             }
+            if ( availableIdentifiers.getOperators() != null ) {
+                for ( String opKey : availableIdentifiers.getOperators().keySet() ) {
+                    parserContext1.addInput( opKey, availableIdentifiers.getOperators().get( opKey ).getClass() );
+                }
 
+            }
+            
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
@@ -160,7 +167,7 @@ public class MVELExprAnalyzer {
                     continue;
                 }
 
-                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null;
+                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? DroolsCompilerComponentFactory.getExpressionProcessor().getEvaluatorWrapperClass() : null;
                 if ( cls != null ) {
                     parserContext2.addInput( str,
                                              cls );
@@ -244,14 +251,7 @@ public class MVELExprAnalyzer {
 
     /**
      * Analyse an expression.
-     * 
-     * @param availDecls
-     *            Total set of declarations available.
-     * @param ast
-     *            The AST for the expression.
-     * 
-     * @return The <code>Set</code> of declarations used by the expression.
-     * 
+     *
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */

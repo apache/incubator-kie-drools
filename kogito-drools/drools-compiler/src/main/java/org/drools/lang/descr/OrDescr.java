@@ -18,7 +18,7 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrDescr extends BaseDescr
+public class OrDescr extends AnnotatedBaseDescr
     implements
     ConditionalElementDescr {
 

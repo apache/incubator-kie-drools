@@ -92,21 +92,26 @@ public class JoinNode extends BetaNode {
                                                           context,
                                                           it ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
             
-            final InternalFactHandle handle = rightTuple.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( contextEntry,
-                                                       handle ) ) {
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    rightTuple,
-                                                    null,
-                                                    null,
-                                                    context,
-                                                    workingMemory,
-                                                    useLeftMemory );
-            }
+            propagateFromLeft( rightTuple, leftTuple, contextEntry, useLeftMemory, context, workingMemory );
         }
                 
 
         this.constraints.resetTuple( contextEntry );
+    }
+
+
+    protected void propagateFromLeft( RightTuple rightTuple, LeftTuple leftTuple, ContextEntry[] contextEntry, boolean useLeftMemory, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        final InternalFactHandle handle = rightTuple.getFactHandle();
+        if ( this.constraints.isAllowedCachedLeft( contextEntry,
+                handle ) ) {
+            this.sink.propagateAssertLeftTuple( leftTuple,
+                    rightTuple,
+                    null,
+                    null,
+                    context,
+                    workingMemory,
+                    useLeftMemory );
+        }
     }
 
     public void assertObject( final InternalFactHandle factHandle,
@@ -139,22 +144,29 @@ public class JoinNode extends BetaNode {
                                                factHandle );
 
         FastIterator it = getLeftIterator( leftMemory );
-                        
         for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-            if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                                                        leftTuple ) ) {
-                // wm.marshaller.write( i, leftTuple )
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    rightTuple,
-                                                    null,
-                                                    null,
-                                                    context,
-                                                    workingMemory,
-                                                    true );
-            }
+            propagateFromRight( rightTuple, leftTuple, memory, context, workingMemory );
         }
+
         this.constraints.resetFactHandle( memory.getContext() );
     }
+
+
+    protected void propagateFromRight( RightTuple rightTuple, LeftTuple leftTuple, BetaMemory memory, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                leftTuple ) ) {
+            // wm.marshaller.write( i, leftTuple )
+            this.sink.propagateAssertLeftTuple( leftTuple,
+                    rightTuple,
+                    null,
+                    null,
+                    context,
+                    workingMemory,
+                    true );
+        }
+    }
+
+
 
     public void retractRightTuple( final RightTuple rightTuple,
                                    final PropagationContext context,
@@ -245,49 +257,45 @@ public class JoinNode extends BetaNode {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
                 for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-                    if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                                                                leftTuple ) ) {
-                        this.sink.propagateAssertLeftTuple( leftTuple,
-                                                            rightTuple,
-                                                            null,
-                                                            null,
-                                                            context,
-                                                            workingMemory,
-                                                            true );
-                    }
+                    propagateFromRight( rightTuple, leftTuple, memory, context, workingMemory );
                 }
             } else {
                 // in the same bucket, so iterate and compare
                 for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
-                    if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                                                                leftTuple ) ) {
-                        if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
-                            this.sink.propagateAssertLeftTuple( leftTuple,
-                                                                rightTuple,
-                                                                null,
-                                                                childLeftTuple,
-                                                                context,
-                                                                workingMemory,
-                                                                true );
-                        } else {
-                            childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
-                                                                                      leftTuple,
-                                                                                      context,
-                                                                                      workingMemory,
-                                                                                      true );
-                        }
-                    } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
-                        childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
-                                                                                   leftTuple,
-                                                                                   context,
-                                                                                   workingMemory );
-                    }
-                    // else do nothing, was false before and false now.
+                    childLeftTuple = propagateOrModifyFromRight( rightTuple, leftTuple, childLeftTuple, memory, context, workingMemory );
                 }
             }
         }
 
         this.constraints.resetFactHandle( memory.getContext() );
+    }
+
+    protected LeftTuple propagateOrModifyFromRight( RightTuple rightTuple, LeftTuple leftTuple, LeftTuple childLeftTuple, BetaMemory memory, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                                                    leftTuple ) ) {
+            if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
+                this.sink.propagateAssertLeftTuple( leftTuple,
+                                                    rightTuple,
+                                                    null,
+                                                    childLeftTuple,
+                                                    context,
+                                                    workingMemory,
+                                                    true );
+            } else {
+                childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
+                                                                          leftTuple,
+                                                                          context,
+                                                                          workingMemory,
+                                                                          true );
+            }
+        } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
+            childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
+                                                                       leftTuple,
+                                                                       context,
+                                                                       workingMemory );
+        }
+        // else do nothing, was false before and false now.
+        return childLeftTuple;
     }
 
     public void modifyLeftTuple( final LeftTuple leftTuple,
@@ -332,52 +340,52 @@ public class JoinNode extends BetaNode {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
                 for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
-                    final InternalFactHandle handle = rightTuple.getFactHandle();
-                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
-                                                               handle ) ) {
-                        this.sink.propagateAssertLeftTuple( leftTuple,
-                                                            rightTuple,
-                                                            null,
-                                                            null,
-                                                            context,
-                                                            workingMemory,
-                                                            true );
-                    }
+                    propagateFromLeft( rightTuple, leftTuple, contextEntry, true, context, workingMemory );
                 }
             } else {
                 // in the same bucket, so iterate and compare
                 for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
-                    final InternalFactHandle handle = rightTuple.getFactHandle();
-
-                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
-                                                               handle ) ) {
-                        if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
-                            this.sink.propagateAssertLeftTuple( leftTuple,
-                                                                rightTuple,
-                                                                childLeftTuple,
-                                                                null,
-                                                                context,
-                                                                workingMemory,
-                                                                true );
-                        } else {
-                            childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
-                                                                                      rightTuple,
-                                                                                      context,
-                                                                                      workingMemory,
-                                                                                      true );
-                        }
-                    } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
-                        childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
-                                                                                   rightTuple,
-                                                                                   context,
-                                                                                   workingMemory );
-                    }
-                    // else do nothing, was false before and false now.
+                    childLeftTuple = propagateOrModifyFromLeft( rightTuple, leftTuple, childLeftTuple, contextEntry, context, workingMemory );
                 }
             }
         }
 
         this.constraints.resetTuple( contextEntry );
+    }
+
+    protected LeftTuple propagateOrModifyFromLeft( RightTuple rightTuple,
+                                                   LeftTuple leftTuple,
+                                                   LeftTuple childLeftTuple,
+                                                   ContextEntry[] contextEntry,
+                                                   PropagationContext context,
+                                                   InternalWorkingMemory workingMemory ) {
+        final InternalFactHandle handle = rightTuple.getFactHandle();
+
+        if ( this.constraints.isAllowedCachedLeft( contextEntry,
+                                                   handle ) ) {
+            if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
+                this.sink.propagateAssertLeftTuple( leftTuple,
+                                                    rightTuple,
+                                                    childLeftTuple,
+                                                    null,
+                                                    context,
+                                                    workingMemory,
+                                                    true );
+            } else {
+                childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
+                                                                          rightTuple,
+                                                                          context,
+                                                                          workingMemory,
+                                                                          true );
+            }
+        } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
+            childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
+                                                                       rightTuple,
+                                                                       context,
+                                                                       workingMemory );
+        }
+        // else do nothing, was false before and false now.
+        return childLeftTuple;
     }
 
     /* (non-Javadoc)

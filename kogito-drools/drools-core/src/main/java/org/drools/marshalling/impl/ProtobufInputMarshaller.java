@@ -54,6 +54,7 @@ import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode;
@@ -97,8 +98,6 @@ public class ProtobufInputMarshaller {
      * 
      * @param session
      * @param context
-     * @param id
-     * @param executor
      * @return
      * @throws IOException
      * @throws ClassNotFoundException
@@ -194,8 +193,7 @@ public class ProtobufInputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = new DefaultAgenda( context.ruleBase,
-                                                  false );
+        DefaultAgenda agenda = ReteooComponentFactory.getAgendaFactory().createAgenda( context.ruleBase, false );
         readAgenda( context,
                     _session.getRuleData(),
                     agenda );

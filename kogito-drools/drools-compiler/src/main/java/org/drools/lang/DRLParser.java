@@ -1968,6 +1968,12 @@ public class DRLParser {
                         DroolsEditorType.KEYWORD );
                 if ( state.failed ) return null;
 
+                while ( input.LA( 1 ) == DRLLexer.AT ) {
+                    // annotation*
+                    annotation( or );
+                    if ( state.failed ) return null;
+                }
+
                 if ( state.backtracking == 0 ) {
                     helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
                 }
@@ -2026,6 +2032,13 @@ public class DRLParser {
                                     DroolsEditorType.KEYWORD );
                         }
                         if ( state.failed ) return null;
+
+                        while ( input.LA( 1 ) == DRLLexer.AT ) {
+                            // annotation*
+                            annotation( or );
+                            if ( state.failed ) return null;
+                        }
+
                         if ( state.backtracking == 0 ) {
                             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
                         }
@@ -2090,6 +2103,13 @@ public class DRLParser {
                         DroolsEditorType.KEYWORD );
                 if ( state.failed ) return null;
 
+                while ( input.LA( 1 ) == DRLLexer.AT ) {
+                    // annotation*
+                    annotation( and );
+                    if ( state.failed ) return null;
+                }
+
+
                 if ( state.backtracking == 0 ) {
                     helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
                 }
@@ -2146,6 +2166,12 @@ public class DRLParser {
                                     DroolsEditorType.KEYWORD );
                         }
                         if ( state.failed ) return null;
+
+                        while ( input.LA( 1 ) == DRLLexer.AT ) {
+                            // annotation*
+                            annotation( and );
+                            if ( state.failed ) return null;
+                        }
 
                         if ( state.backtracking == 0 ) {
                             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
@@ -3701,40 +3727,45 @@ public class DRLParser {
     /* ------------------------------------------------------------------------------------------------
      *                         ANNOTATION
      * ------------------------------------------------------------------------------------------------ */
+
     /**
-     * annotation := AT ID (elementValuePairs | chunk_(_) )?
+     * annotation := fullAnnotation | AT ID chunk_(_)?
      */
     private void annotation( AnnotatedDescrBuilder< ? > adb ) {
         AnnotationDescrBuilder< ? > annotation = null;
+
         try {
-            // '@'
-            Token at = match( input,
-                              DRLLexer.AT,
-                              null,
-                              null,
-                              DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
+            if ( speculateFullAnnotation() ) {
+                boolean buildState = exprParser.isBuildDescr();
+                exprParser.setBuildDescr( true );
+                exprParser.fullAnnotation( adb );
+                exprParser.setBuildDescr( buildState );
+            } else {
 
-            // identifier
-            Token id = match( input,
-                              DRLLexer.ID,
-                              null,
-                              null,
-                              DroolsEditorType.IDENTIFIER );
-            if ( state.failed ) return;
+                // '@'
+                Token at = match( input,
+                                  DRLLexer.AT,
+                                  null,
+                                  null,
+                                  DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
 
-            if ( state.backtracking == 0 ) {
-                annotation = adb.newAnnotation( id.getText() );
-                helper.setStart( annotation,
-                                 at );
-            }
+                // identifier
+                Token id = match( input,
+                                  DRLLexer.ID,
+                                  null,
+                                  null,
+                                  DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return;
 
-            try {
-                if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
-                    if ( speculateElementValuePairs() ) {
-                        elementValuePairs( annotation );
-                        if ( state.failed ) return;
-                    } else {
+                if ( state.backtracking == 0 ) {
+                    annotation = adb.newAnnotation( id.getText() );
+                    helper.setStart( annotation,
+                                     at );
+                }
+
+                try {
+                    if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
                         String value = chunk( DRLLexer.LEFT_PAREN,
                                               DRLLexer.RIGHT_PAREN,
                                               -1 ).trim();
@@ -3743,10 +3774,10 @@ public class DRLParser {
                             annotation.value( value );
                         }
                     }
-                }
-            } finally {
-                if ( state.backtracking == 0 ) {
-                    helper.setEnd( annotation );
+                } finally {
+                    if ( state.backtracking == 0 ) {
+                        helper.setEnd( annotation );
+                    }
                 }
             }
 
@@ -3754,24 +3785,25 @@ public class DRLParser {
             reportError( re );
         }
     }
-
+    
+    
     /**
-     * Invokes elementValuePairs() rule with backtracking
-     * to check if the next token sequence matches it or not.
-     * 
+     * Invokes the expression parser, trying to parse the annotation
+     * as a full java-style annotation
+     *
      * @return true if the sequence of tokens will match the
      *         elementValuePairs() syntax. false otherwise.
      */
-    private boolean speculateElementValuePairs() {
+    private boolean speculateFullAnnotation() {
         state.backtracking++;
         int start = input.mark();
         try {
-            elementValuePairs( null ); // can never throw exception
+            exprParser.fullAnnotation( null );
         } catch ( RecognitionException re ) {
             System.err.println( "impossible: " + re );
             re.printStackTrace();
         }
-        boolean success = !state.failed;
+        boolean success = ! state.failed;
         input.rewind( start );
         state.backtracking--;
         state.failed = false;
@@ -3779,156 +3811,6 @@ public class DRLParser {
 
     }
 
-    /**
-     * elementValuePairs := LEFT_PAREN elementValuePair (COMMA elementValuePair)* RIGHT_PAREN
-     * @param annotation
-     */
-    private void elementValuePairs( AnnotationDescrBuilder< ? > annotation ) throws RecognitionException {
-        try {
-            match( input,
-                   DRLLexer.LEFT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
-
-            elementValuePair( annotation );
-            if ( state.failed ) return;
-
-            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
-                match( input,
-                       DRLLexer.COMMA,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
-                if ( state.failed ) return;
-
-                elementValuePair( annotation );
-                if ( state.failed ) return;
-            }
-
-            match( input,
-                   DRLLexer.RIGHT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
-
-        } catch ( RecognitionException re ) {
-            reportError( re );
-        }
-    }
-
-    /**
-     * elementValuePair := ID EQUALS elementValue
-     * @param annotation
-     */
-    private void elementValuePair( AnnotationDescrBuilder< ? > annotation ) {
-        try {
-            Token id = match( input,
-                              DRLLexer.ID,
-                              null,
-                              null,
-                              DroolsEditorType.IDENTIFIER );
-            if ( state.failed ) return;
-            String key = id.getText();
-
-            match( input,
-                   DRLLexer.EQUALS_ASSIGN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
-
-            String value = elementValue();
-            if ( state.failed ) return;
-
-            if ( state.backtracking == 0 ) {
-                String actKey = key != null ? key : "value";
-                String actVal = annotation.getDescr().getValue( actKey );
-                if ( actVal != null ) {
-                    // TODO: error message?
-                    value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
-                }
-                annotation.keyValue( actKey,
-                                     value );
-            }
-
-        } catch ( RecognitionException re ) {
-            reportError( re );
-        }
-    }
-
-    /**
-     * elementValue := elementValueArrayInitializer | conditionalExpression 
-     * @return
-     */
-    private String elementValue() {
-        String value = "";
-        try {
-            int first = input.index();
-
-            if ( input.LA( 1 ) == DRLLexer.LEFT_CURLY ) {
-                elementValueArrayInitializer();
-                if ( state.failed ) return value;
-            } else {
-                exprParser.conditionalExpression();
-                if ( state.failed ) return value;
-            }
-            value = input.toString( first,
-                                    input.LT( -1 ).getTokenIndex() );
-        } catch ( Exception re ) {
-            reportError( re );
-        }
-        return value;
-    }
-
-    /**
-     * elementValueArrayInitializer := LEFT_CURLY (elementValue (COMMA elementValue )*)? RIGHT_CURLY
-     * @return
-     */
-    private String elementValueArrayInitializer() {
-        String value = "";
-        int first = input.index();
-        try {
-            match( input,
-                   DRLLexer.LEFT_CURLY,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return value;
-
-            if ( input.LA( 1 ) != DRLLexer.RIGHT_CURLY ) {
-                elementValue();
-                if ( state.failed ) return value;
-
-                while ( input.LA( 1 ) == DRLLexer.COMMA ) {
-                    match( input,
-                           DRLLexer.COMMA,
-                           null,
-                           null,
-                           DroolsEditorType.SYMBOL );
-                    if ( state.failed ) return value;
-
-                    elementValue();
-                    if ( state.failed ) return value;
-                }
-            }
-            match( input,
-                   DRLLexer.RIGHT_CURLY,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return value;
-
-        } catch ( RecognitionException re ) {
-            reportError( re );
-        } finally {
-            value = input.toString( first,
-                                    input.index() );
-        }
-        return value;
-    }
 
     /* ------------------------------------------------------------------------------------------------
      *                         UTILITY RULES

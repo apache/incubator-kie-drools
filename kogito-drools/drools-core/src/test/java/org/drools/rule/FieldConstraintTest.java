@@ -82,7 +82,7 @@ public class FieldConstraintTest {
                 getClass().getClassLoader());
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"cheddar\"",
-                                                                      FieldFactory.getFieldValue( "cheddar" ),
+                                                                      FieldFactory.getInstance().getFieldValue( "cheddar" ),
                                                                       extractor );
 
         final ContextEntry context = constraint.createContextEntry();
@@ -129,7 +129,7 @@ public class FieldConstraintTest {
                 getClass().getClassLoader());
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "price == 5",
-                                                                      FieldFactory.getFieldValue( 5 ),
+                                                                      FieldFactory.getInstance().getFieldValue( 5 ),
                                                                       extractor );
         final ContextEntry context = constraint.createContextEntry();
 

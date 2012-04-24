@@ -21,6 +21,7 @@ import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
 import org.drools.io.Resource;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -556,8 +557,8 @@ public class Rule
      */
     public GroupElement[] getTransformedLhs() throws InvalidPatternException {
         //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
-        return LogicTransformer.getInstance().transform( getExtendedLhs( this,
-                                                                         null ) );
+        return ReteooComponentFactory.getLogicTransformer().transform( getExtendedLhs( this,
+                                                                       null ) );
     }    
 
     public int getSpecifity() {

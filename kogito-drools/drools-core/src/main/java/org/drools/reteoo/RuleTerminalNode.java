@@ -82,7 +82,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     private boolean                       fireDirect;
 
-    private int              leftInputOtnId;
+    private int                           leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors

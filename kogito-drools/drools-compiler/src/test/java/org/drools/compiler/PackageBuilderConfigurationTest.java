@@ -475,6 +475,15 @@ public class PackageBuilderConfigurationTest {
             // TODO Auto-generated method stub
             return null;
         }
+        
+        public AnalysisResult analyzeExpression( PackageBuildContext context,
+                                                 BaseDescr descr,
+                                                 Object content,
+                                                 BoundIdentifiers availableIdentifiers,
+                                                 Map<String,Class<?>> localTypes ) {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
         public AnalysisResult analyzeBlock( PackageBuildContext context,
                                             BaseDescr descr,

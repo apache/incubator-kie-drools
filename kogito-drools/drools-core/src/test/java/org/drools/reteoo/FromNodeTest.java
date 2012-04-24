@@ -86,7 +86,7 @@ public class FromNodeTest {
                                                             getClass().getClassLoader() );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
-                                                                      FieldFactory.getFieldValue( "stilton" ),
+                                                                      FieldFactory.getInstance().getFieldValue( "stilton" ),
                                                                       extractor );
 
         final List list = new ArrayList();
@@ -313,7 +313,7 @@ public class FromNodeTest {
                                                             getClass().getClassLoader() );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
-                                                                      FieldFactory.getFieldValue("stilton"),
+                                                                      FieldFactory.getInstance().getFieldValue("stilton"),
                                                                       extractor );
 
         final List list = new ArrayList();

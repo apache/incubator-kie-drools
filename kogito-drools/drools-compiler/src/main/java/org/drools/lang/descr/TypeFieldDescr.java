@@ -136,30 +136,4 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         this.inherited = inherited;
     }
 
-    public static TypeFieldDescr buildInheritedFromDefinition(FactField fld) {
-        PatternDescr fldType = new PatternDescr();
-        TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
-        inheritedFldDescr.setFieldName(fld.getName());
-        fldType.setObjectType( ((FieldDefinition) fld).getTypeName() );
-        inheritedFldDescr.setPattern(fldType);
-        if (fld.isKey()) inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,new AnnotationDescr(TypeDeclaration.ATTR_KEY));
-        inheritedFldDescr.setIndex(fld.getIndex());
-        inheritedFldDescr.setInherited(true);
-        inheritedFldDescr.setInitExpr(((FieldDefinition) fld).getInitExpr());
-        return inheritedFldDescr;
-
-    }
-
-
-    public TypeFieldDescr cloneAsInherited() {
-        TypeFieldDescr fieldDescr = new TypeFieldDescr(fieldName,pattern);
-        fieldDescr.setInitExpr(initExpr);
-        for (String key : getAnnotations().keySet())
-            fieldDescr.getAnnotations().put(key, getAnnotation(key));
-        fieldDescr.setIndex(index);
-        fieldDescr.setInherited(true);
-
-        return fieldDescr;
-    }
-
 }

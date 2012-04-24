@@ -31,10 +31,10 @@ import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.conf.EventProcessingOption;
-import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.reteoo.WindowNode;
 import org.drools.rule.Behavior;
@@ -196,18 +196,28 @@ public class PatternBuilder
 
             final Constraint constraint = (Constraint) object;
             if ( constraint.getType().equals( Constraint.ConstraintType.ALPHA ) ) {
-                alphaConstraints.add( (AlphaNodeFieldConstraint) constraint );
+                linkAlphaConstraint( (AlphaNodeFieldConstraint) constraint, alphaConstraints );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
-                betaConstraints.add( (BetaNodeFieldConstraint) constraint );
+                linkBetaConstraint( (BetaNodeFieldConstraint) constraint, betaConstraints );
                 if ( isNegative && context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                     checkDelaying( context,
-                                   constraint );
+                            constraint );
                 }
             } else {
                 throw new RuntimeDroolsException( "Unknown constraint type: " + constraint.getType() + ". This is a bug. Please contact development team." );
             }
+
         }
     }
+
+    protected void linkBetaConstraint( BetaNodeFieldConstraint constraint, List<BetaNodeFieldConstraint> betaConstraints ) {
+        betaConstraints.add( constraint );
+    }
+
+    protected void linkAlphaConstraint( AlphaNodeFieldConstraint constraint, List<AlphaNodeFieldConstraint> alphaConstraints ) {
+        alphaConstraints.add( constraint );
+    }
+
 
     private void checkDelaying(final BuildContext context,
                                final Constraint constraint) {
@@ -318,15 +328,7 @@ public class PatternBuilder
 
         boolean alphaMemory = context.isAlphaMemoryAllowed();
 
-        for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
-            context.pushRuleComponent( constraint );
-            context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new AlphaNode( context.getNextId(),
-                                                                                     (AlphaNodeFieldConstraint) constraint,
-                                                                                     context.getObjectSource(),
-                                                                                     context ) ) );
-            context.popRuleComponent();
-        }        
+        buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
         
         if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
@@ -342,6 +344,19 @@ public class PatternBuilder
 
     }
 
+    protected void buildAlphaNodeChain( BuildContext context, BuildUtils utils, Pattern pattern, List<AlphaNodeFieldConstraint> alphaConstraints ) {
+        for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
+            context.pushRuleComponent( constraint );
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      ReteooComponentFactory.getNodeFactoryService().buildAlphaNode(
+                                                                      context.getNextId(),
+                                                                      constraint,
+                                                                      context.getObjectSource(),
+                                                                      context) ) );
+            context.popRuleComponent();
+        }
+    }
+
     private void attachObjectTypeNode( final BuildContext context, final BuildUtils utils, final Pattern pattern ) {
         boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         ObjectType objectType = pattern.getObjectType();
@@ -355,7 +370,7 @@ public class PatternBuilder
             }
         }
 
-        ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
+        ObjectTypeNode otn = ReteooComponentFactory.getNodeFactoryService().buildObjectTypeNode( context.getNextId(),
                                                  (EntryPointNode) context.getObjectSource(),
                                                  objectType,
                                                  context );

@@ -118,7 +118,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
                   ACC_PUBLIC + ACC_SUPER,
                   internalProxy,
                   null,
-                  "org/drools/factmodel/traits/TraitProxy",
+                  BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ),
                   new String[] { internalTrait, "java/io/Externalizable" } );
 
         {
@@ -147,7 +147,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitCode();
 
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "<init>", "()V");
 
             mv.visitInsn(RETURN);
             mv.visitMaxs(1, 1);
@@ -164,10 +164,10 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitFieldInsn( PUTFIELD, internalProxy, "storeId", "Ljava/lang/String;" );
 
 
-            buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
+            int size = buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
 
             mv.visitInsn(RETURN);
-            mv.visitMaxs(5, 3);
+            mv.visitMaxs( 5 + size, 3 );
             mv.visitEnd();
         }
         {
@@ -228,7 +228,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "writeExternal", "(Ljava/io/ObjectOutput;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "writeExternal", "(Ljava/io/ObjectOutput;)V");
 
 
             mv.visitInsn(RETURN);
@@ -260,7 +260,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "readExternal", "(Ljava/io/ObjectInput;)V");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "readExternal", "(Ljava/io/ObjectInput;)V");
 
 
             mv.visitVarInsn( ALOAD, 0);
@@ -337,11 +337,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
     }
 
 
-    protected void buildConstructorCore( ClassWriter cw, MethodVisitor mv, String internalProxy, String internalWrapper, String internalCore, String descrCore, String mixin, Class mixinClass ) {
+    protected int buildConstructorCore( ClassWriter cw, MethodVisitor mv, String internalProxy, String internalWrapper, String internalCore, String descrCore, String mixin, Class mixinClass ) {
 
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+        mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "<init>", "()V");
         if ( mixinClass != null ) {
             try {
 //                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
@@ -401,6 +401,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedTypes", "<init>", "(Ljava/lang/Object;Lorg/drools/core/util/TripleStore;)V");
         mv.visitMethodInsn(INVOKEVIRTUAL, internalCore, "setTraitMap", "(Ljava/util/Map;)V");
 
+        return 0;
     }
 
     private Class getPossibleConstructor(Class klass, Class arg) throws NoSuchMethodException {
@@ -576,7 +577,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         if ( BuildUtils.isPrimitive(type) ) {
             TraitFactory.valueOf( mv, type );
         }
-        mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;");
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "put", "(Lorg/drools/core/util/Triple;)Z");
 
         mv.visitInsn(POP);
@@ -607,7 +608,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
         mv.visitVarInsn(ALOAD, 0);
         mv.visitLdcInsn( fieldName );
 
-        mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/TripleImpl;");
+        mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/Triple;");
         mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "get", "(Lorg/drools/core/util/Triple;)Lorg/drools/core/util/Triple;");
 
 
@@ -660,12 +661,12 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitInsn(IRETURN);
             mv.visitLabel(l0);
             mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/TraitProxy");
+            mv.visitTypeInsn(CHECKCAST, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ));
             mv.visitVarInsn(ASTORE, 2);
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, proxyType, "getFields", "()Ljava/util/Map;");
             mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/factmodel/traits/TraitProxy", "getFields", "()Ljava/util/Map;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "getFields", "()Ljava/util/Map;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
             Label l1 = new Label();
             mv.visitJumpInsn(IFNE, l1);
@@ -675,7 +676,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKEVIRTUAL, proxyType, "getObject", "()Ljava/lang/Object;");
             mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/factmodel/traits/TraitProxy", "getObject", "()Ljava/lang/Object;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "getObject", "()Ljava/lang/Object;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
             Label l2 = new Label();
             mv.visitJumpInsn(IFNE, l2);
@@ -691,7 +692,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
             MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "hashCode", "()I");
+            mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( TraitFactory.proxyBaseClass.getName() ), "hashCode", "()I");
             mv.visitVarInsn(ISTORE, 1);
             mv.visitIntInsn(BIPUSH, 31);
             mv.visitVarInsn(ILOAD, 1);
@@ -1030,29 +1031,29 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder 
     protected void buildCommonMethods( ClassWriter cw, String proxy ) {
         MethodVisitor mv;
 //        {
-//            mv = cw.visitMethod(ACC_PROTECTED, "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/TripleImpl;", null, null);
+//            mv = cw.visitMethod(ACC_PROTECTED, "propertyKey", "(Ljava/lang/String;)Lorg/drools/core/util/Triple;", null, null);
 //            mv.visitCode();
-//            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
+//            mv.visitTypeInsn(NEW, "org/drools/core/util/Triple");
 //            mv.visitInsn(DUP);
 //            mv.visitVarInsn(ALOAD, 0);
 //            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
 //            mv.visitVarInsn(ALOAD, 1);
 //            mv.visitFieldInsn(GETSTATIC, "org/drools/runtime/rule/Variable", "v", "Lorg/drools/runtime/rule/Variable;");
-//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/Triple", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
 //            mv.visitInsn(ARETURN);
 //            mv.visitMaxs(5, 2);
 //            mv.visitEnd();
 //        }
 //        {
-//            mv = cw.visitMethod(ACC_PROTECTED, "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;", null, null);
+//            mv = cw.visitMethod(ACC_PROTECTED, "property", "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/Triple;", null, null);
 //            mv.visitCode();
-//            mv.visitTypeInsn(NEW, "org/drools/core/util/TripleImpl");
+//            mv.visitTypeInsn(NEW, "org/drools/core/util/Triple");
 //            mv.visitInsn(DUP);
 //            mv.visitVarInsn(ALOAD, 0);
 //            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "getObject", "()Ljava/lang/Object;");
 //            mv.visitVarInsn(ALOAD, 1);
 //            mv.visitVarInsn(ALOAD, 2);
-//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/TripleImpl", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
+//            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/core/util/Triple", "<init>", "(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Object;)V");
 //            mv.visitInsn(ARETURN);
 //            mv.visitMaxs(5, 3);
 //            mv.visitEnd();

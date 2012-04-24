@@ -10911,6 +10911,7 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
 
+
     @Test
     public void testCheckDuplicateVariables() throws Exception {
         // JBRULES-3035
@@ -11148,7 +11149,7 @@ public class MiscTest extends CommonTestMethodBase {
                 "then\n" +
                 "   list.add( $i );\n" +
                 "end";
-
+ 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
@@ -11196,5 +11197,40 @@ public class MiscTest extends CommonTestMethodBase {
         public Double getTyped() {
             return typed;
         }
+	}
+
+    public void testMvelMatches() {
+        String str = "package com.sample\n" +
+                "import org.drools.Person\n" +
+                "global java.util.List results;" +
+                "rule XXX when\n" +
+                "  Person( $n : name ~= \"\\\\D.*\" )\n" +
+                "then\n" +
+                "  results.add( $n ); \n " +
+                "end \n" +
+                "rule YY when\n" +
+                "  Person( $a : age, $n : name ~= \"\\\\d\\\\D.*\" )\n" +
+                "then\n" +
+                "  results.add( $a ); \n " +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List res = new ArrayList();
+        ksession.setGlobal( "results", res );
+
+        ksession.insert(new Person("mark", 37));
+        ksession.insert(new Person("mario", 38));
+        ksession.insert(new Person("1mike", 44));
+        ksession.insert(new Person("52matt", 44));
+
+        ksession.fireAllRules();
+        ksession.dispose();
+        
+        assertEquals( 3, res.size() );
+        assertTrue( res.contains( "mark" ) );
+        assertTrue( res.contains( "mario" ) );
+        assertTrue( res.contains( 44 ) );
     }
 }

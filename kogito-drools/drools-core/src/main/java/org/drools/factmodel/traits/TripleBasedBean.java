@@ -2,6 +2,7 @@ package org.drools.factmodel.traits;
 
 
 import org.drools.core.util.Triple;
+import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleImpl;
 import org.drools.core.util.TripleStore;
 
@@ -11,6 +12,8 @@ import java.io.ObjectOutput;
 
 
 public class TripleBasedBean extends TripleBasedStruct {
+
+    public static TripleFactory tripleFactory = TraitFactory.tripleFactory;
 
     protected Object object;
 
@@ -28,7 +31,7 @@ public class TripleBasedBean extends TripleBasedStruct {
         int N = getTriplesForSubject( getObject() ).size();
         out.writeInt( N );
         for ( Triple t : getTriplesForSubject( getObject() ) ) {
-            out.writeObject( new TripleImpl( null, t.getProperty(), t.getValue() ) );
+            out.writeObject( tripleFactory.newTriple( null, t.getProperty(), t.getValue() ) );
         }
     }
 

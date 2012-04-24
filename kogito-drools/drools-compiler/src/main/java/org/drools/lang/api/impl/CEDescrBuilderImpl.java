@@ -16,6 +16,7 @@
 
 package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
@@ -23,7 +24,7 @@ import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.ForallDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.AnnotatedBaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
@@ -32,7 +33,7 @@ import org.drools.lang.descr.OrDescr;
 /**
  * An implementation for the CEDescrBuilder
  */
-public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends BaseDescr> extends BaseDescrBuilderImpl<P, T>
+public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends AnnotatedBaseDescr> extends BaseDescrBuilderImpl<P, T>
     implements
     CEDescrBuilder<P, T> { 
 
@@ -141,4 +142,12 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends BaseD
         return pattern;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public AnnotationDescrBuilder<CEDescrBuilder<P, T>> newAnnotation( String name ) {
+        AnnotationDescrBuilder<CEDescrBuilder<P, T>> annotation = new AnnotationDescrBuilderImpl<CEDescrBuilder<P, T>>( this, name );
+        descr.addAnnotation( annotation.getDescr() );
+        return annotation;
+    }
 }

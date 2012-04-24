@@ -280,10 +280,7 @@ public class QueryElementNode extends LeftTupleSource
             }
         }
 
-        UnificationNodeViewChangedEventListener collector = new UnificationNodeViewChangedEventListener( leftTuple,
-                                                                                                         varIndexes,
-                                                                                                         this,
-                                                                                                         this.tupleMemoryEnabled );
+        UnificationNodeViewChangedEventListener collector = createCollector( leftTuple, varIndexes, this.tupleMemoryEnabled );
         
         boolean executeAsOpenQuery = openQuery;
         if ( executeAsOpenQuery ) {
@@ -306,6 +303,13 @@ public class QueryElementNode extends LeftTupleSource
         leftTuple.setObject( handle ); // so it can be retracted later and destroyed
 
         return queryObject;
+    }
+
+    protected UnificationNodeViewChangedEventListener createCollector( LeftTuple leftTuple, int[] varIndexes, boolean tupleMemoryEnabled ) {
+        return new UnificationNodeViewChangedEventListener( leftTuple,
+                varIndexes,
+                this,
+                tupleMemoryEnabled );
     }
 
     public void retractLeftTuple(LeftTuple leftTuple,
@@ -454,7 +458,7 @@ public class QueryElementNode extends LeftTupleSource
 
         private LeftTuple          leftTuple;
 
-        private QueryElementNode   node;
+        protected QueryElementNode   node;
 
         private InternalFactHandle factHandle;
 
@@ -505,12 +509,7 @@ public class QueryElementNode extends LeftTupleSource
                                                                            workingMemory, 
                                                                            objects );
             
-            RightTuple rightTuple = new RightTuple( resultHandle );
-            if ( query.isOpen() ) {
-                rightTuple.setLeftTuple( resultLeftTuple );
-                resultLeftTuple.setObject( rightTuple );
-
-            }
+            RightTuple rightTuple = createResultRightTuple( resultHandle, resultLeftTuple, query.isOpen() );
 
             this.node.getSinkPropagator().createChildLeftTuplesforQuery( this.leftTuple,
                                                                          rightTuple,
@@ -530,6 +529,16 @@ public class QueryElementNode extends LeftTupleSource
             }
 
             rightTuples.add( rightTuple );
+        }
+
+        protected RightTuple createResultRightTuple( QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open ) {
+            RightTuple rightTuple = new RightTuple( resultHandle );
+            if ( open ) {
+                rightTuple.setLeftTuple( resultLeftTuple );
+                resultLeftTuple.setObject( rightTuple );
+
+            }
+            return rightTuple;
         }
 
         @SuppressWarnings("unchecked")

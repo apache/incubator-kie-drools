@@ -214,7 +214,7 @@ public abstract class BetaNode extends LeftTupleSource
         rightInferredMask &= (Long.MAX_VALUE - rightNegativeMask);
     }
 
-    private ObjectSource unwrapRightInput() {
+    public ObjectSource unwrapRightInput() {
         return rightInput instanceof PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
     }
 
@@ -233,7 +233,7 @@ public abstract class BetaNode extends LeftTupleSource
         leftListenedProperties = (List) in.readObject();
         rightListenedProperties = (List) in.readObject();
         setUnificationJoin();
-        super.readExternal(in);
+        super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -248,15 +248,15 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( constraints );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
-        out.writeBoolean(objectMemory);
+        out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
         out.writeBoolean( lrUnlinkingEnabled );
-        out.writeLong(rightDeclaredMask);
+        out.writeLong( rightDeclaredMask );
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );
-        out.writeObject(leftListenedProperties);
-        out.writeObject(rightListenedProperties);
+        out.writeObject( leftListenedProperties );
+        out.writeObject( rightListenedProperties );
         super.writeExternal( out );
     }
 

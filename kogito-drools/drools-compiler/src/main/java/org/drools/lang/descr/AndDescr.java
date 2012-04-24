@@ -19,7 +19,7 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AndDescr extends BaseDescr
+public class AndDescr extends AnnotatedBaseDescr
     implements
     ConditionalElementDescr {
     private static final long serialVersionUID = 510l;
@@ -61,8 +61,12 @@ public class AndDescr extends BaseDescr
 
     public void addOrMerge(final BaseDescr baseDescr) {
         if ( baseDescr instanceof AndDescr ) {
-            for( BaseDescr descr : ((AndDescr) baseDescr).getDescrs() ) {
+            AndDescr and = (AndDescr) baseDescr;
+            for( BaseDescr descr : and.getDescrs() ) {
                 addDescr( descr );
+                for ( String annKey : and.getAnnotationNames() ) {
+                    addAnnotation( and.getAnnotation( annKey ) );
+                }
             }
         } else {
             addDescr( baseDescr );

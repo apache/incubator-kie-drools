@@ -21,20 +21,20 @@ import static org.drools.rule.constraint.EvaluatorHelper.valuesAsMap;
 
 public class MvelConditionEvaluator implements ConditionEvaluator, MapConditionEvaluator {
 
-    private final Declaration[] declarations;
-    private ExecutableStatement executableStatement;
+    protected final Declaration[] declarations;
+    protected ExecutableStatement executableStatement;
     private ParserContext parserContext;
-    private MVELCompilationUnit compilationUnit;
+    protected MVELCompilationUnit compilationUnit;
 
     private boolean evaluated = false;
 
-    MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations) {
+    public MvelConditionEvaluator(ParserConfiguration configuration, String expression, Declaration[] declarations) {
         this.declarations = declarations;
         this.parserContext = new ParserContext(configuration);
         executableStatement = (ExecutableStatement)MVEL.compileExpression(expression, parserContext);
     }
 
-    MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement, Declaration[] declarations) {
+    public MvelConditionEvaluator(MVELCompilationUnit compilationUnit, ParserContext parserContext, ExecutableStatement executableStatement, Declaration[] declarations) {
         this.declarations = declarations;
         this.compilationUnit = compilationUnit;
         this.parserContext = parserContext;

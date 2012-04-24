@@ -19,7 +19,7 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExistsDescr extends BaseDescr
+public class ExistsDescr extends AnnotatedBaseDescr
     implements
     ConditionalElementDescr {
 

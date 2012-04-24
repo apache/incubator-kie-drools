@@ -46,7 +46,7 @@ public class GroupElementBuilder
                                     final Pattern prefixPattern) {
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
-        final GroupElement ge = newGroupElementFor( cedescr.getClass() );
+        final GroupElement ge = this.newGroupElementFor( descr );
         context.getBuildStack().push( ge );
 
         if ( prefixPattern != null ) {
@@ -82,7 +82,8 @@ public class GroupElementBuilder
         return ge;
     }
 
-    private GroupElement newGroupElementFor(final Class descr) {
+    protected GroupElement newGroupElementFor( final BaseDescr baseDescr ) {
+        Class descr = baseDescr.getClass();
         if ( AndDescr.class.isAssignableFrom( descr ) ) {
             return GroupElementFactory.newAndInstance();
         } else if ( OrDescr.class.isAssignableFrom( descr ) ) {

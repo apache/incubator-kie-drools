@@ -23,7 +23,7 @@ import java.util.List;
  * A descriptor to represent logical connectives in constraints, like
  * &&, || and ^. 
  */
-public class ConstraintConnectiveDescr extends BaseDescr {
+public class ConstraintConnectiveDescr extends AnnotatedBaseDescr {
     private static final long serialVersionUID = 520l;
     
     private ConnectiveType     connective       = ConnectiveType.AND;
@@ -77,6 +77,9 @@ public class ConstraintConnectiveDescr extends BaseDescr {
             if( con.getConnective().equals( this.connective ) ) {
                 for( BaseDescr descr : con.getDescrs() ) {
                     addDescr( descr );
+                    for ( String annKey : con.getAnnotationNames() ) {
+                        addAnnotation( con.getAnnotation( annKey ) );
+                    }
                 }
             } else {
                 addDescr( con );

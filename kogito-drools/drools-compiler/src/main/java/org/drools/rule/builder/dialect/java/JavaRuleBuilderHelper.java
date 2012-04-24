@@ -16,8 +16,21 @@ import java.util.Map.Entry;
 
 public final class JavaRuleBuilderHelper {
 
-    protected static final TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
-    protected static final TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
+    protected static TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
+    protected static TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
+
+    protected static String JAVA_RULE_MVEL             = "javaRule.mvel";
+    protected static String JAVA_INVOKERS_MVEL         = "javaInvokers.mvel";
+
+    public static void setConsequenceTemplate( String name ) {
+        JAVA_RULE_MVEL = name;
+        RULE_REGISTRY = new SimpleTemplateRegistry();
+    }
+
+    public static void setInvokerTemplate( String name ) {
+        JAVA_INVOKERS_MVEL = name;
+        INVOKER_REGISTRY = new SimpleTemplateRegistry();
+    }
 
     public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
         if ( !RULE_REGISTRY.contains( "rules" ) ) {
@@ -26,7 +39,7 @@ public final class JavaRuleBuilderHelper {
             
             ParserContext pctx = new ParserContext(pconf);
             RULE_REGISTRY.addNamedTemplate( "rules",
-                                            TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaRule.mvel" ),
+                                            TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_RULE_MVEL ),
                                                                               pctx ) );
             TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
                                      null,
@@ -43,7 +56,7 @@ public final class JavaRuleBuilderHelper {
             
             ParserContext pctx = new ParserContext(pconf);            
             INVOKER_REGISTRY.addNamedTemplate( "invokers",
-                                               TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaInvokers.mvel" ),
+                                               TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_INVOKERS_MVEL ),
                                                                                  pctx ) );
             TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
                                      null,

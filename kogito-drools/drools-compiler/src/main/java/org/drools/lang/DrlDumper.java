@@ -16,9 +16,8 @@ package org.drools.lang;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.core.util.debug.SessionReporter;
 import org.drools.lang.descr.PackageDescr;
-import org.mvel2.compiler.AbstractParser;
+import org.drools.rule.builder.DroolsCompilerComponentFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -34,7 +33,7 @@ public class DrlDumper  {
 
     protected final TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
     
-    private MVELDumper mvel = new MVELDumper();
+    private ExpressionRewriter mvel = DroolsCompilerComponentFactory.getExpressionProcessor();
 
     public DrlDumper() {
         OptimizerFactory.setDefaultOptimizer( "reflective" );

@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.*;
 
 import org.drools.base.ClassObjectType;
+import org.drools.factmodel.AnnotationDefinition;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.Constraint;
@@ -44,6 +45,8 @@ public class Pattern
     private PatternSource            source;
     private List<Behavior>           behaviors;
     private List<String>             listenedProperties;
+    
+    private Map<String, AnnotationDefinition> annotations;
 
     public static final String ATTR_LISTENED_PROPS = "watch";
 
@@ -102,7 +105,7 @@ public class Pattern
                                    this.declaration );
         } else {
             this.declaration = null;
-        }
+        }        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -119,6 +122,7 @@ public class Pattern
         if ( source instanceof From ) {
             ((From)source).setResultPattern( this );
         }
+        annotations = (Map<String,AnnotationDefinition>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -131,6 +135,7 @@ public class Pattern
         out.writeObject( source );
         out.writeInt( offset );
         out.writeObject(getListenedProperties());
+        out.writeObject( annotations );
     }
     
     public void setClassObjectType(ClassObjectType objectType) {
@@ -418,5 +423,16 @@ public class Pattern
 
     public void setListenedProperties(List<String> listenedProperties) {
         this.listenedProperties = listenedProperties;
+    }
+
+    public Map<String, AnnotationDefinition> getAnnotations() {
+        if ( annotations == null ) {
+            annotations = new HashMap<String, AnnotationDefinition>();
+        }
+        return annotations;
+    }
+
+    public void setAnnotations( Map<String, AnnotationDefinition> annotations ) {
+        this.annotations = annotations;
     }
 }

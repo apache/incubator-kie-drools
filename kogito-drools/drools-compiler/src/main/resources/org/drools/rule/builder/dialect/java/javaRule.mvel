@@ -2,7 +2,7 @@
 public static org.drools.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
                                                       @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
-    return org.drools.base.FieldFactory.getFieldValue( @{text} );
+    return  org.drools.reteoo.ReteooComponentFactory.getFieldFactory().getFieldValue( @{text} );
 }
 @end{}
 

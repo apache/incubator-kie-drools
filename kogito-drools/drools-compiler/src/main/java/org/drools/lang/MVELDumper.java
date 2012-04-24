@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.base.EvaluatorWrapper;
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.DrlExprParser;
 import org.drools.core.util.ReflectiveVisitor;
@@ -33,13 +34,13 @@ import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.OperatorDescr;
 import org.drools.lang.descr.RelationalExprDescr;
 
-public class MVELDumper extends ReflectiveVisitor {
+public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
     
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(", Pattern.MULTILINE );
 
     private static final String[] standard;
     static {
-        standard = new String[]{"==", "<", ">", ">=", "<=", "!="};
+        standard = new String[]{ "==", "<", ">", ">=", "<=", "!=", "~=" };
         Arrays.sort( standard );
     }
 
@@ -48,7 +49,7 @@ public class MVELDumper extends ReflectiveVisitor {
                      base,
                      0,
                      false,
-                     new MVELDumperContext() ).toString();
+                     createContext() ).toString();
     }
 
     public String dump( BaseDescr base,
@@ -66,7 +67,7 @@ public class MVELDumper extends ReflectiveVisitor {
                      base,
                      parentPrecedence,
                      false,
-                     new MVELDumperContext() ).toString();
+                     createContext() ).toString();
     }
 
     public StringBuilder dump( StringBuilder sbuilder,
@@ -75,50 +76,24 @@ public class MVELDumper extends ReflectiveVisitor {
                                boolean isInsideRelCons,
                                MVELDumperContext context ) {
         if ( context == null ) {
-            context = new MVELDumperContext();
+            context = createContext();
         }
         if ( base instanceof ConstraintConnectiveDescr ) {
-            ConstraintConnectiveDescr ccd = (ConstraintConnectiveDescr) base;
-            boolean first = true;
-            boolean wrapParenthesis = parentPriority > ccd.getConnective().getPrecedence();
-            if ( wrapParenthesis ) {
-                sbuilder.append( "( " );
-            }
-            for ( BaseDescr constr : ccd.getDescrs() ) {
-                if ( !( constr instanceof BindingDescr ) ) {
-                    if ( first ) {
-                        first = false;
-                    } else {
-                        sbuilder.append( " " );
-                        sbuilder.append( ccd.getConnective().toString() );
-                        sbuilder.append( " " );
-                    }
-                }
-                dump( sbuilder,
-                      constr,
-                      ccd.getConnective().getPrecedence(),
-                      isInsideRelCons,
-                      context );
-            }
-            if( first == true ) { 
-                // means all children were actually only bindings, replace by just true
-                sbuilder.append( "true" );
-            }
-            if ( wrapParenthesis ) {
-                sbuilder.append( " )" );
-            }
+
+            processConnectiveDescr( sbuilder, base, parentPriority, isInsideRelCons, context );
+
         } else if ( base instanceof AtomicExprDescr ) {
             AtomicExprDescr atom = (AtomicExprDescr) base;
             String expr = atom.getExpression().trim();
-            Matcher m = evalRegexp.matcher( atom.getExpression() );                
-            if (m.find()) {  
+            Matcher m = evalRegexp.matcher( atom.getExpression() );
+            if (m.find()) {
                 // stripping "eval" as it is no longer necessary
                 expr = expr.substring( expr.indexOf( '(' ) + 1,
                                        expr.lastIndexOf( ')' ) );
             }
             sbuilder.append( expr );
         } else if ( base instanceof BindingDescr ) {
-            context.addBinding( (BindingDescr) base ); 
+            context.addBinding( (BindingDescr) base );
             if( isInsideRelCons ) {
                 BindingDescr bind = (BindingDescr) base;
                 String expr = bind.getExpression().trim();
@@ -161,6 +136,43 @@ public class MVELDumper extends ReflectiveVisitor {
         return sbuilder;
     }
 
+    protected void processConnectiveDescr( StringBuilder sbuilder,
+                                         BaseDescr base,
+                                         int parentPriority,
+                                         boolean isInsideRelCons,
+                                         MVELDumperContext context ) {
+        ConstraintConnectiveDescr ccd = (ConstraintConnectiveDescr) base;
+        boolean first = true;
+        boolean wrapParenthesis = parentPriority > ccd.getConnective().getPrecedence();
+        if ( wrapParenthesis ) {
+            sbuilder.append( "( " );
+        }
+        for ( BaseDescr constr : ccd.getDescrs() ) {
+            if ( !( constr instanceof BindingDescr ) ) {
+                if ( first ) {
+                    first = false;
+                } else {
+                    sbuilder.append( " " );
+                    sbuilder.append( ccd.getConnective().toString() );
+                    sbuilder.append( " " );
+                }
+            }
+            dump( sbuilder,
+                    constr,
+                    ccd.getConnective().getPrecedence(),
+                    isInsideRelCons,
+                    context );
+        }
+        if( first == true ) {
+            // means all children were actually only bindings, replace by just true
+            sbuilder.append( "true" );
+        }
+        if ( wrapParenthesis ) {
+            sbuilder.append( " )" );
+        }
+
+    }
+
     public void processRestriction( MVELDumperContext context,
                                     StringBuilder sbuilder,
                                     String left,
@@ -196,54 +208,87 @@ public class MVELDumper extends ReflectiveVisitor {
                     .append( " ~= " )
                     .append( right )
                     .append( evaluatorSufix( operator.isNegated() ) );
-        } else if ( Arrays.binarySearch( standard,
-                                         op.getOperatorString() ) >= 0 ) {
-            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
-                    .append( left )
-                    .append( " " )
-                    .append( operator.getOperator() )
-                    .append( " " )
-                    .append( right )
-                    .append( evaluatorSufix( operator.isNegated() ) );
+        } else if ( lookupBasicOperator( operator.getOperator() ) ) {
+            rewriteBasicOperator( context, sbuilder, left, operator, right );
         } else {
             // rewrite operator as a function call
-            String alias = context.createAlias( operator );
-            operator.setLeftString( left );
-            operator.setRightString( right );
-            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
-                    .append( alias )
-                    .append( ".evaluate( " )
-                    .append( left )
-                    .append( ", " )
-                    .append( right )
-                    .append( " )" )
-                    .append( evaluatorSufix( operator.isNegated() ) );
+            rewriteOperator( context, sbuilder, left, operator, right );
         }
     }
 
-    private String evaluatorPrefix( final boolean isNegated ) {
+    protected void rewriteBasicOperator( MVELDumperContext context,
+                                         StringBuilder sbuilder,
+                                         String left,
+                                         OperatorDescr operator,
+                                         String right) {
+        sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                .append( left )
+                .append( " " )
+                .append( operator.getOperator() )
+                .append( " " )
+                .append( right )
+                .append( evaluatorSufix( operator.isNegated() ) );
+    }
+
+    protected boolean lookupBasicOperator( String op ) {
+        return Arrays.binarySearch( standard, op ) >= 0;
+
+    }
+
+    protected void rewriteOperator( MVELDumperContext context,
+                                    StringBuilder sbuilder,
+                                    String left,
+                                    OperatorDescr operator,
+                                    String right ) {
+        String alias = context.createAlias( operator );
+        operator.setLeftString( left );
+        operator.setRightString( right );
+        sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                .append( alias )
+                .append( ".evaluate( " )
+                .append( left )
+                .append( ", " )
+                .append( right )
+                .append( " )" )
+                .append( evaluatorSufix( operator.isNegated() ) );
+
+    }
+
+    protected String evaluatorPrefix(final boolean isNegated) {
         if ( isNegated ) {
             return "!( ";
         }
         return "";
     }
 
-    private String evaluatorSufix( final boolean isNegated ) {
+    protected String evaluatorSufix(final boolean isNegated) {
         if ( isNegated ) {
             return " )";
         }
         return "";
     }
 
+
+    protected MVELDumperContext createContext() {
+        return new MVELDumperContext();
+    }
+
+
+    public Class<?> getEvaluatorWrapperClass() {
+        return EvaluatorWrapper.class;
+    }
+
     public static class MVELDumperContext {
-        private Map<String, OperatorDescr> aliases;
-        private int                        counter;
-        private List<BindingDescr>         bindings;
+        protected Map<String, OperatorDescr> aliases;
+        protected int                        counter;
+        protected List<BindingDescr>         bindings;
+        protected Map<String, Class<?>>      localTypes;
 
         public MVELDumperContext() {
             this.aliases = new HashMap<String, OperatorDescr>();
             this.counter = 0;
             this.bindings = null;
+            this.localTypes = null;
         }
 
         /**
@@ -263,7 +308,7 @@ public class MVELDumper extends ReflectiveVisitor {
         /**
          * Creates a new alias for the operator, setting it in the descriptor
          * class, adding it to the internal Map and returning it as a String
-         * 
+         *
          * @param operator
          * @return
          */
@@ -274,7 +319,7 @@ public class MVELDumper extends ReflectiveVisitor {
                               operator );
             return alias;
         }
-        
+
         /**
          * Adds a binding to the list of bindings on this context
          * @param bind
@@ -285,11 +330,18 @@ public class MVELDumper extends ReflectiveVisitor {
             }
             this.bindings.add( bind );
         }
-        
+
         @SuppressWarnings("unchecked")
         public List<BindingDescr> getBindings() {
             return this.bindings == null ? Collections.EMPTY_LIST : this.bindings;
         }
 
+        public Map<String,Class<?>> getLocalTypes() {
+            return localTypes;
+        }
+
+        public void setLocalTypes(Map<String, Class<?>> localTypes) {
+            this.localTypes = localTypes;
+        }
     }
 }

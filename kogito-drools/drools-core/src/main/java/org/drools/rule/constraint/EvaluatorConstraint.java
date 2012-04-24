@@ -20,10 +20,10 @@ import java.io.ObjectOutput;
 
 public class EvaluatorConstraint extends MutableTypeConstraint implements IntervalProviderConstraint {
 
-    private Declaration[] declarations;
-    private Evaluator evaluator;
-    private InternalReadAccessor extractor;
-    private FieldValue field;
+    protected Declaration[] declarations;
+    protected Evaluator evaluator;
+    protected InternalReadAccessor extractor;
+    protected FieldValue field;
 
     public EvaluatorConstraint() { }
 
@@ -40,7 +40,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         this.extractor = extractor;
     }
 
-    private boolean isLiteral() {
+    protected boolean isLiteral() {
         return declarations.length == 0;
     }
 
@@ -100,6 +100,18 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return evaluator == null ? null : evaluator.getInterval();
     }
 
+    protected Evaluator getEvaluator() {
+        return evaluator;
+    }
+
+    protected FieldValue getField() {
+        return field;
+    }
+
+    protected InternalReadAccessor getExtractor() {
+        return extractor;
+    }
+
     public EvaluatorConstraint clone() {
         if (isLiteral()) {
             return new EvaluatorConstraint(field, evaluator, extractor);
@@ -132,7 +144,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         evaluator = (Evaluator) in.readObject();
     }
 
-    private static class LiteralContextEntry implements ContextEntry {
+    protected static class LiteralContextEntry implements ContextEntry {
 
         private static final long   serialVersionUID = 510l;
         public InternalReadAccessor extractor;

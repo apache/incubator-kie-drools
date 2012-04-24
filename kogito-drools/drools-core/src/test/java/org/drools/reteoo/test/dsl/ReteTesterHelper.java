@@ -93,7 +93,7 @@ public class ReteTesterHelper {
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
 
-        FieldValue fieldValue = FieldFactory.getFieldValue( value,
+        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue( value,
                                                             extractor.getValueType(), 
                                                             null );
 

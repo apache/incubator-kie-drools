@@ -69,7 +69,7 @@ public class ReteooBuilder
     
     private Map<String, WindowNode>     namedWindows;
 
-    private transient ReteooRuleBuilder ruleBuilder;
+    private transient RuleBuilder       ruleBuilder;
 
     private IdGenerator                 idGenerator;
 
@@ -94,7 +94,7 @@ public class ReteooBuilder
 
         //Set to 1 as Rete node is set to 0
         this.idGenerator = new IdGenerator( 1 );
-        this.ruleBuilder = new ReteooRuleBuilder();
+        this.ruleBuilder = ReteooComponentFactory.getRuleBuilderFactory().newRuleBuilder();
     }
 
     // ------------------------------------------------------------
@@ -426,7 +426,7 @@ public class ReteooBuilder
             bytes.close();
         }
 
-        this.ruleBuilder = new ReteooRuleBuilder();
+        this.ruleBuilder = ReteooComponentFactory.getRuleBuilderFactory().newRuleBuilder();
     }
 
     public void setRuleBase(ReteooRuleBase reteooRuleBase) {

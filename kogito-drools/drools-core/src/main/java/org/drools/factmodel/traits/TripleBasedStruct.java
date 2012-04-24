@@ -2,15 +2,28 @@ package org.drools.factmodel.traits;
 
 
 import org.drools.core.util.Triple;
-import org.drools.core.util.TripleImpl;
+import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.runtime.rule.Variable;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
+
 
 public abstract class TripleBasedStruct implements Map<String, Object>, Externalizable {
 
+    protected static TripleFactory tripleFactory = TraitFactory.tripleFactory;
 
     protected transient TripleStore store;
 
@@ -29,16 +42,16 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
         setObject( in.readObject() );
     }
 
-    protected TripleImpl propertyKey( Object property ) {
-        return new TripleImpl( getObject(), property.toString(), Variable.v );
+    protected Triple propertyKey( Object property ) {
+        return tripleFactory.newTriple( getObject(), property.toString(), Variable.v );
     }
 
-    protected TripleImpl propertyKey( String property ) {
-        return new TripleImpl( getObject(), property, Variable.v );
+    protected Triple propertyKey( String property ) {
+        return tripleFactory.newTriple( getObject(), property, Variable.v );
     }
 
-    protected TripleImpl property( String property, Object value ) {
-        return new TripleImpl( getObject(), property, value );
+    protected Triple property( String property, Object value ) {
+        return tripleFactory.newTriple( getObject(), property, value );
     }
 
     public int size() {
@@ -143,7 +156,7 @@ public abstract class TripleBasedStruct implements Map<String, Object>, External
 
 
     protected Collection<Triple> getTriplesForSubject( Object subj ) {
-        Collection<Triple> coll = store.getAll( new TripleImpl( subj, Variable.v, Variable.v ) );
+        Collection<Triple> coll = store.getAll( tripleFactory.newTriple( subj, Variable.v, Variable.v ) );
         Iterator<Triple> iter = coll.iterator();
         while ( iter.hasNext() ) {
             if ( (iter.next().getProperty()).equals(TripleStore.TYPE) ) {

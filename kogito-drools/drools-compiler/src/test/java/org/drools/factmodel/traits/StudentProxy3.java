@@ -17,15 +17,16 @@
 package org.drools.factmodel.traits;
 
 import org.drools.core.util.Triple;
-import org.drools.core.util.TripleImpl;
+import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 
-import java.util.Map;
 
 public class StudentProxy3 extends TraitProxy implements IStudent {
+
+    private static TripleFactory tripleFactory = TraitFactory.tripleFactory;
 
     public final Imp2 object;
     private TripleStore map;
@@ -121,12 +122,12 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
 
 
 
-    protected TripleImpl propertyKey( String property ) {
-        return new TripleImpl( getObject(), property, Variable.v );
+    protected Triple propertyKey( String property ) {
+        return tripleFactory.newTriple( getObject(), property, Variable.v );
     }
 
-    protected TripleImpl property( String property, Object value ) {
-        return new TripleImpl( getObject(), property, value );
+    protected Triple property( String property, Object value ) {
+        return tripleFactory.newTriple( getObject(), property, value );
     }
 
 

@@ -36,6 +36,7 @@ public class QueryBuilder implements EngineElementBuilder {
         
         final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, queryObjectType, "name", null, true);
         final QueryNameConstraint constraint = new QueryNameConstraint(extractor, queryDescr.getName());
+
         PatternBuilder.registerReadAccessor( context, queryObjectType, "name", constraint );
 
         // adds appropriate constraint to the pattern

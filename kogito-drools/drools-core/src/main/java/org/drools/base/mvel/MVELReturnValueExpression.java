@@ -25,11 +25,10 @@ import java.io.Serializable;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -101,9 +100,9 @@ public class MVELReturnValueExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
-                                                                                   object,
-                                                                                   factory ) );
+        return ReteooComponentFactory.getFieldFactory().getFieldValue( MVEL.executeExpression( this.expr,
+                                                                                               object,
+                                                                                               factory ) );
     }
 
 

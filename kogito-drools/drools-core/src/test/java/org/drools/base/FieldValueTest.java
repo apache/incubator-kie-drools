@@ -32,11 +32,11 @@ public class FieldValueTest {
 
     @Before
     public void setUp() throws Exception {
-        this.field1 = FieldFactory.getFieldValue( null );
-        this.field2 = FieldFactory.getFieldValue( null );
-        this.field3 = FieldFactory.getFieldValue( "A" );
-        this.field4 = FieldFactory.getFieldValue( "A" );
-        this.field5 = FieldFactory.getFieldValue( "B" );
+        this.field1 = FieldFactory.getInstance().getFieldValue( null );
+        this.field2 = FieldFactory.getInstance().getFieldValue( null );
+        this.field3 = FieldFactory.getInstance().getFieldValue( "A" );
+        this.field4 = FieldFactory.getInstance().getFieldValue( "A" );
+        this.field5 = FieldFactory.getInstance().getFieldValue( "B" );
     }
 
     /*

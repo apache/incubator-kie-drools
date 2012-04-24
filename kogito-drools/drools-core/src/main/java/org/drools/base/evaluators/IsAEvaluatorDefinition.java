@@ -48,7 +48,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             "isA", false);
     public static final Operator NOT_ISA = Operator
             .addOperatorToRegistry("isA", true);
-    private static final String[] SUPPORTED_IDS = { ISA
+    protected static final String[] SUPPORTED_IDS = { ISA
             .getOperatorString() };
 
     private Evaluator[] evaluator;
@@ -157,10 +157,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
             TraitableBean core = null;
-            if ( objectValue instanceof Thing) {
+            if ( objectValue instanceof Thing ) {
                 Thing thing = (Thing) objectValue;
                 core = (TraitableBean) thing.getCore();
-                return this.getOperator().isNegated() ^ core.hasTrait(typeName.toString());
+                return this.getOperator().isNegated() ^ core.hasTrait(typeName.toString() );
             } else if ( objectValue instanceof TraitableBean ) {
                 core = (TraitableBean) objectValue;
                 return this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() );
@@ -173,7 +173,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
 
 
-        private TraitableBean lookForWrapper( final Object objectValue, InternalWorkingMemory workingMemory) {
+        protected TraitableBean lookForWrapper( final Object objectValue, InternalWorkingMemory workingMemory) {
             Iterator iter = workingMemory.getObjectStore().iterateObjects( new ObjectFilter() {
                 public boolean accept(Object object) {
                     if ( object instanceof TraitProxy ) {

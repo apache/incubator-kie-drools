@@ -157,10 +157,7 @@ public class GroupElement extends ConditionalElement
         if ( (this.isAnd() || this.isOr()) && (this.children.size() == 1) ) {
             final Object child = this.getChildren().get( 0 );
             if ( child instanceof GroupElement ) {
-                final GroupElement group = (GroupElement) child;
-                this.type = group.getType();
-                this.children.clear();
-                this.children.addAll( group.getChildren() );
+                mergeGroupElements( this, (GroupElement) child );
             }
         }
         
@@ -183,6 +180,12 @@ public class GroupElement extends ConditionalElement
             }
         }
 
+    }
+
+    protected void mergeGroupElements(GroupElement parent, GroupElement child) {
+        parent.type = child.getType();
+        parent.children.clear();
+        parent.children.addAll( child.getChildren() );
     }
 
     /**
@@ -244,14 +247,7 @@ public class GroupElement extends ConditionalElement
         }
     }
 
-    /**
-     * Traverses two trees and checks that they are structurally equal at all
-     * levels
-     *
-     * @param e1
-     * @param e2
-     * @return
-     */
+
     public boolean equals(final Object object) {
         // Return false if its null or not an instance of ConditionalElement
         if ( object == null || !(object instanceof GroupElement) ) {
@@ -294,8 +290,6 @@ public class GroupElement extends ConditionalElement
      * Clones all Conditional Elements but references the non ConditionalElement
      * children
      *
-     * @param e1
-     * @param e2
      * @return
      */
     public GroupElement clone() {
@@ -306,7 +300,7 @@ public class GroupElement extends ConditionalElement
         return clone(false);
     }
 
-    private GroupElement clone(boolean deepClone) {
+    protected GroupElement clone(boolean deepClone) {
         GroupElement cloned = new GroupElement();
         cloned.setType( this.getType() );
         for ( RuleConditionElement re : children ) {

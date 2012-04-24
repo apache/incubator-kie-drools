@@ -44,12 +44,12 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    public final InternalFactHandle newFactHandle(final int id,
-                                                  final Object object,
-                                                  final long recency,
-                                                  final ObjectTypeConf conf,
-                                                  final InternalWorkingMemory workingMemory,
-                                                  final WorkingMemoryEntryPoint wmEntryPoint) {
+    public InternalFactHandle newFactHandle( final int id,
+                                             final Object object,
+                                             final long recency,
+                                             final ObjectTypeConf conf,
+                                             final InternalWorkingMemory workingMemory,
+                                             final WorkingMemoryEntryPoint wmEntryPoint) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;

@@ -25,8 +25,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.JoinNode;
-import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
@@ -42,7 +41,7 @@ public class GroupElementBuilder
     implements
     ReteooComponentBuilder {
 
-    private final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<Type, ReteooComponentBuilder>();
+    protected final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<Type, ReteooComponentBuilder>();
 
     public GroupElementBuilder() {
         this.geBuilders.put( GroupElement.AND,
@@ -89,7 +88,7 @@ public class GroupElementBuilder
                                                rce );
     }
     
-    private static class AndBuilder
+    public static class AndBuilder
         implements
         ReteooComponentBuilder {
 
@@ -121,14 +120,16 @@ public class GroupElementBuilder
                     while ( !(source instanceof ObjectTypeNode) ) {
                         source = source.getParentObjectSource();
                     }
-                    context.setRootObjectTypeNode((ObjectTypeNode) source);
-
+                    context.setRootObjectTypeNode( (ObjectTypeNode) source );
+                    
+                    
                     // adapt it to a Tuple source                    
-                    context.setTupleSource((LeftTupleSource) utils.attachNode( context,
-                                                                               new LeftInputAdapterNode( context.getNextId(),
-                                                                                                         context.getObjectSource(),
-                                                                                                         context) ) );
-                    context.setObjectSource(null);
+                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
+                                                                                ReteooComponentFactory.getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
+                                                                                                                                                          context.getObjectSource(),
+                                                                                                                                                          context ) ) );
+
+                    context.setObjectSource( null );
                 }
 
                 // if there was a previous tuple source, then a join node is needed
@@ -138,14 +139,14 @@ public class GroupElementBuilder
                                                                                             context.getBetaconstraints(),
                                                                                             false );
 
-                    context.setTupleSource((LeftTupleSource) utils.attachNode(context,
-                                                                              new JoinNode(context.getNextId(),
-                                                                                           context.getTupleSource(),
-                                                                                           context.getObjectSource(),
-                                                                                           betaConstraints,
-                                                                                           context)));
-                    context.setBetaconstraints(null);
-                    context.setObjectSource(null);
+                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
+                                                                                ReteooComponentFactory.getNodeFactoryService().buildJoinNode( context.getNextId(),
+                                                                                                                                              context.getTupleSource(),
+                                                                                                                                              context.getObjectSource(),
+                                                                                                                                              betaConstraints,
+                                                                                                                                              context) ) );
+                    context.setBetaconstraints( null );
+                    context.setObjectSource( null );
                 }
             }
         }
@@ -168,7 +169,7 @@ public class GroupElementBuilder
         }
     }
 
-    private static class OrBuilder
+    public static class OrBuilder
         implements
         ReteooComponentBuilder {
 
@@ -187,7 +188,7 @@ public class GroupElementBuilder
         }
     }
 
-    private static class NotBuilder
+    public static class NotBuilder
         implements
         ReteooComponentBuilder {
 
@@ -272,7 +273,7 @@ public class GroupElementBuilder
         }
     }
 
-    private static class ExistsBuilder
+    public static class ExistsBuilder
         implements
         ReteooComponentBuilder {
 
