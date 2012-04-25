@@ -164,7 +164,7 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
             Map<String, Object> parameters) {
         StartProcessCommand startProcess = new StartProcessCommand();
         startProcess.setProcessId(processId);
-        startProcess.setParameters((HashMap<String, Object>) parameters);
+        startProcess.setParameters(parameters);
         return startProcess;
     }
 
