@@ -21,7 +21,7 @@ import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
-import org.jbpm.task.service.TaskServiceEscalationBaseTest;
+import org.jbpm.task.service.persistence.TaskServiceEscalationBaseTest;
 
 public class TaskServiceEscalationHornetQTest extends TaskServiceEscalationBaseTest {
 

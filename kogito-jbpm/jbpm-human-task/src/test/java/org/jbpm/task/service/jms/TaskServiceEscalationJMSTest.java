@@ -24,10 +24,10 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceEscalationBaseTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
+import org.jbpm.task.service.persistence.TaskServiceEscalationBaseTest;
 
 public class TaskServiceEscalationJMSTest extends TaskServiceEscalationBaseTest {
 

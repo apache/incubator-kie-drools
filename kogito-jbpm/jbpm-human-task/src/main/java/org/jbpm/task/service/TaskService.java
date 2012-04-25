@@ -49,8 +49,7 @@ import org.slf4j.LoggerFactory;
 public class TaskService extends TaskPersistenceManagerAccessor {
 
     private EntityManagerFactory emf;
-    
-    ScheduledThreadPoolExecutor scheduler;
+    private ScheduledThreadPoolExecutor scheduler;
 
     private EscalatedDeadlineHandler escalatedDeadlineHandler;
 
@@ -101,15 +100,9 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         eventSupport.addEventListener(new MessagingTaskEventListener(eventKeys));
         scheduler = new ScheduledThreadPoolExecutor(3);
 
-        long now = System.currentTimeMillis();
-        TaskPersistenceManager tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
-        for (DeadlineSummary summary : tpm.getUnescalatedDeadlines() ) { 
-            schedule(new ScheduledTaskDeadline(summary.getTaskId(),
-                    summary.getDeadlineId(),
-                    this),
-                    summary.getDate().getTime() - now);
-        }
-        tpm.endPersistenceContext();
+        TaskServiceSession session = createSession();
+        session.scheduleUnescalatedDeadlines();
+        session.dispose();
 
         Map<String, Object> vars = new HashMap<String, Object>();
 
@@ -214,6 +207,17 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         session.dispose();
     }
 
+    public void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups) {
+        TaskServiceSession taskSession = createSession();
+        for (User user : users.values()) {
+            taskSession.addUser(user);
+        }
+
+        for (Group group : groups.values()) {
+            taskSession.addGroup(group);
+        }
+        taskSession.dispose();
+    }
 
     public static String toString(Reader reader) throws IOException {
         int charValue  ;

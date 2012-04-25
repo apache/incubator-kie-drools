@@ -61,22 +61,15 @@ public class RunTaskService {
 		emf = Persistence.createEntityManagerFactory("org.drools.task");
 
 		taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-		taskSession = taskService.createSession();
 		MockUserInfo userInfo = new MockUserInfo();
 		taskService.setUserinfo(userInfo);
 		Map<String, Object> vars = new HashMap();
 
 		Reader reader = new InputStreamReader(RunTaskService.class.getResourceAsStream("LoadUsers.mvel"));
 		Map<String, User> users = (Map<String, User>) eval(reader, vars);
-		for (User user : users.values()) {
-			taskSession.addUser(user);
-		}
-
 		reader = new InputStreamReader(RunTaskService.class.getResourceAsStream("LoadGroups.mvel"));
 		Map<String, Group> groups = (Map<String, Group>) eval(reader, vars);
-		for (Group group : groups.values()) {
-			taskSession.addGroup(group);
-		}
+		taskService.addUsersAndGroups(users, groups);
 		
 		server = new MinaTaskServer( taskService );
         Thread thread = new Thread( server );

@@ -70,15 +70,16 @@ public abstract class BaseTest extends TestCase {
         emf = createEntityManagerFactory();
 
         taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-        taskSession = taskService.createSession();
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
         users = fillUsersOrGroups("LoadUsers.mvel");
         groups = fillUsersOrGroups("LoadGroups.mvel");
-        loadUsersAndGroups(taskSession, users, groups);
+        taskService.addUsersAndGroups(users, groups);
         disableUserGroupCallback();
         
         logger = LoggerFactory.getLogger(getClass());
+        
+        taskSession = taskService.createSession();
     }
 
     protected void tearDown() throws Exception {

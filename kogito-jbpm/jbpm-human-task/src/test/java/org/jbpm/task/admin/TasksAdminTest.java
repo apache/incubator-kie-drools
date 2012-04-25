@@ -66,10 +66,9 @@ public class TasksAdminTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 
-        taskSession = taskService.createSession();
+        taskSession = new TaskServiceSession(taskService, emf);
 
         addUsersAndGroups(taskSession);
-
 
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
@@ -104,8 +103,8 @@ public class TasksAdminTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 
-        taskSession = taskService.createSession();
-
+        taskSession = new TaskServiceSession(taskService, emf);
+        
         addUsersAndGroups(taskSession);
 
 
@@ -143,8 +142,8 @@ public class TasksAdminTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 
-        taskSession = taskService.createSession();
-
+        taskSession = new TaskServiceSession(taskService, emf);
+        
         addUsersAndGroups(taskSession);
 
 
@@ -183,7 +182,7 @@ public class TasksAdminTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 
-        taskSession = taskService.createSession();
+        taskSession = new TaskServiceSession(taskService, emf);
 
         addUsersAndGroups(taskSession);
 

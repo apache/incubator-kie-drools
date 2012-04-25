@@ -37,7 +37,6 @@ public class ModelPersistenceTest extends BaseTest {
     }
     
     public void testfullHibernateRoundtripWithAdditionalMVELCheck() throws Exception {
-        TaskServiceSession session = taskService.createSession();
         Task task1 = new Task();
         task1.setPriority( 100 );
 
@@ -319,6 +318,7 @@ public class ModelPersistenceTest extends BaseTest {
         potentialOwners.add( users.get( "stuart" ) );
         potentialOwners.add( users.get( "dalai" ) );        
 
+        TaskServiceSession session = taskService.createSession();
         session.addTask( task1, null );
         
         session.dispose();        
@@ -331,9 +331,7 @@ public class ModelPersistenceTest extends BaseTest {
                       task2 );
         
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "FullyPopulatedTask.mvel" ) );
-        Map  vars = new HashMap();
-        vars.put( "users", users );
-        vars.put( "groups", groups );          
+        Map  vars = fillVariables();
         vars.put( "bytes1", new byte[]{1, 0, 0, 1} ); 
         Task task3= (Task) eval( reader, vars );               
         

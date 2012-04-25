@@ -19,7 +19,7 @@ package org.jbpm.task.service.test;
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServiceEscalationBaseTest;
+import org.jbpm.task.service.persistence.TaskServiceEscalationBaseTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
 
 public class TaskServiceEscalationTest extends TaskServiceEscalationBaseTest {

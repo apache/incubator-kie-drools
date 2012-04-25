@@ -47,10 +47,9 @@ public abstract class BaseSpringTest {
         taskService.setUserinfo(userInfo);
         
         // Add users and groups to sessoin
-        TaskServiceSession taskSession = taskService.createSession();
         users = fillUsersOrGroups("LoadUsers.mvel");
         groups = fillUsersOrGroups("LoadGroups.mvel");
-        loadUsersAndGroups(taskSession, users, groups);
+        taskService.addUsersAndGroups(users, groups);
         
         // Disable User Group Call back
         UserGroupCallbackManager.getInstance().setCallback(null);

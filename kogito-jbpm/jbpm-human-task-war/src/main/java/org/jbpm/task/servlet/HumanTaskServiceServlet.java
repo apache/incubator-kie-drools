@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -126,59 +127,67 @@ public class HumanTaskServiceServlet extends HttpServlet {
         	taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
 		}
         
-        TaskServiceSession taskSession = taskService.createSession();
-        
         String usersConfig = getConfigParameter("load.users", "");
         String groupsConfig = getConfigParameter("load.groups", "");
+        
+        Map<String, User> users = new HashMap<String, User>();
+        Map<String, Group> groups = new HashMap<String, Group>();
+        
         try {
             if (usersConfig != null && usersConfig.length() > 0) {
                 if (usersConfig.endsWith(".mvel")) {
                    
                     Map vars = new HashMap();
                     Reader reader = new InputStreamReader(getConfigFileStream(usersConfig) );     
-                    Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
-                    for ( User user : users.values() ) {
-                        taskSession.addUser( user );
-                    }  
+                    users = ( Map<String, User> ) TaskService.eval( reader, vars );   
                 } else if (usersConfig.endsWith(".properties"))  {
                     Properties props = new Properties();
                     props.load(getConfigFileStream(usersConfig));
                     
-                    Set<String> ids = props.stringPropertyNames();
-                    for (String id : ids) {
-                        taskSession.addUser( new User(id) );
+                    Enumeration<?> ids = props.propertyNames();
+                    while(ids.hasMoreElements()) { 
+                        Object idObject = ids.nextElement();
+                        if( idObject instanceof String ) {
+                            String id = (String) idObject;
+                            groups.put(id, new Group(id));
+                        }
                     }
                 }
             }
     	} catch (Exception e) {
             System.err.println("Problem loading users from specified file: " + usersConfig + " error message: " + e);
         }
+        
+        taskService.addUsersAndGroups(users, groups);
+        users = new HashMap<String, User>(); 
+        groups = new HashMap<String, Group>();
+        
         try {
             if (groupsConfig != null && groupsConfig.length() > 0) {
                 if (groupsConfig.endsWith(".mvel")) {
                     Map vars = new HashMap();
                     Reader reader = new InputStreamReader( getConfigFileStream(groupsConfig) );      
-                    Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
-                    for ( Group group : groups.values() ) {
-                        taskSession.addGroup( group );
-                    }
+                    groups = ( Map<String, Group> ) TaskService.eval( reader, vars );     
                 } else if (groupsConfig.endsWith(".properties"))  {
                     Properties props = new Properties();
                     props.load(getConfigFileStream(groupsConfig));
                     
-                    Set<String> ids = props.stringPropertyNames();
-                    for (String id : ids) {
-                        taskSession.addGroup( new Group(id) );
+                    Enumeration<?> ids = props.propertyNames();
+                    while(ids.hasMoreElements()) { 
+                        Object idObject = ids.nextElement();
+                        if( idObject instanceof String ) {
+                            String id = (String) idObject;
+                            groups.put(id, new Group(id));
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             System.err.println("Problem loading groups from specified file: " + groupsConfig + " error message: " + e);
         }
-                 
+        taskService.addUsersAndGroups(users, groups);
         
         String activeConfig = getConfigParameter("active.config", "hornetq");
-        
         
         if ("mina".equalsIgnoreCase(activeConfig)) {
 	        int port = Integer.parseInt(getConfigParameter("mina.port", "9123"));
@@ -227,7 +236,6 @@ public class HumanTaskServiceServlet extends HttpServlet {
         		
         	manager.setCallback(userGroupCallback);
         }
-        taskSession.dispose();
         System.out.println("Task service startup completed successfully !");
         
     }
@@ -249,63 +257,10 @@ public class HumanTaskServiceServlet extends HttpServlet {
 		}
 	}
 
-
-
 	protected TaskServer getServer() {
 		return server;
 	}
 
-
-
-	public static Object eval(Reader reader, Map vars) {
-        try {
-            return eval( readerToString( reader ), vars );
-        } catch ( IOException e ) {
-            throw new RuntimeException( "Exception Thrown", e );
-        }
-    }
-    
-    public static String readerToString(Reader reader) throws IOException {
-        int charValue = 0;
-        StringBuffer sb = new StringBuffer( 1024 );
-        while ( (charValue = reader.read()) != -1 ) {
-            //result = result + (char) charValue;
-            sb.append( (char) charValue );
-        }
-        return sb.toString();
-    }
-
-    public static Object eval(String str, Map vars) {
-        ExpressionCompiler compiler = new ExpressionCompiler( str.trim() );
-
-        ParserContext context = new ParserContext();
-        context.addPackageImport( "org.jbpm.task" );
-        context.addPackageImport( "java.util" );
-        
-        context.addImport( "AccessType", AccessType.class );
-        context.addImport( "AllowedToDelegate", AllowedToDelegate.class );
-        context.addImport( "Attachment", Attachment.class );
-        context.addImport( "BooleanExpression", BooleanExpression.class );
-        context.addImport( "Comment", Comment.class );
-        context.addImport( "Deadline", Deadline.class );
-        context.addImport( "Deadlines", Deadlines.class );
-        context.addImport( "Delegation", Delegation.class );
-        context.addImport( "Escalation", Escalation.class );
-        context.addImport( "Group", Group.class );
-        context.addImport( "I18NText", I18NText.class );
-        context.addImport( "Notification", Notification.class );
-        context.addImport( "OrganizationalEntity", OrganizationalEntity.class );
-        context.addImport( "PeopleAssignments", PeopleAssignments.class );
-        context.addImport( "Reassignment", Reassignment.class );
-        context.addImport( "Status", Status.class );
-        context.addImport( "Task", Task.class );
-        context.addImport( "TaskData", TaskData.class );
-        context.addImport( "TaskSummary", TaskSummary.class );
-        context.addImport( "User", User.class );
-
-        return MVEL.executeExpression( compiler.compile( context ), vars );
-    }
-    
     protected String getConfigParameter(String name, String defaultValue) {
     	String paramValue = getInitParameter(name);
     	

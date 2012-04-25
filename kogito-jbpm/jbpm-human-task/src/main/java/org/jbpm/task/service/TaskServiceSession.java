@@ -24,7 +24,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.drools.RuleBase;
@@ -46,6 +45,7 @@ import org.jbpm.task.SubTasksStrategy;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
+import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
@@ -55,8 +55,8 @@ import org.slf4j.LoggerFactory;
 public class TaskServiceSession extends TaskPersistenceManagerAccessor {
 
     private final TaskPersistenceManager tpm;
-    
     private final TaskService service;
+    
     private Map<String, RuleBase> ruleBases;
     private Map<String, Map<String, Object>> globals;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
@@ -70,6 +70,18 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
     
     public void dispose() {
         tpm.endPersistenceContext();
+        if( ruleBases != null ) { 
+            ruleBases.clear();
+            ruleBases = null;
+        }
+        if( globals != null ) { 
+            globals.clear();
+            globals = null;
+        }
+        if( userGroupsMap != null ) { 
+            userGroupsMap.clear();
+            userGroupsMap = null;
+        }
     }
 
     public TaskPersistenceManager getTaskPersistenceManager() { 
@@ -214,6 +226,17 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         }
     }
 
+    public void scheduleUnescalatedDeadlines() { 
+        long now = System.currentTimeMillis();
+        for (DeadlineSummary summary : tpm.getUnescalatedDeadlines() ) { 
+            ScheduledTaskDeadline deadline = new ScheduledTaskDeadline(summary.getTaskId(),
+                                                                       summary.getDeadlineId(),
+                                                                       this.service);
+            long delay =  summary.getDate().getTime() - now;
+            this.service.schedule(deadline, delay);
+        }
+    }
+    
     private void scheduleDeadlines(final List<Deadline> deadlines, final long now, final long taskId) {
         for (Deadline deadline : deadlines) {
             if (!deadline.isEscalated()) {

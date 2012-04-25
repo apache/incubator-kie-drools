@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TaskPersistenceManager {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static Logger logger = LoggerFactory.getLogger(TaskPersistenceManager.class);
     
     private TaskTransactionManager ttxm;
     private EntityManager em;
@@ -137,6 +137,10 @@ public class TaskPersistenceManager {
        
         }
         
+    }
+    
+    public void dispose() { 
+        endPersistenceContext();
     }
     
     public void endPersistenceContext() { 
