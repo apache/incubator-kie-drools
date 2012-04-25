@@ -81,30 +81,34 @@ public class BinaryRuleBaseLoader {
 
     /**
      * This will add the BINARY package to the rulebase.
-     * @param in An input stream to the serialized package.
-     * @param classLoader used as the parent ClassLoader for the Package's internal ClassLaoder
+     * 
+     * @param in
+     *            An input stream to the serialized package.
+     * @param classLoader
+     *            used as the parent ClassLoader for the Package's internal
+     *            ClassLaoder
      */
-    public void addPackage(InputStream in, ClassLoader classLoader) {
+    public void addPackage(InputStream in,
+                           ClassLoader classLoader) {
         if ( classLoader == null ) {
             classLoader = this.classLoader;
         }
 
         try {
-            Object opkg = DroolsStreamUtils.streamIn(in, classLoader);
-            if ( !(opkg instanceof Package) ) {
+            
+            Object opkg = DroolsStreamUtils.streamIn( in,
+                                                      classLoader );
+
+            if ( opkg instanceof Package ) {
+                Package pkg = (Package) opkg;
+                addPackage( pkg );
+            } else if ( opkg instanceof Package[] ) {
+                Package[] pkgs = (Package[]) opkg;
+                for ( Package pkg : pkgs ) {
+                    addPackage( pkg );
+                }
+            } else {
                 throw new IllegalArgumentException( "Can only add instances of org.drools.rule.Package to a rulebase instance." );
-            }
-            Package binPkg = (Package) opkg;
-
-            if ( !binPkg.isValid() ) {
-                throw new IllegalArgumentException( "Can't add a non valid package to a rulebase." );
-            }
-
-            try {
-                this.ruleBase.addPackage( binPkg );
-            } catch ( Exception e ) {
-                throw new RuntimeDroolsException( "Unable to add package to the rulebase.",
-                                                  e );
             }
 
         } catch ( IOException e ) {
@@ -119,6 +123,18 @@ public class BinaryRuleBaseLoader {
             }
         }
 
+    }
+    
+    private void addPackage(Package pkg) {
+        if ( !pkg.isValid() ) {
+            throw new IllegalArgumentException( "Can't add a non valid package to a rulebase." );
+        }
+        try {
+            this.ruleBase.addPackage( pkg );
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Unable to add package to the rulebase.",
+                                              e );
+        }
     }
 
     public RuleBase getRuleBase() {
