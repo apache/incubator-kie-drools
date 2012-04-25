@@ -219,7 +219,7 @@ public class CommandBasedStatefulKnowledgeSession
                                         Map<String, Object> parameters) {
         StartProcessCommand command = new StartProcessCommand();
         command.setProcessId( processId );
-        command.setParameters( (HashMap<String, Object>) parameters );
+        command.setParameters( parameters );
         return commandService.execute( command );
     }
 
@@ -227,7 +227,7 @@ public class CommandBasedStatefulKnowledgeSession
 			                                     Map<String, Object> parameters) {
         CreateProcessInstanceCommand command = new CreateProcessInstanceCommand();
         command.setProcessId( processId );
-        command.setParameters( (HashMap<String, Object>) parameters );
+        command.setParameters( parameters );
         return commandService.execute( command );
 	}
 
