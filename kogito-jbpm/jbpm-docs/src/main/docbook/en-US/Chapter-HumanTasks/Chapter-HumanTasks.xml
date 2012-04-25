@@ -990,6 +990,88 @@ public interface UserInfo {
       and userinfo.properties.
       </para>
       
+      <section>
+      <title>User information retrieved from LDAP server</title>
+      
+      <para>More production alike configuration would be to use LDAP server as user information repository
+      and to achieve that a dedicated UserInfo implementation is shipped with jBPM - LDAPUserInfoImpl.
+      This is especially useful when configuring task server to use LDAP based user group callback, with 
+      this complete user/group information are externalized to LDAP server.</para>
+      
+      LDAP UserGroupCallback properties
+     <itemizedlist>
+         <listitem>ldap.bind.user : username used to connect to the LDAP server (optional if LDAP server accepts anonymous access)</listitem>
+         <listitem>ldap.bind.pwd : password used to connect to the LDAP server(optional if LDAP server accepts anonymous access)</listitem>
+         
+         <listitem>ldap.user.ctx : context in LDAP that will be used when searching for user information (mandatory)</listitem>
+         <listitem>ldap.role.ctx : context in LDAP that will be used when searching for group/role information (mandatory)</listitem>
+         
+         <listitem>ldap.user.filter : filter that will be used to search for user information, usually will contain substitution keys {0} to be replaced with parameters (mandatory)</listitem>
+         <listitem>ldap.role.filter : filter that will be used to search for group/role information, usually will contain substitution keys {0} to be replaced with parameters (mandatory)</listitem>
+         <listitem>ldap.role.members.filter : filter that will be used to search for user group/role membership information, usually will contain substitution keys {0} to be replaced with parameters (optional default same as ldap.role.filter)</listitem>
+         
+         <listitem>ldap.email.attr.id : attribute id that contains email address in LDAP (default mail)</listitem>
+         <listitem>ldap.name.attr.id : attribute id that contians display name in LDAP (default displayName)</listitem>
+         <listitem>ldap.lang.attr.id : attribute id that contians language information (default locale)</listitem>
+         <listitem>ldap.member.attr.id : attribute id on group/role object in LDAP that contains members (default member)</listitem>
+         <listitem>ldap.user.attr.id : attribute id that contains user id in LDAP server (default uid)</listitem>
+         <listitem>ldap.role.attr.id : attribute id that contains group/role id in LDAP server (default cn)</listitem>
+         
+         <listitem>ldap.entity.id.dn : instructs if the organizational entity is (or can be) DN, especially important when members of a group will be returned as DN instead of user ids (default false)</listitem>
+         
+         <listitem>java.naming.factory.initial : initial conntext factory class name (default com.sun.jndi.ldap.LdapCtxFactory)</listitem>
+         <listitem>java.naming.security.authentication : authentication type (none, simple, strong where simple is default one)</listitem>
+         <listitem>java.naming.security.protocol : specifies security protocol to be used, for instance ssl</listitem>
+         <listitem>java.naming.provider.url : LDAP url to be used default is ldap://localhost:389, or if protocol is set to ssl ldap://localhost:636</listitem>
+      </itemizedlist>
+      Depending on how human task server is started LDAP user info can be configured in two ways:
+      <itemizedlist>
+         <listitem>programatically - build property object with all required attributes and register 
+         new user info on escalation handler
+         
+      
+      <programlisting language="java">
+Properties properties = new Properties();
+properties.setProperty(LDAPUserInfoImpl.USER_CTX, "ou=People,dc=jbpm,dc=org");
+properties.setProperty(LDAPUserInfoImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
+properties.setProperty(LDAPUserInfoImpl.USER_FILTER, "(uid={0})");
+properties.setProperty(LDAPUserInfoImpl.ROLE_FILTER, "(cn={0})");
+properties.setProperty(LDAPUserInfoImpl.IS_ENTITY_ID_DN, "true");
+
+UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
+
+DefaultEscalatedDeadlineHandler handler = new DefaultEscalatedDeadlineHandler(emailProperties);
+handler.setUserInfo(ldapUserInfo);
+      </programlisting>
+      </listitem>
+      <listitem>declaratively - create property file (jbpm.user.info.properties) with all 
+      required attributes, place it on the root of the classpath and declare LDAP user info implementation
+       to be registered (see section Starting the human task server for deatils). Alternatively, location of 
+      jbpm.user.info.properties can be specified via system property 
+      -Djbpm.user.info.properties=FILE_LOCATION_ON_CLASSPATH
+      <programlisting language="java">
+#ldap.bind.user=
+#ldap.bind.pwd=
+
+ldap.user.ctx=ou\=People,dc\=my-domain,dc\=com
+ldap.role.ctx=ou\=Roles,dc\=my-domain,dc\=com
+
+ldap.user.filter=(uid\={0})
+ldap.role.filter=(cn\={0})
+#ldap.role.members.filter=
+
+#ldap.email.attr.id
+#ldap.name.attr.id
+#ldap.lang.attr.id
+#ldap.member.attr.id
+#ldap.user.attr.id
+#ldap.role.attr.id
+
+ldap.entity.id.dn=true
+      </programlisting>
+      </listitem>
+      </itemizedlist>
+      </section>
       
     </section>
 
