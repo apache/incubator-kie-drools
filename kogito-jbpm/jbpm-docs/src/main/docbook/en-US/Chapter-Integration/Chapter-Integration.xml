@@ -149,7 +149,7 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     <para>For example, the following configuration file sets up a new session based on a
     knowledge base with one process definition (loaded from the classpath).</para>
     
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:jbpm="http://drools.org/schema/drools-spring"       
@@ -170,7 +170,7 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     <para>The following piece of code can be used to load the above Spring configuration, retrieve
     the session and start the process.</para>
     
-    <programlisting>ClassPathXmlApplicationContext context = 
+    <programlisting language="java">ClassPathXmlApplicationContext context =
     new ClassPathXmlApplicationContext("spring-conf.xml");
 StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) context.getBean("ksession");
 ksession.startProcess("com.sample.HelloWorld");
@@ -179,7 +179,7 @@ ksession.startProcess("com.sample.HelloWorld");
     <para>Note that you can also inject the session in one of your domain objects, for example by adding
     the following fragment in the configuration file.</para>
     
-    <programlisting>&lt;bean id="myObject" class="org.jbpm.sample.MyObject"&gt;
+    <programlisting language="xml">&lt;bean id="myObject" class="org.jbpm.sample.MyObject"&gt;
   &lt;property name="session" ref="ksession" /&gt;
 &lt;/bean&gt;
     </programlisting>
@@ -187,7 +187,7 @@ ksession.startProcess("com.sample.HelloWorld");
     <para>As a result, the session will be injected in your domain object can then be accessed directly.
     For example:</para>
     
-    <programlisting>public class MyObject {
+    <programlisting language="java">public class MyObject {
   private StatefulKnowledgeSession ksession;
   public void setSession(StatefulKnowledgeSession ksession) {
     this.ksession = ksession;
@@ -198,63 +198,226 @@ ksession.startProcess("com.sample.HelloWorld");
 }
     </programlisting>
     
-    <!--para>The following example shows a slightly more complex example, where the session is
+    <para>The following example shows a slightly more complex example, where the session is
     configured to use persistence (JPA using an in-memory database) and transaction (using 
     the Spring transaction manager).</para>
     
-    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:drools="http://drools.org/schema/drools-spring"
-  xmlns:jee="http://www.springframework.org/schema/jee"
-  xmlns:util="http://www.springframework.org/schema/util"
-  xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:tx="http://www.springframework.org/schema/tx"
-  xmlns:aop="http://www.springframework.org/schema/aop"
-  xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
-    http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"&gt;
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:drools="http://drools.org/schema/drools-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring-1.3.0.xsd"&gt;
 
-  &lt;bean name="myDroolsBean" class="org.drools.container.spring.timer.MyDroolsBean"&gt;
-    &lt;property name="emf" ref="entityManagerFactory" /&gt;
-    &lt;property name="kbase" ref="knowledgeBase" /&gt;
-    &lt;property name="kstore" ref="knowledgeStore" /&gt;
-    &lt;property name="txm" ref="transactionManager" /&gt;
-  &lt;/bean&gt;
+    &lt;bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
+      &lt;property name="driverClassName" value="org.h2.Driver"/&gt;
+      &lt;property name="url" value="jdbc:h2:mem:jbpm"/&gt;
+      &lt;property name="username" value="sa"/&gt;
+      &lt;property name="password" value=""/&gt;
+    &lt;/bean&gt;
 
-  &lt;context:annotation-config/&gt;
+    &lt;bean id="emf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+      &lt;property name="dataSource" ref="dataSource"/&gt;
+      &lt;property name="persistenceUnitName" value="org.drools.persistence.jpa.local"/&gt;
+    &lt;/bean&gt;
 
-  &lt;drools:kstore id="knowledgeStore"/&gt;
+    &lt;bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+      &lt;property name="entityManagerFactory" ref="emf"/&gt;
+    &lt;/bean&gt;
 
-  &lt;drools:kbase id="knowledgeBase"&gt;
-    &lt;drools:resources&gt;
-      &lt;drools:resource type="BPMN2" source="classpath:MyProcess.bpmn" /&gt;
-    &lt;/drools:resources&gt;
-  &lt;/drools:kbase&gt;
+    &lt;drools:grid-node id="node1"/&gt;
 
-  &lt;bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
-    &lt;property name="entityManagerFactory" ref="entityManagerFactory" /&gt;
-  &lt;/bean&gt;
+    &lt;drools:kbase id="kbase1" node="node1"&gt;
+      &lt;drools:resources&gt;
+        &lt;drools:resource type="BPMN2" source="classpath:MyProcess.bpmn"/&gt;
+      &lt;/drools:resources&gt;
+    &lt;/drools:kbase&gt;
 
-  &lt;bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"&gt;
-    &lt;property name="driverClassName" value="org.h2.Driver" /&gt;
-    &lt;property name="url" value="jdbc:h2:mem:drools-spring-workflow" /&gt;
-    &lt;property name="username" value="sa" /&gt;
-    &lt;property name="password" value="" /&gt;
-  &lt;/bean&gt;
-
-  &lt;bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
-    &lt;property name="persistenceUnitName" value="org.drools.persistence.jpa.local" /&gt;
-    &lt;property name="dataSource" ref="datasource" /&gt;
-  &lt;/bean&gt;
-
+    &lt;drools:ksession id="ksession1" type="stateful" kbase="kbase1" node="node1"&gt;
+      &lt;drools:configuration&gt;
+        &lt;drools:jpa-persistence&gt;
+          &lt;drools:transaction-manager ref="txManager"/&gt;
+          &lt;drools:entity-manager-factory ref="emf"/&gt;
+        &lt;/drools:jpa-persistence&gt;
+      &lt;/drools:configuration&gt;
+    &lt;/drools:ksession&gt;
 &lt;/beans&gt;
-    </programlisting-->
-    
-    </section>
+    </programlisting>
+
+    <para>In order to execute the above example you must be sure that in your META-INF you have
+      a persistent.xml file with the following content:</para>
+
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence      http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"&gt;
+
+  &lt;persistence-unit name="org.drools.persistence.jpa.local"&gt;
+    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+    &lt;mapping-file&gt;META-INF/JBPMorm.xml&lt;/mapping-file&gt;
+    &lt;mapping-file&gt;META-INF/ProcessInstanceInfo.hbm.xml&lt;/mapping-file&gt;
+
+    &lt;class&gt;org.drools.persistence.info.SessionInfo&lt;/class&gt;
+    &lt;class&gt;org.jbpm.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
+    &lt;class&gt;org.drools.persistence.info.WorkItemInfo&lt;/class&gt;
+
+    &lt;properties&gt;
+      &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
+      &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt;
+      &lt;property name="hibernate.show_sql" value="false"/&gt;
+
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
+    &lt;/properties&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+    </programlisting>
+  </section>
+
+  <section>
+    <title>Apache Camel Integration</title>
+
+    <para>Camel provides a lightweight bus framework for geting information into and
+      out of jBPM. Additionally Camel provides a way to expose your KnowledgeBases
+      remotely for any sort of client application that can use HTTP, through a SOAP
+      or REST interface.
+    </para>
+
+    <para>The following example shows how to setup a remote accessible session:</para>
+
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+       xmlns:kb="http://drools.org/schema/drools-spring"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd"&gt;
+
+  &lt;!-- jBPM Knowledge Related Config --&gt;
+
+  &lt;kb:grid-node id="node1"/&gt;
+
+  &lt;kb:kbase id="kbase1" node="node1"&gt;
+    &lt;kb:resources&gt;
+      &lt;kb:resource type="BPMN2" source="classpath:MyProcess.bpmn"/&gt;
+    &lt;/kb:resources&gt;
+  &lt;/kb:kbase&gt;
+
+  &lt;kb:ksession id="ksession1" type="stateless" kbase="kbase1" node="node1"/&gt;
+
+  &lt;!-- Camel Config --&gt;
+
+  &lt;import resource="classpath:META-INF/cxf/cxf.xml" /&gt;
+  &lt;import resource="classpath:META-INF/cxf/cxf-servlet.xml" /&gt;
+
+  &lt;cxf:rsServer id="rsServer"
+                address="/rest"
+                serviceClass="org.drools.jax.rs.CommandExecutorImpl"&gt;
+       &lt;cxf:providers&gt;
+           &lt;bean class="org.drools.jax.rs.CommandMessageBodyReader"/&gt;
+       &lt;/cxf:providers&gt;
+  &lt;/cxf:rsServer&gt;
+
+  &lt;cxf:cxfEndpoint id="soapServer"
+            address="/soap"
+             serviceName="ns:CommandExecutor"
+             endpointName="ns:CommandExecutorPort"
+          wsdlURL="soap.wsdl"
+          xmlns:ns="http://soap.jax.drools.org/" &gt;
+    &lt;cxf:properties&gt;
+      &lt;entry key="dataFormat" value="MESSAGE"/&gt;
+      &lt;entry key="defaultOperationName" value="execute"/&gt;
+    &lt;/cxf:properties&gt;
+  &lt;/cxf:cxfEndpoint&gt;
+
+  &lt;!-- Must have bean - needed to make Camel "drools" aware --&gt;
+  &lt;bean id="kbPolicy" class="org.drools.camel.component.DroolsPolicy" /&gt;
+
+  &lt;camelContext id="camel" xmlns="http://camel.apache.org/schema/spring"&gt;
+    &lt;route&gt;
+       &lt;from uri="cxfrs://bean://rsServer"/&gt;
+       &lt;policy ref="kbPolicy"&gt;
+         &lt;unmarshal ref="xstream" /&gt;
+         &lt;to uri="drools:node1/ksession1" /&gt;
+         &lt;marshal ref="xstream" /&gt;
+       &lt;/policy&gt;
+    &lt;/route&gt;
+
+    &lt;route&gt;
+      &lt;from uri="cxf://bean://soapServer"/&gt;
+      &lt;policy ref="kbPolicy"&gt;
+        &lt;unmarshal ref="xstream" /&gt;
+        &lt;to uri="drools:node1/ksession1" /&gt;
+        &lt;marshal ref="xstream" /&gt;
+      &lt;/policy&gt;
+    &lt;/route&gt;
+
+  &lt;/camelContext&gt;
+
+&lt;/beans&gt;</programlisting>
+
+    <para>To execute the above example you must be sure that you have the folliwing
+      content in your web.xml file:</para>
+
+    <programlisting language="xml">&lt;web-app&gt;
+  (...)
+  &lt;context-param&gt;
+    &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+    &lt;param-value&gt;classpath:beans.xml&lt;/param-value&gt;
+  &lt;/context-param&gt;
+
+  &lt;listener&gt;
+    &lt;listener-class&gt;
+      org.springframework.web.context.ContextLoaderListener
+    &lt;/listener-class&gt;
+  &lt;/listener&gt;
+
+  &lt;servlet&gt;
+    &lt;display-name&gt;CXF Servlet&lt;/display-name&gt;
+    &lt;servlet-name&gt;CXFServlet&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;
+      org.apache.cxf.transport.servlet.CXFServlet
+    &lt;/servlet-class&gt;
+    &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;CXFServlet&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/kservice/*&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;
+
+  &lt;session-config&gt;
+    &lt;session-timeout&gt;10&lt;/session-timeout&gt;
+  &lt;/session-config&gt;
+&lt;/web-app&gt;</programlisting>
+
+    <para>After deploying the above example, you can test it using any http compatible
+      tool like curl, directly from you command line</para>
+
+    <programlisting>$ curl -v \
+  -H 'Content-Type: text/plain' \
+  -d '&lt;batch-execution lookup="ksession1"&gt; \
+  &lt;start-process processId="org.jbpm.sample.my-process" out-identifier = "processId"/&gt; \
+  &lt;/batch-execution&gt;' \
+  http://localhost:8080/jbpm-camel/kservice/rest/execute
+    </programlisting>
+
+    <para>The above execution will result in something similar to the following code snippet:</para>
+
+    <programlisting>HTTP/1.1 200 OK
+Content-Length: 131
+Server: Apache-Coyote/1.1
+Date: Mon, 13 Apr 2012 17:02:42 GMT
+Content-Type: text/plain
+Connection: close
+
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;&lt;execution-results&gt;&lt;result identifier="processId"&gt;&lt;long&gt;1&lt;/long&gt;&lt;/result&gt;&lt;/execution-results&gt;
+    </programlisting>
+
+  </section>
 
 </chapter>
