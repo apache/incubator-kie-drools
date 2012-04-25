@@ -54,6 +54,8 @@ import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,9 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private OnErrorAction action;
     
 	private boolean initialized = false;
+    
+    private ContentMarshallerContext marshallerContext;
+    
     
     public SyncWSHumanTaskHandler() {
     	this.action = OnErrorAction.LOG;
@@ -99,6 +104,14 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         this.action = action;
     }
 
+    public ContentMarshallerContext getMarshallerContext() {
+        return marshallerContext;
+    }
+
+    public void setMarshallerContext(ContentMarshallerContext marshallerContext) {
+        this.marshallerContext = marshallerContext;
+    }
+    
     public void setConnection(String ipAddress, int port) {
         this.ipAddress = ipAddress;
         this.port = port;
@@ -251,18 +264,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
             contentObject = workItem.getParameters();
         }
         if (contentObject != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out;
-            try {
-                out = new ObjectOutputStream(bos);
-                out.writeObject(contentObject);
-                out.close();
-                content = new ContentData();
-                content.setContent(bos.toByteArray());
-                content.setAccessType(AccessType.Inline);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
+            content = ContentMarshallerHelper.marshal(contentObject, marshallerContext,  session.getEnvironment());
         }
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
         try {
@@ -337,31 +339,22 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 				long contentId = task.getTaskData().getOutputContentId();
 				if (contentId != -1) {
 					Content content = client.getContent(contentId);
-					ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
-					ObjectInputStream in;
-					try {
-						in = new ObjectInputStream(bis);
-						Object result = in.readObject();
-						in.close();
-						results.put("Result", result);
-						if (result instanceof Map) {
-							Map<?, ?> map = (Map) result;
-							for (Map.Entry<?, ?> entry: map.entrySet()) {
-								if (entry.getKey() instanceof String) {
-									results.put((String) entry.getKey(), entry.getValue());
-								}
-							}
+                                        Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallerContext, session.getEnvironment());
+					results.put("Result", result);
+                                        if (result instanceof Map) {
+                                            Map<?, ?> map = (Map) result;
+                                            for (Map.Entry<?, ?> entry: map.entrySet()) {
+						if (entry.getKey() instanceof String) {
+                                                    results.put((String) entry.getKey(), entry.getValue());
 						}
-						if (session != null) {
-							session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
-						} else {
-							manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
-						}
-					} catch (IOException e) {
-		                logger.error(e.getMessage(), e);
-					} catch (ClassNotFoundException e) {
-		                logger.error(e.getMessage(), e);
+                                            }
 					}
+					if (session != null) {
+                                            session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
+					} else {
+                                            manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+					}
+					
 				} else {
 					if (session != null) {
 						session.getWorkItemManager().completeWorkItem(workItemId, results);

@@ -29,7 +29,7 @@ import org.drools.time.SessionClock;
 
 public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 	public static int testSessionId = 5;
-	
+	private Environment env;
 	public Calendars getCalendars() {
 		return null;
 	}
@@ -38,8 +38,11 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
 		return null;
 	}
 
+        public void setEnvironment(Environment env){
+            this.env = env;
+        }
 	public Environment getEnvironment() {
-		return null;
+		return this.env;
 	}
 
 	public Object getGlobal(String arg0) {

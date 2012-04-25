@@ -45,4 +45,21 @@
       <property name="hibernate.show_sql" value="false" />
     </properties>
   </persistence-unit>
+  
+   <persistence-unit name="org.jbpm.persistence.example">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>org.jbpm.task.service.persistence.variable.MyEntity</class>
+        <properties>
+            <property name="hibernate.max_fetch_depth" value="3"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="hibernate.show_sql" value="false" />
+            
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
+            <property name="hibernate.connection.username" value="sa" />
+            <property name="hibernate.connection.password" value="sasa" />
+        </properties>        
+    </persistence-unit>
 </persistence>
