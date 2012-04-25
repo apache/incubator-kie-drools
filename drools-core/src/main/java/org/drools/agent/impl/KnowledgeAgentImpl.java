@@ -250,7 +250,8 @@ public class KnowledgeAgentImpl
                                          + resource );
                     processChangeSet( resource,
                                       changeSetState );
-                } else if ( ((InternalResource) resource).isDirectory() ) {
+                } else if ( changeSetState.scanDirectories &&
+                        ((InternalResource) resource).isDirectory() ) {
                     this.resourceDirectories.add( resource );
                     this.listener.debug( "KnowledgeAgent subscribing to directory="
                                          + resource );
