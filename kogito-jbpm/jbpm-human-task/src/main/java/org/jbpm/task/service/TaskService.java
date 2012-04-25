@@ -33,12 +33,14 @@ import javax.persistence.EntityManagerFactory;
 import org.drools.SystemEventListener;
 import org.jbpm.eventmessaging.EventKeys;
 import org.jbpm.task.*;
+import org.jbpm.task.admin.TasksAdmin;
 import org.jbpm.task.event.MessagingTaskEventListener;
 import org.jbpm.task.event.TaskEventListener;
 import org.jbpm.task.event.TaskEventSupport;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.persistence.TaskPersistenceManager;
+import org.jbpm.task.service.persistence.TaskSessionFactory;
+import org.jbpm.task.service.persistence.TaskSessionFactoryImpl;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -46,11 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
-public class TaskService extends TaskPersistenceManagerAccessor {
+public class TaskService {
 
-    private EntityManagerFactory emf;
+    private TaskSessionFactory sessionFactory;
+    
     private ScheduledThreadPoolExecutor scheduler;
-
     private EscalatedDeadlineHandler escalatedDeadlineHandler;
 
     private UserInfo userInfo;
@@ -74,11 +76,21 @@ public class TaskService extends TaskPersistenceManagerAccessor {
      * @param systemEventListener the Drools SystemEventListener
      */
     public TaskService(EntityManagerFactory emf, SystemEventListener systemEventListener) {
-        this(emf, systemEventListener, null);
+        initialize(emf, systemEventListener, null);
     }
 
+    /**
+     * Default constructor
+     * @param emf
+     * @param systemEventListener
+     * @param escalationHandler
+     */
     public TaskService(EntityManagerFactory emf, SystemEventListener systemEventListener, EscalatedDeadlineHandler escalationHandler) {
-        this.emf = emf;
+        initialize(emf, systemEventListener, escalationHandler);
+    }
+    
+    private void initialize(EntityManagerFactory emf, SystemEventListener systemEventListener, EscalatedDeadlineHandler escalationHandler) {
+        this.sessionFactory = new TaskSessionFactoryImpl(this, emf);
         this.systemEventListener = systemEventListener;
         if (escalationHandler != null) {
             this.escalatedDeadlineHandler = escalationHandler;
@@ -86,7 +98,7 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         else { 
             this.escalatedDeadlineHandler = new DefaultEscalatedDeadlineHandler();
         }
-        init();
+        initialize();
     }
     
     /**
@@ -94,7 +106,7 @@ public class TaskService extends TaskPersistenceManagerAccessor {
      * </p>
      * The constructor has been split into two methods in order to use Spring with human-task.
      */
-    public void init() { 
+    public void initialize() { 
         eventSupport = new TaskEventSupport();
         eventKeys = new EventKeys();
         eventSupport.addEventListener(new MessagingTaskEventListener(eventKeys));
@@ -133,14 +145,6 @@ public class TaskService extends TaskPersistenceManagerAccessor {
     }
     
     /**
-     * Setter of the EntityManagerFactory field for Spring.
-     * @param emf an {@link EntityManagerFactory} instance
-     */
-    public void setEntityManagerFactory(EntityManagerFactory emf) { 
-        this.emf = emf;
-    }
-    
-    /**
      * Setter of the {@link SystemEventListener} field for Spring.
      * @param emf an {@link SystemEventListener} instance
      */
@@ -148,8 +152,20 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         this.systemEventListener = systemEventListener;
     }
 
+    /**
+     * Setter of the {@link TaskSessionFactory} field for Spring.
+     * @param emf an {@link TaskSessionFactory} instance
+     */
+    public void setTaskSessionFactory(TaskSessionFactory taskSessionFactory) { 
+        this.sessionFactory = taskSessionFactory;
+    }
+
     public TaskServiceSession createSession() {
-        return new TaskServiceSession(this, emf);
+        return sessionFactory.createTaskServiceSession();
+    }
+
+    public TasksAdmin createTaskAdmin() {
+        return sessionFactory.createTaskAdmin();
     }
 
     public void schedule(ScheduledTaskDeadline deadline,
@@ -369,4 +385,6 @@ public class TaskService extends TaskPersistenceManagerAccessor {
         }
 
     }
+    
+
 }

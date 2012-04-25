@@ -32,49 +32,46 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author salaboy
  */
 public class TasksAdminTest {
 
+    private EntityManagerFactory emf;
     private TaskServiceSession taskSession;
+    private TaskService taskService;
+    
     private Map<String, User> users = new HashMap<String, User>();
     private Map<String, Group> groups = new HashMap<String, Group>();
 
     public TasksAdminTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Before
     public void setUp() {
+        emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+        taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+
+        taskSession = taskService.createSession();
+
+        addUsersAndGroups(taskSession, users, groups);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        taskService.setUserinfo(userInfo);
+        
+        UserGroupCallbackManager.getInstance().setCallback(null);
     }
 
     @After
     public void tearDown() {
+        taskSession.dispose();
+        emf.close();
     }
 
     @Test
     public void completedTasksTest() {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-
-        taskSession = new TaskServiceSession(taskService, emf);
-
-        addUsersAndGroups(taskSession);
-
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
-
-        UserGroupCallbackManager.getInstance().setCallback(null);
-
+        runCompletedTasksTest(users, taskService);
+    }
+    
+    public static void runCompletedTasksTest(Map<String, User> users, TaskService taskService) { 
         LocalTaskService localTaskService = new LocalTaskService(taskService);
 
         Task task = createSimpleTask(users.get("salaboy"), users.get("administrator"));
@@ -85,7 +82,7 @@ public class TasksAdminTest {
 
         localTaskService.start(simpleTask.getId(), "salaboy");
 
-        TasksAdmin admin = new TasksAdminImpl(emf);
+        TasksAdmin admin = taskService.createTaskAdmin();
         List<TaskSummary> completedTasks = admin.getCompletedTasks();
         assertEquals(0, completedTasks.size());
 
@@ -93,26 +90,14 @@ public class TasksAdminTest {
 
         completedTasks = admin.getCompletedTasks();
         assertEquals(1, completedTasks.size());
-
-
     }
 
     @Test
     public void completedSinceTasksTest() {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-
-        taskSession = new TaskServiceSession(taskService, emf);
-        
-        addUsersAndGroups(taskSession);
-
-
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
-
-        UserGroupCallbackManager.getInstance().setCallback(null);
-
+        runCompletedSinceTasksTest(users, taskService);
+    }
+    
+    public static void runCompletedSinceTasksTest(Map<String, User> users, TaskService taskService) { 
         LocalTaskService localTaskService = new LocalTaskService(taskService);
 
         Task task = createSimpleTask(users.get("salaboy"), users.get("administrator"));
@@ -124,7 +109,7 @@ public class TasksAdminTest {
 
         localTaskService.start(simpleTask.getId(), "salaboy");
 
-        TasksAdmin admin = new TasksAdminImpl(emf);
+        TasksAdmin admin = taskService.createTaskAdmin();
         List<TaskSummary> completedTasks = admin.getCompletedTasks(new Date());
         assertEquals(0, completedTasks.size());
 
@@ -132,26 +117,14 @@ public class TasksAdminTest {
 
         completedTasks = admin.getCompletedTasks(new Date());
         assertEquals(1, completedTasks.size());
-
-
     }
 
-    @Test // FIX ISSUE WITH TPM
+    @Test 
     public void archiveTasksTest() {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-
-        taskSession = new TaskServiceSession(taskService, emf);
-        
-        addUsersAndGroups(taskSession);
-
-
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
-
-        UserGroupCallbackManager.getInstance().setCallback(null);
-
+        runArchiveTasksTest(users, taskService, emf);
+    }
+    
+    public static void runArchiveTasksTest(Map<String, User> users, TaskService taskService, EntityManagerFactory emf) { 
         LocalTaskService localTaskService = new LocalTaskService(taskService);
 
         Task task = createSimpleTask(users.get("salaboy"), users.get("administrator"));
@@ -163,7 +136,7 @@ public class TasksAdminTest {
 
         localTaskService.start(simpleTask.getId(), "salaboy");
             
-        TasksAdmin admin = new TasksAdminImpl(emf);
+        TasksAdmin admin = taskService.createTaskAdmin();
         int archived = admin.archiveTasks(admin.getActiveTasks());
         assertEquals(1, archived);
         List<TaskSummary> archivedTasks = admin.getArchivedTasks();
@@ -173,25 +146,14 @@ public class TasksAdminTest {
         System.out.println(">>> Archived? "+localTaskService.getTask(archivedTasks.get(0).getId()).isArchived());
         EntityManager em = emf.createEntityManager();
         System.out.println(">>> Archived? "+em.find(Task.class, archivedTasks.get(0).getId()).isArchived());
-        
-
     }
+    
     @Test
     public void removeTasksTest() {
+        runRemoveTasksTest(users, taskService, emf);
+    }
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
-        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-
-        taskSession = new TaskServiceSession(taskService, emf);
-
-        addUsersAndGroups(taskSession);
-
-
-        MockUserInfo userInfo = new MockUserInfo();
-        taskService.setUserinfo(userInfo);
-
-        UserGroupCallbackManager.getInstance().setCallback(null);
-
+    public static void runRemoveTasksTest(Map<String, User> users, TaskService taskService, EntityManagerFactory emf) {
         LocalTaskService localTaskService = new LocalTaskService(taskService);
 
         Task task = createSimpleTask(users.get("salaboy"), users.get("administrator"));
@@ -203,7 +165,7 @@ public class TasksAdminTest {
 
         localTaskService.start(simpleTask.getId(), "salaboy");
             
-        TasksAdmin admin = new TasksAdminImpl(emf);
+        TasksAdmin admin = taskService.createTaskAdmin();
         List<TaskSummary> activeTasks = admin.getActiveTasks();
         Task activeTask = localTaskService.getTask(activeTasks.get(0).getId());
         int removed = admin.removeTasks(activeTasks);
@@ -217,45 +179,49 @@ public class TasksAdminTest {
         
         EntityManager em = emf.createEntityManager();
         assertNull(em.find(Task.class, activeTask.getId()));
-        
-
     }
     
-
-    private void addUsersAndGroups(TaskServiceSession taskSession) {
+    public static void addUsersAndGroups(TaskServiceSession taskSession, Map<String, User> users, Map<String, Group> groups) {
         User user = new User("salaboy");
         taskSession.addUser(user);
+        
         User administrator = new User("Administrator");
         taskSession.addUser(administrator);
+        
         users.put("salaboy", user);
         users.put("administrator", administrator);
+        
         Group myGroup = new Group("group1");
         taskSession.addGroup(myGroup);
+        
         groups.put("group1", myGroup);
 
     }
 
-    private Task createSimpleTask(User user, User administrator) {
+    private static Task createSimpleTask(User user, User administrator) {
         Task task = new Task();
         task.setPriority(1);
-        TaskData data = new TaskData();
-        data.setActualOwner(user);
-        data.setCreatedBy(user);
-        data.setWorkItemId(1);
+        
         PeopleAssignments peopleAssignments = new PeopleAssignments();
-        List<OrganizationalEntity> usersEntities = new ArrayList<OrganizationalEntity>();
-        usersEntities.add(user);
         List<OrganizationalEntity> adminsEntities = new ArrayList<OrganizationalEntity>();
         adminsEntities.add(administrator);
         peopleAssignments.setBusinessAdministrators(adminsEntities);
+        List<OrganizationalEntity> usersEntities = new ArrayList<OrganizationalEntity>();
+        usersEntities.add(user);
         peopleAssignments.setPotentialOwners(usersEntities);
         peopleAssignments.setTaskInitiator(user);
         task.setPeopleAssignments(peopleAssignments);
+        
         List<I18NText> names = new ArrayList<I18NText>();
         names.add(new I18NText("en-UK", "My Simple Task"));
         task.setNames(names);
         task.setDescriptions(names);
         task.setSubjects(names);
+        
+        TaskData data = new TaskData();
+        data.setActualOwner(user);
+        data.setCreatedBy(user);
+        data.setWorkItemId(1);
         data.setProcessInstanceId(1);
         data.setProcessSessionId(1);
         task.setTaskData(data);

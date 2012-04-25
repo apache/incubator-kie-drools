@@ -76,7 +76,13 @@ public abstract class TaskServiceEscalationBaseTest extends BaseTest {
         List<Task> tasks = (List<Task>) eval( reader, vars );
         long now = ((Date)vars.get( "now" )).getTime();
         
-        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        EntityManager em = emf.createEntityManager();
+        TaskPersistenceManager tpm;
+        if( useJTA ) { 
+            tpm = new TaskPersistenceManager(em, new TaskJTATransactionManager());
+        } else { 
+            tpm = new TaskPersistenceManager(em);
+        }
         tpm.beginTransaction();
         for ( Task task : tasks ) {
             // for this one we put the task in directly;

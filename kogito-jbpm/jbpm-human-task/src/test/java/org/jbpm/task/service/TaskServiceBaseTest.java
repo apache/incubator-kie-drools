@@ -22,11 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.UniqueConstraint;
+
 import org.jbpm.task.BaseTest;
+import org.jbpm.task.Group;
 import org.jbpm.task.Task;
+import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 import org.jbpm.task.utils.CollectionUtils;
 
 public abstract class TaskServiceBaseTest extends BaseTest {
@@ -34,13 +40,25 @@ public abstract class TaskServiceBaseTest extends BaseTest {
 	protected TaskServer server;
     protected TaskClient client;
 
-    @SuppressWarnings("unchecked")
     public void testTasksOwnedQueryWithI18N() throws Exception {
-        Map<String, Object>  vars = new HashMap<String, Object>();
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
+        runTestTasksOwnedQueryWithI18N(client, users, groups);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static void runTestTasksOwnedQueryWithI18N(TaskClient client, Map<String, User> users, Map<String, Group> groups) { 
+        Map<String, Object>  vars = fillVariables(users, groups);
         
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwned) );
+        BlockingAllOpenTasksForUseResponseHandler getTaskshandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "peter" ).getId(), "en-UK", getTaskshandler );
+        int peterSize = getTaskshandler.getResults().size();
+        getTaskshandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "steve" ).getId(), "en-UK", getTaskshandler );
+        int steveSize = getTaskshandler.getResults().size();
+        getTaskshandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksOwned( users.get( "darth" ).getId(), "en-UK", getTaskshandler );
+        int darthSize = getTaskshandler.getResults().size();
+        
+        Reader reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream(MvelFilePath.TasksOwned) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -49,7 +67,7 @@ public abstract class TaskServiceBaseTest extends BaseTest {
         }
 
         // Test UK I18N  
-        reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwnedInEnglish) );
+        reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream(MvelFilePath.TasksOwnedInEnglish) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 
@@ -58,32 +76,33 @@ public abstract class TaskServiceBaseTest extends BaseTest {
                               "en-UK",
                               responseHandler );
         List<TaskSummary> actual = responseHandler.getResults();
-        assertEquals( 3,
+        assertEquals( peterSize + 3,
                       actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "peter" ), actual ) );
+        assertTrue( CollectionUtils.equals( expected.get( "peter" ), 
+                                            actual.subList(0, expected.get("peter").size()) ) );
 
         responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksOwned( users.get( "steve" ).getId(),
                               "en-UK",
                               responseHandler );
         actual = responseHandler.getResults();
-        assertEquals( 2,
+        assertEquals( steveSize + 2,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "steve" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("steve").size()) ) );
 
         responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksOwned( users.get( "darth" ).getId(),
                               "en-UK",
                               responseHandler );
         actual = responseHandler.getResults();
-        assertEquals( 1,
+        assertEquals( darthSize + 1,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "darth" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("darth").size()) ) );
 
         // Test DK I18N 
-        reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwnedInGerman) );
+        reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream(MvelFilePath.TasksOwnedInGerman) );
         expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                           vars );
 
@@ -92,121 +111,158 @@ public abstract class TaskServiceBaseTest extends BaseTest {
                               "en-DK",
                               responseHandler );
         actual = responseHandler.getResults();
-        assertEquals( 3,
+        assertEquals( peterSize + 3,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "peter" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("peter").size()) ) );
 
         responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksOwned( users.get( "steve" ).getId(),
                               "en-DK",
                               responseHandler );
         actual = responseHandler.getResults();
-        assertEquals( 2,
+        assertEquals( steveSize + 2,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "steve" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("steve").size()) ) );
 
         responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksOwned( users.get( "darth" ).getId(),
                               "en-DK",
                               responseHandler );
         actual = responseHandler.getResults();
-        assertEquals( 1,
+        assertEquals( darthSize + 1,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "darth" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("darth").size()) ) );
     }
     
     public void testPotentialOwnerQueries() {
-        Map<String, Object>  vars = new HashMap<String, Object>();
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
+        runTestPotentialOwnerQueries(client, users, groups);
+    }
+   
+    @SuppressWarnings("unchecked")
+    public static void runTestPotentialOwnerQueries(TaskClient client, Map<String, User> users, Map<String, Group> groups) { 
+        Map<String, Object>  vars = fillVariables(users, groups);
+        
+        BlockingAllOpenTasksForUseResponseHandler getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(),
+                              "en-UK",
+                              getTasksHandler );
+        List<TaskSummary> actual = getTasksHandler.getResults();
+        int originalSize = actual.size();
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksPotentialOwner) );
+        Reader reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream(MvelFilePath.TasksPotentialOwner) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
-            client.addTask( task, null, responseHandler );
+            BlockingAddTaskResponseHandler addTaskHandler = new BlockingAddTaskResponseHandler();
+            client.addTask( task, null, addTaskHandler );
         }
 
         // Test UK I18N  
-        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(),
                               "en-UK",
-                              responseHandler );
-        List<TaskSummary> actual = responseHandler.getResults();
-        assertEquals( 2,
+                              getTasksHandler );
+        actual = getTasksHandler.getResults();
+        assertEquals( originalSize + 2,
                       actual.size() );
     }
 
     public void testPeopleAssignmentQueries() {
-        Map vars = new HashMap();
-        vars.put( "users",
-                  users );
-        vars.put( "groups",
-                  groups );
+        runTestPeopleAssignmentQueries(client, taskSession, users, groups);
+    }
+   
+    @SuppressWarnings({"unchecked"})
+    public static void runTestPeopleAssignmentQueries(TaskClient client, TaskServiceSession taskSession, Map<String, User> users, Map<String, Group> groups) { 
+        Map<String, Object>  vars = fillVariables(users, groups);
 
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwned) );
+        BlockingAllOpenTasksForUseResponseHandler getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsTaskInitiator( users.get( "darth" ).getId(), "en-UK", getTasksHandler );
+        int darthSize = getTasksHandler.getResults().size();
+        
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsExcludedOwner( users.get( "liz" ).getId(), "en-UK", getTasksHandler );
+        int lizSize = getTasksHandler.getResults().size();
+        
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsPotentialOwner( users.get( "bobba" ).getId(), "en-UK", getTasksHandler );
+        int bobbaSize = getTasksHandler.getResults().size();
+        
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsRecipient( users.get( "sly" ).getId(), "en-UK", getTasksHandler );
+        int slySize = getTasksHandler.getResults().size();
+        
+        Reader reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream(MvelFilePath.TasksOwned) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
-            taskSession.addTask( task, null );
+            BlockingAddTaskResponseHandler addTaskHandler = new BlockingAddTaskResponseHandler();
+            client.addTask(task, null, addTaskHandler);
         }
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.PeopleAssignmentQuerries ) );
+        reader = new InputStreamReader( TaskServiceBaseTest.class.getResourceAsStream( MvelFilePath.PeopleAssignmentQuerries ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 
-        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsTaskInitiator( users.get( "darth" ).getId(),
                                                 "en-UK",
-                                                responseHandler );
-        List<TaskSummary> actual = responseHandler.getResults();
-        assertEquals( 1,
+                                                getTasksHandler );
+        List<TaskSummary> actual = getTasksHandler.getResults();
+        assertEquals( darthSize + 1,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "darth" ),
-                                            actual ) );
+                                            actual.subList(0, 1) ) );
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsBusinessAdministrator( users.get( "steve" ).getId(),
                                                         "en-UK",
-                                                        responseHandler );
-        actual = responseHandler.getResults();
+                                                        getTasksHandler );
+        actual = getTasksHandler.getResults();
         assertTrue( CollectionUtils.equals( expected.get( "steve" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("steve").size()) ) );
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsExcludedOwner( users.get( "liz" ).getId(),
                                                 "en-UK",
-                                                responseHandler );
-        actual = responseHandler.getResults();
-        assertEquals( 2,
+                                                getTasksHandler );
+        actual = getTasksHandler.getResults();
+        assertEquals( lizSize + 2,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "liz" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("liz").size()) ) );
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsPotentialOwner( users.get( "bobba" ).getId(),
                                                  "en-UK",
-                                                 responseHandler );
-        actual = responseHandler.getResults();
-        assertEquals( 3,
+                                                 getTasksHandler );
+        actual = getTasksHandler.getResults();
+        assertEquals( bobbaSize + 3,
                       actual.size() );
-        assertTrue( CollectionUtils.equals( expected.get( "bobba" ),
-                                            actual ) );
+        for( TaskSummary orig : expected.get("bobba") ) { 
+            boolean matchFound = false;
+            for( TaskSummary ts : actual ) { 
+                if( orig.equals(ts) ) { 
+                    matchFound = true;
+                    break;
+                }
+            }
+            assertTrue( matchFound );
+        }
 
-        responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsRecipient( users.get( "sly" ).getId(),
                                             "en-UK",
-                                            responseHandler );
-        actual = responseHandler.getResults();
-        assertEquals( 1,
+                                            getTasksHandler );
+        actual = getTasksHandler.getResults();
+        assertEquals( slySize + 1,
                       actual.size() );
         assertTrue( CollectionUtils.equals( expected.get( "sly" ),
-                                            actual ) );
+                                            actual.subList(0, expected.get("sly").size()) ) );
     }
 
 	public static class BlockingAllOpenTasksForUseResponseHandler

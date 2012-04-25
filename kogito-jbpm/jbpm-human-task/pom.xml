@@ -14,7 +14,7 @@
   <name>jBPM :: Human Task</name>
 
   <properties>
-    <spring.test.version>3.0.7.RELEASE</spring.test.version>
+    <springframework.version>3.0.7.RELEASE</springframework.version>
   </properties>
   
   <dependencies>
@@ -38,7 +38,6 @@
     <dependency>
       <groupId>javax.jms</groupId>
       <artifactId>jms</artifactId>
-      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
@@ -47,6 +46,10 @@
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
     </dependency>
     <dependency>
       <groupId>dom4j</groupId>
@@ -60,7 +63,6 @@
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
     </dependency>
- 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -70,7 +72,6 @@
     <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp-wiser</artifactId>
-      <version>1.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -111,61 +112,40 @@
       <version>3.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency>
     
-    <!-- Tests with Spring -->
+    <!-- tests with Spring -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-spring</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>${spring.test.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-      <version>${spring.test.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.test.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${spring.test.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>${spring.test.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
-      <version>${spring.test.version}</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>spring-aop</artifactId>
-          <groupId>org.springframework</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
+    
+    <!--  remove me -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-persistence-jpa</artifactId>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>8.4-702.jdbc3</version>
       <scope>test</scope>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <version>5.4.0-SNAPSHOT</version>
-      <type>jar</type>
     </dependency>
   </dependencies>
 

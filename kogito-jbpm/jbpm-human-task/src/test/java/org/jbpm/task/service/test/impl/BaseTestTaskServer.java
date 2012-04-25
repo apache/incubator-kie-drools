@@ -22,6 +22,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jbpm.task.service.TaskServer;
@@ -103,11 +104,22 @@ public class BaseTestTaskServer extends TaskServer {
             for( int i = 0; i < numClients; ++i ) { 
                 producer.offer((new byte [] {}));
             }
-            producer = null;
             
             if( latchGiven ) { 
-                finished.await();
+                boolean done = false;
+                while( !done ) { 
+                    try { 
+                        finished.await(2, TimeUnit.SECONDS);
+                        done = true;
+                    } catch( InterruptedException e ) { 
+                        // do nothing
+                    }
+                    for( int i = 0; i < numClients; ++i ) { 
+                        producer.offer((new byte [] {}));
+                    }
+                }
             }
+            producer = null;
         } catch (InterruptedException e) {
             // We're done regardless of what happens here. 
         }

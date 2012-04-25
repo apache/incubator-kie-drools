@@ -62,7 +62,7 @@ public class QueryTest extends BaseTest {
         long now = ((Date)vars.get( "now" )).getTime();
         
         // should be three, one is marked as escalated
-        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        TaskPersistenceManager tpm = new TaskPersistenceManager(emf.createEntityManager());
         List<DeadlineSummary> list = tpm.getUnescalatedDeadlines();
         
         assertEquals( 3,
@@ -130,7 +130,7 @@ public class QueryTest extends BaseTest {
      * @throws Exception
      */
     public void testPotentialOwnerHibernate4QueryTest() throws Exception { 
-        TaskPersistenceManager tpm = new TaskPersistenceManager(emf);
+        TaskPersistenceManager tpm = new TaskPersistenceManager(emf.createEntityManager());
         String name = "Bobba Fet";
         Task task = new Task();
         User bobba = new User();

@@ -17,26 +17,24 @@ package org.jbpm.task.admin;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.EntityManager;
+
 import javax.persistence.EntityManagerFactory;
+
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskPersistenceManagerAccessor;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TasksAdminImpl extends TaskPersistenceManagerAccessor implements TasksAdmin {
-
+public class TasksAdminImpl implements TasksAdmin {
     
     protected TaskPersistenceManager tpm;
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
 
-    public TasksAdminImpl(EntityManagerFactory emf) {
-        
-        this.tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
+    public TasksAdminImpl(TaskPersistenceManager tpm) {
+        this.tpm = tpm;
     }
 
     public List<TaskSummary> getActiveTasks() {

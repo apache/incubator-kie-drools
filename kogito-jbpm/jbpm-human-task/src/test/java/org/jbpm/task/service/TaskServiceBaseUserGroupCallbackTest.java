@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.task.BaseTestNoUserGroupSetup;
+import org.jbpm.task.Group;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
@@ -32,17 +33,20 @@ import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.utils.CollectionUtils;
 
 public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
+    
     protected TaskServer server;
     protected TaskClient client;
 
-    @SuppressWarnings("unchecked")
     public void testTasksOwnedQueryWithI18N() throws Exception {
-        Map<String, Object>  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
+        runTestTasksOwnedQueryWithI18N(client, users, groups);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static void runTestTasksOwnedQueryWithI18N(TaskClient client, Map<String, User> users, Map<String, Group> groups) { 
+        Map<String, Object>  vars = fillVariables(users, groups);
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwned ) );
+        Reader reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.TasksOwned ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -51,7 +55,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         }
 
         // Test UK I18N  
-        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwnedInEnglish ) );
+        reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.TasksOwnedInEnglish ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 
@@ -86,7 +90,7 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
                                             actual ) );
 
         // Test DK I18N 
-        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksOwnedInGerman ) );
+        reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.TasksOwnedInGerman ) );
         expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                           vars );
 
@@ -121,14 +125,20 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
                                             actual ) );
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testPotentialOwnerQueries() {
-        Map<String, Object>  vars = new HashMap();     
-        vars.put( "users", users );
-        vars.put( "groups", groups );        
+        runTestPotentialOwnerQueries(client, users, groups);
+    }
+    
+    @SuppressWarnings({ "unchecked" })
+    public static void runTestPotentialOwnerQueries(TaskClient client, Map<String, User> users, Map<String, Group> groups) { 
+        Map<String, Object>  vars = fillVariables(users, groups);
+        
+        BlockingAllOpenTasksForUseResponseHandler getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", getTasksHandler );
+        int bobbaSize = getTasksHandler.getResults().size();
         
         //Reader reader;
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.TasksPotentialOwner ) );
+        Reader reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.TasksPotentialOwner ) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
         for ( Task task : tasks ) {
@@ -141,31 +151,33 @@ public abstract class TaskServiceBaseUserGroupCallbackTest extends BaseTestNoUse
         }
 
         // Test UK I18N  
-        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        getTasksHandler = new BlockingAllOpenTasksForUseResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(),
                               "en-UK",
-                              responseHandler );
-        List<TaskSummary> actual = responseHandler.getResults();
+                              getTasksHandler );
+        List<TaskSummary> actual = getTasksHandler.getResults();
         assertEquals( 2,
                       actual.size() );
     }
+    
+    public void testPeopleAssignmentQueries() {
+        runTestPeopleAssignmentQueries(client, users, groups, taskSession);
+    }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void testPeopleAssignmentQueries() {
-        Map vars = new HashMap();
-        vars.put( "users",
-                  users );
-        vars.put( "groups",
-                  groups );
+    public static void runTestPeopleAssignmentQueries(TaskClient client, Map<String, User> users, Map<String, Group> groups, TaskServiceSession taskSession) { 
+        Map vars = fillVariables(users, groups);
 
-        Reader reader = new InputStreamReader( getClass().getResourceAsStream(MvelFilePath.TasksOwned ) );
+        Reader reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream(MvelFilePath.TasksOwned) );
         List<Task> tasks = (List<Task>) eval( reader,
                                               vars );
+
         for ( Task task : tasks ) {
-            taskSession.addTask( task, null );
+            BlockingAddTaskResponseHandler addTaskHandler = new BlockingAddTaskResponseHandler();
+            client.addTask(task, null, addTaskHandler);
         }
 
-        reader = new InputStreamReader( getClass().getResourceAsStream( MvelFilePath.PeopleAssignmentQuerries ) );
+        reader = new InputStreamReader( TaskServiceBaseUserGroupCallbackTest.class.getResourceAsStream( MvelFilePath.PeopleAssignmentQuerries ) );
         Map<String, List<TaskSummary>> expected = (Map<String, List<TaskSummary>>) eval( reader,
                                                                                          vars );
 

@@ -7,9 +7,12 @@
 			<param name="ConversionPattern" value="%-4r %d{dd/MM HH:mm:ss,SSS}[%t] %-5p %c{3}.%M %x - %m%n"/>
 		</layout>
 	</appender>
-
+  
 	<logger name="org.jbpm">
 		<level value="INFO"/>
+	</logger>
+	<logger name="org.jbpm.task.service.TaskServiceSession">
+		<level value="ERROR"/>
 	</logger>
 	
 	<logger name="org.hibernate">
@@ -18,10 +21,10 @@
     <logger name="org.hibernate.cfg">
         <level value="WARN"/>
     </logger>
-    
+
     <!-- hibernate 4 verbosity -->
 	<logger name="org.hibernate.tool.hbm2ddl.TableMetadata">
-		<level value="INFO"/>
+		<level value="WARN"/>
 	</logger>
 	<logger name="org.hibernate.tool.hbm2ddl.SchemaExport">
 		<level value="FATAL"/>

@@ -52,7 +52,7 @@ import org.jbpm.task.service.persistence.TaskPersistenceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskServiceSession extends TaskPersistenceManagerAccessor {
+public class TaskServiceSession {
 
     private final TaskPersistenceManager tpm;
     private final TaskService service;
@@ -63,13 +63,13 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
 
-    public TaskServiceSession(final TaskService service, final EntityManagerFactory emf) {
+    public TaskServiceSession(final TaskService service, final TaskPersistenceManager tpm) {
         this.service = service;
-        this.tpm = getTaskPersistenceManagerFactory().newTaskPersistenceManager(emf);
+        this.tpm = tpm;
     }
     
     public void dispose() {
-        tpm.endPersistenceContext();
+        tpm.dispose();
         if( ruleBases != null ) { 
             ruleBases.clear();
             ruleBases = null;
@@ -404,9 +404,8 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         }
 
         final Task task = getTask(taskId);
-        
         User user = getEntity(User.class, userId);
-
+        
         boolean transactionOwner = false;
         try {
             final List<OperationCommand> commands = service.getCommandsForOperation(operation);
@@ -461,23 +460,24 @@ public class TaskServiceSession extends TaskPersistenceManagerAccessor {
         } 
 
         switch (operation) {
-	        case Claim: {
-	            postTaskClaimOperation(task);
-	            break;
-	        }
-	        case Complete: {
-	            postTaskCompleteOperation(task);
-	            break;
-	        }
-	        case Fail: {
-	            postTaskFailOperation(task);
-	            break;
-	        }
-	        case Skip: {
-	            postTaskSkipOperation(task, userId);
-	            break;
-	        }
+            case Claim: {
+                postTaskClaimOperation(task);
+                break;
+            }
+            case Complete: {
+                postTaskCompleteOperation(task);
+                break;
+            }
+            case Fail: {
+                postTaskFailOperation(task);
+                break;
+            }
+            case Skip: {
+                postTaskSkipOperation(task, userId);
+                break;
+            }
         }
+
     }
 
     private void taskClaimOperation(final Task task) {

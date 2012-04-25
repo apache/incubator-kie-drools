@@ -146,11 +146,8 @@ public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
         assertEquals( "type", task1.getTaskData().getDocumentType() );
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue( contentId != -1 ); 
-
-        
         
         Content content = client.getContent(contentId);
-        System.out.println(new String(content.getContent()));
         assertEquals(largeContent, new String(content.getContent()));
     }
     

@@ -18,7 +18,6 @@ package org.jbpm.task;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +29,6 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.drools.SystemEventListenerFactory;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler;
 import org.jbpm.task.service.MockEscalatedDeadlineHandler.Item;
 import org.jbpm.task.service.SendIcal;
@@ -40,6 +37,8 @@ import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.UserGroupCallbackManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public abstract class BaseTest extends TestCase {
 
@@ -53,6 +52,9 @@ public abstract class BaseTest extends TestCase {
     protected TaskService taskService;
     protected TaskServiceSession taskSession;
 
+    protected final boolean useJTA = false;
+    private PoolingDataSource ds;
+    
     protected EntityManagerFactory createEntityManagerFactory() { 
         return Persistence.createEntityManagerFactory("org.jbpm.task");
     }
@@ -66,6 +68,19 @@ public abstract class BaseTest extends TestCase {
         conf.setProperty("defaultLanguage", "en-UK");
         SendIcal.initInstance(conf);
 
+        if( useJTA ) { 
+            ds = new PoolingDataSource();
+            ds.setUniqueName( "jdbc/taskDS" );
+            ds.setClassName( "bitronix.tm.resource.jdbc.lrc.LrcXADataSource" );
+            ds.setMaxPoolSize( 3 );
+            ds.setAllowLocalTransactions( true );
+            ds.getDriverProperties().put( "user", "sa" );
+            ds.getDriverProperties().put( "password", "sasa" );
+            ds.getDriverProperties().put( "url", "jdbc:h2:mem:taskDb" );
+            ds.getDriverProperties().put( "driverClassName", "org.h2.Driver" );
+            ds.init();
+        }
+        
         // Use persistence.xml configuration
         emf = createEntityManagerFactory();
 
@@ -85,6 +100,9 @@ public abstract class BaseTest extends TestCase {
     protected void tearDown() throws Exception {
         taskSession.dispose();
         emf.close();
+        if( useJTA ) { 
+            ds.close();
+        }
     }
     
     public void disableUserGroupCallback() {
@@ -160,7 +178,7 @@ public abstract class BaseTest extends TestCase {
                 thirdDeadlineMet = true;
             }
             else { 
-                fail( deadlineTime + " is not an expected deadline time." );
+                fail( deadlineTime + " is not an expected deadline time [now=" + now + "]" );
             }
         }
         

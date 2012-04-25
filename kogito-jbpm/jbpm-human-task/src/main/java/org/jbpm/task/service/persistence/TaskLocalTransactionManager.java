@@ -1,13 +1,29 @@
+/**
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jbpm.task.service.persistence;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.transaction.Status;
 
+import org.drools.persistence.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class TaskLocalTransactionManager extends TaskTransactionManager {
+class TaskLocalTransactionManager implements TaskTransactionManager {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -15,36 +31,37 @@ class TaskLocalTransactionManager extends TaskTransactionManager {
         // empty constructor
     }
     
-    boolean ownsTransaction(EntityManager em) { 
-        TransactionStatus status = getStatus(em);
-       return (status != TransactionStatus.ACTIVE
-               && status != TransactionStatus.MARKED_ROLLBACK);     
-    }
-    
-    void attachPersistenceContext(EntityManager em) { 
+    public void attachPersistenceContext(EntityManager em) { 
         // no-op for entity transactions
     }
     
-    synchronized void begin(EntityManager em) {
-        try {
-            em.getTransaction().begin();
-        } catch (Exception e) {
-            logger.warn("Unable to begin transaction", e);
-            throw new RuntimeException("Unable to begin transaction", e);
+    public boolean begin(EntityManager em) {
+        boolean begun = false;
+        if( getStatus(em) == TransactionManager.STATUS_NO_TRANSACTION ) { 
+            try {
+                em.getTransaction().begin();
+                begun = true;
+            } catch (Exception e) {
+                logger.warn("Unable to begin transaction", e);
+                throw new RuntimeException("Unable to begin transaction", e);
+            }
         }
+        return begun;
     }
 
-    void commit(EntityManager em) {
+    public void commit(EntityManager em, boolean txOwner) { 
         try { 
-            em.getTransaction().commit();
+            if( txOwner ) { 
+                em.getTransaction().commit();
+            }
         } catch (Exception e) {
             logger.warn("Unable to begin transaction", e);
             throw new RuntimeException("Unable to commit transaction", e);
         }
     }
 
-    void rollback(EntityManager em, boolean txOwner) {
-        if( ! em.getTransaction().isActive() ) { 
+    public void rollback(EntityManager em, boolean txOwner) {
+        if( getStatus(em) == Status.STATUS_NO_TRANSACTION ) { 
             return;
         }
         
@@ -61,22 +78,18 @@ class TaskLocalTransactionManager extends TaskTransactionManager {
         }
     }
 
-    TransactionStatus getStatus(EntityManager em) { 
+    public int getStatus(EntityManager em) { 
         EntityTransaction tx = em.getTransaction();
         if( tx.isActive() ) { 
-            if( tx.getRollbackOnly() ) { 
-                return TransactionStatus.MARKED_ROLLBACK;
-            }
-            return TransactionStatus.ACTIVE;
+            return TransactionManager.STATUS_ACTIVE;
         }
         else { 
-            return TransactionStatus.COMMITTED;
+            return TransactionManager.STATUS_NO_TRANSACTION;
         }
     }
-    
-    void registerTransactionSynchronization(TransactionSynchronization ts) {
-        // DBG Auto-generated method stub
 
+    public void dispose() {
+        // no-op
     }
-
+    
 }

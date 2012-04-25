@@ -5,9 +5,11 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
 
-  <persistence-unit name="org.jbpm.task">
+  <persistence-unit name="org.jbpm.task" transaction-type="JTA" >
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/taskDS</jta-data-source>
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    
     <class>org.jbpm.task.Attachment</class>
     <class>org.jbpm.task.Content</class>
     <class>org.jbpm.task.BooleanExpression</class>
@@ -35,32 +37,16 @@
       <!-- testing with H2 in memory -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
       <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-      <property name="hibernate.connection.url" value="jdbc:h2:mem:test;MVCC=true" />
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:taskDb" />
       <property name="hibernate.connection.username" value="sa"/>
       <property name="hibernate.connection.password" value="sasa"/>
-
-      <property name="hibernate.connection.autocommit" value="false" />
-
+      <property name="hibernate.connection.autocommit" value="false" /> 
+      
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+           
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
       <property name="hibernate.show_sql" value="false" />
     </properties>
   </persistence-unit>
-  
-   <persistence-unit name="org.jbpm.persistence.example">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>org.jbpm.task.service.persistence.variable.MyEntity</class>
-        <properties>
-            <property name="hibernate.max_fetch_depth" value="3"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-            <property name="hibernate.show_sql" value="false" />
-            
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-            <property name="hibernate.connection.username" value="sa" />
-            <property name="hibernate.connection.password" value="sasa" />
-        </properties>        
-    </persistence-unit>
 </persistence>
