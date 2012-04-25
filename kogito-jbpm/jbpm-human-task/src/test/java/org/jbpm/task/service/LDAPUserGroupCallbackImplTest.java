@@ -15,9 +15,9 @@ public class LDAPUserGroupCallbackImplTest {
     @Test
     public void testUserExists() {
         Properties properties = new Properties();
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=my-domain,dc=com");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_FILTER, "(uid={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_FILTER, "(cn={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_FILTER, "(member={0})");
@@ -31,25 +31,25 @@ public class LDAPUserGroupCallbackImplTest {
     @Test
     public void testGroupExists() {
         Properties properties = new Properties();
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=my-domain,dc=com");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_FILTER, "(uid={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_FILTER, "(cn={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_FILTER, "(member={0})");
         
         UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(properties);
         
-        boolean userExists = ldapUserGroupCallback.existsGroup("Echo");
+        boolean userExists = ldapUserGroupCallback.existsGroup("manager");
         assertTrue(userExists);
     }
     
     @Test
     public void testUserGroup() {
         Properties properties = new Properties();
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=my-domain,dc=com");
-        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=my-domain,dc=com");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
+        properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_CTX, "ou=Roles,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_FILTER, "(uid={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_FILTER, "(cn={0})");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_ROLES_FILTER, "(member={0})");
@@ -57,7 +57,7 @@ public class LDAPUserGroupCallbackImplTest {
         UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(properties);
         
         List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john", null, null);
-        assertEquals(1, userGroups.size());
+        assertEquals(3, userGroups.size());
     }
     
     @Test

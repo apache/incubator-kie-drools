@@ -62,17 +62,17 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     
     protected static final String DEFAULT_PROPERTIES_NAME = "/jbpm.usergroup.callback.properties";
     
-    protected static final String BIND_USER = "ldap.bind.user";
-    protected static final String BIND_PWD = "ldap.bind.pwd";
-    protected static final String USER_CTX = "ldap.user.ctx";
-    protected static final String ROLE_CTX = "ldap.role.ctx";
-    protected static final String USER_ROLES_CTX = "ldap.user.roles.ctx";
-    protected static final String USER_FILTER = "ldap.user.filter";
-    protected static final String ROLE_FILTER = "ldap.role.filter";
-    protected static final String USER_ROLES_FILTER = "ldap.user.roles.filter";
-    protected static final String USER_ATTR_ID = "ldap.user.attr.id";
-    protected static final String ROLE_ATTR_ID = "ldap.roles.attr.id";
-    protected static final String IS_USER_ID_DN = "ldap.user.id.dn";
+    public static final String BIND_USER = "ldap.bind.user";
+    public static final String BIND_PWD = "ldap.bind.pwd";
+    public static final String USER_CTX = "ldap.user.ctx";
+    public static final String ROLE_CTX = "ldap.role.ctx";
+    public static final String USER_ROLES_CTX = "ldap.user.roles.ctx";
+    public static final String USER_FILTER = "ldap.user.filter";
+    public static final String ROLE_FILTER = "ldap.role.filter";
+    public static final String USER_ROLES_FILTER = "ldap.user.roles.filter";
+    public static final String USER_ATTR_ID = "ldap.user.attr.id";
+    public static final String ROLE_ATTR_ID = "ldap.roles.attr.id";
+    public static final String IS_USER_ID_DN = "ldap.user.id.dn";
     
     protected static final String[] requiredProperties = {USER_CTX, ROLE_CTX, USER_FILTER, ROLE_FILTER, USER_ROLES_FILTER};
 
