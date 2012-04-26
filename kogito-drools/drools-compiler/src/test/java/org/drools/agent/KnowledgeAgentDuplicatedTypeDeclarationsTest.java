@@ -48,7 +48,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
         List<String> list = new ArrayList<String>();
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
@@ -88,7 +88,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
         List<String> list = new ArrayList<String>();
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false, false );
 
@@ -159,7 +159,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
 
         List<String> list = new ArrayList<String>();
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
@@ -234,7 +234,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
         xml += "    </add> ";
         xml += "</change-set>";
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
@@ -340,7 +340,7 @@ public class KnowledgeAgentDuplicatedTypeDeclarationsTest extends BaseKnowledgeA
         xml += "    </add> ";
         xml += "</change-set>";
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false, true );
 
