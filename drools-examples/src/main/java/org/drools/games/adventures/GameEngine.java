@@ -1,5 +1,8 @@
 package org.drools.games.adventures;
 
+import static org.drools.builder.ResourceType.DRL;
+import static org.drools.io.ResourceFactory.newClassPathResource;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,57 +32,67 @@ public class GameEngine {
 
     public void createGame() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "Model.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "Queries.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "General.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "Response.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "Events.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "UiView.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "Commands.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
+        
+        
+        kbuilder.batch().add( newClassPathResource( "Model.drl", getClass()  ), DRL )
+        .add( newClassPathResource( "Queries.drl",  getClass()  ), DRL )
+        .add( newClassPathResource( "General.drl",  getClass()  ), DRL )
+        .add( newClassPathResource( "Response.drl",  getClass()  ), DRL )
+        .add( newClassPathResource( "Events.drl",  getClass()  ), DRL )
+        .add( newClassPathResource( "UiView.drl", getClass() ), DRL )
+        .add( newClassPathResource( "Commands.drl", getClass() ), DRL ).build();   
+        
+//        kbuilder.add( ResourceFactory.newClassPathResource( "Model.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "Queries.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "General.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "Response.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "Events.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "UiView.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
+//        if ( kbuilder.hasErrors() ) {
+//            System.out.println( kbuilder.getErrors().toString() );
+//            System.exit( 1 );
+//        }
+//
+//        kbuilder.add( ResourceFactory.newClassPathResource( "Commands.drl",
+//                                                            getClass() ),
+//                      ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors().toString() );
             System.exit( 1 );
@@ -137,7 +150,7 @@ public class GameEngine {
 
             MapVariableResolverFactory f = new MapVariableResolverFactory( map );
 
-            String baseStr = "import  org.drools.adventures.*;  import org.drools.adventures.commands.*;\n";
+            String baseStr = "import  org.drools.games.adventures.*;  import org.drools.games.adventures.commands.*;\n";
             FactHandle fh = ksession.insert( MVEL.eval( baseStr + "new EnterEvent( characters['hero'], rooms['first floor hallway'] )",
                                                         f ) );
             ksession.fireAllRules();
@@ -149,7 +162,7 @@ public class GameEngine {
     public void receiveMessage(UserSession session,
                                List cmd) {
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-        String baseStr = "import  org.drools.adventures.*;  import org.drools.adventures.commands.*;\n";
+        String baseStr = "import  org.drools.games.adventures.*;  import org.drools.games.adventures.commands.*;\n";
         try {
             Thread.currentThread().setContextClassLoader( classLoader );
             Map vars = new HashMap();
