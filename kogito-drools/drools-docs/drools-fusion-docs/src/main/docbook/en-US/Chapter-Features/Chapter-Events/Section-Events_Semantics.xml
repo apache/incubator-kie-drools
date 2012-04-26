@@ -19,12 +19,12 @@
       optimizations and for the specification of the event lifecycle. This
       does not mean that the java object representing the object must be
       immutable. Quite the contrary, the engine does not enforce immutability
-      of the object model, because one of the most common usecases for rules
+      of the object model, because one of the most common use cases for rules
       is event data enrichment.</para>
 
       <note>
         <para>As a best practice, the application is allowed to populate
-        un-populated event attributes (to enrich the event with infered data),
+        un-populated event attributes (to enrich the event with inferred data),
         but already populated attributes should never be changed.</para>
       </note>
     </listitem>

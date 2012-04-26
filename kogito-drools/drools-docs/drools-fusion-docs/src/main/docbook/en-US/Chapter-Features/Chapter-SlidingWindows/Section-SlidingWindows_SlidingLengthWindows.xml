@@ -58,6 +58,6 @@ end</programlisting>
     constraints for event expiration from the session, and the engine will not
     consider them. If events have no other rules defining temporal constraints
     and no explicit expiration policy, the engine will keep them in the
-    session indefinitively. </para>
+    session indefinitely. </para>
   </important>
 </section>

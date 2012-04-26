@@ -34,7 +34,7 @@
 
     <listitem>
       <para>There is no requirement on event ordering. The engine looks at the
-      events as an unnordered cloud against which the engine tries to match
+      events as an unordered cloud against which the engine tries to match
       rules.</para>
     </listitem>
   </itemizedlist>

@@ -31,7 +31,7 @@ config.setOption( ClockTypeOption.get("realtime") );
     <para>Drools also offers out of the box an implementation of a clock that
     is controlled by the application that is called Pseudo Clock. This clock
     is specially useful for unit testing temporal rules since it can be
-    controled by the application and so the results become
+    controlled by the application and so the results become
     deterministic.</para>
 
     <para>To configure the pseudo session clock, do:</para>

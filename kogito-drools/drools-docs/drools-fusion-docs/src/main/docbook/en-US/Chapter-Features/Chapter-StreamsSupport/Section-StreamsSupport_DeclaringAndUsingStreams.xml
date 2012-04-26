@@ -9,7 +9,7 @@
   <para>Entry points are declared implicitly in Drools by directly making use
   of them in rules. I.e. referencing an entry point in a rule will make the
   engine, at compile time, to identify and create the proper internal
-  structures to suppor that entry point. </para>
+  structures to support that entry point. </para>
 
   <para>So, for instance, lets imagine a banking application, where
   transactions are fed into the system coming from streams. One of the streams

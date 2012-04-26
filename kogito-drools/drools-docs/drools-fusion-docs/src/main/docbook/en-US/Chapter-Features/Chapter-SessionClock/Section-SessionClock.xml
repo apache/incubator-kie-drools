@@ -22,7 +22,7 @@
   <itemizedlist>
     <listitem>
       <para><emphasis role="bold">Rules testing:</emphasis> testing always
-      requires a controled environment, and when the tests include rules with
+      requires a controlled environment, and when the tests include rules with
       temporal constraints, it is necessary to not only control the input
       rules and facts, but also the flow of time.</para>
     </listitem>

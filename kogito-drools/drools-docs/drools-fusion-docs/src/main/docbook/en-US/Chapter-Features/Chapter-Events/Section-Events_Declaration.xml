@@ -41,7 +41,7 @@
   code would be:</para>
 
   <example>
-      <title>declaring a fact type and assiging it the event role</title>
+      <title>declaring a fact type and assigning it the event role</title>
 
       <programlisting><emphasis role="bold">declare</emphasis> StockTick 
     <emphasis>@role</emphasis>( event )
