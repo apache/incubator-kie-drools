@@ -40,7 +40,9 @@ public class ForEachNode extends CompositeNode {
     private static final long serialVersionUID = 510l;
     
     private String variableName;
+    private String outputVariableName;
     private String collectionExpression;
+    private String outputCollectionExpression;
     private boolean waitForCompletion = true;
 
     public ForEachNode() {
@@ -92,6 +94,22 @@ public class ForEachNode extends CompositeNode {
     		}
     	}
     	return null;
+    }
+    
+    public String getOutputVariableName() {
+        return outputVariableName;
+    }
+    
+    public DataType getOutputVariableType() {
+        if (outputVariableName == null) {
+            return null;
+        }
+        for (Variable variable: ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).getVariables()) {
+            if (outputVariableName.equals(variable.getName())) {
+                return variable.getType();
+            }
+        }
+        return null;
     }
     
     public CompositeContextNode getCompositeNode() {
@@ -175,6 +193,20 @@ public class ForEachNode extends CompositeNode {
         variable.setType(type);
         variables.add(variable);
     }
+    
+    public void setOutputVariable(String variableName, DataType type) {
+        this.outputVariableName = variableName;
+        VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        List<Variable> variables = variableScope.getVariables();
+        if (variables == null) {
+            variables = new ArrayList<Variable>();
+            variableScope.setVariables(variables);
+        }
+        Variable variable = new Variable();
+        variable.setName(variableName);
+        variable.setType(type);
+        variables.add(variable);
+    }
 
     public String getCollectionExpression() {
         return collectionExpression;
@@ -182,6 +214,14 @@ public class ForEachNode extends CompositeNode {
 
     public void setCollectionExpression(String collectionExpression) {
         this.collectionExpression = collectionExpression;
+    }
+    
+    public String getOutputCollectionExpression() {
+        return outputCollectionExpression;
+    }
+
+    public void setOutputCollectionExpression(String collectionExpression) {
+        this.outputCollectionExpression = collectionExpression;
     }
 
     public boolean isWaitForCompletion() {

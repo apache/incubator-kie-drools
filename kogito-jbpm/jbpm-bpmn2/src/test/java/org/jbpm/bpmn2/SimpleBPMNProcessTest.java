@@ -875,7 +875,39 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 				"MultiInstanceLoopCharacteristicsProcess", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testMultiInstanceLoopCharacteristicsProcessWithOutput() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutput.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        ProcessInstance processInstance = ksession.startProcess(
+                "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 
+	public void testMultiInstanceLoopCharacteristicsTaskWithOutput() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> myList = new ArrayList<String>();
+        List<String> myListOut = new ArrayList<String>();
+        myList.add("First Item");
+        myList.add("Second Item");
+        params.put("list", myList);
+        params.put("listOut", myListOut);
+        ProcessInstance processInstance = ksession.startProcess(
+                "MultiInstanceLoopCharacteristicsTask", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
 	public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <itemDefinition id="_listItem" structureRef="java.util.List"/>
+  <itemDefinition id="_listItemOut" structureRef="java.util.List"/>
+  <itemDefinition id="_2_multiInstanceItemType"/>
+  <itemDefinition id="_2_multiInstanceItemOutType"/>
+  <process id="MultiInstanceLoopCharacteristicsProcessWithOutput" tns:packageName="com.sample" name="Multiple instances sub-process" isExecutable="true" processType="Private">
+    <property id="list" itemSubjectRef="_listItem"/>
+    <property id="listOut" itemSubjectRef="_listItemOut"/>
+    <startEvent id="_1" name="Start">
+      <outgoing>_1-_2</outgoing>
+    </startEvent>
+    <subProcess id="_2" name="Multiple Instances of update item">
+      <incoming>_1-_2</incoming>
+      <outgoing>_2-_3</outgoing>
+      <ioSpecification id="InputOutputSpecification_1">
+        <dataInput id="_2_listInput" name="list"/>
+        <dataOutput id="_2_listOutOutput" name="listOut"/>
+        <inputSet id="InputSet_1">
+          <dataInputRefs>_2_listInput</dataInputRefs>
+        </inputSet>
+        <outputSet id="OutputSet_1">
+          <dataOutputRefs>_2_listOutOutput</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation id="DataInputAssociation_1">
+        <sourceRef>list</sourceRef>
+        <targetRef>_2_listInput</targetRef>
+      </dataInputAssociation>
+      <dataOutputAssociation id="DataOutputAssociation_1">
+        <sourceRef>_2_listOutOutput</sourceRef>
+        <targetRef>listOut</targetRef>
+      </dataOutputAssociation>
+      <multiInstanceLoopCharacteristics id="MultiInstanceLoopCharacteristics_1">
+        <loopDataInputRef>_2_listInput</loopDataInputRef>
+        <loopDataOutputRef>_2_listOutOutput</loopDataOutputRef>
+        <inputDataItem xsi:type="tDataInput" id="item" itemSubjectRef="_2_multiInstanceItemType"/>
+        <outputDataItem xsi:type="tDataOutput" id="itemOut" itemSubjectRef="_2_multiInstanceItemOutType"/>
+      </multiInstanceLoopCharacteristics>
+      <startEvent id="_2-2-1" name="Start">
+        <outgoing>_2-2-1-_2-2-4</outgoing>
+      </startEvent>
+      <endEvent id="_2-2-3" name="End">
+        <incoming>_2-2-4-_2-2-3</incoming>
+      </endEvent>
+      <scriptTask id="_2-2-4" name="Update the items" scriptFormat="http://www.java.com/java">
+        <incoming>_2-2-1-_2-2-4</incoming>
+        <outgoing>_2-2-4-_2-2-3</outgoing>
+        <script>
+          System.out.println( &quot;start item:&quot; + item ); item = item + &quot; changed&quot;;
+          System.out.println(&quot;update item to:&quot; + item);
+          context.setVariable(&quot;itemOut&quot;, item);
+</script>
+      </scriptTask>
+      <sequenceFlow id="_2-2-4-_2-2-3" sourceRef="_2-2-4" targetRef="_2-2-3"/>
+      <sequenceFlow id="_2-2-1-_2-2-4" sourceRef="_2-2-1" targetRef="_2-2-4"/>
+    </subProcess>
+    <scriptTask id="_3" name="Show the items again" scriptFormat="http://www.java.com/java">
+      <incoming>_2-_3</incoming>
+      <outgoing>_3-_4</outgoing>
+      <script>
+        System.out.println( &quot;list is now&quot; + list ); System.out.println( &quot;listOut is now &quot; +
+        listOut );
+</script>
+    </scriptTask>
+    <endEvent id="_4" name="End">
+      <incoming>_3-_4</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="MultiInstanceLoopCharacteristicsProcessWithOutput">
+      <bpmndi:BPMNShape id="BPMNShape_SubProcess_1" bpmnElement="_2" isHorizontal="true">
+        <dc:Bounds height="147.0" width="317.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_2" bpmnElement="_2-2-1" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="121.0" y="66.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_2-2-3" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="338.0" y="69.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_2-2-4" isHorizontal="true">
+        <dc:Bounds height="49.0" width="117.0" x="197.0" y="64.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_3" isHorizontal="true">
+        <dc:Bounds height="48.0" width="132.0" x="445.0" y="65.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_2" bpmnElement="_4" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="614.0" y="66.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="_2-2-4-_2-2-3" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="314.0" y="88.0"/>
+        <di:waypoint xsi:type="dc:Point" x="338.0" y="93.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-2-1-_2-2-4" sourceElement="BPMNShape_StartEvent_2" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="169.0" y="90.0"/>
+        <di:waypoint xsi:type="dc:Point" x="197.0" y="88.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_SubProcess_1">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="89.0"/>
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="89.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_2-_3" sourceElement="BPMNShape_SubProcess_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="413.0" y="89.0"/>
+        <di:waypoint xsi:type="dc:Point" x="445.0" y="89.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_5" bpmnElement="_3-_4" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_EndEvent_2">
+        <di:waypoint xsi:type="dc:Point" x="577.0" y="89.0"/>
+        <di:waypoint xsi:type="dc:Point" x="614.0" y="90.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

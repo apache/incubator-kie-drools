@@ -37,6 +37,8 @@ import org.xml.sax.SAXException;
 
 public class SubProcessHandler extends AbstractNodeHandler {
     
+    
+    
     protected Node createNode(Attributes attrs) {
     	CompositeContextNode result = new CompositeContextNode();
         VariableScope variableScope = new VariableScope();
@@ -111,7 +113,9 @@ public class SubProcessHandler extends AbstractNodeHandler {
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("dataInputAssociation".equals(nodeName)) {
+            if ("ioSpecification".equals(nodeName)) {
+                readIoSpecification(xmlNode, dataInputs, dataOutputs);
+            } else if ("dataInputAssociation".equals(nodeName)) {
                 readDataInputAssociation(xmlNode, forEachNode);
             } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
             	readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
@@ -157,10 +161,39 @@ public class SubProcessHandler extends AbstractNodeHandler {
                 if (variableName != null && variableName.trim().length() > 0) {
                 	forEachNode.setVariable(variableName, dataType);
                 }
+            } else if ("outputDataItem".equals(nodeName)) {
+                String variableName = ((Element) subNode).getAttribute("id");
+                String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+                DataType dataType = null;
+                Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+                    ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+                if (itemDefinitions != null) {
+                    ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+                    if (itemDefinition != null) {
+                        dataType = new ObjectDataType(itemDefinition.getStructureRef());
+                    }
+                }
+                if (dataType == null) {
+                    dataType = new ObjectDataType("java.lang.Object");
+                }
+                if (variableName != null && variableName.trim().length() > 0) {
+                    forEachNode.setOutputVariable(variableName, dataType);
+                }
+            } else if ("loopDataOutputRef".equals(nodeName)) {
+                
+                String outputDataRef = ((Element) subNode).getTextContent();
+                
+                String outputDataName = dataOutputs.get(outputDataRef);
+                if (outputDataName != null && outputDataName.trim().length() > 0) {
+                    forEachNode.setOutputCollectionExpression(outputDataName);
+                }
+                
             }
             subNode = subNode.getNextSibling();
         }
     }
+    
+
     
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException("Writing out should be handled by specific handlers");
