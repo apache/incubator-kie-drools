@@ -37,7 +37,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
         File fxml = fileManager.write( "changeset.xml",
                                        xml );
         
-        //Create a new Agent with newInstace=true
+        //Create a new Agent with newInstance=true
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent(kbase, false);
 
@@ -114,7 +114,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
         File fxml = fileManager.write( "changeset.xml",
                                        xml );
 
-        //Create a new Agent with newInstace=false
+        //Create a new Agent with newInstance=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
