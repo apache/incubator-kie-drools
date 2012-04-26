@@ -86,7 +86,7 @@ end</programlisting>
     Sprinkler</code> and every row in the Room table would be joined with
     every row in the Sprinkler table resulting in the following output:</para>
 
-    <programlisting>room:office sprinker:office
+    <programlisting>room:office sprinkler:office
 room:office sprinkler:kitchen
 room:office sprinkler:livingroom
 room:office sprinkler:bedroom
@@ -471,7 +471,7 @@ IsAdult( person == $p )</programlisting>
     <para>This change management process and communication between departments
     is not ideal for an agile environment and change become costly and error
     prone. Also the card department is managing more information than it needs
-    to be aware of with its "monolothic" approach to rules management which is
+    to be aware of with its "monolithic" approach to rules management which is
     "leaking" information better placed else where. By this I mean that it
     doesn't care what explicit "age &gt;= 18" information determines whether
     someone is an adult, only that they are an adult.</para>

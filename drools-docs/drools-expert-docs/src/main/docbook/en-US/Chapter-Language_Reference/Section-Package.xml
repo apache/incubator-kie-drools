@@ -40,7 +40,7 @@
     </mediaobject>
   </figure>
 
-  <para>Notice that any rule atttribute (as described the section Rule Attributes)
+  <para>Notice that any rule attribute (as described the section Rule Attributes)
   may also be written at package level, superseding the attribute's default value.
   The modified default may still be replaced by an attribute setting within
   a rule.</para>

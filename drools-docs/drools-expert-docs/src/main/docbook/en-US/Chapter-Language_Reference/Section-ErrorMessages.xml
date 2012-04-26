@@ -142,7 +142,7 @@
       <title>102: Mismatched input</title>
 
       <para>This error indicates that the parser was looking for a particular
-      symbol that it didn’t ﬁnd at the current input position. Here are some
+      symbol that it didn't ﬁnd at the current input position. Here are some
       samples:</para>
 
       <example>
@@ -248,7 +248,7 @@
       </itemizedlist>
 
       <para>The <emphasis role="bold">fdsfdsfds</emphasis> text is invalid and
-      the parser couldn’t identify it as the soft keyword
+      the parser couldn't identify it as the soft keyword
       <literal>rule</literal>.</para>
 
       <note>

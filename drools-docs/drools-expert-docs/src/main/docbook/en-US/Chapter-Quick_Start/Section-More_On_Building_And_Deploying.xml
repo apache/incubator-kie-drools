@@ -77,9 +77,9 @@ if ( kbuilder.hasErrors() ) {
   <section>
     <title>Knowledge Agent</title>
 
-    <para>The Knowlege Agent provides automatic loading, caching and
+    <para>The Knowledge Agent provides automatic loading, caching and
     re-loading of resources and is configured from a properties files. The
-    Knowledge Agent can update or rebuild this Knowlege Base as the resources
+    Knowledge Agent can update or rebuild this Knowledge Base as the resources
     it uses are changed. The strategy for this is determined by the
     configuration given to the factory, but it is typically pull-based using
     regular polling. We hope to add push-based updates and rebuilds in future
@@ -126,11 +126,11 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
       </section>
       <section>
       <title>Reuse KnowledgeBase ClassLoader</title>
-        <para>Most of the times, the classloader you wan't to use in the
+        <para>Most of the times, the classloader you want to use in the
         compilation process of remote resources is the same needed in the
         agent's kbase, so the rules could be executed. If you want to use this
         approach, you will need to setup the desired ClassLoader to the
-        agen't kbase and use the "drools.agent.useKBaseClassLoaderForCompiling"
+        agent kbase and use the "drools.agent.useKBaseClassLoaderForCompiling"
         property of KnowledgeAgentConfiguration object.</para>
         <para>This approach lets you modify agent's kbuilder classloader in
         runtime by modifying the classloader the agent's kbase uses. This will
@@ -161,7 +161,7 @@ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
             KnowledgeAgentConfiguration object passed to the Agent's constructor.
         </para>
         <para>
-            When "newInstace" is set to true (the default value), the agent
+            When "newInstance" is set to true (the default value), the agent
             will destroy the cached Knowledge Base it contains and populate a
             new one containing the change set modifications. When "newInstance"
             is set to "false" change sets are applied directly to the cached
@@ -173,7 +173,7 @@ KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
         </para>
         <para>
             The following code snippet creates a new Knowledge Agent with its
-            "newInstace" property set to false
+            "newInstance" property set to false
         </para>
             <programlisting language="java">KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
 aconf.setProperty("drools.agent.newInstance", "false");
