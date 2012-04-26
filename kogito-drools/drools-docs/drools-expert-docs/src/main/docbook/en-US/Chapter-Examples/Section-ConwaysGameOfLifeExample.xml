@@ -31,7 +31,7 @@
     discuss the Drools parts of the implementation.</para>
 
     <para>We'll first introduce the grid view, shown below, designed for the
-    visualisation of the game, showing the "arena" where the life simuation
+    visualisation of the game, showing the "arena" where the life simulation
     takes place. Initially the grid is empty, meaning that there are no live
     cells in the system. Each cell is either alive or dead, with live cells
     showing a green ball. Preselected patterns of live cells can be
@@ -248,7 +248,7 @@ end
     </example>
 
     <para>Once all <code>Cell</code> objects in the grid have been evaluated,
-    we first clear any calculation activations that occured from any previous
+    we first clear any calculation activations that occurred from any previous
     data changes. This is done via the "reset calculate" rule, which clears
     any activations in the "calculate" group. We then enter a split in the
     rule flow which allows any activations in both the "kill" and the "birth"

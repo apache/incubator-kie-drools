@@ -286,9 +286,9 @@ session.insert( fact, dynamic );
       </example>
 
       <para>There are two other classes in this example:
-      <code>StateExampleUsingAgendGroup</code> and
+      <code>StateExampleUsingAgendaGroup</code> and
       <code>StateExampleWithDynamicRules</code>. Both execute from A to B
-      to C to D, as just shown. The <code>StateExampleUsingAgendGroup</code>
+      to C to D, as just shown. The <code>StateExampleUsingAgendaGroup</code>
       uses agenda-groups to control the rule conflict and which one fires
       first. <code>StateExampleWithDynamicRules</code> shows how an
       additional rule can be added to an already running Working Memory

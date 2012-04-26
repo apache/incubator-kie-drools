@@ -79,7 +79,7 @@
     </example>
 
     <para>The first simple rule to execute has a single <literal>eval</literal>
-    condition that will alway be true, so that this rule will match and
+    condition that will always be true, so that this rule will match and
     fire, once, after the start.</para>
 
     <example>
@@ -90,7 +90,7 @@
         eval( 1==1 )
     then
         System.out.println( "Rule 01 Works" );
-endh</programlisting>
+end</programlisting>
     </example>
 
     <para>The output for the rule is below, showing that the rule matches
@@ -122,7 +122,7 @@ Rule 01 Works</programlisting>
 }</programlisting>
     </example>
 
-    <para>This doesn’t use any specific facts but instead asserts a set
+    <para>This doesn't use any specific facts but instead asserts a set
     of <code>java.lang.Integer</code> objects. This is not considered
     "best practice" as a number is not a useful fact, but we use it here
     to demonstrate basic techniques before more complexity is added.</para>

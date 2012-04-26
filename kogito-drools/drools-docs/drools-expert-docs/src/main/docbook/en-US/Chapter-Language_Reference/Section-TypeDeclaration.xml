@@ -335,7 +335,7 @@ end
         hashCode() methods that will check the firstName and lastName
         attributes to determine if two instances of Person are equal to each
         other, but will not check the age attribute. It will also generate a
-        constructutor taking firstName and lastName as parameters, allowing
+        constructor taking firstName and lastName as parameters, allowing
         one to create instances with a code like this:</para>
 
         <example>
@@ -356,7 +356,7 @@ end
         Person( name == "mark" ) can be rewritten as Person( "mark"; ). The
         semicolon ';' is important so that the engine knows that everything
         before it is a positional argument. Otherwise we might assume it was a
-        boolean expression, which is how it could be interpretted after the
+        boolean expression, which is how it could be interpreted after the
         semicolon. You can mix positional and named arguments on a pattern by
         using the semicolon ';' to separate them. Any variables used in a
         positional that have not yet been bound will be bound to the field
@@ -370,7 +370,7 @@ end
 </programlisting>
 
         <para>The default order is the declared order, but this can be
-        overiden using @position</para>
+        overridden using @position</para>
 
         <programlisting>declare Cheese
     name : String @position(1)
@@ -381,13 +381,13 @@ end
 
         <para>The @Position annotation, in the org.drools.definition.type
         package, can be used to annotate original pojos on the classpath.
-        Currently only fields on classes can be annotated. Inheritence of
+        Currently only fields on classes can be annotated. Inheritance of
         classes is supported, but not interfaces of methods yet.</para>
 
         <para>Example patterns, with two constraints and a binding. Remember
         semicolon ';' is used to differentiate the positional section from the
         named argument section. Variables and literals and expressions using
-        just literals are supported in posional arguments, but not
+        just literals are supported in positional arguments, but not
         variables.</para>
 
         <programlisting>
@@ -440,7 +440,7 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
   </section>
 
   <section>
-    <title>Parameterized constructors for declared types</title>
+    <title>Parametrized constructors for declared types</title>
 
     <para>Generate constructors with parameters for declared types.</para>
 

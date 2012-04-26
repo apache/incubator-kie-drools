@@ -216,13 +216,13 @@ Validation complete.
       <code>cellRow</code>, <code>cellCol</code> and <code>cellSqr</code>
       and the <code>CellGroup</code> property <code>cells</code>, a list of
       <code>Cell</code> objects, it is possible to write rules that
-      detect the specific sitations that permit the allocation of a
+      detect the specific situations that permit the allocation of a
       value to a cell or the elimination of a value from some candidate 
       set.</para>
 
       <para>An object of class <code>Setting</code> is used for triggering
       the operations that accompany the allocation of a value: its removal
-      from the candidata sets of sibling cells and associated cell groups.
+      from the candidate sets of sibling cells and associated cell groups.
       Moreover, the presence of a <code>Setting</code> fact is used in
       all rules that should detect a new situation; this is to avoid
       reactions to inconsistent intermediary states.</para>
@@ -234,7 +234,7 @@ Validation complete.
 
 
       <para>The class <code>org.drools.examples.sudoku.SudokuExample</code>
-      implements a Java application combining the components desribed.</para>
+      implements a Java application combining the components described.</para>
     </section>
 
     <section>

@@ -67,7 +67,7 @@ end    </programlisting>
 
       <para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
 
-      <para>Also, don't forget to use "fireAllRules()" - a common mistake ! (In this case we are using a statefull session, so this is necessary).</para>
+      <para>Also, don't forget to use "fireAllRules()" - a common mistake ! (In this case we are using a stateful session, so this is necessary).</para>
 
       <para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
 
@@ -185,7 +185,7 @@ Email : [Ticket [Customer D : Silver] : Escalate]
 session.update( ft3,
                 t3 );
 </programlisting> 
-      <para>in the code (outside of rules) - this simulates a customer service officer maarking a ticket as done (and of course, uses the fact handle we kept from before). This results in a cancelled activation (as we no longer have a New Silvert customer ticket - it is done) and a new activation to log the fact it was done.</para>
+      <para>in the code (outside of rules) - this simulates a customer service officer marking a ticket as done (and of course, uses the fact handle we kept from before). This results in a cancelled activation (as we no longer have a New Silver customer ticket - it is done) and a new activation to log the fact it was done.</para>
 
       <para>In all the excitement, in parallel the engine has been watching the time pass, and it happens that the Gold tickets start to escalate, and then silver (as expected).</para>
 

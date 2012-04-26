@@ -158,7 +158,7 @@ then
         </listitem>
 
         <listitem>
-          <para>You should see the RuleAgent downloadomg the pre-compiled package from brms, if something goes wrong and all tests fails, check if the BRMS is up and running and try rebuild the package snapshot.</para>
+          <para>You should see the RuleAgent downloading the pre-compiled package from brms, if something goes wrong and all tests fails, check if the BRMS is up and running and try rebuild the package snapshot.</para>
 
         <screen>Running org.acme.insurance.test.DriverTest
 RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:44 BRT 2007): Configuring with newInstance=true, secondsToRefresh=30
@@ -175,19 +175,19 @@ Insurance calculate
 Insurance Calcule: 0.0
 Driver wants non related expenses coverage: 1.05
 Driver wants glass coverage: 1.1025
-Driver wants extra assistence: 1.1576250000000001Driver wants an extra Car: 1.2155062500000002
+Driver wants extra assistance: 1.1576250000000001Driver wants an extra Car: 1.2155062500000002
 Driver Single Young Male Driver factor: 1.9448100000000004
 New Licenced driver 2.333772
 approve: 0.0
-Policy aproved focusing insurance calcule agenda-group
+Policy approved focusing insurance calcule agenda-group
 Insurance calculate
 Insurance Calcule: 0.0
 Night Vehicle Place: 1.44
 Day Vehicle Place: 1.656
 approve: 0.0
-Policy aproved focusing insurance calcule agenda-group
+Policy approved focusing insurance calcule agenda-group
 Insurance calculate
-Insurance extra itens percent: 545.0
+Insurance extra items percent: 545.0
 Insurance Calcule: 545.0
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 sec
 

@@ -14,13 +14,13 @@
   <section>
     <title>KnowledgeBase</title>
 
-    <para>The <code>KnowlegeBase</code> is a repository of all the
+    <para>The <code>KnowledgeBase</code> is a repository of all the
     application's knowledge definitions. It will contain rules, processes,
     functions, and type models. The Knowledge Base itself does not contain
     data; instead, sessions are created from the <code>KnowledgeBase</code>
     into which data can be inserted and from which process instances may be
-    started. Creating the <code>KnowlegeBase</code> can be heavy, whereas
-    session creation is very light, so it is recommended that Knowle Bases be
+    started. Creating the <code>KnowledgeBase</code> can be heavy, whereas
+    session creation is very light, so it is recommended that KnowledgeBases be
     cached where possible to allow for repeated session creation.</para>
 
     <example>
@@ -187,7 +187,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       <title>WorkingMemory</title>
 
       <para>The WorkingMemory provides access to the Agenda, permits query
-      executions, and lets you access named Enty Points.</para>
+      executions, and lets you access named Entry Points.</para>
 
       <figure>
         <title>WorkingMemory</title>
@@ -205,7 +205,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
 
         <para>Queries are used to retrieve fact sets based on patterns, as
         they are used in rules. Patterns may make use of optional parameters.
-        Queries can be defined in the Knowlege Base, from where they are
+        Queries can be defined in the Knowledge Base, from where they are
         called up to return the matching results. While iterating over the
         result collection, any bound identifier in the query can be accessed
         using the get(String identifier) method and any FactHandle for that

@@ -47,7 +47,7 @@
         </listitem>
       </orderedlist>
 
-      <para>The immediate thing about this riddle, is that a solution is not obvious (of course ! it wouldn't be a riddle otherwise !). It also isn't obvious how to write an algorithm to solve it (if it is for you - then you can take a break now, go have a coffee or someting to reward your uber intellect).</para>
+      <para>The immediate thing about this riddle, is that a solution is not obvious (of course ! it wouldn't be a riddle otherwise !). It also isn't obvious how to write an algorithm to solve it (if it is for you - then you can take a break now, go have a coffee or something to reward your uber intellect).</para>
 
       <para>Instead of thinking about how to solve it, we can be lazy and use rules instead. So we don't attempt to solve it, we just state the problem in rules, and let the engine derive the solution.</para>
     </section>
@@ -106,7 +106,7 @@ Tom 3 red     </programlisting>
                color != $fred.color,
                color != $joe.color )      </programlisting>
 
-      <para>Refering to the above, we also know there is a golfer called Bob, who wears plaid pants - once again that all we know about him. but of course, we add in the constraints that he must be in a different position to fred, joe, and also have different colored pants.</para>
+      <para>Referring to the above, we also know there is a golfer called Bob, who wears plaid pants - once again that all we know about him. but of course, we add in the constraints that he must be in a different position to fred, joe, and also have different colored pants.</para>
 
       <programlisting>$tom : Golfer( name == "Tom",
                position != 1,

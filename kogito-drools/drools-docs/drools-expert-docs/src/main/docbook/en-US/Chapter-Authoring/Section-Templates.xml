@@ -10,7 +10,7 @@
     <para>If you discover that you have a group of rules following
     the same arrangement of patterns, constraints and actions on
     the RHS, differing only in constants or names for objects or
-    fields, you might think of employing Drool's rule template feature
+    fields, you might think of employing Drools's rule template feature
     for generating the actual rules. You would write a 
     <emphasis>rule template</emphasis> file, containing the
     textual skeleton of your rule and use the Drools template
