@@ -215,10 +215,6 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                         rightTuple = (RightTuple) list.getFirst( );
                         return rightTuple;
                     }
-//                    else if ( this.row >= length ) {
-//                        // we've scanned the whole table and nothing is left, so return null
-//                        return null;
-//                    }                    
                 }
 
                 rightTuple = (RightTuple) rightTuple.getNext();
