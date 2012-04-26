@@ -149,7 +149,7 @@ end</programlisting>
 	  temporal constraint [0s, ...] does not exclude by itself the bound event
 	  $h from being matched again, thus preventing the rule to fire.</para>
 	  <example>
-        <title>excluding bound events in negativ patterns</title>
+        <title>excluding bound events in negative patterns</title>
 
         <programlisting>rule "Sound the alarm"
 when

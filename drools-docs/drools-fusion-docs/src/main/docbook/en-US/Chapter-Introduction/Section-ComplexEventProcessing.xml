@@ -43,7 +43,7 @@
   of event processing. Two trends were born under the names of Event Stream
   Processing and Complex Event Processing.</para>
 
-  <para>In the very begginings, Event Stream Processing was focused on the
+  <para>In the very beginnings, Event Stream Processing was focused on the
   capabilities of processing streams of events in (near) real time, where the
   main focus of Complex Event Processing was on the correlation and
   composition of atomic events into complex (compound) events. An important
@@ -51,11 +51,11 @@
   Luckham's book "The Power of Events" in 2002. In the book, Dr Luckham
   introduces the concept of Complex Event Processing and how it can be used to
   enhance systems that deal with events. Over the years, both trends converged
-  to a common understanding and today these systems are all refered as CEP
+  to a common understanding and today these systems are all referred as CEP
   systems.</para>
 
   <para>This is a very simplistic explanation to a really complex and fertile
-  field of research, but sets a very highlevel and common understanding for
+  field of research, but sets a very high level and common understanding for
   the concepts this guide will introduce.</para>
 
   <para>The current understanding of what Complex Event Processing is may be
@@ -78,7 +78,7 @@
 
   <para>In other words, CEP is about detecting and selecting the interesting
   events (and only them) from an event cloud, finding their relationships and
-  infering new data from them and their relationships.</para>
+  inferring new data from them and their relationships.</para>
 
   <note><para>For the remaining of this guide, we will use the terms 
    <emphasis role="bold">Complex Event Processing</emphasis>
