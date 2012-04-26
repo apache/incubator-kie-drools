@@ -17,7 +17,7 @@
   both the MVEL and Java dialects.</para>
 
   <para>This example demonstrates how to build Knowledge Bases and Sessions.
-  Also, audit logging and debug outputs are shown, which is ommitted
+  Also, audit logging and debug outputs are shown, which is omitted
   from other examples as it's all very similar. A <code>KnowledgeBuilder</code>
   is used to turn a DRL source file into <code>Package</code> objects which
   the Knowledge Base can consume. The add method takes a <code>Resource</code>
@@ -56,7 +56,7 @@ if (kbuilder.hasErrors()) {
 // get the compiled packages (which are serializable)
 final Collection&lt;KnowledgePackage&gt; pkgs = kbuilder.getKnowledgePackages();
 
-// add the packages to a knowledgebase (deploy the knowledge packages).
+// add the packages to a KnowledgeBase (deploy the knowledge packages).
 final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 kbase.addKnowledgePackages(pkgs);
 
@@ -217,7 +217,7 @@ Goodbye cruel world</programlisting>
       m : Message( status == Message.HELLO, message : message )
   then
       System.out.println( message ); 
-      modify ( m ) { message = "Goodbyte cruel world",
+      modify ( m ) { message = "Goodbye cruel world",
                      status = Message.GOODBYE };
 end</programlisting>
   </example>
@@ -273,7 +273,7 @@ end</programlisting>
   to create a <code>KnowledgeRuntimeLogger</code> and called
   <code>logger.close()</code> at the end. This created an audit log file that
   can be shown in the Audit view. We use the Audit view in many of the
-  examples to demostrate the example execution flow. In the view screen shot
+  examples to demonstrate the example execution flow. In the view screen shot
   below we can see that the object is inserted, which creates an activation
   for the "Hello World" rule; the activation is then executed which updates
   the <code>Message</code> object causing the "Good Bye" rule to

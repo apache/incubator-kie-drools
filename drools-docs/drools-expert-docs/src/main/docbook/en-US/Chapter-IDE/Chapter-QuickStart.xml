@@ -791,7 +791,7 @@ logger.close();</programlisting>
     for zooming in and out can be used in the customary manner.</para>
 
     <para>In the current release there is no export function to creates a gif
-    or jpeg file. Meanwhile, please use ctrl + alt + print to create a copy of
+    or jpg file. Meanwhile, please use ctrl + alt + print to create a copy of
     your current Eclipse window, and cut it off.</para>
 
     <mediaobject>

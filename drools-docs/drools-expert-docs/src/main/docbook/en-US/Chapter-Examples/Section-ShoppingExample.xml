@@ -39,7 +39,7 @@ session.retract( hatPurchaseHandle );
 System.out.println( "Customer mark has returned the hat" );
 session.fireAllRules();      </programlisting>
 
-      <para>Refering the the above listing, we can see there is a Customer ("mark"), and there are 2 Products ("shoes" and "hat") which are available for Purchase. In this case, a Purchase combines a customer with a product (and a product has a price attribute).</para>
+      <para>Referring the the above listing, we can see there is a Customer ("mark"), and there are 2 Products ("shoes" and "hat") which are available for Purchase. In this case, a Purchase combines a customer with a product (and a product has a price attribute).</para>
 
       <para>Note that after we fireAllRules(), we then retract the purchase of a hat (but leave the purchase of shoes in). Running the example as a java application should see the following output:</para>
 
@@ -92,7 +92,7 @@ end      </programlisting>
 
       <para>Calculating the discount is done with a single rule, using the higher order logic of "accumulate".</para>
 
-      <programlisting>rule "Apply 10% discount if total purcahses is over 100"
+      <programlisting>rule "Apply 10% discount if total purchases is over 100"
  no-loop true
  dialect "java"
     when
@@ -107,6 +107,6 @@ end      </programlisting>
 
       <para>An interesting part of this rule is the "accumulate": this is saying to accumulate a total (sum) of the $price of a product (product.price) for all Purchase facts that belong to the customer ($c). The result of this is a Double. The rule then checks to see if this total is greater then 100. If it is, it applies the discount (of 10), and then inserts a logical fact of the Discount object.</para>
 
-      <para>The purpose of the logical insertion of the Discount, is to automatically retract the Discount object should the total of the purchases not add up to &gt; 100 (when the LHS is no longer satisified, restract the resulting logical assertions - this is what is meant by "truth maintenance"). The act of inserting the Discount, causes the "Discount awarded notification" rule to activate. However, should the discount fact be retracted, the "Discount removed notification" will activate, resulting in the customers discount being wiped out. In the example you can see this happen, as after the first fireAllRules(), a purchase is retracted, causing the total to fall below 100, which means the conditions that satisfied the "Apply 10% discount..." rule no longer apply, hence the logical fact of "Discount" is automatically retracted.</para>
+      <para>The purpose of the logical insertion of the Discount, is to automatically retract the Discount object should the total of the purchases not add up to &gt; 100 (when the LHS is no longer satisfied, retract the resulting logical assertions - this is what is meant by "truth maintenance"). The act of inserting the Discount, causes the "Discount awarded notification" rule to activate. However, should the discount fact be retracted, the "Discount removed notification" will activate, resulting in the customers discount being wiped out. In the example you can see this happen, as after the first fireAllRules(), a purchase is retracted, causing the total to fall below 100, which means the conditions that satisfied the "Apply 10% discount..." rule no longer apply, hence the logical fact of "Discount" is automatically retracted.</para>
     </section>
   </section>
