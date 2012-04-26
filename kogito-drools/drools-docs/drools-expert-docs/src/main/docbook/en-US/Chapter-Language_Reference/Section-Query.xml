@@ -88,11 +88,11 @@ end
 
     <para>The @Position annotation, in the org.drools.definition.type package,
     can be used to annotate original pojos on the classpath. Currently only
-    fields on classes can be annotated. Inheritence of classes is supported,
+    fields on classes can be annotated. Inheritance of classes is supported,
     but not interfaces of methods yet.</para>
 
     <para>Queries can now call other queries, this combined with optional
-    query arguments provides deriviation query style backward chaining.
+    query arguments provides derivation query style backward chaining.
     Positional and mixed positional/named type is supported. Literal
     expressions can passed as query arguments, but at this stage you cannot
     mix expressions with variables. Here s an example of a query that calls
@@ -150,7 +150,7 @@ for ( QueryResultsRow r : results ) {
     <para>The algorithm uses stacks to handle recursion, so the method stack
     will not blow up.</para>
 
-    <para>The following is not yet suported:</para>
+    <para>The following is not yet supported:</para>
 
     <itemizedlist>
       <listitem>

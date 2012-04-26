@@ -107,7 +107,7 @@ end</programlisting>
     collection of compiled definitions, such as rules and processes, which are
     compiled using the <code>KnowledgeBuilder</code>. Both the
     KnowledgeBuilder and KnowledgeBase can be created from the factories
-    KnowledeBuilderFactory and KnowledgeBaseFactory.</para>
+    KnowledgeBuilderFactory and KnowledgeBaseFactory.</para>
 
     <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newClassPathResource( "licenseApplication.drl", getClass() ),
@@ -341,7 +341,7 @@ end</programlisting>
     determine that a fire has been extinguished, i.e., that there isn't a
     <code>Fire</code> object any more? Previously the constraints have been
     sentences according to Propositional Logic, where the engine is
-    constraining against individual intances. Drools also has support for
+    constraining against individual instances. Drools also has support for
     First Order Logic that allows you to look at sets of data. A pattern under
     the keyword <literal>not</literal> matches when something does not exist.
     The rule given below turns the sprinkler off as soon as the fire in that
@@ -416,7 +416,7 @@ if ( kbuilder.hasErrors() ) {
 kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();</programlisting>
 
-    <para>With the session created it is now possible to iteratvely work with
+    <para>With the session created it is now possible to iteratively work with
     it over time. Four <code>Room</code> objects are created and inserted, as
     well as one <code>Sprinkler</code> object for each room. At this point the
     engine has done all of its matching, but no rules have fired yet. Calling
