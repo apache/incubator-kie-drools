@@ -144,7 +144,7 @@ $eventA : EventA( this before[ -2m, -3m30s ] $eventB ) </programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>If only one paratemer is given, it is used for both start and
+        <para>If only one parameter is given, it is used for both start and
         end timestamps.</para>
       </listitem>
 

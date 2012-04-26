@@ -44,7 +44,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>Both require seemless integration with the enterprise
+      <para>Both require seamless integration with the enterprise
       infrastructure and applications, specially on autonomous governance,
       including, but not limited to, lifecycle management, auditing, security,
       etc.</para>
@@ -68,7 +68,7 @@
     <para>Drools was also born as a rules engine several years ago, but
     following the vision of becoming a single platform for behavioral
     modelling, it soon realized that it could only achieve this goal by
-    crediting the same importante to the three complementary business
+    crediting the same importance to the three complementary business
     modelling techniques:</para>
 
     <itemizedlist>
@@ -91,7 +91,7 @@
 
   <para>Supporting Complex Event Processing, though, is much more than simply
   understanding what an event is. CEP scenarios share several common and
-  distiguishing characteristics:</para>
+  distinguishing characteristics:</para>
 
   <itemizedlist>
     <listitem>
@@ -132,7 +132,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>Support Events, with their propper semantics, as first class
+      <para>Support Events, with their proper semantics, as first class
       citizens.</para>
     </listitem>
 

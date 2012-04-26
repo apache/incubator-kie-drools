@@ -7,7 +7,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Knowledgebase Partitioning</title>
+  <title>KnowledgeBase Partitioning</title>
 
   <warning>
     <para>THIS FEATURE IS NO LONGER SUPPORTED. It may be reintroduced in the
@@ -28,7 +28,7 @@
   multiple partitions may be "active" at a single point in time.</para>
 
   <para>Everything should be transparent to the user, except that all working
-  memory actions (insert/retract/modify) are executed assynchronously.</para>
+  memory actions (insert/retract/modify) are executed asynchronously.</para>
 
   <important>
     <para>This feature enables parallel LHS evaluation, but does not change
