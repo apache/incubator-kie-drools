@@ -31,33 +31,64 @@ import org.slf4j.LoggerFactory;
 public class ContentMarshallerHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
-    
-    
-    
+
     public static ContentData marshal(Object o, ContentMarshallerContext marshallerContext, Environment env) {
         ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
         ContentData content = null;
+
+        if (o instanceof Map) {
+            for (Object key : ((Map) o).keySet()) {
+                Object value = ((Map) o).get(key);
+                MarshalledContentWrapper marshalledValue = null;
+                for (ObjectMarshallingStrategy strat : strats) {
+                    //Use the first strategy that accept the Object based on the order of the provided strategies
+                    if (strat.accept(value)) {
+                        marshalledValue = marshalSingle(strat, marshallerContext, value);
+                        break;
+                    }
+                }
+                ((Map) o).put(key, marshalledValue);
+            }
+        }
+        MarshalledContentWrapper marshalled = null;
         for (ObjectMarshallingStrategy strat : strats) {
             //Use the first strategy that accept the Object based on the order of the provided strategies
             if (strat.accept(o)) {
-                try {
-                    Context context = strat.createContext();
-                    marshallerContext.strategyContext.put(strat, context);    
-                    byte[] marshalled = strat.marshal(context, null, o);
-
-                    content = new ContentData();
-                    content.setContent(marshalled);
-                    // A map by default should be serialized
-                    content.setType(strat.getClass().getCanonicalName());
-                    content.setAccessType(AccessType.Inline);
-                    return content;
-                } catch (IOException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                marshalled = marshalSingle(strat, marshallerContext, o);
+                break;
             }
         }
+        content = new ContentData();
+        content.setContent(marshalled.getContent());
+        // A map by default should be serialized
+        content.setType(marshalled.getMarshaller());
+        content.setAccessType(AccessType.Inline);
+
 
         return content;
+    }
+
+    private static MarshalledContentWrapper marshalSingle(ObjectMarshallingStrategy strat, ContentMarshallerContext marshallerContext, Object o) {
+
+        MarshalledContentWrapper contentWrap = null;
+        try {
+            Context context = null;
+            if(marshallerContext.strategyContext.get(strat) == null){
+                context = strat.createContext();
+                marshallerContext.strategyContext.put(strat, context);
+            } else{
+                context = marshallerContext.strategyContext.get(strat);
+            }
+            byte[] marshalled = strat.marshal(context, null, o);
+            contentWrap = new MarshalledContentWrapper(marshalled, strat.getClass().getCanonicalName(), o.getClass());
+
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+
+
+        return contentWrap;
     }
 
     public static Object unmarshall(String type, byte[] content, ContentMarshallerContext marshallerContext, Environment env) {
@@ -65,14 +96,29 @@ public class ContentMarshallerHelper {
         ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
         Object data = null;
         ObjectMarshallingStrategy selectedStrat = null;
-        for(ObjectMarshallingStrategy strat : strats){
-            if(strat.getClass().getCanonicalName().equals(type)){
-             selectedStrat = strat;
+        for (ObjectMarshallingStrategy strat : strats) {
+            if (strat.getClass().getCanonicalName().equals(type)) {
+                selectedStrat = strat;
             }
         }
         Context context = marshallerContext.strategyContext.get(selectedStrat);
         try {
             data = selectedStrat.unmarshal(context, null, content, ContentMarshallerHelper.class.getClassLoader());
+            if (data instanceof Map) {
+                for (Object key : ((Map) data).keySet()) {
+                    MarshalledContentWrapper value = (MarshalledContentWrapper) ((Map) data).get(key);
+                    Object unmarshalledObj = null;
+
+                    for (ObjectMarshallingStrategy strat : strats) {
+                        if (strat.getClass().getCanonicalName().equals(value.getMarshaller())) {
+                            selectedStrat = strat;
+                        }
+                    }
+                    context = marshallerContext.strategyContext.get(selectedStrat);
+                    unmarshalledObj = selectedStrat.unmarshal(context, null, value.getContent(), ContentMarshallerHelper.class.getClassLoader());
+                    ((Map) data).put(key, unmarshalledObj);
+                }
+            }
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         } catch (ClassNotFoundException ex) {

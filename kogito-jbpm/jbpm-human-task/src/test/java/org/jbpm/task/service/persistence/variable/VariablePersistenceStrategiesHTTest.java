@@ -181,7 +181,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
 
         Task task = getClient().getTask(taskSummary.getId());
         assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
-        System.out.println(">>>>>>>>>>task.getTaskData().document type: "+task.getTaskData().getDocumentType());
+        
         assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
@@ -207,7 +207,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
     
     
     
-    @Ignore
+    @Test
     public void testTaskDataWithVPSandMAP() throws Exception {
         //JPA Entity
         EntityManager em = domainEmf.createEntityManager();
@@ -251,23 +251,33 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         assertTrue(contentId != -1);
 
         Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), marshallerContext,  ksession.getEnvironment());
-        assertEquals(myEntity.getTest(), ((MyEntity)data).getTest());
-
+        Map<String, Object> dataMap = (Map<String, Object>)data;
+        
+        assertEquals(myEntity.getTest(), ((MyEntity)dataMap.get("myJPAEntity")).getTest());
+        assertEquals(myObject.getValue(), ((MyObject)dataMap.get("mySerializableObject")).getValue());
+        
         getClient().start(task.getId(), "Darth Vader");
         
+        Map<String, Object> results = new HashMap<String, Object>();
         em.getTransaction().begin();
         MyEntity myEntity2 = new MyEntity("This is a JPA Entity 2");
         em.persist(myEntity2);
         em.getTransaction().commit();
+        results.put("myEntity2", myEntity2);
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+        results.put("myObject2", myObject2);
         
-        ContentData result = ContentMarshallerHelper.marshal(myEntity2, marshallerContext, ksession.getEnvironment());
+        ContentData result = ContentMarshallerHelper.marshal(results, marshallerContext, ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
-        Map<String, Object> results = manager.getResults();
-        assertNotNull(results);
-        assertEquals("Darth Vader", results.get("ActorId"));
-        assertEquals(myEntity2.getTest(), ((MyEntity)results.get("Result")).getTest());
+        Map<String, Object> managerResults = manager.getResults();
+        assertNotNull(managerResults);
+        assertEquals("Darth Vader", managerResults.get("ActorId"));
+        assertEquals(myEntity2.getTest(), ((MyEntity)((Map)managerResults.get("Result")).get("myEntity2")).getTest());
+        assertEquals(myEntity2.getTest(), ((MyEntity)managerResults.get("myEntity2")).getTest());
+        assertEquals(myObject2.getValue(), ((MyObject)((Map)managerResults.get("Result")).get("myObject2")).getValue());
+        assertEquals(myObject2.getValue(), ((MyObject)managerResults.get("myObject2")).getValue());
     }
 
 
