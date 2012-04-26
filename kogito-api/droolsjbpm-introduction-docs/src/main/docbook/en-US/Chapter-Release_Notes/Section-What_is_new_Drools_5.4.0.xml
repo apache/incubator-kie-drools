@@ -1,0 +1,1713 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>What is New and Noteworthy in Drools 5.4.0</title>
+
+  <section>
+    <title>Drools Expert</title>
+
+    <section>
+      <title>Traits</title>
+
+      <para>Traits were introduced in the 5.3 release, and details on them can be found in the N&amp;N for there. This
+      release adds an example so that people have something simple to run, to help them understand. In the
+      drools-examples source project open the classes and drl for the namespace "/org/drools/examples/traits". There you
+      will find an example around classifications of students and workers.</para>
+
+      <programlisting>rule "Students and Workers" no-loop when
+    $p : Person( $name : name, 
+                 $age : age &lt; 25,  
+                 $weight : weight )
+then
+    IWorker w = don( $p, IWorker.class, true );
+    w.setWage( 1200 );
+    update( w );
+
+    IStudent s = don( $p, IStudent.class, true );
+    s.setSchool( "SomeSchool" );
+    update( s );
+end
+
+
+rule "Working Students" salience -10 when
+    $s : IStudent( $school : school, 
+                   $name : name,
+                   this isA IWorker, 
+                   $wage : fields[ "wage" ] )
+then
+    System.out.println( $name + " : I have " + $wage + " to pay the fees at " + $school );
+end</programlisting>
+
+      <para>A two part detailed article has been written up at a blog, which will later be improved and rolled into the
+      main documentation. For now you can read them here.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><link
+          xlink:href="http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html">http://blog.athico.com/2011/12/new-feature-spotlight-traits-part-1.html</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link
+          xlink:href="http://blog.athico.com/2011/12/dynamic-typing-in-rules-traits-part-2.html">http://blog.athico.com/2011/12/dynamic-typing-in-rules-traits-part-2.html</link></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Simulation and Test</title>
+
+      <para>The simulation project that was first started in 2009, <link
+      xlink:href="http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html">http://blog.athico.com/2009/07/drools-simulation-and-test-framework.html</link>,
+      has undergone an over haul and is now in a usable state. We have not yet promoted this to
+      <literal>knowledge-api</literal>, so it's considered unstable and will change during the beta process. For now
+      though, the adventurous people can take a look at the unit tests and start playing.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/simulation.jpg" scale="80"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <para>The Simulator runs the Simulation. The Simulation is your scenario definition. The Simulation consists of 1
+      to n Paths, you can think of a Path as a sort of Thread. The Path is a chronological line on which Steps are
+      specified at given temporal distances from the start. You don't specify a time unit for the Step, say 12:00am,
+      instead it is always a relative time distance from the start of the Simulation (note: in Beta2 this will be
+      relative time distance from the last step in the same path). Each Step contains one or more Commands, i.e. create
+      a <literal>StatefulKnowledgeSession</literal> or insert an object or start a process. These are the very same
+      commands that you would use to script a knowledge session using the batch execution, so it's re-using existing
+      concepts.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>1.1 Simulation</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>1..n Paths</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>1..n Steps</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>1..n Commands</para>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>All the steps, from all paths, are added to a priority queue which is ordered by the temporal distance, and
+      allows us to incrementally execute the engine using a time slicing approach. The simulator pops of the steps from
+      the queue in turn. For each Step it increments the engine clock and then executes all the Step's Commands.</para>
+
+      <para>Here is an example Command (notice it uses the same Commands as used by the CommandExecutor):</para>
+
+      <programlisting>new InsertObjectCommand( new Person( "darth", 97 ) )</programlisting>
+
+      <para>Commands can be grouped together, especially Assertion commands, via test groups. The test groups are mapped
+      to JUnit "test methods", so as they pass or fail using a specialised JUnit Runner the Eclipse GUI is updated - as
+      illustrated in the above image, showing two passed test groups named "test1" and "test2".</para>
+
+      <para>Using the JUnit integration is trivial. Just annotate the class with @RunWith(JUnitSimulationRunner.class).
+      Then any method that is annotated with @Test and returns a Simulation instance will be invoked executing the
+      returned Simulation instance in the Simulator. As test groups are executed the JUnit GUI is updated.</para>
+
+      <para>When executing any commands on a KnowledgeBuilder, KnowledgeBase or StatefulKnowledgeSession the system
+      assumes a "register" approach. To get a feel for this look at the <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/SimulationTest.java">org.drools.simulation.impl.SimulationTest</link> at github
+      (path may change over time).</para>
+
+      <programlisting>cmds.add( new NewKnowledgeBuilderCommand( null ) );
+cmds.add( new SetVariableCommandFromLastReturn( "path1",
+                                                KnowledgeBuilder.class.getName() ) );
+
+cmds.add( new KnowledgeBuilderAddCommand( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                                          ResourceType.DRL, null ) );</programlisting>
+
+      <para>Notice the set command. "path1" is the context, each path has it's own variable context. All paths inherit
+      from a "root" context. "KnowledgeBuilder.class.getName() " is the name that we are setting the return value of the
+      last command. As mentioned before we consider the class names of those classes as registers, any further commands
+      that attempt to operate on a knowledge builder will use what ever is assigned to that, as in the case of
+      KnowledgeBuilderAddCommand. This allows multiple kbuilders, kbases and ksessions to exist in one context under
+      different variable names, but only the one assigned to the register name is the one that is currently executed
+      on.</para>
+
+      <para>The code below show the rough outline used in SimulationTest:</para>
+
+      <programlisting>Simulation simulation = new SimulationImpl();
+PathImpl path = new PathImpl( simulation,
+                              "path1" );                              
+simulation.getPaths().put( "path1",
+                           path );                                      
+List&lt;Step&gt; steps = new ArrayList&lt;Step&gt;();
+path.setSteps( steps );
+List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
+.... add commands to step here ....
+// create a step at temporal distance of 2000ms from start
+steps.add( new StepImpl( path,
+                         cmds,
+                         2000 ) ); </programlisting>
+
+      <para>We know the above looks quite verbose. SimulationTest just shows our low level canonical model, the idea is
+      that high level representations are built ontop of this. As this is a builder API we are currently focusing on two
+      sets of fluents, compact and standard. We will also work on a spreadsheet UI for building these, and eventually a
+      dedicated textual dsl.</para>
+
+      <para>The compact fluent is designed to provide the absolute minimum necessary to run against a single ksession. A
+      good place to start is <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/CompactFluentTest.java">org.drools.simulation.impl.CompactFluentTest</link>,
+      a snippet of which is shown below. Notice we set "yoda" to "y" and can then assert on that. Currently inside of
+      the test string it executes using mvel. The eventual goal is to build out a set of <link
+      xlink:href="http://code.google.com/p/hamcrest/">hamcrest</link> matchers that will allow assertions against the
+      state of the engine, such as what rules have fired and optionally with with data.</para>
+
+      <programlisting>FluentCompactSimulation f = new FluentCompactSimulationImpl();
+f.newStatefulKnowledgeSession()
+    .getKnowledgeBase()
+    .addKnowledgePackages( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                           ResourceType.DRL )
+    .end()
+    .newStep( 100 ) // increases the time 100ms
+    .insert( new Person( "yoda",
+                         150 ) ).set( "y" )
+    .fireAllRules()
+    // show testing inside of ksession execution
+    .test( "y.name == 'yoda'" )
+    .test( "y.age == 160" );</programlisting>
+
+      <para>Note that the test is not executing at build time, it's building a script to be executed later. The script
+      underneath matches what you saw in SimulationTest. Currently the way to run a simulation manually is shown below.
+      Atlhough you already saw in SimulationTest that JUnit will execute these automatically. We'll improve this over
+      itme.</para>
+
+      <programlisting>SimulationImpl sim = (SimulationImpl) ((FluentCompactSimulationImpl) f).getSimulation();
+Simulator simulator = new Simulator( sim,
+                                     new Date().getTime() );
+simulator.run();</programlisting>
+
+      <para>The standard fluent is almost a 1 to 1 mapping to the cannonical path, step and command structure in
+      SimulationTest- just more compact. Start by looking in <link
+      xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/StandardFluentTest.java">org.drools.simulation.impl.StandardFluentTest</link>. This fluent allows you to run any number of
+      paths and steps, along with a lot more control over multiple kbuilders, kbases and ksessions.</para>
+
+      <programlisting>FluentStandardSimulation f = new FluentStandardSimulationImpl();      
+f.newPath("init")
+     .newStep( 0 )
+          // set to ROOT, as I want paths to share this
+         .newKnowledgeBuilder()
+             .add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                   ResourceType.DRL )
+         .end(ContextManager.ROOT, KnowledgeBuilder.class.getName() )
+         .newKnowledgeBase()
+             .addKnowledgePackages()
+         .end(ContextManager.ROOT, KnowledgeBase.class.getName() )
+    .end()
+ .newPath( "path1" )
+    .newStep( 1000 )
+        .newStatefulKnowledgeSession()
+            .insert( new Person( "yoda", 150 ) ).set( "y" )
+            .fireAllRules()
+            .test( "y.name == 'yoda'" )
+            .test( "y.age == 160" )
+        .end()
+    .end()
+ .newPath( "path2" )
+    .newStep( 800 )
+        .newStatefulKnowledgeSession()
+            .insert( new Person( "darth", 70 ) ).set( "d" )
+            .fireAllRules()
+            .test( "d.name == 'darth'" )
+            .test( "d.age == 80" )
+        .end()
+    .end()
+ .end</programlisting>
+
+      <para>There is still an aweful lot to do, this is designed to eventually provide a unified simulation and testing
+      environment for rules, workflow and event processing over time, and eventually also over distributed
+      architectures.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Flesh out the api to support more commands, and also to encompass jBPM commands</para>
+        </listitem>
+
+        <listitem>
+          <para>Improve out of the box usability, including moving interfaces to knowlege-api and hiding "new"
+          constructors with factory methods</para>
+        </listitem>
+
+        <listitem>
+          <para>Commands are already marshallable to json and xml. They should be updated to allow full round tripping
+          from java api commands and json/xml documents.</para>
+        </listitem>
+
+        <listitem>
+          <para>Develop hamcrest matchers for testing state</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>What rule(s) fired, including optionally what data was used with the executing rule (Drools)</para>
+            </listitem>
+
+            <listitem>
+              <para>What rules are active for a given fact</para>
+            </listitem>
+
+            <listitem>
+              <para>What rules activated and de-activated for a given fact change</para>
+            </listitem>
+
+            <listitem>
+              <para>Process variable state (jBPM)</para>
+            </listitem>
+
+            <listitem>
+              <para>Wait node states (jBPM)</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Design and build tabular authoring tools via spreadsheet, targetting the web with round tripping to
+          excel.</para>
+        </listitem>
+
+        <listitem>
+          <para>Design and develop textual DSL for authoing - maybe part of DRL (long term task).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Fine Grained Property Change Listeners (Property
+        Specific)</title>
+
+      <para>Currently, when you in a RHS you call modify() on a given fact it
+        triggers a revaluation of all Patterns of the matching object type in
+        the knowledeg base. As some have found this can be a problem, forcing
+        you to split up your objects into smaller 1 to 1 objects, to avoid
+        unwanted evaluation of objects like recursion or excessive evaluation
+        issues. This new feature allows a pattern to react (and then be
+        re-eavluated) only to modifications made on fields constrained or bound
+        inside the pattern itself.</para>
+
+      <para>The implementation is bit mask based, so very efficient. When the
+        engine executes a modify statement it uses a bit mask of fields being
+        changed, the pattern will only respond if it has an overlapping bit
+        mask. This does not work for update(), and is one of the reason why we
+        promote modify() as it encapsulates the field changes within the
+        statement.</para>
+
+      <para>feature is off by default in order to make the behavior of the
+        rule engine backward compatible with the former releases. If you want to
+        activate it on a specific bean you have to annotate it with
+        @propertySpecific. This annotation works both on drl type
+        declarations:</para>
+
+      <programlisting>declare Person
+        @propertySpecific
+        firstName : String
+        lastName : String
+        end</programlisting>
+
+      <para>and on Java classes:</para>
+
+      <programlisting>@PropertySpecific
+        public static class Person {
+        private String firstName;
+        private String lastName;
+        }</programlisting>
+
+      <para>Given this simple type declaration, the most evident advantage of
+        this new Property Specific feature, will be, for instance, that the
+        following rule:</para>
+
+      <programlisting>rule "Modify last name" when
+        Person( firstName == "Mario" )
+        then
+        modify($person) { setLastName("Fusco") }
+        end</programlisting>
+
+      <para>will no longer end up in an infinite loop.</para>
+
+      <para>Moreover on Java classes you can also annotate any method to say
+        that its invocation actually modifies other properties. For instance in
+        the former Person class you could have a method like:</para>
+
+      <programlisting>@Modifies( { "firstName", "lastName" } )
+        public void setName(String name) {
+        String[] names = name.split("\\s");
+        this.firstName = names[0];
+        this.lastName = names[1];
+        }</programlisting>
+
+      <para>That means that if a rule has a RHS like the following:</para>
+
+      <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
+
+      <para>it will correctly recognize that both the firstName and lastName
+        have been modified and act accordingly. Of course the @Modifies
+        annotation on a method has no effect if the declaring class isn't
+        annotated with @PropertySpecific.</para>
+
+      <para>The third newly introduced annotation is on patterns and allows
+        you to modify the inferred set of properties "listened" by it. So, for
+        example, you can annotate a pattern in the LHS of a rule like:</para>
+
+      <programlisting>Person( firstName == $expectedFirstName ) @watch( lastName ) // --&gt; listens for changes on both firstName (inferred) and lastName
+        Person( firstName == $expectedFirstName ) @watch( * ) // --&gt; listens for all the properties of the Person bean
+        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName ) // --&gt; listens for changes on lastName and explicitly exclude firstName
+        Person( firstName == $expectedFirstName ) @watch( *, !age ) // --&gt; listens for changes on all the properties except the age one</programlisting>
+
+      <para>The usage of @watch on a type not annotated as @PropertySpecific
+        will raise a compilation error. The same will happen if you mention an
+        unknown property name inside @watch or use the same name more than once
+        like for example in: @watch( lastName, !lastName )</para>
+    </section>
+
+    <section>
+      <title>Accumulate syntax improvements</title>
+
+      <para>Multi-function accumulate now supports inline constraints. The
+        simplified EBNF is:</para>
+
+      <programlisting>lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd (COMMA|SEMICOLON)
+        accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
+        (SEMICOLON constraints)?
+        RIGHT_PAREN SEMICOLON?</programlisting>
+
+      <para>E.g.:</para>
+
+      <programlisting>rule "Accumulate example"
+        when
+        accumulate( Cheese( $price : price );
+        $a1 : average( $price ),
+        $m1 : min( $price ),
+        $M1 : max( $price );    // a semicolon, followed by inline constraints
+        $a1 &gt; 10 &amp;&amp; $M1 &lt;= 100, // inline constraint
+        $m1 == 5                // inline constraint
+        )
+        then
+        // do something
+        end
+      </programlisting>
+    </section>
+
+    <section>
+      <title>XLS \ CSV Decision tables support declared types</title>
+
+      <para>A new RuleSet property has been added called "Declare".</para>
+
+      <para>This provides a slot in the RuleSet definition to define declared
+        types.</para>
+
+      <para>In essence the slot provides a descrete location to add type
+        declarations where, previously, they may have been added to a Queries or
+        Functions definition.</para>
+
+      <figure>
+        <title>RuleSet "Declare"</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-xls-declare.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Wumpus World</title>
+
+      <para>A working version of Wumpus World, an AI example covered in in the
+        book "Artificial Intelligence : A Modern Approach", is now available
+        among the other examples. A more detailed overview of Wumpus World can
+        be found <link
+            xlink:href="http://www.cis.temple.edu/~giorgio/cis587/readings/wumpus.shtml">here</link></para>
+    </section>
+
+    <section>
+      <title>Decision Tables support "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
+
+      <table>
+        <title>New attributes</title>
+
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Keyword</entry>
+
+              <entry>Initial</entry>
+
+              <entry>Value</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>TIMER</entry>
+
+              <entry>T</entry>
+
+              <entry>A timer definition. See "Timers and Calendars".</entry>
+            </row>
+
+            <row>
+              <entry>CALENDARS</entry>
+
+              <entry>E</entry>
+
+              <entry>A calendars definition. See "Timers and Calendars".</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>KnowledgeBuilder supports building of cross referencing drl files</title>
+
+      <para>KnowledgeBuilder has a new batch mode, with a fluent interface, that allows to build multiple DRLs at once
+        as in the following example:</para>
+
+      <programlisting>KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.batch()
+        .add(ResourceFactory.newByteArrayResource(rules1.getBytes()), ResourceType.DRL)
+        .add(ResourceFactory.newByteArrayResource(rules2.getBytes()), ResourceType.DRL)
+        .add(ResourceFactory.newByteArrayResource(declarations.getBytes()), ResourceType.DRL)
+        .build();</programlisting>
+
+      <para>In this way it is no longer necessary to build the DRLs files in the right order (e.g. first the DRLs
+        containing the type declarations and then the ones with the rules using them) and it will also be possible to have
+        circular references among them.</para>
+
+      <para>Moreover the KnowledgeBuilder (regardless if you are using the batch mode or not) also allows to discard
+        what has been added with the last DRL(s) building. This can be useful to recover from having added a wrong DRL to
+        the KnowledgeBuilder as it follows:</para>
+
+      <programlisting>kbuilder.add(ResourceFactory.newByteArrayResource(wrongDrl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+        kbuilder.undo();
+        }</programlisting>
+    </section>
+
+    <section>
+      <title>Fine grained property change listeners</title>
+
+      <para>In Drools when you invoke update() or modify() on a given object it will trigger a revaluation of all
+        patterns of the matching object type in the knowledge base. As some have experienced, this can be a problem that
+        often can lead to unwanted and useless evaluations and in the worst cases to infinite recursions. The only
+        workaround to avoid it was to split up your objects into smaller ones having a 1 to 1 relationship with the
+        original object.</para>
+
+      <para>This new feature allows the pattern matching to only react to modification of properties actually
+        constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
+        object splitting.</para>
+
+      <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
+        former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
+        This annotation works both on drl type declarations:</para>
+
+      <programlisting>declare Person
+        @propertyReactive
+        firstName : String
+        lastName : String
+        end</programlisting>
+
+      <para>and on Java classes:</para>
+
+      <programlisting>@PropertyReactive
+        public static class Person {
+        private String firstName;
+        private String lastName;
+        }</programlisting>
+
+      <para>In this way, for instance, if you have a rule like the following:</para>
+
+      <programlisting>rule "Every person named Mario is a male" when
+        $person : Person( firstName == "Mario" )
+        then
+        modify ( $person )  { setMale( true ) }
+        end</programlisting>
+
+      <para>you won't have to add the no-loop attribute to it in order to avoid an infinite recursion because the engine
+        recognizes that the pattern matching is done on the 'firstName' property while the RHS of the rule modifies the
+        'male' one. Note that this feature does not work for update(), and this is one of the reasons why we promote
+        modify() since it encapsulates the field changes within the statement. Moreover, on Java classes, you can also
+        annotate any method to say that its invocation actually modifies other properties. For instance in the former
+        Person class you could have a method like:</para>
+
+      <programlisting>@Modifies( { "firstName", "lastName" } )
+        public void setName(String name) {
+        String[] names = name.split("\\s");
+        this.firstName = names[0];
+        this.lastName = names[1];
+        }</programlisting>
+
+      <para>That means that if a rule has a RHS like the following:</para>
+
+      <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
+
+      <para>it will correctly recognize that the values of both properties 'firstName' and 'lastName' could have
+        potentially been modified and act accordingly, not missing of reevaluating the patterns constrained on them. At
+        the moment the usage of @Modifies is not allowed on fields but only on methods. This is coherent with the most
+        common scenario where the @Modifies will be used for methods that are not related with a class field as in the
+        Person.setName() in the former example. Also note that @Modifies is not transitive, meaning that if another method
+        internally invokes the Person.setName() one it won't be enough to annotate it with @Modifies( { "name" } ), but it
+        is necessary to use @Modifies( { "firstName", "lastName" } ) even on it. Very likely @Modifies transitivity will
+        be implemented in the next release.</para>
+
+      <para>For what regards nested accessors, the engine will be notified only for top level fields. In other words a
+        pattern matching like:</para>
+
+      <programlisting>Person ( address.city.name == "London ) </programlisting>
+
+      <para>will be revaluated only for modification of the 'address' property of a Person object. In the same way the
+        constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
+        to clarify this. An LHS like the following:</para>
+
+      <programlisting>$p : Person( )
+        Car( owner = $p.name )</programlisting>
+
+      <para>will not listen on modifications of the person's name, while this one will do:</para>
+
+      <programlisting>Person( $name : name )
+        Car( owner = $name )</programlisting>
+
+      <para>To overcome this problem it is possible to annotate a pattern with @watch as it follows:</para>
+
+      <programlisting>$p : Person( ) @watch ( name )
+        Car( owner = $p.name )</programlisting>
+
+      <para>Indeed, annotating a pattern with @watch allows you to modify the inferred set of properties for which that
+        pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
+        automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
+        with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
+        respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
+        like:</para>
+
+      <programlisting>// listens for changes on both firstName (inferred) and lastName
+        Person( firstName == $expectedFirstName ) @watch( lastName )
+
+        // listens for all the properties of the Person bean
+        Person( firstName == $expectedFirstName ) @watch( * )
+
+        // listens for changes on lastName and explicitly exclude firstName
+        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName )
+
+        // listens for changes on all the properties except the age one
+        Person( firstName == $expectedFirstName ) @watch( *, !age )</programlisting>
+
+      <para>Since doesn't make sense to use this annotation on a pattern using a type not annotated with
+        @PropertyReactive the rule compiler will raise a compilation error if you try to do so. Also the duplicated usage
+        of the same property in @watch (for example like in: @watch( firstName, ! firstName ) ) will end up in a
+        compilation error. In a next release we will make the automatic detection of the properties to be listened smarter
+        by doing analysis even outside of the pattern.</para>
+
+      <para>It also possible to enable this feature by default on all the types of your model or to completely disallow
+        it by using on option of the KnowledgeBuilderConfiguration. In particular this new PropertySpecificOption can have
+        one of the following 3 values:</para>
+
+      <programlisting>- DISABLED =&gt; the feature is turned off and all the other related annotations are just ignored
+        - ALLOWED =&gt; this is the default behavior: types are not property reactive unless they are not annotated with @PropertySpecific
+        - ALWAYS =&gt; all types are property reactive by default</programlisting>
+
+      <para>So, for example, to have a KnowledgeBuilder generating property reactive types by default you could
+        do:</para>
+
+      <programlisting>KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        config.setOption(PropertySpecificOption.ALWAYS);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);</programlisting>
+
+      <para>In this last case it will be possible to disable the property reactivity feature on a specific type by
+        annotating it with @ClassReactive.</para>
+    </section>
+
+    <section>
+      <title>Fluent simulation testing</title>
+
+      <para><emphasis>This API is experimental: future backwards incompatible changes are possible.</emphasis></para>
+
+      <para>Using the new fluent simulation testing, you can test your rules in unit tests more easily:</para>
+
+      <programlisting language="java">    @Test
+        public void rejectMinors() {
+        SimulationFluent simulationFluent = new DefaultSimulationFluent();
+
+        Driver john = new Driver("John", "Smith", new LocalDate().minusYears(10));
+        Car mini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest johnMiniPolicyRequest = new PolicyRequest(john, mini);
+        johnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        johnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+
+
+        simulationFluent
+        .newKnowledgeBuilder()
+        .add(ResourceFactory.newClassPathResource("org/drools/examples/carinsurance/rule/policyRequestApprovalRules.drl"),
+        ResourceType.DRL)
+        .end()
+        .newKnowledgeBase()
+        .addKnowledgePackages()
+        .end()
+        .newStatefulKnowledgeSession()
+        .insert(john).set("john")
+        .insert(mini).set("mini")
+        .insert(johnMiniPolicyRequest).set("johnMiniPolicyRequest")
+        .fireAllRules()
+        .test("johnMiniPolicyRequest.automaticallyRejected == true")
+        .test("johnMiniPolicyRequest.rejectedMessageList.size() == 1")
+        .end()
+        .runSimulation();
+        }</programlisting>
+
+      <para>You can even test your CEP rules in unit tests without suffering from slow tests:</para>
+
+      <programlisting language="java">    @Test
+        public void lyingAboutAge() {
+        SimulationFluent simulationFluent = new DefaultSimulationFluent();
+
+        Driver realJohn = new Driver("John", "Smith", new LocalDate().minusYears(10));
+        Car realMini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest realJohnMiniPolicyRequest = new PolicyRequest(realJohn, realMini);
+        realJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        realJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+        realJohnMiniPolicyRequest.setAutomaticallyRejected(true);
+        realJohnMiniPolicyRequest.addRejectedMessage("Too young.");
+
+        Driver fakeJohn = new Driver("John", "Smith", new LocalDate().minusYears(30));
+        Car fakeMini = new Car("MINI-01", CarType.SMALL, false, new BigDecimal("10000.00"));
+        PolicyRequest fakeJohnMiniPolicyRequest = new PolicyRequest(fakeJohn, fakeMini);
+        fakeJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COLLISION));
+        fakeJohnMiniPolicyRequest.addCoverageRequest(new CoverageRequest(CoverageType.COMPREHENSIVE));
+        fakeJohnMiniPolicyRequest.setAutomaticallyRejected(false);
+
+
+        simulationFluent
+        .newStep(0)
+        .newKnowledgeBuilder()
+        .add(ResourceFactory.newClassPathResource("org/drools/examples/carinsurance/cep/policyRequestFraudDetectionRules.drl"),
+        ResourceType.DRL)
+        .end()
+        .newKnowledgeBase()
+        .addKnowledgePackages()
+        .end(World.ROOT, KnowledgeBase.class.getName())
+        .newStatefulKnowledgeSession()
+        .end()
+        .newStep(1000)
+        .getStatefulKnowledgeSession()
+        .insert(realJohn).set("realJohn")
+        .insert(realMini).set("realMini")
+        .insert(realJohnMiniPolicyRequest).set("realJohnMiniPolicyRequest")
+        .fireAllRules()
+        .test("realJohnMiniPolicyRequest.requiresManualApproval == false")
+        .end()
+        .newStep(5000)
+        .getStatefulKnowledgeSession()
+        .insert(fakeJohn).set("fakeJohn")
+        .insert(fakeMini).set("fakeMini")
+        .insert(fakeJohnMiniPolicyRequest).set("fakeJohnMiniPolicyRequest")
+        .fireAllRules()
+        .test("fakeJohnMiniPolicyRequest.requiresManualApproval == true")
+        .end()
+        .runSimulation();
+        }</programlisting>
+    </section>
+
+  </section>
+
+  <section>
+    <title>Drools Fusion</title>
+
+    <section>
+      <title>Entry-Point Declaration</title>
+
+      <para>The engine now supports the declaration of entry-points. This
+        allow tools and the application to inspect, select and restrict the use
+        of entry-points in rules.</para>
+
+      <para>The simplified EBNF to declare an entry-point is:</para>
+
+      <programlisting>entryPointDeclaration := DECLARE ENTRY-POINT epName annotation* END
+        epName := stringId
+      </programlisting>
+
+      <para>Example:</para>
+
+      <programlisting>declare entry-point STStream
+        @doc("A stream of StockTicks")
+        end
+      </programlisting>
+    </section>
+
+    <section>
+      <title>Window Declaration</title>
+
+      <para>The engine now supports the declaration of Windows. This promotes
+        a clear separation between what are the filters applied to the window
+        and what are the constraints applied to the result of window. It also
+        allows easy reuse of windows among multiple rules.</para>
+
+      <para>Another benefit is a new implementation of the basic window
+        support in the engine, increasing the overall performance of the rules
+        that use sliding windows.</para>
+
+      <para>The simplified EBNF to declare a window is:</para>
+
+      <programlisting>windowDeclaration := DECLARE WINDOW ID annotation* lhsPatternBind END</programlisting>
+
+      <para>Example:</para>
+
+      <programlisting>declare window Ticks
+        @doc("last 10 stock ticks")
+        StockTick( source == "NYSE" )
+        over window:length( 10 )
+        from entry-point STStream
+        end
+      </programlisting>
+
+      <para>Rules can then use the declared window by referencing using a FROM
+        CE. Example:</para>
+
+      <programlisting>rule "RHT ticks in the window"
+        when
+        accumulate( StockTick( symbol == "RHT" ) from window Ticks,
+        $cnt : count(1) )
+        then
+        // there has been $cnt RHT ticks over the last 10 ticks
+        end
+      </programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>Guvnor</title>
+
+    <section>
+      <title>Guided Decision Table - Limited Entry</title>
+
+      <para>The Guided Decision Table editor and wizard now support the creation of "Limited Entry" tables.</para>
+
+      <figure>
+        <title>Selecting the table format</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Defining Limited Entry constraints with the Wizard</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-2.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Defining Limited Entry actions with the Wizard</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-3.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An example expanded, limited entry table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-4.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Editing a constraint in the editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-5.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Editing an action in the editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/limited-entry-6.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Improved formatting</title>
+
+      <para>With the introduction of support for Limited Entry, the decision table format was improved to better
+      differentiate between Condition and Action columns. Furthermore the table header was improved to show more
+      information for Action columns.</para>
+
+      <figure>
+        <title>Improved formatting and header</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-column-formatting.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Rearranging columns</title>
+
+      <para>The ability to rearrange whole patterns as well as individual conditions in the constraints section of the
+      table has been added. This allows the table author to arrange constraints to maximise performance of the resulting
+      rules, by placing generalised constraints before more specific. Action columns can also be re-arranged. Both
+      patterns and columns are re-arranged by dragging and dropping.</para>
+
+      <figure>
+        <title>Re-arranging Condition patterns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-patterns.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Re-arranging columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Actions to retract Facts</title>
+
+      <para>This release brings the ability to define Action columns to retract Facts.</para>
+
+      <para>If you are authoring an Extended Entry decision table the column definition contains basic information and
+      the fact being retracted is held in the table itself.</para>
+
+      <figure>
+        <title>Defining an Extended Entry retraction</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-extended-entry.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>If however you are authoring a Limited Entry decision table the Fact being retracted is defined in the
+      column definition.</para>
+
+      <figure>
+        <title>Defining a Limited Entry retraction</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-retract-limited-entry.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Binding condition fields</title>
+
+      <para>You can now bind fields in Conditions to variables. These variables can then be used in Predicate or Forumla
+      conditions, and Work Item actions.</para>
+
+      <figure>
+        <title>Binding a field</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>A Decision Table using bound fields</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-field-binding2.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Using jBPM Work Item actions</title>
+
+      <para>jBPM Work Items can now be used as Actions; and the corresponding Work Item Handler invoked at runtime. Work
+      Item Handlers should be added to the runtime session as normal.</para>
+
+      <para>Work Item input parameters can either be defined as a literal value in the column definition or as a Fact or
+      Fact Field binding.</para>
+
+      <para>New Actions have been created to perform the following functions:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Execute a Work Item</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the value of a field on an existing Fact to the value of a Work Item output (result)
+          parameter.</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the value of a field on a new Fact to the value of a Work Item output (result) parameter.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title>New Actions</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Calling a Work Item</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems2.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Setting a field from a Work Item output (result) parameter</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-workitems3.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Decision table analysis</title>
+
+      <para>On the bottom of Web decision tables, there's now a button <guilabel>Analyze...</guilabel> which will check
+      if there issues in your decision table, such as impossible matches and conflicting matches.</para>
+
+      <section>
+        <title>Impossible match detection</title>
+
+        <para>An impossible match is a row in a decision table that can never match. For example:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Release_Notes/impossibleMatch.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>In the decision table above, row 2 is an impossible match, because there is no Person with a minimum age
+        of 21 and a maximum age of 20.</para>
+      </section>
+
+      <section>
+        <title>Conflicting match detection</title>
+
+        <para>A conflicting match are 2 rows in a decision table that can both match.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Release_Notes/conflictingMatch.png"></imagedata>
+          </imageobject>
+        </mediaobject>
+
+        <para>In the decision table above, row 2 and 3 are a conflicting match, because a Person of age 67 will match
+        both rows: it's unclear whether that Person has to pay a fee of 200 or 100.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>REST api changes</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Added support to create (PUT) and delete (DELETE) a Category with
+          <literal>rest/categories/{categoryName}</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Removed buggy <literal>category</literal> property from <literal>Package</literal>: it was
+          <literal>null</literal> upon GET and ignored upon PUT.</para>
+        </listitem>
+
+        <listitem>
+          <para>The REST resource to get the assets for a certain category has been moved from
+          <literal>rest/categories/{categoryName}</literal> to
+          <literal>rest/categories/{categoryName}/assets</literal>.</para>
+        </listitem>
+
+        <listitem>
+          <para>The REST resources now properly encode and decode the URL's. Note that URL path encoding is different
+          than URL query encoding: the former does not accept <literal>+</literal> as encoding for space.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>JBoss AS 6 war is no longer shipped in the release</title>
+
+      <para>This does not mean that Guvnor can not be made to work in AS 6. We are just focusing on JBoss AS 7 and
+      Tomcat.</para>
+    </section>
+
+    <section>
+      <title>Rule Templates - Interpolation keys in free-form DRL</title>
+
+      <para>When using Rule Templates you can now define interpolation variables in free-form DRL blocks. Template Keys
+      are formatted as documented in Drools Expert User Guide; i.e. @{keyName}. All Template Keys in 'free-form' LHS or
+      RHS elements are considered 'Text' (i.e. you'll get a TextBox in the Template data screen). Data-types should be
+      correctly escaped in the 'free-form' entry. For example: System.out.println("@{key}");</para>
+    </section>
+
+    <section>
+      <title>Relational operators for Strings</title>
+
+      <para>All guided rule editors (BRL, Rule Templates and Decision Tables) now support relation operators for String
+      values.</para>
+    </section>
+
+    <section>
+      <title>Guvnor requirements change</title>
+
+      <para>Guvnor 5.4.x requires at least Java 6 to run. The Drools and jBPM
+        will still run on Java 5. Guvnor 5.3.x hotfixes will still run on Java 5
+        too.</para>
+    </section>
+
+    <section>
+      <title>Guvnor configuration change</title>
+
+      <para>Any custom configuration in the guvnor war in
+        <filename>WEB-INF/components.xml</filename> must now happen in
+        <filename>WEB-INF/beans.xml</filename>.</para>
+    </section>
+
+    <section>
+      <title>Decision table analysis</title>
+
+      <para>On the bottom of Web decision tables, the button
+        <guilabel>Analyze...</guilabel> that checks for issues in your decision
+        table, now also checks for 2 new detections:</para>
+
+      <section>
+        <title>Duplicate match detection</title>
+
+        <para>A duplicate match are 2 rows in a decision table that can both
+          match but have the same actions.</para>
+
+        <para>For example: a person between 20 and 40 has to pay a fee of 400
+          and a person between 30 and 50 has to pay a fee of 400 too. These 2
+          rows duplicate each other. If the fee would be different between them,
+          then they would conflict each other.</para>
+      </section>
+
+      <section>
+        <title>Multiple values for one action detection</title>
+
+        <para>A multiple values for one action match is 1 row in a decision
+          table who's actions contradict itself. This is a common problem in
+          limited entry tables, but rare in non-limited entry tables.</para>
+
+        <para>For example: a person below 40 has to pay the standard fee (400)
+          and also has to pay the youngster fee (200). Since fee can only be set
+          once, that's a problem.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Decision table - BRL fragments</title>
+
+      <para>BRL fragments can now be used for Condition and/or Action
+        columns.</para>
+
+      <figure>
+        <title>Adding a BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-advanced-columns.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A BRL fragment is a section of a rule created using Guvnor's (BRL)
+        Guided Rule Editor: Condition columns permit the definition of "WHEN"
+        sections and Action columns the definition of "THEN" sections. Fields
+        defined therein as "Template Keys" become columns in the decision
+        table.</para>
+
+      <figure>
+        <title>A Condition BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-condition.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An Action BRL fragment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-action.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Consequently any rule that could be defined with the (BRL) Guided
+        Rule Editor can now be defined with a decision table; including
+        free-format DRL and DSL Sentences.</para>
+
+      <para>BRL fragments are fully integrated with other columns in the
+        decision table, so that a Pattern or field defined in a regular column
+        can be referenced in the BRL fragments and vice-versa.</para>
+
+      <figure>
+        <title>A decision table with BRL fragments and regular columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-brl-columns.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Decision table \ Template data copy and paste rows</title>
+
+      <para>You can now copy and paste rows in both the guided Decision Table
+        and Template Data editors.</para>
+
+      <para>Simply right-click a row in the tables' left hand-side selector
+        column and choose the appropriate operation.</para>
+
+      <figure>
+        <title>Copying a row</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-copy-paste-rows.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>BRL Editor - Remove Constraint\Action Value definition</title>
+
+      <para>When creating new constraints or actions in the BRL guided (rule)
+        editor it is simple to define a value as literal, or formula or
+        expression. However, up until now, changing the value type required
+        deletion of the whole constraint or action. This release brings the
+        ability to remove the value definition thus enabling you to change a
+        literal value to a formula etc without needing to delete the whole
+        constraint or action.</para>
+
+      <figure>
+        <title>Copying a row</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/brl-remove-value-types.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>New Change-Set Editor</title>
+
+      <para>A new Editor to create Change-Sets was added in Guvnor. Using this
+        new editor you can create change-sets referencing packages, snapshots
+        and even particular assets inside a package and expose them to external
+        applications. For further information refer to the documentation.</para>
+
+      <figure>
+        <title>Change-Set Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/NewChangeSet1.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Custom Forms in DSL sentences</title>
+
+      <para>Custom Forms is a feature that exists in Guvnor since 5.1.1. It
+        basically allows you to define external applications that will be
+        invoked by Rule Editor when a particular field of a particular Fact Type
+        is being used in a rule.</para>
+
+      <para>This feature is now also available to be used in DSL sentences.
+        When defining a variable in a sentence you can now use this syntax for
+        variable's definition:</para>
+
+      <programlisting>{&lt;varName&gt;:CF:&lt;factType.fieldName&gt;}</programlisting>
+
+      <para>If you have an active Working-Set defining a Custom Form
+        configuration for factType.fieldName, the Custom Form will be invoked by
+        Rule Editor while setting the value of that variable.</para>
+    </section>
+
+    <section>
+      <title>BRL editor supports "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
+
+      <figure>
+        <title>Timer and Calendar</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-brl.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Decision Tables support "timer" and "calendar" attributes</title>
+
+      <para>Support has been added for the "timer" and "calendar" attributes.</para>
+
+      <figure>
+        <title>Timer and Calendar</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/timerAndCalendarAttributes-guvnor-dtable.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Tables import from XLS</title>
+
+      <para>Uploading a XLS decision table results in the creation of numerous new assets, including (obviously)
+        web-guided Decision Tables, functions, declarative types and modifications to package globals and imports etc
+        (Queries are not converted, although supported in the XLS form, as Guvnor doesn't support them <link
+            xlink:href="https://issues.jboss.org/browse/GUVNOR-1532">yet</link>).</para>
+
+      <figure>
+        <title>XLS decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-xls.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Guided decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-converted.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>This is the first stage of "round-tripping" decision tables. We still need to add the ability to export a
+        guided decision table back to XLS, plus we'd like to add tighter integration of updated XLS assets to their
+        original converted cousins - so if a new version of the XLS decision table is uploaded the related assets'
+        versions are updated (rather than creating new) upon conversion.</para>
+
+      <para>This is a powerful enhancement and as such your feedback is critical to ensure we implement the feature as
+        you'd like it to operate. Check it out, feedback your opinions and help guide the future work.</para>
+    </section>
+
+    <section>
+      <title>Improved value editors for numerical types</title>
+
+      <para>Numerical "value editors" (i.e. the text boxes for numerical values) in the BRL, Rule Template, Test
+        Scenarios and Decision Table editors now support the types Byte, Short, Integer, Long, Double, Float, BigDecimal
+        and BigInteger (and their primitive counterparts) correctly. The generated DRL is automatically appended with "B"
+        or "I" type classifiers for BigDecimal and BigInteger values respectively, as provided for by Drools Expert. The
+        Right-hand Side generates applicable DRL for BigDecimal and BigInteger values according to the rule's
+        dialect.</para>
+
+      <figure>
+        <title>Example of using a BigDecimal</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/guvnor-numeric-value-editors.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Improved dependent enumerations support</title>
+
+      <para>Dependent enumerations can now be used in both the Web Guided Decision Table editor and the Rule Template
+        Data grid. Furthermore improvements were made to the operation of dependent enumerations in the BRL Guided Rule
+        editor for sub-fields and expressions.</para>
+
+      <figure>
+        <title>Dependent enumerations in the Web Guided Decision Table editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-dependent-enums.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Improved Guided Decision Table default value support</title>
+
+      <para>The editor to define a default value has been greatly improved:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A default value editor is correct for the data-type of the column's Fact\.</para>
+        </listitem>
+
+        <listitem>
+          <para>If a "Value List" is provided, the default value needs to be one of the values in the list.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column represents a field with an enumeration the default value must be one of the enumeration's
+            members.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column uses an operator that does not need a value (e.g. "is null") a default value cannot be
+            provided.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the column field is a "dependent enumeration" the default value must be one of the permitted values
+            based upon parent enumeration default values, if any.</para>
+        </listitem>
+
+        <listitem>
+          <para>Default values are not required for Limited Entry tables.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title>Setting the default value of a Date column</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-default-1.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Setting the default value of a cell with a Value List</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-default-2.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>New Service Editor</title>
+
+      <para>A new editor to create services was added in Guvnor. Service is a
+        special asset that enables users configure KnowledgeBases and KSessions
+        to be executed remotely for any sort of client application (via REST
+        or SOAP).</para>
+      <para>In order to expose those services, the editor generates automatically a
+        war file that can be deployed on most platforms on most containers.
+        For further information refer to the documentation.</para>
+
+      <figure>
+        <title>The new Service Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/NewServiceConfig1.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+  </section>
+
+  <section>
+    <title>Planner</title>
+
+    <section>
+      <title>Build-in move factories</title>
+
+      <para>Planner now comes with 2 build-in move factories: <literal>GenericChangeMoveFactory</literal> and
+      <literal>GenericSwapMoveFactory</literal>. Here's an example that uses both of them:</para>
+
+      <programlisting>  &lt;localSearch&gt;
+    &lt;selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericChangeMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+      &lt;selector&gt;
+        &lt;moveFactoryClass&gt;org.drools.planner.core.move.generic.GenericSwapMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;/selector&gt;
+    &lt;/selector&gt;
+    ...
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>It's no longer required to write your own Move and MoveFactory implementations, but you still can (and mix
+      those in too).</para>
+    </section>
+
+    <section>
+      <title>Benchmarker supports custom input and output files</title>
+
+      <para>The Benchmarker can now read and write the input and output files
+        from any format, through the <literal>ProblemIO</literal> interface. The
+        default is still an XStream implementation.</para>
+    </section>
+
+    <section>
+      <title>New example selection screen</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/plannerExamplesAppScreenshot.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>New example: TSP</title>
+
+      <para>This is an implementation of the classic <emphasis>Traveling Salesman Problem</emphasis>: given a list of
+        cities, find the shortest tour for a salesman that visits each city exactly once.</para>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=T5D3hTjZlRc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>New example: Vehicle Routing</title>
+
+      <para>This is an implementation of capacitated vehicle routing: Using a fleet of vehicles, transport items from
+        the depot(s) to customers at different locations. Each vehicle can service multiple locations, but it has a
+        limited capacity for items.</para>
+
+      <para>In the screenshot below, there are 6 vehicles (the lines in different colors) that drop off 541 items at 33
+        customer locations. Each vehicle can carry 100 items.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/vehicleRoutingScreenshot.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=GybpV0uLrxc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>Employee rostering example: better GUI</title>
+
+      <para>The employee rostering example's GUI has been reworked to show shift assignment more clearly.</para>
+
+      <para>See <link xlink:href="http://www.youtube.com/watch?v=Gxd-DqtK5Xc">this video</link>.</para>
+    </section>
+
+    <section>
+      <title>Chaining support makes it easy to implement TSP and Vehicle Routing</title>
+
+      <para>Untill now, implementing TSP or Vehicle Routing like problems in Planner was hard. The new chaining support
+        makes it easy.</para>
+
+      <para>You simply declare that a planning variable (<literal>previousAppearance</literal>) of this planning entity
+        (<literal>VrpCustomer</literal>) is chained and therefor possibly referencing another planning entity
+        (<literal>VrpCustomer</literal>) itself, creating a chain with that entity.</para>
+
+      <programlisting language="java">public class VrpCustomer implements VrpAppearance {
+
+        ...
+
+        @PlanningVariable(chained = true)
+        @ValueRanges({
+        @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
+        @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList",
+        excludeUninitializedPlanningEntity = true)})
+        public VrpAppearance getPreviousAppearance() {
+        return previousAppearance;
+        }
+
+        ...
+        }</programlisting>
+
+      <para>This triggers automatic chain correction:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Release_Notes/chainCorrection.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>Without any extra boilerplate code, this is compatible with:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Every optimization algorithm: including construction heuristics (first fit, first fit decreasing, ...),
+            local search (tabu search, simmulated annealing), ...</para>
+        </listitem>
+
+        <listitem>
+          <para>The generic build-in move factories. Note: currently there are chained alternatives for each move
+            factory, but those will be unified with the originals soon.</para>
+        </listitem>
+
+        <listitem>
+          <para>Repeated planning, including real-time planning</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For more information, <link xlink:href="http://www.jboss.org/drools/documentation">read the Planner
+        reference manual</link>.</para>
+    </section>
+
+    <section>
+      <title>New Tabu Search implementation: planning value tabu</title>
+
+      <para>Property tabu has been renamed to planning entity tabu. Planning value tabu has been added. The generic
+        moves support this out-of-the-box.</para>
+
+      <programlisting language="xml">    &lt;acceptor&gt;
+        &lt;planningValueTabuSize&gt;5&lt;/planningValueTabuSize&gt;
+        &lt;/acceptor&gt;</programlisting>
+    </section>
+
+    <section>
+      <title>Score calculation with plain Java (no DRL)</title>
+
+      <para>Planner can now alternatively, use a score calculation written in plain Java. Just implement this
+        interface:</para>
+
+      <programlisting language="java">public interface SimpleScoreCalculator&lt;Sol extends Solution&gt; {
+
+        Score calculateScore(Sol solution);
+
+        }</programlisting>
+
+      <para>See the CloudBalance example for an implementation.</para>
+
+      <para>In this way, Planner does not use Drools at all. This allows you to:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Use Planner, even if your company forbids any other language than Java (including DRL).</para>
+        </listitem>
+
+        <listitem>
+          <para>Hook Planner up to an existing score calculation system, which you don't want to migrate to DRL at this
+            time.</para>
+        </listitem>
+
+        <listitem>
+          <para>Or just use Java if you prefer that over DRL.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>There is 2 Java ways implemented: <literal>SimpleScoreCalculator</literal> (which is simple and slow)
+        and <literal>IncrementalScoreCalculator</literal> (which is fast).</para>
+    </section>
+
+    <section>
+      <title>Quick start tutorial</title>
+
+      <para>The documentation now has a new chapter <emphasis>Quick start tutorial</emphasis>. It explains how to write
+        the CloudBalance example from scratch. <link xlink:href="http://www.jboss.org/drools/documentation">Read the
+          Planner reference manual</link>.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Eclipse plugin</title>
+    <section>
+      <title>Breakpoints in Rule RHS are not working with Java dialect</title>
+
+      <para>Debugging with Java is not working. Debugging with MVEL is not affected. This will be fixed in the future releases before 5.4.0.Final</para> 
+    </section>
+  </section>
+
+</section>
