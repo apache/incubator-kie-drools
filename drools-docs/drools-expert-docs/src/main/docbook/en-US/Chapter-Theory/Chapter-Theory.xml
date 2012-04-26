@@ -282,7 +282,7 @@
     
     rule
     when
-        Cheese( $chedddar : name == "cheddar" )
+        Cheese( $cheddar : name == "cheddar" )
         $person : Person( favouriteCheese == $cheddar )
     then
         System.out.println( $person.getName() + " likes cheddar" );
@@ -294,7 +294,7 @@
     
     rule
     when
-        Cheese( $chedddar : name == "cheddar" )
+        Cheese( $cheddar : name == "cheddar" )
         $person : Person( favouriteCheese != $cheddar )
     then
         System.out.println( $person.getName() + " does not like cheddar" );

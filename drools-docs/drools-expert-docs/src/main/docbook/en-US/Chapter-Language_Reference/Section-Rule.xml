@@ -299,7 +299,7 @@ end</programlisting>
   <section>
     <title>Timers and Calendars</title>
 
-    <para>Rules now suport both interval and cron based timers, which replace
+    <para>Rules now support both interval and cron based timers, which replace
     the now deprecated duration attribute.</para>
 
     <example>
@@ -760,7 +760,7 @@ Person( age == $firstAge ) // constraint expression</programlisting>
           <programlisting>// Not recommended
 Person( $age : age * 2 &lt; 100 )</programlisting>
 
-          <programlisting>// Recommended (seperates bindings and constraint expressions)
+          <programlisting>// Recommended (separates bindings and constraint expressions)
 Person( age * 2 &lt; 100, $age : age )</programlisting>
         </note>
 
@@ -783,8 +783,8 @@ Person( age * 2 &lt; 100, $age : age )</programlisting>
 Person( $age := age) </programlisting>
 
         <para>In essence unification will declare a binding for the first
-        occurance, and constrain to the same value of the bound field for
-        sequence occurances.</para>
+        occurrence and constrain to the same value of the bound field for
+        sequence occurrences.</para>
       </section>
 
       <section>
@@ -902,7 +902,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
 
           <programlisting>Person( birthDate &lt; $otherBirthDate )</programlisting>
 
-          <para>Only applies on <literal>Comperable</literal>
+          <para>Only applies on <literal>Comparable</literal>
           properties.</para>
         </section>
 
@@ -1126,7 +1126,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese ) )</programlisting>
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete in this example</programlisting>
+Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obsolete in this example</programlisting>
         </example>
 
         <note>
@@ -1299,7 +1299,7 @@ Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete i
       name == "mark" ) can be rewritten as Person( "mark"; ). The semicolon
       ';' is important so that the engine knows that everything before it is a
       positional argument. Otherwise we might assume it was a boolean
-      expression, which is how it could be interpretted after the semicolon.
+      expression, which is how it could be interpreted after the semicolon.
       You can mix positional and named arguments on a pattern by using the
       semicolon ';' to separate them. Any variables used in a positional that
       have not yet been bound will be bound to the field that maps to that
@@ -1315,7 +1315,7 @@ end
       <para>Example patterns, with two constraints and a binding. Remember
       semicolon ';' is used to differentiate the positional section from the
       named argument section. Variables and literals and expressions using
-      just literals are supported in posional arguments, but not variables.
+      just literals are supported in positional arguments, but not variables.
       Positional arguments are always resolved using unification.</para>
 
       <programlisting>Cheese( "stilton", "Cheese Shop", p; )
@@ -1325,7 +1325,7 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
 </programlisting>
 
       <para>Positional arguments that are given a previously declared binding
-      will consrain against that using unification; these are referred to as
+      will constrain against that using unification; these are referred to as
       input arguments. If the binding does not yet exist, it will create the
       declaration binding it to the field represented by the position
       argument; these are referred to as output arguments.</para>
@@ -2067,7 +2067,7 @@ end</programlisting>
 </programlisting>
 
           <para>For instance, a rule to calculate the minimum, maximum and
-          average temperatur reading for a given sensor and that raises an
+          average temperature reading for a given sensor and that raises an
           alarm if the minimum temperature is under 20C degrees and the
           average is over 70C degrees could be written in the following way,
           using Accumulate:</para>
@@ -2260,7 +2260,7 @@ public class AverageAccumulateFunction implements org.drools.runtime.rule.TypedA
 
           <para>The accumulate syntax evolved over time with the goal of
           becoming more compact and expressive. Nevertheless, Drools still
-          supports previous sintaxes for backward compatibility
+          supports previous syntaxes for backward compatibility
           purposes.</para>
 
           <para>In case the rule is using a single accumulate function on a
@@ -2292,7 +2292,7 @@ end</programlisting>
 
           <warning>
             <para>The use of accumulate with inline custom code is not a good
-            practice for several reasons, including dificulties on maintaining
+            practice for several reasons, including difficulties on maintaining
             and testing rules that use them, as well as the inability of
             reusing that code. Implementing your own accumulate functions is
             very simple and straightforward, they are easy to unit test and to

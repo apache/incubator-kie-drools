@@ -33,7 +33,7 @@
     proper. DSL sentences can also act as "templates" for conditional elements and
     consequence actions that are used repeatedly in your rules, possibly with
     minor variations. You may define DSL sentences as being mapped to these
-    repeated phrases, with parameters providing a means for accomodating those
+    repeated phrases, with parameters providing a means for accommodating those
     variations.</para>
 
     <para>DSLs have no impact on the rule engine at runtime, they are just a
@@ -327,7 +327,7 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
         with any number of embedded <emphasis>variable definitions,</emphasis>
         terminated by an equal sign ("="). A variable definition is enclosed
         in braces ("{" and "}"). It
-        consists of a variable name and two optional attachements, separated
+        consists of a variable name and two optional attachments, separated
         by colons (":"). If there is one attachment, it is a regular expression
         for matching text that is to be assigned to the variable; if there
         are two attachments, the first one is a hint for the GUI
