@@ -57,7 +57,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         List<String> list = new ArrayList<String>();
 
-        //Create a new Agent with newInstace=true
+        //Create a new Agent with newInstance=true
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase,
                                                    false );
@@ -236,7 +236,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        //Create a new Agent with newInstace=true
+        //Create a new Agent with newInstance=true
         KnowledgeAgent kagent = this.createKAgent( kbase,
                                                    false );
 
