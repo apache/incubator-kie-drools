@@ -188,15 +188,15 @@ f.newStatefulKnowledgeSession()
 
       <para>Note that the test is not executing at build time, it's building a script to be executed later. The script
       underneath matches what you saw in SimulationTest. Currently the way to run a simulation manually is shown below.
-      Atlhough you already saw in SimulationTest that JUnit will execute these automatically. We'll improve this over
-      itme.</para>
+      Although you already saw in SimulationTest that JUnit will execute these automatically. We'll improve this over
+      time.</para>
 
       <programlisting>SimulationImpl sim = (SimulationImpl) ((FluentCompactSimulationImpl) f).getSimulation();
 Simulator simulator = new Simulator( sim,
                                      new Date().getTime() );
 simulator.run();</programlisting>
 
-      <para>The standard fluent is almost a 1 to 1 mapping to the cannonical path, step and command structure in
+      <para>The standard fluent is almost a 1 to 1 mapping to the canonical path, step and command structure in
       SimulationTest- just more compact. Start by looking in <link
       xlink:href="https://github.com/droolsjbpm/droolsjbpm-integration/blob/8100e28668537aa5fe04ce5dd0a62f3dc779b30f/drools-simulator/src/test/java/org/drools/simulation/impl/StandardFluentTest.java">org.drools.simulation.impl.StandardFluentTest</link>. This fluent allows you to run any number of
       paths and steps, along with a lot more control over multiple kbuilders, kbases and ksessions.</para>
@@ -233,7 +233,7 @@ f.newPath("init")
     .end()
  .end</programlisting>
 
-      <para>There is still an aweful lot to do, this is designed to eventually provide a unified simulation and testing
+      <para>There is still an awful lot to do, this is designed to eventually provide a unified simulation and testing
       environment for rules, workflow and event processing over time, and eventually also over distributed
       architectures.</para>
 
@@ -243,7 +243,7 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Improve out of the box usability, including moving interfaces to knowlege-api and hiding "new"
+          <para>Improve out of the box usability, including moving interfaces to knowledge-api and hiding "new"
           constructors with factory methods</para>
         </listitem>
 
@@ -279,12 +279,12 @@ f.newPath("init")
         </listitem>
 
         <listitem>
-          <para>Design and build tabular authoring tools via spreadsheet, targetting the web with round tripping to
+          <para>Design and build tabular authoring tools via spreadsheet, targeting the web with round tripping to
           excel.</para>
         </listitem>
 
         <listitem>
-          <para>Design and develop textual DSL for authoing - maybe part of DRL (long term task).</para>
+          <para>Design and develop textual DSL for authoring - maybe part of DRL (long term task).</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -295,11 +295,11 @@ f.newPath("init")
 
       <para>Currently, when you in a RHS you call modify() on a given fact it
         triggers a revaluation of all Patterns of the matching object type in
-        the knowledeg base. As some have found this can be a problem, forcing
+        the knowledge base. As some have found this can be a problem, forcing
         you to split up your objects into smaller 1 to 1 objects, to avoid
         unwanted evaluation of objects like recursion or excessive evaluation
         issues. This new feature allows a pattern to react (and then be
-        re-eavluated) only to modifications made on fields constrained or bound
+        re-evaluated) only to modifications made on fields constrained or bound
         inside the pattern itself.</para>
 
       <para>The implementation is bit mask based, so very efficient. When the
@@ -412,7 +412,7 @@ f.newPath("init")
       <para>This provides a slot in the RuleSet definition to define declared
         types.</para>
 
-      <para>In essence the slot provides a descrete location to add type
+      <para>In essence the slot provides a discrete location to add type
         declarations where, previously, they may have been added to a Queries or
         Functions definition.</para>
 
@@ -577,7 +577,7 @@ f.newPath("init")
 
       <programlisting>Person ( address.city.name == "London ) </programlisting>
 
-      <para>will be revaluated only for modification of the 'address' property of a Person object. In the same way the
+      <para>will be reevaluated only for modification of the 'address' property of a Person object. In the same way the
         constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
         to clarify this. An LHS like the following:</para>
 
@@ -598,7 +598,7 @@ f.newPath("init")
         pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
         automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
         with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
-        respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
+        respectively with the wildcards * and !*. So, for example, you can annotate a pattern in the LHS of a rule
         like:</para>
 
       <programlisting>// listens for changes on both firstName (inferred) and lastName
@@ -948,7 +948,7 @@ f.newPath("init")
     <section>
       <title>Guided Decision Table - Binding condition fields</title>
 
-      <para>You can now bind fields in Conditions to variables. These variables can then be used in Predicate or Forumla
+      <para>You can now bind fields in Conditions to variables. These variables can then be used in Predicate or Formula
       conditions, and Work Item actions.</para>
 
       <figure>
@@ -1593,7 +1593,7 @@ f.newPath("init")
     <section>
       <title>Chaining support makes it easy to implement TSP and Vehicle Routing</title>
 
-      <para>Untill now, implementing TSP or Vehicle Routing like problems in Planner was hard. The new chaining support
+      <para>Until now, implementing TSP or Vehicle Routing like problems in Planner was hard. The new chaining support
         makes it easy.</para>
 
       <para>You simply declare that a planning variable (<literal>previousAppearance</literal>) of this planning entity
@@ -1629,7 +1629,7 @@ f.newPath("init")
       <itemizedlist>
         <listitem>
           <para>Every optimization algorithm: including construction heuristics (first fit, first fit decreasing, ...),
-            local search (tabu search, simmulated annealing), ...</para>
+            local search (tabu search, simulated annealing), ...</para>
         </listitem>
 
         <listitem>
