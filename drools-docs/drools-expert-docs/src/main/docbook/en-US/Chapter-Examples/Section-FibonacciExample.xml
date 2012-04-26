@@ -229,7 +229,7 @@ end</programlisting>
         // Bind f3 and s3; alternative reference of f2.sequence
         f3 : Fibonacci( s3 : sequence == (f2.sequence + 1 ), value == -1 )      
     then
-        // Note the various referencing rechniques.
+        // Note the various referencing techniques.
         modify ( f3 ) { value = f1.value + v2 };
         System.out.println( s3 + " == " + f3.value );
 end 

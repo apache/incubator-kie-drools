@@ -16,7 +16,7 @@
     <para>The RuleServiceProviderManager manages the registration and
     retrieval of RuleServiceProviders. The Drools RuleServiceProvider
     implementation is automatically registered via a static block when the
-    class is loaded using Class.forNamem, in much the same way as JDBC
+    class is loaded using Class.forName, in much the same way as JDBC
     drivers.</para>
 
     <example>

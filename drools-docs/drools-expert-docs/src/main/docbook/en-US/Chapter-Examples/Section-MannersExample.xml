@@ -155,7 +155,7 @@
     </section>
 
     <section>
-      <title>Indepth Discussion</title>
+      <title>In depth Discussion</title>
 
       <section>
         <title>Cheating</title>
@@ -360,7 +360,7 @@ end</programlisting>
         <code>pid</code> cross product be chosen. How can this be possible
         if we have activations, of the same time tag, for nearly all
         existing <code>Seating</code> and <code>Guest</code> objects? For
-        example, on the third iteration of <code>findDeating</code> the
+        example, on the third iteration of <code>findSeating</code> the
         produced activations will be as shown below. Remember, this is from
         a very small data set, and with larger data sets there would be many
         more possible activated <code>Seating</code> solutions, with multiple

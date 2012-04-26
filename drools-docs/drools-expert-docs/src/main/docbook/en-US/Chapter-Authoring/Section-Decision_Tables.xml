@@ -186,7 +186,7 @@
 
     <para>Rows 18 and 19 show data, which will be combined (interpolated) with the templates in row 15, to generate
     rules. If a cell contains no data, then its template is ignored. (This would mean that some condition or action does
-    not apply for that rule row.) Rule rows are read until there is a blank row. Multiple RuleTables can exsist in a
+    not apply for that rule row.) Rule rows are read until there is a blank row. Multiple RuleTables can exist in a
     sheet. Row 20 contains another keyword, and a value. The row positions of keywords like this do not matter (most
     people put them at the top) but their column should be the same one where the RuleTable or RuleSet keywords should
     appear. In our case column C has been chosen to be significant, but any other column could be used instead.</para>
@@ -359,7 +359,7 @@ end
 
               <entry>P</entry>
 
-              <entry>An integer defining the "salience" value for the rule. Overriden by the "Sequential" flag.</entry>
+              <entry>An integer defining the "salience" value for the rule. Overridden by the "Sequential" flag.</entry>
             </row>
 
             <row>
@@ -588,7 +588,7 @@ end
 
         <listitem>
           <para>From the fourth row on, non-blank entries provide data for interpolation as described above. A blank
-          cell results in the omission of the conditional element or constaint for this rule.</para>
+          cell results in the omission of the conditional element or constraint for this rule.</para>
         </listitem>
       </itemizedlist>
 
@@ -724,7 +724,7 @@ end
           </mediaobject>
         </screenshot> Here, the result is <code>c: Cheese(type == "stilton").</code> Note that the quotes are provided
       automatically. Actually, anything can be placed in the object type row. Apart from the definition of a binding
-      variable, it could alse be an additional pattern that is to be inserted literally.</para>
+      variable, it could also be an additional pattern that is to be inserted literally.</para>
 
       <para>A simple construction of an action statement with the insertion of a single value is shown below.
       <screenshot>
@@ -734,7 +734,7 @@ end
             </imageobject>
           </mediaobject>
         </screenshot> The cell below the ACTION header is left blank. Using this style, anything can be placed in the
-      consequence, not just a sinle method call. (The same technique is applicable within a CONDITION column as
+      consequence, not just a single method call. (The same technique is applicable within a CONDITION column as
       well.)</para>
 
       <para>Below is a comprehensive example, showing the use of various column headers. It is not an error to have no

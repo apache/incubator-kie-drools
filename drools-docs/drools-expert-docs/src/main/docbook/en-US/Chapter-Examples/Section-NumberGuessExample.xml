@@ -202,7 +202,7 @@ end</programlisting>
   </orderedlist>
 
   <para>One point of integration between the standard Rules and the RuleFlow is via the
-  <literal>ruleflow-group</literal> attribute on the rules, as dicussed above. A <emphasis>second point of integration
+  <literal>ruleflow-group</literal> attribute on the rules, as discussed above. A <emphasis>second point of integration
   between the rules (.drl) file and the Rules Flow .rf files</emphasis> is that the Split Nodes (the blue ovals) can use
   values in the Working Memory (as updated by the rules) to decide which flow of action to take. To see how this works,
   click on the "Guess Correct Node"; then within the Properties View, open the Constraints Editor by clicking the button

@@ -34,12 +34,12 @@
   <section>
     <title>KnowledgeBase</title>
 
-    <para>The Knowlege Base is a repository of all the application's knowledge
+    <para>The Knowledge Base is a repository of all the application's knowledge
     definitions. It may contain rules, processes, functions, and type models.
     The Knowledge Base itself does not contain instance data, known as facts;
     instead, sessions are created from the Knowledge Base into which data can be
     inserted and where process instances may be started. Creating the
-    Knowlege Base can be
+    Knowledge Base can be
     heavy, whereas session creation is very light, so it is recommended that
     Knowledge Bases be cached where possible to allow for repeated session
     creation.</para>
@@ -59,7 +59,7 @@
     may prefer to build and then store a <code>KnowledgeBase</code>, treating it also 
     as a unit of deployment, instead of the Knowledge Packages.</para>
 
-    <para>The KnowlegeBase is created using the KnowledgeBaseFactory.</para>
+    <para>The KnowledgeBase is created using the KnowledgeBaseFactory.</para>
 
     <figure>
       <title>KnowledgeBaseFactory</title>

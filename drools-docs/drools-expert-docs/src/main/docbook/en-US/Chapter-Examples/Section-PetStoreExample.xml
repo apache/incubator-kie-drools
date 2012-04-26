@@ -469,7 +469,7 @@ end</programlisting>
       <para>The rule <code>"do checkout"</code> has <emphasis role="bold">no
       agenda group set and no auto-focus attribute</emphasis>. As such, is is
       deemed part of the default (MAIN) agenda group. This group gets focus by
-      default when all the rules in agenda-groups that explicity had focus set
+      default when all the rules in agenda-groups that explicitly had focus set
       to them have run their course.</para>
 
       <para>There is no LHS to the rule, so the RHS will always call the
