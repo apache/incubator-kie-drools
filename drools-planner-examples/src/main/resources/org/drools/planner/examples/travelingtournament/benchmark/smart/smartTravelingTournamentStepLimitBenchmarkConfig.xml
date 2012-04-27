@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
+  <benchmarkDirectory>local/data/travelingtournament/smart/stepLimit</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

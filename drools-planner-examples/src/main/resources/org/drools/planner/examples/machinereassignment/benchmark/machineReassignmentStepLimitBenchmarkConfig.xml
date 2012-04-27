@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
+  <benchmarkDirectory>local/data/machinereassignment/stepLimit</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>

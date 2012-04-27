@@ -6,16 +6,17 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <problemIOClass>org.drools.planner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>-->
       <inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>
       <inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>
+      <!--<inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>-->
       <problemStatisticType>BEST_SOLUTION_CHANGED</problemStatisticType>
     </problemBenchmarks>
 
@@ -26,7 +27,8 @@
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
-        <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+        <incrementalScoreCalculatorClass>org.drools.planner.examples.machinereassignment.solver.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <!--<scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
@@ -35,15 +37,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>Original</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>entityTabu5</name>
+    <name>entityTabu7-64000</name>
     <solver>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
@@ -58,10 +52,82 @@
           </selector>
         </selector>
         <acceptor>
-          <planningEntityTabuSize>5</planningEntityTabuSize>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>64000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>simulatedAnnealing8_50k</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>8hard/50000soft</simulatedAnnealingStartingTemperature>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>simulatedAnnealing4_100k</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>4hard/100000soft</simulatedAnnealingStartingTemperature>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>simulatedAnnealing2_200k</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>2hard/200000soft</simulatedAnnealingStartingTemperature>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
