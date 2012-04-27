@@ -148,6 +148,9 @@ public class ProblemBenchmark {
     private void determineWinningResult() {
         winningPlannerBenchmarkResult = null;
         for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            if (result.isFailure()) {
+                continue;
+            }
             if (winningPlannerBenchmarkResult == null
                     || result.getScore().compareTo(winningPlannerBenchmarkResult.getScore()) > 0) {
                 winningPlannerBenchmarkResult = result;
@@ -157,6 +160,9 @@ public class ProblemBenchmark {
 
     private void determineWinningResultScoreDifference() {
         for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            if (result.isFailure()) {
+                continue;
+            }
             result.setWinningScoreDifference(result.getScore().subtract(winningPlannerBenchmarkResult.getScore()));
         }
     }

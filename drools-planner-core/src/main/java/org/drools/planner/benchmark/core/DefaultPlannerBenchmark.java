@@ -180,9 +180,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 failureThrowable = e;
             }
             if (failureThrowable == null) {
-                result.setSuccess(true);
+                result.setSucceeded(true);
             } else {
-                result.setSuccess(false);
+                result.setSucceeded(false);
                 result.setFailureThrowable(failureThrowable);
                 failureCount++;
                 if (firstFailureThrowable == null) {

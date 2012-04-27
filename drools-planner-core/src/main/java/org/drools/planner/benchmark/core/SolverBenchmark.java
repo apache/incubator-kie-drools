@@ -31,6 +31,7 @@ public class SolverBenchmark {
     private List<ProblemBenchmark> problemBenchmarkList = null;
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
 
+    private Integer failureCount = null;
     private Score totalScore = null;
     // Ranking starts from 0
     private Integer ranking = null;
@@ -89,12 +90,17 @@ public class SolverBenchmark {
     }
 
     private void determineTotalScore() {
+        failureCount = 0;
         totalScore = null;
-        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
+        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
+            if (result.isFailure()) {
+                failureCount++;
+                continue;
+            }
             if (totalScore == null) {
-                totalScore = plannerBenchmarkResult.getScore();
+                totalScore = result.getScore();
             } else {
-                totalScore = totalScore.add(plannerBenchmarkResult.getScore());
+                totalScore = totalScore.add(result.getScore());
             }
         }
     }
@@ -108,7 +114,10 @@ public class SolverBenchmark {
     }
 
     public Score getAverageScore() {
-        return getTotalScore().divide(plannerBenchmarkResultList.size());
+        if (totalScore == null) {
+            return null;
+        }
+        return getTotalScore().divide(plannerBenchmarkResultList.size() - failureCount);
     }
 
     public List<Score> getScoreList() {

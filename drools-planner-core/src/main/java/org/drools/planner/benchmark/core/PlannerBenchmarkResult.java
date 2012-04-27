@@ -38,7 +38,7 @@ public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> 
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
 
-    private Boolean success = null;
+    private Boolean succeeded = null;
     private Throwable failureThrowable = null;
 
     public SolverBenchmark getSolverBenchmark() {
@@ -105,12 +105,12 @@ public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> 
         this.calculateCount = calculateCount;
     }
 
-    public Boolean isSuccess() {
-        return success;
+    public Boolean getSucceeded() {
+        return succeeded;
     }
 
-    public void setSuccess(Boolean success) {
-        this.success = success;
+    public void setSucceeded(Boolean succeeded) {
+        this.succeeded = succeeded;
     }
 
     public Throwable getFailureThrowable() {
@@ -152,6 +152,14 @@ public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> 
         }
         problemBenchmark.writeSolution(this, outputSolution);
         return this;
+    }
+
+    public boolean isSuccess() {
+        return succeeded != null && succeeded.booleanValue();
+    }
+
+    public boolean isFailure() {
+        return succeeded != null && !succeeded.booleanValue();
     }
 
     public Long getAverageCalculateCountPerSecond() {
