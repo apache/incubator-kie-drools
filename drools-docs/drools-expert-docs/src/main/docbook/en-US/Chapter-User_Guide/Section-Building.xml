@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>Building</title>
 
   <figure>
@@ -11,7 +14,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-User_Guide/builder.png"></imagedata>
+        <imagedata fileref="images/Chapter-User_Guide/builder.png"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -22,21 +25,22 @@
     <para>The KnowledgeBuilder is responsible for taking source files, such as
     a DRL file or an Excel file, and turning them into a Knowledge Package of
     rule and process definitions which a Knowledge Base can consume. An object
-    of the class <code>ResourceType</code> indicates the type of resource it is being
-    asked to build.</para>
+    of the class <code>ResourceType</code> indicates the type of resource it
+    is being asked to build.</para>
 
-    <para>The <code>ResourceFactory</code> provides capabilities to load resources from a
-    number of sources, such as Reader, ClassPath, URL, File, or ByteArray.
-    Binaries, such as decision tables (Excel .xls files), should not use a Reader based
-    resource handler, which is only suitable for text based resources.</para>
+    <para>The <code>ResourceFactory</code> provides capabilities to load
+    resources from a number of sources, such as Reader, ClassPath, URL, File,
+    or ByteArray. Binaries, such as decision tables (Excel .xls files), should
+    not use a Reader based resource handler, which is only suitable for text
+    based resources.</para>
 
     <figure>
       <title>KnowledgeBuilder</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"
+                     width="100%"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -49,8 +53,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata width="100%"
-                     fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"
+                     width="100%"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -64,13 +68,15 @@
       <programlisting language="java">KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();</programlisting>
     </example>
 
-    <para>A configuration can be created using the <code>KnowledgeBuilderFactory</code>.
-    This allows the behavior of the Knowledge Builder to be modified. The most
-    common usage is to provide a custom class loader so that the <code>KnowledgeBuilder</code>
-    object can resolve classes that are not in the default classpath. The first parameter
-    is for properties and is optional, i.e., it may be left null, in which case the
-    default options will be used. The options parameter can be used for things
-    like changing the dialect or registering new accumulator functions.</para>
+    <para>A configuration can be created using the
+    <code>KnowledgeBuilderFactory</code>. This allows the behavior of the
+    Knowledge Builder to be modified. The most common usage is to provide a
+    custom class loader so that the <code>KnowledgeBuilder</code> object can
+    resolve classes that are not in the default classpath. The first parameter
+    is for properties and is optional, i.e., it may be left null, in which
+    case the default options will be used. The options parameter can be used
+    for things like changing the dialect or registering new accumulator
+    functions.</para>
 
     <example>
       <title>Creating a new KnowledgeBuilder with a custom ClassLoader</title>
@@ -93,10 +99,45 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
 </programlisting>
     </example>
 
-    <para>It is best practice to always check the <code>hasErrors()</code> method after an
-    addition. You should not add more resources or retrieve the Knowledge Packages
-    if there are errors. <code>getKnowledgePackages()</code> returns an empty list if
-    there are errors.</para>
+    <para>It is a best practice to always check the compilation results after
+    a change an addition. The KnowledgeBuilder can report compilation results
+    of 3 different severities: ERROR, WARNING and INFO. </para>
+
+    <para>An ERROR indicates that the compilation of the resources failed and
+    you should not add more resources or retrieve the Knowledge Packages if
+    there are errors. <code>getKnowledgePackages()</code> returns an empty
+    list if there are errors. </para>
+
+    <para>WARNING and INFO results can be ignored, but are available for
+    inspection nonetheless. <code>hasErrors()</code> method after an addition.
+    </para>
+
+    <para>To check and retrieve the building results for a list of severities,
+    the KnowledgeBuilder interface offers a couple methods:</para>
+
+    <example>
+      <title>KnowledgeBuilder result inspection methods</title>
+
+      <programlisting>    /**
+     * Return the knowledge builder results for the listed severities.
+     * 
+     * @param severities
+     * @return
+     */
+    KnowledgeBuilderResults getResults(ResultSeverity...severities );
+    
+        
+    /**
+     * Checks if the builder generated any results of the listed severities
+     * @param severities
+     * @return
+     */
+    boolean hasResults(ResultSeverity...severities );</programlisting>
+    </example>
+
+    <para>The KnowledgeBuilder interface also has two helper methods to
+    inspect for errors only: <code>hasErrors()</code> and
+    <code>getErrors()</code>:</para>
 
     <example>
       <title>Validating</title>
@@ -109,8 +150,8 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
     </example>
 
     <para>When all the resources have been added and there are no errors the
-    collection of Knowledge Packages can be retrieved. It is a Collection because
-    there is one Knowledge Package per package namespace. These
+    collection of Knowledge Packages can be retrieved. It is a Collection
+    because there is one Knowledge Package per package namespace. These
     Knowledge Packages are serializable and often used as a unit of
     deployment.</para>
 
@@ -153,11 +194,11 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 
     <para>Instead of adding the resources to create definitions
     programmatically it is also possible to do it by configuration, via the
-    ChangeSet XML. The simple XML file supports
-    three elements: add, remove, and modify, each of which has a sequence
-    of &lt;resource&gt; subelements defining a configuration entity. The
-    following XML schema is <emphasis>not</emphasis> normative and
-    intended for illustration only.</para>
+    ChangeSet XML. The simple XML file supports three elements: add, remove,
+    and modify, each of which has a sequence of &lt;resource&gt; subelements
+    defining a configuration entity. The following XML schema is
+    <emphasis>not</emphasis> normative and intended for illustration
+    only.</para>
 
     <example>
       <title>XML Schema for ChangeSet XML (not normative)</title>
@@ -225,9 +266,10 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 
 &lt;/xs:schema&gt;</programlisting>
     </example>
-    
-    <para>Currently only the add element is supported, but the others will be implemented to
-    support iterative changes. The following example loads a single DRL file.</para>
+
+    <para>Currently only the add element is supported, but the others will be
+    implemented to support iterative changes. The following example loads a
+    single DRL file.</para>
 
     <example>
       <title>Simple ChangeSet XML</title>
@@ -242,22 +284,23 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>Notice the <code>file:</code> prefix, which signifies the protocol for the
-    resource. The Change Set supports all the protocols provided by
+    <para>Notice the <code>file:</code> prefix, which signifies the protocol
+    for the resource. The Change Set supports all the protocols provided by
     java.net.URL, such as "file" and "http", as well as an additional
     "classpath". Currently the type attribute must always be specified for a
     resource, as it is not inferred from the file name extension. Using the
-    ClassPath resource loader in Java allows you to specify the Class Loader to
-    be used to locate the resource but this is not possible from XML. Instead,
-    the Class Loader will default to the one used by the Knowledge Builder
-    unless the ChangeSet XML is itself loaded by the ClassPath resource, in
-    which case it will use the Class Loader specified for that resource.</para>
+    ClassPath resource loader in Java allows you to specify the Class Loader
+    to be used to locate the resource but this is not possible from XML.
+    Instead, the Class Loader will default to the one used by the Knowledge
+    Builder unless the ChangeSet XML is itself loaded by the ClassPath
+    resource, in which case it will use the Class Loader specified for that
+    resource.</para>
 
     <para>Currently you still need to use the API to load that ChangeSet, but
-    we will add support for containers such as Spring in the future, so that the
-    process of creating a Knowledge Base can be done completely by XML configuration.
-    Loading resources using an XML file couldn't be simpler, as it's just another
-    resource type.</para>
+    we will add support for containers such as Spring in the future, so that
+    the process of creating a Knowledge Base can be done completely by XML
+    configuration. Loading resources using an XML file couldn't be simpler, as
+    it's just another resource type.</para>
 
     <example>
       <title>Loading the ChangeSet XML</title>
@@ -266,10 +309,11 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>ChangeSets can include any number of resources, and they even support
-    additional configuration information, which currently is only needed for
-    decision tables. Below, the example is expanded to load rules from a
-    http URL location, and an Excel decision table from the classpath.</para>
+    <para>ChangeSets can include any number of resources, and they even
+    support additional configuration information, which currently is only
+    needed for decision tables. Below, the example is expanded to load rules
+    from a http URL location, and an Excel decision table from the
+    classpath.</para>
 
     <example>
       <title>ChangeSet XML with resource configuration</title>
@@ -287,17 +331,17 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
 
-    <para>The ChangeSet is especially useful when working with a Knowledge Agent,
-    as it allows for change notification and automatic rebuilding of the
-    Knowledge Base, which is covered in more detail in the section on the
+    <para>The ChangeSet is especially useful when working with a Knowledge
+    Agent, as it allows for change notification and automatic rebuilding of
+    the Knowledge Base, which is covered in more detail in the section on the
     Knowledge Agent, under Deploying.</para>
 
-    <para>Directories can also be specified, to add all resources
-    in that folder. Currently it is expected that all resources in
-    that folder are of the same type. If you use the Knowledge Agent it will
-    provide a continous scanning for added, modified or removed resources and
-    rebuild the cached Knowledge Base. The KnowledgeAgent provides more
-    information on this.</para>
+    <para>Directories can also be specified, to add all resources in that
+    folder. Currently it is expected that all resources in that folder are of
+    the same type. If you use the Knowledge Agent it will provide a continous
+    scanning for added, modified or removed resources and rebuild the cached
+    Knowledge Base. The KnowledgeAgent provides more information on
+    this.</para>
 
     <example>
       <title>ChangeSet XML which adds a directory's contents</title>
@@ -311,5 +355,51 @@ Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 &lt;/change-set&gt;
 </programlisting>
     </example>
+  </section>
+
+  <section>
+    <title>Changing default building result severity</title>
+
+    <para>In some cases, it is possible to change the default severity of a
+    type of building result. For instance, when a new rule with the same name
+    of an existing rule is added to a package, the default behavior is to
+    replace the old rule by the new rule and report it as an INFO. This is
+    probably ideal for most use cases, but in some deployements, the user
+    might want to prevent the rule update and report it as an error. </para>
+
+    <para>Changing the default severity for a result type is the same as
+    configuring any other option in Drools and can be done either by API
+    calls, system properties or configuration files. As of this version,
+    Drools supports configurable result severity for rule updates and function
+    updates. To configure it using system properties or configuration files,
+    the user has to use the following properties:</para>
+
+    <example>
+      <title>Setting the severity using properties</title>
+
+      <programlisting>// sets the severity of rule updates
+drools.kbuilder.severity.duplicateRule = &lt;INFO|WARNING|ERROR&gt;
+// sets the severity of function updates
+drools.kbuilder.severity.duplicateFunction = &lt;INFO|WARNING|ERROR&gt;
+</programlisting>
+    </example>
+
+    <para>To configure it through the API:</para>
+
+    <example>
+      <title>Setting the severity using the API</title>
+
+      <programlisting>KnowledgeBuilderConfiguration kbconf = ...
+
+// sets the severity of rule updates to error
+kbconf.setOption( KBuilderSeverityOption.get( "drools.kbuilder.severity.duplicateRule", ResultSeverity.ERROR ) ); 
+// sets the severity of function updates to error
+kbconf.setOption( KBuilderSeverityOption.get( "drools.kbuilder.severity.duplicateFunction", ResultSeverity.ERROR ) ); 
+</programlisting>
+    </example>
+
+    <para/>
+
+    <para/>
   </section>
 </section>
