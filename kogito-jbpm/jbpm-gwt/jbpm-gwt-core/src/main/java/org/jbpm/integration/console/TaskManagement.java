@@ -22,6 +22,7 @@ import java.io.ObjectOutputStream;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -135,12 +136,11 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
 		connect();
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
-			List<TaskSummary> tasks = service.getTasksOwned(idRef, "en-UK");
+		    List<Status> onlyReserved = Collections.singletonList(Status.Reserved);
+			List<TaskSummary> tasks = service.getTasksOwned(idRef, onlyReserved, "en-UK");
 			
 	        for (TaskSummary task: tasks) {
-	        	if (task.getStatus() == Status.Reserved) {
-	        		result.add(Transform.task(task));
-	        	}
+	        	result.add(Transform.task(task));
 	        }
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -156,11 +156,11 @@ public class TaskManagement extends SessionInitializer implements org.jboss.bpm.
             
 			List<String> roles = getCallerRoles();
 			List<TaskSummary> tasks = null;
-			
+			List<Status> onlyReady = Collections.singletonList(Status.Ready);
 			if (roles == null) {
-				tasks = service.getTasksAssignedAsPotentialOwner(idRef, "en-UK");
+				tasks = service.getTasksAssignedAsPotentialOwnerByStatus(idRef, onlyReady, "en-UK");
 			} else {
-				tasks = service.getTasksAssignedAsPotentialOwner(idRef, roles, "en-UK");
+				tasks = service.getTasksAssignedAsPotentialOwnerByStatusByGroup(idRef, roles, onlyReady, "en-UK");
 			}
 			
 			
