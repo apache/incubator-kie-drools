@@ -153,6 +153,14 @@ public class ProblemBenchmark {
         return problemIO.read(inputSolutionFile);
     }
 
+    public void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
+        String solverBenchmarkName = result.getSolverBenchmark().getName()
+                .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
+        String filename = name + "_" + solverBenchmarkName + "." + problemIO.getFileExtension();
+        File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
+        problemIO.write(outputSolution, outputSolutionFile);
+    }
+
     public void benchmarkingEnded() {
         determineWinningResult();
         determineWinningResultScoreDifference();

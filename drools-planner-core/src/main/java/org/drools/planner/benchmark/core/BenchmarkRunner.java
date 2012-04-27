@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,8 @@
 
 package org.drools.planner.benchmark.core;
 
-import java.io.File;
 import java.util.concurrent.Callable;
 
-import org.drools.planner.benchmark.api.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -27,49 +25,40 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-class BenchmarkRunner implements Callable<Boolean> {
+public class BenchmarkRunner implements Callable<Boolean> {
 
-    private final PlannerBenchmarkResult result;
-    private final ProblemBenchmark problem;
+    private final PlannerBenchmarkResult benchmarkResult;
+    private final ProblemBenchmark problemBenchmark;
 
-    public BenchmarkRunner(PlannerBenchmarkResult result, ProblemBenchmark problem) {
-        this.result = result;
-        this.problem = problem;
+    public BenchmarkRunner(PlannerBenchmarkResult benchmarkResult, ProblemBenchmark problemBenchmark) {
+        this.benchmarkResult = benchmarkResult;
+        this.problemBenchmark = problemBenchmark;
     }
 
     public Boolean call() throws Exception {
-        SolverBenchmark solverBenchmark = result.getSolverBenchmark();
+        SolverBenchmark solverBenchmark = benchmarkResult.getSolverBenchmark();
         // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-        for (ProblemStatistic statistic : problem.getProblemStatisticList()) {
+        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
             statistic.addListener(solver, solverBenchmark.getName());
         }
 
-        solver.setPlanningProblem(problem.readPlanningProblem());
+        solver.setPlanningProblem(problemBenchmark.readPlanningProblem());
         solver.solve();
         Solution outputSolution = solver.getBestSolution();
 
-        result.setTimeMillisSpend(solver.getTimeMillisSpend());
+        benchmarkResult.setTimeMillisSpend(solver.getTimeMillisSpend());
         DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-        result.setCalculateCount(solverScope.getCalculateCount());
-        result.setScore(outputSolution.getScore());
+        benchmarkResult.setCalculateCount(solverScope.getCalculateCount());
+        benchmarkResult.setScore(outputSolution.getScore());
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-        result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(outputSolution));
-        result.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
-        for (ProblemStatistic statistic : problem.getProblemStatisticList()) {
+        benchmarkResult.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(outputSolution));
+        benchmarkResult.setProblemScale(solutionDescriptor.getProblemScale(outputSolution));
+        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
             statistic.removeListener(solver, solverBenchmark.getName());
         }
-        writeSolution(result, outputSolution);
+        problemBenchmark.writeSolution(benchmarkResult, outputSolution);
         return true;
-    }
-
-    private void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
-        ProblemIO problemIo = problem.getProblemIO();
-        String solverBenchmarkName = result.getSolverBenchmark().getName()
-                .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        String filename = problem.getName() + "_" + solverBenchmarkName + "." + problemIo.getFileExtension();
-        File outputSolutionFile = new File(problem.getOutputSolutionFilesDirectory(), filename);
-        problemIo.write(outputSolution, outputSolutionFile);
     }
 
 }

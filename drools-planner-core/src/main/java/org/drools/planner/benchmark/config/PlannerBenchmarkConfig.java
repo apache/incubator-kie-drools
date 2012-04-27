@@ -26,6 +26,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
@@ -38,8 +43,14 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("plannerBenchmark")
 public class PlannerBenchmarkConfig {
-    
-    private final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
+
+    public static final String PARALLEL_BENCHMARK_COUNT_AUTO = "AUTO";
+    /**
+     * @see Runtime#availableProcessors()
+     */
+    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
     private File benchmarkInstanceDirectory = null;
@@ -47,12 +58,11 @@ public class PlannerBenchmarkConfig {
     private File statisticDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
+    private String parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
     private Long warmUpSecondsSpend = null;
     private Long warmUpMinutesSpend = null;
     private Long warmUpHoursSpend = null;
-
-    private String threadsUse = null;
 
     @XStreamAlias("inheritedSolverBenchmark")
     private SolverBenchmarkConfig inheritedSolverBenchmarkConfig = null;
@@ -98,6 +108,21 @@ public class PlannerBenchmarkConfig {
 
     public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
+    }
+
+    /**
+     * Using multiple parallel benchmarks can decrease the reliability of the results.
+     * <p/>
+     * If there aren't enough processors available, it will be decreased.
+     * @return null, {@value #PARALLEL_BENCHMARK_COUNT_AUTO}
+     * or a JavaScript calculation using {@value #AVAILABLE_PROCESSOR_COUNT}.
+     */
+    public String getParallelBenchmarkCount() {
+        return parallelBenchmarkCount;
+    }
+
+    public void setParallelBenchmarkCount(String parallelBenchmarkCount) {
+        this.parallelBenchmarkCount = parallelBenchmarkCount;
     }
 
     public Long getWarmUpTimeMillisSpend() {
@@ -148,14 +173,6 @@ public class PlannerBenchmarkConfig {
         this.solverBenchmarkConfigList = solverBenchmarkConfigList;
     }
 
-    public String getThreadsUse() {
-        return threadsUse;
-    }
-
-    public void setThreadsUse(String threads) {
-        threadsUse = threads;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -167,53 +184,62 @@ public class PlannerBenchmarkConfig {
         }
     }
     
-    private ExecutorService getExecutor() {
-        int threadCount = this.getRequestedThreadCount();
-        if (threadCount > Runtime.getRuntime().availableProcessors()) {
+    private ExecutorService createExecutor() {
+        int resolvedParallelBenchmarkCount = resolveParallelBenchmarkCount();
+        if (resolvedParallelBenchmarkCount > Runtime.getRuntime().availableProcessors()) {
             logger.warn("Benchmarker will use more threads than there are CPUs. Results may be compromised.");
-        } else if (threadCount < 1) {
-            logger.warn("Requested number of threads (" + threadCount + ") is invalid.");
-            threadCount = 1;
+        } else if (resolvedParallelBenchmarkCount < 1) {
+            logger.warn("Requested number of threads (" + resolvedParallelBenchmarkCount + ") is invalid.");
+            resolvedParallelBenchmarkCount = 1;
         }
-        logger.info("Benchmarking will use (" + threadCount + ") threads.");
-        return Executors.newFixedThreadPool(threadCount);
+        logger.info("Benchmarking will use (" + resolvedParallelBenchmarkCount + ") threads.");
+        return Executors.newFixedThreadPool(resolvedParallelBenchmarkCount);
     }
     
-    private int parseThreadCount(String num) {
-        try {
-            int numThreads = Integer.valueOf(num);
-            if (numThreads < 1) {
-                throw new IllegalStateException("Number of threads must not be smaller than 1.");
-            }
-            return numThreads;
-        } catch (Exception ex) {
-            throw new IllegalStateException("Requested (" + num + ") threads. Please use a positive integer, +/- positive integer or 'AUTO'.");
-        }
-    }
-
-    private int getRequestedThreadCount() {
-        int cpuCount = Runtime.getRuntime().availableProcessors();
-        String request = this.getThreadsUse();
-        if (request == null) {
-            // no threads are requested; use just one
-            return 1;
-        } else if (request.equals("AUTO")) {
-            // "AUTO" threads are requested; use everything possible, leave some for the operating system
-            return Math.max(1, cpuCount - 2);
-        } else if (request.startsWith("-")) {
-            int num = parseThreadCount(request.substring(1));
-            return cpuCount - num;
-        } else if (request.startsWith("+")) {
-            int num = parseThreadCount(request.substring(1));
-            return cpuCount + num;
+    protected int resolveParallelBenchmarkCount() {
+        int availableProcessorCount = Runtime.getRuntime().availableProcessors();
+        int resolvedParallelBenchmarkCount;
+        if (parallelBenchmarkCount == null) {
+            resolvedParallelBenchmarkCount = 1;
+        } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
+            resolvedParallelBenchmarkCount = (availableProcessorCount / 2) + 1;
         } else {
-            return parseThreadCount(request);
+            String scriptLanguage = "JavaScript";
+            ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
+            scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, availableProcessorCount);
+            Object scriptResult;
+            try {
+                scriptResult = scriptEngine.eval(parallelBenchmarkCount);
+            } catch (ScriptException e) {
+                throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
+                        + ") is not " + PARALLEL_BENCHMARK_COUNT_AUTO + " and cannot be parsed in " + scriptLanguage
+                        + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
+            }
+            if (!(scriptResult instanceof Number)) {
+                throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
+                        + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
+                        + " and is not a Number.");
+            }
+            resolvedParallelBenchmarkCount = ((Number) scriptResult).intValue();
         }
+        if (resolvedParallelBenchmarkCount < 1) {
+            throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
+                    + ") resulted in a resolvedParallelBenchmarkCount (" + resolvedParallelBenchmarkCount
+                    + ") that is lower then 1.");
+        }
+        if (resolvedParallelBenchmarkCount > availableProcessorCount) {
+            logger.warn("Because the resolvedParallelBenchmarkCount (" + resolvedParallelBenchmarkCount
+                    + ") is higher than the availableProcessorCount (" + availableProcessorCount
+                    + "), it is reduced to availableProcessorCount.");
+            resolvedParallelBenchmarkCount = availableProcessorCount;
+        }
+        return resolvedParallelBenchmarkCount;
     }
 
     private void generateSolverBenchmarkConfigNames() {
         Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
+                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             if (solverBenchmarkConfig.getName() != null) {
                 boolean unique = nameSet.add(solverBenchmarkConfig.getName());
@@ -258,7 +284,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
-        ExecutorService executor = getExecutor();
+        ExecutorService executor = createExecutor();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
         List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
