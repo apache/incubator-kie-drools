@@ -625,7 +625,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <title>Simulated annealing acceptor</title>
 
         <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate many
-        moves per step. At least at first. Instead, it gives unimproving moves also a chance to be picked, depending on
+        moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending on
         its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
         hill climber, only accepting improving moves.</para>
 

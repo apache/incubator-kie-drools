@@ -637,7 +637,7 @@ model_a2_5: 12 resources, 5 neighborhoods, 25 locations, 50 machines, 153 servic
           </listitem>
         </itemizedlist>
 
-        <para>There are also a number of soft constraints that should be minimized (each of which has parameterized
+        <para>There are also a number of soft constraints that should be minimized (each of which has parametrized
         penalty's):</para>
 
         <itemizedlist>

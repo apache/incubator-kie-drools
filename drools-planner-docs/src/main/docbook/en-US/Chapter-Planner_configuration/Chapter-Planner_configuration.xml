@@ -534,7 +534,7 @@ public class Queen {
         </section>
 
         <section>
-          <title><literal>ValueRange</literal> undefinied</title>
+          <title><literal>ValueRange</literal> undefined</title>
 
           <para>Leaves the value range undefined. Some optimization algorithms do not support this value range.</para>
 
@@ -708,8 +708,8 @@ public class Visit ... implements Appearance {
             <listitem>
               <para>The value range which holds the initialized planning entities, for example
               <literal>visitList</literal>. This always requires an enabled
-              <literal>excludeUninitializedPlanningEntity</literal>, because an intialized entity should never point to
-              an unintialized entity: that would break the principle that every chain must have an anchor.</para>
+              <literal>excludeUninitializedPlanningEntity</literal>, because an initialized entity should never point to
+              an uninitialized entity: that would break the principle that every chain must have an anchor.</para>
             </listitem>
           </itemizedlist>
         </section>
@@ -1227,7 +1227,7 @@ public class Visit ... implements Appearance {
         runs.</para>
 
         <para>The reproducible mode is not much slower than the production mode. If your production environment requires
-        reproducability, use it in production too.</para>
+        reproducibility, use it in production too.</para>
 
         <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
         optimizations (such as work stealing).</para>
@@ -1262,7 +1262,7 @@ public class Visit ... implements Appearance {
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">WARN</emphasis>: Log suspicous circumstances.</para>
+          <para><emphasis role="bold">WARN</emphasis>: Log suspicious circumstances.</para>
         </listitem>
 
         <listitem>

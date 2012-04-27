@@ -149,7 +149,7 @@
     <warning>
       <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be done
       on the instances of the <literal>Solution</literal> of <literal>scoreDirector.getWorkingSolution()</literal>. Note
-      that these are not the same entity instances as in the bestSolution (or therfor your user interface): they are
+      that these are not the same entity instances as in the bestSolution (or therefor your user interface): they are
       clones.</para>
     </warning>
 

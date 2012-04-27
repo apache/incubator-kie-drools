@@ -115,7 +115,7 @@
       <title>Algorithm description</title>
 
       <para>Like <literal>First Fit</literal>, but uses the weaker planning values first, because the strong planning
-      values are more likely to be able to accomodate later planning entities. So it sorts the planning values on
+      values are more likely to be able to accommodate later planning entities. So it sorts the planning values on
       increasing strength.</para>
 
       <para>Requires the model to support <link linkend="planningValueStrength">planning value strength
