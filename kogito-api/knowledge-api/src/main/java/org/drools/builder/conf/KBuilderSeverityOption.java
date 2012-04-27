@@ -32,7 +32,7 @@ public class KBuilderSeverityOption
     private KBuilderSeverityOption(String key,
                                    ResultSeverity severity) {
         this.key = key;
-        this.severity = severity;
+        this.severity = severity != null ? severity : ResultSeverity.INFO;
     }
 
     /* (non-Javadoc)
