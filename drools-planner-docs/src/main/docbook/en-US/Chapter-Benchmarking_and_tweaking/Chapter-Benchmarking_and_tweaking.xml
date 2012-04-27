@@ -58,6 +58,7 @@
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
   &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;!--&lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;--&gt;
   &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
 
   &lt;inheritedSolverBenchmark&gt;
@@ -206,6 +207,64 @@
           <para>A <literal>ProblemIO</literal> implementation must be thread-safe.</para>
         </warning>
       </section>
+    </section>
+
+    <section>
+      <title>Parallel benchmarking on multiple threads</title>
+
+      <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
+      multiple threads to get your benchmarks results faster:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;parallelBenchmarkCount&gt;AUTO&lt;/parallelBenchmarkCount&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <warning>
+        <para>Running too many benchmarks in parallel will affect the results of benchmarks negatively. Leave some
+        processors unused for garbage collection and other processes.</para>
+
+        <para>We tweak <literal>parallelBenchmarkCount</literal> <literal>AUTO</literal> to maximize the reliability and
+        efficiency of the benchmark results.</para>
+      </warning>
+
+      <para>The following options are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>1</literal>: Run all benchmarks sequentially. This is the default setting.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>AUTO</literal>: Let Planner decide how many benchmarks to run in parallel. This formula is
+          based on experience. It's recommended to prefer this over the other parallel enabling options.</para>
+        </listitem>
+
+        <listitem>
+          <para>Static number: The number of benchmarks to run in parallel.</para>
+
+          <programlisting language="xml">&lt;parallelBenchmarkCount&gt;2&lt;/parallelBenchmarkCount&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para>JavaScript formula: Formula for the number of benchmarks to run in parallel. It can use the variable
+          <literal>availableProcessorCount</literal>. For example: </para>
+
+          <programlisting language="xml">&lt;parallelBenchmarkCount&gt;(availableProcessorCount / 2) + 1&lt;/parallelBenchmarkCount&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <note>
+        <para>The <literal>parallelBenchmarkCount</literal> is always limited to the number of available processors. If
+        it's higher, it will be automatically decreased.</para>
+      </note>
+
+      <note>
+        <para>In the future, we will also support multi-JVM benchmarking. This feature is independent of <link
+        xlink:href="https://issues.jboss.org/browse/JBRULES-681">multi-threaded solving</link> or multi-JVM
+        solving.</para>
+      </note>
     </section>
 
     <section>
