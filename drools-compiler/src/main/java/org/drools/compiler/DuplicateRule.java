@@ -28,10 +28,14 @@ public class DuplicateRule extends ConfigurableSeverityResult {
     
     private PackageDescr pkgDescr;
     
+    private int[] line;
+    
     public DuplicateRule(RuleDescr ruleDescr, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
         super(ruleDescr.getResource(), config);
         rule = ruleDescr.getName();
         pkgDescr = pkg;
+        line = new int[1];
+        line[0] = ruleDescr.getLine();
     }
 
 	@Override
@@ -42,7 +46,7 @@ public class DuplicateRule extends ConfigurableSeverityResult {
 
 	@Override
 	public int[] getLines() {
-		return null;
+		return line;
 	}
 
     @Override
