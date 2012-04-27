@@ -97,6 +97,12 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         out.writeInt( factSize );
         out.writeObject( index );
     }
+    
+    public void init(Entry[] table, int size, int factSize) {
+        this.table = table;
+        this.size = size;
+        this.factSize = factSize;
+    }
 
     public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle) {
         RightTupleList bucket = get( leftTuple, factHandle );
@@ -183,8 +189,6 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             this.row = 0;
         }
 
-
-
         public Entry next(Entry object) {
             RightTuple rightTuple = ( RightTuple ) object;
             RightTupleList list = null;
@@ -194,22 +198,27 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 
             int length = table.length;
 
-            while ( this.row < length ) {
+            while ( this.row <= length ) {
                 // check if there is a current bucket
-                while ( list == null ) {
-                    // iterate while there is no current bucket, trying each array position
-                    list = (RightTupleList) this.table[this.row];
-                    this.row++;
+                while ( list == null ) {                    
+                    if ( this.row < length ) {
+                        // iterate while there is no current bucket, trying each array position
+                        list = (RightTupleList) this.table[this.row];
+                        this.row++;                   
+                    } else {     
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;
+                    }
                     
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
                         rightTuple = (RightTuple) list.getFirst( );
                         return rightTuple;
-                    } else if ( this.row >= length ) {
-                        // we've scanned the whole table and nothing is left, so return null
-                        return null;
                     }
-                    
+//                    else if ( this.row >= length ) {
+//                        // we've scanned the whole table and nothing is left, so return null
+//                        return null;
+//                    }                    
                 }
 
                 rightTuple = (RightTuple) rightTuple.getNext();
@@ -223,7 +232,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                         // if we have another bucket, assign the first RightTuple and return
                         rightTuple = (RightTuple) list.getFirst( );
                         return rightTuple;
-                    }
+                    }  
                 }
             }
             return null;
@@ -233,7 +242,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return true;
         }        
     }
-
+    
     public static class FieldIndexHashTableFullIterator
         implements
         Iterator {
@@ -253,20 +262,22 @@ public class RightTupleIndexHashTable extends AbstractHashTable
          * @see org.drools.util.Iterator#next()
          */
         public Object next() {
-            while ( this.row < this.length ) {
+            while ( this.row <= this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
-                    // iterate while there is no current bucket, trying each array position
-                    this.list = (RightTupleList) this.table[this.row];
-                    this.row++;
+                    if ( this.row < length ) {
+                        // iterate while there is no current bucket, trying each array position
+                        this.list = (RightTupleList) this.table[this.row];
+                        this.row++;
+                    } else {
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;
+                    }
                     
                     if ( this.list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
                         this.rightTuple = (RightTuple) this.list.getFirst();
                         return this.rightTuple;
-                    } else if ( this.row >= this.length ) {
-                        // we've scanned the whole table and nothing is left, so return null
-                        return null;
                     }
                     
                 }
