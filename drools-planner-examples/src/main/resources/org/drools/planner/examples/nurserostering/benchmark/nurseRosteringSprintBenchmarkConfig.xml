@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
-  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpend>5</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
