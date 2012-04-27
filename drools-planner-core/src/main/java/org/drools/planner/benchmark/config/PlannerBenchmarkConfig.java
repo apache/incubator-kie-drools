@@ -247,7 +247,14 @@ public class PlannerBenchmarkConfig {
         if (parallelBenchmarkCount == null) {
             resolvedParallelBenchmarkCount = 1;
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
-            resolvedParallelBenchmarkCount = (availableProcessorCount / 2) + 1;
+            // TODO Tweak it based on experience
+            if (availableProcessorCount <= 2) {
+                resolvedParallelBenchmarkCount = 1;
+            } else if (availableProcessorCount <= 4) {
+                resolvedParallelBenchmarkCount = 2;
+            } else {
+                resolvedParallelBenchmarkCount = (availableProcessorCount / 2) + 1;
+            }
         } else {
             String scriptLanguage = "JavaScript";
             ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
