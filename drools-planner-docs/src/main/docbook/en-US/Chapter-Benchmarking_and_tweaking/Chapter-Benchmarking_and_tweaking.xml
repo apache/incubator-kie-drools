@@ -201,14 +201,18 @@
       &lt;inputSolutionFile&gt;data/machinereassignment/input/model_a1_1.txt&lt;/inputSolutionFile&gt;
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
+
+        <warning>
+          <para>A <literal>ProblemIO</literal> implementation must be thread-safe.</para>
+        </warning>
       </section>
     </section>
 
     <section>
-      <title>Warming up the hotspot compiler</title>
+      <title>Warming up the HotSpot compiler</title>
 
       <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
-      reliable</emphasis>, because they will have lost CPU time on hotspot JIT compilation (and possibly DRL compilation
+      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
       too).</para>
 
       <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
