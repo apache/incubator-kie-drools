@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="1.0"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd
+                                 http://java.sun.com/xml/ns/persistence/orm 
+                                 http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://java.sun.com/xml/ns/persistence">
+
+  <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>java:jboss/datasources/jbpmDS</jta-data-source>       
+    <mapping-file>META-INF/JBPMorm.xml</mapping-file>
+    <mapping-file>META-INF/ProcessInstanceInfo.hbm.xml</mapping-file>
+
+    <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+    <class>org.drools.persistence.info.SessionInfo</class>
+    <class>org.drools.persistence.info.WorkItemInfo</class>
+
+    <class>org.jbpm.process.audit.ProcessInstanceLog</class>
+    <class>org.jbpm.process.audit.NodeInstanceLog</class>
+    <class>org.jbpm.process.audit.VariableInstanceLog</class>
+
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <!-- hbm2ddl.auto MUST BE update! The console will otherwise overwrite the schema with each new thread -->
+      <property name="hibernate.hbm2ddl.auto" value="update" />
+      <property name="hibernate.show_sql" value="false" />
+
+      <!-- for AS7 -->
+      <!--property name="hibernate.transaction.manager_lookup_class" value="org.jbpm.integration.console.JBPMTransactionManager" /-->
+      <!-- for AS5 -->
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+    </properties>        
+  </persistence-unit>
+    
+</persistence>

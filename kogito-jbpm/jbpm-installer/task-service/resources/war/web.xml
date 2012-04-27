@@ -1,0 +1,101 @@
+<web-app>
+  <display-name>Human Task Service WAR</display-name>
+  <servlet>
+    <servlet-name>HumanTaskServiceServlet</servlet-name>
+      <servlet-class>org.jbpm.task.servlet.HumanTaskServiceServlet</servlet-class>
+      
+      <!-- Following is a list of initialization parameters that HumanTaskService Servlet accepts
+      	   Main controller is active.config parameter that dictates what transport to initialize.
+      	   
+      	   Then there are transport specific parameters that should be filled in only for selected
+      	   transport.
+      	   
+      	   Last part provides access to configuring components of task Service itself. All of them
+      	   are optional and in case there are not set default values will apply.
+       -->
+      
+      <!-- active configuration on of hornetq|mina|jms (defauls to hornetq) -->
+      <init-param>
+      	<param-name>active.config</param-name>
+      	<param-value>hornetq</param-value>
+      </init-param>
+      
+      <!-- Apache Mina configuration parameters -->
+      <init-param>
+      	<param-name>mina.host</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>mina.port</param-name>
+      	<param-value></param-value>
+      </init-param>
+      
+      <!-- HornetQ configuration parameters -->
+      <init-param>
+      	<param-name>hornetq.port</param-name>
+      	<param-value></param-value>
+      </init-param>
+      
+      <!-- JMS configuration parameters -->
+      <init-param>
+      	<param-name>JMSTaskServer.connectionFactory</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>JMSTaskServer.transacted</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>JMSTaskServer.acknowledgeMode</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>JMSTaskServer.queueName</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>JMSTaskServer.responseQueueName</param-name>
+      	<param-value></param-value>
+      </init-param>
+      
+      <!-- Task Service configuration independent of transport -->
+      <init-param>
+      	<param-name>task.persistence.unit</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <!-- use org.jbpm.task.service.DefaultUserGroupCallbackImpl to configure sample user group callback for demo purpose-->
+      <init-param>
+      	<param-name>user.group.callback.class</param-name>
+      	<param-value>org.jbpm.task.service.DefaultUserGroupCallbackImpl</param-value>
+      </init-param>
+      <init-param>
+      	<param-name>escalated.deadline.handler.class</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <init-param>
+      	<param-name>user.info.class</param-name>
+      	<param-value></param-value>
+      </init-param>
+      <!-- allows to specify location of a files that will be used to initially populate task server db -->
+      <!-- accepts two types of files: MVEL and properties must be suffixed with .mvel and .properties -->
+      <!-- location of the files can be either on classpath (with prefix classpath:) or valid URL -->
+      <!-- NOTE: that with custom users files Administrator user must always be present!!! -->
+      <!-- use classpath:/org/jbpm/task/servlet/SampleUsers.mvel to configure sample users for demo purpose-->
+      <!-- DefaultUsers.mvel is used to insert Administrator as it is required for task server to operate -->
+      <init-param>
+        <param-name>load.users</param-name>
+        <param-value>classpath:/org/jbpm/task/servlet/SampleUsers.mvel</param-value>
+      </init-param>
+      <!-- use classpath:/org/jbpm/task/servlet/SampleGroups.mvel to configure sample users for demo purpose-->
+      <init-param>
+        <param-name>load.groups</param-name>
+        <param-value>classpath:/org/jbpm/task/servlet/SampleGroups.mvel</param-value>
+      </init-param>
+      
+    <load-on-startup>2</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HumanTaskServiceServlet</servlet-name>
+    <url-pattern>/HumanTaskServiceServlet/*</url-pattern>
+  </servlet-mapping>
+</web-app>

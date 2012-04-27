@@ -309,6 +309,21 @@
   	<get src="${form.builder.url}" dest="${install.home}/lib/jbpm-form-builder.war" />
   </target>
 	
+  <!-- Download jBPM human task server war -->
+  <target name="download.jBPM.ht-war.check">
+    <echo message="Checking jBPM human task war download ..." />
+    <condition property="jBPM.ht-war.not.available">
+      <not>
+        <available file="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.jBPM-ht.war" depends="download.jBPM.ht-war.check" if="jBPM.ht-war.not.available">
+    <echo message="Getting jBPM human task war ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jBPM.url}/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war"  />
+  </target>
+	
   <!-- ############ INSTALL ############ -->
 
   <!-- Install JBoss AS -->
@@ -409,7 +424,7 @@
     <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war"/>
     <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
            dest="${install.home}/target/jbpm-gwt-console-server-war"/>
-    <copy file="${install.home}/db/persistence.xml"
+    <copy file="${install.home}/db/persistence-as5.xml"
           tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
           overwrite="true" />
     <copy file="${install.home}/db/ProcessInstanceInfo.hbm.xml"
@@ -425,6 +440,10 @@
   	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/ejb3-persistence-1.0.2.GA.jar"/>
   	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.4.GA.jar"/>
   	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.14.0-GA.jar"/>
+  	<delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/gwt-user-2.3.0.jar"/>
+  	<delete>
+      <fileset dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
+    </delete>
     <!-- Other configuration like work item handlers -->
     <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
@@ -470,15 +489,78 @@
           tofile="${install.home}/target/jbpm-form-builder-war/WEB-INF/classes/roles.properties" 
           overwrite="true" />
     <copy file="${install.home}/auth/users.properties"
-          tofile="${jboss.home}/standalone/configuration/users.properties" 
+          tofile="${jboss.server.conf.dir}/users.properties" 
           overwrite="true" />
     <copy file="${install.home}/auth/roles.properties"
-          tofile="${jboss.home}/standalone/configuration/roles.properties" 
+          tofile="${jboss.server.conf.dir}/roles.properties" 
           overwrite="true" />
     <zip basedir="${install.home}/target/jbpm-form-builder-war"
          destfile="${install.home}/target/jbpm-form-builder.war" />
     <copy file="${install.home}/target/jbpm-form-builder.war" 
           tofile="${jboss.server.deploy.dir}/jbpm-form-builder.war" 
+          overwrite="true" />
+    <delete dir="${install.home}/target" />
+  </target>
+	
+	
+  <!-- Install jbpm human task war -->
+  <target name="install.jBPM-ht.into.jboss" depends="download.h2,download.jBPM-ht.war">
+    <antcall target="install.ht.war.into.jboss5" />
+    <antcall target="install.ht.war.into.jboss7" />
+  </target>	
+
+  <!-- Install jbpm human task war -->
+  <target name="install.ht.war.into.jboss7" depends="download.jBPM-ht.war" if="jboss.version.is.7">
+    <mkdir dir="${install.home}/target"/>
+    <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
+    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
+  	<!-- remove hornetq related libs as they are referenced from jboss module -->
+    <delete>
+      <fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
+    </delete>
+  	<copy file="${install.home}/task-service/resources/war/web.xml" 
+  	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 
+  	          overwrite="true" />
+  	<copy file="${install.home}/task-service/resources/war/persistence.xml" 
+  	              tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/classes/META-INF/persistence.xml" 
+  	              overwrite="true" />
+  	<copy file="${install.home}/jbpm-tm.jar"
+  	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/jbpm-tm.jar"
+  	          overwrite="true" />
+    <zip basedir="${install.home}/target/jbpm-human-task-war"
+         destfile="${install.home}/target/jbpm-human-task-war-${jBPM.version}.war" />
+    <copy file="${install.home}/target/jbpm-human-task-war-${jBPM.version}.war" 
+          tofile="${jboss.server.deploy.dir}/jbpm-human-task-war.war" 
+          overwrite="true" />
+    <delete dir="${install.home}/target" />
+  </target>
+	
+  <!-- Install jbpm human task war -->
+  <target name="install.ht.war.into.jboss5" depends="download.jBPM-ht.war" unless="jboss.version.is.7">
+    <mkdir dir="${install.home}/target"/>
+    <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
+    <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
+  	<delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/xml-apis-1.3.04.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-annotations-3.4.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-commons-annotations-3.1.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-core-3.3.2.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-entitymanager-3.4.0.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-tools-3.2.3.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/ejb3-persistence-1.0.2.GA.jar"/>
+  	<delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/hibernate-jpa-2.0-api-1.0.1.Final.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/javassist-3.4.GA.jar"/>
+    <delete file="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/javassist-3.14.0-GA.jar"/>
+  	
+  	<move todir="${jboss.server.lib.dir}">
+  		<fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
+  	</move>
+  	<copy file="${install.home}/task-service/resources/war/web.xml" 
+  	              tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 
+  	              overwrite="true" />
+    <zip basedir="${install.home}/target/jbpm-human-task-war"
+         destfile="${install.home}/target/jbpm-human-task-war-${jBPM.version}.war" />
+    <copy file="${install.home}/target/jbpm-human-task-war-${jBPM.version}.war" 
+          tofile="${jboss.server.deploy.dir}/jbpm-human-task-war.war" 
           overwrite="true" />
     <delete dir="${install.home}/target" />
   </target>
@@ -500,6 +582,7 @@
    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib">
       <fileset dir="${install.home}/birt/birt-runtime-${birt.version.as7}/ReportEngine/lib">
          <include name="**/*.jar"/>
+      	 <exclude name="org.apache.commons.codec*.jar"/>
       </fileset>
    </copy>
    <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/output"/>
@@ -597,13 +680,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.form.builder.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM-ht.into.jboss,install.form.builder.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.form.builder.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM-ht.into.jboss,install.form.builder.into.jboss,install.jBPM.runtime" />
 
   <!-- Install Demo (DB == No Eclipse) -->
   <target name="install.demo.db" depends="install.demo.noeclipse" />
@@ -764,13 +847,13 @@
   </target>
 
   <!-- Start Demo -->
-  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
+  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse" />
   
   <!-- Start Demo (Eclipse) -->
   <target name="start.demo.eclipse" depends="start.h2,start.eclipse,start.human.task" />
 
   <!-- Start Demo (No Eclipse)--> 
-  <target name="start.demo.noeclipse" depends="start.h2,start.jboss,start.human.task" />	
+  <target name="start.demo.noeclipse" depends="start.h2,start.jboss" />	
   
   <!-- Start Demo (Database)--> 
   <target name="start.demo.db" depends="install.db.files,start.jboss,start.human.task" />	
