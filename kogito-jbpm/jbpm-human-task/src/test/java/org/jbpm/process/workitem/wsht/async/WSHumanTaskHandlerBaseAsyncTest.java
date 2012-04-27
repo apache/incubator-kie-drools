@@ -15,10 +15,7 @@
  */
 package org.jbpm.process.workitem.wsht.async;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +39,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 
 public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
@@ -414,10 +412,12 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
-        ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Object data = in.readObject();
-        in.close();
+        
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getContentResponseHandler.getContent().getContent(), 
+                                                            ((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
+        
         assertEquals("This is the content", data);
 
         System.out.println("Starting task " + task.getId());
@@ -428,14 +428,16 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", ((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+//        ContentData result = new ContentData();
+//        result.setAccessType(AccessType.Inline);
+//        result.setType("java.lang.String");
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        ObjectOutputStream out = new ObjectOutputStream(bos);
+//        out.writeObject("This is the result");
+//        out.close();
+//        result.setContent(bos.toByteArray());
+                
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());
@@ -487,10 +489,14 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
-        ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Map<String, Object> data = (Map<String, Object>) in.readObject();
-        in.close();
+        
+         
+        
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getContentResponseHandler.getContent().getContent(), 
+                                                            ((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
+        
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
         assertEquals("MyObjectValue", ((MyObject) data.get("MyObject")).getValue());
         assertEquals("10", data.get("Priority"));
@@ -504,14 +510,15 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+//        ContentData result = new ContentData();
+//        result.setAccessType(AccessType.Inline);
+//        result.setType("java.lang.String");
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        ObjectOutputStream out = new ObjectOutputStream(bos);
+//        out.writeObject("This is the result");
+//        out.close();
+//        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", ((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());
