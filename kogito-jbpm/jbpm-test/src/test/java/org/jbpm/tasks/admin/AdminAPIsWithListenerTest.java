@@ -1,8 +1,9 @@
 package org.jbpm.tasks.admin;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static junit.framework.Assert.fail;
+import static org.drools.persistence.util.PersistenceUtil.cleanUp;
+import static org.drools.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static junit.framework.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +29,6 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.event.process.DefaultProcessEventListener;
-import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -39,19 +37,17 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.persistence.objects.MedicalRecord;
-import org.jbpm.persistence.objects.MockUserInfo;
-import org.jbpm.persistence.objects.Patient;
-import org.jbpm.persistence.objects.RecordRow;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Content;
 import org.jbpm.task.Group;
 import org.jbpm.task.User;
+import org.jbpm.task.UserInfo;
 import org.jbpm.task.admin.TaskCleanUpProcessEventListener;
 import org.jbpm.task.admin.TasksAdmin;
-import org.jbpm.task.admin.TasksAdminImpl;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.DefaultUserInfo;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
@@ -78,7 +74,7 @@ public class AdminAPIsWithListenerTest {
     protected TaskService taskService;
     protected LocalTaskService localTaskService;
     protected TaskServiceSession taskSession;
-    protected MockUserInfo userInfo;
+    protected UserInfo userInfo;
     protected Properties conf;
     protected TasksAdmin admin;
     @Before
@@ -99,7 +95,7 @@ public class AdminAPIsWithListenerTest {
 
         emfTasks = Persistence.createEntityManagerFactory("org.jbpm.task");
         
-        admin = new TasksAdminImpl(emfTasks);
+        admin = new TaskService(emfTasks, SystemEventListenerFactory.getSystemEventListener()).createTaskAdmin();
         Reader reader = null;
         Map vars = new HashMap();
         try {
@@ -121,7 +117,7 @@ public class AdminAPIsWithListenerTest {
             }
         }
 
-        userInfo = new MockUserInfo();
+        userInfo = new DefaultUserInfo(null);
 
         taskService = new TaskService(emfTasks, SystemEventListenerFactory.getSystemEventListener(), null);
         taskSession = taskService.createSession();
