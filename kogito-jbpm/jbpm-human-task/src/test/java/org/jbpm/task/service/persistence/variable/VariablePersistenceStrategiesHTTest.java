@@ -58,7 +58,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
     private WorkItemHandler handler;
     private EntityManagerFactory domainEmf;
     protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
-    protected ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
+    
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -75,7 +75,6 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
 
         setClient(new LocalTaskService(taskService));
         SyncWSHumanTaskHandler syncWSHumanTaskHandler = new SyncWSHumanTaskHandler(getClient(), ksession);
-        syncWSHumanTaskHandler.setMarshallerContext(marshallerContext);
         setHandler(syncWSHumanTaskHandler);
     }
 
@@ -134,7 +133,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 
-        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getClient().getContent(contentId).getContent(), marshallerContext,  ksession.getEnvironment());
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
         assertEquals(myEntity.getTest(), ((MyEntity)data).getTest());
 
         getClient().start(task.getId(), "Darth Vader");
@@ -144,7 +143,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         em.persist(myEntity2);
         em.getTransaction().commit();
         
-        ContentData result = ContentMarshallerHelper.marshal(myEntity2, marshallerContext, ksession.getEnvironment());
+        ContentData result = ContentMarshallerHelper.marshal(myEntity2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -186,7 +185,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 
-        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),getClient().getContent(contentId).getContent(), marshallerContext,  ksession.getEnvironment());
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
         assertEquals(myObject.getValue(), ((MyObject)data).getValue());
 
         getClient().start(task.getId(), "Darth Vader");
@@ -195,7 +194,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         MyObject myObject2 = new MyObject("This is a Serializable Object 2");
         
         
-        ContentData result = ContentMarshallerHelper.marshal(myObject2, marshallerContext, ksession.getEnvironment());
+        ContentData result = ContentMarshallerHelper.marshal(myObject2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -250,7 +249,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 
-        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), marshallerContext,  ksession.getEnvironment());
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
         Map<String, Object> dataMap = (Map<String, Object>)data;
         
         assertEquals(myEntity.getTest(), ((MyEntity)dataMap.get("myJPAEntity")).getTest());
@@ -267,7 +266,7 @@ public class VariablePersistenceStrategiesHTTest extends BaseTest {
         MyObject myObject2 = new MyObject("This is a Serializable Object 2");
         results.put("myObject2", myObject2);
         
-        ContentData result = ContentMarshallerHelper.marshal(results, marshallerContext, ksession.getEnvironment());
+        ContentData result = ContentMarshallerHelper.marshal(results, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));

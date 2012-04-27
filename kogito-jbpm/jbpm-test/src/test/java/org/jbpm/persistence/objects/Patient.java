@@ -28,6 +28,10 @@ public class Patient implements Serializable{
     @Temporal(TemporalType.TIMESTAMP)
     private Date nextAppointment;
 
+    public Patient() {
+    }
+
+    
     public Patient(String name) {
         this.name = name;
     }

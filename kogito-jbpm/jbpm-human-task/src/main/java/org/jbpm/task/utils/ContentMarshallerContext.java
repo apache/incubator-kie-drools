@@ -21,10 +21,10 @@ import org.drools.marshalling.ObjectMarshallingStrategy;
 
 
 public class ContentMarshallerContext {
-    public final Map<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context> strategyContext;
+    public final Map<Class, ObjectMarshallingStrategy.Context> strategyContext;
 
     public ContentMarshallerContext() {
-        strategyContext = new HashMap<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context>();
+        strategyContext = new HashMap<Class, ObjectMarshallingStrategy.Context>();
         
     }
     

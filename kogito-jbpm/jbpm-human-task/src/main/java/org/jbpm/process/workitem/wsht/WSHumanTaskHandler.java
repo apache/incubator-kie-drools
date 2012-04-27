@@ -60,6 +60,7 @@ import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	private boolean initialized = false;
 	private KnowledgeRuntime session;
 	private OnErrorAction action;
-
+        private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
 	public WSHumanTaskHandler() { 
 		this.action = OnErrorAction.LOG;
 	}

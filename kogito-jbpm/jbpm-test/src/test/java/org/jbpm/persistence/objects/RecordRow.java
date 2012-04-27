@@ -28,6 +28,10 @@ public class RecordRow implements Serializable{
     @JoinColumn(name="MEDREC_ID", nullable=false, updatable=false)
     private MedicalRecord medicalRecord;
 
+    public RecordRow() {
+    }
+
+    
     public RecordRow(String code, String desc) {
         this.code = code;
         this.description = desc;
@@ -68,7 +72,7 @@ public class RecordRow implements Serializable{
 
     @Override
     public String toString() {
-        return "RecordRow{" + "id=" + id + ", code=" + code + ", desc=" + description + ", medicalRecord=" + medicalRecord + '}';
+        return "RecordRow{" + "id=" + id + ", code=" + code + ", desc=" + description + ", medicalRecord=" + medicalRecord.getId() + '}';
     }
 
     @Override

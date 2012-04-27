@@ -30,6 +30,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -47,16 +48,14 @@ import org.jbpm.persistence.objects.MockUserInfo;
 import org.jbpm.persistence.objects.Patient;
 import org.jbpm.persistence.objects.RecordRow;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.Content;
-import org.jbpm.task.Group;
-import org.jbpm.task.User;
+import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.local.LocalTaskService;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -86,7 +85,9 @@ public class PatientVariablePersistenceStrategyTest {
     
     protected MockUserInfo userInfo;
     protected Properties conf;
-
+    
+    protected StatefulKnowledgeSession ksession;
+    protected SyncWSHumanTaskHandler htHandler;
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource("org.jbpm.runtime", false);
@@ -176,8 +177,8 @@ public class PatientVariablePersistenceStrategyTest {
         em.getTransaction().commit();
         Environment env = createEnvironment();
         KnowledgeBase kbase = createKnowledgeBase("patient-appointment.bpmn");
-        StatefulKnowledgeSession ksession = createSession(kbase, env);
-        SyncWSHumanTaskHandler htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
+        ksession = createSession(kbase, env);
+        htHandler = new SyncWSHumanTaskHandler(localTaskService, ksession);
         htHandler.setLocal(true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", htHandler);
         logger.info("### Starting process ###");
@@ -295,9 +296,11 @@ public class PatientVariablePersistenceStrategyTest {
     }
 
     private Environment createEnvironment() {
+        Environment domainEnv = EnvironmentFactory.newEnvironment();
+        domainEnv.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emfDomain);
         Environment env = PersistenceUtil.createEnvironment(context);
         env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
-                    new JPAPlaceholderResolverStrategy(env),
+                    new JPAPlaceholderResolverStrategy(domainEnv),
                     new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)
                 });
         return env;
@@ -340,9 +343,15 @@ public class PatientVariablePersistenceStrategyTest {
     private MedicalRecord getTaskContent(TaskSummary summary) throws IOException, ClassNotFoundException{
         logger.info(" >>> Getting Task Content = "+summary.getId());
         Content content = this.localTaskService.getContent(summary.getId());
+        Task task = this.localTaskService.getTask(summary.getId());
+//        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content.getContent()));
+        Object readObject = 
+                ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            content.getContent(), 
+                                                            ((SyncWSHumanTaskHandler)htHandler).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
+                //ois.readObject();
         
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(content.getContent()));
-        Object readObject = ois.readObject();
         logger.info(" >>> Object = "+readObject);
         return (MedicalRecord)readObject;
     }
@@ -353,22 +362,24 @@ public class PatientVariablePersistenceStrategyTest {
      * @return 
      */
     private ContentData prepareContentData(Map data){
-        ContentData contentData = null;
-        if (data != null) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream out;
-                try {
-                        out = new ObjectOutputStream(bos);
-                        out.writeObject(data);
-                        out.close();
-                        contentData = new ContentData();
-                        contentData.setContent(bos.toByteArray());
-                        contentData.setAccessType(AccessType.Inline);
-                }
-                catch (IOException e) {
-                        System.err.print(e);
-                }
-        }
+        ContentData contentData = ContentMarshallerHelper.marshal(data, ((SyncWSHumanTaskHandler)htHandler).getMarshallerContext(), ksession.getEnvironment());
+                
+//                null;
+//        if (data != null) {
+//                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//                ObjectOutputStream out;
+//                try {
+//                        out = new ObjectOutputStream(bos);
+//                        out.writeObject(data);
+//                        out.close();
+//                        contentData = new ContentData();
+//                        contentData.setContent(bos.toByteArray());
+//                        contentData.setAccessType(AccessType.Inline);
+//                }
+//                catch (IOException e) {
+//                        System.err.print(e);
+//                }
+//        }
         
         return contentData;
     }

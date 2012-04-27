@@ -17,9 +17,11 @@ package org.jbpm.task.utils;
 
 import java.io.*;
 import java.util.Map;
-import java.util.logging.Level;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategy.Context;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+
+import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
@@ -33,7 +35,13 @@ public class ContentMarshallerHelper {
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
 
     public static ContentData marshal(Object o, ContentMarshallerContext marshallerContext, Environment env) {
-        ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        ObjectMarshallingStrategy[] strats = null;
+        if (env != null && env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) != null) {
+            strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        } else {
+            strats = new ObjectMarshallingStrategy[1];
+            strats[0] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
+        }
         ContentData content = null;
 
         if (o instanceof Map) {
@@ -73,11 +81,15 @@ public class ContentMarshallerHelper {
         MarshalledContentWrapper contentWrap = null;
         try {
             Context context = null;
-            if(marshallerContext.strategyContext.get(strat) == null){
-                context = strat.createContext();
-                marshallerContext.strategyContext.put(strat, context);
-            } else{
-                context = marshallerContext.strategyContext.get(strat);
+            if(marshallerContext != null){
+                if (marshallerContext.strategyContext.get(strat.getClass()) == null) {
+                    context = strat.createContext();
+                    marshallerContext.strategyContext.put(strat.getClass(), context);
+                } else {
+                    context = marshallerContext.strategyContext.get(strat.getClass());
+                }
+            }else{
+                throw new IllegalStateException(" The Marshaller Context Needs to be Provided");
             }
             byte[] marshalled = strat.marshal(context, null, o);
             contentWrap = new MarshalledContentWrapper(marshalled, strat.getClass().getCanonicalName(), o.getClass());
@@ -93,7 +105,13 @@ public class ContentMarshallerHelper {
 
     public static Object unmarshall(String type, byte[] content, ContentMarshallerContext marshallerContext, Environment env) {
 
-        ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        ObjectMarshallingStrategy[] strats = null;
+        if (env != null && env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) != null) {
+            strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        } else {
+            strats = new ObjectMarshallingStrategy[1];
+            strats[0] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
+        }
         Object data = null;
         ObjectMarshallingStrategy selectedStrat = null;
         for (ObjectMarshallingStrategy strat : strats) {
@@ -101,7 +119,7 @@ public class ContentMarshallerHelper {
                 selectedStrat = strat;
             }
         }
-        Context context = marshallerContext.strategyContext.get(selectedStrat);
+        Context context = marshallerContext.strategyContext.get(selectedStrat.getClass());
         try {
             data = selectedStrat.unmarshal(context, null, content, ContentMarshallerHelper.class.getClassLoader());
             if (data instanceof Map) {
@@ -114,7 +132,7 @@ public class ContentMarshallerHelper {
                             selectedStrat = strat;
                         }
                     }
-                    context = marshallerContext.strategyContext.get(selectedStrat);
+                    context = marshallerContext.strategyContext.get(selectedStrat.getClass());
                     unmarshalledObj = selectedStrat.unmarshal(context, null, value.getContent(), ContentMarshallerHelper.class.getClassLoader());
                     ((Map) data).put(key, unmarshalledObj);
                 }

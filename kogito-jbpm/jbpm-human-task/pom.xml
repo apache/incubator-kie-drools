@@ -161,6 +161,12 @@
       <scope>test</scope>
       <type>jar</type>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>5.4.0-SNAPSHOT</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
 
   <build>

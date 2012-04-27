@@ -75,7 +75,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     
 	private boolean initialized = false;
     
-    private ContentMarshallerContext marshallerContext;
+    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
     
     
     public SyncWSHumanTaskHandler() {

@@ -38,6 +38,7 @@ import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 
 public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
@@ -362,22 +363,27 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
         
-        ByteArrayInputStream bis = new ByteArrayInputStream(getClient().getContent(contentId).getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Object data = in.readObject();
-        in.close();
+//        ByteArrayInputStream bis = new ByteArrayInputStream(getClient().getContent(contentId).getContent());
+//        ObjectInputStream in = new ObjectInputStream(bis);
+//        Object data = in.readObject();
+//        in.close();
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getClient().getContent(contentId).getContent(), 
+                                                            ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
         assertEquals("This is the content", data);
 
         getClient().start(task.getId(), "Darth Vader");
        
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+//        ContentData result = new ContentData();
+//        result.setAccessType(AccessType.Inline);
+//        result.setType("java.lang.String");
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        ObjectOutputStream out = new ObjectOutputStream(bos);
+//        out.writeObject("This is the result");
+//        out.close();
+//        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result);
         
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
@@ -428,10 +434,14 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertTrue(contentId != -1);
         
         
-        ByteArrayInputStream bis = new ByteArrayInputStream(getClient().getContent(contentId).getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Map<String, Object> data = (Map<String, Object>) in.readObject();
-        in.close();
+//        ByteArrayInputStream bis = new ByteArrayInputStream(getClient().getContent(contentId).getContent());
+//        ObjectInputStream in = new ObjectInputStream(bis);
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getClient().getContent(contentId).getContent(), 
+                                                            ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
+                //in.readObject();
+        //in.close();
         //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
         assertEquals("MyObjectValue", ((MyObject) data.get("MyObject")).getValue());
         assertEquals("10", data.get("Priority"));
@@ -439,14 +449,16 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
 
         getClient().start(task.getId(), "Darth Vader");
 
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+//                new ContentData();
+//        result.setAccessType(AccessType.Inline);
+//        result.setType("java.lang.String");
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+//        ObjectOutputStream out = new ObjectOutputStream(bos);
+//        out.writeObject("This is the result");
+//        out.close();
+//        result.setContent(bos.toByteArray());
+                
         getClient().complete(task.getId(), "Darth Vader", result);
 
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));

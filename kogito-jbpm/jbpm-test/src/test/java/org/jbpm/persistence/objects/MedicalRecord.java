@@ -33,6 +33,10 @@ public class MedicalRecord implements Serializable{
     private List<RecordRow> rows;
     private int priority;
 
+    public MedicalRecord() {
+    }
+
+    
     public MedicalRecord(String desc, Patient patient) {
         this.description = desc;
         this.patient = patient;
@@ -80,7 +84,7 @@ public class MedicalRecord implements Serializable{
 
     @Override
     public String toString() {
-        return "MedicalRecord{" + "id=" + id + ", desc=" + description + ", patient=" + patient + ", rows=" + rows + ", priority=" + priority + '}';
+        return "MedicalRecord{" + "id=" + id + ", desc=" + description + ", patient=" + patient.getId() + ", rows=" + rows + ", priority=" + priority + '}';
     }
 
     @Override
