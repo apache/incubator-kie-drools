@@ -16,9 +16,17 @@
 
 package org.drools.planner.benchmark.core;
 
-import org.drools.planner.core.score.Score;
+import java.util.concurrent.Callable;
 
-public class PlannerBenchmarkResult {
+import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.DefaultSolverScope;
+
+public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> {
 
     private SolverBenchmark solverBenchmark = null;
     private ProblemBenchmark problemBenchmark = null;
@@ -29,6 +37,9 @@ public class PlannerBenchmarkResult {
     private Score winningScoreDifference = null; // compared to winning result (which might not be the overall winner)
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
+
+    private Boolean success = null;
+    private Throwable failureThrowable = null;
 
     public SolverBenchmark getSolverBenchmark() {
         return solverBenchmark;
@@ -94,9 +105,54 @@ public class PlannerBenchmarkResult {
         this.calculateCount = calculateCount;
     }
 
+    public Boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public Throwable getFailureThrowable() {
+        return failureThrowable;
+    }
+
+    public void setFailureThrowable(Throwable failureThrowable) {
+        this.failureThrowable = failureThrowable;
+    }
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
+
+    public String getName() {
+        return problemBenchmark.getName() + "_" + solverBenchmark.getName();
+    }
+
+    public PlannerBenchmarkResult call() {
+        // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+        Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
+            statistic.addListener(solver, solverBenchmark.getName());
+        }
+
+        solver.setPlanningProblem(problemBenchmark.readPlanningProblem());
+        solver.solve();
+        Solution outputSolution = solver.getBestSolution();
+
+        timeMillisSpend = solver.getTimeMillisSpend();
+        DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
+        calculateCount = solverScope.getCalculateCount();
+        score = outputSolution.getScore();
+        SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
+        planningEntityCount = solutionDescriptor.getPlanningEntityCount(outputSolution);
+        problemScale = solutionDescriptor.getProblemScale(outputSolution);
+        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
+            statistic.removeListener(solver, solverBenchmark.getName());
+        }
+        problemBenchmark.writeSolution(this, outputSolution);
+        return this;
+    }
 
     public Long getAverageCalculateCountPerSecond() {
         long timeMillisSpend = this.timeMillisSpend;

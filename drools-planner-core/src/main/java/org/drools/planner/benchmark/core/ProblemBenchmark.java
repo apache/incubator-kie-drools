@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.ProblemIO;
@@ -35,8 +34,6 @@ import org.drools.planner.core.solution.Solution;
 public class ProblemBenchmark {
 
     private String name = null;
-
-    private ExecutorService executor = null;
 
     private ProblemIO problemIO = null;
     private File inputSolutionFile = null;
@@ -54,14 +51,6 @@ public class ProblemBenchmark {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ExecutorService getExecutor() {
-        return executor;
-    }
-
-    public void setExecutor(ExecutorService executor) {
-        this.executor = executor;
     }
 
     public ProblemIO getProblemIO() {
@@ -119,14 +108,6 @@ public class ProblemBenchmark {
     public void benchmarkingStarted() {
     }
 
-    public Collection<Future<Boolean>> benchmark() {
-        Collection<Future<Boolean>> benchmarks = new ArrayList<Future<Boolean>>(plannerBenchmarkResultList.size());
-        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            benchmarks.add(executor.submit(new BenchmarkRunner(result, this)));
-        }
-        return benchmarks;
-    }
-
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
         for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
             SolverBenchmark solverBenchmark = result.getSolverBenchmark();
@@ -154,9 +135,7 @@ public class ProblemBenchmark {
     }
 
     public void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
-        String solverBenchmarkName = result.getSolverBenchmark().getName()
-                .replaceAll(" ", "_").replaceAll("[^\\w\\d_\\-]", "");
-        String filename = name + "_" + solverBenchmarkName + "." + problemIO.getFileExtension();
+        String filename = result.getName() + "." + problemIO.getFileExtension();
         File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }

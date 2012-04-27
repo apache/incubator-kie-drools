@@ -18,7 +18,6 @@ package org.drools.planner.benchmark.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
@@ -66,15 +65,25 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(List<ProblemBenchmark> unifiedProblemBenchmarkList, ExecutorService executor) {
+    public SolverBenchmark buildSolverBenchmark(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
+        validate();
         SolverBenchmark solverBenchmark = new SolverBenchmark();
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
         solverBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
         List<ProblemBenchmark> problemBenchmarkList = problemBenchmarksConfig
-                .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark, executor);
+                .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
+    }
+
+    private void validate() {
+        String nameRegex = "^[\\w\\d _\\-\\.]+$";
+        if (!name.matches(nameRegex)) {
+            throw new IllegalStateException("The solverBenchmark name (" + name
+                    + ") is invalid because it does not follow the nameRegex (" + nameRegex + ")" +
+                    " which might cause an illegal filename.");
+        }
     }
 
     public void inherit(SolverBenchmarkConfig inheritedConfig) {

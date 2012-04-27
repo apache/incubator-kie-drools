@@ -23,10 +23,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -177,25 +174,73 @@ public class PlannerBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    private void validate() {
+    public PlannerBenchmark buildPlannerBenchmark() {
+        validate();
+        generateSolverBenchmarkConfigNames();
+        inherit();
+
+        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
+        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
+        plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
+        plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
+        plannerBenchmark.setStatisticDirectory(statisticDirectory);
+        plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
+        plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
+        plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
+
+        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
+        List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
+        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(unifiedProblemBenchmarkList);
+            solverBenchmarkList.add(solverBenchmark);
+        }
+        plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
+        plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
+        return plannerBenchmark;
+    }
+
+    protected void validate() {
         if (solverBenchmarkConfigList == null || solverBenchmarkConfigList.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <solverBenchmark> in the <plannerBenchmark> configuration.");
         }
     }
-    
-    private ExecutorService createExecutor() {
-        int resolvedParallelBenchmarkCount = resolveParallelBenchmarkCount();
-        if (resolvedParallelBenchmarkCount > Runtime.getRuntime().availableProcessors()) {
-            logger.warn("Benchmarker will use more threads than there are CPUs. Results may be compromised.");
-        } else if (resolvedParallelBenchmarkCount < 1) {
-            logger.warn("Requested number of threads (" + resolvedParallelBenchmarkCount + ") is invalid.");
-            resolvedParallelBenchmarkCount = 1;
+
+    protected void generateSolverBenchmarkConfigNames() {
+        Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
+                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+            if (solverBenchmarkConfig.getName() != null) {
+                boolean unique = nameSet.add(solverBenchmarkConfig.getName());
+                if (!unique) {
+                    throw new IllegalStateException("The benchmark name (" + solverBenchmarkConfig.getName()
+                            + ") is used in more than 1 benchmark.");
+                }
+            } else {
+                noNameBenchmarkConfigSet.add(solverBenchmarkConfig);
+            }
         }
-        logger.info("Benchmarking will use (" + resolvedParallelBenchmarkCount + ") threads.");
-        return Executors.newFixedThreadPool(resolvedParallelBenchmarkCount);
+        int generatedNameIndex = 0;
+        for (SolverBenchmarkConfig solverBenchmarkConfig : noNameBenchmarkConfigSet) {
+            String generatedName = "Config_" + generatedNameIndex;
+            while (nameSet.contains(generatedName)) {
+                generatedNameIndex++;
+                generatedName = "Config_" + generatedNameIndex;
+            }
+            solverBenchmarkConfig.setName(generatedName);
+            generatedNameIndex++;
+        }
     }
-    
+
+    protected void inherit() {
+        if (inheritedSolverBenchmarkConfig != null) {
+            for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
+                solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
+            }
+        }
+    }
+
     protected int resolveParallelBenchmarkCount() {
         int availableProcessorCount = Runtime.getRuntime().availableProcessors();
         int resolvedParallelBenchmarkCount;
@@ -236,68 +281,7 @@ public class PlannerBenchmarkConfig {
         return resolvedParallelBenchmarkCount;
     }
 
-    private void generateSolverBenchmarkConfigNames() {
-        Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
-                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
-        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            if (solverBenchmarkConfig.getName() != null) {
-                boolean unique = nameSet.add(solverBenchmarkConfig.getName());
-                if (!unique) {
-                    throw new IllegalStateException("The benchmark name (" + solverBenchmarkConfig.getName()
-                            + ") is used in more than 1 benchmark.");
-                }
-            } else {
-                noNameBenchmarkConfigSet.add(solverBenchmarkConfig);
-            }
-        }
-        int generatedNameIndex = 0;
-        for (SolverBenchmarkConfig solverBenchmarkConfig : noNameBenchmarkConfigSet) {
-            String generatedName = "Config_" + generatedNameIndex;
-            while (nameSet.contains(generatedName)) {
-                generatedNameIndex++;
-                generatedName = "Config_" + generatedNameIndex;
-            }
-            solverBenchmarkConfig.setName(generatedName);
-            generatedNameIndex++;
-        }
-    }
-
-    private void inherit() {
-        if (inheritedSolverBenchmarkConfig != null) {
-            for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-                solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
-            }
-        }
-    }
-
-    public PlannerBenchmark buildPlannerBenchmark() {
-        validate();
-        generateSolverBenchmarkConfigNames();
-        inherit();
-
-        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark();
-        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
-        plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
-        plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
-        plannerBenchmark.setStatisticDirectory(statisticDirectory);
-        plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
-        plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
-
-        ExecutorService executor = createExecutor();
-        List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkConfigList.size());
-        List<ProblemBenchmark> unifiedProblemBenchmarkList = new ArrayList<ProblemBenchmark>();
-        for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
-            SolverBenchmark solverBenchmark = solverBenchmarkConfig.buildSolverBenchmark(
-                    unifiedProblemBenchmarkList, executor);
-            solverBenchmarkList.add(solverBenchmark);
-        }
-        plannerBenchmark.setSolverBenchmarkList(solverBenchmarkList);
-        plannerBenchmark.setUnifiedProblemBenchmarkList(unifiedProblemBenchmarkList);
-        return plannerBenchmark;
-    }
-
-    public Long calculateWarmUpTimeMillisSpendTotal() {
+    protected Long calculateWarmUpTimeMillisSpendTotal() {
         if (warmUpTimeMillisSpend == null && warmUpSecondsSpend == null && warmUpMinutesSpend == null
                 && warmUpHoursSpend == null) {
             return null;

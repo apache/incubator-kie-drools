@@ -19,7 +19,6 @@ package org.drools.planner.benchmark.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.api.ProblemIO;
@@ -83,16 +82,15 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmark> buildProblemBenchmarkList(
-            List<ProblemBenchmark> unifiedProblemBenchmarkList, SolverBenchmark solverBenchmark, ExecutorService executor) {
+    public List<ProblemBenchmark> buildProblemBenchmarkList(List<ProblemBenchmark> unifiedProblemBenchmarkList,
+            SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
                 inputSolutionFileList.size());
         for (File inputSolutionFile : inputSolutionFileList) {
-            // 2 SolverBenchmarks containing equal PProblemBenchmarks should contain the same instance
-            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(
-                    problemIO, inputSolutionFile, executor);
+            // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
+            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(problemIO, inputSolutionFile);
             ProblemBenchmark problemBenchmark;
             int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
             if (index < 0) {
@@ -141,11 +139,9 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemBenchmark buildProblemBenchmark(
-            ProblemIO problemIO, File inputSolutionFile, ExecutorService executor) {
+    private ProblemBenchmark buildProblemBenchmark(ProblemIO problemIO, File inputSolutionFile) {
         ProblemBenchmark problemBenchmark = new ProblemBenchmark();
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
-        problemBenchmark.setExecutor(executor);
         problemBenchmark.setName(name);
         problemBenchmark.setProblemIO(problemIO);
         problemBenchmark.setInputSolutionFile(inputSolutionFile);

@@ -19,12 +19,16 @@ package org.drools.planner.benchmark.core;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
@@ -45,11 +49,15 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<ProblemStatisticType> problemStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
+    private int parallelBenchmarkCount = -1;
     private Long warmUpTimeMillisSpend = null;
 
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
+    private ExecutorService executorService;
+    private int failureCount;
+    private Throwable firstFailureThrowable = null;
     private SolverBenchmark winningSolverBenchmark = null;
 
     public File getBenchmarkDirectory() {
@@ -100,6 +108,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
     }
 
+    public int getParallelBenchmarkCount() {
+        return parallelBenchmarkCount;
+    }
+
+    public void setParallelBenchmarkCount(int parallelBenchmarkCount) {
+        this.parallelBenchmarkCount = parallelBenchmarkCount;
+    }
+
     public Long getWarmUpTimeMillisSpend() {
         return warmUpTimeMillisSpend;
     }
@@ -131,21 +147,49 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
-        // execute all benchmarks in pre-configured number of threads
-        Collection<Future<Boolean>> benchmarks = new ArrayList<Future<Boolean>>();
+        Map<PlannerBenchmarkResult, Future<PlannerBenchmarkResult>> futureMap
+                = new HashMap<PlannerBenchmarkResult, Future<PlannerBenchmarkResult>>();
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            benchmarks.addAll(problemBenchmark.benchmark());
-        }
-        // wait for the benchmarks to complete
-        for (Future<Boolean> benchmark: benchmarks) {
-            try {
-                benchmark.get();
-            } catch (Exception e) {
-                logger.warn("One of the benchmarks failed.", e);
+            for (PlannerBenchmarkResult result : problemBenchmark.getPlannerBenchmarkResultList()) {
+                Future<PlannerBenchmarkResult> future = executorService.submit(result);
+                futureMap.put(result, future);
             }
         }
-        // all the threads are over, shut down the executor
-        unifiedProblemBenchmarkList.get(0).getExecutor().shutdownNow();
+        // wait for the benchmarks to complete
+        for (Map.Entry<PlannerBenchmarkResult, Future<PlannerBenchmarkResult>> futureEntry : futureMap.entrySet()) {
+            PlannerBenchmarkResult result = futureEntry.getKey();
+            Future<PlannerBenchmarkResult> future = futureEntry.getValue();
+            Throwable failureThrowable = null;
+            try {
+                // Explicitly returning it in the Callable guarantees memory visibility
+                result = future.get();
+                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                if (result.getScore() == null) {
+                    throw new IllegalStateException("Score is null. TODO fix JBRULES-3462.");
+                }
+            } catch (InterruptedException e) {
+                logger.error("The plannerBenchmarkResult (" + result.getName() + ") was interrupted.", e);
+                failureThrowable = e;
+            } catch (ExecutionException e) {
+                Throwable cause = e.getCause();
+                logger.error("The plannerBenchmarkResult (" + result.getName() + ") failed.", cause);
+                failureThrowable = cause;
+            } catch (IllegalStateException e) {
+                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                logger.error("The plannerBenchmarkResult (" + result.getName() + ") failed.", e);
+                failureThrowable = e;
+            }
+            if (failureThrowable == null) {
+                result.setSuccess(true);
+            } else {
+                result.setSuccess(false);
+                result.setFailureThrowable(failureThrowable);
+                failureCount++;
+                if (firstFailureThrowable == null) {
+                    firstFailureThrowable = failureThrowable;
+                }
+            }
+        }
         benchmarkingEnded();
     }
 
@@ -165,8 +209,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             problemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
             problemBenchmark.benchmarkingStarted();
         }
-        logger.info("Benchmarking started: solverBenchmarkList size ({}).",
-                solverBenchmarkList.size());
+        executorService = Executors.newFixedThreadPool(parallelBenchmarkCount);
+        failureCount = 0;
+        firstFailureThrowable = null;
+        winningSolverBenchmark = null;
+        logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount({}).",
+                solverBenchmarkList.size(), parallelBenchmarkCount);
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
@@ -211,6 +259,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     public void benchmarkingEnded() {
+        executorService.shutdownNow();
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
             problemBenchmark.benchmarkingEnded();
         }
@@ -223,6 +272,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         statisticManager.writeStatistics(solverBenchmarkList);
         logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
                 winningSolverBenchmark.getName(), statisticManager.getHtmlOverviewFile().getAbsolutePath());
+        if (failureCount > 0) {
+            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ").",
+                    firstFailureThrowable);
+        }
     }
 
     private void determineRanking() {

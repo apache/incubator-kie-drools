@@ -21,7 +21,9 @@ import java.io.File;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * Reads or writes a {@link Solution} from or to a {@link File}.
+ * Reads or writes a {@link Solution} from or to a {@link File}.<
+ * <p/>
+ * This class is thread-safe.
  */
 public interface ProblemIO {
 
@@ -39,17 +41,21 @@ public interface ProblemIO {
      * If that isn't the case, this method should return the output file extension.
      * <p/>
      * The file extension does not include the dot that separates it from the base name.
+     * <p/>
+     * This method is thread-safe.
      * @return never null, for example "xml"
      */
     String getFileExtension();
 
     /**
+     * This method is thread-safe.
      * @param inputSolutionFile never null
      * @return never null
      */
     Solution read(File inputSolutionFile);
 
     /**
+     * This method is thread-safe.
      * @param solution never null
      * @param outputSolutionFile never null, parent directory already exists
      */
