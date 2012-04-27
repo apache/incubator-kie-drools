@@ -97,6 +97,12 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         out.writeInt( factSize );
         out.writeObject( index );
     }   
+    
+    public void init(Entry[] table, int size, int factSize) {
+        this.table = table;
+        this.size = size;
+        this.factSize = factSize;
+    }    
 
     public Iterator iterator() {
         if ( this.tupleValueFullIterator == null ) {
@@ -146,22 +152,23 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
             int length = table.length;
 
-            while ( this.row < length ) {
+            while ( this.row <= length ) {
                 // check if there is a current bucket
                 while ( list == null ) {
-                    // iterate while there is no current bucket, trying each array position
-                    list = (LeftTupleList) this.table[this.row];
-                    this.row++;
+                    if ( this.row < length ) {
+                        // iterate while there is no current bucket, trying each array position
+                        list = (LeftTupleList) this.table[this.row];
+                        this.row++;
+                    } else {
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;                        
+                    }
                     
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
                         leftTuple = (LeftTuple) list.getFirst( );
                         return leftTuple;
-                    } else if ( this.row >= length ) {
-                        // we've scanned the whole table and nothing is left, so return null
-                        return null;
-                    }
-                    
+                    }                    
                 }
 
                 leftTuple = (LeftTuple) leftTuple.getNext();
@@ -246,22 +253,23 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
          * @see org.drools.util.Iterator#next()
          */
         public Object next() {
-            while ( this.row < this.length ) {
+            while ( this.row <= this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
-                    // iterate while there is no current bucket, trying each array position
-                    this.list = (LeftTupleList) this.table[this.row];
-                    this.row++;
+                    if ( this.row < length ) {
+                        // iterate while there is no current bucket, trying each array position
+                        this.list = (LeftTupleList) this.table[this.row];
+                        this.row++;
+                    } else {
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;                        
+                    }
                     
                     if ( this.list != null ) {
                         // we have a bucket so assign the first LeftTuple and return
                         this.leftTuple = (LeftTuple) this.list.getFirst( );
                         return this.leftTuple;
-                    } else if ( this.row >= this.length ) {
-                        // we've scanned the whole table and nothing is left, so return null
-                        return null;
-                    }
-                    
+                    }                    
                 }
 
                 this.leftTuple = (LeftTuple) this.leftTuple.getNext();
