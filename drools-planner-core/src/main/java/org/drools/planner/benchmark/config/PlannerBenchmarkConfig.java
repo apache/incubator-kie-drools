@@ -18,7 +18,6 @@ package org.drools.planner.benchmark.config;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,9 +28,11 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.benchmark.core.comparator.SimpleSolverBenchmarkComparatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class PlannerBenchmarkConfig {
     private File benchmarkInstanceDirectory = null;
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
-    private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private Class<SolverBenchmarkComparatorFactory> solverBenchmarkComparatorFactoryClass = null;
 
     private String parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpend = null;
@@ -99,12 +100,12 @@ public class PlannerBenchmarkConfig {
         this.statisticDirectory = statisticDirectory;
     }
 
-    public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
-        return solverBenchmarkComparator;
+    public Class<SolverBenchmarkComparatorFactory> getSolverBenchmarkComparatorFactoryClass() {
+        return solverBenchmarkComparatorFactoryClass;
     }
 
-    public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
-        this.solverBenchmarkComparator = solverBenchmarkComparator;
+    public void setSolverBenchmarkComparatorFactoryClass(Class<SolverBenchmarkComparatorFactory> solverBenchmarkComparatorFactoryClass) {
+        this.solverBenchmarkComparatorFactoryClass = solverBenchmarkComparatorFactoryClass;
     }
 
     /**
@@ -184,7 +185,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmark.setBenchmarkInstanceDirectory(benchmarkInstanceDirectory);
         plannerBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
         plannerBenchmark.setStatisticDirectory(statisticDirectory);
-        plannerBenchmark.setSolverBenchmarkComparator(solverBenchmarkComparator);
+        plannerBenchmark.setSolverBenchmarkComparatorFactory(buildSolverBenchmarkComparatorFactory());
         plannerBenchmark.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmark.setWarmUpTimeMillisSpend(calculateWarmUpTimeMillisSpendTotal());
 
@@ -208,8 +209,7 @@ public class PlannerBenchmarkConfig {
 
     protected void generateSolverBenchmarkConfigNames() {
         Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet
-                = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+        Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
         for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
             if (solverBenchmarkConfig.getName() != null) {
                 boolean unique = nameSet.add(solverBenchmarkConfig.getName());
@@ -239,6 +239,23 @@ public class PlannerBenchmarkConfig {
                 solverBenchmarkConfig.inherit(inheritedSolverBenchmarkConfig);
             }
         }
+    }
+
+    protected SolverBenchmarkComparatorFactory buildSolverBenchmarkComparatorFactory() {
+        if (solverBenchmarkComparatorFactoryClass != null) {
+            try {
+                return solverBenchmarkComparatorFactoryClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("solverBenchmarkComparatorFactoryClass ("
+                        + solverBenchmarkComparatorFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("solverBenchmarkComparatorFactoryClass ("
+                        + solverBenchmarkComparatorFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+        }
+        return new SimpleSolverBenchmarkComparatorFactory();
     }
 
     protected int resolveParallelBenchmarkCount() {

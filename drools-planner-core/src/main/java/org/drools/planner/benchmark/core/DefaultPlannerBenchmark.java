@@ -31,8 +31,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator;
+import org.drools.planner.benchmark.core.comparator.SimpleSolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private List<ProblemStatisticType> problemStatisticTypeList = null;
-    private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+    private SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory = null;
 
     private int parallelBenchmarkCount = -1;
     private Long warmUpTimeMillisSpend = null;
@@ -100,12 +101,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
-    public Comparator<SolverBenchmark> getSolverBenchmarkComparator() {
-        return solverBenchmarkComparator;
+    public SolverBenchmarkComparatorFactory getSolverBenchmarkComparatorFactory() {
+        return solverBenchmarkComparatorFactory;
     }
 
-    public void setSolverBenchmarkComparator(Comparator<SolverBenchmark> solverBenchmarkComparator) {
-        this.solverBenchmarkComparator = solverBenchmarkComparator;
+    public void setSolverBenchmarkComparatorFactory(SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory) {
+        this.solverBenchmarkComparatorFactory = solverBenchmarkComparatorFactory;
     }
 
     public int getParallelBenchmarkCount() {
@@ -199,9 +200,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
         initBenchmarkDirectoryAndSubdirs();
-        if (solverBenchmarkComparator == null) {
-            solverBenchmarkComparator = new TotalScoreSolverBenchmarkComparator();
-        }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
         }
@@ -280,15 +278,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
-        Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            int ranking = sortedSolverBenchmarkList.indexOf(solverBenchmark);
+        Comparator<SolverBenchmark> comparator = solverBenchmarkComparatorFactory.createSolverBenchmarkComparator(sortedSolverBenchmarkList);
+        Collections.sort(sortedSolverBenchmarkList, Collections.reverseOrder(comparator));
+        int ranking = 0;
+        for (SolverBenchmark solverBenchmark : sortedSolverBenchmarkList) {
             solverBenchmark.setRanking(ranking);
-            if (ranking == 0) {
-                winningSolverBenchmark = solverBenchmark;
-            }
+            ranking++;
         }
+        winningSolverBenchmark = sortedSolverBenchmarkList.get(0);
     }
 
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
