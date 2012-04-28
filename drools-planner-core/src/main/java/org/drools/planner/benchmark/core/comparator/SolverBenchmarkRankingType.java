@@ -16,22 +16,17 @@
 
 package org.drools.planner.benchmark.core.comparator;
 
-import java.util.Comparator;
-import java.util.List;
-
-import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
-import org.drools.planner.benchmark.core.SolverBenchmark;
-
-/**
- * This benchmark ranker simply ranks solver benchmarks by their total score.
- */
-public class SimpleSolverBenchmarkComparatorFactory implements SolverBenchmarkComparatorFactory {
-
+public enum SolverBenchmarkRankingType {
     /**
-     * Rank the benchmarks based on their total score.
+     * @see TotalScoreSolverBenchmarkRankingComparator
      */
-    public Comparator<SolverBenchmark> createSolverBenchmarkComparator(List<SolverBenchmark> solverBenchmarkList) {
-        return new TotalScoreSolverBenchmarkComparator();
-    }
-
+    TOTAL_SCORE,
+    /**
+     * @see WorstScoreSolverBenchmarkRankingComparator
+     */
+    WORST_SCORE,
+    /**
+     * @see TotalRankSolverBenchmarkRankingWeightFactory
+     */
+    TOTAL_RANKING
 }

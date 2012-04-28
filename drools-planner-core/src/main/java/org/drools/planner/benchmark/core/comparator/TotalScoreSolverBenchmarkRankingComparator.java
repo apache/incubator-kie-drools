@@ -17,23 +17,31 @@
 package org.drools.planner.benchmark.core.comparator;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solution.Solution;
 
-public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
+/**
+ * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its total {@link Score}.
+ * It minimizes the overall cost if all {@link Solution}s would be executed.
+ * <p/>
+ * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
+ * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
+ * In such cases, dataset B would marginalize dataset A.
+ * To avoid that, use {@link TotalRankSolverBenchmarkRankingWeightFactory}.
+ */
+public class TotalScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmark>, Serializable {
+
+    private WorstScoreSolverBenchmarkRankingComparator worstScoreSolverBenchmarkRankingComparator
+            = new WorstScoreSolverBenchmarkRankingComparator();
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {
-        List<Score> aScoreList = a.getScoreList();
-        Collections.sort(aScoreList); // Worst scores become first in the list
-        List<Score> bScoreList = b.getScoreList();
-        Collections.sort(bScoreList); // Worst scores become first in the list
         return new CompareToBuilder()
-                .append(aScoreList.toArray(), bScoreList.toArray())
+                .append(a.getTotalScore(), b.getTotalScore())
+                .append(a, b, worstScoreSolverBenchmarkRankingComparator)
                 .toComparison();
     }
 

@@ -17,20 +17,27 @@
 package org.drools.planner.benchmark.core.comparator;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.core.score.Score;
 
-public class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
-
-    private WorstScoreSolverBenchmarkComparator worstScoreSolverBenchmarkComparator
-            = new WorstScoreSolverBenchmarkComparator();
+/**
+ * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its worst {@link Score}.
+ * It minimizes the worst case scenario.
+ */
+public class WorstScoreSolverBenchmarkRankingComparator implements Comparator<SolverBenchmark>, Serializable {
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {
+        List<Score> aScoreList = a.getScoreList();
+        Collections.sort(aScoreList); // Worst scores become first in the list
+        List<Score> bScoreList = b.getScoreList();
+        Collections.sort(bScoreList); // Worst scores become first in the list
         return new CompareToBuilder()
-                .append(a.getTotalScore(), b.getTotalScore())
-                .append(a, b, worstScoreSolverBenchmarkComparator)
+                .append(aScoreList.toArray(), bScoreList.toArray())
                 .toComparison();
     }
 

@@ -25,13 +25,14 @@ import org.drools.planner.benchmark.core.SolverBenchmark;
  * Defines an interface for classes that will be used to rank solver benchmarks 
  * in order of their respective performance.
  */
-public interface SolverBenchmarkComparatorFactory {
+public interface SolverBenchmarkRankingWeightFactory {
 
     /**
      * The ranking function. Takes the provided solverBenchmarkList and ranks them.
      * @param solverBenchmarkList never null
+     * @param solverBenchmark never null
      * @return never null
      */
-    public Comparator<SolverBenchmark> createSolverBenchmarkComparator(List<SolverBenchmark> solverBenchmarkList);
+    Comparable createRankingWeight(List<SolverBenchmark> solverBenchmarkList, SolverBenchmark solverBenchmark);
 
 }

@@ -26,14 +26,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.drools.planner.benchmark.api.SolverBenchmarkComparatorFactory;
+import org.apache.commons.collections.comparators.ReverseComparator;
+import org.drools.planner.benchmark.api.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.comparator.SimpleSolverBenchmarkComparatorFactory;
 import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
 import org.slf4j.Logger;
@@ -48,7 +50,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
     private List<ProblemStatisticType> problemStatisticTypeList = null;
-    private SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory = null;
+    private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
+    private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
 
     private int parallelBenchmarkCount = -1;
     private Long warmUpTimeMillisSpend = null;
@@ -101,12 +104,20 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
-    public SolverBenchmarkComparatorFactory getSolverBenchmarkComparatorFactory() {
-        return solverBenchmarkComparatorFactory;
+    public Comparator<SolverBenchmark> getSolverBenchmarkRankingComparator() {
+        return solverBenchmarkRankingComparator;
     }
 
-    public void setSolverBenchmarkComparatorFactory(SolverBenchmarkComparatorFactory solverBenchmarkComparatorFactory) {
-        this.solverBenchmarkComparatorFactory = solverBenchmarkComparatorFactory;
+    public void setSolverBenchmarkRankingComparator(Comparator<SolverBenchmark> solverBenchmarkRankingComparator) {
+        this.solverBenchmarkRankingComparator = solverBenchmarkRankingComparator;
+    }
+
+    public SolverBenchmarkRankingWeightFactory getSolverBenchmarkRankingWeightFactory() {
+        return solverBenchmarkRankingWeightFactory;
+    }
+
+    public void setSolverBenchmarkRankingWeightFactory(SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory) {
+        this.solverBenchmarkRankingWeightFactory = solverBenchmarkRankingWeightFactory;
     }
 
     public int getParallelBenchmarkCount() {
@@ -278,8 +289,26 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
-        Comparator<SolverBenchmark> comparator = solverBenchmarkComparatorFactory.createSolverBenchmarkComparator(sortedSolverBenchmarkList);
-        Collections.sort(sortedSolverBenchmarkList, Collections.reverseOrder(comparator));
+        if (solverBenchmarkRankingComparator != null) {
+            Collections.sort(sortedSolverBenchmarkList, Collections.reverseOrder(solverBenchmarkRankingComparator));
+        } else if (solverBenchmarkRankingWeightFactory != null) {
+            SortedMap<Comparable, SolverBenchmark> sortedSolverBenchmarkMap = new TreeMap<Comparable, SolverBenchmark>(
+                    new ReverseComparator());
+            for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+                Comparable rankingWeight = solverBenchmarkRankingWeightFactory.createRankingWeight(
+                        solverBenchmarkList, solverBenchmark);
+                Object previous = sortedSolverBenchmarkMap.put(rankingWeight, solverBenchmark);
+                if (previous != null) {
+                    throw new IllegalStateException("The solverBenchmarkList contains 2 times"
+                            + " the same solverBenchmark (" + previous + ") and (" + solverBenchmark + ").");
+                }
+            }
+            sortedSolverBenchmarkList.clear();
+            sortedSolverBenchmarkList.addAll(sortedSolverBenchmarkMap.values());
+        } else {
+            throw new IllegalStateException("Ranking is impossible" +
+                    " because solverBenchmarkRankingComparator and solverBenchmarkRankingWeightFactory are null.");
+        }
         int ranking = 0;
         for (SolverBenchmark solverBenchmark : sortedSolverBenchmarkList) {
             solverBenchmark.setRanking(ranking);

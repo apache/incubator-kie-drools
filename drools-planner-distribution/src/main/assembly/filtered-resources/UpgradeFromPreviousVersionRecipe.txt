@@ -1907,3 +1907,14 @@ After in *.java:
         scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDirectorFactoryConfig.ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+
+
+From 5.4.0.Final to 5.5.0.Beta1
+-------------------------------
+
+[MINOR] Benchmarker: each *SolverBenchmarkComparator has been renamed to *SolverBenchmarkRankingComparator
+Before in *BenchmarkConfig.xml:
+  <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
+After in *BenchmarkConfig.xml:
+  <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
+However, if you want to use any of the build-in ranking comparisons, just use <solverBenchmarkRankingType>, see manual.
