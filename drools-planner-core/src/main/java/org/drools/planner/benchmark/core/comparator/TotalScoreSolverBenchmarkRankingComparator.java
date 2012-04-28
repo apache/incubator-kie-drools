@@ -26,7 +26,7 @@ import org.drools.planner.core.solution.Solution;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmark} by its total {@link Score}.
- * It minimizes the overall cost if all {@link Solution}s would be executed.
+ * It maximize the overall score, so it minimizes the overall cost if all {@link Solution}s would be executed.
  * <p/>
  * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
  * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.

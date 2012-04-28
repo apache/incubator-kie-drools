@@ -29,9 +29,9 @@ import org.drools.planner.core.solution.Solution;
 /**
  * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmark} by how how many time each of it's
  * {@link PlannerBenchmarkResult} beat the {@link PlannerBenchmarkResult} of the other {@link SolverBenchmark}s.
- * It maximizes the total ranking.
+ * It maximizes the overall ranking.
  * <p/>
- * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
+ * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in
  * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, this ranking is more fair than {@link TotalScoreSolverBenchmarkRankingComparator},
  * because in this ranking, dataset B wouldn't marginalize dataset A.

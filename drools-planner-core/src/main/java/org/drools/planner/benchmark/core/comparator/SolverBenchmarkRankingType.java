@@ -16,16 +16,21 @@
 
 package org.drools.planner.benchmark.core.comparator;
 
+import org.drools.planner.core.solution.Solution;
+
 public enum SolverBenchmarkRankingType {
     /**
+     * Maximize the overall score, so minimize the overall cost if all {@link Solution}s would be executed.
      * @see TotalScoreSolverBenchmarkRankingComparator
      */
     TOTAL_SCORE,
     /**
+     * Minimize the worst case scenario.
      * @see WorstScoreSolverBenchmarkRankingComparator
      */
     WORST_SCORE,
     /**
+     * Maximize the overall ranking.
      * @see TotalRankSolverBenchmarkRankingWeightFactory
      */
     TOTAL_RANKING
