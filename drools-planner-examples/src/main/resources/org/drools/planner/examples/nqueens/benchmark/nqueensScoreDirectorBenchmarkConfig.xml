@@ -116,7 +116,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>TS with Drools compensation action</name>
+    <name>TS with Drools compensation action experiment</name>
     <solver>
       <scoreDirectorFactory>
         <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensCompensationActionExperimentScoreRules.drl</scoreDrl>

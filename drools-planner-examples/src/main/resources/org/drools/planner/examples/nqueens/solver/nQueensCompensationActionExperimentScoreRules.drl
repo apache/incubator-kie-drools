@@ -37,7 +37,6 @@ rule "multipleQueensHorizontal"
         int score = scoreHolder.getScore();
         score--;
         scoreHolder.setScore(score);
-
         // TODO greatly simplify the use of compensation action
         final SimpleScoreHolder finalScoreHolder = scoreHolder;
         ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
@@ -62,7 +61,6 @@ rule "multipleQueensAscendingDiagonal"
         int score = scoreHolder.getScore();
         score--;
         scoreHolder.setScore(score);
-
         // TODO greatly simplify the use of compensation action
         final SimpleScoreHolder finalScoreHolder = scoreHolder;
         ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
@@ -85,7 +83,6 @@ rule "multipleQueensDescendingDiagonal"
         int score = scoreHolder.getScore();
         score--;
         scoreHolder.setScore(score);
-
         // TODO greatly simplify the use of compensation action
         final SimpleScoreHolder finalScoreHolder = scoreHolder;
         ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(

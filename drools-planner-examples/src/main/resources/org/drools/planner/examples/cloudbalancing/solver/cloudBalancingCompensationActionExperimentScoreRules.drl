@@ -1,0 +1,147 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.examples.cloudbalancing.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreHolder;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
+import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+
+global HardAndSoftScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "requiredCpuPowerTotal"
+    when
+        $computer : CloudComputer($cpuPower : cpuPower)
+        $requiredCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
+            CloudProcess(
+                computer == $computer,
+                $requiredCpuPower : requiredCpuPower),
+            sum($requiredCpuPower)
+        )
+    then
+        final int weight = $requiredCpuPowerTotal.intValue() - $cpuPower;
+
+        int hardBroken = scoreHolder.getHardConstraintsBroken();
+        hardBroken +=  weight;
+        scoreHolder.setHardConstraintsBroken(hardBroken);
+        // TODO greatly simplify the use of compensation action
+        final HardAndSoftScoreHolder finalScoreHolder = scoreHolder;
+        ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
+            new org.drools.event.rule.ActivationUnMatchListener() {
+                public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                        org.drools.runtime.rule.Activation activation) {
+                    int hardBroken = finalScoreHolder.getHardConstraintsBroken();
+                    hardBroken -= weight;
+                    finalScoreHolder.setHardConstraintsBroken(hardBroken);
+                }
+            }
+        );
+end
+
+rule "requiredMemoryTotal"
+    when
+        $computer : CloudComputer($memory : memory)
+        $requiredMemoryTotal : Number(intValue > $memory) from accumulate(
+            CloudProcess(
+                computer == $computer,
+                $requiredMemory : requiredMemory),
+            sum($requiredMemory)
+        )
+    then
+        final int weight = $requiredMemoryTotal.intValue() - $memory;
+
+        int hardBroken = scoreHolder.getHardConstraintsBroken();
+        hardBroken +=  weight;
+        scoreHolder.setHardConstraintsBroken(hardBroken);
+        // TODO greatly simplify the use of compensation action
+        final HardAndSoftScoreHolder finalScoreHolder = scoreHolder;
+        ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
+            new org.drools.event.rule.ActivationUnMatchListener() {
+                public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                        org.drools.runtime.rule.Activation activation) {
+                    int hardBroken = finalScoreHolder.getHardConstraintsBroken();
+                    hardBroken -= weight;
+                    finalScoreHolder.setHardConstraintsBroken(hardBroken);
+                }
+            }
+        );
+end
+
+rule "requiredNetworkBandwidthTotal"
+    when
+        $computer : CloudComputer($networkBandwidth : networkBandwidth)
+        $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
+            CloudProcess(
+                computer == $computer,
+                $requiredNetworkBandwidth : requiredNetworkBandwidth),
+            sum($requiredNetworkBandwidth)
+        )
+    then
+        final int weight = $requiredNetworkBandwidthTotal.intValue() - $networkBandwidth;
+
+        int hardBroken = scoreHolder.getHardConstraintsBroken();
+        hardBroken +=  weight;
+        scoreHolder.setHardConstraintsBroken(hardBroken);
+        // TODO greatly simplify the use of compensation action
+        final HardAndSoftScoreHolder finalScoreHolder = scoreHolder;
+        ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
+            new org.drools.event.rule.ActivationUnMatchListener() {
+                public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                        org.drools.runtime.rule.Activation activation) {
+                    int hardBroken = finalScoreHolder.getHardConstraintsBroken();
+                    hardBroken -= weight;
+                    finalScoreHolder.setHardConstraintsBroken(hardBroken);
+                }
+            }
+        );
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "computerCost"
+    when
+        $computer : CloudComputer($cost : cost)
+        exists CloudProcess(computer == $computer)
+    then
+        final int weight = $cost;
+
+        int softBroken = scoreHolder.getSoftConstraintsBroken();
+        softBroken +=  weight;
+        scoreHolder.setSoftConstraintsBroken(softBroken);
+        // TODO greatly simplify the use of compensation action
+        final HardAndSoftScoreHolder finalScoreHolder = scoreHolder;
+        ((org.drools.common.AgendaItem) kcontext.getActivation()).setActivationUnMatchListener(
+            new org.drools.event.rule.ActivationUnMatchListener() {
+                public void unMatch(org.drools.runtime.rule.WorkingMemory wm,
+                        org.drools.runtime.rule.Activation activation) {
+                    int softBroken = finalScoreHolder.getSoftConstraintsBroken();
+                    softBroken -= weight;
+                    finalScoreHolder.setSoftConstraintsBroken(softBroken);
+                }
+            }
+        );
+end

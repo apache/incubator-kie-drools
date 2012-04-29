@@ -115,4 +115,33 @@
       </localSearch>
     </solver>
   </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Drools compensation action experiment</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingCompensationActionExperimentScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessSwapMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <planningEntityTabuSize>7</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </plannerBenchmark>
