@@ -78,7 +78,6 @@ public class DrlParserTest {
     }
     
     @Test
-    @Ignore("See JBRULES-3425: KnowledgeBuilder fails to build rules with BigDecimal\\BigInteger constraints comparing to zero")
     public void testBigDecimalWithZeroValue() throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
@@ -159,7 +158,6 @@ public class DrlParserTest {
     }
 
     @Test
-    @Ignore("See JBRULES-3425: KnowledgeBuilder fails to build rules with BigDecimal\\BigInteger constraints comparing to zero")
     public void testBigIntegerWithZeroValue() throws Exception {
         String drl = "package foo \n"
                      + "declare Bean1 \n"
