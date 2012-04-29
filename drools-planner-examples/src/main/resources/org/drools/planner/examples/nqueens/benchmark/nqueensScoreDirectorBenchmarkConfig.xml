@@ -115,4 +115,27 @@
       </localSearch>
     </solver>
   </solverBenchmark>
+  <solverBenchmark>
+    <name>TS with Drools compensation action</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensCompensationActionExperimentScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <planningEntityTabuSize>5</planningEntityTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </plannerBenchmark>
