@@ -269,11 +269,7 @@ public class PatternBuilder
                 epn = new EntryPointNode( context.getNextId(),
                                           ruleBase.getRete(),
                                           context );
-                if ( wms.length > 0 ) {
-                    epn.attach( wms );
-                } else {
-                    epn.attach();
-                }
+                epn.attach( context );
             }
 
             ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
@@ -285,11 +281,7 @@ public class PatternBuilder
                                                                objectType );
             otn.setExpirationOffset( expirationOffset );
 
-            if ( wms.length > 0 ) {
-                otn.attach( wms );
-            } else {
-                otn.attach();
-            }
+            otn.attach( context );
 
             return otn;
         } finally {

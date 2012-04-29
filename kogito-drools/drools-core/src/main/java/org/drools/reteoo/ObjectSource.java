@@ -97,7 +97,7 @@ public abstract class ObjectSource extends BaseNode
                  final boolean partitionsEnabled,
                  final ObjectSource objectSource,
                  final int alphaNodeHashingThreshold) {
-        super( id, partitionId, partitionsEnabled );
+        super(id, partitionId, partitionsEnabled);
         this.source = objectSource;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
         this.sink = EmptyObjectSinkAdapter.getInstance();
@@ -143,7 +143,7 @@ public abstract class ObjectSource extends BaseNode
         
         Class objectClass = ((ClassObjectType)objectType).getClassType();        
         TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
+        if ( typeDeclaration == null || !typeDeclaration.isPropertyReactive() ) {
             // if property specific is not on, then accept all modification propagations
             declaredMask = Long.MAX_VALUE;             
         } else {
@@ -167,8 +167,7 @@ public abstract class ObjectSource extends BaseNode
         }
         inferredMask = inferredMask | returnMask;
         return returnMask;
-        
-    }         
+    }
 
     /**
      * Adds the <code>ObjectSink</code> so that it may receive

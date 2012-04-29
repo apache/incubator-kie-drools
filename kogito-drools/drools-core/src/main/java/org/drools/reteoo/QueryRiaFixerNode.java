@@ -115,23 +115,19 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public BetaNode getBetaNode() {
         return betaNode;
     }
-    /**
-     * Attaches this node into the network.
-     */
-    public void attach() {
-        this.tupleSource.addTupleSink( this );
-    }
-    
+
     @Override
-    public void addTupleSink(LeftTupleSink tupleSink) {
+    public void addTupleSink(LeftTupleSink tupleSink, BuildContext context) {
         this.betaNode = (BetaNode) tupleSink;
     }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
+    public void attach( BuildContext context ) {
+        this.tupleSource.addTupleSink( this, context );
+        if (context == null) {
+            return;
+        }
 
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,

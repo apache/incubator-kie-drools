@@ -141,15 +141,13 @@ public class QueryElementNode extends LeftTupleSource
                                  workingMemories );
     }
 
-    public void attach() {
-        this.tupleSource.addTupleSink( this );
-    }
+    public void attach( BuildContext context ) {
+        this.tupleSource.addTupleSink( this, context );
+        if (context == null) {
+            return;
+        }
 
-    public void attach(InternalWorkingMemory[] workingMemories) {
-        attach();
-
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,

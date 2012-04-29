@@ -326,7 +326,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory,
                                               boolean tupleMemoryEnabled) {
-        for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+        for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = childLeftTuple.getLeftParentNext() ) {
             childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                                context,
                                                                workingMemory );

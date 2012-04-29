@@ -89,31 +89,31 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null,
                                                                        null );
-        
+
         BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
         final EntryPointNode entryPoint = new EntryPointNode( -1,
                                                               ruleBase.getRete(),
                                                               context );
         entryPoint.attach();
-                        
+
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   context );
-        
+
         objectTypeNode.attach();
-        
+
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
-                                                                       objectTypeNode,                 
+                                                                       objectTypeNode,
                                                                        buildContext );
         liaNode.attach();
-        
+
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final MockLeftTupleSink sink = new MockLeftTupleSink();
         liaNode.addTupleSink( sink );
-        
+
         final Object string1 = "cheese";
 
         // assert object

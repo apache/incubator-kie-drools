@@ -294,7 +294,8 @@ public class ReteTest extends DroolsTestCase {
                                                                  buildContext );
         final MockObjectSink collectionSink = new MockObjectSink();
         collectionOtn.addObjectSink( collectionSink );
-        collectionOtn.attach( new InternalWorkingMemory[]{workingMemory} );
+
+        collectionOtn.attach( new TestBuildContext( new InternalWorkingMemory[]{workingMemory} ) );
 
         assertEquals( 1,
                       collectionSink.getAsserted().size() );
@@ -306,6 +307,19 @@ public class ReteTest extends DroolsTestCase {
         assertTrue( nodes.contains( arrayOtn ) );
         assertTrue( nodes.contains( listOtn ) );
         assertTrue( nodes.contains( collectionOtn ) );
+    }
+
+    public static class TestBuildContext extends BuildContext {
+        InternalWorkingMemory[] workingMemories;
+
+        TestBuildContext(InternalWorkingMemory[] workingMemories) {
+            super(null, null);
+            this.workingMemories = workingMemories;
+        }
+
+        public InternalWorkingMemory[] getWorkingMemories() {
+            return workingMemories;
+        }
     }
 
     /**

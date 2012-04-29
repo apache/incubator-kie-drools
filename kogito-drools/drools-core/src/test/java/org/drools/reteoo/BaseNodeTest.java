@@ -17,6 +17,7 @@
 package org.drools.reteoo;
 
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class BaseNodeTest {
 
         }
 
-        public void attach() {
+        public void attach( BuildContext context ) {
             // TODO Auto-generated method stub
 
         }
@@ -70,11 +71,6 @@ public class BaseNodeTest {
                                 final ReteooBuilder builder,
                                 final BaseNode node,
                                 final InternalWorkingMemory[] workingMemories) {
-        }
-
-        public void attach(final InternalWorkingMemory[] workingMemories) {
-            // TODO Auto-generated method stub
-
         }
 
         public boolean isInUse() {

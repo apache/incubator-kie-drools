@@ -41,6 +41,10 @@ public final class ClassUtils {
 
     private static final String STAR    = "*";
 
+    public static boolean areNullSafeEquals(Object obj1, Object obj2) {
+        return obj1 == null ? obj2 == null : obj1.equals(obj2);
+    }
+
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class

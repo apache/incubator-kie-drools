@@ -26,6 +26,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
@@ -43,6 +44,8 @@ import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
 import org.drools.rule.WindowReference;
 import org.drools.time.TemporalDependencyMatrix;
+
+import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 public class ReteooRuleBuilder {
 
@@ -145,9 +148,7 @@ public class ReteooRuleBuilder {
         // checks if an initial-fact is needed
         if (builder.requiresLeftActivation( this.utils,
                                             subrule )) {
-            this.addInitialFactPattern( context,
-                                        subrule,
-                                        rule );
+            this.addInitialFactPattern( subrule );
         }
 
         // builds and attach
@@ -163,16 +164,13 @@ public class ReteooRuleBuilder {
                                                                   subruleIndex,
                                                                   context );
 
-        if (context.getWorkingMemories().length == 0) {
-            ( (BaseNode) terminal ).attach();
-        } else {
-            ( (BaseNode) terminal ).attach( context.getWorkingMemories() );
-        }
+        BaseNode baseTerminalNode = (BaseNode) terminal;
+        baseTerminalNode.attach(context);
 
-        ( (BaseNode) terminal ).networkUpdated(new UpdateContext());
+        baseTerminalNode.networkUpdated(new UpdateContext());
 
-        // adds the terminal no to the list of nodes created/added by this sub-rule
-        context.getNodes().add( (BaseNode) terminal );
+        // adds the terminal node to the list of nodes created/added by this sub-rule
+        context.getNodes().add( baseTerminalNode );
 
         // assigns partition IDs to the new nodes
         //assignPartitionId(context);
@@ -183,13 +181,9 @@ public class ReteooRuleBuilder {
     /**
      * Adds a query pattern to the given subrule
      * 
-     * @param context
      * @param subrule
-     * @param rule
      */
-    private void addInitialFactPattern( final BuildContext context,
-            final GroupElement subrule,
-            final Rule rule ) {
+    private void addInitialFactPattern( final GroupElement subrule ) {
 
         // creates a pattern for initial fact
         final Pattern pattern = new Pattern( 0,
@@ -237,10 +231,8 @@ public class ReteooRuleBuilder {
         builder.build( context,
                        this.utils,
                        window );
-        
-        WindowNode wnode = (WindowNode) context.getObjectSource();
-        
-        return wnode;
+
+        return (WindowNode) context.getObjectSource();
     }
 
 }

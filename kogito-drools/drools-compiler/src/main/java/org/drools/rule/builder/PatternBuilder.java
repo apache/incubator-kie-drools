@@ -389,7 +389,7 @@ public class PatternBuilder
         if (!(patternType instanceof ClassObjectType)) return null;
         Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
         TypeDeclaration typeDeclaration = context.getPackageBuilder().getTypeDeclaration(patternClass);
-        if (!typeDeclaration.isPropertySpecific()) {
+        if (!typeDeclaration.isPropertyReactive()) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                     patternDescr,
                     null,

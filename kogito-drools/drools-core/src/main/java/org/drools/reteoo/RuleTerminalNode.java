@@ -16,20 +16,13 @@
 
 package org.drools.reteoo;
 
-import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
-import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
-import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
-
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
@@ -46,13 +39,12 @@ import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
-import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Activation;
-import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.time.impl.ExpressionIntervalTimer;
+
+import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -60,10 +52,8 @@ import org.drools.time.impl.ExpressionIntervalTimer;
  *
  * @see org.drools.rule.Rule
  */
-public class RuleTerminalNode extends BaseNode
-        implements
-        TerminalNode,
-        Externalizable {
+public class RuleTerminalNode extends AbstractTerminalNode {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -80,7 +70,6 @@ public class RuleTerminalNode extends BaseNode
      */
     private GroupElement                  subrule;
     private int                           subruleIndex;
-    private LeftTupleSource               tupleSource;
     private Declaration[]                 declarations;
     
     private Declaration[]                 timerDelayDeclarations;
@@ -93,11 +82,7 @@ public class RuleTerminalNode extends BaseNode
 
     private boolean                       fireDirect;
 
-    private long             declaredMask;
-    private long             inferredMask;
-    private long             negativeMask;
-    
-    private int              leftInputOtnId;    
+    private int              leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors
@@ -121,11 +106,11 @@ public class RuleTerminalNode extends BaseNode
                             final GroupElement subrule,
                             final int subruleIndex,
                             final BuildContext context) {
-        super(id,
-                context.getPartitionId(),
-                context.getRuleBase().getConfiguration().isMultithreadEvaluation());
+        super( id,
+               context.getPartitionId(),
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               source );
         this.rule = rule;
-        this.tupleSource = source;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
 
@@ -188,61 +173,8 @@ public class RuleTerminalNode extends BaseNode
             }
             Arrays.sort( this.timerPeriodDeclarations, SortDeclarations.instance );             
         }
-        
-
     }
 
-    public void initDeclaredMask(BuildContext context) {  
-        doInitDeclaredMask(this, context);
-    }
-    public static void doInitDeclaredMask(TerminalNode tn, BuildContext context) {        
-        if ( !(tn.unwrapTupleSource() instanceof LeftInputAdapterNode)) {
-            // RTN's not after LIANode are not relevant for property specific, so don't block anything.
-            tn.setDeclaredMask( Long.MAX_VALUE );
-            return;            
-        }
-        
-        Pattern pattern = context.getLastBuiltPatterns()[0];
-        ObjectType objectType = pattern.getObjectType();
-        
-        if ( !(objectType instanceof ClassObjectType) ) {
-            // InitialFact has no type declaration and cannot be property specific
-            // Only ClassObjectType can use property specific
-            tn.setDeclaredMask( Long.MAX_VALUE );
-            return;
-        }
-        
-        Class objectClass = ((ClassObjectType)objectType).getClassType();        
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration(objectClass);
-        if (  typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
-            // if property specific is not on, then accept all modification propagations
-            tn.setDeclaredMask( Long.MAX_VALUE );            
-        } else  {
-            List<String> settableProperties = getSettableProperties(context.getRuleBase(), objectClass);
-            tn.setDeclaredMask( calculatePositiveMask(pattern.getListenedProperties(), settableProperties) );
-            tn.setNegativeMask( calculateNegativeMask(pattern.getListenedProperties(), settableProperties) );
-        }
-    }
-    
-    public void initInferredMask() {
-        doInitInferredMask(this);
-    }
-    
-    public static void doInitInferredMask(TerminalNode tn) {
-        LeftTupleSource leftTupleSource = tn.unwrapTupleSource();
-        if ( leftTupleSource instanceof LeftInputAdapterNode && ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource() instanceof AlphaNode ) {
-            AlphaNode alphaNode = (AlphaNode) ((LeftInputAdapterNode)leftTupleSource).getParentObjectSource();
-            tn.setInferredMask( alphaNode.updateMask( tn.getDeclaredMask() ) );
-        } else {
-            tn.setInferredMask(  tn.getDeclaredMask() );
-        }
-        
-        tn.setInferredMask(   tn.getInferredMask() & (Long.MAX_VALUE - tn.getNegativeMask() ) );
-    }
-
-    public LeftTupleSource unwrapTupleSource() {
-        return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
-    }
 
     // ------------------------------------------------------------
     // Instance methods
@@ -250,12 +182,11 @@ public class RuleTerminalNode extends BaseNode
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        super.readExternal( in );
+        super.readExternal(in);
         sequence = in.readInt();
         rule = (Rule) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();
-        tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
@@ -267,9 +198,6 @@ public class RuleTerminalNode extends BaseNode
         
         fireDirect = rule.getActivationListener().equals( "direct" );
         
-        declaredMask = in.readLong();
-        inferredMask = in.readLong();        
-        negativeMask = in.readLong();
         leftInputOtnId = in.readInt();
     }
 
@@ -279,7 +207,6 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( rule );
         out.writeObject( subrule );
         out.writeInt( subruleIndex );
-        out.writeObject( tupleSource );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
@@ -289,9 +216,6 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );  
         
-        out.writeLong(declaredMask);
-        out.writeLong(inferredMask);        
-        out.writeLong(negativeMask);
         out.writeLong(leftInputOtnId);
     }
 
@@ -315,34 +239,6 @@ public class RuleTerminalNode extends BaseNode
     public int getSequence() {
         return this.sequence;
     }
-
-    public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
-    }
-
-    public long getDeclaredMask() {
-        return declaredMask;
-    }
-
-    public long getInferredMask() {
-        return inferredMask;
-    }
-    
-    public void setDeclaredMask(long mask) {
-        declaredMask = mask;
-    }
-
-    public void setInferredMask(long mask) {
-        inferredMask = mask;
-    }      
-
-    public long getNegativeMask() {
-        return negativeMask;
-    }
-    
-    public void setNegativeMask(long mask) {
-        negativeMask = mask;
-    }    
 
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
@@ -407,33 +303,6 @@ public class RuleTerminalNode extends BaseNode
         }
     }
 
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        LeftTupleSource.doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
-                                           this, getLeftInputOtnId(), inferredMask);
-        
-//        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-//
-//        if ( intersect(context.getModificationMask(), inferredMask)) {
-//            if ( leftTuple != null ) {
-//                leftTuple.reAdd(); //
-//                // LeftTuple previously existed, so continue as modify
-//                modifyLeftTuple( leftTuple,
-//                                 context,
-//                                 workingMemory );
-//            } else {
-//                // LeftTuple does not exist, so create and continue as assert
-//                assertLeftTuple( createLeftTuple( factHandle,
-//                                                    this,
-//                                                    true ),
-//                                 context,
-//                                 workingMemory );
-//            }
-//        }
-    }    
-    
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
@@ -460,28 +329,24 @@ public class RuleTerminalNode extends BaseNode
         return "[RuleTerminalNode(" + this.getId() + "): rule=" + this.rule.getName() + "]";
     }
 
-    public void attach() {
-        this.tupleSource.addTupleSink( this );
-    }
+    public void attach( BuildContext context ) {
+        getLeftTupleSource().addTupleSink(this, context);
+        if (context == null) {
+            return;
+        }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
-
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
-                                         propagationContext,
-                                         workingMemory );
+            getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        getLeftTupleSource().networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -490,10 +355,10 @@ public class RuleTerminalNode extends BaseNode
                             final InternalWorkingMemory[] workingMemories) {
         CleanupAdapter adapter = context.getCleanupAdapter();
         context.setCleanupAdapter( new RTNCleanupAdapter( this ) );
-        this.tupleSource.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+        getLeftTupleSource().remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
         for ( InternalWorkingMemory workingMemory : workingMemories ) {
             workingMemory.executeQueuedActions();
         }
@@ -710,6 +575,6 @@ public class RuleTerminalNode extends BaseNode
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
-        return tupleSource.getObjectTypeNode();
+        return getLeftTupleSource().getObjectTypeNode();
     }
 }

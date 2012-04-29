@@ -34,6 +34,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -161,11 +162,7 @@ public class Rete extends ObjectSource
         ruleBase.registeRremovedEntryNodeCache(node);
     }
 
-    public void attach() {
-        throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
-    }
-
-    public void attach(final InternalWorkingMemory[] workingMemories) {
+    public void attach( BuildContext context ) {
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 

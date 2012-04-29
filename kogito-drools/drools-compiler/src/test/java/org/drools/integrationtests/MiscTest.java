@@ -7511,7 +7511,7 @@ public class MiscTest extends CommonTestMethodBase {
                      aliveT1 );
     }
 
-    @Test
+    @Test @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -10136,25 +10136,6 @@ public class MiscTest extends CommonTestMethodBase {
         setterList.add(CommandFactory.newSetter("likes", p.getLikes()));
 
         ksession.execute(CommandFactory.newModify(fh, setterList));
-    }
-
-    @Test @Ignore
-    public void testNumericValueForStringField() throws Exception {
-        // JBRULES-3080
-        String rule = "package org.drools\n" +
-                "declare Node\n" +
-                "    value: String\n" +
-                "end\n" +
-                "rule R1 when\n" +
-                "   $parent: Node( $value : value == 12 )\n" +
-                "then\n" +
-                "   System.out.println( $value );\n" +
-                "end";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL );
-
-        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
