@@ -99,26 +99,40 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
 
 			Thread responsesThread = new Thread(new Runnable() {
 
-				public void run() {
-					try {
-						consumer = session.createConsumer(name);
-						while (true) {
-							ClientMessage serverMessage = consumer.receive();
-							if (serverMessage!=null) {
-								((HornetQTaskClientHandler)handler).messageReceived(session, readMessage(serverMessage), BaseHornetQTaskServer.SERVER_TASK_COMMANDS_QUEUE);
-							}
-						}
-					}
-					catch (HornetQException e) {
-						if (e.getCode()!=HornetQException.OBJECT_CLOSED) {
-							throw new RuntimeException("Client Exception with class " + getClass() + " using port " + port, e);
-						}
-						logger.info(e.getMessage());
-					}
-					catch (Exception e) {
-						throw new RuntimeException("Client Exception with class " + getClass() + " using port " + port, e);
-					}
-				}
+                            public void run() {
+                                try {
+                                    consumer = session.createConsumer(name);
+                                } catch (HornetQException e) {
+                                    logger.error("Error creating consumer. ", e);
+                                    if (e.getCode() == HornetQException.OBJECT_CLOSED) {
+                                        logger.info(e.getMessage());
+                                        return;
+                                    }
+                                    throw new RuntimeException("Client Exception with class " + getClass()
+                                            + " using port " + port, e);
+                                }
+
+
+                                while (true) {
+                                    try {
+                                        ClientMessage serverMessage = consumer.receive();
+                                        if (serverMessage != null) {
+                                            ((HornetQTaskClientHandler) handler).messageReceived(session, readMessage(serverMessage), BaseHornetQTaskServer.SERVER_TASK_COMMANDS_QUEUE);
+                                        }
+                                    } catch (HornetQException e) {
+                                        if (e.getCode() != HornetQException.OBJECT_CLOSED) {
+                                            logger.error(e.getMessage());
+                                            return;
+                                        }
+
+                                    } catch (Exception e) {
+                                        // LOG the exception and continue receiving
+                                        // messages.
+                                        logger.error(e.getMessage());
+                                    }
+                                }
+
+                            }
 			});
 			responsesThread.start();
 			session.start();
