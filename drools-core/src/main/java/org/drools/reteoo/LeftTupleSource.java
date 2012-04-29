@@ -37,6 +37,7 @@ import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -105,6 +106,10 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeLong( leftNegativeMask );
     }
 
+    public void addTupleSink(final LeftTupleSink tupleSink) {
+        addTupleSink(tupleSink, null);
+    }
+
     /**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
@@ -113,7 +118,7 @@ public abstract class LeftTupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    public void addTupleSink(final LeftTupleSink tupleSink) {
+    protected void addTupleSink(final LeftTupleSink tupleSink, final BuildContext context) {
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
             if ( this.partitionsEnabled && !this.partitionId.equals( tupleSink.getPartitionId() ) ) {
                 // if partitions are enabled and the next node belongs to a different partition,
@@ -224,19 +229,22 @@ public abstract class LeftTupleSource extends BaseNode
         }
 
         Class objectClass = ((ClassObjectType) objectType).getClassType();
-        TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
-        if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
-            // if property specific is not on, then accept all modification propagations
-            leftDeclaredMask = Long.MAX_VALUE;
-        } else {
+        if ( isPropertyReactive(context, objectClass) ) {
             // TODO: at the moment if pattern is null (e.g. for eval node) we cannot calculate the mask, so we leave it to 0
             if ( pattern != null ) {
+                List<String> leftListenedProperties = pattern.getListenedProperties();
                 List<String> settableProperties = getSettableProperties( context.getRuleBase(), objectClass );
-                leftDeclaredMask = calculatePositiveMask( pattern.getListenedProperties(), settableProperties );
-                leftNegativeMask = calculateNegativeMask( pattern.getListenedProperties(), settableProperties );
+                leftDeclaredMask = calculatePositiveMask( leftListenedProperties, settableProperties );
+                leftNegativeMask = calculateNegativeMask( leftListenedProperties, settableProperties );
+                setLeftListenedProperties(leftListenedProperties);
             }
+        } else {
+            // if property specific is not on, then accept all modification propagations
+            leftDeclaredMask = Long.MAX_VALUE;
         }
     }
+
+    protected void setLeftListenedProperties(List<String> leftListenedProperties) { }
 
     protected void initInferredMask(LeftTupleSource leftInput) {
         LeftTupleSource unwrappedLeft = unwrapLeftInput( leftInput );
@@ -249,7 +257,7 @@ public abstract class LeftTupleSource extends BaseNode
         leftInferredMask &= (Long.MAX_VALUE - leftNegativeMask);
     }
 
-    private LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
+    protected LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
         if ( leftInput instanceof FromNode ) {
             return ((FromNode) leftInput).getLeftTupleSource();
         }
@@ -333,6 +341,10 @@ public abstract class LeftTupleSource extends BaseNode
         return leftInferredMask;
     }
 
+    protected void setLeftInferredMask(long leftInferredMask) {
+        this.leftInferredMask = leftInferredMask;
+    }
+
     public long getLeftNegativeMask() {
         return leftNegativeMask;
     }
@@ -346,4 +358,9 @@ public abstract class LeftTupleSource extends BaseNode
     }
 
     protected abstract ObjectTypeNode getObjectTypeNode();
+
+    public ObjectType getObjectType() {
+        ObjectTypeNode objectTypeNode = getObjectTypeNode();
+        return objectTypeNode != null ? objectTypeNode.getObjectType() : null;
+    }
 }

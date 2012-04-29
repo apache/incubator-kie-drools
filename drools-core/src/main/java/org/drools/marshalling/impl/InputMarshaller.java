@@ -267,12 +267,7 @@ public class InputMarshaller {
                 context.ruleBase.lock();
                 try {
                     // Yeah, I know, because one session is being deserialized, we go and lock all of them...
-                    InternalWorkingMemory[] wms = buildContext.getWorkingMemories();
-                    if ( wms.length > 0 ) {
-                        initialFactNode.attach( wms );
-                    } else {
-                        initialFactNode.attach();
-                    }
+                    initialFactNode.attach( buildContext );
                 } finally {
                     context.ruleBase.unlock();
                 }

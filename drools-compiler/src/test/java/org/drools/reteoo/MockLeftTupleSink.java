@@ -30,6 +30,7 @@ import org.drools.common.Memory;
 import org.drools.common.NodeMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
 public class MockLeftTupleSink extends LeftTupleSource
@@ -48,7 +49,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public MockLeftTupleSink(final int id) {
-        super( id, RuleBasePartitionId.MAIN_PARTITION, false );
+        super(id, RuleBasePartitionId.MAIN_PARTITION, false);
     }
 
     public void assertLeftTuple(final LeftTuple tuple,
@@ -85,11 +86,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
-    public void attach() {
-        // TODO Auto-generated method stub
-
-    }
-
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) throws FactException {
@@ -103,7 +99,7 @@ public class MockLeftTupleSink extends LeftTupleSource
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
+    public void attach(BuildContext buildContext) {
         // TODO Auto-generated method stub
 
     }

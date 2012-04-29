@@ -17,9 +17,11 @@
 package org.drools.reteoo;
 
 import static org.drools.core.util.BitMaskUtil.intersect;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -55,7 +57,6 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.IndexableConstraint;
 import org.drools.rule.Pattern;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -107,6 +108,9 @@ public abstract class BetaNode extends LeftTupleSource
     private long              rightInferredMask;
     private long              rightNegativeMask;
 
+    private List<String>      leftListenedProperties;
+    private List<String>      rightListenedProperties;
+
     private transient int     rightInputOtnId;
 
     private transient ObjectTypeNode objectTypeNode;
@@ -145,7 +149,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
         setUnificationJoin();
 
-        initMasks( context, leftInput );
+        initMasks(context, leftInput);
     }
 
     @Override
@@ -166,19 +170,18 @@ public abstract class BetaNode extends LeftTupleSource
                 // InitialFact has no type declaration and cannot be property specific
                 // Only ClassObjectType can use property specific
                 rightDeclaredMask = Long.MAX_VALUE;
-
             }
 
             Class objectClass = ((ClassObjectType) objectType).getClassType();
-            TypeDeclaration typeDeclaration = context.getRuleBase().getTypeDeclaration( objectClass );
-            if ( typeDeclaration == null || !typeDeclaration.isPropertySpecific() ) {
-                // if property specific is not on, then accept all modification propagations
-                rightDeclaredMask = Long.MAX_VALUE;
-            } else {
+            if ( isPropertyReactive(context, objectClass) ) {
+                rightListenedProperties = pattern.getListenedProperties();
                 List<String> settableProperties = getSettableProperties( context.getRuleBase(), objectClass );
-                rightDeclaredMask = calculatePositiveMask( pattern.getListenedProperties(), settableProperties );
+                rightDeclaredMask = calculatePositiveMask(rightListenedProperties, settableProperties );
                 rightDeclaredMask |= constraints.getListenedPropertyMask( settableProperties );
-                rightNegativeMask = calculateNegativeMask( pattern.getListenedProperties(), settableProperties );
+                rightNegativeMask = calculateNegativeMask(rightListenedProperties, settableProperties );
+            } else {
+                // if property reactive is not on, then accept all modification propagations
+                rightDeclaredMask = Long.MAX_VALUE;
             }
         } else {
             rightDeclaredMask = Long.MAX_VALUE;
@@ -186,7 +189,11 @@ public abstract class BetaNode extends LeftTupleSource
             context.setLastBuiltPattern( context.getLastBuiltPatterns()[0] );
         }
 
-        super.initDeclaredMask( context, leftInput );
+        super.initDeclaredMask(context, leftInput);
+    }
+
+    protected void setLeftListenedProperties(List<String> leftListenedProperties) {
+        this.leftListenedProperties = leftListenedProperties;
     }
 
     public void initInferredMask() {
@@ -208,7 +215,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     private ObjectSource unwrapRightInput() {
-        return rightInput instanceof PropagationQueuingNode ? ((PropagationQueuingNode) rightInput).getParentObjectSource() : rightInput;
+        return rightInput instanceof PropagationQueuingNode ? rightInput.getParentObjectSource() : rightInput;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -223,8 +230,10 @@ public abstract class BetaNode extends LeftTupleSource
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
         rightNegativeMask = in.readLong();
+        leftListenedProperties = (List) in.readObject();
+        rightListenedProperties = (List) in.readObject();
         setUnificationJoin();
-        super.readExternal( in );
+        super.readExternal(in);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -239,13 +248,15 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( constraints );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
-        out.writeBoolean( objectMemory );
+        out.writeBoolean(objectMemory);
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
         out.writeBoolean( lrUnlinkingEnabled );
-        out.writeLong( rightDeclaredMask );
+        out.writeLong(rightDeclaredMask);
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );
+        out.writeObject(leftListenedProperties);
+        out.writeObject(rightListenedProperties);
         super.writeExternal( out );
     }
 
@@ -343,14 +354,6 @@ public abstract class BetaNode extends LeftTupleSource
         return this.constraints;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#attach()
-     */
-    public void attach() {
-        this.rightInput.addObjectSink( this );
-        this.leftInput.addTupleSink( this );
-    }
-
     public void networkUpdated(UpdateContext updateContext) {
         updateContext.startVisitNode( leftInput );
         rightInput.networkUpdated( updateContext );
@@ -362,16 +365,13 @@ public abstract class BetaNode extends LeftTupleSource
 
     public List<String> getRules() {
         final List<String> list = new ArrayList<String>();
-
-        final LeftTupleSink[] sinks = this.sink.getSinks();
-        for ( int i = 0, length = sinks.length; i < length; i++ ) {
-            if ( sinks[i] instanceof RuleTerminalNode ) {
-                list.add( ((RuleTerminalNode) sinks[i]).getRule().getName() );
-            } else if ( sinks[i] instanceof BetaNode ) {
-                list.addAll( ((BetaNode) sinks[i]).getRules() );
+        for (LeftTupleSink sinkleftTupleSink : this.sink.getSinks()) {
+            if (sinkleftTupleSink instanceof RuleTerminalNode) {
+                list.add(((RuleTerminalNode) sinkleftTupleSink).getRule().getName());
+            } else if (sinkleftTupleSink instanceof BetaNode) {
+                list.addAll(((BetaNode) sinkleftTupleSink).getRules());
             }
         }
-
         return list;
     }
 
@@ -389,16 +389,20 @@ public abstract class BetaNode extends LeftTupleSource
         return objectTypeNode;
     }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
+    public void attach(BuildContext context) {
+        this.rightInput.addObjectSink( this );
+        this.leftInput.addTupleSink( this, context );
 
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+        if (context == null) {
+            return;
+        }
+
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
+            final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
+                    PropagationContext.RULE_ADDITION,
+                    null,
+                    null,
+                    null);
 
             /* FIXME: This should be generalized at BetaNode level and the
              * instanceof should be removed!
@@ -407,16 +411,16 @@ public abstract class BetaNode extends LeftTupleSource
              * that is initially linked. If there are tuples to be propagated,
              * they will trigger the update (thus, population) of the other side.
              * */
-            if ( !lrUnlinkingEnabled || !(this instanceof JoinNode) ) {
+            if (!lrUnlinkingEnabled || !(this instanceof JoinNode)) {
 
-                this.rightInput.updateSink( this,
-                                            propagationContext,
-                                            workingMemory );
+                this.rightInput.updateSink(this,
+                        propagationContext,
+                        workingMemory);
             }
 
-            this.leftInput.updateSink( this,
-                                       propagationContext,
-                                       workingMemory );
+            this.leftInput.updateSink(this,
+                    propagationContext,
+                    workingMemory);
         }
 
     }
@@ -429,33 +433,33 @@ public abstract class BetaNode extends LeftTupleSource
             removeTupleSink( (LeftTupleSink) node );
         }
         if ( !this.isInUse() || context.getCleanupAdapter() != null ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
+            for (InternalWorkingMemory workingMemory : workingMemories) {
                 BetaMemory memory;
-                Object object = workingMemories[i].getNodeMemory( this );
+                Object object = workingMemory.getNodeMemory(this);
 
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
-                if ( object instanceof AccumulateMemory ) {
+                if (object instanceof AccumulateMemory) {
                     memory = ((AccumulateMemory) object).betaMemory;
                 } else {
                     memory = (BetaMemory) object;
                 }
 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
-                for ( LeftTuple leftTuple = getFirstLeftTuple( memory.getLeftTupleMemory(), it ); leftTuple != null; ) {
-                    LeftTuple tmp = (LeftTuple) it.next( leftTuple );
-                    if ( context.getCleanupAdapter() != null ) {
-                        for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext() ) {
-                            if ( child.getLeftTupleSink() == this ) {
+                for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
+                    LeftTuple tmp = (LeftTuple) it.next(leftTuple);
+                    if (context.getCleanupAdapter() != null) {
+                        for (LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext()) {
+                            if (child.getLeftTupleSink() == this) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
                                 leftTuple.unlinkFromLeftParent();
                                 leftTuple.unlinkFromRightParent();
                             } else {
-                                context.getCleanupAdapter().cleanUp( child, workingMemories[i] );
+                                context.getCleanupAdapter().cleanUp(child, workingMemory);
                             }
                         }
                     }
-                    memory.getLeftTupleMemory().remove( leftTuple );
+                    memory.getLeftTupleMemory().remove(leftTuple);
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
                     leftTuple = tmp;
@@ -463,31 +467,31 @@ public abstract class BetaNode extends LeftTupleSource
 
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
-                if ( object instanceof AccumulateMemory ) {
-                    ((AccumulateNode) this).doRemove( workingMemories[i], (AccumulateMemory) object );
+                if (object instanceof AccumulateMemory) {
+                    ((AccumulateNode) this).doRemove(workingMemory, (AccumulateMemory) object);
                 }
 
-                if ( !this.isInUse() ) {
+                if (!this.isInUse()) {
                     it = memory.getRightTupleMemory().fullFastIterator();
-                    for ( RightTuple rightTuple = getFirstRightTuple( memory.getRightTupleMemory(), it ); rightTuple != null; ) {
-                        RightTuple tmp = (RightTuple) it.next( rightTuple );
-                        if ( rightTuple.getBlocked() != null ) {
+                    for (RightTuple rightTuple = getFirstRightTuple(memory.getRightTupleMemory(), it); rightTuple != null; ) {
+                        RightTuple tmp = (RightTuple) it.next(rightTuple);
+                        if (rightTuple.getBlocked() != null) {
                             // special case for a not, so unlink left tuple from here, as they aren't in the left memory
-                            for ( LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
+                            for (LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
                                 LeftTuple temp = leftTuple.getBlockedNext();
 
-                                leftTuple.setBlocker( null );
-                                leftTuple.setBlockedPrevious( null );
-                                leftTuple.setBlockedNext( null );
+                                leftTuple.setBlocker(null);
+                                leftTuple.setBlockedPrevious(null);
+                                leftTuple.setBlockedNext(null);
                                 leftTuple.unlinkFromLeftParent();
                                 leftTuple = temp;
                             }
                         }
-                        memory.getRightTupleMemory().remove( rightTuple );
+                        memory.getRightTupleMemory().remove(rightTuple);
                         rightTuple.unlinkFromRightParent();
                         rightTuple = tmp;
                     }
-                    workingMemories[i].clearNodeMemory( this );
+                    workingMemory.clearNodeMemory(this);
                 }
             }
             context.setCleanupAdapter( null );
@@ -586,7 +590,14 @@ public abstract class BetaNode extends LeftTupleSource
      * @see org.drools.reteoo.BaseNode#hashCode()
      */
     public int hashCode() {
-        return this.leftInput.hashCode() ^ this.rightInput.hashCode();
+        int hash = ( 23 * leftInput.hashCode() ) + ( 29 * rightInput.hashCode() ) + ( 31 * constraints.hashCode() );
+        if (leftListenedProperties != null) {
+            hash += 37 * leftListenedProperties.hashCode();
+        }
+        if (rightListenedProperties != null) {
+            hash += 41 * rightListenedProperties.hashCode();
+        }
+        return hash;
     }
 
     /* (non-Javadoc)
@@ -603,7 +614,12 @@ public abstract class BetaNode extends LeftTupleSource
 
         final BetaNode other = (BetaNode) object;
 
-        return this.getClass() == other.getClass() && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
+        return this.getClass() == other.getClass() &&
+                this.leftInput.equals( other.leftInput ) &&
+                this.rightInput.equals( other.rightInput ) &&
+                this.constraints.equals( other.constraints ) &&
+                areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
+                areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
     }
 
     /**

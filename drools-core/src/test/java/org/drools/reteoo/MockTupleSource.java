@@ -20,6 +20,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends LeftTupleSource {
@@ -58,7 +59,7 @@ public class MockTupleSource extends LeftTupleSource {
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
+    public void attach( BuildContext context ) {
         // TODO Auto-generated method stub
 
     }

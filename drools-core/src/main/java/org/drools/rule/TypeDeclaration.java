@@ -157,7 +157,7 @@ public class TypeDeclaration
     private boolean                typesafe;
     private boolean                novel;
     private boolean                valid;
-    private boolean                propertySpecific;
+    private boolean                propertyReactive;
     private transient List<String> settableProprties;
 
     private transient ObjectType   objectType;
@@ -212,7 +212,7 @@ public class TypeDeclaration
         this.expirationOffset = in.readLong();
         this.dynamic = in.readBoolean();
         this.typesafe = in.readBoolean();
-        this.propertySpecific = in.readBoolean();
+        this.propertyReactive = in.readBoolean();
         this.valid = in.readBoolean();
     }
 
@@ -233,7 +233,7 @@ public class TypeDeclaration
         out.writeLong(expirationOffset);
         out.writeBoolean(dynamic);
         out.writeBoolean( typesafe );
-        out.writeBoolean(propertySpecific);
+        out.writeBoolean(propertyReactive);
         out.writeBoolean(valid);
     }
 
@@ -518,12 +518,12 @@ public class TypeDeclaration
         this.typesafe = typesafe;
     }
 
-    public boolean isPropertySpecific() {
-        return propertySpecific;
+    public boolean isPropertyReactive() {
+        return propertyReactive;
     }
 
-    public void setPropertySpecific(boolean propertySpecific) {
-        this.propertySpecific = propertySpecific;
+    public void setPropertyReactive(boolean propertyReactive) {
+        this.propertyReactive = propertyReactive;
     }
 
     public boolean isNovel() {

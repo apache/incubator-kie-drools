@@ -162,7 +162,7 @@ public class JavaConsequenceBuilderTest {
                                             new HashMap(),
                                             0);
 
-            context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertySpecific(true);
+            context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
             String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
@@ -269,7 +269,7 @@ public class JavaConsequenceBuilderTest {
 
         analysis.setBoundIdentifiers(bindings);
 
-        context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertySpecific(true);
+        context.getPackageBuilder().getTypeDeclaration(Cheese.class).setPropertyReactive(true);
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations(context.getRule()), descrs );
 
         String expected = 

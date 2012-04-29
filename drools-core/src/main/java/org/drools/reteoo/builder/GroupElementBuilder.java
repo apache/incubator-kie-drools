@@ -18,7 +18,6 @@ package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -107,50 +106,46 @@ public class GroupElementBuilder
             final GroupElement ge = (GroupElement) rce;
 
             // iterate over each child and build it
-            for ( final Iterator it = ge.getChildren().iterator(); it.hasNext(); ) {
+            for (final RuleConditionElement child : ge.getChildren()) {
 
-                final RuleConditionElement child = (RuleConditionElement) it.next();
-
-                final ReteooComponentBuilder builder = utils.getBuilderFor( child );
+                final ReteooComponentBuilder builder = utils.getBuilderFor(child);
 
                 builder.build( context,
                                utils,
                                child );
 
                 // if a previous object source was bound, but no tuple source
-                if ( context.getObjectSource() != null && context.getTupleSource() == null ) {
+                if (context.getObjectSource() != null && context.getTupleSource() == null) {
                     // we know this is the root OTN, so record it
                     ObjectSource source = context.getObjectSource();
-                    while ( !(source instanceof ObjectTypeNode ) ) {
+                    while ( !(source instanceof ObjectTypeNode) ) {
                         source = source.getParentObjectSource();
                     }
-                    context.setRootObjectTypeNode( (ObjectTypeNode) source );
-                    
-                    
-                    // adapt it to a Tuple source                    
-                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                                new LeftInputAdapterNode( context.getNextId(),
-                                                                                                          context.getObjectSource(),
-                                                                                                          context ) ) );
+                    context.setRootObjectTypeNode((ObjectTypeNode) source);
 
-                    context.setObjectSource( null );
+                    // adapt it to a Tuple source                    
+                    context.setTupleSource((LeftTupleSource) utils.attachNode( context,
+                                                                               new LeftInputAdapterNode( context.getNextId(),
+                                                                                                         context.getObjectSource(),
+                                                                                                         context) ) );
+                    context.setObjectSource(null);
                 }
 
                 // if there was a previous tuple source, then a join node is needed
-                if ( context.getObjectSource() != null && context.getTupleSource() != null ) {
+                if (context.getObjectSource() != null && context.getTupleSource() != null) {
                     // so, create the tuple source and clean up the constraints and object source
                     final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                             context.getBetaconstraints(),
                                                                                             false );
 
-                    context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                                new JoinNode( context.getNextId(),
-                                                                                              context.getTupleSource(),
-                                                                                              context.getObjectSource(),
-                                                                                              betaConstraints,
-                                                                                              context ) ) );
-                    context.setBetaconstraints( null );
-                    context.setObjectSource( null );
+                    context.setTupleSource((LeftTupleSource) utils.attachNode(context,
+                                                                              new JoinNode(context.getNextId(),
+                                                                                           context.getTupleSource(),
+                                                                                           context.getObjectSource(),
+                                                                                           betaConstraints,
+                                                                                           context)));
+                    context.setBetaconstraints(null);
+                    context.setObjectSource(null);
                 }
             }
         }
@@ -165,7 +160,7 @@ public class GroupElementBuilder
                 return true;
             }
 
-            final RuleConditionElement child = (RuleConditionElement) and.getChildren().get( 0 );
+            final RuleConditionElement child = and.getChildren().get( 0 );
             final ReteooComponentBuilder builder = utils.getBuilderFor( child );
 
             return builder.requiresLeftActivation( utils,
@@ -215,7 +210,7 @@ public class GroupElementBuilder
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
-            final RuleConditionElement child = (RuleConditionElement) not.getChildren().get( 0 );
+            final RuleConditionElement child = not.getChildren().get( 0 );
 
             // get builder for child
             final ReteooComponentBuilder builder = utils.getBuilderFor( child );
@@ -257,12 +252,11 @@ public class GroupElementBuilder
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
-            NotNode node = null;
-            node = new NotNode( context.getNextId(),
-                                context.getTupleSource(),
-                                context.getObjectSource(),
-                                betaConstraints,
-                                context );
+            NotNode node = new NotNode( context.getNextId(),
+                                        context.getTupleSource(),
+                                        context.getObjectSource(),
+                                        betaConstraints,
+                                        context );
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                         node ) );
             context.setBetaconstraints( null );
@@ -301,7 +295,7 @@ public class GroupElementBuilder
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
-            final RuleConditionElement child = (RuleConditionElement) exists.getChildren().get( 0 );
+            final RuleConditionElement child = exists.getChildren().get( 0 );
 
             // get builder for child
             final ReteooComponentBuilder builder = utils.getBuilderFor( child );

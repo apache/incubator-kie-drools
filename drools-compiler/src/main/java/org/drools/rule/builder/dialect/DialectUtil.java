@@ -605,7 +605,7 @@ public final class DialectUtil {
         if (isInternalFact) {
             Class<?> typeClass = ((ClassObjectType) declr.getPattern().getObjectType()).getClassType();
             typeDeclaration = context.getPackageBuilder().getTypeDeclaration(typeClass);
-            if (typeDeclaration != null && typeDeclaration.isPropertySpecific()) {
+            if (typeDeclaration != null && typeDeclaration.isPropertyReactive()) {
                 isPropertySpecific = true;
                 typeDeclaration.setTypeClass(typeClass);
                 settableProperties = typeDeclaration.getSettableProperties();

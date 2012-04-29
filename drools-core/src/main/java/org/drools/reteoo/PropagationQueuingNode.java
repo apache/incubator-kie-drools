@@ -122,18 +122,8 @@ public class PropagationQueuingNode extends ObjectSource
                                 workingMemory );
     }
 
-    /**
-     * @see org.drools.common.BaseNode#attach()
-     */
-    public void attach() {
+    public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-    }
-
-    /**
-     * @see org.drools.common.BaseNode#attach(org.drools.common.InternalWorkingMemory[])
-     */
-    public void attach( InternalWorkingMemory[] workingMemories ) {
-        attach();
         // this node does not require update, so nothing else to do.
     }
 
