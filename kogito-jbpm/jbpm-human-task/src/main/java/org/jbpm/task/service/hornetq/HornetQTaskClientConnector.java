@@ -124,11 +124,15 @@ public class HornetQTaskClientConnector implements TaskClientConnector {
                                             logger.error(e.getMessage());
                                             return;
                                         }
+                                        throw new RuntimeException("Client Exception with class " + getClass()
+                                            + " using port " + port, e);
 
                                     } catch (Exception e) {
                                         // LOG the exception and continue receiving
                                         // messages.
                                         logger.error(e.getMessage());
+                                        throw new RuntimeException("Client Exception with class " + getClass()
+                                            + " using port " + port, e);
                                     }
                                 }
 
