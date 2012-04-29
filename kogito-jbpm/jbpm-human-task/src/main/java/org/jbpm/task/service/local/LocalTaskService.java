@@ -231,7 +231,13 @@ public class LocalTaskService implements TaskService {
 
     public void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler) {
         SimpleEventTransport transport = new SimpleEventTransport(session, responseHandler, remove);
-        service.getEventKeys().register(key, transport);
+        if(!remove){
+           service.getEventKeys().register(key, transport);
+        }else{
+           service.getEventKeys().unregister(key, transport); 
+        }
+        
+        
     }
 
     public void release(long taskId, String userId) {

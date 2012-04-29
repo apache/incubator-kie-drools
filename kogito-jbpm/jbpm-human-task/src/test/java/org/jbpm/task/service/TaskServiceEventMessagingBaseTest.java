@@ -63,7 +63,7 @@ public abstract class TaskServiceEventMessagingBaseTest extends BaseTest {
         
         EventKey key = new TaskEventKey(TaskClaimedEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, true, handler );
+        client.registerForEvent( key, false, handler );
         Thread.sleep( 3000 );
         
         taskSession.taskOperation( Operation.Claim, taskId, users.get( "darth" ).getId(), null, null, null );          

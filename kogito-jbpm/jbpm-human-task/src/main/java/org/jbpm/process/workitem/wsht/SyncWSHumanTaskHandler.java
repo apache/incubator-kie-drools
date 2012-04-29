@@ -72,8 +72,8 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private KnowledgeRuntime session;
     private boolean local = false;
     private OnErrorAction action;
-    
-	private boolean initialized = false;
+    private boolean initialized = false;
+    private Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
     
     private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
     
@@ -146,13 +146,16 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     private void registerTaskEvents() {
-		TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskFailedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskSkippedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
     }
 
     public void setManager(WorkItemManager manager) {
@@ -292,9 +295,14 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void dispose() throws Exception {
+        for(TaskEventKey key : eventHandlers.keySet()){
+            client.registerForEvent(key, true, eventHandlers.get(key));
+        }
+        eventHandlers.clear();
         if (client != null) {
             client.disconnect();
         }
+        
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {

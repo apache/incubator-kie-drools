@@ -58,7 +58,7 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
-        client.registerForEvent(key, true, handler);
+        client.registerForEvent(key, false, handler);
 
         BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
@@ -115,7 +115,7 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
             assertTrue( taskId != 0 );
 
             EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
-            client.registerForEvent(key, true, handler);
+            client.registerForEvent(key, false, handler);
 
             BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
             client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);
@@ -146,7 +146,7 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
             assertTrue( "Tasks should have different ids.", taskId != taskId2 );
 
             EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
-            client.registerForEvent(key2, true, handler2);
+            client.registerForEvent(key2, false, handler2);
 
             BlockingTaskSummaryResponseHandler taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
             client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK", taskSummaryResponseHandler);

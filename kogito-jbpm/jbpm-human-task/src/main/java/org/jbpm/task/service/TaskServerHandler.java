@@ -517,8 +517,12 @@ public class TaskServerHandler {
 									                            cmd.getId(),
 									                            clients,
 									                            remove);
+                    if(!remove){
+                         service.getEventKeys().register(key, transport);
+                    }else{
+                        service.getEventKeys().unregister(key, transport); 
+                    }
                     
-                    service.getEventKeys().register(key, transport);
                     break;
                 }
                 case RegisterClient: {

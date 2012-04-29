@@ -70,7 +70,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, true, handler );
+        client.registerForEvent( key, false, handler );
         
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
@@ -130,7 +130,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key, true, handler );
+        client.registerForEvent( key, false, handler );
         
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
@@ -174,7 +174,7 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         
         EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2 );           
         BlockingEventResponseHandler handler2 = new BlockingEventResponseHandler(); 
-        client.registerForEvent( key2, true, handler2 );
+        client.registerForEvent( key2, false, handler2 );
         
         taskSummaryResponseHandler = new BlockingTaskSummaryResponseHandler();
         client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK", taskSummaryResponseHandler);
@@ -213,5 +213,5 @@ public abstract class TaskLifeCycleBaseTest extends BaseTest {
         task2 = getTaskResponseHandler2.getTask();
         assertEquals( Status.Completed , task2.getTaskData().getStatus() );
     }
-
+        
 }

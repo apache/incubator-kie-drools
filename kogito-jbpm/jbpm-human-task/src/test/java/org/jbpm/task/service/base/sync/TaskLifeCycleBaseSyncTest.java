@@ -63,7 +63,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
-        client.registerForEvent(key, true, handler);
+        client.registerForEvent(key, false, handler);
 
         List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
@@ -110,7 +110,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
 
         BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
-        client.registerForEvent(key, true, handler);
+        client.registerForEvent(key, false, handler);
 
         List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
@@ -128,7 +128,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
         BlockingEventResponseHandler handler2 = new BlockingEventResponseHandler();
-        client.registerForEvent(key2, true, handler2);
+        client.registerForEvent(key2, false, handler2);
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(2, tasks.size());

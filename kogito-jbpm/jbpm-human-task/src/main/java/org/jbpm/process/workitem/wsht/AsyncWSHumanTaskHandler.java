@@ -70,7 +70,8 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     private KnowledgeRuntime session;
     private OnErrorAction action;
     private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
-
+    private Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
+    
     public AsyncWSHumanTaskHandler() {
     	this.action = OnErrorAction.LOG;
     }
@@ -128,13 +129,20 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                 throw new IllegalArgumentException("Could not connect task client");
             }
         }
+        registerTaskEvents();
+    }
+
+    private void registerTaskEvents() {
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
         TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, marshallerContext, session.getEnvironment(),  client);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskFailedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskSkippedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
+        eventHandlers.put(key, eventResponseHandler);
     }
 
     public void setManager(WorkItemManager manager) {
@@ -253,6 +261,10 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void dispose() throws Exception {
+        for(TaskEventKey key : eventHandlers.keySet()){
+            client.registerForEvent(key, true, eventHandlers.get(key));
+        }
+        eventHandlers.clear();
         if (client != null) {
             client.disconnect();
         }
