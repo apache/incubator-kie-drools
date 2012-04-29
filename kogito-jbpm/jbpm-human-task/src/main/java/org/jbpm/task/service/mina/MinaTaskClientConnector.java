@@ -76,6 +76,7 @@ public class MinaTaskClientConnector implements TaskClientConnector {
 
         if (this.connector==null) {
         	this.connector = new NioSocketConnector();
+                this.connector.setHandler( this.handler );
         }
         
         if (this.address==null) {
