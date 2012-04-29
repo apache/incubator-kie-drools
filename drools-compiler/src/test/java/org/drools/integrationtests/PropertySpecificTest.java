@@ -2,7 +2,6 @@ package org.drools.integrationtests;
 
 import org.drools.Cheese;
 import org.drools.CommonTestMethodBase;
-import org.drools.InitialFact;
 import org.drools.KnowledgeBase;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
@@ -22,7 +21,6 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.PropertySpecificUtil;
 
 import static org.drools.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.reteoo.PropertySpecificUtil.getSettableProperties;
@@ -30,6 +28,7 @@ import static org.drools.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import org.drools.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -281,7 +280,14 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "    i : int\n" +
                 "    j : int\n" +
                 "    k : int\n" +
+                "end\n" +
+                "declare C\n" +
+                "    @propertyReactive\n" +
+                "end\n" +
+                "declare D\n" +
+                "    @propertyReactive\n" +
                 "end\n";
+
         int i = 0;
         for ( String str : rules ) {
             rule += "rule r" + (i++) + "\n" +
@@ -597,7 +603,9 @@ public class PropertySpecificTest extends CommonTestMethodBase {
         BetaNode betaNode = ( BetaNode )  alphaNode.getSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("b","s"), sp), betaNode.getRightDeclaredMask() );
         assertEquals( calculatePositiveMask(list("a", "b", "s"), sp), betaNode.getRightInferredMask() );
-        
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNode.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNode.getLeftInferredMask() );
+
         otn = getObjectTypeNode(kbase, "B" );
         alphaNode = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
         assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
@@ -1965,6 +1973,343 @@ public class PropertySpecificTest extends CommonTestMethodBase {
 
         public double getValue() {
             return price * quantity;
+        }
+    }
+
+    @Test
+    public void testBetaWithWatchAfterBeta() {
+        String rule1 = "$b : B(a == 15) @watch(k) C() A(i == $b.j) @watch(b, c)";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
+        ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
+        List<String> sp = getSettableProperties(wm, otnA);
+
+        BetaNode betaNodeA = ( BetaNode ) otnA.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA.getLeftInferredMask() );
+
+        BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+        assertEquals( 0L, betaNodeC.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("k"), sp), betaNodeC.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "k"), sp), betaNodeC.getLeftInferredMask() );
+    }
+
+    @Test
+    public void testBetaAfterBetaWithWatch() {
+        String rule1 = "$b : B(a == 15) @watch(k) A(i == $b.j) @watch(b, c) C()";
+        KnowledgeBase kbase = getKnowledgeBase(rule1);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
+        ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
+        List<String> sp = getSettableProperties(wm, otnA);
+
+        BetaNode betaNodeA = ( BetaNode ) otnA.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("i", "b", "c"), sp), betaNodeA.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("k"), sp), betaNodeA.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "k"), sp), betaNodeA.getLeftInferredMask() );
+
+        BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+        assertEquals(0L, betaNodeC.getRightDeclaredMask());
+        assertEquals( 0L, betaNodeC.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftInferredMask() );
+    }
+
+    @Test
+    public void test2DifferentAlphaWatchBeforeSameBeta() {
+        String rule1 = "B(a == 15) @watch(b) C()";
+        String rule2 = "B(a == 15) @watch(c) C()";
+        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
+        List<String> sp = getSettableProperties(wm, otnB);
+
+        AlphaNode alphaNode = ( AlphaNode ) otnB.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode.getInferredMask());
+
+        ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
+        BetaNode betaNodeC1 = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+        BetaNode betaNodeC2 = ( BetaNode ) otnC.getSinkPropagator().getSinks()[1];
+
+        LeftInputAdapterNode lia = (LeftInputAdapterNode)alphaNode.getSinkPropagator().getSinks()[0];
+        assertSame(betaNodeC1, lia.getSinkPropagator().getSinks()[0]);
+        assertSame(betaNodeC2, lia.getSinkPropagator().getSinks()[1]);
+
+        assertEquals( 0L, betaNodeC1.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC1.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("b"), sp), betaNodeC1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), betaNodeC1.getLeftInferredMask() );
+
+        assertEquals( 0L, betaNodeC2.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC2.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNodeC2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNodeC2.getLeftInferredMask() );
+
+        kbase.removeRule( "org.drools", "r0" );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), alphaNode.getInferredMask());
+
+        assertEquals( 1, lia.getSinkPropagator().getSinks().length );
+        BetaNode betaNodeC = ( BetaNode ) lia.getSinkPropagator().getSinks()[0];
+
+        assertEquals( 0L, betaNodeC2.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC2.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNodeC2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNodeC2.getLeftInferredMask() );
+    }
+
+    @Test
+    public void testSameBetasWith2RTNSinks() {
+        String rule1 = "B(a == 15) C() A()";
+        String rule2 = "B(a == 15) C() A() @watch(b, c)";
+        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
+        ObjectTypeNode otnC = getObjectTypeNode(kbase, "C");
+        List<String> sp = getSettableProperties(wm, otnA);
+
+        BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+        BetaNode betaNodeA1 = ( BetaNode ) otnA.getSinkPropagator().getSinks()[0];
+        BetaNode betaNodeA2 = ( BetaNode ) otnA.getSinkPropagator().getSinks()[1];
+        assertSame(betaNodeC.getSinkPropagator().getSinks()[0], betaNodeA1);
+        assertSame(betaNodeC.getSinkPropagator().getSinks()[1], betaNodeA2);
+        assertSame(betaNodeA1.getLeftTupleSource(), betaNodeC);
+        assertSame(betaNodeA2.getLeftTupleSource(), betaNodeC);
+
+        assertEquals( 0L, betaNodeC.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC.getRightInferredMask() );
+        assertEquals( 0L, betaNodeC.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a"), sp), betaNodeC.getLeftInferredMask() );
+
+        assertEquals( 0L, betaNodeA1.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeA1.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA1.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA1.getLeftInferredMask() );
+
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNodeA2.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("b", "c"), sp), betaNodeA2.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeA2.getLeftInferredMask() );
+
+        kbase.removeRule( "org.drools", "r0" );
+        assertEquals(1, betaNodeC.getSinkPropagator().getSinks().length);
+    }
+
+    @Test
+    public void testBetaWith2BetaSinks() {
+        String rule1 = "B(a == 15) @watch(b) A() @watch(i) C()";
+        String rule2 = "B(a == 15) @watch(c) A() @watch(j) D()";
+        KnowledgeBase kbase = getKnowledgeBase(rule1, rule2);
+        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
+
+        ObjectTypeNode otnB = getObjectTypeNode(kbase, "B" );
+        List<String> sp = getSettableProperties(wm, otnB);
+
+        AlphaNode alphaNode = ( AlphaNode ) otnB.getSinkPropagator().getSinks()[0];
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b", "c"), sp), alphaNode.getInferredMask());
+
+        ObjectTypeNode otnA = getObjectTypeNode(kbase, "A" );
+        BetaNode betaNodeA1 = ( BetaNode ) otnA.getSinkPropagator().getSinks()[0];
+        BetaNode betaNodeA2 = ( BetaNode ) otnA.getSinkPropagator().getSinks()[1];
+
+        assertEquals( calculatePositiveMask(list("i"), sp), betaNodeA1.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("i"), sp), betaNodeA1.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("b"), sp), betaNodeA1.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), betaNodeA1.getLeftInferredMask() );
+
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNodeA2.getRightDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("j"), sp), betaNodeA2.getRightInferredMask() );
+        assertEquals( calculatePositiveMask(list("c"), sp), betaNodeA2.getLeftDeclaredMask() );
+        assertEquals( calculatePositiveMask(list("a", "c"), sp), betaNodeA2.getLeftInferredMask() );
+
+        ObjectTypeNode otnC = getObjectTypeNode(kbase, "C" );
+        BetaNode betaNodeC = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+
+        assertEquals( 0L, betaNodeC.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeC.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeC.getLeftInferredMask() );
+
+        ObjectTypeNode otnD = getObjectTypeNode(kbase, "D" );
+        BetaNode betaNodeD = ( BetaNode ) otnC.getSinkPropagator().getSinks()[0];
+
+        assertEquals( 0L, betaNodeD.getRightDeclaredMask() );
+        assertEquals( 0L, betaNodeD.getRightInferredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeD.getLeftDeclaredMask() );
+        assertEquals( Long.MAX_VALUE, betaNodeD.getLeftInferredMask() );
+
+        kbase.removeRule( "org.drools", "r1" );
+        assertEquals( calculatePositiveMask(list("a"), sp), alphaNode.getDeclaredMask( ) );
+        assertEquals( calculatePositiveMask(list("a", "b"), sp), alphaNode.getInferredMask());
+    }
+
+    @Test(timeout = 5000)
+    public void testBetaWith2RTNSinksExecNoLoop() throws Exception {
+        testBetaWith2RTNSinksExec(false);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testBetaWith2RTNSinksExecInfiniteLoop() throws Exception {
+        testBetaWith2RTNSinksExec(true);
+    }
+
+    private void testBetaWith2RTNSinksExec(boolean addInfiniteLoopWatch) throws Exception {
+        String rule = "package org.drools\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+                "declare A\n" +
+                "   @propertyReactive\n" +
+                "   x : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "   @propertyReactive\n" +
+                "end\n" +
+                "declare C\n" +
+                "   @propertyReactive\n" +
+                "   y : int\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   A ( x == 1 )\n" +
+                "   B ( )\n" +
+                (addInfiniteLoopWatch ? "   $c : C ( ) @watch(y)\n" : "   $c : C ( )\n") +
+                "then " +
+                "   modify( $c ) { setY( 2 ) };\n" +
+                "   if (counter.incrementAndGet() > 10) throw new RuntimeException();\n" +
+                "end;\n" +
+                "rule R2 when\n" +
+                "   A ( x == 1 )\n" +
+                "   B ( )\n" +
+                "   C ( ) @watch(y)\n" +
+                "then end;\n" +
+                "rule InitA when\n" +
+                "   $a : A ( x == 0 )\n" +
+                "then\n" +
+                "   modify( $a ) { setX( 1 ) };\n" +
+                "end;\t\n" +
+                "rule InitC salience 1 when\n" +
+                "   $c : C ( y == 0 )\n" +
+                "then\n" +
+                "   modify( $c ) { setY( 1 ) };\n" +
+                "end;\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        ksession.setGlobal( "counter", counter );
+
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
+        Object factA = factTypeA.newInstance();
+        factTypeA.set( factA, "x", 0 );
+        ksession.insert(factA);
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        ksession.insert(factB);
+
+        FactType factTypeC = kbase.getFactType( "org.drools", "C" );
+        Object factC = factTypeC.newInstance();
+        factTypeC.set( factC, "y", 0 );
+        ksession.insert(factC);
+
+        try {
+            ksession.fireAllRules();
+        } finally {
+            assertEquals(2, factTypeC.get(factC, "y"));
+            ksession.dispose();
+        }
+    }
+
+    @Test(timeout = 5000)
+    public void testBetaWith2BetaSinksExecNoLoop() throws Exception {
+        testBetaWith2BetaSinksExec(false);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void testBetaWith2BetaSinksExecInfiniteLoop() throws Exception {
+        testBetaWith2BetaSinksExec(true);
+    }
+
+    private void testBetaWith2BetaSinksExec(boolean addInfiniteLoopWatch) throws Exception {
+        String rule = "package org.drools\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+                "declare A\n" +
+                "   @propertyReactive\n" +
+                "   x : int\n" +
+                "end\n" +
+                "declare B\n" +
+                "   @propertyReactive\n" +
+                "end\n" +
+                "declare C\n" +
+                "   @propertyReactive\n" +
+                "   y : int\n" +
+                "end\n" +
+                "declare D\n" +
+                "   @propertyReactive\n" +
+                "end\n" +
+                "rule R1 when\n" +
+                "   A ( x == 1 )\n" +
+                (addInfiniteLoopWatch ? "   $c : C ( ) @watch(y)\n" : "   $c : C ( )\n") +
+                "   B ( )\n" +
+                "then " +
+                "   modify( $c ) { setY( 2 ) };\n" +
+                "   if (counter.incrementAndGet() > 10) throw new RuntimeException();\n" +
+                "end;\n" +
+                "rule R2 when\n" +
+                "   A ( x == 1 )\n" +
+                "   C ( ) @watch(y)\n" +
+                "   D ( )\n" +
+                "then end;\n" +
+                "rule InitA when\n" +
+                "   $a : A ( x == 0 )\n" +
+                "then\n" +
+                "   modify( $a ) { setX( 1 ) };\n" +
+                "end;\t\n" +
+                "rule InitC salience 1 when\n" +
+                "   $c : C ( y == 0 )\n" +
+                "then\n" +
+                "   modify( $c ) { setY( 1 ) };\n" +
+                "end;\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AtomicInteger counter = new AtomicInteger(0);
+        ksession.setGlobal( "counter", counter );
+
+        FactType factTypeA = kbase.getFactType( "org.drools", "A" );
+        Object factA = factTypeA.newInstance();
+        factTypeA.set( factA, "x", 0 );
+        ksession.insert(factA);
+
+        FactType factTypeB = kbase.getFactType( "org.drools", "B" );
+        Object factB = factTypeB.newInstance();
+        ksession.insert(factB);
+
+        FactType factTypeC = kbase.getFactType( "org.drools", "C" );
+        Object factC = factTypeC.newInstance();
+        factTypeC.set( factC, "y", 0 );
+        ksession.insert(factC);
+
+        FactType factTypeD = kbase.getFactType( "org.drools", "D" );
+        Object factD = factTypeD.newInstance();
+        ksession.insert(factD);
+
+        try {
+            ksession.fireAllRules();
+        } finally {
+            assertEquals(2, factTypeC.get(factC, "y"));
+            ksession.dispose();
         }
     }
 }

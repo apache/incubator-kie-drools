@@ -380,18 +380,16 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * Rete needs to know that this ObjectTypeNode has been added
      */
-    public void attach() {
+    public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-    }
-
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
+        if (context == null) {
+            return;
+        }
 
         // we need to call updateSink on Rete, because someone
         // might have already added facts matching this ObjectTypeNode
         // to working memories
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContextImpl propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                           PropagationContext.RULE_ADDITION,
                                                                                           null,

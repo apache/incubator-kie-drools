@@ -377,15 +377,13 @@ public class EntryPointNode extends ObjectSource
         this.objectTypeNodes.remove( node.getObjectType() );
     }
 
-    public void attach() {
+    public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-    }
+        if (context == null) {
+            return;
+        }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
-
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,

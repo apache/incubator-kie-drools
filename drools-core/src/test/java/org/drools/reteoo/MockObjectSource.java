@@ -26,6 +26,7 @@ import java.util.List;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSource extends ObjectSource {
@@ -92,7 +93,7 @@ public class MockObjectSource extends ObjectSource {
         }
     }
 
-    public void attach(final InternalWorkingMemory[] workingMemories) {
+    public void attach(BuildContext context) {
     }
     
     @Override

@@ -33,7 +33,6 @@ import org.mvel2.compiler.CompiledAccExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.integration.Interceptor;
 import org.mvel2.integration.VariableResolverFactory;
-import org.mvel2.optimizers.impl.refl.nodes.IndexedVariableAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.optimizers.impl.refl.nodes.SetterAccessor;
 
@@ -85,7 +84,7 @@ public class ModifyInterceptor
         Class<?> nodeClass = node.getEgressType();
         InternalRuleBase ruleBase = (InternalRuleBase)knowledgeHelper.getWorkingMemory().getRuleBase();
         TypeDeclaration typeDeclaration = ruleBase.getTypeDeclaration(nodeClass);
-        if (typeDeclaration == null || !typeDeclaration.isPropertySpecific()) {
+        if (typeDeclaration == null || !typeDeclaration.isPropertyReactive()) {
             modificationMask = Long.MAX_VALUE;
             return;
         }

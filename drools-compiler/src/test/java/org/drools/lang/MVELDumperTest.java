@@ -122,8 +122,7 @@ public class MVELDumperTest {
                       result );
     }
 
-    @Test
-    @Ignore
+    @Test @Ignore
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )";

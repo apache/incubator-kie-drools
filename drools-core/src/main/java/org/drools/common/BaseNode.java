@@ -26,6 +26,7 @@ import org.drools.definition.rule.Rule;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.RuleComponent;
 
 /**
@@ -83,12 +84,14 @@ public abstract class BaseNode
         return this.id;
     }
 
+    public void attach() {
+        attach(null);
+    }
+
     /**
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
-    public abstract void attach();
-
-    public abstract void attach(InternalWorkingMemory[] workingMemories);
+    public abstract void attach(BuildContext context);
 
     /**
      * A method that is called for all nodes whose network below them

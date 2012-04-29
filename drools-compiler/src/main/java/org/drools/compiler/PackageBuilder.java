@@ -1393,12 +1393,12 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
         boolean propertySpecific = propertySpecificOption.isPropSpecific(cls.isAnnotationPresent(PropertyReactive.class),
                                                                          cls.isAnnotationPresent(ClassReactive.class));
-        typeDeclaration.setPropertySpecific( propertySpecific );
+        typeDeclaration.setPropertyReactive(propertySpecific);
 
         ClassDefinition clsDef = typeDeclaration.getTypeClassDef();
         if (clsDef == null) {
             clsDef = new ClassDefinition();
-            if (typeDeclaration.isPropertySpecific()) {
+            if (typeDeclaration.isPropertyReactive()) {
                 processModifiedProps( cls,
                                       clsDef );
             }
@@ -2130,7 +2130,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         PropertySpecificOption propertySpecificOption = configuration.getOption(PropertySpecificOption.class);
         boolean propertySpecific = propertySpecificOption.isPropSpecific(typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_PROP_SPECIFIC),
                 typeDescr.getAnnotationNames().contains(TypeDeclaration.ATTR_NOT_PROP_SPECIFIC));
-        type.setPropertySpecific( propertySpecific );
+        type.setPropertyReactive(propertySpecific);
 
         if ( type.isValid() ) {
             pkgRegistry.getPackage().addTypeDeclaration( type );

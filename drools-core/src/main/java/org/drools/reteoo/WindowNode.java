@@ -119,20 +119,13 @@ public class WindowNode extends ObjectSource
         return behavior.getBehaviors();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.drools.reteoo.BaseNode#attach()
-     */
-    public void attach() {
+    public void attach(BuildContext context) {
         this.source.addObjectSink( this );
-    }
+        if (context == null) {
+            return;
+        }
 
-    public void attach( final InternalWorkingMemory[] workingMemories ) {
-        attach();
-
-        for (int i = 0, length = workingMemories.length; i < length; i++) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
             final PropagationContext propagationContext = new PropagationContextImpl(
                                                                                       workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,

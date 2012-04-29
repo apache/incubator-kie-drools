@@ -43,7 +43,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.drools.definition.process.Process;
@@ -687,12 +686,12 @@ abstract public class AbstractRuleBase
                                             true,
                                             false ) );
 
-        existingDecl.setPropertySpecific( mergeLeft(existingDecl.getTypeName(),
+        existingDecl.setPropertyReactive( mergeLeft(existingDecl.getTypeName(),
                                           "Unable to merge @propertyReactive attribute for type declaration of class:",
-                                          existingDecl.isPropertySpecific(),
-                                          newDecl.isPropertySpecific(),
+                                          existingDecl.isPropertyReactive(),
+                                          newDecl.isPropertyReactive(),
                                           true,
-                                          false ) );
+                                          false) );
 
         existingDecl.setExpirationOffset( Math.max( existingDecl.getExpirationOffset(),
                                                     newDecl.getExpirationOffset() ) );

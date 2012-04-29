@@ -40,10 +40,8 @@ import org.drools.spi.PropagationContext;
  *
  * @see org.drools.rule.Rule
  */
-public final class QueryTerminalNode extends BaseNode
-    implements
-    LeftTupleSinkNode,
-    TerminalNode {
+public final class QueryTerminalNode extends AbstractTerminalNode implements LeftTupleSinkNode {
+
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -56,17 +54,12 @@ public final class QueryTerminalNode extends BaseNode
     private Query             query;
     private GroupElement      subrule;
     private int               subruleIndex;    
-    private LeftTupleSource   tupleSource;
-    private Declaration[]     declarations; 
+    private Declaration[]     declarations;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
     
-    private long             declaredMask;
-    private long             inferredMask;
-    private long             negativeMask;
-    
-    private int              leftInputOtnId;    
+    private int              leftInputOtnId;
 
     // ------------------------------------------------------------
     // Constructors
@@ -91,11 +84,11 @@ public final class QueryTerminalNode extends BaseNode
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
-               context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
+               context.getRuleBase().getConfiguration().isMultithreadEvaluation(),
+               source );
         this.query = (Query) rule;
         this.subrule = subrule;
-        this.tupleSource = source;
-        this.subruleIndex = subruleIndex;   
+        this.subruleIndex = subruleIndex;
         
         initDeclaredMask(context);        
         initInferredMask();        
@@ -110,11 +103,7 @@ public final class QueryTerminalNode extends BaseNode
         query = (Query) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();        
-        tupleSource = (LeftTupleSource) in.readObject();
-        declaredMask = in.readLong();
-        inferredMask = in.readLong();        
-        negativeMask = in.readLong();
-        leftInputOtnId = in.readInt();        
+        leftInputOtnId = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -122,38 +111,13 @@ public final class QueryTerminalNode extends BaseNode
         out.writeObject( query );
         out.writeObject( subrule );
         out.writeInt(subruleIndex);
-        out.writeObject( tupleSource );
-        out.writeLong(declaredMask);
-        out.writeLong(inferredMask);        
-        out.writeLong(negativeMask);
-        out.writeLong(leftInputOtnId);        
+        out.writeLong(leftInputOtnId);
     }
     
-    public void initDeclaredMask(BuildContext context) {  
-        RuleTerminalNode.doInitDeclaredMask(this, context);
-    }
-    
-    public void initInferredMask() {
-        RuleTerminalNode.doInitInferredMask(this);
-    }
-    
-    public long getDeclaredMask() {
-        return declaredMask;
-    }
-
-    public long getInferredMask() {
-        return inferredMask;
-    }
-    
-
     public Rule getRule() {
         return this.query;
     }
 
-    public LeftTupleSource getLeftTupleSource() {
-        return this.tupleSource;
-    }      
-    
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -208,29 +172,6 @@ public final class QueryTerminalNode extends BaseNode
                                                     workingMemory );
     }
 
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        LeftTupleSource.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                (LeftTupleSink) this, getLeftInputOtnId(), inferredMask);
-//        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
-//        if ( leftTuple != null ) {
-//            leftTuple.reAdd(); //
-//            // LeftTuple previously existed, so continue as modify
-//            modifyLeftTuple( leftTuple,
-//                             context,
-//                             workingMemory );
-//        } else {
-//            // LeftTuple does not exist, so create and continue as assert
-//            assertLeftTuple( createLeftTuple( factHandle,
-//                                              this,
-//                                              true ),
-//                             context,
-//                             workingMemory );
-//        }
-    }
-
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
@@ -254,42 +195,34 @@ public final class QueryTerminalNode extends BaseNode
         return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
     }
 
-    public void ruleAttached() {
+    public void attach( BuildContext context ) {
+        getLeftTupleSource().addTupleSink( this, context );
+        if (context == null) {
+            return;
+        }
 
-    }
-
-    public void attach() {
-        this.tupleSource.addTupleSink( this );
-    }
-
-    public void attach(final InternalWorkingMemory[] workingMemories) {
-        attach();
-
-        for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-            final InternalWorkingMemory workingMemory = workingMemories[i];
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null,
                                                                                       null );
-            this.tupleSource.updateSink( this,
-                                         propagationContext,
-                                         workingMemory );
+            getLeftTupleSource().updateSink( this, propagationContext, workingMemory );
         }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
-        this.tupleSource.networkUpdated(updateContext);
+        getLeftTupleSource().networkUpdated(updateContext);
     }
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        this.tupleSource.remove( context,
-                                 builder,
-                                 this,
-                                 workingMemories );
+        getLeftTupleSource().remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
     }
 
     public boolean isInUse() {
@@ -407,25 +340,4 @@ public final class QueryTerminalNode extends BaseNode
     public void setLeftInputOtnId(int leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
     }
-
-    public LeftTupleSource unwrapTupleSource() {
-        return tupleSource instanceof FromNode ? ((FromNode)tupleSource).getLeftTupleSource() : tupleSource;
-    }
-    
-    public void setDeclaredMask(long mask) {
-        declaredMask = mask;
-    }
-
-    public void setInferredMask(long mask) {
-        inferredMask = mask;
-    }      
-
-    public long getNegativeMask() {
-        return negativeMask;
-    }
-    
-    public void setNegativeMask(long mask) {
-        negativeMask = mask;
-    }           
-
 }

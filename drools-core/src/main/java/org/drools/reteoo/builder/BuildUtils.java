@@ -32,6 +32,7 @@ import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
+import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
@@ -45,7 +46,6 @@ import org.drools.rule.IntervalProviderConstraint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
-import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.time.Interval;
@@ -142,12 +142,7 @@ public class BuildUtils {
             }
             // set node whit the actual partition label
             node.setPartitionId( partition );
-
-            if ( context.getWorkingMemories().length == 0 ) {
-                node.attach();
-            } else {
-                node.attach( context.getWorkingMemories() );
-            }
+            node.attach(context);
             // adds the node to the context list to track all added nodes
             context.getNodes().add( node );
         } else {
@@ -311,9 +306,7 @@ public class BuildUtils {
             } else {
                 result = source;
             }
-            TemporalDependencyMatrix matrix = new TemporalDependencyMatrix( result,
-                                                                            events );
-            return matrix;
+            return new TemporalDependencyMatrix( result, events );
         }
         return null;
     }
