@@ -89,7 +89,7 @@ public class SolverBenchmark {
         determineTotalScore();
     }
 
-    private void determineTotalScore() {
+    protected void determineTotalScore() {
         failureCount = 0;
         totalScore = null;
         for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
