@@ -29,14 +29,14 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.api.SolverBenchmarkRankingWeightFactory;
+import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.comparator.SolverBenchmarkRankingType;
-import org.drools.planner.benchmark.core.comparator.TotalRankSolverBenchmarkRankingWeightFactory;
-import org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkRankingComparator;
-import org.drools.planner.benchmark.core.comparator.WorstScoreSolverBenchmarkRankingComparator;
+import org.drools.planner.benchmark.core.ranking.SolverBenchmarkRankingType;
+import org.drools.planner.benchmark.core.ranking.TotalRankSolverBenchmarkRankingWeightFactory;
+import org.drools.planner.benchmark.core.ranking.TotalScoreSolverBenchmarkRankingComparator;
+import org.drools.planner.benchmark.core.ranking.WorstScoreSolverBenchmarkRankingComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

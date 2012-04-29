@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.api;
+package org.drools.planner.benchmark.api.ranking;
 
-import java.util.Comparator;
 import java.util.List;
 
 import org.drools.planner.benchmark.core.SolverBenchmark;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.comparator;
+package org.drools.planner.benchmark.core.ranking;
 
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.benchmark.api.SolverBenchmarkRankingWeightFactory;
+import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;

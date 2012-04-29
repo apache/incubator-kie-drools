@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.comparator;
+package org.drools.planner.benchmark.core.ranking;
 
 import org.drools.planner.core.solution.Solution;
 

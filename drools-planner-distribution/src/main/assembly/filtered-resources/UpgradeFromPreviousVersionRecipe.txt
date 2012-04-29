@@ -1917,4 +1917,11 @@ Before in *BenchmarkConfig.xml:
   <solverBenchmarkComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkComparator</solverBenchmarkComparator>
 After in *BenchmarkConfig.xml:
   <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
-However, if you want to use any of the build-in ranking comparisons, just use <solverBenchmarkRankingType>, see manual.
+However, if you use any of the build-in ranking comparisons, it's better to use this in *BenchmarkConfig.xml:
+  <solverBenchmarkRankingType>TOTAL_SCORE</solverBenchmarkRankingType>
+
+[MINOR] Benchmarker: package org.drools.planner.benchmark.core.comparator has been renamed to ranking
+Before in *BenchmarkConfig.xml:
+  <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
+After in *BenchmarkConfig.xml:
+  <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.ranking.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
