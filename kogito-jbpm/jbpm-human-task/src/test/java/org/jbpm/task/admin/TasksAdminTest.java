@@ -131,9 +131,10 @@ public class TasksAdminTest {
 
         localTaskService.addTask(task, new ContentData());
         List<TaskSummary> salaboysTasks = localTaskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-
+        
         TaskSummary simpleTask = salaboysTasks.get(0);
-
+        assertEquals("My Simple Task", simpleTask.getName());
+        
         localTaskService.start(simpleTask.getId(), "salaboy");
             
         TasksAdmin admin = taskService.createTaskAdmin();
@@ -162,7 +163,8 @@ public class TasksAdminTest {
         List<TaskSummary> salaboysTasks = localTaskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
 
         TaskSummary simpleTask = salaboysTasks.get(0);
-
+        assertEquals("My Simple Task", simpleTask.getName());
+        
         localTaskService.start(simpleTask.getId(), "salaboy");
             
         TasksAdmin admin = taskService.createTaskAdmin();
@@ -215,8 +217,6 @@ public class TasksAdminTest {
         List<I18NText> names = new ArrayList<I18NText>();
         names.add(new I18NText("en-UK", "My Simple Task"));
         task.setNames(names);
-        task.setDescriptions(names);
-        task.setSubjects(names);
         
         TaskData data = new TaskData();
         data.setActualOwner(user);
