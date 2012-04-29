@@ -30,7 +30,6 @@ import org.junit.Test;
 
 public class CronJobTest {
     @Test
-    @Ignore
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = new SessionConfiguration();
         config.setClockType( ClockType.PSEUDO_CLOCK );

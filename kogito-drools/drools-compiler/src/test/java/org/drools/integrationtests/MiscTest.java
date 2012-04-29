@@ -9374,7 +9374,7 @@ public class MiscTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("TODO unignore when fixing JBRULES-2749")
+
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
 

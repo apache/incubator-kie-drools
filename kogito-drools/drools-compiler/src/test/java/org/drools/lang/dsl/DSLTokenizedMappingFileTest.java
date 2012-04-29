@@ -19,7 +19,7 @@ public class DSLTokenizedMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    @Test @Ignore
+    @Test
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );
