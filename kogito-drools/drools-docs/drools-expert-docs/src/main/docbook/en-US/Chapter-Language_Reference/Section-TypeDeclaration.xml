@@ -292,6 +292,13 @@ end
 end</programlisting>
         </example>
       </section>
+
+      <section>
+        <title>@propertyReactive</title>
+
+        <para>Make this type property reactive. See Fine grained property change
+        listeners section for details.</para>
+      </section>
     </section>
 
     <section>
