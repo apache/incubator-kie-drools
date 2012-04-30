@@ -20,6 +20,8 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
@@ -52,7 +54,11 @@ public class ASMConditionEvaluatorJitter {
     }
 
     private static String getUniqueClassName() {
-        return "ConditionEvaluator" + generateUUID();
+        return getUniqueName("ConditionEvaluator");
+    }
+
+    private static String getUniqueName(String prefix) {
+        return prefix + generateUUID();
     }
 
     private static class EvaluateMethodGenerator extends GeneratorHelper.DeclarationAccessorMethod {
@@ -138,7 +144,11 @@ public class ASMConditionEvaluatorJitter {
 
         private void jitSingleCondition(SingleCondition singleCondition) {
             if (singleCondition.isBinary()) {
-                jitBinary(singleCondition);
+                if (singleCondition.getOperation() == BooleanOperator.MATCHES) {
+                    jitMatches(singleCondition);
+                } else {
+                    jitBinary(singleCondition);
+                }
             } else {
                 jitUnary(singleCondition);
             }
@@ -181,6 +191,45 @@ public class ASMConditionEvaluatorJitter {
             } else {
                 jitObjectBinary(singleCondition, left, right, commonType);
             }
+        }
+
+        private void jitMatches(SingleCondition singleCondition) {
+            if (!(singleCondition.getRight() instanceof FixedExpression)) {
+                jitBinary(singleCondition);
+                return;
+            }
+
+            final String matchingString = ((FixedExpression)singleCondition.getRight()).getValue().toString();
+            final String patternVariableName = getUniqueName("pattern");
+            getClassGenerator().addStaticField(ACC_PRIVATE | ACC_FINAL, patternVariableName, Pattern.class, null);
+            getClassGenerator().addStaticInitBlock(new ClassGenerator.MethodBody() {
+                @Override
+                public void body(MethodVisitor mv) {
+                    mv.visitLdcInsn(matchingString);
+                    invokeStatic(Pattern.class, "compile", Pattern.class, String.class);
+                    putStaticField(patternVariableName, Pattern.class);
+                }
+            });
+
+            jitExpression(singleCondition.getLeft(), String.class);
+            store(LEFT_OPERAND, singleCondition.getLeft().getType());
+
+            Label notNullLabel = jitLeftIsNull(singleCondition.getLeft().getType() == String.class ?
+                    jitNullSafeOperationStart() :
+                    jitNullSafeCoercion(singleCondition.getLeft().getType(), String.class));
+
+            mv.visitInsn(ICONST_0);
+
+            Label nullEvaluation = new Label();
+            mv.visitJumpInsn(GOTO, nullEvaluation);
+            mv.visitLabel(notNullLabel);
+
+            getStaticField(patternVariableName, Pattern.class);
+            load(LEFT_OPERAND);
+            invokeVirtual(Pattern.class, "matcher", Matcher.class, CharSequence.class);
+            invokeVirtual(Matcher.class, "matches", boolean.class);
+
+            mv.visitLabel(nullEvaluation);
         }
 
         private void jitPrimitiveBinary(SingleCondition singleCondition, Expression left, Expression right, Class<?> type) {
@@ -416,7 +465,7 @@ public class ASMConditionEvaluatorJitter {
 
         private Class<?> jitExpression(Expression exp, Class<?> requiredClass) {
             if (exp instanceof FixedExpression) {
-                push(((FixedExpression) exp).typedValue.value, requiredClass);
+                push(((FixedExpression) exp).getValue(), requiredClass);
                 return exp.getType();
             } else if (exp instanceof EvaluatedExpression) {
                 return jitEvaluatedExpression((EvaluatedExpression) exp, true);
