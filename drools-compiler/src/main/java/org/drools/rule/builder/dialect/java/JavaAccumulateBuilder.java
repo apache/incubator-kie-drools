@@ -133,6 +133,7 @@ public class JavaAccumulateBuilder
                                                                               "this" );
 
         int index = 0;
+        Pattern pattern = (Pattern) context.getBuildStack().peek();
         for ( AccumulateFunctionCallDescr fc : funcCalls ) {
             // find the corresponding function
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( fc.getFunction() );
@@ -146,11 +147,18 @@ public class JavaAccumulateBuilder
 
             // if there is a binding, create the binding
             if ( fc.getBind() != null ) {
-                createResultBind( context,
-                                  index,
-                                  arrayReader,
-                                  fc,
-                                  function );
+                if ( pattern.getDeclaration( fc.getBind() ) != null ) {
+                    context.addError(new DescrBuildError(context.getParentDescr(),
+                            accumDescr,
+                            null,
+                            "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'"));
+                } else {
+                    createResultBind( pattern,
+                                      index,
+                                      arrayReader,
+                                      fc,
+                                      function );
+                }
             }
 
             // analyze the expression
@@ -228,13 +236,13 @@ public class JavaAccumulateBuilder
         return accumulator;
     }
 
-    private void createResultBind( final RuleBuildContext context,
+    private void createResultBind( final Pattern pattern,
                                    int index,
                                    InternalReadAccessor arrayReader,
                                    AccumulateFunctionCallDescr fc,
                                    AccumulateFunction function ) {
         // bind function result on the result pattern
-        Declaration declr = ((Pattern) context.getBuildStack().peek()).addDeclaration( fc.getBind() );
+        Declaration declr = pattern.addDeclaration( fc.getBind() );
 
         Class< ? > type = function instanceof TypedAccumulateFunction ? ((TypedAccumulateFunction) function).getResultType() : Object.class;
 
