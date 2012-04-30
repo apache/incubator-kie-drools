@@ -928,6 +928,35 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateMultipleFunctionsConstraint() throws Exception {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
     }
+    
+    @Test 
+    public void testAccumulateWithAndOrCombinations() throws Exception {
+        // JBRULES-3482
+        // once this compils, update it to actually assert on correct outputs.
+        
+        String rule = "package org.drools.test;\n" +
+                      "import org.drools.Cheese;\n" +
+                      "import org.drools.Person;\n" +
+                        
+                      "rule \"Class cast causer\"\n" +
+                      "    when\n" +
+                      "        $person      : Person( $likes : likes )\n" +
+                      "        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),\n" +
+                      "                                                min($c.getPrice()) )\n" +
+                      "        ($p2 : Person(name == 'nobody') or $p2 : Person(name == 'Doug'))\n" +
+                      "    then\n" +
+                      "        System.out.println($p2.getName());\n" +
+                      "end\n";
+        // read in the source
+        final Reader reader = new StringReader( rule );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+
+        wm.insert( new Cheese( "stilton", 10 ) );
+        wm.insert( new Person( "Alice", "brie" ) );
+        wm.insert( new Person( "Bob", "stilton" ) );
+    }    
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
