@@ -80,6 +80,24 @@
               <packages>org.drools.time*</packages>
             </group>
           </groups>
+          <!--
+            yWorks UML Doclet (AKA ydoc) is used for the UML diagrams in drools-expert-docs.
+            To use it:
+            - Download version 3.0.2 or higher from http://www.yworks.com/en/products_ydoc.html#download
+            - Install it to for example /home/gdesmet/opt/other/yworks-uml-doclet
+            - Edit yworks-uml-doclet/resources/ydoc.cfg:
+            - Replace every "original-style.xml" by "dotnet-style.xml"
+            - For "tiling", set property "enabled" to "false"
+            - Save and close ydoc.cfg
+            - Uncomment the lines below. Adjust <docletPath> accordingly.
+            - cd .../droolsjbpm/droolsjbpm-knowledge/knowledge-api
+            - mvn clean install -Dfull
+            - cd .../droolsjbpm
+            - droolsjbpm-build-bootstrap/script/docs/copy-ydoc-output.sh
+          -->
+          <!--<doclet>ydoc.doclets.YStandard</doclet>-->
+          <!--<docletPath>~/opt/other/yworks-uml-doclet/lib/ydoc.jar:~/opt/other/yworks-uml-doclet/lib/styleed.jar:~/opt/other/yworks-uml-doclet/resources</docletPath>-->
+          <!--<additionalparam>-umlautogen</additionalparam>-->
         </configuration>
       </plugin>
     </plugins>
