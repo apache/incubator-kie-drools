@@ -278,29 +278,21 @@
     they don't have to be re-evaluated for every single instance. The
     following two rules share the first pattern, but not the last:</para>
 
-    <programlisting>
-    
-    rule
-    when
-        Cheese( $cheddar : name == "cheddar" )
-        $person : Person( favouriteCheese == $cheddar )
-    then
-        System.out.println( $person.getName() + " likes cheddar" );
-    end
-    
-   </programlisting>
+    <programlisting>rule
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese == $cheddar )
+then
+    System.out.println( $person.getName() + " likes cheddar" );
+end</programlisting>
 
-    <programlisting>
-    
-    rule
-    when
-        Cheese( $cheddar : name == "cheddar" )
-        $person : Person( favouriteCheese != $cheddar )
-    then
-        System.out.println( $person.getName() + " does not like cheddar" );
-    end
-    
-  </programlisting>
+    <programlisting>rule
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese != $cheddar )
+then
+    System.out.println( $person.getName() + " does not like cheddar" );
+end</programlisting>
 
     <para>As you can see below, the compiled Rete network shows that the alpha
     node is shared, but the beta nodes are not. Each beta node has its own
