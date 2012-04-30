@@ -41,6 +41,8 @@ import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.io.ResourceFactory;
+import org.drools.logger.KnowledgeRuntimeLogger;
+import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -1137,6 +1139,170 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         //System.err.println(reportWMObjects(kSession));
     }
+    
+    public class IntervalRequirement
+    {
+        private int interval;
+        private int staffingRequired;
+        
+        public IntervalRequirement(int interval, int staffingRequired) {
+            super();
+            this.interval = interval;
+            this.staffingRequired = staffingRequired;
+        }
+        
+        public int getInterval() {
+            return interval;
+        }
+
+        public int getStaffingRequired() {
+            return staffingRequired;
+        }
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(getClass().getSimpleName()).append(": ")
+                .append("interval: ").append(this.interval)
+                .append(", staffingRequired: ").append(this.staffingRequired)
+                ;
+            return sb.toString();
+        }
+    }
+
+    public class ShiftAssignment
+    {
+        private int shiftStartTime = -1;
+        private int shiftEndTime = -1;
+
+        public ShiftAssignment() {
+        }
+        
+        public int getShiftStartTime() {
+            return this.shiftStartTime;
+        }
+        
+        public int getShiftEndTime() {
+            return this.shiftEndTime;
+        }
+        
+        public void setShiftStartTime(int shiftStartTime) {
+            this.shiftStartTime = shiftStartTime;
+        }
+
+        public void setShiftEndTime(int shiftEndTime) {
+            this.shiftEndTime = shiftEndTime;
+        }
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("ShiftAssignment: ")
+                .append(" ")
+                .append("start: ").append(this.shiftStartTime).append(" end: ").append(this.shiftEndTime);
+            return sb.toString();
+        }
+    }
+    
+    @Test
+    public void testRepetitiveUpdatesOnSameFacts() throws Exception {
+        // JBRULES-3320
+        // Using the concept of shift assignments covering interval requirements (staffing required for a given interval)
+        List notCovered = new ArrayList();          // Interval requirements not covered by any shift assignments
+        List partiallyCovered = new ArrayList();    // Interval requirements partially covered by shift assignments (staffing requirement partially met)
+        List totallyCovered = new ArrayList();      // Interval requirements totally covered by shift assignments (staffing requirement met or exceeded)
+
+        // load up the knowledge base
+        KnowledgeBase kbase = loadKnowledgeBase( "test_RepetitiveUpdatesOnSameFacts.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.setGlobal("totallyCovered", totallyCovered);
+        ksession.setGlobal("partiallyCovered", partiallyCovered);
+        ksession.setGlobal("notCovered", notCovered);
+
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        
+        // Using 4 IntervalRequirement objects that never change during the execution of the test
+        // Staffing required at interval 100
+        IntervalRequirement ir100 = new IntervalRequirement(100, 2);
+        ksession.insert(ir100);
+        // Staffing required at interval 101
+        IntervalRequirement ir101 = new IntervalRequirement(101, 2);
+        ksession.insert(ir101);
+        // Staffing required at interval 102
+        IntervalRequirement ir102 = new IntervalRequirement(102, 2);
+        ksession.insert(ir102);
+        // Staffing required at interval 103
+        IntervalRequirement ir103 = new IntervalRequirement(103, 2);
+        ksession.insert(ir103);
+
+        // Using a single ShiftAssignment object that will get updated multiple times during the execution of the test
+        ShiftAssignment sa = new ShiftAssignment();
+        sa.setShiftStartTime(100);
+
+        FactHandle saHandle = null;
+    
+        // Intersects 1 interval
+        totallyCovered.clear();
+        partiallyCovered.clear();
+        notCovered.clear();
+        sa.setShiftEndTime(101);
+        System.out.println("ShiftAssignment set from " + sa.getShiftStartTime() + " to " + sa.getShiftEndTime());
+        saHandle = ksession.insert(sa);
+        ksession.fireAllRules();
+        assertEquals("notCovered with " + sa, 3, notCovered.size());
+        assertEquals("totallyCovered with " + sa, 0, totallyCovered.size());
+        assertEquals("partiallyCovered with " + sa, 1, partiallyCovered.size());
+        
+        // Intersects 3 intervals
+        totallyCovered.clear();
+        partiallyCovered.clear();
+        notCovered.clear();
+        sa.setShiftEndTime(103);
+        System.out.println("ShiftAssignment set from " + sa.getShiftStartTime() + " to " + sa.getShiftEndTime());
+        ksession.update(saHandle, sa);
+        ksession.fireAllRules();
+        assertEquals("notCovered with " + sa, 0, notCovered.size()); // this was fired in the previous scenario
+        assertEquals("totallyCovered with " + sa, 0, totallyCovered.size());
+        assertEquals("partiallyCovered with " + sa, 3, partiallyCovered.size());
+        
+        // Intersects 2 intervals
+        totallyCovered.clear();
+        partiallyCovered.clear();
+        notCovered.clear();
+        sa.setShiftEndTime(102);
+        System.out.println("ShiftAssignment set from " + sa.getShiftStartTime() + " to " + sa.getShiftEndTime());
+        ksession.update(saHandle, sa);
+        ksession.fireAllRules();
+        assertEquals("notCovered with " + sa, 1, notCovered.size()); // new uncovered scenario
+        assertEquals("totallyCovered with " + sa, 0, totallyCovered.size());
+        assertEquals("partiallyCovered with " + sa, 2, partiallyCovered.size());
+        
+        // Intersects 4 intervals
+        totallyCovered.clear();
+        partiallyCovered.clear();
+        notCovered.clear();
+        sa.setShiftEndTime(104);
+        System.out.println("ShiftAssignment set from " + sa.getShiftStartTime() + " to " + sa.getShiftEndTime());
+        ksession.update(saHandle, sa);
+        ksession.fireAllRules();
+        assertEquals("notCovered with " + sa, 0, notCovered.size());
+        assertEquals("totallyCovered with " + sa, 0, totallyCovered.size());
+        assertEquals("partiallyCovered with " + sa, 4, partiallyCovered.size());
+        
+        // Intersects 1 interval
+        totallyCovered.clear();
+        partiallyCovered.clear();
+        notCovered.clear();
+        sa.setShiftEndTime(101);
+        System.out.println("ShiftAssignment set from " + sa.getShiftStartTime() + " to " + sa.getShiftEndTime());
+        ksession.update(saHandle, sa);
+        ksession.fireAllRules();
+        assertEquals("notCovered with " + sa, 3, notCovered.size());
+        assertEquals("totallyCovered with " + sa, 0, totallyCovered.size());
+        assertEquals("partiallyCovered with " + sa, 1, partiallyCovered.size());
+        
+        ksession.dispose();
+        logger.close();
+    }    
     
     public InternalFactHandle getFactHandle(FactHandle factHandle,
                                             StatefulSession session) {
