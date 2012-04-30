@@ -271,6 +271,10 @@ public class Pattern
         return this.declaration;
     }
 
+    public Declaration getDeclaration(String identifier) {
+        return this.declarations != null ? this.declarations.get(identifier) : null;
+    }
+
     public int getIndex() {
         return this.index;
     }

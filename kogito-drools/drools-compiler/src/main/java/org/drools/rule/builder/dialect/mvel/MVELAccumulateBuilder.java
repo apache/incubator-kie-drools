@@ -165,6 +165,7 @@ public class MVELAccumulateBuilder
                                                                               "this" );
 
         int index = 0;
+        Pattern pattern = (Pattern) context.getBuildStack().peek();
         for ( AccumulateFunctionCallDescr func : functions ) {
             // build an external function executor
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
@@ -179,11 +180,18 @@ public class MVELAccumulateBuilder
 
             // if there is a binding, create the binding
             if ( func.getBind() != null ) {
-                createResultBind( context,
+                if ( pattern.getDeclaration( func.getBind() ) != null ) {
+                    context.addError(new DescrBuildError(context.getParentDescr(),
+                            accumDescr,
+                            null,
+                            "Duplicate declaration for variable '" + func.getBind() + "' in the rule '" + context.getRule().getName() + "'"));
+                } else {
+                    createResultBind( pattern,
                                   index,
                                   arrayReader,
                                   func,
                                   function );
+                }
             }
 
             final AnalysisResult analysis = dialect.analyzeExpression( context,
@@ -337,13 +345,13 @@ public class MVELAccumulateBuilder
         return usedDeclarations.toArray( new Declaration[usedDeclarations.size()] );
     }
 
-    private void createResultBind( final RuleBuildContext context,
+    private void createResultBind( final Pattern pattern,
                                    int index,
                                    InternalReadAccessor arrayReader,
                                    AccumulateFunctionCallDescr fc,
                                    AccumulateFunction function ) {
         // bind function result on the result pattern
-        Declaration declr = ((Pattern) context.getBuildStack().peek()).addDeclaration( fc.getBind() );
+        Declaration declr = pattern.addDeclaration( fc.getBind() );
 
         Class< ? > type = function instanceof TypedAccumulateFunction ? ((TypedAccumulateFunction) function).getResultType() : Object.class;
 
