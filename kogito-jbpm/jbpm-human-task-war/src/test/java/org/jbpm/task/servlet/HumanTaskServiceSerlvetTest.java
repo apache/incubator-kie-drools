@@ -94,7 +94,7 @@ public class HumanTaskServiceSerlvetTest {
 	@Test
 	public void testDefaultHornetQConfiguration() {
 		String host = "localhost";
-		String port = "5446";
+		String port = "5445";
 		Properties parameters = new Properties();
 		parameters.setProperty("active.config", "hornetq");
 		parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
@@ -152,7 +152,7 @@ public class HumanTaskServiceSerlvetTest {
 	@Test
 	public void testDefaultConfiguration() {
 		String host = "localhost";
-		String port = "5446";
+		String port = "5445";
 		Properties parameters = new Properties();
 		parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
 		
@@ -188,7 +188,7 @@ public class HumanTaskServiceSerlvetTest {
 	@Test
 	public void testDefaultTransportConfigurationWithCustomUserGroupCallback() {
 		String host = "localhost";
-		String port = "5446";
+		String port = "5445";
 		Properties parameters = new Properties();
 		parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
 		parameters.setProperty("user.group.callback.class", CustomUserGroupCallbackImpl.class.getName());
@@ -224,7 +224,7 @@ public class HumanTaskServiceSerlvetTest {
 	@Test
 	public void testDefaultTransportConfigurationWithCustomEscalatedDeadlineHandler() {
 		String host = "localhost";
-		String port = "5446";
+		String port = "5445";
 		Properties parameters = new Properties();
 		parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
 		parameters.setProperty("escalated.deadline.handler.class", CustomEscalatedDeadlineHandler.class.getName());
@@ -256,7 +256,7 @@ public class HumanTaskServiceSerlvetTest {
 	@Test
 	public void testDefaultTransportConfigurationWithCustomUserInfo() {
 		String host = "localhost";
-		String port = "5446";
+		String port = "5445";
 		Properties parameters = new Properties();
 		parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
 		parameters.setProperty("user.info.class", CustomUserInfo.class.getName());
@@ -291,7 +291,7 @@ public class HumanTaskServiceSerlvetTest {
     @Test
     public void testDefaultConfigurationWithDefaultUserGroupCallbackImpl() {
         String host = "localhost";
-        String port = "5446";
+        String port = "5445";
         Properties parameters = new Properties();
         parameters.setProperty("task.persistence.unit", "org.jbpm.task.test");
         parameters.setProperty("user.group.callback.class", DefaultUserGroupCallbackImpl.class.getName());

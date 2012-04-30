@@ -200,7 +200,7 @@ public class HumanTaskServiceServlet extends HttpServlet {
 	        System.out.println("Apache Mina Task service running ...");
 	        
         } else if ("hornetq".equalsIgnoreCase(activeConfig)) {
-        	int port = Integer.parseInt(getConfigParameter("hornetq.port", "5446"));
+        	int port = Integer.parseInt(getConfigParameter("hornetq.port", "5445"));
         	
         	server = new HornetQTaskServer(taskService, port);
     		thread = new Thread(server);
