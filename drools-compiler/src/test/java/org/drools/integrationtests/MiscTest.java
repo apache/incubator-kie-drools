@@ -10923,5 +10923,40 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals(20, ksession.fireAllRules());
         ksession.dispose();
     }
-}
 
+
+    @Test
+    public void testCheckDuplicateVariables() throws Exception {
+        // JBRULES-3035
+        String str = "package com.sample\n" +
+                "import org.drools.*\n" +
+                "rule R1 when\n" +
+                "   Person( $a: age, $a: name ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+
+        str = "package com.sample\n" +
+                "rule R1 when\n" +
+                "   accumulate( Object(), $c: count(1), $c: max(1) ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+
+        str = "package com.sample\n" +
+                "rule R1 when\n" +
+                "   Number($i: intValue) from accumulate( Object(), $i: count(1) ) // this should cause a compile-time error\n" +
+                "then\n" +
+                "end";
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        assertTrue(kbuilder.hasErrors());
+    }
+}
