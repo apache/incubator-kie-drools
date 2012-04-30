@@ -1,0 +1,49 @@
+#created on: Nov 7, 2011
+package org.drools.integrationtests
+dialect "java" 
+
+import java.util.ArrayList;
+import java.util.HashSet;
+
+import org.drools.integrationtests.TruthMaintenanceTest.ShiftAssignment;
+import org.drools.integrationtests.TruthMaintenanceTest.IntervalRequirement;
+
+global java.util.List totallyCovered
+global java.util.List notCovered
+global java.util.List partiallyCovered
+
+rule "intervalRequirementNotCovered"
+	when
+		$intervalReq : IntervalRequirement($interval : interval)
+        not (ShiftAssignment(shiftStartTime <= $interval, shiftEndTime > $interval))
+	then 
+		#actions
+		notCovered.add($intervalReq);
+		System.out.println("intervalRequirementNotCovered -> " + $intervalReq);
+end
+
+rule "intervalRequirementPartiallyCovered"
+	when
+		$intervalReq : IntervalRequirement($interval : interval, $staffingRequired : staffingRequired)
+		$matchingShiftAssignmentsCount : Number(intValue() > 0, intValue() < $staffingRequired) from accumulate(
+            $matchingShiftAssignments : ShiftAssignment(shiftStartTime <= $interval, shiftEndTime > $interval)
+            								, count($matchingShiftAssignments)
+        )
+	then 
+		#actions
+		partiallyCovered.add($intervalReq);
+		System.out.println("intervalRequirementPartiallyCovered -> " + $intervalReq + " covered by " + $matchingShiftAssignmentsCount + " ShiftAssignment(s)");
+end
+
+rule "intervalRequirementTotallyCovered"
+	when
+		$intervalReq : IntervalRequirement($interval : interval, $staffingRequired : staffingRequired)
+		$matchingShiftAssignmentsCount : Number(intValue() > 0, intValue() >= $staffingRequired) from accumulate(
+            $matchingShiftAssignments : ShiftAssignment(shiftStartTime <= $interval, shiftEndTime > $interval)
+            								, count($matchingShiftAssignments)
+        )
+	then 
+		#actions
+		totallyCovered.add($intervalReq);
+		System.out.println("intervalRequirementTotallyCovered -> " + $intervalReq + " covered by " + $matchingShiftAssignmentsCount + " ShiftAssignment(s)");
+end
