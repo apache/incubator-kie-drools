@@ -87,7 +87,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                    srcObjType );
         this.accumulate = new Accumulate( sourcePattern,
                                           new Declaration[0],
-                                          new Declaration[0],
                                           new Accumulator[] { this.accumulator },
                                           false );
 

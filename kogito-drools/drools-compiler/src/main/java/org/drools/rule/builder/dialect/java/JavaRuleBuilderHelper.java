@@ -133,6 +133,8 @@ public final class JavaRuleBuilderHelper {
                                                      final Map<String, Class<?>> globals) {
         final Map<String, Object> map = new HashMap<String, Object>();
 
+        map.put( "className", 
+                 className );
         map.put( "methodName",
                  className );
 

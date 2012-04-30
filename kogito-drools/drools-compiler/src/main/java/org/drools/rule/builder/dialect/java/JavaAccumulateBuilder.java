@@ -109,7 +109,6 @@ public class JavaAccumulateBuilder
         return accumulate;
     }
 
-    @SuppressWarnings("unchecked")
     private Accumulate buildExternalFunctionCall( final RuleBuildContext context,
                                                   final AccumulateDescr accumDescr,
                                                   final RuleConditionElement source,
@@ -187,7 +186,6 @@ public class JavaAccumulateBuilder
         
         accumulate = new Accumulate( source,
                                      requiredDecl.toArray( new Declaration[requiredDecl.size()] ),
-                                     sourceDeclArr,
                                      accumulators,
                                      accumDescr.isMultiFunction() );
         return accumulate;
@@ -360,8 +358,7 @@ public class JavaAccumulateBuilder
                  new Integer( actionCode.hashCode() ) );
 
         accumulate = new Accumulate( source,
-                                     declarations,
-                                     sourceDeclArr );
+                                     declarations );
 
         generateTemplates("accumulateInnerClass",
                 "accumulateInvoker",

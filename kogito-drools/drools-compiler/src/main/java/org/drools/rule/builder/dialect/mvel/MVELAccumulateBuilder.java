@@ -125,7 +125,6 @@ public class MVELAccumulateBuilder
 
             final Accumulate accumulate = new Accumulate( source,
                                                           null,
-                                                          null,
                                                           accumulators,
                                                           accumDescr.isMultiFunction() );
 

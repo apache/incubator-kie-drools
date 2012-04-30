@@ -930,7 +930,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
     }
     
-    @Test @Ignore
+    @Test 
     public void testAccumulateWithAndOrCombinations() throws Exception {
         // JBRULES-3482
         // once this compils, update it to actually assert on correct outputs.

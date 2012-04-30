@@ -28,7 +28,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
-import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.Accumulator;
@@ -98,7 +97,6 @@ public class CollectBuilder
         CollectAccumulator accumulator = new CollectAccumulator( collect );
         Accumulate accumulate = new Accumulate( sourcePattern,
                                                 sourcePattern.getRequiredDeclarations(),
-                                                (Declaration[]) collect.getInnerDeclarations().values().toArray( new Declaration[0] ),
                                                 new Accumulator[] { accumulator },
                                                 false );
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
