@@ -1331,6 +1331,137 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
       argument; these are referred to as output arguments.</para>
     </section>
 
+  <section>
+      <title>Fine grained property change listeners</title>
+
+      <para>When you call modify() (see the modify statement section) on a given object it will trigger a revaluation of all
+          patterns of the matching object type in the knowledge base. This can can lead to unwanted and useless evaluations
+          and in the worst cases to infinite recursions. The only workaround to avoid it was to split up your objects into
+          smaller ones having a 1 to 1 relationship with the original object.</para>
+
+      <para>This feature allows the pattern matching to only react to modification of properties actually
+          constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
+          object splitting.</para>
+
+      <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
+          former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
+          This annotation works both on drl type declarations:</para>
+
+      <programlisting>declare Person
+          @propertyReactive
+          firstName : String
+          lastName : String
+          end</programlisting>
+
+      <para>and on Java classes:</para>
+
+      <programlisting>@PropertyReactive
+          public static class Person {
+          private String firstName;
+          private String lastName;
+          }</programlisting>
+
+      <para>In this way, for instance, if you have a rule like the following:</para>
+
+      <programlisting>rule "Every person named Mario is a male" when
+          $person : Person( firstName == "Mario" )
+          then
+          modify ( $person )  { setMale( true ) }
+          end</programlisting>
+
+      <para>you won't have to add the no-loop attribute to it in order to avoid an infinite recursion because the engine
+          recognizes that the pattern matching is done on the 'firstName' property while the RHS of the rule modifies the
+          'male' one. Note that this feature does not work for update(), and this is one of the reasons why we promote
+          modify() since it encapsulates the field changes within the statement. Moreover, on Java classes, you can also
+          annotate any method to say that its invocation actually modifies other properties. For instance in the former
+          Person class you could have a method like:</para>
+
+      <programlisting>@Modifies( { "firstName", "lastName" } )
+          public void setName(String name) {
+          String[] names = name.split("\\s");
+          this.firstName = names[0];
+          this.lastName = names[1];
+          }</programlisting>
+
+      <para>That means that if a rule has a RHS like the following:</para>
+
+      <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
+
+      <para>it will correctly recognize that the values of both properties 'firstName' and 'lastName' could have
+          potentially been modified and act accordingly, not missing of reevaluating the patterns constrained on them. At
+          the moment the usage of @Modifies is not allowed on fields but only on methods. This is coherent with the most
+          common scenario where the @Modifies will be used for methods that are not related with a class field as in the
+          Person.setName() in the former example. Also note that @Modifies is not transitive, meaning that if another method
+          internally invokes the Person.setName() one it won't be enough to annotate it with @Modifies( { "name" } ), but it
+          is necessary to use @Modifies( { "firstName", "lastName" } ) even on it. Very likely @Modifies transitivity will
+          be implemented in the next release.</para>
+
+      <para>For what regards nested accessors, the engine will be notified only for top level fields. In other words a
+          pattern matching like:</para>
+
+      <programlisting>Person ( address.city.name == "London ) </programlisting>
+
+      <para>will be revaluated only for modification of the 'address' property of a Person object. In the same way the
+          constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
+          to clarify this. An LHS like the following:</para>
+
+      <programlisting>$p : Person( )
+          Car( owner = $p.name )</programlisting>
+
+      <para>will not listen on modifications of the person's name, while this one will do:</para>
+
+      <programlisting>Person( $name : name )
+          Car( owner = $name )</programlisting>
+
+      <para>To overcome this problem it is possible to annotate a pattern with @watch as it follows:</para>
+
+      <programlisting>$p : Person( ) @watch ( name )
+          Car( owner = $p.name )</programlisting>
+
+      <para>Indeed, annotating a pattern with @watch allows you to modify the inferred set of properties for which that
+          pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
+          automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
+          with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
+          respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
+          like:</para>
+
+      <programlisting>// listens for changes on both firstName (inferred) and lastName
+          Person( firstName == $expectedFirstName ) @watch( lastName )
+
+          // listens for all the properties of the Person bean
+          Person( firstName == $expectedFirstName ) @watch( * )
+
+          // listens for changes on lastName and explicitly exclude firstName
+          Person( firstName == $expectedFirstName ) @watch( lastName, !firstName )
+
+          // listens for changes on all the properties except the age one
+          Person( firstName == $expectedFirstName ) @watch( *, !age )</programlisting>
+
+      <para>Since doesn't make sense to use this annotation on a pattern using a type not annotated with
+          @PropertyReactive the rule compiler will raise a compilation error if you try to do so. Also the duplicated usage
+          of the same property in @watch (for example like in: @watch( firstName, ! firstName ) ) will end up in a
+          compilation error. In a next release we will make the automatic detection of the properties to be listened smarter
+          by doing analysis even outside of the pattern.</para>
+
+      <para>It also possible to enable this feature by default on all the types of your model or to completely disallow
+          it by using on option of the KnowledgeBuilderConfiguration. In particular this new PropertySpecificOption can have
+          one of the following 3 values:</para>
+
+      <programlisting>- DISABLED =&gt; the feature is turned off and all the other related annotations are just ignored
+          - ALLOWED =&gt; this is the default behavior: types are not property reactive unless they are not annotated with @PropertySpecific
+          - ALWAYS =&gt; all types are property reactive by default</programlisting>
+
+      <para>So, for example, to have a KnowledgeBuilder generating property reactive types by default you could
+          do:</para>
+
+      <programlisting>KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+          config.setOption(PropertySpecificOption.ALWAYS);
+          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);</programlisting>
+
+      <para>In this last case it will be possible to disable the property reactivity feature on a specific type by
+          annotating it with @ClassReactive.</para>
+    </section>
+
     <section>
       <title>Basic conditional elements</title>
 
@@ -2284,7 +2415,8 @@ end</programlisting>
           pattern for the result type of the accumulate function (Number) and
           write the constraints inside it. There are no problems in using this
           syntax over the compact syntax presented before, except that is is a
-          bit more verbose.</para>
+          bit more verbose. Also note that it is not allowed to use both the
+          return type and the functions binding in the same accumulate statement.</para>
         </section>
 
         <section>
@@ -3304,6 +3436,10 @@ then
     }
 end</programlisting>
       </example>
+
+      <para>The advantages in using the modify statment are particularly clear when
+      used in conjuction with fine grained property change listeners.
+      See the corresponding section for more details.</para>
     </section>
   </section>
 
