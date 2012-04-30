@@ -213,6 +213,13 @@ class LogicTransformer {
                                                                   resolved );
                 }
             }
+        } else if ( element instanceof Accumulate ) {
+            for ( RuleConditionElement rce : element.getNestedElements() ) {
+                processElement( resolver,
+                                contextStack,
+                                rce );
+            }
+            ((Accumulate)element).resetInnerDeclarationCache();
         } else if ( element instanceof From ) {
             DataProvider provider = ((From) element).getDataProvider();
             Declaration[] decl = provider.getRequiredDeclarations();

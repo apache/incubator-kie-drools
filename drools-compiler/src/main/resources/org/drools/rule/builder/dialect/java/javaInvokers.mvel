@@ -285,7 +285,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
     @includeNamed{"equals"}
 
     public java.util.List getMethodBytecode() {
-        java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "$@{className}" + ".class" );
+        java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "@{'$'}@{className}" + ".class" );
 
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
         byte[] data = new byte[1024];
@@ -298,7 +298,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
-            throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}$@{className}' ");
+            throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}@{'$'}@{className}' ");
         }
         return Collections.singletonList( bos );
     }

@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class Accumulate extends ConditionalElement
     private Accumulator[]        accumulators;
     private RuleConditionElement source;
     private Declaration[]        requiredDeclarations;
-    private Declaration[]        innerDeclarations;
+    private Declaration[]        innerDeclarationCache;
     private boolean              multiFunction;
 
     private List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
@@ -58,31 +59,26 @@ public class Accumulate extends ConditionalElement
 
         this( source,
               new Declaration[0],
-              new Declaration[0],
               new Accumulator[1], // default is 1 accumulator
               false );
     }
 
     public Accumulate(final RuleConditionElement source,
-                      final Declaration[] requiredDeclarations,
-                      final Declaration[] innerDeclarations) {
+                      final Declaration[] requiredDeclarations ) {
 
         this( source,
               requiredDeclarations,
-              innerDeclarations,
               new Accumulator[1], // default is 1 accumulator
               false );
     }
 
     public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations,
-                      final Declaration[] innerDeclarations,
                       final Accumulator[] accumulators,
                       final boolean multiFunction ) {
 
         this.source = source;
         this.requiredDeclarations = requiredDeclarations;
-        this.innerDeclarations = innerDeclarations;
         this.accumulators = accumulators;
         this.multiFunction = multiFunction;
     }
@@ -97,7 +93,6 @@ public class Accumulate extends ConditionalElement
         this.multiFunction = in.readBoolean();
         source = (RuleConditionElement) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
-        innerDeclarations = (Declaration[]) in.readObject();
         this.cloned = (List<Accumulate>) in.readObject();
     }
 
@@ -113,7 +108,6 @@ public class Accumulate extends ConditionalElement
         out.writeBoolean( multiFunction );
         out.writeObject( this.source );
         out.writeObject( this.requiredDeclarations );
-        out.writeObject( this.innerDeclarations );
         out.writeObject( this.cloned );
     }
 
@@ -164,7 +158,7 @@ public class Accumulate extends ConditionalElement
      * @param leftTuple
      * @param handle
      * @param declarations
-     * @param innerDeclarations
+     * @param localDeclarations
      * @param workingMemory
      * @throws Exception
      */
@@ -180,7 +174,7 @@ public class Accumulate extends ConditionalElement
                                                  leftTuple,
                                                  handle,
                                                  this.requiredDeclarations,
-                                                 this.innerDeclarations,
+                                                 getInnerDeclarationCache(),
                                                  workingMemory );
             }
         } catch ( final Exception e ) {
@@ -194,7 +188,7 @@ public class Accumulate extends ConditionalElement
      * @param leftTuple
      * @param handle
      * @param declarations
-     * @param innerDeclarations
+     * @param localDeclarations
      * @param workingMemory
      * @throws Exception
      */
@@ -210,7 +204,7 @@ public class Accumulate extends ConditionalElement
                                               leftTuple,
                                               handle,
                                               this.requiredDeclarations,
-                                              this.innerDeclarations,
+                                              getInnerDeclarationCache(),
                                               workingMemory );
             }
         } catch ( final Exception e ) {
@@ -264,7 +258,6 @@ public class Accumulate extends ConditionalElement
     public Accumulate clone() {
         Accumulate clone = new Accumulate( (RuleConditionElement) this.source.clone(),
                                            this.requiredDeclarations,
-                                           this.innerDeclarations,
                                            this.accumulators,
                                            this.multiFunction );
 
@@ -288,7 +281,7 @@ public class Accumulate extends ConditionalElement
     public Map<String, Declaration> getOuterDeclarations() {
         return Collections.emptyMap();
     }
-
+    
     /**
      * @inheritDoc
      */
@@ -326,6 +319,27 @@ public class Accumulate extends ConditionalElement
         this.multiFunction = multiFunction;
     }
     
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved) {
+        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
+            if ( this.requiredDeclarations[i].equals( declaration ) ) {
+                this.requiredDeclarations[i] = resolved;
+            }
+        }
+    }
+    
+    public void resetInnerDeclarationCache() {
+        this.innerDeclarationCache = null;
+    }
+    
+    private Declaration[] getInnerDeclarationCache() {
+        if( this.innerDeclarationCache == null ) {
+            Map<String, Declaration> innerDeclarations = this.source.getInnerDeclarations();
+            this.innerDeclarationCache = innerDeclarations.values().toArray( new Declaration[innerDeclarations.size()] ); 
+        }
+        return this.innerDeclarationCache;
+    }
+    
     public final class Wirer implements Wireable, Serializable {
         private static final long serialVersionUID = -9072646735174734614L;
         
@@ -341,6 +355,32 @@ public class Accumulate extends ConditionalElement
                 clone.accumulators[index] = (Accumulator) object;
             }
         }
+    }
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode( accumulators );
+        //result = prime * result + Arrays.hashCode( localDeclarations );
+        result = prime * result + (multiFunction ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode( requiredDeclarations );
+        result = prime * result + ((source == null) ? 0 : source.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        Accumulate other = (Accumulate) obj;
+        if ( !Arrays.equals( accumulators, other.accumulators ) ) return false;
+        //if ( !Arrays.equals( localDeclarations, other.localDeclarations ) ) return false;
+        if ( multiFunction != other.multiFunction ) return false;
+        if ( !Arrays.equals( requiredDeclarations, other.requiredDeclarations ) ) return false;
+        if ( source == null ) {
+            if ( other.source != null ) return false;
+        } else if ( !source.equals( other.source ) ) return false;
+        return true;
     }
 
 }

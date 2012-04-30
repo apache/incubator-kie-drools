@@ -225,7 +225,6 @@ public class AccumulateNodeStep
 
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration
-                                                    new Declaration[]{}, // inner declarations
                                                     new Accumulator[]{accumulator},
                                                     false );
             AccumulateNode accNode = new AccumulateNode( buildContext.getNextId(),
