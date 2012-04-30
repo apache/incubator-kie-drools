@@ -645,7 +645,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
         <row>
           <entry>multiInstanceLoopCharacteristics</entry>
           <entry></entry>
-          <entry>loopDataInputRef inputDataItem</entry>
+          <entry>loopDataInputRef inputDataItem loopDataOutputRef outputDataItem</entry>
           <entry></entry>
           <entry></entry>
         </row>
