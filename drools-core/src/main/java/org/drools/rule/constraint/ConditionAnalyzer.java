@@ -616,6 +616,10 @@ public class ConditionAnalyzer {
         public Class<?> getType() {
             return typedValue.type;
         }
+
+        public Object getValue() {
+            return typedValue.value;
+        }
     }
 
     public static class VariableExpression implements Expression {

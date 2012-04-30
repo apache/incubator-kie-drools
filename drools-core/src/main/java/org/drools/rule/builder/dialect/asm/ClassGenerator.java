@@ -59,6 +59,7 @@ import static org.mvel2.asm.Opcodes.L2I;
 import static org.mvel2.asm.Opcodes.NEW;
 import static org.mvel2.asm.Opcodes.NEWARRAY;
 import static org.mvel2.asm.Opcodes.PUTFIELD;
+import static org.mvel2.asm.Opcodes.PUTSTATIC;
 import static org.mvel2.asm.Opcodes.RETURN;
 import static org.mvel2.asm.Opcodes.T_BOOLEAN;
 import static org.mvel2.asm.Opcodes.T_BYTE;
@@ -88,6 +89,7 @@ public class ClassGenerator {
     private String superDescriptor;
 
     private List<ClassPartDescr> classParts = new ArrayList<ClassPartDescr>();
+    private StaticInitializerDescr staticInitializer = null;
 
     private byte[] bytecode;
     private Class<?> clazz;
@@ -111,7 +113,12 @@ public class ClassGenerator {
         if (bytecode == null) {
             ClassWriter cw = new InternalClassWriter(classLoader, ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
             cw.visit(version, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInteralNames(interfaces));
-            for (ClassPartDescr part : classParts) part.write(this, cw);
+            for (int i = 0; i < classParts.size(); i++) { // don't use iterator to allow method visits to add more class fields and methods
+                classParts.get(i).write(this, cw);
+            }
+            if (staticInitializer != null) {
+                staticInitializer.write(this, cw);
+            }
             cw.visitEnd();
             bytecode = cw.toByteArray();
             if (DUMP_GENERATED_CLASSES) {
@@ -332,11 +339,11 @@ public class ClassGenerator {
     public ClassGenerator addDefaultConstructor(final MethodBody body, Class<?>... args) {
         MethodBody constructorBody = new MethodBody() {
             public void body(MethodVisitor mv) {
-                body.setClassGenerator(cg);
+                body.setClassGenerator(getClassGenerator());
                 body.setMethodVisitor(mv);
 
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitMethodInsn(INVOKESPECIAL, cg.getSuperClassDescriptor(), "<init>", "()V"); // super()
+                mv.visitMethodInsn(INVOKESPECIAL, getClassGenerator().getSuperClassDescriptor(), "<init>", "()V"); // super()
                 body.body(mv);
             }
         };
@@ -365,6 +372,14 @@ public class ClassGenerator {
         return this;
     }
 
+    public ClassGenerator addStaticInitBlock(MethodBody body) {
+        if (staticInitializer == null) {
+            staticInitializer = new StaticInitializerDescr();
+        }
+        staticInitializer.addInitializer(body);
+        return this;
+    }
+
     private static final MethodBody EMPTY_METHOD_BODY = new MethodBody() {
         public final void body(MethodVisitor mv) {
             mv.visitInsn(RETURN); // return
@@ -374,15 +389,19 @@ public class ClassGenerator {
     // MethodBody
 
     public abstract static class MethodBody {
-        ClassGenerator cg;
+        private ClassGenerator classGenerator;
         protected MethodVisitor mv;
         private Map<Integer, Type> storedTypes;
 
         public abstract void body(MethodVisitor mv);
 
-        private void setClassGenerator (ClassGenerator cg) {
-            this.cg = cg;
+        private void setClassGenerator(ClassGenerator classGenerator) {
+            this.classGenerator = classGenerator;
         }
+        protected ClassGenerator getClassGenerator() {
+            return classGenerator;
+        }
+
         private void setMethodVisitor (MethodVisitor mv) {
             this.mv = mv;
         }
@@ -396,7 +415,7 @@ public class ClassGenerator {
         }
 
         protected final int store(int registry, String typeName) {
-            return store(registry, cg.toType(typeName));
+            return store(registry, classGenerator.toType(typeName));
         }
 
         protected final int store(int registry, Type t) {
@@ -568,7 +587,7 @@ public class ClassGenerator {
                 }
                 mv.visitLdcInsn(obj);
             } else if (type == Class.class) {
-                mv.visitLdcInsn(cg.toType((Class<?>) obj));
+                mv.visitLdcInsn(classGenerator.toType((Class<?>) obj));
             } else if (type == Character.class) {
                 invokeConstructor(Character.class, new Object[]{ obj.toString().charAt(0) }, char.class);
             } else {
@@ -736,6 +755,14 @@ public class ClassGenerator {
             mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
         }
 
+        protected final void putStaticField(String name, Class<?> type) {
+            mv.visitFieldInsn(PUTSTATIC, classDescriptor(), name, classGenerator.descriptorOf(type));
+        }
+
+        protected final void getStaticField(String name, Class<?> type) {
+            mv.visitFieldInsn(GETSTATIC, classDescriptor(), name, classGenerator.descriptorOf(type));
+        }
+
         protected final void putFieldInThisFromRegistry(String name, Class<?> type, int regNr) {
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, regNr);
@@ -743,50 +770,50 @@ public class ClassGenerator {
         }
 
         protected final void putFieldInThis(String name, Class<?> type) {
-            mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, cg.descriptorOf(type));
+            mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, classGenerator.descriptorOf(type));
         }
 
         protected final void getFieldFromThis(String name, Class<?> type) {
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, classDescriptor(), name, cg.descriptorOf(type));
+            mv.visitFieldInsn(GETFIELD, classDescriptor(), name, classGenerator.descriptorOf(type));
         }
 
         protected final void readField(Field field) {
             boolean isStatic = (field.getModifiers() & Modifier.STATIC) != 0;
-            mv.visitFieldInsn(isStatic ? GETSTATIC : GETFIELD, field.getDeclaringClass().getName().replace('.', '/'), field.getName(), cg.descriptorOf(field.getType()));
+            mv.visitFieldInsn(isStatic ? GETSTATIC : GETFIELD, field.getDeclaringClass().getName().replace('.', '/'), field.getName(), classGenerator.descriptorOf(field.getType()));
         }
 
         // ClassGenerator delegates
 
         public String classDescriptor() {
-            return cg.getClassDescriptor();
+            return classGenerator.getClassDescriptor();
         }
 
         public String superClassDescriptor() {
-            return cg.getSuperClassDescriptor();
+            return classGenerator.getSuperClassDescriptor();
         }
         public String methodDescr(Class<?> type, Class<?>... args) {
-            return cg.methodDescr(type, args);
+            return classGenerator.methodDescr(type, args);
         }
 
         private Type type(String typeName) {
-            return cg.toType(typeName);
+            return classGenerator.toType(typeName);
         }
 
         public String typeDescr(Class<?> clazz) {
-            return cg.toTypeDescriptor(clazz);
+            return classGenerator.toTypeDescriptor(clazz);
         }
 
         public String typeDescr(String className) {
-            return cg.toTypeDescriptor(className);
+            return classGenerator.toTypeDescriptor(className);
         }
 
         public String internalName(Class<?> clazz) {
-            return cg.toInteralName(clazz);
+            return classGenerator.toInteralName(clazz);
         }
 
         public String internalName(String className) {
-            return cg.toInteralName(className);
+            return classGenerator.toInteralName(className);
         }
     }
 
@@ -824,6 +851,34 @@ public class ClassGenerator {
             }
 
             mv.visitEnd();
+        }
+    }
+
+    private static class StaticInitializerDescr implements ClassPartDescr {
+
+        private final List<MethodBody> initializerBodies = new ArrayList<MethodBody>();
+
+        public void write(ClassGenerator cg, ClassWriter cw) {
+            MethodVisitor mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
+            mv.visitCode();
+
+            try {
+                for (MethodBody initializerBody : initializerBodies) {
+                    initializerBody.setClassGenerator(cg);
+                    initializerBody.setMethodVisitor(mv);
+                    initializerBody.body(mv);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Error writing method static class initializer", e);
+            }
+
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
+        }
+
+        private void addInitializer(MethodBody initBlock) {
+            initializerBodies.add(initBlock);
         }
     }
 
