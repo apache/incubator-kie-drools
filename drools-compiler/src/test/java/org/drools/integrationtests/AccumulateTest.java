@@ -969,7 +969,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test
     public void testAccumulateMultipleFunctionsConstraint() throws Exception {
-        execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
+        execTestAccumulateMultipleFunctionsConstraint( "test_AccumulateMultipleFunctionsConstraint.drl" );
     }
     
     @Test 
