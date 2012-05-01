@@ -215,6 +215,7 @@ public class AccumulateNodeStep
                                                                            new String[]{"this", "drools", "kcontext", "rule", decl.getIdentifier()}, // input identifiers
                                                                            new String[]{Object.class.getName(), KnowledgeHelper.class.getName(), KnowledgeHelper.class.getName(), Rule.class.getName(), decl.getValueType().getClassType().getName()}, // input types
                                                                            4,
+                                                                           false,
                                                                            false );
 
             AccumulateFunction accFunction = new SumAccumulateFunction();

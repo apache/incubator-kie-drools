@@ -38,6 +38,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
+import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -86,6 +87,11 @@ public class JavaAccumulateBuilder
             return null;
         }
 
+        final boolean readLocalsFromTuple = accumDescr.isMultiPattern() || accumDescr.getInputPattern().getSource() != null ||
+                source instanceof QueryElement ||
+                source.getNestedElements().size() > 1 || 
+                ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
+        
         Map<String, Declaration> declsInScope = context.getDeclarationResolver().getDeclarations( context.getRule() );
         Map<String, Class< ? >> declCls = DeclarationScopeResolver.getDeclarationClasses( declsInScope );
 
@@ -96,14 +102,16 @@ public class JavaAccumulateBuilder
                                                     accumDescr,
                                                     source,
                                                     declsInScope,
-                                                    declCls );
+                                                    declCls,
+                                                    readLocalsFromTuple );
         } else {
             // if it uses inline code, build the class for it
             accumulate = buildInlineAccumulate( context,
                                                 accumDescr,
                                                 source,
                                                 declsInScope,
-                                                declCls );
+                                                declCls,
+                                                readLocalsFromTuple );
         }
 
         return accumulate;
@@ -113,7 +121,8 @@ public class JavaAccumulateBuilder
                                                   final AccumulateDescr accumDescr,
                                                   final RuleConditionElement source,
                                                   Map<String, Declaration> declsInScope,
-                                                  Map<String, Class< ? >> declCls ) {
+                                                  Map<String, Class< ? >> declCls,
+                                                  final boolean readLocalsFromTuple) {
         Accumulate accumulate = null;
 
         // list of functions to build
@@ -181,7 +190,8 @@ public class JavaAccumulateBuilder
                                                                       fc,
                                                                       function,
                                                                       usedIdentifiers,
-                                                                      previousDeclarations );
+                                                                      previousDeclarations,
+                                                                      readLocalsFromTuple );
         }
         
         accumulate = new Accumulate( source,
@@ -210,7 +220,8 @@ public class JavaAccumulateBuilder
                                                                               AccumulateFunctionCallDescr fc,
                                                                               AccumulateFunction function,
                                                                               final BoundIdentifiers usedIdentifiers,
-                                                                              final Declaration[] previousDeclarations ) {
+                                                                              final Declaration[] previousDeclarations,
+                                                                              final boolean readLocalsFromTuple ) {
         final String className = "accumulateExpression" + context.getNextId();
         final Map<String, Object> map = createVariableContext( className,
                                                                fc.getParams().length > 0 ? fc.getParams()[0] : "\"\"",
@@ -220,7 +231,7 @@ public class JavaAccumulateBuilder
                                                                usedIdentifiers.getGlobals()
         );
         map.put( "readLocalsFromTuple",
-                 accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
+                 readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
 
         JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
 
@@ -255,7 +266,8 @@ public class JavaAccumulateBuilder
                                               final AccumulateDescr accumDescr,
                                               final RuleConditionElement source,
                                               Map<String, Declaration> decls,
-                                              Map<String, Class< ? >> declCls ) {
+                                              Map<String, Class< ? >> declCls,
+                                              final boolean readLocalsFromTuple) {
         Accumulate accumulate;
         // ELSE, if it is not an external function, build it using the regular java builder
         final String className = "Accumulate" + context.getNextId();
@@ -315,7 +327,7 @@ public class JavaAccumulateBuilder
         map.put( "innerDeclarations",
                  sourceDeclArr );
         map.put( "isMultiPattern",
-                 accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
+                 readLocalsFromTuple ? Boolean.TRUE : Boolean.FALSE );
 
         final String initCode = this.fixInitCode( initCodeAnalysis,
                                                   accumDescr.getInitCode() );

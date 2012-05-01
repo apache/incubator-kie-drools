@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Collect;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
@@ -41,21 +42,26 @@ public class CollectAccumulator
 
     private static final long                          serialVersionUID = 510l;
     private Collect collect;
+    private boolean unwrapHandle;
 
     public CollectAccumulator() {
     }
 
-    public CollectAccumulator( final Collect collect ) {
+    public CollectAccumulator( final Collect collect, 
+                               boolean unwrapHandle ) {
         this.collect = collect;
+        this.unwrapHandle = unwrapHandle;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.collect = (Collect) in.readObject();
+        this.unwrapHandle = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.collect );
+        out.writeBoolean( this.unwrapHandle );
     }
 
     /* (non-Javadoc)
@@ -86,7 +92,8 @@ public class CollectAccumulator
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        ((CollectContext) context).result.add( handle.getObject() );
+        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getLastHandle().getObject() : handle.getObject();
+        ((CollectContext) context).result.add( value );
     }
 
     public void reverse(Object workingMemoryContext,
@@ -96,7 +103,8 @@ public class CollectAccumulator
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        ((CollectContext) context).result.remove( handle.getObject() );
+        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getLastHandle().getObject() : handle.getObject();
+        ((CollectContext) context).result.remove( value );
     }
 
     /* (non-Javadoc)

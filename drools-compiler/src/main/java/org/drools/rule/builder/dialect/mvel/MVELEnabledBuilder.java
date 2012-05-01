@@ -66,7 +66,8 @@ public class MVELEnabledBuilder
                                                                        otherVars,
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class );
+                                                                       KnowledgeHelper.class,
+                                                                       false );
 
             MVELEnabledExpression expr = new MVELEnabledExpression( unit,
                                                                     dialect.getId() );

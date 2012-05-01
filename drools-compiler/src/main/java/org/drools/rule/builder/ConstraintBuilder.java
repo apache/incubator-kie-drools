@@ -286,7 +286,8 @@ public class ConstraintBuilder {
                                                     null,
                                                     context,
                                                     "drools",
-                                                    KnowledgeHelper.class );
+                                                    KnowledgeHelper.class,
+                                                    false );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
