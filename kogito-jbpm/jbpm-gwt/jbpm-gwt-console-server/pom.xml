@@ -18,7 +18,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jboss.bpm</groupId>
-      <artifactId>gwt-console-server</artifactId>
+      <artifactId>gwt-console-server-jbpm</artifactId>
       <type>war</type>
       <!-- overwrite parent pom version -->
       <version>${console.version}</version>
