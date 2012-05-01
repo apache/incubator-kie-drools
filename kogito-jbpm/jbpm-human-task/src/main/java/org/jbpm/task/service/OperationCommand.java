@@ -34,6 +34,10 @@ public class OperationCommand {
     private boolean       skippable;
     private Operation     exec;
     
+    public OperationCommand() { 
+        // Default constructor
+    }
+    
     public List<Status> getStatus() {
         return status;
     }
