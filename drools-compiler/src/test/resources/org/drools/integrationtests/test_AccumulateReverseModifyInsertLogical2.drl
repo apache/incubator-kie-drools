@@ -1,0 +1,29 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+import org.drools.Cheesery;
+import org.drools.Person;
+
+global java.util.List results;
+
+declare Total
+    person : Person
+    value : Number
+end
+
+rule "Total prices of cheeses liked by other people" salience 2
+    when
+        $person      : Person( $likes : likes )
+        $total       : Number() from accumulate( $p : Person(likes != $likes, $l : likes) and $c : Cheese( type == $l ),
+                                                sum($c.getPrice()) )
+    then
+        insertLogical(new Total($person, $total));
+end  
+
+rule "Minimum Total" salience 1
+    when
+        $min       : Number() from accumulate( $p : Person(name != "Doug") and $t : Total(person == $p),
+                                                min($t.getValue()) )
+    then
+        results.add( $min );
+end

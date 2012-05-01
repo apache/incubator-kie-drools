@@ -1,7 +1,6 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -44,11 +43,9 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.exceptions.verification.NeverWantedButInvoked;
 
 public class AccumulateTest extends CommonTestMethodBase {
 
@@ -474,6 +471,51 @@ public class AccumulateTest extends CommonTestMethodBase {
                              results.size() );
 
     }
+    
+    @Test
+    public void testAccumulateReverseModifyInsertLogical2() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyInsertLogical2.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{
+                new Cheese( "stilton", 10 ),
+                new Cheese( "stilton", 2 ),
+                new Cheese( "stilton", 5 ),
+                new Cheese( "brie", 15 ),
+                new Cheese( "brie", 16 ),
+                new Cheese( "provolone", 8 )
+        };
+        final Person alice = new Person( "Alice", "brie" );
+        final Person bob = new Person( "Bob", "stilton" );
+        final Person carol = new Person( "Carol", "cheddar" );
+        final Person doug = new Person( "Doug", "stilton" );
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+        final FactHandle aliceHandle = wm.insert( alice );
+        final FactHandle bobHandle = wm.insert( bob );
+        // add Carol later
+        final FactHandle dougHandle = wm.insert( doug ); // should be ignored
+
+        // alice = 31, bob = 17, carol = 0, doug = 17
+        // !alice = 34, !bob = 31, !carol = 65, !doug = 31
+        wm.fireAllRules();
+        assertEquals( 31, ((Number) results.get( results.size() - 1 )).intValue() );
+
+        // retract stilton=2 ==> bob = 15, doug = 15, !alice = 30, !carol = 61
+        wm.retract(cheeseHandles[1]);
+        wm.fireAllRules();
+        assertEquals( 30, ((Number) results.get( results.size() - 1 )).intValue() );
+    }    
 
     @Test
     public void testAccumulateReverseModifyMVEL() throws Exception {

@@ -16,6 +16,8 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
+import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -48,8 +51,6 @@ import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
-
-import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 /**
  * A builder for the java dialect accumulate version
@@ -104,6 +105,11 @@ public class MVELAccumulateBuilder
 
             Accumulator[] accumulators = null;
 
+            final boolean readLocalsFromTuple = accumDescr.isMultiPattern() || accumDescr.getInputPattern().getSource() != null ||
+                    source instanceof QueryElement ||
+                    source.getNestedElements().size() > 1 || 
+                    ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
+            
             if ( accumDescr.isExternalFunction() ) {
                 // uses accumulate functions
                 accumulators = buildExternalFunctions( context,
@@ -111,7 +117,8 @@ public class MVELAccumulateBuilder
                                                        dialect,
                                                        decls,
                                                        sourceOuterDeclr,
-                                                       boundIds );
+                                                       boundIds,
+                                                       readLocalsFromTuple );
             } else {
                 // it is a custom accumulate
                 accumulators = buildCustomAccumulate( context,
@@ -120,7 +127,8 @@ public class MVELAccumulateBuilder
                                                       dialect,
                                                       decls,
                                                       sourceOuterDeclr,
-                                                      boundIds );
+                                                      boundIds,
+                                                      readLocalsFromTuple );
             }
 
             final Accumulate accumulate = new Accumulate( source,
@@ -154,7 +162,8 @@ public class MVELAccumulateBuilder
                                                   MVELDialect dialect,
                                                   Map<String, Declaration> decls,
                                                   Map<String, Declaration> sourceOuterDeclr,
-                                                  BoundIdentifiers boundIds ) {
+                                                  BoundIdentifiers boundIds,
+                                                  boolean readLocalsFromTuple ) {
         Accumulator[] accumulators;
         List<AccumulateFunctionCallDescr> functions = accumDescr.getFunctions();
 
@@ -207,7 +216,8 @@ public class MVELAccumulateBuilder
                                                                        null,
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class );
+                                                                       KnowledgeHelper.class,
+                                                                       readLocalsFromTuple );
 
             accumulators[index++] = new MVELAccumulatorFunctionExecutor( unit,
                                                                          function );
@@ -221,7 +231,8 @@ public class MVELAccumulateBuilder
                                                  MVELDialect dialect,
                                                  Map<String, Declaration> decls,
                                                  Map<String, Declaration> sourceOuterDeclr,
-                                                 BoundIdentifiers boundIds ) {
+                                                 BoundIdentifiers boundIds,
+                                                 boolean readLocalsFromTuple ) {
 
         Accumulator[] accumulators;
         final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
@@ -267,7 +278,8 @@ public class MVELAccumulateBuilder
                                                                        initCodeAnalysis.getMvelVariables(),
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class );
+                                                                       KnowledgeHelper.class,
+                                                                       readLocalsFromTuple );
 
         context.setTypesafe( actionCodeAnalysis.isTypesafe() );
         MVELCompilationUnit actionUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getActionCode(),
@@ -279,7 +291,8 @@ public class MVELAccumulateBuilder
                                                                          initCodeAnalysis.getMvelVariables(),
                                                                          context,
                                                                          "drools",
-                                                                         KnowledgeHelper.class );
+                                                                         KnowledgeHelper.class,
+                                                                         readLocalsFromTuple );
 
         MVELCompilationUnit reverseUnit = null;
         if ( accumDescr.getReverseCode() != null ) {
@@ -293,7 +306,8 @@ public class MVELAccumulateBuilder
                                                           initCodeAnalysis.getMvelVariables(),
                                                           context,
                                                           "drools",
-                                                          KnowledgeHelper.class );
+                                                          KnowledgeHelper.class,
+                                                          readLocalsFromTuple );
         }
 
         context.setTypesafe( resultCodeAnalysis.isTypesafe() );
@@ -306,7 +320,8 @@ public class MVELAccumulateBuilder
                                                                          initCodeAnalysis.getMvelVariables(),
                                                                          context,
                                                                          "drools",
-                                                                         KnowledgeHelper.class );
+                                                                         KnowledgeHelper.class,
+                                                                         readLocalsFromTuple );
 
 //        if ( reverseUnit != null ) {
 //            Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );

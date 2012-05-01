@@ -847,7 +847,7 @@ public class AccumulateNode extends BetaNode {
         if ( this.unwrapRightObject ) {
             // if there is a subnetwork, handle must be unwrapped
             tuple = (LeftTuple) handle.getObject();
-            handle = tuple.getLastHandle();
+            //handle = tuple.getLastHandle();
         }
         this.accumulate.accumulate( memory.workingMemoryContext,
                                     accresult.context,
@@ -894,7 +894,7 @@ public class AccumulateNode extends BetaNode {
         LeftTuple tuple = leftTuple;
         if ( this.unwrapRightObject ) {
             tuple = (LeftTuple) handle.getObject();
-            handle = tuple.getLastHandle();
+            //handle = tuple.getLastHandle();
         }
 
         if ( this.accumulate.supportsReverse() ) {

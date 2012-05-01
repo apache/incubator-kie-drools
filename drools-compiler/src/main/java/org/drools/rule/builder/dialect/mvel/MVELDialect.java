@@ -520,7 +520,8 @@ public class MVELDialect
                                                       final Map<String, Class<?>> otherInputVariables,
                                                       final PackageBuildContext context,
                                                       String contextIndeifier,
-                                                      Class kcontextClass) {
+                                                      Class kcontextClass,
+                                                      boolean readLocalsFromTuple ) {
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
         
@@ -626,7 +627,8 @@ public class MVELDialect
                                         inputIdentifiers,
                                         inputTypes,
                                         languageLevel,
-                                        ((MVELAnalysisResult)analysis).isTypesafe()  );
+                                        ((MVELAnalysisResult)analysis).isTypesafe(),
+                                        readLocalsFromTuple );
     }
 
     public EngineElementBuilder getBuilder(final Class clazz) {
