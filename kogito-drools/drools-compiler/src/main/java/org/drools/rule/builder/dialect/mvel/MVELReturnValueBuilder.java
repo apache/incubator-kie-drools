@@ -65,7 +65,8 @@ public class MVELReturnValueBuilder
                                                                       null, 
                                                                       context,
                                                                       "drools",
-                                                                      KnowledgeHelper.class);
+                                                                      KnowledgeHelper.class,
+                                                                      false );
     
             MVELReturnValueExpression expr = new MVELReturnValueExpression( unit,
                                                                             context.getDialect().getId() );

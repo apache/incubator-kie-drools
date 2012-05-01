@@ -148,7 +148,8 @@ public class MVELConsequenceBuilder
                                                                        null,
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class );
+                                                                       KnowledgeHelper.class,
+                                                                       false );
 
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId() );

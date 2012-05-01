@@ -93,7 +93,8 @@ public class MVELEvalBuilder
                                                                        null,
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class);
+                                                                       KnowledgeHelper.class,
+                                                                       false );
             final EvalCondition eval = new EvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,

@@ -36,7 +36,6 @@ import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ModifyInterceptor;
-import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
@@ -50,7 +49,11 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.integration.*;
+import org.mvel2.integration.Interceptor;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
 
@@ -77,6 +80,8 @@ public class MVELCompilationUnit
 
     private int                                  languageLevel;
     private boolean                              strictMode;
+    
+    private boolean                              readLocalsFromTuple;
     
     private SimpleVariableSpaceModel             varModel;
 
@@ -127,7 +132,8 @@ public class MVELCompilationUnit
                                String[] inputIdentifiers,
                                String[] inputTypes,
                                int languageLevel,
-                               boolean strictMode) {
+                               boolean strictMode,
+                               boolean readLocalsFromTuple ) {
         this.name = name;
         this.expression = expression;
 
@@ -143,6 +149,8 @@ public class MVELCompilationUnit
 
         this.languageLevel = languageLevel;
         this.strictMode = strictMode;
+        
+        this.readLocalsFromTuple = readLocalsFromTuple;
     }
 
     public String getExpression() {
@@ -166,6 +174,8 @@ public class MVELCompilationUnit
 
         out.writeInt( languageLevel );
         out.writeBoolean( strictMode );
+        
+        out.writeBoolean( readLocalsFromTuple );
     }
 
     public void readExternal( ObjectInput in ) throws IOException,
@@ -185,6 +195,8 @@ public class MVELCompilationUnit
 
         languageLevel = in.readInt();
         strictMode = in.readBoolean();
+        
+        readLocalsFromTuple = in.readBoolean();
     }    
 
     public Serializable getCompiledExpression(MVELDialectRuntimeData runtimeData ) {        
@@ -365,9 +377,18 @@ public class MVELCompilationUnit
         if ( this.localDeclarations != null && this.localDeclarations.length > 0 ) {
             for ( int j = 0, length = this.localDeclarations.length; j < length; j++ ) {
                 Declaration decl = this.localDeclarations[j];
-                Object o = decl.getValue( workingMemory,
-                                          rightObject );
-                factory.getIndexedVariableResolver( i++ ).setValue( o );
+                Object value = null;
+                if( readLocalsFromTuple && tuples != null ) {
+                    InternalFactHandle handle = getFactHandle( decl,
+                                                               handles );
+
+                    value = decl.getValue( workingMemory,
+                                           handle.getObject() );
+                } else {
+                    value = decl.getValue( workingMemory,
+                                          rightObject ); 
+                }
+                factory.getIndexedVariableResolver( i++ ).setValue( value );
             }
         }
 
@@ -473,7 +494,8 @@ public class MVELCompilationUnit
                                                             inputIdentifiers,
                                                             inputTypes,
                                                             languageLevel,
-                                                            strictMode );
+                                                            strictMode,
+                                                            readLocalsFromTuple );
         unit.varModel = this.varModel;
         return unit;
     }

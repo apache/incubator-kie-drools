@@ -94,7 +94,8 @@ public class CollectBuilder
                                                                        resultBetaConstraints,
                                                                        true );
 
-        CollectAccumulator accumulator = new CollectAccumulator( collect );
+        CollectAccumulator accumulator = new CollectAccumulator( collect, 
+                                                                 existSubNetwort );
         Accumulate accumulate = new Accumulate( sourcePattern,
                                                 sourcePattern.getRequiredDeclarations(),
                                                 new Accumulator[] { accumulator },

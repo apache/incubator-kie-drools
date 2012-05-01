@@ -52,7 +52,8 @@ public class MVELObjectExpressionBuilder {
                                                                        null,
                                                                        context,
                                                                        "drools",
-                                                                       KnowledgeHelper.class );
+                                                                       KnowledgeHelper.class,
+                                                                       false );
 
             MVELObjectExpression expr = new MVELObjectExpression( unit,
                                                                       dialect.getId() );
