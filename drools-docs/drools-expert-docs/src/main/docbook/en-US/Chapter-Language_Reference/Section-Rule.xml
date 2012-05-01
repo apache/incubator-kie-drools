@@ -926,7 +926,9 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
             <emphasis>need to escape '<literal>\</literal></emphasis>'.</para>
           </note>
 
-          <para>Only applies on <literal>String</literal> properties.</para>
+          <para>Only applies on <literal>String</literal> properties.
+          Using <literal>matches</literal> against a <literal>null</literal> value
+          always evaluates to false.</para>
         </section>
 
         <section>
@@ -942,7 +944,9 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
             <programlisting>Cheese( type not matches "(Buffulo)?\\S*Mozarella" )</programlisting>
           </example>
 
-          <para>Only applies on <literal>String</literal> properties.</para>
+          <para>Only applies on <literal>String</literal> properties.
+          Using <literal>not matches</literal> against a <literal>null</literal> value
+          always evaluates to true.</para>
         </section>
 
         <section>
