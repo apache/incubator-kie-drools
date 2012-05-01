@@ -292,10 +292,8 @@ public class PatternBuilder
             }
         }
 
-        // Process all constraints
-        processConstraintsAndBinds( context, patternDescr, pattern );
         processAnnotations( context, patternDescr, pattern );
-
+        
         if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
             RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( patternDescr.getSource().getClass() );
@@ -307,6 +305,9 @@ public class PatternBuilder
             }
             pattern.setSource( source );
         }
+
+        // Process all constraints
+        processConstraintsAndBinds( context, patternDescr, pattern );
 
         for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
             if ( pattern.getObjectType().isEvent() ) {
@@ -1129,7 +1130,8 @@ public class PatternBuilder
 
             boolean isDynamic = requiredOperators.length > 0 ||
                     ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType()) ||
-                    !context.getPackageBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe();
+                    (!((ClassObjectType)pattern.getObjectType()).getClassType().isArray() &&
+                    !context.getPackageBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe());
 
             Constraint constraint = new MvelConstraint(context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic);
             pattern.addConstraint( constraint );
