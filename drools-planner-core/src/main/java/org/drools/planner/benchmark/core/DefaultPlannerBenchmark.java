@@ -222,7 +222,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         failureCount = 0;
         firstFailureThrowable = null;
         winningSolverBenchmark = null;
-        logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount({}).",
+        logger.info("Benchmarking started: solverBenchmarkList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkList.size(), parallelBenchmarkCount);
     }
 
