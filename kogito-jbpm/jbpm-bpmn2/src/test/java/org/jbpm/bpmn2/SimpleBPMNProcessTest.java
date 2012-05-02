@@ -38,6 +38,7 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
@@ -865,6 +866,21 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testSubProcessWithTerminateEndEvent() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTerminateEndEvent.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        final List<String> list = new ArrayList<String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+     
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                list.add(event.getNodeInstance().getNodeName());
+            }
+        });
+        ProcessInstance processInstance = ksession.startProcess("SubProcessTerminate");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals(7, list.size());
+    }
 
 	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");

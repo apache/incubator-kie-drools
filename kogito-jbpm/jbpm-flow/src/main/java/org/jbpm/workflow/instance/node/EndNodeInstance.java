@@ -54,9 +54,16 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
         }
         ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
         if (getEndNode().isTerminate()) {
+        	if (getNodeInstanceContainer() instanceof CompositeNodeInstance) {
+        	    // handle composite nodes such as embedded sub process
+        	    // deactivate all node instances of this composite node instance
+        	    ((CompositeNodeInstance) getNodeInstanceContainer()).cancel();
+        	    
+        	    ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
+        	} else {
+        	    ((ProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );    
+        	}
         	
-        	((ProcessInstance) getProcessInstance()).setState( ProcessInstance.STATE_COMPLETED );
-            
         } else {
             ((NodeInstanceContainer) getNodeInstanceContainer())
                 .nodeInstanceCompleted(this, null);
