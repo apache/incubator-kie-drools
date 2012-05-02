@@ -26,7 +26,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> {
+public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     private SolverBenchmark solverBenchmark = null;
     private ProblemBenchmark problemBenchmark = null;
@@ -34,7 +34,8 @@ public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> 
     private int planningEntityCount = -1;
     private long problemScale = -1;
     private Score score = null;
-    private Score winningScoreDifference = null; // compared to winning result (which might not be the overall winner)
+    // compared to winning singleBenchmark (which might not be the overall winner)
+    private Score winningScoreDifference = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
 
@@ -129,8 +130,8 @@ public class PlannerBenchmarkResult implements Callable<PlannerBenchmarkResult> 
         return problemBenchmark.getName() + "_" + solverBenchmark.getName();
     }
 
-    public PlannerBenchmarkResult call() {
-        // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+    public SingleBenchmark call() {
+        // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
         for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
             statistic.addListener(solver, solverBenchmark.getName());

@@ -17,25 +17,14 @@
 package org.drools.planner.benchmark.core.ranking;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.MoveScope;
-import org.drools.planner.core.localsearch.decider.acceptor.tabu.PlanningEntityTabuAcceptor;
-import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
-import org.drools.planner.core.score.buildin.simple.SimpleScore;
-import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.testdata.domain.TestdataEntity;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class TotalScoreSolverBenchmarkRankingComparatorTest {
 
@@ -43,18 +32,18 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest {
     public void normal() {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark();
-        List<PlannerBenchmarkResult> aResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(aResultList, -1000);
-        addPlannerBenchmarkResult(aResultList, -400);
-        addPlannerBenchmarkResult(aResultList, -30);
-        a.setPlannerBenchmarkResultList(aResultList);
+        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -1000);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -400);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
+        a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
         SolverBenchmark b = new SolverBenchmark();
-        List<PlannerBenchmarkResult> bResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(bResultList, -1000);
-        addPlannerBenchmarkResult(bResultList, -200);
-        addPlannerBenchmarkResult(bResultList, -50);
-        b.setPlannerBenchmarkResultList(bResultList);
+        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -1000);
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -200);
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -50);
+        b.setSingleBenchmarkList(bSingleBenchmarkList);
         b.benchmarkingEnded();
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
@@ -64,27 +53,27 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest {
     public void totalIsEqual() {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
         SolverBenchmark a = new SolverBenchmark();
-        List<PlannerBenchmarkResult> aResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(aResultList, -1005);
-        addPlannerBenchmarkResult(aResultList, -200);
-        addPlannerBenchmarkResult(aResultList, -30);
-        a.setPlannerBenchmarkResultList(aResultList);
+        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -1005);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -200);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
+        a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
         SolverBenchmark b = new SolverBenchmark();
-        List<PlannerBenchmarkResult> bResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(bResultList, -1000);
-        addPlannerBenchmarkResult(bResultList, -200);
-        addPlannerBenchmarkResult(bResultList, -35);
-        b.setPlannerBenchmarkResultList(bResultList);
+        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -1000);
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -200);
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -35);
+        b.setSingleBenchmarkList(bSingleBenchmarkList);
         b.benchmarkingEnded();
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }
 
-    private void addPlannerBenchmarkResult(List<PlannerBenchmarkResult> plannerBenchmarkResultList, int score) {
-        PlannerBenchmarkResult result = new PlannerBenchmarkResult();
+    private void addPlannerBenchmarkResult(List<SingleBenchmark> singleBenchmarkList, int score) {
+        SingleBenchmark result = new SingleBenchmark();
         result.setScore(DefaultSimpleScore.valueOf(score));
-        plannerBenchmarkResultList.add(result);
+        singleBenchmarkList.add(result);
     }
 
 }

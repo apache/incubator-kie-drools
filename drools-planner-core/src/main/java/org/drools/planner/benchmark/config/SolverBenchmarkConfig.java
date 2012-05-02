@@ -19,7 +19,7 @@ package org.drools.planner.benchmark.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.config.solver.SolverConfig;
@@ -70,7 +70,7 @@ public class SolverBenchmarkConfig {
         SolverBenchmark solverBenchmark = new SolverBenchmark();
         solverBenchmark.setName(name);
         solverBenchmark.setSolverConfig(solverConfig);
-        solverBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
+        solverBenchmark.setSingleBenchmarkList(new ArrayList<SingleBenchmark>());
         List<ProblemBenchmark> problemBenchmarkList = problemBenchmarksConfig
                 .buildProblemBenchmarkList(unifiedProblemBenchmarkList, solverBenchmark);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);

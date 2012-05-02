@@ -21,14 +21,14 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
 /**
  * This {@link SolverBenchmarkRankingWeightFactory} orders a {@link SolverBenchmark} by how how many time each of it's
- * {@link PlannerBenchmarkResult} beat the {@link PlannerBenchmarkResult} of the other {@link SolverBenchmark}s.
+ * {@link SingleBenchmark} beat the {@link SingleBenchmark} of the other {@link SolverBenchmark}s.
  * It maximizes the overall ranking.
  * <p/>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in

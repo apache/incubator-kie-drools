@@ -17,10 +17,7 @@
 package org.drools.planner.benchmark.core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import org.drools.planner.benchmark.api.ProblemIO;
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
@@ -41,9 +38,9 @@ public class ProblemBenchmark {
 
     private List<ProblemStatistic> problemStatisticList = null;
 
-    private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
+    private List<SingleBenchmark> singleBenchmarkList = null;
 
-    private PlannerBenchmarkResult winningPlannerBenchmarkResult = null;
+    private SingleBenchmark winningSingleBenchmark = null;
 
     public String getName() {
         return name;
@@ -85,20 +82,20 @@ public class ProblemBenchmark {
         this.problemStatisticList = problemStatisticList;
     }
 
-    public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
-        return plannerBenchmarkResultList;
+    public List<SingleBenchmark> getSingleBenchmarkList() {
+        return singleBenchmarkList;
     }
 
-    public void setPlannerBenchmarkResultList(List<PlannerBenchmarkResult> plannerBenchmarkResultList) {
-        this.plannerBenchmarkResultList = plannerBenchmarkResultList;
+    public void setSingleBenchmarkList(List<SingleBenchmark> singleBenchmarkList) {
+        this.singleBenchmarkList = singleBenchmarkList;
     }
 
-    public PlannerBenchmarkResult getWinningPlannerBenchmarkResult() {
-        return winningPlannerBenchmarkResult;
+    public SingleBenchmark getWinningSingleBenchmark() {
+        return winningSingleBenchmark;
     }
 
-    public void setWinningPlannerBenchmarkResult(PlannerBenchmarkResult winningPlannerBenchmarkResult) {
-        this.winningPlannerBenchmarkResult = winningPlannerBenchmarkResult;
+    public void setWinningSingleBenchmark(SingleBenchmark winningSingleBenchmark) {
+        this.winningSingleBenchmark = winningSingleBenchmark;
     }
 
     // ************************************************************************
@@ -109,8 +106,8 @@ public class ProblemBenchmark {
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
-        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            SolverBenchmark solverBenchmark = result.getSolverBenchmark();
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            SolverBenchmark solverBenchmark = singleBenchmark.getSolverBenchmark();
             TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
             tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
@@ -134,36 +131,36 @@ public class ProblemBenchmark {
         return problemIO.read(inputSolutionFile);
     }
 
-    public void writeSolution(PlannerBenchmarkResult result, Solution outputSolution) {
-        String filename = result.getName() + "." + problemIO.getFileExtension();
+    public void writeSolution(SingleBenchmark singleBenchmark, Solution outputSolution) {
+        String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
         File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 
     public void benchmarkingEnded() {
-        determineWinningResult();
-        determineWinningResultScoreDifference();
+        determineWinningSingleBenchmark();
+        determineWinningSingleBenchmarkScoreDifference();
     }
 
-    private void determineWinningResult() {
-        winningPlannerBenchmarkResult = null;
-        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            if (result.isFailure()) {
+    private void determineWinningSingleBenchmark() {
+        winningSingleBenchmark = null;
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (singleBenchmark.isFailure()) {
                 continue;
             }
-            if (winningPlannerBenchmarkResult == null
-                    || result.getScore().compareTo(winningPlannerBenchmarkResult.getScore()) > 0) {
-                winningPlannerBenchmarkResult = result;
+            if (winningSingleBenchmark == null
+                    || singleBenchmark.getScore().compareTo(winningSingleBenchmark.getScore()) > 0) {
+                winningSingleBenchmark = singleBenchmark;
             }
         }
     }
 
-    private void determineWinningResultScoreDifference() {
-        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            if (result.isFailure()) {
+    private void determineWinningSingleBenchmarkScoreDifference() {
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (singleBenchmark.isFailure()) {
                 continue;
             }
-            result.setWinningScoreDifference(result.getScore().subtract(winningPlannerBenchmarkResult.getScore()));
+            singleBenchmark.setWinningScoreDifference(singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
         }
     }
 

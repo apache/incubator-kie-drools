@@ -29,7 +29,7 @@ public class SolverBenchmark {
     private SolverConfig solverConfig = null;
 
     private List<ProblemBenchmark> problemBenchmarkList = null;
-    private List<PlannerBenchmarkResult> plannerBenchmarkResultList = null;
+    private List<SingleBenchmark> singleBenchmarkList = null;
 
     private Integer failureCount = null;
     private Score totalScore = null;
@@ -60,12 +60,12 @@ public class SolverBenchmark {
         this.problemBenchmarkList = problemBenchmarkList;
     }
 
-    public List<PlannerBenchmarkResult> getPlannerBenchmarkResultList() {
-        return plannerBenchmarkResultList;
+    public List<SingleBenchmark> getSingleBenchmarkList() {
+        return singleBenchmarkList;
     }
 
-    public void setPlannerBenchmarkResultList(List<PlannerBenchmarkResult> plannerBenchmarkResultList) {
-        this.plannerBenchmarkResultList = plannerBenchmarkResultList;
+    public void setSingleBenchmarkList(List<SingleBenchmark> singleBenchmarkList) {
+        this.singleBenchmarkList = singleBenchmarkList;
     }
 
     public Integer getRanking() {
@@ -81,7 +81,7 @@ public class SolverBenchmark {
     // ************************************************************************
 
     public void benchmarkingStarted() {
-        // Note: do not call PlannerBenchmarkResult.benchmarkingStarted()
+        // Note: do not call SingleBenchmark.benchmarkingStarted()
         // because DefaultPlannerBenchmark does that already on the unified list
     }
 
@@ -92,15 +92,15 @@ public class SolverBenchmark {
     protected void determineTotalScore() {
         failureCount = 0;
         totalScore = null;
-        for (PlannerBenchmarkResult result : plannerBenchmarkResultList) {
-            if (result.isFailure()) {
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (singleBenchmark.isFailure()) {
                 failureCount++;
                 continue;
             }
             if (totalScore == null) {
-                totalScore = result.getScore();
+                totalScore = singleBenchmark.getScore();
             } else {
-                totalScore = totalScore.add(result.getScore());
+                totalScore = totalScore.add(singleBenchmark.getScore());
             }
         }
     }
@@ -117,13 +117,13 @@ public class SolverBenchmark {
         if (totalScore == null) {
             return null;
         }
-        return getTotalScore().divide(plannerBenchmarkResultList.size() - failureCount);
+        return getTotalScore().divide(singleBenchmarkList.size() - failureCount);
     }
 
     public List<Score> getScoreList() {
-        List<Score> scoreList = new ArrayList<Score>(plannerBenchmarkResultList.size());
-        for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
-            scoreList.add(plannerBenchmarkResult.getScore());
+        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkList.size());
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            scoreList.add(singleBenchmark.getScore());
         }
         return scoreList;
     }

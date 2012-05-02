@@ -19,7 +19,7 @@ package org.drools.planner.benchmark.core.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.junit.Test;
@@ -33,19 +33,19 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest {
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
         SolverBenchmark a = new SolverBenchmark();
-        List<PlannerBenchmarkResult> aResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(aResultList, -1000);
-        addPlannerBenchmarkResult(aResultList, -300);
-        addPlannerBenchmarkResult(aResultList, -40);
-        a.setPlannerBenchmarkResultList(aResultList);
+        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -1000);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -300);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -40);
+        a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
         solverBenchmarkList.add(a);
         SolverBenchmark b = new SolverBenchmark();
-        List<PlannerBenchmarkResult> bResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(bResultList, -2000); // Loses vs a
-        addPlannerBenchmarkResult(bResultList, -200); // Wins vs a
-        addPlannerBenchmarkResult(bResultList, -30); // Wins vs a
-        b.setPlannerBenchmarkResultList(bResultList);
+        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -2000); // Loses vs a
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -200); // Wins vs a
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -30); // Wins vs a
+        b.setSingleBenchmarkList(bSingleBenchmarkList);
         b.benchmarkingEnded();
         solverBenchmarkList.add(b);
 
@@ -61,27 +61,27 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest {
         TotalRankSolverBenchmarkRankingWeightFactory factory = new TotalRankSolverBenchmarkRankingWeightFactory();
         List<SolverBenchmark> solverBenchmarkList = new ArrayList<SolverBenchmark>();
         SolverBenchmark a = new SolverBenchmark();
-        List<PlannerBenchmarkResult> aResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(aResultList, -5000);
-        addPlannerBenchmarkResult(aResultList, -900);
-        addPlannerBenchmarkResult(aResultList, -90);
-        a.setPlannerBenchmarkResultList(aResultList); // 0 wins - 1 equals - 5 losses
+        List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -5000);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -900);
+        addPlannerBenchmarkResult(aSingleBenchmarkList, -90);
+        a.setSingleBenchmarkList(aSingleBenchmarkList); // 0 wins - 1 equals - 5 losses
         a.benchmarkingEnded();
         solverBenchmarkList.add(a);
         SolverBenchmark b = new SolverBenchmark();
-        List<PlannerBenchmarkResult> bResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(bResultList, -1000); // Wins vs a - wins vs c
-        addPlannerBenchmarkResult(bResultList, -200); // Wins vs a - loses vs c
-        addPlannerBenchmarkResult(bResultList, -20); // Wins vs a - loses vs c
-        b.setPlannerBenchmarkResultList(bResultList); // 4 wins - 0 equals - 2 losses
+        List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -1000); // Wins vs a - wins vs c
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -200); // Wins vs a - loses vs c
+        addPlannerBenchmarkResult(bSingleBenchmarkList, -20); // Wins vs a - loses vs c
+        b.setSingleBenchmarkList(bSingleBenchmarkList); // 4 wins - 0 equals - 2 losses
         b.benchmarkingEnded();
         solverBenchmarkList.add(b);
         SolverBenchmark c = new SolverBenchmark();
-        List<PlannerBenchmarkResult> cResultList = new ArrayList<PlannerBenchmarkResult>();
-        addPlannerBenchmarkResult(cResultList, -5000); // Loses vs b, Equals vs a
-        addPlannerBenchmarkResult(cResultList, -100); // Wins vs a - wins vs b
-        addPlannerBenchmarkResult(cResultList, -10); // Wins vs a - wins vs b
-        c.setPlannerBenchmarkResultList(cResultList); // 4 wins - 1 equals - 1 losses
+        List<SingleBenchmark> cSingleBenchmarkList = new ArrayList<SingleBenchmark>();
+        addPlannerBenchmarkResult(cSingleBenchmarkList, -5000); // Loses vs b, Equals vs a
+        addPlannerBenchmarkResult(cSingleBenchmarkList, -100); // Wins vs a - wins vs b
+        addPlannerBenchmarkResult(cSingleBenchmarkList, -10); // Wins vs a - wins vs b
+        c.setSingleBenchmarkList(cSingleBenchmarkList); // 4 wins - 1 equals - 1 losses
         c.benchmarkingEnded();
         solverBenchmarkList.add(c);
 
@@ -97,10 +97,10 @@ public class TotalRankSolverBenchmarkRankingWeightFactoryTest {
         assertEquals(1, cWeight.compareTo(bWeight));
     }
 
-    private void addPlannerBenchmarkResult(List<PlannerBenchmarkResult> plannerBenchmarkResultList, int score) {
-        PlannerBenchmarkResult result = new PlannerBenchmarkResult();
+    private void addPlannerBenchmarkResult(List<SingleBenchmark> singleBenchmarkList, int score) {
+        SingleBenchmark result = new SingleBenchmark();
         result.setScore(DefaultSimpleScore.valueOf(score));
-        plannerBenchmarkResultList.add(result);
+        singleBenchmarkList.add(result);
     }
 
 }

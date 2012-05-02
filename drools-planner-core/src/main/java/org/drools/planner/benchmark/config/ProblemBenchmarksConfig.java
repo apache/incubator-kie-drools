@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.api.ProblemIO;
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.benchmark.core.XStreamProblemIO;
@@ -99,7 +99,7 @@ public class ProblemBenchmarksConfig {
             } else {
                 problemBenchmark = unifiedProblemBenchmarkList.get(index);
             }
-            addPlannerBenchmarkResult(solverBenchmark, problemBenchmark);
+            addSingleBenchmark(solverBenchmark, problemBenchmark);
             problemBenchmarkList.add(problemBenchmark);
         }
         return problemBenchmarkList;
@@ -154,17 +154,17 @@ public class ProblemBenchmarksConfig {
             }
         }
         problemBenchmark.setProblemStatisticList(problemStatisticList);
-        problemBenchmark.setPlannerBenchmarkResultList(new ArrayList<PlannerBenchmarkResult>());
+        problemBenchmark.setSingleBenchmarkList(new ArrayList<SingleBenchmark>());
         return problemBenchmark;
     }
 
-    private void addPlannerBenchmarkResult(
+    private void addSingleBenchmark(
             SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        PlannerBenchmarkResult result = new PlannerBenchmarkResult();
-        result.setSolverBenchmark(solverBenchmark);
-        solverBenchmark.getPlannerBenchmarkResultList().add(result);
-        result.setProblemBenchmark(problemBenchmark);
-        problemBenchmark.getPlannerBenchmarkResultList().add(result);
+        SingleBenchmark singleBenchmark = new SingleBenchmark();
+        singleBenchmark.setSolverBenchmark(solverBenchmark);
+        solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
+        singleBenchmark.setProblemBenchmark(problemBenchmark);
+        problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {

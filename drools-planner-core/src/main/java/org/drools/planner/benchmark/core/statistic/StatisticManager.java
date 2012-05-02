@@ -28,7 +28,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.benchmark.core.PlannerBenchmarkResult;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
 import org.drools.planner.core.score.Score;
@@ -92,14 +92,14 @@ public class StatisticManager {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                Score score = result.getScore();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                Score score = singleBenchmark.getScore();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
                 if (solverBenchmark.isRankingBest()) {
                     solverLabel += " (winner)";
                 }
-                String planningProblemLabel = result.getProblemBenchmark().getName();
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
             }
         }
@@ -140,14 +140,14 @@ public class StatisticManager {
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                Score score = result.getWinningScoreDifference();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                Score score = singleBenchmark.getWinningScoreDifference();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 String solverLabel = solverBenchmark.getName();
                 if (solverBenchmark.isRankingBest()) {
                     solverLabel += " (winner)";
                 }
-                String planningProblemLabel = result.getProblemBenchmark().getName();
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 dataset.addValue(scoreGraphValue, solverLabel, planningProblemLabel);
             }
         }
@@ -186,10 +186,10 @@ public class StatisticManager {
     private CharSequence writeTimeSpendSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                long timeMillisSpend = result.getTimeMillisSpend();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                 String solverLabel = solverBenchmark.getName();
-                String planningProblemLabel = result.getProblemBenchmark().getName();
+                String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                 dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
             }
         }
@@ -234,9 +234,9 @@ public class StatisticManager {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                long problemScale = result.getProblemScale();
-                long timeMillisSpend = result.getTimeMillisSpend();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                long problemScale = singleBenchmark.getProblemScale();
+                long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                 series.add((Long) problemScale, (Long) timeMillisSpend);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
@@ -275,9 +275,9 @@ public class StatisticManager {
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
-            for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                long problemScale = result.getProblemScale();
-                long averageCalculateCountPerSecond = result.getAverageCalculateCountPerSecond();
+            for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                long problemScale = singleBenchmark.getProblemScale();
+                long averageCalculateCountPerSecond = singleBenchmark.getAverageCalculateCountPerSecond();
                 series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
@@ -324,16 +324,16 @@ public class StatisticManager {
             htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
                     .append(solverBenchmark.getName()).append("</th>");
             for (ProblemBenchmark problemBenchmark : problemBenchmarkList) {
-                boolean noResult = true;
-                for (PlannerBenchmarkResult result : solverBenchmark.getPlannerBenchmarkResultList()) {
-                    if (problemBenchmark.equals(result.getProblemBenchmark())) {
-                        Score score = result.getScore();
+                boolean noSingleBenchmark = true;
+                for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
+                    if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
+                        Score score = singleBenchmark.getScore();
                         htmlFragment.append("<td>").append(score.toString()).append("</td>");
-                        noResult = false;
+                        noSingleBenchmark = false;
                         break;
                     }
                 }
-                if (noResult) {
+                if (noSingleBenchmark) {
                     htmlFragment.append("<td/>");
                 }
             }

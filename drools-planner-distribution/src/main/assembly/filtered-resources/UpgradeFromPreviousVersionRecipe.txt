@@ -1925,3 +1925,7 @@ Before in *BenchmarkConfig.xml:
   <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.comparator.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
 After in *BenchmarkConfig.xml:
   <solverBenchmarkRankingComparator>org.drools.planner.benchmark.core.ranking.TotalScoreSolverBenchmarkRankingComparator</solverBenchmarkRankingComparator>
+
+[MINOR] Benchmarker: PlannerBenchmarkResult has been renamed to SingleBenchmark
+This should not impact your code.
+
