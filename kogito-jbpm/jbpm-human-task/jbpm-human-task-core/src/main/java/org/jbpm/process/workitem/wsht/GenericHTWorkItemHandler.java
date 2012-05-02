@@ -149,7 +149,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
         } catch (Exception e) {
 
             if (action.equals(OnErrorAction.ABORT)) {
-                session.getWorkItemManager().abortWorkItem(workItem.getId());
+                this.manager.abortWorkItem(workItem.getId());
 
             } else if (action.equals(OnErrorAction.RETHROW)) {
                 if (e instanceof RuntimeException) {

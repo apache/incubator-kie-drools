@@ -113,5 +113,6 @@
     <module>jbpm-human-task-hornetq</module>
     <module>jbpm-human-task-mina</module>
     <module>jbpm-human-task-jms</module>
+    <module>jbpm-human-task-war</module>
   </modules>
 </project>

@@ -172,7 +172,7 @@ public class AsyncGenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 			super.setError(error);
 			
 			if (action.equals(OnErrorAction.ABORT)) {
-				session.getWorkItemManager().abortWorkItem(workItemId);
+				manager.abortWorkItem(workItemId);
 				
 			} else if (action.equals(OnErrorAction.RETHROW)) {
 				throw getError();

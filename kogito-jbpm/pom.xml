@@ -86,7 +86,6 @@
     <module>jbpm-bpmn2-emfextmodel</module>
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
-    <module>jbpm-human-task-war</module>
     <module>jbpm-gwt</module>
     <module>jbpm-test</module>
     <module>jbpm-examples</module>
