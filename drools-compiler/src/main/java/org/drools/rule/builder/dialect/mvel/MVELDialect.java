@@ -513,6 +513,27 @@ public class MVELDialect
                                            kcontextClass);
     }
 
+
+    public MVELCompilationUnit getMVELCompilationUnit(final String expression,
+                                                      final AnalysisResult analysis,
+                                                      Declaration[] previousDeclarations,
+                                                      Declaration[] localDeclarations,
+                                                      final Map<String, Class<?>> otherInputVariables,
+                                                      final PackageBuildContext context,
+                                                      String contextIndeifier,
+                                                      Class kcontextClass) {
+
+        return getMVELCompilationUnit(expression,
+                analysis,
+                previousDeclarations,
+                localDeclarations,
+                otherInputVariables,
+                context,
+                contextIndeifier,
+                kcontextClass,
+                false);
+    }
+
     public MVELCompilationUnit getMVELCompilationUnit(final String expression,
                                                       final AnalysisResult analysis,
                                                       Declaration[] previousDeclarations,
