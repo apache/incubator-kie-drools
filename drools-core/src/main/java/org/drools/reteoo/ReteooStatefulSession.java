@@ -179,12 +179,6 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.executor.shutDown();
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        dispose();
-    }
-
     public List getRuleBaseUpdateListeners() {
         if ( this.ruleBaseListeners == null || this.ruleBaseListeners == Collections.EMPTY_LIST ) {
             String listenerName = this.ruleBase.getConfiguration().getRuleBaseUpdateHandler();

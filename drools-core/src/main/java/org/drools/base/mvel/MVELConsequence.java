@@ -90,26 +90,17 @@ public class MVELConsequence
 
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
-        pkg = knowledgeHelper.getWorkingMemory().getRuleBase().getPackage(knowledgeHelper.getRule().getPackage() );
-
-        ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( ((InternalRuleBase) workingMemory.getRuleBase()).getRootClassLoader() );
-
-        try {
-            if ( MVELDebugHandler.isDebugMode() ) {
-                if ( MVELDebugHandler.verbose ) {
-                    System.out.println( DebugTools.decompile( compexpr ) );
-                }
-                MVEL.executeDebugger( compexpr,
-                                      knowledgeHelper,
-                                      factory );
-            } else {
-                MVEL.executeExpression( compexpr,
-                                        knowledgeHelper,
-                                        factory );
+        if ( MVELDebugHandler.isDebugMode() ) {
+            if ( MVELDebugHandler.verbose ) {
+                System.out.println( DebugTools.decompile( compexpr ) );
             }
-        } finally {
-            Thread.currentThread().setContextClassLoader( tempClassLoader );
+            MVEL.executeDebugger( compexpr,
+                                  knowledgeHelper,
+                                  factory );
+        } else {
+            MVEL.executeExpression( compexpr,
+                                    knowledgeHelper,
+                                    factory );
         }
     }
 
