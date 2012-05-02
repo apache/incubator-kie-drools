@@ -60,6 +60,10 @@ import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * 
+ */
+@Deprecated
 public class SyncWSHumanTaskHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);

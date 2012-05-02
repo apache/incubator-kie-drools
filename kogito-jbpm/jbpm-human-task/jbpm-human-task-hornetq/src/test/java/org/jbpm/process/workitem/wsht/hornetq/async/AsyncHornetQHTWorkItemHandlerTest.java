@@ -13,42 +13,37 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.jbpm.process.workitem.wsht.mina;
+package org.jbpm.process.workitem.wsht.hornetq.async;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseTest;
+import org.jbpm.process.workitem.wsht.AsyncHornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
 import org.jbpm.task.TestStatefulKnowledgeSession;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.jbpm.task.service.mina.MinaTaskServer;
+import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
-public class WSHumanTaskHandlerMinaTest extends WSHumanTaskHandlerBaseTest {
-    
+public class AsyncHornetQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsyncTest {
+
     private TaskServer server;
-    
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        server = new MinaTaskServer(taskService);
+        server = new HornetQTaskServer(taskService, 5446);
         Thread thread = new Thread(server);
         thread.start();
-        System.out.println("Waiting for the Mina Server to come up");
+        System.out.println("Waiting for the HornetQTask Server to come up");
         while (!server.isRunning()) {
             System.out.print(".");
             Thread.sleep(50);
         }
-        setClient(new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        getClient().connect("127.0.0.1", 9123);
-        WSHumanTaskHandler handler = new WSHumanTaskHandler(new TestStatefulKnowledgeSession());
+        AsyncHornetQHTWorkItemHandler handler = new AsyncHornetQHTWorkItemHandler(new TestStatefulKnowledgeSession());
+        setClient(handler.getClient());
         setHandler(handler);
     }
-    
+
     protected void tearDown() throws Exception {
-        ((WSHumanTaskHandler) getHandler()).dispose();
+        ((AsyncHornetQHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         server.stop();
         super.tearDown();

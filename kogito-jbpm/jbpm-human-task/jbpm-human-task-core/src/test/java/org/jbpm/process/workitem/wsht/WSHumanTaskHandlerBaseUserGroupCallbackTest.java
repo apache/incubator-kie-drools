@@ -16,10 +16,6 @@
 
 package org.jbpm.process.workitem.wsht;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,33 +24,30 @@ import java.util.Map;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.task.AccessType;
-import org.jbpm.task.BaseTestNoUserGroupSetup;
-import org.jbpm.task.Status;
-import org.jbpm.task.Task;
+import org.jbpm.task.*;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
 
     private static final int DEFAULT_WAIT_TIME = 5000;
     private static final int MANAGER_COMPLETION_WAIT_TIME = DEFAULT_WAIT_TIME;
     private static final int MANAGER_ABORT_WAIT_TIME = DEFAULT_WAIT_TIME;
-
-    private TaskClient client;
+    protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
+    private AsyncTaskService client;
     private WorkItemHandler handler;
 
-    public void setClient(TaskClient client) {
+    public void setClient(AsyncTaskService client) {
         this.client = client;
     }
 
-    public TaskClient getClient() {
+    public AsyncTaskService getClient() {
         return client;
     }
 
@@ -289,10 +282,12 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
-        ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Object data = in.readObject();
-        in.close();
+        
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getContentResponseHandler.getContent().getContent(), 
+                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
+                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());        
         assertEquals("This is the content", data);
 
         System.out.println("Starting task " + task.getId());
@@ -303,14 +298,11 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", 
+                                                                (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
+                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                                , ksession.getEnvironment());
+
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());
@@ -362,10 +354,11 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
-        ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
-        ObjectInputStream in = new ObjectInputStream(bis);
-        Map<String, Object> data = (Map<String, Object>) in.readObject();
-        in.close();
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
+                                                            getContentResponseHandler.getContent().getContent(), 
+                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
+                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
+                                                            ksession.getEnvironment());
                 //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
         assertEquals("MyObjectValue", ((MyObject)data.get("MyObject")).getValue());
                 assertEquals("10", data.get("Priority"));
@@ -379,14 +372,10 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
-        ContentData result = new ContentData();
-        result.setAccessType(AccessType.Inline);
-        result.setType("java.lang.String");
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bos);
-        out.writeObject("This is the result");
-        out.close();
-        result.setContent(bos.toByteArray());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", 
+                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
+                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
+                                                            , ksession.getEnvironment());
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());

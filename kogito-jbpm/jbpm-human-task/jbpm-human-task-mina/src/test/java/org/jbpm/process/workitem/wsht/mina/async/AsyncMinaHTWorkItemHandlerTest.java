@@ -15,17 +15,12 @@
  */
 package org.jbpm.process.workitem.wsht.mina.async;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.AsyncMinaHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
-public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsyncTest {
+public class AsyncMinaHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsyncTest {
 
     private TaskServer server;
 
@@ -40,14 +35,15 @@ public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsync
             System.out.print(".");
             Thread.sleep(50);
         }
-        setClient(new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        setHandler(new AsyncWSHumanTaskHandler(getClient(), ksession));
+        
+        AsyncMinaHTWorkItemHandler asyncMinaHTWorkItemHandler = new AsyncMinaHTWorkItemHandler(ksession);
+        setClient(asyncMinaHTWorkItemHandler.getClient());
+        setHandler(asyncMinaHTWorkItemHandler);
         
     }
 
     protected void tearDown() throws Exception {
-        ((AsyncWSHumanTaskHandler) getHandler()).dispose();
+        ((AsyncMinaHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         server.stop();
         super.tearDown();

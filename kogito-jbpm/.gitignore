@@ -24,3 +24,4 @@ bin/
 /jbpm-human-task/jbpm-human-task-mina/target/
 /jbpm-human-task/jbpm-human-task-jms-hornetq/target/
 /jbpm-human-task/jbpm-human-task-jms/target/
+/jbpm-human-task/jbpm-human-task-hornetq/target/

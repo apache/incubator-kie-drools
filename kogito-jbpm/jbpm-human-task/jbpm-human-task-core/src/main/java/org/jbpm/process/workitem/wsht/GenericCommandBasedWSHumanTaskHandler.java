@@ -57,30 +57,33 @@ import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
+
+public class GenericCommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(AsyncWSHumanTaskHandler.class);
-    private String ipAddress = "127.0.0.1";
-    private int port = 9123;
+    private String ipAddress;
+    private int port;
     private TaskClient client;
     private KnowledgeRuntime session;
     private OnErrorAction action;
+    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
 
-    public CommandBasedWSHumanTaskHandler() {
+    public GenericCommandBasedWSHumanTaskHandler() {
         this.session = null;
         this.action = OnErrorAction.LOG;
     }
 
-    public CommandBasedWSHumanTaskHandler(KnowledgeRuntime session) {
+    public GenericCommandBasedWSHumanTaskHandler(KnowledgeRuntime session) {
         this.session = session;
         this.action = OnErrorAction.LOG;
     }
 
-    public CommandBasedWSHumanTaskHandler(KnowledgeRuntime session, OnErrorAction action) {
+    public GenericCommandBasedWSHumanTaskHandler(KnowledgeRuntime session, OnErrorAction action) {
         this.session = session;
         this.action = action;
     }
@@ -94,10 +97,11 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
         this.port = port;
     }
 
-    public void configureClient(TaskClient clientIn) {
-        this.client = clientIn;
-        registerTaskEventHandlers();
+    public void setClient(TaskClient client) {
+        this.client = client;
     }
+
+    
 
     private void registerTaskEventHandlers() {
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
@@ -114,29 +118,19 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void connect() {
-//		if (client == null) {
-//			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler", 
-//																new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-//			boolean connected = client.connect(ipAddress, port);
-//			if (!connected) {
-//				throw new IllegalArgumentException("Could not connect task client");
-//			}
-//			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
-//			TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
-//			client.registerForEvent(key, false, eventResponseHandler);
-//			key = new TaskEventKey(TaskFailedEvent.class, -1);           
-//			client.registerForEvent(key, false, eventResponseHandler);
-//			key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-//			client.registerForEvent(key, false, eventResponseHandler);
-//		}
-        if(client == null){
-           throw new IllegalArgumentException("The Client Cannot be null, please configure one using: configureClient(TaskClient)"); 
+        if (client == null) {
+            throw new IllegalStateException("You must provide a client connector for the Client using the setClient() method");
+        }
+        if(ipAddress == null || ipAddress.equals("") || port == 0){
+            throw new IllegalStateException("You must provide connection settings such as ip and port for the Client using the setConnection() method");
         }
         boolean connected = client.connect(ipAddress, port);
         if (!connected) {
             throw new IllegalArgumentException("Could not connect task client");
         }
         registerTaskEventHandlers();
+
+
     }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
@@ -230,6 +224,7 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 
         ContentData content = null;
         Object contentObject = workItem.getParameter("Content");
+        
         if (contentObject != null) {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream out;

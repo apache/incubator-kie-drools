@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.wsht.mina.async;
+package org.jbpm.process.workitem.wsht.mina.sync;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
-import org.jbpm.task.service.TaskClient;
+import org.jbpm.process.workitem.wsht.MinaHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 
-public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsyncTest {
+public class MinaHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseSyncTest {
 
     private TaskServer server;
 
@@ -40,14 +35,15 @@ public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsync
             System.out.print(".");
             Thread.sleep(50);
         }
-        setClient(new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        setHandler(new AsyncWSHumanTaskHandler(getClient(), ksession));
+        
+        MinaHTWorkItemHandler minaHTWorkItemHandler = new MinaHTWorkItemHandler(ksession);
+        setClient(minaHTWorkItemHandler.getClient());
+        setHandler(minaHTWorkItemHandler);
         
     }
 
     protected void tearDown() throws Exception {
-        ((AsyncWSHumanTaskHandler) getHandler()).dispose();
+        ((MinaHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         server.stop();
         super.tearDown();

@@ -1,27 +1,32 @@
 /**
  * Copyright 2010 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.jbpm.process.workitem.wsht;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.drools.runtime.Environment;
 
+import org.drools.SystemEventListenerFactory;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
@@ -29,8 +34,9 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.eventmessaging.Payload;
+import org.jbpm.process.workitem.wsht.HumanTaskHandlerHelper;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
-import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Content;
 import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
@@ -48,63 +54,47 @@ import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.event.TaskFailedEvent;
 import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.jbpm.task.service.mina.MinaTaskClientConnector;
+import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.utils.ContentMarshallerContext;
-import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.jbpm.task.utils.OnErrorAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Deprecated
-public class AsyncWSHumanTaskHandler implements WorkItemHandler {
+public class WSHumanTaskHandler implements WorkItemHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AsyncWSHumanTaskHandler.class);
-    
+    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
     private String ipAddress = "127.0.0.1";
     private int port = 9123;
-    
-    private AsyncTaskService client;
+    private TaskClient client;
     private WorkItemManager manager = null;
+    private boolean initialized = false;
     private KnowledgeRuntime session;
     private OnErrorAction action;
     private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
-    private Map<TaskEventKey, EventResponseHandler> eventHandlers = new HashMap<TaskEventKey, EventResponseHandler>();
-    
-    public AsyncWSHumanTaskHandler() {
-    	this.action = OnErrorAction.LOG;
-    }
 
-    public AsyncWSHumanTaskHandler(AsyncTaskService client) {
-        this.client = client;
+    public WSHumanTaskHandler() {
         this.action = OnErrorAction.LOG;
     }
-    
-    public AsyncWSHumanTaskHandler(AsyncTaskService client, KnowledgeRuntime session) {
-        this.client = client;
+
+    public WSHumanTaskHandler(KnowledgeRuntime session) {
         this.session = session;
         this.action = OnErrorAction.LOG;
     }
-    
-    public AsyncWSHumanTaskHandler(AsyncTaskService client, OnErrorAction action) {
-        this.client = client;
+
+    public WSHumanTaskHandler(OnErrorAction action) {
         this.action = action;
     }
-    
-    public AsyncWSHumanTaskHandler(AsyncTaskService client, KnowledgeRuntime session, OnErrorAction action) {
-        this.client = client;
+
+    public WSHumanTaskHandler(KnowledgeRuntime session, OnErrorAction action) {
         this.session = session;
         this.action = action;
-    }
-
-    public ContentMarshallerContext getMarshallerContext() {
-        return marshallerContext;
-    }
-
-    public void setMarshallerContext(ContentMarshallerContext marshallerContext) {
-        this.marshallerContext = marshallerContext;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -112,38 +102,38 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         this.port = port;
     }
 
-    public void setClient(AsyncTaskService client) {
+    public void setAction(OnErrorAction action) {
+        this.action = action;
+    }
+
+    public void setClient(TaskClient client) {
         this.client = client;
     }
-    
-    public void setAction(OnErrorAction action) {
-		this.action = action;
-	}
 
     public void connect() {
-        if (client == null) {
-            throw new IllegalStateException("You must set the client to the work item to work");
-        }
-        if (client != null) {
-            boolean connected = client.connect(ipAddress, port);
-            if (!connected) {
-                throw new IllegalArgumentException("Could not connect task client");
-            }
-        }
-        registerTaskEvents();
+		if (!initialized) {
+			if (client == null) {
+				client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+											new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+				boolean connected = client.connect(ipAddress, port);
+		 		if (!connected) {
+					throw new IllegalArgumentException("Could not connect task client");
+				}
+			}
+			registerTaskEventHandlers();
+                        initialized = true;
+		}
+      
     }
-
-    private void registerTaskEvents() {
-        TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, marshallerContext, session.getEnvironment(),  client);
+    
+    private void registerTaskEventHandlers() {
+        TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+        TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, client);
         client.registerForEvent(key, false, eventResponseHandler);
-        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskFailedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
-        eventHandlers.put(key, eventResponseHandler);
         key = new TaskEventKey(TaskSkippedEvent.class, -1);
         client.registerForEvent(key, false, eventResponseHandler);
-        eventHandlers.put(key, eventResponseHandler);
     }
 
     public void setManager(WorkItemManager manager) {
@@ -177,7 +167,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         List<I18NText> subjects = new ArrayList<I18NText>();
         subjects.add(new I18NText("en-UK", comment));
         task.setSubjects(subjects);
-        
+
         String priorityString = (String) workItem.getParameter("Priority");
         int priority = 0;
         if (priorityString != null) {
@@ -192,11 +182,11 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         TaskData taskData = new TaskData();
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
-        if(session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
-			taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
-		}
-        if(session != null && (session instanceof StatefulKnowledgeSession)) { 
-        	taskData.setProcessSessionId( ((StatefulKnowledgeSession) session).getId() );
+        if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+            taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+        }
+        if (session != null && (session instanceof StatefulKnowledgeSession)) {
+            taskData.setProcessSessionId(((StatefulKnowledgeSession) session).getId());
         }
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
@@ -253,19 +243,27 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             contentObject = workItem.getParameters();
         }
         if (contentObject != null) {
-            content = ContentMarshallerHelper.marshal(contentObject, marshallerContext,  session.getEnvironment());
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out;
+            try {
+                out = new ObjectOutputStream(bos);
+                out.writeObject(contentObject);
+                out.close();
+                content = new ContentData();
+                content.setContent(bos.toByteArray());
+                content.setAccessType(AccessType.Inline);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
-        
+
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
 
-        client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
+        client.addTask(task, content, new TaskAddedHandler(manager, workItem.getId()));
+
     }
 
     public void dispose() throws Exception {
-        for(TaskEventKey key : eventHandlers.keySet()){
-            client.registerForEvent(key, true, eventHandlers.get(key));
-        }
-        eventHandlers.clear();
         if (client != null) {
             client.disconnect();
         }
@@ -276,56 +274,54 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                 new AbortTaskResponseHandler(client);
         client.getTaskByWorkItemId(workItem.getId(), abortTaskResponseHandler);
     }
-    
+
     private class TaskAddedHandler extends AbstractBaseResponseHandler implements AddTaskResponseHandler {
 
-		private long workItemId;
-		
-		public TaskAddedHandler(long workItemId) {
-			this.workItemId = workItemId;
-		}
-		public void execute(long taskId) {
-			
-		}
+        private long workItemId;
+        private WorkItemManager manager;
 
-		@Override
-		public synchronized void setError(RuntimeException error) {		
-			super.setError(error);
-			
-			if (action.equals(OnErrorAction.ABORT)) {
-				session.getWorkItemManager().abortWorkItem(workItemId);
-				
-			} else if (action.equals(OnErrorAction.RETHROW)) {
-				throw getError();
-				
-			} else if (action.equals(OnErrorAction.LOG)) {
-				StringBuffer logMsg = new StringBuffer();
-				logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
-				logMsg.append(". Error reported by task server: " + getError().getMessage() );
-				logger.error(logMsg.toString(), getError());
-			}
-		}
-	
+        public TaskAddedHandler(WorkItemManager manager, long workItemId) {
+            this.workItemId = workItemId;
+            this.manager = manager;
+        }
+
+        public void execute(long taskId) {
+        }
+
+        @Override
+        public synchronized void setError(RuntimeException error) {
+            super.setError(error);
+
+            if (action.equals(OnErrorAction.ABORT)) {
+                this.manager.abortWorkItem(workItemId);
+
+            } else if (action.equals(OnErrorAction.RETHROW)) {
+                throw getError();
+
+            } else if (action.equals(OnErrorAction.LOG)) {
+                StringBuffer logMsg = new StringBuffer();
+                logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItemId);
+                logMsg.append(". Error reported by task server: " + getError().getMessage());
+                logger.error(logMsg.toString(), getError());
+            }
+        }
     }
 
     private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
 
         private WorkItemManager manager;
-        private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
-        private Environment env;
-        public TaskCompletedHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env,  AsyncTaskService client) {
+        private TaskClient client;
+
+        public TaskCompletedHandler(WorkItemManager manager, TaskClient client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
-            this.env = env;
         }
 
         public void execute(Payload payload) {
             TaskEvent event = (TaskEvent) payload.get();
             long taskId = event.getTaskId();
             GetTaskResponseHandler getTaskResponseHandler =
-                    new GetCompletedTaskResponseHandler(manager, marshallContext, env, client);
+                    new GetCompletedTaskResponseHandler(manager, client);
             client.getTask(taskId, getTaskResponseHandler);
         }
 
@@ -337,14 +333,11 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     private static class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
         private WorkItemManager manager;
-        private AsyncTaskService client;
-        private ContentMarshallerContext marshallContext;
-        private Environment env;
-        public GetCompletedTaskResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext,Environment env, AsyncTaskService client) {
+        private TaskClient client;
+
+        public GetCompletedTaskResponseHandler(WorkItemManager manager, TaskClient client) {
             this.manager = manager;
             this.client = client;
-            this.marshallContext = marshallContext;
-            this.env = env;
         }
 
         public void execute(Task task) {
@@ -356,7 +349,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                 long contentId = task.getTaskData().getOutputContentId();
                 if (contentId != -1) {
                     GetContentResponseHandler getContentResponseHandler =
-                            new GetResultContentResponseHandler(manager, marshallContext, env, task, results);
+                            new GetResultContentResponseHandler(manager, task, results);
                     client.getContent(contentId, getContentResponseHandler);
                 } else {
                     manager.completeWorkItem(workItemId, results);
@@ -372,22 +365,23 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         private WorkItemManager manager;
         private Task task;
         private Map<String, Object> results;
-        private ContentMarshallerContext marshallContext;
-        private Environment env;
-        public GetResultContentResponseHandler(WorkItemManager manager, ContentMarshallerContext marshallContext, Environment env, Task task, Map<String, Object> results) {
+
+        public GetResultContentResponseHandler(WorkItemManager manager, Task task, Map<String, Object> results) {
             this.manager = manager;
             this.task = task;
             this.results = results;
-            this.marshallContext = marshallContext;
-            this.env = env;
         }
 
         public void execute(Content content) {
-                Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallContext, env);
+            ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+            ObjectInputStream in;
+            try {
+                in = new ObjectInputStream(bis);
+                Object result = in.readObject();
+                in.close();
                 results.put("Result", result);
                 if (result instanceof Map) {
-                    @SuppressWarnings("rawtypes")
-					Map<?, ?> map = (Map) result;
+                    Map<?, ?> map = (Map) result;
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         if (entry.getKey() instanceof String) {
                             results.put((String) entry.getKey(), entry.getValue());
@@ -395,14 +389,19 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                     }
                 }
                 manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            } catch (ClassNotFoundException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 
     private static class AbortTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
 
-        private AsyncTaskService client;
+        private TaskClient client;
 
-        public AbortTaskResponseHandler(AsyncTaskService client) {
+        public AbortTaskResponseHandler(TaskClient client) {
             this.client = client;
         }
 

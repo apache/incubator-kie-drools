@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.process.workitem.wsht.hornetq.async;
+package org.jbpm.process.workitem.wsht.hornetq.sync;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
 import org.jbpm.task.TestStatefulKnowledgeSession;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
-public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAsyncTest {
+public class HornetQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseSyncTest {
 
     private TaskServer server;
 
@@ -39,18 +36,14 @@ public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAs
         while (!server.isRunning()) {
             System.out.print(".");
             Thread.sleep(50);
-        }
-        setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
-                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
-        TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
-        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient(), ksession);
-        handler.setConnection("127.0.0.1", 5446);
+        }   
+        HornetQHTWorkItemHandler handler = new HornetQHTWorkItemHandler(new TestStatefulKnowledgeSession());
+        setClient(handler.getClient());
         setHandler(handler);
-        setSession(ksession);
     }
 
     protected void tearDown() throws Exception {
-        ((AsyncWSHumanTaskHandler) getHandler()).dispose();
+        ((HornetQHTWorkItemHandler) getHandler()).dispose();
         getClient().disconnect();
         server.stop();
         super.tearDown();

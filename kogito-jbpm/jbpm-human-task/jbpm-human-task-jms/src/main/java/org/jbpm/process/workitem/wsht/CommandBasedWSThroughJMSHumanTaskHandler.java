@@ -7,8 +7,6 @@ import javax.naming.NamingException;
 
 import org.drools.SystemEventListenerFactory;
 import org.drools.runtime.KnowledgeRuntime;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
