@@ -59,6 +59,7 @@
             <descriptor>src/main/assembly/src.xml</descriptor>
             <descriptor>src/main/assembly/gwt-console.xml</descriptor>
             <descriptor>src/main/assembly/form-builder.xml</descriptor>
+            <descriptor>src/main/assembly/human-task-war.xml</descriptor>
             <descriptor>src/main/assembly/installer.xml</descriptor>
             <descriptor>src/main/assembly/docs-build.xml</descriptor>
             <descriptor>src/main/assembly/docs.xml</descriptor>
@@ -154,7 +155,12 @@
       <artifactId>jbpm-examples</artifactId>
       <classifier>sources</classifier>
     </dependency>
-
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-human-task-war</artifactId>
+      <type>war</type>
+    </dependency>
+    
     <!-- The old assembly also included this optional dependency -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
