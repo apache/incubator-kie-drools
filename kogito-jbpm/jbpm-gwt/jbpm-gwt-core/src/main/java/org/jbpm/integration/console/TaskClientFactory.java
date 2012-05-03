@@ -22,7 +22,7 @@ import javax.naming.NamingException;
 
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
 import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
@@ -66,7 +66,7 @@ public class TaskClientFactory {
 
             
         } else {
-            service = new AsyncTaskServiceWrapper(newAsyncInstance(properties, connectorId));
+            service = new SyncTaskServiceWrapper(newAsyncInstance(properties, connectorId));
         }
         
         return service;

@@ -13,7 +13,10 @@
         <include>org.jbpm:jbpm-persistence-jpa</include>
         <include>org.jbpm:jbpm-bpmn2</include>
         <include>org.jbpm:jbpm-bam</include>
-        <include>org.jbpm:jbpm-human-task</include>
+        <exclude>org.jbpm:jbpm-human-task-core</exclude>
+        <exclude>org.jbpm:jbpm-human-task-mina</exclude>
+        <exclude>org.jbpm:jbpm-human-task-hornetq</exclude>
+        <exclude>org.jbpm:jbpm-human-task-jms</exclude>
         <include>org.jbpm:jbpm-workitems</include>
         <include>org.jbpm:jbpm-test</include>
       </includes>
@@ -29,7 +32,10 @@
         <exclude>org.jbpm:jbpm-persistence-jpa</exclude>
         <exclude>org.jbpm:jbpm-bpmn2</exclude>
         <exclude>org.jbpm:jbpm-bam</exclude>
-        <exclude>org.jbpm:jbpm-human-task</exclude>
+        <exclude>org.jbpm:jbpm-human-task-core</exclude>
+        <exclude>org.jbpm:jbpm-human-task-mina</exclude>
+        <exclude>org.jbpm:jbpm-human-task-hornetq</exclude>
+        <exclude>org.jbpm:jbpm-human-task-jms</exclude>
         <exclude>org.jbpm:jbpm-workitems</exclude>
         <!-- Exclude docs -->
         <exclude>org.jbpm:jbpm-docs</exclude>

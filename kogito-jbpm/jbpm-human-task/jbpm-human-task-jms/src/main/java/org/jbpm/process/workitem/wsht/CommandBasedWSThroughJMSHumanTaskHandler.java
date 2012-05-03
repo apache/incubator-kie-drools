@@ -12,6 +12,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.WSHumanTaskJMSProperties;
 
+@Deprecated
 public class CommandBasedWSThroughJMSHumanTaskHandler extends CommandBasedWSHumanTaskHandler {
 
 	public CommandBasedWSThroughJMSHumanTaskHandler(KnowledgeRuntime session) {
