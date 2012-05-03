@@ -337,9 +337,17 @@
 
   <!-- Install guvnor -->
   <target name="install.guvnor.into.jboss" depends="download.drools.guvnor,check.jboss.version">
-    <copy file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war"
+    <mkdir dir="${install.home}/target"/>
+    <unzip src="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}.war" dest="${install.home}/target" />
+    <copy file="${install.home}/conf/guvnor.preferences.properties"
+          tofile="${install.home}/target/WEB-INF/classes/preferences.properties"
+          overwrite="true" />
+    <zip basedir="${install.home}/target"
+         destfile="${install.home}/target/guvnor-distribution-wars-${drools.guvnor.version}.war"/>
+    <copy file="${install.home}/target/guvnor-distribution-wars-${drools.guvnor.version}.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
           overwrite="true" />
+    <delete dir="${install.home}/target"/>
   </target>  	
 
   <!-- Install designer -->
