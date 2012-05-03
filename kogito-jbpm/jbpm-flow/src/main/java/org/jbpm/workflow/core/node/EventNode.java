@@ -99,10 +99,10 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
             throw new IllegalArgumentException(
                 "This type of node only accepts default incoming connection type!");
         }
-        if (getFrom() != null) {
+        if (getFrom() != null && System.getProperty("jbpm.enable.multi.con") == null) {
             throw new IllegalArgumentException(
-                "This type of node cannot have more than one incoming connection!");
-        }
+                 "This type of node cannot have more than one incoming connection!");
+         }
     }
 
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
@@ -111,9 +111,9 @@ public class EventNode extends ExtendedNodeImpl implements EventNodeInterface {
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }
-        if (getTo() != null) {
+        if (getTo() != null && System.getProperty("jbpm.enable.multi.con") == null) {
             throw new IllegalArgumentException(
-                "This type of node cannot have more than one outgoing connection!");
+              "This type of node cannot have more than one outgoing connection!");
         }
     }
     

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -168,7 +169,17 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             if (getNodeInstanceContainer().getNodeInstances().size() == 1) {
             	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
-                	triggerConnection(getForEachJoinNode().getTo());
+                	
+                	if (System.getProperty("jbpm.enable.multi.con") == null) {
+                		
+                		triggerConnection(getForEachJoinNode().getTo());
+                	} else {
+                	
+	                    List<Connection> connections = getForEachJoinNode().getOutgoingConnections(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
+	                	for (Connection connection : connections) {
+	                	    triggerConnection(connection);
+	                	}
+                	}
                 }
             }
         }

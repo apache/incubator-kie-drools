@@ -11,6 +11,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
+import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
 import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
@@ -235,30 +236,34 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     
     private void initProcessEventListener(Process process) {
     	if ( process instanceof RuleFlowProcess ) {
-            StartNode startNode = ((RuleFlowProcess) process).getStart();
-            if (startNode != null) {
-                List<Trigger> triggers = startNode.getTriggers();
-                if ( triggers != null ) {
-                    for ( Trigger trigger : triggers ) {
-                        if ( trigger instanceof EventTrigger ) {
-                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
-                            String type = null;
-                            for ( EventFilter filter : filters ) {
-                                if ( filter instanceof EventTypeFilter ) {
-                                    type = ((EventTypeFilter) filter).getType();
+    	    for (Node node : ((RuleFlowProcess) process).getNodes()) {
+    	        if (node instanceof StartNode) {
+                    StartNode startNode = (StartNode) node;
+                    if (startNode != null) {
+                        List<Trigger> triggers = startNode.getTriggers();
+                        if ( triggers != null ) {
+                            for ( Trigger trigger : triggers ) {
+                                if ( trigger instanceof EventTrigger ) {
+                                    final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+                                    String type = null;
+                                    for ( EventFilter filter : filters ) {
+                                        if ( filter instanceof EventTypeFilter ) {
+                                            type = ((EventTypeFilter) filter).getType();
+                                        }
+                                    }
+                                    StartProcessEventListener listener = new StartProcessEventListener( process.getId(),
+                                                                                                        filters,
+                                                                                                        trigger.getInMappings() );
+                                    signalManager.addEventListener( type,
+                                                                    listener );
+                                    ((RuleFlowProcess) process).getMetaData().put("StartProcessEventType", type);
+                                    ((RuleFlowProcess) process).getMetaData().put("StartProcessEventListener", listener);
                                 }
                             }
-                            StartProcessEventListener listener = new StartProcessEventListener( process.getId(),
-                                                                                                filters,
-                                                                                                trigger.getInMappings() );
-                            signalManager.addEventListener( type,
-                                                            listener );
-                            ((RuleFlowProcess) process).getMetaData().put("StartProcessEventType", type);
-                            ((RuleFlowProcess) process).getMetaData().put("StartProcessEventListener", listener);
                         }
                     }
-                }
-            }
+        	    }
+        	}
         }
     }
     

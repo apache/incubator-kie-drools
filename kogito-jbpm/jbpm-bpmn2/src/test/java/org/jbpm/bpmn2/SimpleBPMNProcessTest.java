@@ -50,6 +50,7 @@ import org.drools.event.rule.DebugAgendaEventListener;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
@@ -954,9 +955,11 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
+        assertEquals(0, myListOut.size());
         ProcessInstance processInstance = ksession.startProcess(
                 "MultiInstanceLoopCharacteristicsProcessWithOutput", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals(2, myListOut.size());
     }
 
 	public void testMultiInstanceLoopCharacteristicsTaskWithOutput() throws Exception {
@@ -971,9 +974,11 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         myList.add("Second Item");
         params.put("list", myList);
         params.put("listOut", myListOut);
+        assertEquals(0, myListOut.size());
         ProcessInstance processInstance = ksession.startProcess(
                 "MultiInstanceLoopCharacteristicsTask", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+        assertEquals(2, myListOut.size());
     }
 	
 	public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
@@ -2422,6 +2427,123 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
         assertNodeTriggered(processInstance.getId(), "StartProcess", "User Task", "User Task2",
                 "End1");
+	}
+	
+	public void testMultipleStartEventsRegularStart() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("MultipleStartEvents");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession, true);
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+    
+    public void testMultipleStartEventsStartOnTimer() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleStartEventProcess.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        Thread.sleep(500);
+        assertEquals(0, list.size());
+        for (int i = 0; i < 5; i++) {
+            ksession.fireAllRules();
+            Thread.sleep(500);
+        }
+        assertEquals(5, list.size());
+    }
+    
+    public void testMultipleEventBasedStartEventsSignalStart() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        
+        ksession.signalEvent("startSignal", null);
+        
+        assertEquals(1, list.size());
+        WorkItem workItem = workItemHandler.getWorkItem();
+        long processInstanceId = ((WorkItemImpl) workItem).getProcessInstanceId();
+        
+        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        ksession = restoreSession(ksession, true);
+       
+        assertNotNull(workItem);
+        assertEquals("john", workItem.getParameter("ActorId"));
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+    
+    public void testMultipleEventBasedStartEventsStartOnTimer() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleEventBasedStartEventProcess.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        Thread.sleep(500);
+        assertEquals(0, list.size());
+        for (int i = 0; i < 5; i++) {
+            ksession.fireAllRules();
+            Thread.sleep(500);
+        }
+        assertEquals(5, list.size());
+    }
+    
+    public void testMultipleInOutgoingSequenceFlows() throws Exception {
+    	System.setProperty("jbpm.enable.multi.con", "true");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        
+        final List<Long> list = new ArrayList<Long>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                list.add(event.getProcessInstance().getId());
+            }
+        });
+        
+        assertEquals(0, list.size());
+        
+        ksession.fireAllRules();
+        Thread.sleep(1500);
+         
+        assertEquals(1, list.size());
+        System.clearProperty("jbpm.enable.multi.con");
+    }
+    
+    public void testMultipleInOutgoingSequenceFlowsDisable() throws Exception {
+
+    	try {
+	        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultipleInOutgoingSequenceFlows.bpmn2");
+	        createKnowledgeSession(kbase);
+	        
+	        fail("Should fail as multiple outgoing and incoming connections are disabled by default");
+    	} catch (Exception e) {
+			assertEquals("This type of node cannot have more than one outgoing connection!", e.getMessage());
+		}
+
     }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {

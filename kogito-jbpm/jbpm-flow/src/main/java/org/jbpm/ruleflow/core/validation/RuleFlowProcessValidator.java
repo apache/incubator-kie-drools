@@ -486,7 +486,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
         for ( final Iterator<Node> it = processNodes.keySet().iterator(); it.hasNext(); ) {
             final Node node = it.next();
-            if (Boolean.FALSE.equals(processNodes.get(node))) {
+            if (Boolean.FALSE.equals(processNodes.get(node)) && !(node instanceof StartNode)) {
                 errors.add(new ProcessValidationErrorImpl(process,
                     "Node '" + node.getName() + "' [" + node.getId() + "] has no connection to the start node."));
             }

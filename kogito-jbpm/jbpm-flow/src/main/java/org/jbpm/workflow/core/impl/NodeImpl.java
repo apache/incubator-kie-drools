@@ -193,8 +193,12 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         if (list.size() == 1) {
         	return list.get(0);
         }
-        throw new IllegalArgumentException(
+        if (System.getProperty("jbpm.enable.multi.con") != null) { 
+        	return list.get(0);
+        } else {
+        	throw new IllegalArgumentException(
     		"Trying to retrieve the from connection but multiple connections are present");
+        }
     }
 
     /** Helper method for nodes that have at most one default outgoing connection */
@@ -207,8 +211,12 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         if (list.size() == 1) {
         	return list.get(0);
         }
-        throw new IllegalArgumentException(
+        if (System.getProperty("jbpm.enable.multi.con") != null) { 
+        	return list.get(0);
+        } else {
+        	throw new IllegalArgumentException(
     		"Trying to retrieve the to connection but multiple connections are present");
+        }
     }
 
     /** Helper method for nodes that have multiple default incoming connections */
