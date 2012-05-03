@@ -49,7 +49,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private File benchmarkInstanceDirectory = null;
     private File outputSolutionFilesDirectory = null;
     private File statisticDirectory = null;
-    private List<ProblemStatisticType> problemStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
     private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
 
@@ -94,14 +93,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public void setStatisticDirectory(File statisticDirectory) {
         this.statisticDirectory = statisticDirectory;
-    }
-
-    public List<ProblemStatisticType> getProblemStatisticTypeList() {
-        return problemStatisticTypeList;
-    }
-
-    public void setProblemStatisticTypeList(List<ProblemStatisticType> problemStatisticTypeList) {
-        this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkRankingComparator() {
