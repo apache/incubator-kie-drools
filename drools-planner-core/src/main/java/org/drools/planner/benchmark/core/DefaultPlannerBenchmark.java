@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.statistic.StatisticManager;
+import org.drools.planner.benchmark.core.statistic.PlannerStatistic;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,6 +149,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
+
+    public String getName() {
+        return benchmarkInstanceDirectory.getName();
+    }
 
     public void benchmark() {
         benchmarkingStarted();
@@ -274,11 +278,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             solverBenchmark.benchmarkingEnded();
         }
         determineRanking();
-        StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
-                statisticDirectory, unifiedProblemBenchmarkList);
-        statisticManager.writeStatistics(solverBenchmarkList);
+        PlannerStatistic plannerStatistic = new PlannerStatistic(this);
+        plannerStatistic.writeStatistics(solverBenchmarkList);
         logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
-                winningSolverBenchmark.getName(), statisticManager.getHtmlOverviewFile().getAbsolutePath());
+                winningSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
         if (failureCount > 0) {
             throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ").",
                     firstFailureThrowable);

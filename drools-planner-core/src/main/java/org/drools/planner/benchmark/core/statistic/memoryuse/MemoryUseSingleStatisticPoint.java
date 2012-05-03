@@ -16,12 +16,12 @@
 
 package org.drools.planner.benchmark.core.statistic.memoryuse;
 
-public class MemoryUseStatisticPoint {
+public class MemoryUseSingleStatisticPoint {
 
     private final long timeMillisSpend;
     private final MemoryUseMeasurement memoryUseMeasurement;
 
-    public MemoryUseStatisticPoint(long timeMillisSpend, MemoryUseMeasurement memoryUseMeasurement) {
+    public MemoryUseSingleStatisticPoint(long timeMillisSpend, MemoryUseMeasurement memoryUseMeasurement) {
         this.timeMillisSpend = timeMillisSpend;
         this.memoryUseMeasurement = memoryUseMeasurement;
     }

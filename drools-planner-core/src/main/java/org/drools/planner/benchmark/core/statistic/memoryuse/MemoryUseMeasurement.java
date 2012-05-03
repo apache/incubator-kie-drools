@@ -38,4 +38,5 @@ public class MemoryUseMeasurement {
     public long getMaxMemory() {
         return maxMemory;
     }
+
 }

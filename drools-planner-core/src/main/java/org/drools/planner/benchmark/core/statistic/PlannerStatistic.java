@@ -28,6 +28,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
@@ -50,24 +51,21 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 
-public class StatisticManager {
+public class PlannerStatistic {
 
-    private final String benchmarkName;
+    private final DefaultPlannerBenchmark plannerBenchmark;
     private final File statisticDirectory;
     private final File htmlOverviewFile;
-    private final List<ProblemBenchmark> problemBenchmarkList;
 
-    public StatisticManager(String benchmarkName, File statisticDirectory,
-            List<ProblemBenchmark> problemBenchmarkList) {
-        this.benchmarkName = benchmarkName;
-        this.statisticDirectory = statisticDirectory;
+    public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
+        this.plannerBenchmark = plannerBenchmark;
+        this.statisticDirectory = plannerBenchmark.getStatisticDirectory();
         htmlOverviewFile = new File(statisticDirectory, "index.html");
-        this.problemBenchmarkList = problemBenchmarkList;
     }
 
     public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
         // 2 lines at 80 chars per line give a max of 160 per entry
-        StringBuilder htmlFragment = new StringBuilder(problemBenchmarkList.size() * 160);
+        StringBuilder htmlFragment = new StringBuilder(plannerBenchmark.getUnifiedProblemBenchmarkList().size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeWinningScoreDifferenceSummaryChart(solverBenchmarkList));
@@ -76,12 +74,11 @@ public class StatisticManager {
         htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
         htmlFragment.append("  <h1>Statistics</h1>\n");
-        for (ProblemBenchmark problemBenchmark : problemBenchmarkList) {
-            String problemBenchmarkName = problemBenchmark.getName();
-            htmlFragment.append("  <h2>").append(problemBenchmarkName).append("</h2>\n");
-            for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+            htmlFragment.append("  <h2>").append(problemBenchmark.getName()).append("</h2>\n");
+            for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
                 htmlFragment.append(
-                        statistic.writeStatistic(statisticDirectory, problemBenchmarkName));
+                        problemStatistic.writeStatistic(statisticDirectory, problemBenchmark));
             }
         }
         writeHtmlOverview(htmlFragment);
@@ -314,7 +311,7 @@ public class StatisticManager {
         htmlFragment.append("  <h2>Best score summary table</h2>\n");
         htmlFragment.append("  <table border=\"1\">\n");
         htmlFragment.append("    <tr><th>Solver</th>");
-        for (ProblemBenchmark problemBenchmark : problemBenchmarkList) {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             htmlFragment.append("<th>").append(problemBenchmark.getName()).append("</th>");
         }
         htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
@@ -323,7 +320,7 @@ public class StatisticManager {
             String backgroundColor = solverBenchmark.isRankingBest() ? "Yellow" : oddLine ? "White" : "LightGray";
             htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
                     .append(solverBenchmark.getName()).append("</th>");
-            for (ProblemBenchmark problemBenchmark : problemBenchmarkList) {
+            for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
                 boolean noSingleBenchmark = true;
                 for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                     if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
@@ -352,7 +349,7 @@ public class StatisticManager {
             writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
             writer.append("<html>\n");
             writer.append("<head>\n");
-            writer.append("  <title>Statistic ").append(benchmarkName).append("</title>\n");
+            writer.append("  <title>Statistic ").append(plannerBenchmark.getName()).append("</title>\n");
             writer.append("</head>\n");
             writer.append("<body>\n");
             writer.append(htmlFragment);

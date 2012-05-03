@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2012 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,30 +19,14 @@ package org.drools.planner.benchmark.core.statistic;
 import java.io.File;
 
 import org.drools.planner.benchmark.core.ProblemBenchmark;
+import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.core.Solver;
 
 /**
- * 1 statistic of {@link ProblemBenchmark}
+ * 1 statistic of {@link SingleBenchmark}
  */
-public interface ProblemStatistic {
+public interface SingleStatistic {
 
-    /**
-     * @return never null
-     */
-    ProblemStatisticType getProblemStatisticType();
-
-    /**
-     * This method is thread-safe.
-     * @param solver never null
-     * @return never null
-     */
-    SingleStatistic createSingleStatistic(Solver solver);
-
-    /**
-     * @param statisticDirectory never null
-     * @param problemBenchmark never null
-     * @return a htmFragment, never null
-     */
-    CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark);
+    void close();
 
 }

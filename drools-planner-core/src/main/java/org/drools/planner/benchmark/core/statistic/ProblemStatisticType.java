@@ -16,11 +16,11 @@
 
 package org.drools.planner.benchmark.core.statistic;
 
-import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreStatistic;
-import org.drools.planner.benchmark.core.statistic.calculatecount.CalculateCountStatistic;
-import org.drools.planner.benchmark.core.statistic.memoryuse.MemoryUseStatistic;
+import org.drools.planner.benchmark.core.statistic.bestscore.BestScoreProblemStatistic;
+import org.drools.planner.benchmark.core.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.drools.planner.benchmark.core.statistic.memoryuse.MemoryUseProblemStatistic;
 
-public enum ProblemStatisticType {
+public enum ProblemStatisticType implements StatisticType {
     BEST_SOLUTION_CHANGED,
     CALCULATE_COUNT_PER_SECOND,
     MEMORY_USE;
@@ -28,11 +28,11 @@ public enum ProblemStatisticType {
     public ProblemStatistic create() {
         switch (this) {
             case BEST_SOLUTION_CHANGED:
-                return new BestScoreStatistic();
+                return new BestScoreProblemStatistic();
             case CALCULATE_COUNT_PER_SECOND:
-                return new CalculateCountStatistic();
+                return new CalculateCountProblemStatistic();
             case MEMORY_USE:
-                return new MemoryUseStatistic();
+                return new MemoryUseProblemStatistic();
             default:
                 throw new IllegalStateException("The problemStatisticType (" + this + ") is not implemented");
         }

@@ -16,9 +16,14 @@
 
 package org.drools.planner.benchmark.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.drools.planner.benchmark.core.statistic.ProblemStatistic;
+import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
+import org.drools.planner.benchmark.core.statistic.SingleStatistic;
+import org.drools.planner.benchmark.core.statistic.StatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
@@ -33,6 +38,8 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     private final SolverBenchmark solverBenchmark;
     private final ProblemBenchmark problemBenchmark;
+
+    private Map<StatisticType, SingleStatistic> singleStatisticMap = new HashMap<StatisticType, SingleStatistic>();
 
     private int planningEntityCount = -1;
     private long problemScale = -1;
@@ -125,8 +132,9 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     public SingleBenchmark call() {
         // Intentionally create a fresh solver for every SingleBenchmark to reset Random, tabu lists, ...
         Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
-            statistic.addListener(solver, solverBenchmark.getName());
+        for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(solver);
+            singleStatisticMap.put(problemStatistic.getProblemStatisticType(), singleStatistic);
         }
 
         solver.setPlanningProblem(problemBenchmark.readPlanningProblem());
@@ -140,8 +148,9 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
         planningEntityCount = solutionDescriptor.getPlanningEntityCount(outputSolution);
         problemScale = solutionDescriptor.getProblemScale(outputSolution);
-        for (ProblemStatistic statistic : problemBenchmark.getProblemStatisticList()) {
-            statistic.removeListener(solver, solverBenchmark.getName());
+
+        for (SingleStatistic singleStatistic : singleStatisticMap.values()) {
+            singleStatistic.close();
         }
         problemBenchmark.writeSolution(this, outputSolution);
         return this;
@@ -162,6 +171,10 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
             timeMillisSpend = 1L;
         }
         return calculateCount * 1000L / timeMillisSpend;
+    }
+
+    public SingleStatistic getSingleStatistic(StatisticType statisticType) {
+        return singleStatisticMap.get(statisticType);
     }
 
 }
