@@ -35,6 +35,7 @@ import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -47,12 +48,18 @@ import org.jbpm.marshalling.impl.ProcessMarshallerImpl;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class TimerManager {
+    
+    private static final Logger logger = LoggerFactory.getLogger(TimerManager.class);
+    
     private long                     timerId    = 0;
 
     private InternalKnowledgeRuntime kruntime;
@@ -264,26 +271,37 @@ public class TimerManager {
         Job {
 
         public void execute(JobContext c) {
+            
             ProcessJobContext ctx = (ProcessJobContext) c;
 
             Long processInstanceId = ctx.getProcessInstanceId();
             InternalKnowledgeRuntime kruntime = ctx.getKnowledgeRuntime();
-
-            if ( processInstanceId == null ) {
-                throw new IllegalArgumentException( "Could not find process instance for timer " );
-            }
-
-            ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().<SessionClock>getSessionClock().getCurrentTime() ) );
-
-            ((InternalProcessRuntime) kruntime.getProcessRuntime())
-            	.getSignalManager().signalEvent( processInstanceId,
-                                                 "timerTriggered",
-                                                  ctx.getTimer() );
-            
-            TimerManager tm = ((InternalProcessRuntime)ctx.getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
-
-            if ( ctx.getTimer().getPeriod() == 0 ) {
-                tm.getTimerMap().remove( ctx.getTimer().getId() );
+            try {
+                if ( processInstanceId == null ) {
+                    throw new IllegalArgumentException( "Could not find process instance for timer " );
+                }
+    
+                ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().<SessionClock>getSessionClock().getCurrentTime() ) );
+    
+                ((InternalProcessRuntime) kruntime.getProcessRuntime())
+                	.getSignalManager().signalEvent( processInstanceId,
+                                                     "timerTriggered",
+                                                      ctx.getTimer() );
+                
+                TimerManager tm = ((InternalProcessRuntime)ctx.getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
+    
+                if ( ctx.getTimer().getPeriod() == 0 ) {
+                    tm.getTimerMap().remove( ctx.getTimer().getId() );
+                }
+            } catch (Throwable e) {
+                logger.error("Error when executing timer job", e);
+                WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) kruntime.getProcessInstance(processInstanceId);
+                processInstance.setState(ProcessInstance.STATE_ABORTED);
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else {
+                    throw new RuntimeException("Error when executing timer job", e);
+                }
             }
         }
 
