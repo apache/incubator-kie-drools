@@ -20,8 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.planner.config.solver.SolverConfig;
+import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 
+/**
+ * Represents 1 {@link Solver} configuration benchmarked on multiple problem instances (data sets).
+ */
 public class SolverBenchmark {
 
     private String name = null;
@@ -95,12 +99,12 @@ public class SolverBenchmark {
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (singleBenchmark.isFailure()) {
                 failureCount++;
-                continue;
-            }
-            if (totalScore == null) {
-                totalScore = singleBenchmark.getScore();
             } else {
-                totalScore = totalScore.add(singleBenchmark.getScore());
+                if (totalScore == null) {
+                    totalScore = singleBenchmark.getScore();
+                } else {
+                    totalScore = totalScore.add(singleBenchmark.getScore());
+                }
             }
         }
     }

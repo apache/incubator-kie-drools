@@ -26,7 +26,7 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * Represents one problem instance (a data set) benchmarked on multiple solvers.
+ * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
 public class ProblemBenchmark {
 
@@ -40,6 +40,7 @@ public class ProblemBenchmark {
 
     private List<SingleBenchmark> singleBenchmarkList = null;
 
+    private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;
 
     public String getName() {
@@ -143,14 +144,16 @@ public class ProblemBenchmark {
     }
 
     private void determineWinningSingleBenchmark() {
+        failureCount = 0;
         winningSingleBenchmark = null;
         for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
             if (singleBenchmark.isFailure()) {
-                continue;
-            }
-            if (winningSingleBenchmark == null
-                    || singleBenchmark.getScore().compareTo(winningSingleBenchmark.getScore()) > 0) {
-                winningSingleBenchmark = singleBenchmark;
+                failureCount++;
+            } else {
+                if (winningSingleBenchmark == null
+                        || singleBenchmark.getScore().compareTo(winningSingleBenchmark.getScore()) > 0) {
+                    winningSingleBenchmark = singleBenchmark;
+                }
             }
         }
     }

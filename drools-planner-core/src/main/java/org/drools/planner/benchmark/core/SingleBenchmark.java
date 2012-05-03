@@ -26,6 +26,9 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
+/**
+ * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
+ */
 public class SingleBenchmark implements Callable<SingleBenchmark> {
 
     private SolverBenchmark solverBenchmark = null;

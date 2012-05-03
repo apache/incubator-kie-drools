@@ -36,11 +36,14 @@ import java.util.concurrent.Future;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
-import org.drools.planner.benchmark.core.statistic.ProblemStatisticType;
 import org.drools.planner.benchmark.core.statistic.StatisticManager;
+import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Represents the benchmarks on multiple {@link Solver} configurations on multiple problem instances (data sets).
+ */
 public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
@@ -59,9 +62,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
     private ExecutorService executorService;
-    private int failureCount;
-    private Throwable firstFailureThrowable = null;
-    private SolverBenchmark winningSolverBenchmark = null;
+    private Integer failureCount;
+    private Throwable firstFailureThrowable;
+    private SolverBenchmark winningSolverBenchmark;
 
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
