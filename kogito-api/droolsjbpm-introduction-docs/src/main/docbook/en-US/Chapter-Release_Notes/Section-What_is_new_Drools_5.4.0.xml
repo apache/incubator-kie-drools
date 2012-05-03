@@ -290,93 +290,6 @@ f.newPath("init")
     </section>
 
     <section>
-      <title>Fine Grained Property Change Listeners (Property
-        Specific)</title>
-
-      <para>Currently, when you in a RHS you call modify() on a given fact it
-        triggers a revaluation of all Patterns of the matching object type in
-        the knowledge base. As some have found this can be a problem, forcing
-        you to split up your objects into smaller 1 to 1 objects, to avoid
-        unwanted evaluation of objects like recursion or excessive evaluation
-        issues. This new feature allows a pattern to react (and then be
-        re-evaluated) only to modifications made on fields constrained or bound
-        inside the pattern itself.</para>
-
-      <para>The implementation is bit mask based, so very efficient. When the
-        engine executes a modify statement it uses a bit mask of fields being
-        changed, the pattern will only respond if it has an overlapping bit
-        mask. This does not work for update(), and is one of the reason why we
-        promote modify() as it encapsulates the field changes within the
-        statement.</para>
-
-      <para>feature is off by default in order to make the behavior of the
-        rule engine backward compatible with the former releases. If you want to
-        activate it on a specific bean you have to annotate it with
-        @propertySpecific. This annotation works both on drl type
-        declarations:</para>
-
-      <programlisting>declare Person
-    @propertySpecific
-    firstName : String
-    lastName : String
-end</programlisting>
-
-      <para>and on Java classes:</para>
-
-      <programlisting>@PropertySpecific
-public static class Person {
-    private String firstName;
-    private String lastName;
-}</programlisting>
-
-      <para>Given this simple type declaration, the most evident advantage of
-        this new Property Specific feature, will be, for instance, that the
-        following rule:</para>
-
-      <programlisting>rule "Modify last name" when
-        Person( firstName == "Mario" )
-        then
-        modify($person) { setLastName("Fusco") }
-        end</programlisting>
-
-      <para>will no longer end up in an infinite loop.</para>
-
-      <para>Moreover on Java classes you can also annotate any method to say
-        that its invocation actually modifies other properties. For instance in
-        the former Person class you could have a method like:</para>
-
-      <programlisting>@Modifies( { "firstName", "lastName" } )
-        public void setName(String name) {
-        String[] names = name.split("\\s");
-        this.firstName = names[0];
-        this.lastName = names[1];
-        }</programlisting>
-
-      <para>That means that if a rule has a RHS like the following:</para>
-
-      <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
-
-      <para>it will correctly recognize that both the firstName and lastName
-        have been modified and act accordingly. Of course the @Modifies
-        annotation on a method has no effect if the declaring class isn't
-        annotated with @PropertySpecific.</para>
-
-      <para>The third newly introduced annotation is on patterns and allows
-        you to modify the inferred set of properties "listened" by it. So, for
-        example, you can annotate a pattern in the LHS of a rule like:</para>
-
-      <programlisting>Person( firstName == $expectedFirstName ) @watch( lastName ) // --&gt; listens for changes on both firstName (inferred) and lastName
-        Person( firstName == $expectedFirstName ) @watch( * ) // --&gt; listens for all the properties of the Person bean
-        Person( firstName == $expectedFirstName ) @watch( lastName, !firstName ) // --&gt; listens for changes on lastName and explicitly exclude firstName
-        Person( firstName == $expectedFirstName ) @watch( *, !age ) // --&gt; listens for changes on all the properties except the age one</programlisting>
-
-      <para>The usage of @watch on a type not annotated as @PropertySpecific
-        will raise a compilation error. The same will happen if you mention an
-        unknown property name inside @watch or use the same name more than once
-        like for example in: @watch( lastName, !lastName )</para>
-    </section>
-
-    <section>
       <title>Accumulate syntax improvements</title>
 
       <para>Multi-function accumulate now supports inline constraints. The
@@ -507,9 +420,9 @@ if ( kbuilder.hasErrors() ) {
     </section>
 
     <section>
-      <title>Fine grained property change listeners</title>
+      <title>Fine grained property change listeners (Property Reactive)</title>
 
-      <para>In Drools when you invoke update() or modify() on a given object it will trigger a revaluation of all
+      <para>Currently when in a RHS you invoke update() or modify() on a given object it will trigger a revaluation of all
         patterns of the matching object type in the knowledge base. As some have experienced, this can be a problem that
         often can lead to unwanted and useless evaluations and in the worst cases to infinite recursions. The only
         workaround to avoid it was to split up your objects into smaller ones having a 1 to 1 relationship with the
@@ -517,7 +430,10 @@ if ( kbuilder.hasErrors() ) {
 
       <para>This new feature allows the pattern matching to only react to modification of properties actually
         constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
-        object splitting.</para>
+        object splitting. The implementation is bit mask based, so very efficient. When the engine executes a modify statement
+        it uses a bit mask of fields being changed, the pattern will only respond if it has an overlapping bit mask. This does
+        not work for update(), and is one of the reason why we promote modify() as it encapsulates the field changes within
+        the statement.</para>
 
       <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
         former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
