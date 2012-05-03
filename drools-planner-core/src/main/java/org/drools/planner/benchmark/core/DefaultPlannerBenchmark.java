@@ -153,49 +153,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
-        Map<SingleBenchmark, Future<SingleBenchmark>> futureMap
-                = new HashMap<SingleBenchmark, Future<SingleBenchmark>>();
-        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
-                Future<SingleBenchmark> future = executorService.submit(singleBenchmark);
-                futureMap.put(singleBenchmark, future);
-            }
-        }
-        // wait for the benchmarks to complete
-        for (Map.Entry<SingleBenchmark, Future<SingleBenchmark>> futureEntry : futureMap.entrySet()) {
-            SingleBenchmark singleBenchmark = futureEntry.getKey();
-            Future<SingleBenchmark> future = futureEntry.getValue();
-            Throwable failureThrowable = null;
-            try {
-                // Explicitly returning it in the Callable guarantees memory visibility
-                singleBenchmark = future.get();
-                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
-                if (singleBenchmark.getScore() == null) {
-                    throw new IllegalStateException("Score is null. TODO fix JBRULES-3462.");
-                }
-            } catch (InterruptedException e) {
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") was interrupted.", e);
-                failureThrowable = e;
-            } catch (ExecutionException e) {
-                Throwable cause = e.getCause();
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", cause);
-                failureThrowable = cause;
-            } catch (IllegalStateException e) {
-                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
-                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
-                failureThrowable = e;
-            }
-            if (failureThrowable == null) {
-                singleBenchmark.setSucceeded(true);
-            } else {
-                singleBenchmark.setSucceeded(false);
-                singleBenchmark.setFailureThrowable(failureThrowable);
-                failureCount++;
-                if (firstFailureThrowable == null) {
-                    firstFailureThrowable = failureThrowable;
-                }
-            }
-        }
+        runSingleBenchmarks();
         benchmarkingEnded();
     }
 
@@ -258,6 +216,52 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             logger.info("================================================================================");
             logger.info("Finished warmUp");
             logger.info("================================================================================");
+        }
+    }
+
+    protected void runSingleBenchmarks() {
+        Map<SingleBenchmark, Future<SingleBenchmark>> futureMap
+                = new HashMap<SingleBenchmark, Future<SingleBenchmark>>();
+        for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
+            for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
+                Future<SingleBenchmark> future = executorService.submit(singleBenchmark);
+                futureMap.put(singleBenchmark, future);
+            }
+        }
+        // wait for the benchmarks to complete
+        for (Map.Entry<SingleBenchmark, Future<SingleBenchmark>> futureEntry : futureMap.entrySet()) {
+            SingleBenchmark singleBenchmark = futureEntry.getKey();
+            Future<SingleBenchmark> future = futureEntry.getValue();
+            Throwable failureThrowable = null;
+            try {
+                // Explicitly returning it in the Callable guarantees memory visibility
+                singleBenchmark = future.get();
+                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                if (singleBenchmark.getScore() == null) {
+                    throw new IllegalStateException("Score is null. TODO fix JBRULES-3462.");
+                }
+            } catch (InterruptedException e) {
+                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") was interrupted.", e);
+                failureThrowable = e;
+            } catch (ExecutionException e) {
+                Throwable cause = e.getCause();
+                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", cause);
+                failureThrowable = cause;
+            } catch (IllegalStateException e) {
+                // TODO WORKAROUND Remove when JBRULES-3462 is fixed.
+                logger.error("The singleBenchmark (" + singleBenchmark.getName() + ") failed.", e);
+                failureThrowable = e;
+            }
+            if (failureThrowable == null) {
+                singleBenchmark.setSucceeded(true);
+            } else {
+                singleBenchmark.setSucceeded(false);
+                singleBenchmark.setFailureThrowable(failureThrowable);
+                failureCount++;
+                if (firstFailureThrowable == null) {
+                    firstFailureThrowable = failureThrowable;
+                }
+            }
         }
     }
 
