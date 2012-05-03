@@ -36,8 +36,7 @@ public class TaskLifeCycleMinaUserGroupCallbackTest extends TaskServiceLifeCycle
             System.out.print(".");
             Thread.sleep( 50 );
         }
-        client = new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        client = new AsyncMinaTaskClient();
         client.connect("127.0.0.1", 9123);
     }
 

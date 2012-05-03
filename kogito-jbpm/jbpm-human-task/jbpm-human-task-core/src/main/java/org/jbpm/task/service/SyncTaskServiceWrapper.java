@@ -47,12 +47,12 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler
 /**
  *
  */
-public class AsyncTaskServiceWrapper implements TaskService {
+public class SyncTaskServiceWrapper implements TaskService {
 
     private int timeout = 10000;
     private AsyncTaskService taskService;
 
-    public AsyncTaskServiceWrapper(AsyncTaskService taskService) {
+    public SyncTaskServiceWrapper(AsyncTaskService taskService) {
         this.taskService = taskService;
     }
 

@@ -17,10 +17,7 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
-import org.jbpm.task.service.TaskClient;
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 /**
  *
  * This class provides the default configurations for a HornetQ WorkItem Handler
@@ -38,8 +35,7 @@ public class AsyncHornetQHTWorkItemHandler extends AsyncGenericHTWorkItemHandler
     }
 
     private void init(){
-        setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
-                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+        setClient(new AsyncHornetQTaskClient());
         if(getPort() <= 0){
             setPort(5446);
         }

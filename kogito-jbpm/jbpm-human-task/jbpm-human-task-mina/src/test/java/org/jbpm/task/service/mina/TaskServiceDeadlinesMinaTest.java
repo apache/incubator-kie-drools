@@ -16,18 +16,28 @@
 //
 //package org.jbpm.task.service.mina;
 //
+//import java.util.Properties;
+//
 //import org.drools.SystemEventListenerFactory;
 //import org.jbpm.task.service.TaskClient;
-//import org.jbpm.task.service.mina.MinaTaskClientConnector;
-//import org.jbpm.task.service.mina.MinaTaskClientHandler;
-//import org.jbpm.task.service.mina.MinaTaskServer;
-//import org.jbpm.task.service.persistence.TaskServiceEscalationBaseTest;
+//import org.jbpm.task.service.TaskServiceDeadlinesBaseTest;
+//import org.subethamail.wiser.Wiser;
 //
-//public class TaskServiceEscalationMinaTest extends TaskServiceEscalationBaseTest {
+//public class TaskServiceDeadlinesMinaTest extends TaskServiceDeadlinesBaseTest {
+//
+//	private MinaTaskServer server;
 //
 //	@Override
-//	protected void setUp() throws Exception {
+//	protected void setUp() throws Exception {        
 //		super.setUp();
+//
+//		setConf(new Properties());
+//		getConf().setProperty("mail.smtp.host", "localhost");
+//		getConf().setProperty("mail.smtp.port", "2345");
+//		getConf().setProperty("from", "from@domain.com");
+//		getConf().setProperty("replyTo", "replyTo@domain.com");
+//		getConf().setProperty("defaultLanguage", "en-UK");
+//
 //		server = new MinaTaskServer(taskService);
 //		Thread thread = new Thread(server);
 //		thread.start();
@@ -39,12 +49,18 @@
 //
 //		client = new AsyncMinaTaskClient();
 //		client.connect("127.0.0.1", 9123);
+//
+//		setWiser(new Wiser());
+//		getWiser().setHostname(getConf().getProperty("mail.smtp.host"));
+//		getWiser().setPort(Integer.parseInt(getConf().getProperty("mail.smtp.port")));        
+//		getWiser().start();
 //	}
 //
 //	protected void tearDown() throws Exception {
 //		super.tearDown();
 //		client.disconnect();
 //		server.stop();
+//		getWiser().stop();
 //	}
 //
 //}

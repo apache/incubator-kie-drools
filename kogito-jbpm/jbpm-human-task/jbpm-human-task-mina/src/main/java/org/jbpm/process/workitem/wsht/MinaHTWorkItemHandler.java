@@ -17,11 +17,8 @@ package org.jbpm.process.workitem.wsht;
 
 import org.jbpm.task.utils.OnErrorAction;
 import org.drools.runtime.KnowledgeRuntime;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.drools.SystemEventListenerFactory;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
+import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 /**
  *
  * This class provides the default configurations for a Mina WorkItem Handler
@@ -39,8 +36,7 @@ public class MinaHTWorkItemHandler extends GenericHTWorkItemHandler{
     }
 
     private void init(){
-        setClient(new AsyncTaskServiceWrapper(new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())))));
+        setClient(new SyncTaskServiceWrapper(new AsyncMinaTaskClient()));
         if(getPort() <= 0){
             setPort(9123);
         }

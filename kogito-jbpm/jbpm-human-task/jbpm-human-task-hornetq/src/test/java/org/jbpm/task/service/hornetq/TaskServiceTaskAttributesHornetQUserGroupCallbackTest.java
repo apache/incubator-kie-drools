@@ -1,10 +1,5 @@
 package org.jbpm.task.service.hornetq;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
-import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.jbpm.task.service.TaskServiceTaskAttributesBaseUserGroupCallbackTest;
 
 public class TaskServiceTaskAttributesHornetQUserGroupCallbackTest extends TaskServiceTaskAttributesBaseUserGroupCallbackTest {
@@ -20,8 +15,7 @@ public class TaskServiceTaskAttributesHornetQUserGroupCallbackTest extends TaskS
             Thread.sleep( 50 );
         }
 
-        client = new TaskClient(new HornetQTaskClientConnector("client 1",
-                                new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        client = new AsyncHornetQTaskClient();
         client.connect("127.0.0.1", 5446);
     }
 

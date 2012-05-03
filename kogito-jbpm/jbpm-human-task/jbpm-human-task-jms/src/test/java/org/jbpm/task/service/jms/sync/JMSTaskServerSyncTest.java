@@ -20,7 +20,7 @@ import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.User;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
@@ -91,7 +91,7 @@ public class JMSTaskServerSyncTest extends TestCase {
 		clientProperties.setProperty("JMSTaskClient.acknowledgeMode", "AUTO_ACKNOWLEDGE");
 		clientProperties.setProperty("JMSTaskClient.queueName", "tasksQueue");
 		clientProperties.setProperty("JMSTaskClient.responseQueueName", "tasksResponseQueue");
-		TaskService client = new AsyncTaskServiceWrapper(new TaskClient(
+		TaskService client = new SyncTaskServiceWrapper(new TaskClient(
 				new JMSTaskClientConnector(
 						"org.jbpm.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
 						new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),

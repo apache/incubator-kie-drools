@@ -19,7 +19,7 @@ package org.jbpm.task.service.test.async;
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
@@ -48,12 +48,12 @@ public class ClaimTaskTwiceAsyncTest extends ClaimTaskTwiceTest {
         TaskClient taskClient = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
         taskClient.connect();
         
-        TaskService client = new AsyncTaskServiceWrapper(taskClient);
+        TaskService client = new SyncTaskServiceWrapper(taskClient);
         return client;
     }
     
     protected void cleanupClient(TaskService client) throws Exception { 
-        ((AsyncTaskServiceWrapper) client).disconnect();
+        ((SyncTaskServiceWrapper) client).disconnect();
     }
     
     public void testMultipleClientsOneTask() throws Exception { 

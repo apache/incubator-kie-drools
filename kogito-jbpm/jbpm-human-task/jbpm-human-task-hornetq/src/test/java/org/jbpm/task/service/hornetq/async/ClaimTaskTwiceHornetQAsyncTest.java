@@ -16,14 +16,12 @@
 
 package org.jbpm.task.service.hornetq.async;
 
-import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.ClaimTaskTwiceTest;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
 /**
@@ -55,16 +53,15 @@ public class ClaimTaskTwiceHornetQAsyncTest extends ClaimTaskTwiceTest {
     }
 
     protected TaskService createClient(String clientName) { 
-        TaskClient taskClient = new TaskClient(new HornetQTaskClientConnector(clientName, new HornetQTaskClientHandler(
-                SystemEventListenerFactory.getSystemEventListener())));
+        TaskClient taskClient = new AsyncHornetQTaskClient();
         taskClient.connect("127.0.0.1", 5446);
         
-        TaskService client = new AsyncTaskServiceWrapper(taskClient);
+        TaskService client = new SyncTaskServiceWrapper(taskClient);
         return client;
     }
     
     protected void cleanupClient(TaskService client) throws Exception { 
-        ((AsyncTaskServiceWrapper) client).disconnect();
+        ((SyncTaskServiceWrapper) client).disconnect();
     }
     
 }

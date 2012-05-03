@@ -240,7 +240,8 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
     }
     
     private static Method getMethod(Object object, String methodName) { 
-        Method [] methods = object.getClass().getDeclaredMethods();
+        // Now the MinaTaskClient is inheriting the addTask method
+        Method [] methods = object.getClass().getMethods(); 
         Method methodFound = null;
         for( int i = 0; i < methods.length; ++i ) { 
             if( methodName.equals(methods[i].getName()) ) { 

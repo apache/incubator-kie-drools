@@ -17,9 +17,10 @@
 package org.jbpm.task.service.mina.sync;
 
 import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskServiceLifeCycleBaseSyncTest;
+import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
@@ -40,8 +41,7 @@ public class TaskServiceLifeCycleMinaSyncTest extends TaskServiceLifeCycleBaseSy
         	Thread.sleep( 50 );
         }
 
-        client = new AsyncTaskServiceWrapper(new TaskClient(new MinaTaskClientConnector("client 1",
-                                     new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+        client = new SyncTaskServiceWrapper(new AsyncMinaTaskClient());
         client.connect("127.0.0.1", 9123);
     }
 

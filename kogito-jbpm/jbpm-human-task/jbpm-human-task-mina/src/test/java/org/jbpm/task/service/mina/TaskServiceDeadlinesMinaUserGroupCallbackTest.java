@@ -21,12 +21,9 @@ import java.util.Properties;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServiceDeadlinesBaseUserGroupCallbackTest;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.jbpm.task.service.mina.MinaTaskServer;
 import org.subethamail.wiser.Wiser;
 
-public class TaskServiceDeadlinesMinaQUserGroupCallbackTest extends TaskServiceDeadlinesBaseUserGroupCallbackTest {
+public class TaskServiceDeadlinesMinaUserGroupCallbackTest extends TaskServiceDeadlinesBaseUserGroupCallbackTest {
 
     private MinaTaskServer server;
 
@@ -50,8 +47,7 @@ public class TaskServiceDeadlinesMinaQUserGroupCallbackTest extends TaskServiceD
             Thread.sleep( 50 );
         }
 
-        client = new TaskClient(new MinaTaskClientConnector("client 1",
-                                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        client = new AsyncMinaTaskClient();
         client.connect("127.0.0.1", 9123);
 
         setWiser(new Wiser());

@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseAsyncTest;
+import org.jbpm.task.service.mina.AsyncMinaTaskClient;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
@@ -49,8 +50,7 @@ public class TaskServiceDeadlinesMinaAsyncTest extends TaskServiceDeadlinesBaseA
             Thread.sleep(50);
         }
 
-        client = new TaskClient(new MinaTaskClientConnector("client 1",
-                new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+        client = new AsyncMinaTaskClient();
         client.connect("127.0.0.1", 9123);
 
         setWiser(new Wiser());

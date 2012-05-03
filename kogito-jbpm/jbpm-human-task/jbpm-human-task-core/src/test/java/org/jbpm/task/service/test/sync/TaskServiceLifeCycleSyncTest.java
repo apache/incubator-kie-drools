@@ -18,7 +18,7 @@ package org.jbpm.task.service.test.sync;
 
 import static org.jbpm.task.service.test.impl.TestServerUtil.*;
 
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.TaskServiceLifeCycleBaseSyncTest;
 import org.jbpm.task.service.test.impl.TestTaskServer;
@@ -32,7 +32,7 @@ public class TaskServiceLifeCycleSyncTest extends TaskServiceLifeCycleBaseSyncTe
         server = startServer(taskService);
 
         TaskClient taskClient = new TaskClient(createTestTaskClientConnector("client 1", (TestTaskServer) server));
-        client = new AsyncTaskServiceWrapper(taskClient);
+        client = new SyncTaskServiceWrapper(taskClient);
         client.connect();
 	}
 

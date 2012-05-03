@@ -17,12 +17,12 @@
 package org.jbpm.task.service;
 
 import org.jbpm.task.BaseTest;
-//import org.jbpm.task.service.hornetq.HornetQTaskServer;
+
 import org.jbpm.task.service.mina.MinaTaskServer;
 
-public class TaskServerTest extends BaseTest {
+public class MinaTaskServerTest extends BaseTest {
 
-	//private HornetQTaskServer hornetQServer;
+
 	private MinaTaskServer minaTaskServer;
 
 	@Override
@@ -30,13 +30,7 @@ public class TaskServerTest extends BaseTest {
 		super.setUp();
 	}
 	
-//	public void testHorneQTaskServer() throws Exception {
-//		hornetQServer = new HornetQTaskServer(taskService, 10101);
-//		Thread t = new Thread(hornetQServer);
-//		t.start();
-//		Thread.sleep(5000);
-//		hornetQServer.stop();
-//	}
+
 	
 	public void testMinaTaskServer() throws Exception {
 		minaTaskServer = new MinaTaskServer(taskService);

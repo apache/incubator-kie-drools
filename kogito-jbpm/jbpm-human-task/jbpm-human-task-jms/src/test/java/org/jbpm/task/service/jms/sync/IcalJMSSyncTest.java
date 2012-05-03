@@ -26,7 +26,7 @@ import org.drools.SystemEventListenerFactory;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.easymock.EasyMock;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
@@ -80,7 +80,7 @@ public class IcalJMSSyncTest extends IcalBaseSyncTest {
 		clientProperties.setProperty("JMSTaskClient.queueName", "tasksQueue");
 		clientProperties.setProperty("JMSTaskClient.responseQueueName", "tasksResponseQueue");
         
-		client = new AsyncTaskServiceWrapper(new TaskClient(new JMSTaskClientConnector("client 1",
+		client = new SyncTaskServiceWrapper(new TaskClient(new JMSTaskClientConnector("client 1",
 								new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
 								clientProperties, context)));
 		client.connect();

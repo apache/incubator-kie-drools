@@ -18,12 +18,9 @@ package org.jbpm.task.service.hornetq.sync;
 
 import java.util.Properties;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.AsyncTaskServiceWrapper;
-import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.SyncTaskServiceWrapper;
 import org.jbpm.task.service.base.sync.TaskServiceDeadlinesBaseSyncTest;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 import org.subethamail.wiser.Wiser;
 
@@ -49,8 +46,7 @@ public class TaskServiceDeadlinesHornetQSyncTest extends TaskServiceDeadlinesBas
         	Thread.sleep( 50 );
         }
 
-		client = new AsyncTaskServiceWrapper(new TaskClient(new HornetQTaskClientConnector("client 1",
-								new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
+		client = new SyncTaskServiceWrapper(new AsyncHornetQTaskClient());
 		client.connect("127.0.0.1", 5446);
 
 		setWiser(new Wiser());

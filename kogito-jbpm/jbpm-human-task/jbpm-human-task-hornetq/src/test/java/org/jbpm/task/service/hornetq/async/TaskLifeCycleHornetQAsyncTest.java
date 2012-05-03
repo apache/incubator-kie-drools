@@ -16,11 +16,8 @@
 
 package org.jbpm.task.service.hornetq.async;
 
-import org.drools.SystemEventListenerFactory;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.base.async.TaskLifeCycleBaseAsyncTest;
-import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
-import org.jbpm.task.service.hornetq.HornetQTaskClientHandler;
+import org.jbpm.task.service.hornetq.AsyncHornetQTaskClient;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
 public class TaskLifeCycleHornetQAsyncTest extends TaskLifeCycleBaseAsyncTest {
@@ -36,8 +33,7 @@ public class TaskLifeCycleHornetQAsyncTest extends TaskLifeCycleBaseAsyncTest {
         	System.out.print(".");
         	Thread.sleep( 50 );
         }
-		client = new TaskClient(new HornetQTaskClientConnector("client 1",
-								new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+		client = new AsyncHornetQTaskClient();
 		client.connect("127.0.0.1", 5446);
 	}
 
