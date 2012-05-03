@@ -31,8 +31,8 @@ import org.drools.planner.core.solver.DefaultSolverScope;
  */
 public class SingleBenchmark implements Callable<SingleBenchmark> {
 
-    private SolverBenchmark solverBenchmark = null;
-    private ProblemBenchmark problemBenchmark = null;
+    private final SolverBenchmark solverBenchmark;
+    private final ProblemBenchmark problemBenchmark;
 
     private int planningEntityCount = -1;
     private long problemScale = -1;
@@ -45,36 +45,25 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
     private Boolean succeeded = null;
     private Throwable failureThrowable = null;
 
-    public SolverBenchmark getSolverBenchmark() {
-        return solverBenchmark;
+    public SingleBenchmark(SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
+        this.solverBenchmark = solverBenchmark;
+        this.problemBenchmark = problemBenchmark;
     }
 
-    public void setSolverBenchmark(SolverBenchmark solverBenchmark) {
-        this.solverBenchmark = solverBenchmark;
+    public SolverBenchmark getSolverBenchmark() {
+        return solverBenchmark;
     }
 
     public ProblemBenchmark getProblemBenchmark() {
         return problemBenchmark;
     }
 
-    public void setProblemBenchmark(ProblemBenchmark problemBenchmark) {
-        this.problemBenchmark = problemBenchmark;
-    }
-
     public int getPlanningEntityCount() {
         return planningEntityCount;
     }
 
-    public void setPlanningEntityCount(int planningEntityCount) {
-        this.planningEntityCount = planningEntityCount;
-    }
-
     public long getProblemScale() {
         return problemScale;
-    }
-
-    public void setProblemScale(long problemScale) {
-        this.problemScale = problemScale;
     }
 
     public Score getScore() {

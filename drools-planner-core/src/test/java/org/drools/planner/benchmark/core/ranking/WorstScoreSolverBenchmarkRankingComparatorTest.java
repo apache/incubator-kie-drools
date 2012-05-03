@@ -71,7 +71,7 @@ public class WorstScoreSolverBenchmarkRankingComparatorTest {
     }
 
     private void addPlannerBenchmarkResult(List<SingleBenchmark> singleBenchmarkList, int score) {
-        SingleBenchmark result = new SingleBenchmark();
+        SingleBenchmark result = new SingleBenchmark(null, null);
         result.setScore(DefaultSimpleScore.valueOf(score));
         singleBenchmarkList.add(result);
     }

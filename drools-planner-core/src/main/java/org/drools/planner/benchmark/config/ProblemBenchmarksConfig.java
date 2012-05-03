@@ -160,10 +160,8 @@ public class ProblemBenchmarksConfig {
 
     private void addSingleBenchmark(
             SolverBenchmark solverBenchmark, ProblemBenchmark problemBenchmark) {
-        SingleBenchmark singleBenchmark = new SingleBenchmark();
-        singleBenchmark.setSolverBenchmark(solverBenchmark);
+        SingleBenchmark singleBenchmark = new SingleBenchmark(solverBenchmark, problemBenchmark);
         solverBenchmark.getSingleBenchmarkList().add(singleBenchmark);
-        singleBenchmark.setProblemBenchmark(problemBenchmark);
         problemBenchmark.getSingleBenchmarkList().add(singleBenchmark);
     }
 
