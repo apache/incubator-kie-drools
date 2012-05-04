@@ -20,17 +20,22 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
 import javax.transaction.UserTransaction;
 
+import org.jbpm.marshalling.DebugJbpmUnmarshallingTest;
 import org.jbpm.persistence.processinstance.objects.UserTypePropertyHolder;
 import org.jbpm.persistence.session.objects.MyEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BlobUserTypeTest {
 
     private HashMap<String, Object> context;
     private static boolean runTests = true;
+    
+    private static Logger logger = LoggerFactory.getLogger(BlobUserTypeTest.class);
 
     @BeforeClass
     public static void beforeClass() {
@@ -62,22 +67,30 @@ public class BlobUserTypeTest {
             EntityManager em = openTx();
             em.persist(test);
             closeTx(em);
-            System.out.println("test: " + test.getId());
         }
 
         UserTypePropertyHolder holder = new UserTypePropertyHolder();
         String stringTest = "This is a test string.";
-        byte[] blob = stringTest.getBytes();
+        StringBuilder reallyBigString = new StringBuilder();
+        reallyBigString.append(stringTest);
+        while( reallyBigString.toString().getBytes().length < 10*(2^20) ) { 
+            reallyBigString.append(reallyBigString.toString());
+        }
+        
+        byte[] blob = reallyBigString.toString().getBytes();
         holder.setBlobInfo(blob);
         
         EntityManager em = openTx();
-
         em.persist(holder);
-
         closeTx(em);
 
         int id = holder.getId();
         assertTrue(id > 0);
+        
+        em = openTx();
+        UserTypePropertyHolder copy = em.find(UserTypePropertyHolder.class, holder.getId());
+        assertTrue(Arrays.equals(holder.getBlobInfo(), copy.getBlobInfo()));
+        closeTx(em);
     }
 
     private EntityManager openTx() throws Exception {

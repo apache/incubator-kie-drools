@@ -83,8 +83,20 @@ public class BlobUserType implements UserType {
      */
     public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
         if (value != null) {
-            Blob blob = new BlobImpl((byte[]) value);
-            st.setBlob(index, blob);
+            // Blob blob = new BlobImpl((byte[]) value);
+            // st.setBlob(index, blob);
+            /** 
+             * The two lines above will NOT work with Oracle, 
+             *  because of irregularities in Oracle Blob handling (in the Oracle jdbc driver). 
+             * See https://hibernate.onjira.com/browse/EJB-24 for a little bit more info. 
+             * However, we can get around it by using setBinaryStream(). 
+             * Thanks to http://www.herongyang.com/JDBC/MySQL-BLOB-setBinaryStream.html 
+             *  for inspiration.
+             */
+            byte [] valueByteArr = (byte []) value;
+            ByteArrayInputStream bais = new ByteArrayInputStream(valueByteArr);
+            st.setBinaryStream(index, bais, valueByteArr.length);
+            
         } else {
             st.setNull(index, sqlTypes()[0]);
         }
@@ -130,130 +142,6 @@ public class BlobUserType implements UserType {
      */
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return original;
-    }
-
-    private class BlobImpl implements Blob {
-
-        private TByteLinkedList blobInfo = new TByteLinkedList();
-
-        public BlobImpl() {
-            // Default constructor for ORM's, among other things
-        }
-
-        BlobImpl(byte[] bytes) {
-            blobInfo.add(bytes);
-        }
-
-        public long length() throws SQLException {
-            return this.blobInfo.size();
-        }
-
-        public byte[] getBytes(long pos, int length) throws SQLException {
-            byte[] result = new byte[length];
-            this.blobInfo.toArray(result, (int) pos - 1, length);
-            return result;
-        }
-
-        public int setBytes(long pos, byte[] bytes) throws SQLException {
-            if (pos + bytes.length > this.blobInfo.size()) {
-                if (pos > this.blobInfo.size()) {
-                    this.blobInfo.add(new byte[(int) pos - this.blobInfo.size()]);
-                }
-                this.blobInfo.add(new byte[(int) (pos + bytes.length) - blobInfo.size()]);
-            }
-            this.blobInfo.set((int) pos, bytes);
-            return bytes.length;
-        }
-
-        public InputStream getBinaryStream(long offset, long length) throws SQLException {
-            byte[] output = new byte[(int) length];
-            System.arraycopy(this.blobInfo.toArray(), (int) offset, output, 0, (int) length);
-            return new ByteArrayInputStream(output);
-        }
-
-        public InputStream getBinaryStream() throws SQLException {
-            return new ByteArrayInputStream(this.blobInfo.toArray());
-        }
-
-        public long position(byte[] pattern, long start) throws SQLException {
-            int pos = blobInfo.indexOf(pattern[0]);
-            while (pos != -1) {
-                int pat = 0;
-                while (blobInfo.get(pos + pat) == pattern[pat] && pat < pattern.length) {
-                    ++pat;
-                }
-                if (pat == pattern.length) {
-                    return pos;
-                } else {
-                    int lastPos = pos;
-                    pos = blobInfo.subList(pos, blobInfo.size()).indexOf(pattern[0]);
-                    if (pos > 0) {
-                        pos += lastPos;
-                    }
-                }
-            }
-            return pos;
-        }
-
-        public long position(Blob pattern, long start) throws SQLException {
-            byte[] patternBytes = toByteArray(pattern);
-            return position(patternBytes, start);
-        }
-
-        public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
-            if (blobInfo.size() < pos + len) {
-                int size = (int) (pos + len) - blobInfo.size();
-                blobInfo.add(new byte[size]);
-            }
-            blobInfo.set(offset, bytes, offset, len);
-            return len;
-        }
-
-        public OutputStream setBinaryStream(long pos) throws SQLException {
-            throw new UnsupportedOperationException("Unable to create binary stream for writing to blob");
-        }
-
-        public void truncate(long len) throws SQLException {
-            byte[] contents = blobInfo.toArray();
-            blobInfo.clear();
-            byte[] newContents = new byte[(int) len];
-            System.arraycopy(contents, 0, newContents, 0, (int) len);
-            blobInfo.add(newContents);
-        }
-
-        public void free() throws SQLException {
-            this.blobInfo.clear();
-            this.blobInfo = null;
-        }
-
-        private byte[] toByteArray(Blob blob) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                return toByteArrayImpl(blob, baos);
-            } catch (Exception e) {
-                // do nothing
-            }
-            return null;
-        }
-
-        private byte[] toByteArrayImpl(Blob fromImageBlob, ByteArrayOutputStream baos) throws SQLException, IOException {
-            byte buf[] = new byte[4096];
-            int dataSize;
-            InputStream is = fromImageBlob.getBinaryStream();
-
-            try {
-                while ((dataSize = is.read(buf)) != -1) {
-                    baos.write(buf, 0, dataSize);
-                }
-            } finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-
-            return baos.toByteArray();
-        }
-
     }
 
     /**:HIB4 REMOVE ME:
