@@ -217,7 +217,7 @@
       <itemizedlist>
         <listitem>
           <para>Download a release zip of Drools Planner from <link
-          xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. </para>
+          xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>.</para>
         </listitem>
 
         <listitem>
@@ -303,21 +303,22 @@ $ runExamples.bat</programlisting>
     <section>
       <title>Use it with maven, gradle, ivy, buildr or ANT</title>
 
-      <para>The Drools Planner jars are available on <link
-      xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> (and
-      <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools.planner~~~~">the JBoss
-      maven repository</link>).</para>
+      <para>The Drools Planner jars are available in <link
+      xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> (and also
+      in <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools.planner~~~~">the
+      JBoss maven repository</link>).</para>
 
       <para>If you use maven, just add a dependency to <literal>drools-planner-core</literal> in your project's
       <filename>pom.xml</filename>:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
-        &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
-        &lt;artifactId&gt;drools-planner-core&lt;/artifactId&gt;
-        &lt;version&gt;5.x&lt;/version&gt;
+      &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
+      &lt;artifactId&gt;drools-planner-core&lt;/artifactId&gt;
+      &lt;version&gt;...&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-      <para>This is similar for gradle, ivy and buildr.</para>
+      <para>This is similar for gradle, ivy and buildr. To identify the latest version, check <link
+      xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link>.</para>
 
       <para>If you're still using ant (without ivy), copy all the jars from the download zip's
       <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate

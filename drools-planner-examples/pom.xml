@@ -104,12 +104,6 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <!-- Benchmarker statistic graphs -->
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-    </dependency>
-
 
     <!-- Examples only dependencies. -->
     <!--

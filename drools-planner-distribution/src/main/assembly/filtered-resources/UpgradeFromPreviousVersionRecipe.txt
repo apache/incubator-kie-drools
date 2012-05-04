@@ -216,7 +216,7 @@ After in pom.xml:
         <artifactId>drools-planner-core</artifactId>
         ...
     </dependency>
-And resync your IDE (IntelliJ, Eclipse, Netbeans) from the pom.xml files.
+And resync your IDE (IntelliJ, Eclipse, NetBeans) from the pom.xml files.
 If you're still using ANT, replace drools-solver-core-?.jar with drools-planner-core-?.jar
 and adjust your ANT script and your IDE's classpath accordingly.
 
@@ -1929,3 +1929,32 @@ After in *BenchmarkConfig.xml:
 [MINOR] Benchmarker: PlannerBenchmarkResult has been renamed to SingleBenchmark
 This should not impact your code.
 
+[MAJOR] The benchmarker has moved out of the drools-planner-core jar into the a new drools-planner-benchmark jar.
+That new maven module drools-planner-benchmark now has a non-optional dependency on jfreechart,
+so it's no longer needed to explicitly depend on jfreechart in your pom.
+If you don't use the benchmarker, you don't need to change anything.
+Before in pom.xml:
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-core</artifactId>
+      ...
+    </dependency>
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jfreechart</artifactId>
+      ...
+    </dependency>
+After in pom.xml:
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-core</artifactId>
+      ...
+    </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-benchmark</artifactId>
+        ...
+    </dependency>
+And resync your IDE (IntelliJ, Eclipse, NetBeans) from the pom.xml files.
+If you're still using ANT, add the drools-planner-benchmark-?.jar
+and adjust your ANT script and your IDE's classpath accordingly.
