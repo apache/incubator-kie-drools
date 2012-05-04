@@ -89,6 +89,9 @@ public class ProblemBenchmarksConfig {
         List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
                 inputSolutionFileList.size());
         for (File inputSolutionFile : inputSolutionFileList) {
+            if (!inputSolutionFile.exists()) {
+                throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
+            }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
             ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(problemIO, inputSolutionFile);
             ProblemBenchmark problemBenchmark;
