@@ -353,8 +353,8 @@ public class PlannerStatistic {
                     htmlFragment.append("<td>").append(score.toString()).append("</td>");
                 }
             }
-            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore().toString())
-                    .append("</td><td>").append(solverBenchmark.getRanking()).append("</td>");
+            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore()).append("</td>");
+            htmlFragment.append("<td>").append(solverBenchmark.getRanking()).append("</td>");
             htmlFragment.append("</tr>\n");
             oddLine = !oddLine;
         }
