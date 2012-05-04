@@ -21,6 +21,28 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>javadoc-javadoc</id>
+            <phase>package</phase>
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <configuration>
+              <reportOutputDirectory>${project.build.directory}/aggregated-javadocs</reportOutputDirectory>
+              <includeDependencySources>true</includeDependencySources>
+              <dependencySourceIncludes>
+                <dependencySourceInclude>org.drools.planner:drools-planner-core</dependencySourceInclude>
+                <dependencySourceInclude>org.drools.planner:drools-planner-benchmark</dependencySourceInclude>
+                <!-- TODO apparently drools-planner-examples gets included too somehow? -->
+              </dependencySourceIncludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
@@ -72,17 +94,7 @@
       <classifier>sources</classifier>
     </dependency>
 
-    <!-- Javadocs and documentation -->
-    <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-core</artifactId>
-      <classifier>javadoc</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.drools.planner</groupId>
-      <artifactId>drools-planner-benchmark</artifactId>
-      <classifier>javadoc</classifier>
-    </dependency>
+    <!-- Documentation -->
     <dependency>
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-docs</artifactId>

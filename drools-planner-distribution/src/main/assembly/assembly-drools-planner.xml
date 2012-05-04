@@ -41,6 +41,11 @@
       <filtered>true</filtered>
       <outputDirectory/>
     </fileSet>
+    <!-- Javadocs -->
+    <fileSet>
+      <directory>${project.build.directory}/aggregated-javadocs/apidocs</directory>
+      <outputDirectory>javadocs</outputDirectory>
+    </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../drools-planner-examples/data</directory>
@@ -75,7 +80,6 @@
         <exclude>org.drools.planner:drools-planner-examples</exclude>
         <exclude>org.jdom:jdom</exclude>
         <exclude>org.drools.planner:drools-planner-docs</exclude>
-        <exclude>*:javadoc</exclude>
         <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
@@ -90,15 +94,6 @@
         <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>examples/binaries</outputDirectory>
-      <useStrictFiltering>true</useStrictFiltering>
-    </dependencySet>
-    <dependencySet>
-      <includes>
-        <include>org.drools.planner:drools-planner-core:*:javadoc</include>
-        <include>org.drools.planner:drools-planner-benchmark:*:javadoc</include>
-      </includes>
-      <outputDirectory>javadoc</outputDirectory>
-      <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <dependencySet>
