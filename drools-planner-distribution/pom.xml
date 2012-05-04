@@ -51,6 +51,15 @@
       <artifactId>drools-planner-core</artifactId>
       <classifier>sources</classifier>
     </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-benchmark</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-benchmark</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
 
     <!-- Examples -->
     <dependency>
@@ -67,6 +76,11 @@
     <dependency>
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-core</artifactId>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-benchmark</artifactId>
       <classifier>javadoc</classifier>
     </dependency>
     <dependency>

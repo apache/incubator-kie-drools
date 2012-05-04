@@ -95,6 +95,7 @@
     <dependencySet>
       <includes>
         <include>org.drools.planner:drools-planner-core:*:javadoc</include>
+        <include>org.drools.planner:drools-planner-benchmark:*:javadoc</include>
       </includes>
       <outputDirectory>javadoc</outputDirectory>
       <unpack>true</unpack>
