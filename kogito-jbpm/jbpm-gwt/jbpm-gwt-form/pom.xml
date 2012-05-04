@@ -15,10 +15,7 @@
   <name>jBPM GWT Console Forms</name>
 
   <dependencies>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-human-task</artifactId>
-    </dependency>
+    
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
