@@ -146,7 +146,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         assignments.setBusinessAdministrators(businessAdministrators);
         task.setPeopleAssignments(assignments);
         task.setTaskData(taskData);
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
         return task;
     }
 

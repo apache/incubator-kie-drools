@@ -254,7 +254,7 @@ public class GenericCommandBasedWSHumanTaskHandler implements WorkItemHandler {
                 logger.error(e.getMessage(), e);
             }
         }
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
 
         client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
 

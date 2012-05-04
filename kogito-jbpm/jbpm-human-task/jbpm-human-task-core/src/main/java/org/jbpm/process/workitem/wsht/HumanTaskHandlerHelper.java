@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.runtime.Environment;
 import org.drools.runtime.process.WorkItem;
 import org.drools.time.TimeUtils;
+import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.task.Deadline;
 import org.jbpm.task.Deadlines;
 import org.jbpm.task.EmailNotification;
@@ -31,7 +33,7 @@ public class HumanTaskHandlerHelper {
 	
 	private static final String[] KNOWN_KEYS = {"users", "groups", "from", "tousers", "togroups", "replyto", "subject","body"}; 
 	
-	public static Deadlines setDeadlines(WorkItem workItem, List<OrganizationalEntity> businessAdministrators) {
+	public static Deadlines setDeadlines(WorkItem workItem, List<OrganizationalEntity> businessAdministrators, Environment environment) {
 		String notStartedReassign = (String) workItem.getParameter("NotStartedReassign");
 		String notStartedNotify = (String) workItem.getParameter("NotStartedNotify");
 		String notCompletedReassign = (String) workItem.getParameter("NotCompletedReassign");
@@ -41,12 +43,12 @@ public class HumanTaskHandlerHelper {
 	    Deadlines deadlinesTotal = new Deadlines();
 	    
 	    List<Deadline> startDeadlines = new ArrayList<Deadline>();
-	    startDeadlines.addAll(parseDeadlineString(notStartedNotify, businessAdministrators));
-	    startDeadlines.addAll(parseDeadlineString(notStartedReassign, businessAdministrators));
+	    startDeadlines.addAll(parseDeadlineString(notStartedNotify, businessAdministrators, environment));
+	    startDeadlines.addAll(parseDeadlineString(notStartedReassign, businessAdministrators, environment));
 	    
 	    List<Deadline> endDeadlines = new ArrayList<Deadline>();
-	    endDeadlines.addAll(parseDeadlineString(notCompletedNotify, businessAdministrators));
-	    endDeadlines.addAll(parseDeadlineString(notCompletedReassign, businessAdministrators));
+	    endDeadlines.addAll(parseDeadlineString(notCompletedNotify, businessAdministrators, environment));
+	    endDeadlines.addAll(parseDeadlineString(notCompletedReassign, businessAdministrators, environment));
 	    
 	    
 	    if(!startDeadlines.isEmpty()) {
@@ -59,12 +61,16 @@ public class HumanTaskHandlerHelper {
 		return deadlinesTotal;
 	}
 	
-	protected static List<Deadline> parseDeadlineString(String deadlineInfo, List<OrganizationalEntity> businessAdministrators) {
+	protected static List<Deadline> parseDeadlineString(String deadlineInfo, List<OrganizationalEntity> businessAdministrators, Environment environment) {
 		if (deadlineInfo == null || deadlineInfo.length() == 0) {
 			return new ArrayList<Deadline>();
 		}
         List<Deadline> deadlines = new ArrayList<Deadline>();
         String[] allComponents = deadlineInfo.split(COMPONENT_SEPARATOR);
+        BusinessCalendar businessCalendar = null;
+        if (environment != null && environment.get("jbpm.business.calendar") != null){
+        	businessCalendar = (BusinessCalendar) environment.get("jbpm.business.calendar");
+        }
         
         for (String component : allComponents) {
 	        String[] mainComponents = component.split(ELEMENT_SEPARATOR);
@@ -78,8 +84,11 @@ public class HumanTaskHandlerHelper {
 	            
 	            for (String expiresAt : expireElements) {
 	                taskDeadline = new Deadline();
-	                
-	                taskDeadline.setDate(new Date(System.currentTimeMillis() + TimeUtils.parseTimeString(expiresAt)));
+	                if (businessCalendar != null) {
+	                	taskDeadline.setDate(businessCalendar.calculateBusinessTimeAsDate(expiresAt));
+	                } else {
+	                	taskDeadline.setDate(new Date(System.currentTimeMillis() + TimeUtils.parseTimeString(expiresAt)));
+	                }
 	                List<Escalation> escalations = new ArrayList<Escalation>();
 	                
 	                Escalation escalation = new Escalation();

@@ -22,10 +22,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
@@ -60,23 +62,40 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
             throw new IllegalArgumentException(
                 "A TimerNode only accepts default incoming connections!");
         }
-        TimerInstance timer = createTimerInstance();
+        InternalKnowledgeRuntime kruntime =  getProcessInstance().getKnowledgeRuntime();
+        TimerInstance timer = createTimerInstance(kruntime);
         if (getTimerInstances() == null) {
         	addTimerListener();
         }
-        ((InternalProcessRuntime) getProcessInstance().getKnowledgeRuntime().getProcessRuntime())
+        ((InternalProcessRuntime)kruntime.getProcessRuntime())
         	.getTimerManager().registerTimer(timer, (ProcessInstance) getProcessInstance());
         timerId = timer.getId();
     }
     
-    protected TimerInstance createTimerInstance() {
+    protected TimerInstance createTimerInstance(InternalKnowledgeRuntime kruntime) {
     	Timer timer = getTimerNode().getTimer(); 
     	TimerInstance timerInstance = new TimerInstance();
-    	timerInstance.setDelay(resolveValue(timer.getDelay()));
-    	if (timer.getPeriod() == null) {
-    		timerInstance.setPeriod(0);
+    	
+    	if (kruntime != null && kruntime.getEnvironment().get("jbpm.business.calendar") != null){
+        	BusinessCalendar businessCalendar = (BusinessCalendar) kruntime.getEnvironment().get("jbpm.business.calendar");
+        	
+        	String delay = resolveVariable(timer.getDelay());
+        	
+        	timerInstance.setDelay(businessCalendar.calculateBusinessTimeAsDuration(delay));
+        	
+        	if (timer.getPeriod() == null) {
+                timerInstance.setPeriod(0);
+            } else {
+                String period = resolveVariable(timer.getPeriod());
+                timerInstance.setPeriod(businessCalendar.calculateBusinessTimeAsDuration(period));
+            }
     	} else {
-    		timerInstance.setPeriod(resolveValue(timer.getPeriod()));
+    	    timerInstance.setDelay(resolveValue(timer.getDelay()));
+            if (timer.getPeriod() == null) {
+                timerInstance.setPeriod(0);
+            } else {
+                timerInstance.setPeriod(resolveValue(timer.getPeriod()));
+            }
     	}
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
@@ -87,37 +106,41 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     		return TimeUtils.parseTimeString(s);
     	} catch (RuntimeDroolsException e) {
     		// cannot parse delay, trying to interpret it
-    		Map<String, String> replacements = new HashMap<String, String>();
-    		Matcher matcher = PARAMETER_MATCHER.matcher(s);
-            while (matcher.find()) {
-            	String paramName = matcher.group(1);
-            	if (replacements.get(paramName) == null) {
-                	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
-                    if (variableScopeInstance != null) {
-                        Object variableValue = variableScopeInstance.getVariable(paramName);
-                    	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
-    	                replacements.put(paramName, variableValueString);
-                    } else {
-                    	try {
-                    		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
-    	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
-    	                	replacements.put(paramName, variableValueString);
-                    	} catch (Throwable t) {
-    	                    System.err.println("Could not find variable scope for variable " + paramName);
-    	                    System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
-    	                    System.err.println("Continuing without setting process id.");
-                    	}
-                    }
-            	}
-            }
-            for (Map.Entry<String, String> replacement: replacements.entrySet()) {
-            	s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
-            }
+    		s = resolveVariable(s);
             return TimeUtils.parseTimeString(s);
     	}
     }
 
+    private String resolveVariable(String s) {
+        Map<String, String> replacements = new HashMap<String, String>();
+        Matcher matcher = PARAMETER_MATCHER.matcher(s);
+        while (matcher.find()) {
+            String paramName = matcher.group(1);
+            if (replacements.get(paramName) == null) {
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                if (variableScopeInstance != null) {
+                    Object variableValue = variableScopeInstance.getVariable(paramName);
+                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                    replacements.put(paramName, variableValueString);
+                } else {
+                    try {
+                        Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                        String variableValueString = variableValue == null ? "" : variableValue.toString();
+                        replacements.put(paramName, variableValueString);
+                    } catch (Throwable t) {
+                        System.err.println("Could not find variable scope for variable " + paramName);
+                        System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
+                        System.err.println("Continuing without setting process id.");
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+        }
+        return s;
+    }
     public void signalEvent(String type, Object event) {
     	if ("timerTriggered".equals(type)) {
     		TimerInstance timer = (TimerInstance) event;

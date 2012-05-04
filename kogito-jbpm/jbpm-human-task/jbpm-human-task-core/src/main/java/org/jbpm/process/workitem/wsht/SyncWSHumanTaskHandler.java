@@ -261,7 +261,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         if (contentObject != null) {
             content = ContentMarshallerHelper.marshal(contentObject,  session.getEnvironment());
         }
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
         try {
         	client.addTask(task, content);
         	

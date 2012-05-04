@@ -245,7 +245,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
             content = ContentMarshallerHelper.marshal(contentObject, session.getEnvironment());
         }
 
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
 
         client.addTask(task, content, new TaskAddedHandler(manager, workItem.getId()));
 

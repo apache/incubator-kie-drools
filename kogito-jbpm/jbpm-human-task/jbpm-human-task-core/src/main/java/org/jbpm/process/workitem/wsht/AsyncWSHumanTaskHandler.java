@@ -246,7 +246,7 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
             content = ContentMarshallerHelper.marshal(contentObject,  session.getEnvironment());
         }
         
-        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators));
+        task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
 
         client.addTask(task, content, new TaskAddedHandler(workItem.getId()));
     }
