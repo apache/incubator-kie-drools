@@ -164,7 +164,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         ContentData content = null;
         Object contentObject = workItem.getParameter("Content");
         if (contentObject == null) {
-            contentObject = workItem.getParameters();
+            contentObject = new HashMap<String, Object>(workItem.getParameters());
         }
         if (contentObject != null) {
             content = ContentMarshallerHelper.marshal(contentObject, marshallerContext, session.getEnvironment());

@@ -119,6 +119,71 @@ public abstract class TaskServiceDeadlinesBaseSyncTest extends BaseTest {
         assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
     }
     
+    public void testDelayedEmailNotificationOnDeadlineContentSingleObject() throws Exception {
+        Map vars = new HashMap();
+        vars.put("users", users);
+        vars.put("groups", groups);
+        vars.put("now", new Date());
+
+        DefaultEscalatedDeadlineHandler notificationHandler = new DefaultEscalatedDeadlineHandler(getConf());
+        WorkItemManager manager = new DefaultWorkItemManager(null);
+        notificationHandler.setManager(manager);
+
+        MockUserInfo userInfo = new MockUserInfo();
+        userInfo.getEmails().put(users.get("tony"), "tony@domain.com");
+        userInfo.getEmails().put(users.get("darth"), "darth@domain.com");
+        userInfo.getLanguages().put(users.get("tony"), "en-UK");
+        userInfo.getLanguages().put(users.get("darth"), "en-UK");
+        notificationHandler.setUserInfo(userInfo);
+
+        taskService.setEscalatedDeadlineHandler(notificationHandler);
+        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotificationContentSingleObject));
+        Task task = (Task) eval(reader, vars);
+     
+        client.addTask(task, null);
+        long taskId = task.getId();
+
+        Content content = new Content();
+        content.setContent("'singleobject'".getBytes());
+       
+        client.setDocumentContent(taskId, content);
+        long contentId = content.getId();
+      
+        content = client.getContent(contentId);
+        assertEquals("'singleobject'", new String(content.getContent()));
+
+        // emails should not be set yet
+        assertEquals(0, getWiser().getMessages().size());
+        Thread.sleep(100);
+        // nor yet
+        assertEquals(0, getWiser().getMessages().size());
+        long time = 0;
+        while (getWiser().getMessages().size() != 2 && time < 15000) {
+            Thread.sleep(500);
+            time = 500;
+        }
+
+        // 1 email with two recipients should now exist
+        assertEquals(2, getWiser().getMessages().size());
+        List<String> list = new ArrayList<String>(2);
+        list.add(getWiser().getMessages().get(0).getEnvelopeReceiver());
+        list.add(getWiser().getMessages().get(1).getEnvelopeReceiver());
+
+        assertTrue(list.contains("tony@domain.com"));
+        assertTrue(list.contains("darth@domain.com"));
+
+        MimeMessage msg = ((WiserMessage) getWiser().getMessages().get(0)).getMimeMessage();
+        assertEquals("singleobject", msg.getContent());
+        assertEquals("singleobject", msg.getSubject());
+        assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
+        assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
+        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
+        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
+
+    }
+
+            
+    
     //TODO: this test is not working for the local implementation and needs to be fixed  
     public void FIXtestDelayedReassignmentOnDeadline() throws Exception {
         Map vars = new HashMap();

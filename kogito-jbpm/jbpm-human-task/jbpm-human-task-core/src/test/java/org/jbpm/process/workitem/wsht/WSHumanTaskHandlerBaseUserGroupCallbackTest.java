@@ -24,7 +24,12 @@ import java.util.Map;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.task.*;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.AsyncTaskService;
+import org.jbpm.task.BaseTestNoUserGroupSetup;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
@@ -32,6 +37,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
@@ -354,16 +360,12 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
         getClient().getContent(contentId, getContentResponseHandler);
-        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), 
-                                                            getContentResponseHandler.getContent().getContent(), 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext(),  
-                                                            ksession.getEnvironment());
-                //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
+        Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getContentResponseHandler.getContent().getContent(), new ContentMarshallerContext(), null);
+        //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
         assertEquals("MyObjectValue", ((MyObject)data.get("MyObject")).getValue());
-                assertEquals("10", data.get("Priority"));
-                assertEquals("MyObjectValue", ((MyObject)((Map<String, Object>)data.get("MyMap")).get("MyObjectInsideTheMap")).getValue());
-
+        assertEquals("10", data.get("Priority"));
+        assertEquals("MyObjectValue", ((MyObject)((Map<String, Object>)data.get("MyMap")).get("MyObjectInsideTheMap")).getValue());
+         
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
         getClient().start(task.getId(), "Darth Vader", operationResponseHandler);
@@ -372,10 +374,7 @@ public abstract class WSHumanTaskHandlerBaseUserGroupCallbackTest extends BaseTe
 
         System.out.println("Completing task " + task.getId());
         operationResponseHandler = new BlockingTaskOperationResponseHandler();
-        ContentData result = ContentMarshallerHelper.marshal("This is the result", 
-                                                            (getHandler() instanceof AsyncWSHumanTaskHandler)?((AsyncWSHumanTaskHandler)getHandler()).getMarshallerContext() : 
-                                                                                                             ((AsyncGenericHTWorkItemHandler)getHandler()).getMarshallerContext()
-                                                            , ksession.getEnvironment());
+        ContentData result = ContentMarshallerHelper.marshal("This is the result", new ContentMarshallerContext(),  null);
         getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
         operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         System.out.println("Completed task " + task.getId());

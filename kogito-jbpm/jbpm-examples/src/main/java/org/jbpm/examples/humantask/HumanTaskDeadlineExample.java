@@ -1,8 +1,5 @@
 package org.jbpm.examples.humantask;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,23 +16,22 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
-import org.jbpm.task.AccessType;
+import org.jbpm.process.workitem.wsht.AsyncMinaHTWorkItemHandler;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
 import org.jbpm.task.service.DefaultUserInfo;
 import org.jbpm.task.service.EscalatedDeadlineHandler;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.TaskService;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
-import org.jbpm.task.service.mina.MinaTaskServer;
 import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.mina.MinaTaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.subethamail.wiser.Wiser;
 
 public class HumanTaskDeadlineExample {
@@ -49,7 +45,9 @@ public class HumanTaskDeadlineExample {
 			KnowledgeBase kbase = readKnowledgeBase();
 			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newConsoleLogger(ksession);
-			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler(ksession));
+			AsyncMinaHTWorkItemHandler asyncMinaHTWorkItemHandler = new AsyncMinaHTWorkItemHandler(ksession);
+
+			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", asyncMinaHTWorkItemHandler);
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("userId", "krisv");
@@ -57,9 +55,7 @@ public class HumanTaskDeadlineExample {
 			ksession.startProcess("UserTask", params);
 
 			SystemEventListenerFactory.setSystemEventListener(new SystemEventListener());
-			TaskClient taskClient = new TaskClient(new MinaTaskClientConnector("MinaConnector",
-				new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-			taskClient.connect("127.0.0.1", 9123);
+			AsyncTaskService taskClient = asyncMinaHTWorkItemHandler.getClient();
 			Thread.sleep(1000);
 			
 			// sleep to allow notification to be sent for deadline start
@@ -71,7 +67,7 @@ public class HumanTaskDeadlineExample {
             
 			
 			// wait another few seconds to trigger complete deadline
-			Thread.sleep(4000);
+			Thread.sleep(6000);
 //            Assert.assertEquals(6, wiser.getMessages().size());
 //            Assert.assertEquals("admin@domain.com", wiser.getMessages().get(2).getEnvelopeReceiver());
 //            Assert.assertEquals("mike@domain.com", wiser.getMessages().get(3).getEnvelopeReceiver());
@@ -89,20 +85,7 @@ public class HumanTaskDeadlineExample {
 			Map<String, Object> results = new HashMap<String, Object>();
 			results.put("comment", "Agreed, existing laptop needs replacing");
 			results.put("outcome", "Accept");
-			ContentData contentData = new ContentData();
-			contentData.setAccessType(AccessType.Inline);
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(results);
-				out.close();
-				contentData = new ContentData();
-				contentData.setContent(bos.toByteArray());
-				contentData.setAccessType(AccessType.Inline);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			ContentData contentData = ContentMarshallerHelper.marshal(results, new ContentMarshallerContext(), ksession.getEnvironment());
 			taskClient.complete(task1.getId(), "mike", contentData, taskOperationHandler);
 			taskOperationHandler.waitTillDone(1000);
 			Thread.sleep(1000);

@@ -48,6 +48,8 @@ import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.User;
 import org.jbpm.task.UserInfo;
+import org.jbpm.task.utils.ContentMarshallerContext;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.mvel2.templates.TemplateRuntime;
 
 public class DefaultEscalatedDeadlineHandler
@@ -63,6 +65,8 @@ public class DefaultEscalatedDeadlineHandler
     EmailWorkItemHandler handler;
 
     WorkItemManager      manager;
+    
+    private ContentMarshallerContext marshallerContext = new ContentMarshallerContext();
     
     public DefaultEscalatedDeadlineHandler(Properties properties) {
         handler = new EmailWorkItemHandler();
@@ -189,15 +193,20 @@ public class DefaultEscalatedDeadlineHandler
         Map<String, Object> doc = null;
 
         if ( content != null ) {
-            ByteArrayInputStream bs = new ByteArrayInputStream(content.getContent());
+            Object objectFromBytes = null;
             try {
-                ObjectInputStream oIn = new ObjectInputStream(bs);
-                doc = (Map<String, Object>)oIn.readObject();
+                objectFromBytes = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), this.marshallerContext, null);
 
-                oIn.close();
-                bs.close();
             } catch (Exception e) {
-            	 doc = (Map<String, Object>) TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
+                objectFromBytes = TaskService.eval( new InputStreamReader(new ByteArrayInputStream(content.getContent())) );
+            }
+            if (objectFromBytes instanceof Map) {
+                doc = (Map)objectFromBytes;
+
+            } else {
+
+                doc = new HashMap<String, Object>();
+                doc.put("content", objectFromBytes);
             }
         } else {
             doc = Collections.emptyMap();
@@ -293,6 +302,15 @@ public class DefaultEscalatedDeadlineHandler
                      list );
         }
         list.add( user );
+    }
+    
+    public void setMarshallerContext(ContentMarshallerContext context) {
+       this.marshallerContext = context;
+    }
+
+       
+    public ContentMarshallerContext getMarshallerContext() {
+        return marshallerContext;
     }
 
 }

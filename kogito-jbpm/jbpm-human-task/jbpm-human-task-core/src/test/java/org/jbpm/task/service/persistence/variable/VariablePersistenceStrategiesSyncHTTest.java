@@ -15,12 +15,16 @@
  */
 package org.jbpm.task.service.persistence.variable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
@@ -33,16 +37,24 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.process.workitem.wsht.MyObject;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
-import org.jbpm.task.*;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.BaseTest;
+import org.jbpm.task.Status;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.DefaultEscalatedDeadlineHandler;
+import org.jbpm.task.service.DefaultUserInfo;
+import org.jbpm.task.service.EscalatedDeadlineHandler;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.utils.ContentMarshallerContext;
 import org.jbpm.task.utils.ContentMarshallerHelper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.subethamail.wiser.Wiser;
 
 
 public class VariablePersistenceStrategiesSyncHTTest extends BaseTest {
@@ -54,6 +66,7 @@ public class VariablePersistenceStrategiesSyncHTTest extends BaseTest {
     private WorkItemHandler handler;
     private EntityManagerFactory domainEmf;
     protected TestStatefulKnowledgeSession ksession = new TestStatefulKnowledgeSession();
+    private static Wiser wiser;
     
     @Override
     protected void setUp() throws Exception {
@@ -75,6 +88,9 @@ public class VariablePersistenceStrategiesSyncHTTest extends BaseTest {
     }
 
     protected void tearDown() throws Exception {
+        if (wiser != null) {
+            wiser.stop();
+        }
         ((SyncWSHumanTaskHandler) getHandler()).dispose();
         getClient().disconnect();
         super.tearDown();
@@ -275,6 +291,526 @@ public class VariablePersistenceStrategiesSyncHTTest extends BaseTest {
         assertEquals(myObject2.getValue(), ((MyObject)managerResults.get("myObject2")).getValue());
     }
 
+    
+    @Test
+    public void testTaskDataWithVPSJPAEntityWithMarshal() throws Exception {
+        ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext().setUseMarshal(true);
+        //JPA Entity
+        EntityManager em = domainEmf.createEntityManager();
+        em.getTransaction().begin();
+        MyEntity myEntity = new MyEntity("This is a JPA Entity");
+        em.persist(myEntity);
+        em.getTransaction().commit();
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", myEntity);
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        assertEquals(myEntity.getTest(), ((MyEntity)data).getTest());
+        getClient().start(task.getId(), "Darth Vader");
+        em.getTransaction().begin();
+        MyEntity myEntity2 = new MyEntity("This is a JPA Entity 2");
+        em.persist(myEntity2);
+        em.getTransaction().commit();
+
+        ContentData result = ContentMarshallerHelper.marshal(myEntity2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> results = manager.getResults();
+        assertNotNull(results);
+        assertEquals("Darth Vader", results.get("ActorId"));
+        assertEquals(myEntity2.getTest(), ((MyEntity)results.get("Result")).getTest());
+
+    }
+
+    
+
+    @Test
+    public void testTaskDataWithVPSSerializableObjectWithMarshal() throws Exception {
+        ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext().setUseMarshal(true);
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+       
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", myObject);
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        assertEquals(myObject.getValue(), ((MyObject)data).getValue());
+
+        getClient().start(task.getId(), "Darth Vader");
+
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+
+        ContentData result = ContentMarshallerHelper.marshal(myObject2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> results = manager.getResults();
+        assertNotNull(results);
+        assertEquals("Darth Vader", results.get("ActorId"));
+        assertEquals(myObject2.getValue(), ((MyObject)results.get("Result")).getValue());
+    }
+
+    @Test
+    public void testTaskDataWithVPSandMAPWithMarshal() throws Exception {
+        ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext().setUseMarshal(true);
+        //JPA Entity
+        EntityManager em = domainEmf.createEntityManager();
+        em.getTransaction().begin();
+        MyEntity myEntity = new MyEntity("This is a JPA Entity");
+        em.persist(myEntity);
+        em.getTransaction().commit();
+
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+
+        Map<String, Object> content = new HashMap<String, Object>();
+        content.put("myJPAEntity", myEntity);
+        content.put("mySerializableObject", myObject);
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", content);
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        Map<String, Object> dataMap = (Map<String, Object>)data;      
+
+        assertEquals(myEntity.getTest(), ((MyEntity)dataMap.get("myJPAEntity")).getTest());
+        assertEquals(myObject.getValue(), ((MyObject)dataMap.get("mySerializableObject")).getValue());
+
+        getClient().start(task.getId(), "Darth Vader");
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        em.getTransaction().begin();
+        MyEntity myEntity2 = new MyEntity("This is a JPA Entity 2");
+        em.persist(myEntity2);
+        em.getTransaction().commit();
+        results.put("myEntity2", myEntity2);
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+        results.put("myObject2", myObject2);
+
+        ContentData result = ContentMarshallerHelper.marshal(results, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> managerResults = manager.getResults();
+        assertNotNull(managerResults);
+        assertEquals("Darth Vader", managerResults.get("ActorId"));
+        assertEquals(myEntity2.getTest(), ((MyEntity)((Map)managerResults.get("Result")).get("myEntity2")).getTest());
+        assertEquals(myEntity2.getTest(), ((MyEntity)managerResults.get("myEntity2")).getTest());
+        assertEquals(myObject2.getValue(), ((MyObject)((Map)managerResults.get("Result")).get("myObject2")).getValue());
+        assertEquals(myObject2.getValue(), ((MyObject)managerResults.get("myObject2")).getValue());
+    }
+
+    
+
+    @Test
+    public void testTaskDataWithVPSSerializableObjectWithDeadline() throws Exception {
+          
+        taskService.setEscalatedDeadlineHandler(buildDeadlineHnadler(null));
+
+      
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+        
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", myObject);
+        workItem.setParameter("NotStartedNotify", "[tousers:john|subject:Test|body:${doc['content'].value}]@[2s]");
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+       
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        assertEquals(myObject.getValue(), ((MyObject)data).getValue());
+
+        Thread.sleep(5000);
+        assertEquals(2, wiser.getMessages().size());
+        assertEquals("admin@domain.com", wiser.getMessages().get(0).getEnvelopeReceiver());
+        assertEquals("john@domain.com", wiser.getMessages().get(1).getEnvelopeReceiver());
+        assertEquals("Test", wiser.getMessages().get(0).getMimeMessage().getSubject());
+        assertEquals(myObject.getValue(), wiser.getMessages().get(0).getMimeMessage().getContent());
+
+       
+        getClient().start(task.getId(), "Darth Vader");
+        
+      
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+        ContentData result = ContentMarshallerHelper.marshal(myObject2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> results = manager.getResults();
+        assertNotNull(results);
+        assertEquals("Darth Vader", results.get("ActorId"));
+        assertEquals(myObject2.getValue(), ((MyObject)results.get("Result")).getValue());
+        //clean up
+
+        taskService.setEscalatedDeadlineHandler(null);
+    }
+
+    
+
+    @Test
+    public void testTaskDataWithVPSSerializableObjectWithDeadlineWithMarshal() throws Exception {
+
+        ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext().setUseMarshal(true);
+        taskService.setEscalatedDeadlineHandler(buildDeadlineHnadler(((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext()));
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", myObject);
+        workItem.setParameter("NotStartedNotify", "[tousers:john|subject:Test|body:${doc['content'].value}]@[2s]");
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        assertEquals(myObject.getValue(), ((MyObject)data).getValue());
+
+        Thread.sleep(5000);
+        assertEquals(2, wiser.getMessages().size());
+        assertEquals("admin@domain.com", wiser.getMessages().get(0).getEnvelopeReceiver());
+        assertEquals("john@domain.com", wiser.getMessages().get(1).getEnvelopeReceiver());
+        assertEquals("Test", wiser.getMessages().get(0).getMimeMessage().getSubject());
+        assertEquals(myObject.getValue(), wiser.getMessages().get(0).getMimeMessage().getContent());
+
+        getClient().start(task.getId(), "Darth Vader");
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+
+        ContentData result = ContentMarshallerHelper.marshal(myObject2, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> results = manager.getResults();
+        assertNotNull(results);
+        assertEquals("Darth Vader", results.get("ActorId"));
+        assertEquals(myObject2.getValue(), ((MyObject)results.get("Result")).getValue());
+        //clean up
+        taskService.setEscalatedDeadlineHandler(null);
+    }
+
+    
+
+    @Test
+    public void testTaskDataWithVPSandMAPWithDeadline() throws Exception {
+        ContentMarshallerContext context = new ContentMarshallerContext();
+        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        
+        context.setStrategies(Arrays.asList(strategies));
+        taskService.setEscalatedDeadlineHandler(buildDeadlineHnadler(context));
+        //JPA Entity
+        EntityManager em = domainEmf.createEntityManager();
+        em.getTransaction().begin();
+        MyEntity myEntity = new MyEntity("This is a JPA Entity");
+        em.persist(myEntity);
+        em.getTransaction().commit();
+      
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+
+        Map<String, Object> content = new HashMap<String, Object>();
+        content.put("myJPAEntity", myEntity);
+        content.put("mySerializableObject", myObject);
+
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", content);
+        workItem.setParameter("NotStartedNotify", "[tousers:john|subject:${doc['myJPAEntity'].test}|body:${doc['mySerializableObject'].value}]@[2s]");
+        getHandler().executeWorkItem(workItem, manager);
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        Map<String, Object> dataMap = (Map<String, Object>)data;
+
+        assertEquals(myEntity.getTest(), ((MyEntity)dataMap.get("myJPAEntity")).getTest());
+        assertEquals(myObject.getValue(), ((MyObject)dataMap.get("mySerializableObject")).getValue());
+        
+
+        Thread.sleep(5000);
+        assertEquals(2, wiser.getMessages().size());
+        assertEquals("admin@domain.com", wiser.getMessages().get(0).getEnvelopeReceiver());
+        assertEquals("john@domain.com", wiser.getMessages().get(1).getEnvelopeReceiver());
+        assertEquals(myEntity.getTest(), wiser.getMessages().get(0).getMimeMessage().getSubject());
+        assertEquals(myObject.getValue(), wiser.getMessages().get(0).getMimeMessage().getContent());
+        
+        getClient().start(task.getId(), "Darth Vader");
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        em.getTransaction().begin();
+        MyEntity myEntity2 = new MyEntity("This is a JPA Entity 2");
+        em.persist(myEntity2);
+        em.getTransaction().commit();
+        results.put("myEntity2", myEntity2);
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+        results.put("myObject2", myObject2);
+        
+        ContentData result = ContentMarshallerHelper.marshal(results, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> managerResults = manager.getResults();
+        assertNotNull(managerResults);
+        assertEquals("Darth Vader", managerResults.get("ActorId"));
+        assertEquals(myEntity2.getTest(), ((MyEntity)((Map)managerResults.get("Result")).get("myEntity2")).getTest());
+        assertEquals(myEntity2.getTest(), ((MyEntity)managerResults.get("myEntity2")).getTest());
+        assertEquals(myObject2.getValue(), ((MyObject)((Map)managerResults.get("Result")).get("myObject2")).getValue());
+        assertEquals(myObject2.getValue(), ((MyObject)managerResults.get("myObject2")).getValue());
+
+    }
+
+    
+
+    @Test
+
+    public void testTaskDataWithVPSandMAPWithDeadlineWithMarshal() throws Exception {
+
+        ContentMarshallerContext context = ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext();
+        context.setUseMarshal(true);
+        ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+       
+        context.setStrategies(Arrays.asList(strategies));
+        taskService.setEscalatedDeadlineHandler(buildDeadlineHnadler(context));
+        //JPA Entity
+        EntityManager em = domainEmf.createEntityManager();
+        em.getTransaction().begin();
+        MyEntity myEntity = new MyEntity("This is a JPA Entity");
+        em.persist(myEntity);
+        em.getTransaction().commit();
+       
+        //Serializable Object
+        MyObject myObject = new MyObject("This is a Serializable Object");
+        
+
+        Map<String, Object> content = new HashMap<String, Object>();
+        content.put("myJPAEntity", myEntity);
+        content.put("mySerializableObject", myObject);
+       
+      
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("TaskName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Content", content);
+        workItem.setParameter("NotStartedNotify", "[tousers:john|subject:${doc['myJPAEntity'].test}|body:${doc['mySerializableObject'].value}]@[2s]");
+        getHandler().executeWorkItem(workItem, manager);
+
+
+        List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary taskSummary = tasks.get(0);
+        assertEquals("TaskName", taskSummary.getName());
+        assertEquals(10, taskSummary.getPriority());
+        assertEquals("Comment", taskSummary.getDescription());
+        assertEquals(Status.Reserved, taskSummary.getStatus());
+        assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+
+        Task task = getClient().getTask(taskSummary.getId());
+        assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
+        long contentId = task.getTaskData().getDocumentContentId();
+        assertTrue(contentId != -1);
+
+        Object data = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(),  getClient().getContent(contentId).getContent(), ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(),  ksession.getEnvironment());
+        Map<String, Object> dataMap = (Map<String, Object>)data;
+      
+        assertEquals(myEntity.getTest(), ((MyEntity)dataMap.get("myJPAEntity")).getTest());
+        assertEquals(myObject.getValue(), ((MyObject)dataMap.get("mySerializableObject")).getValue());
+       
+
+        Thread.sleep(5000);
+        assertEquals(2, wiser.getMessages().size());
+        assertEquals("admin@domain.com", wiser.getMessages().get(0).getEnvelopeReceiver());
+        assertEquals("john@domain.com", wiser.getMessages().get(1).getEnvelopeReceiver());
+        assertEquals(myEntity.getTest(), wiser.getMessages().get(0).getMimeMessage().getSubject());
+        assertEquals(myObject.getValue(), wiser.getMessages().get(0).getMimeMessage().getContent());
+        
+        getClient().start(task.getId(), "Darth Vader");
+       
+        Map<String, Object> results = new HashMap<String, Object>();
+        em.getTransaction().begin();
+        MyEntity myEntity2 = new MyEntity("This is a JPA Entity 2");
+        em.persist(myEntity2);
+        em.getTransaction().commit();
+        results.put("myEntity2", myEntity2);
+        MyObject myObject2 = new MyObject("This is a Serializable Object 2");
+        results.put("myObject2", myObject2);
+      
+        ContentData result = ContentMarshallerHelper.marshal(results, ((SyncWSHumanTaskHandler)getHandler()).getMarshallerContext(), ksession.getEnvironment());
+        getClient().complete(task.getId(), "Darth Vader", result);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+        Map<String, Object> managerResults = manager.getResults();
+        assertNotNull(managerResults);
+        assertEquals("Darth Vader", managerResults.get("ActorId"));
+        assertEquals(myEntity2.getTest(), ((MyEntity)((Map)managerResults.get("Result")).get("myEntity2")).getTest());
+        assertEquals(myEntity2.getTest(), ((MyEntity)managerResults.get("myEntity2")).getTest());
+        assertEquals(myObject2.getValue(), ((MyObject)((Map)managerResults.get("Result")).get("myObject2")).getValue());
+        assertEquals(myObject2.getValue(), ((MyObject)managerResults.get("myObject2")).getValue());
+
+    }
+    
+    protected static EscalatedDeadlineHandler buildDeadlineHnadler(ContentMarshallerContext context) {
+                 
+         wiser = new Wiser();
+         wiser.setHostname("localhost");
+         wiser.setPort(2345);        
+         wiser.start();
+
+         Properties emailProperties = new Properties();
+         emailProperties.setProperty("from", "jbpm@domain.com");
+         emailProperties.setProperty("replyTo", "jbpm@domain.com");
+         emailProperties.setProperty("mail.smtp.host", "localhost");
+         emailProperties.setProperty("mail.smtp.port", "2345");
+
+         Properties userInfoProperties = new Properties();
+         userInfoProperties.setProperty("john", "john@domain.com:en-UK:John");
+         userInfoProperties.setProperty("mike", "mike@domain.com:en-UK:Mike");
+
+         userInfoProperties.setProperty("Administrator", "admin@domain.com:en-UK:Admin");
+
+         DefaultEscalatedDeadlineHandler handler = new DefaultEscalatedDeadlineHandler(emailProperties);
+         handler.setUserInfo(new DefaultUserInfo(userInfoProperties));
+         handler.setMarshallerContext(context == null ? new ContentMarshallerContext() : context);
+
+         return handler;
+    }
 
     public void setHandler(WorkItemHandler handler) {
         this.handler = handler;

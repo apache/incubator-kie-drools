@@ -37,11 +37,12 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.utils.ContentMarshallerContext;
+import org.jbpm.task.utils.ContentMarshallerHelper;
 
 public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 
@@ -456,10 +457,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		assertTrue(contentId != -1);
 		BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
 		getClient().getContent(contentId, getContentResponseHandler);
-		ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
-		ObjectInputStream in = new ObjectInputStream(bis);
-		Map<String, Object> data = (Map<String, Object>) in.readObject();
-		in.close();
+		Map<String, Object> data = (Map<String, Object>) ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), getContentResponseHandler.getContent().getContent(), new ContentMarshallerContext(), null);
                 //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
 		assertEquals("MyObjectValue", ((MyObject)data.get("MyObject")).getValue());
                 assertEquals("10", data.get("Priority"));
@@ -470,14 +468,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 
 		operationResponseHandler = new BlockingTaskOperationResponseHandler();
-		ContentData result = new ContentData();
-		result.setAccessType(AccessType.Inline);
-		result.setType("java.lang.String");
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream out = new ObjectOutputStream(bos);
-		out.writeObject("This is the result");
-		out.close();
-		result.setContent(bos.toByteArray());
+		ContentData result = ContentMarshallerHelper.marshal("This is the result", new ContentMarshallerContext(),  null);
 		getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
 		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
 

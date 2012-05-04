@@ -15,12 +15,20 @@
  */
 package org.jbpm.task.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import org.drools.marshalling.ObjectMarshallingStrategy;
 
 
 public class ContentMarshallerContext {
+    
+    private boolean useMarshal = false;
+
+    private List<ObjectMarshallingStrategy> strategies = new ArrayList<ObjectMarshallingStrategy>();
+    
     public final Map<Class, ObjectMarshallingStrategy.Context> strategyContext;
 
     public ContentMarshallerContext() {
@@ -28,5 +36,28 @@ public class ContentMarshallerContext {
         
     }
     
-    
+    public ContentMarshallerContext(boolean useMarshal) {
+        strategyContext = new HashMap<Class, ObjectMarshallingStrategy.Context>();
+        this.setUseMarshal(useMarshal);
+    }
+
+    public void setUseMarshal(boolean useMarshal) {
+        this.useMarshal = useMarshal;
+    }
+
+    public boolean isUseMarshal() {
+        return useMarshal;
+    }
+
+    public void addStrategy(ObjectMarshallingStrategy strategy) {
+        this.strategies.add(strategy);
+    }
+  
+    public void setStrategies(List<ObjectMarshallingStrategy> strategies) {
+        this.strategies = strategies;
+    }
+
+    public List<ObjectMarshallingStrategy> getStrategies() {
+        return strategies;
+    }
 }

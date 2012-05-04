@@ -11,4 +11,5 @@ public class MvelFilePath {
     
     public static final String DeadlineWithReassignment = "/org/jbpm/task/service/DeadlineWithReassignment.mvel";
     public static final String DeadlineWithNotification = "/org/jbpm/task/service/DeadlineWithNotification.mvel";
+    public static final String DeadlineWithNotificationContentSingleObject = "/org/jbpm/task/service/DeadlineWithNotificationContentSingleObject.mvel";
 }

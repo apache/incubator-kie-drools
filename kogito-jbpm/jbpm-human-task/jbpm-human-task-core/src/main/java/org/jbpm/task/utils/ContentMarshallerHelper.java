@@ -15,12 +15,17 @@
  */
 package org.jbpm.task.utils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.Map;
+
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategy.Context;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
-
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -91,7 +96,17 @@ public class ContentMarshallerHelper {
             }else{
                 throw new IllegalStateException(" The Marshaller Context Needs to be Provided");
             }
-            byte[] marshalled = strat.marshal(context, null, o);
+            byte[] marshalled = null;
+            if (marshallerContext.isUseMarshal()) {
+              marshalled = strat.marshal(context, null, o);
+            } else {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(baos);
+                strat.write(out, o);
+                marshalled = baos.toByteArray();
+                out.close();
+                baos.close();
+            }
             contentWrap = new MarshalledContentWrapper(marshalled, strat.getClass().getCanonicalName(), o.getClass());
 
         } catch (IOException e) {
@@ -108,6 +123,9 @@ public class ContentMarshallerHelper {
         ObjectMarshallingStrategy[] strats = null;
         if (env != null && env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) != null) {
             strats = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+        } else if (!marshallerContext.getStrategies().isEmpty()){
+
+              strats = (ObjectMarshallingStrategy[]) marshallerContext.getStrategies().toArray();
         } else {
             strats = new ObjectMarshallingStrategy[1];
             strats[0] = new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT);
@@ -121,8 +139,19 @@ public class ContentMarshallerHelper {
         }
         Context context = marshallerContext.strategyContext.get(selectedStrat.getClass());
         try {
-            data = selectedStrat.unmarshal(context, null, content, ContentMarshallerHelper.class.getClassLoader());
+            if (marshallerContext.isUseMarshal()) {
+                data = selectedStrat.unmarshal(context, null, content, ContentMarshallerHelper.class.getClassLoader());
+            } else {
+                ByteArrayInputStream bs = new ByteArrayInputStream(content);
+                ObjectInputStream oIn = new ObjectInputStream(bs);
+                data = selectedStrat.read(oIn);
+                oIn.close();
+                bs.close();
+            }
             if (data instanceof Map) {
+                ByteArrayInputStream bs = null;
+                ObjectInputStream oIn = null;
+                Map localData = new HashMap();
                 for (Object key : ((Map) data).keySet()) {
                     MarshalledContentWrapper value = (MarshalledContentWrapper) ((Map) data).get(key);
                     Object unmarshalledObj = null;
@@ -133,9 +162,19 @@ public class ContentMarshallerHelper {
                         }
                     }
                     context = marshallerContext.strategyContext.get(selectedStrat.getClass());
-                    unmarshalledObj = selectedStrat.unmarshal(context, null, value.getContent(), ContentMarshallerHelper.class.getClassLoader());
-                    ((Map) data).put(key, unmarshalledObj);
+                    if (marshallerContext.isUseMarshal()) {
+                        unmarshalledObj = selectedStrat.unmarshal(context, null, value.getContent(), ContentMarshallerHelper.class.getClassLoader());
+                    } else {
+                        bs = new ByteArrayInputStream(value.getContent());
+                        oIn = new ObjectInputStream(bs);
+                        unmarshalledObj = selectedStrat.read(oIn);
+                        oIn.close();
+                        bs.close();
+                    }
+
+                    localData.put(key, unmarshalledObj);
                 }
+                data = localData;
             }
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
