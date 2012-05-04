@@ -101,10 +101,11 @@ public class TaskClientFactory {
             throw new IllegalArgumentException("Unknown TaskClient type was specified: " + strategy);
         }
         
-        boolean connected = client.connect(properties.getProperty("jbpm.console.task.service.host", DEFAULT_IP_ADDRESS),
-                Integer.parseInt(properties.getProperty("jbpm.console.task.service.port", Integer.toString(DEFAULT_PORT))));
+        String host = properties.getProperty("jbpm.console.task.service.host", DEFAULT_IP_ADDRESS);
+        String port = properties.getProperty("jbpm.console.task.service.port", Integer.toString(DEFAULT_PORT));
+        boolean connected = client.connect(host, Integer.parseInt(port));
         if (!connected) {
-            throw new IllegalArgumentException("Could not connect task client");
+            throw new IllegalArgumentException("Could not connect task client " + strategy + "(" + host + ":" + port + ")");
         }
         
         return client;
