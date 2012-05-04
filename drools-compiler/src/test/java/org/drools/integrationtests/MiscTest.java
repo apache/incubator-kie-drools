@@ -58,6 +58,7 @@ import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.Cheesery.Maturity;
+import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.Child;
 import org.drools.ClassObjectFilter;
 import org.drools.CommonTestMethodBase;
@@ -100,6 +101,7 @@ import org.drools.StatelessSession;
 import org.drools.StockTick;
 import org.drools.TestParam;
 import org.drools.Triangle;
+import org.drools.Triple;
 import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryConsoleLogger;
@@ -10948,5 +10950,44 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
+    }
+    
+    
+    @Test
+    public void testJBRULES3488() throws Exception {
+
+    	StringBuilder rule = new StringBuilder();
+    	rule.append("package net.sf.eulergui.accumulate_test;\n");
+    	rule.append("import org.drools.Triple;\n");
+
+    	rule.append("rule \"accumulate 2 times\"\n");
+    	rule.append("when\n");
+    	rule.append("  $LIST : java.util.List( )" +
+    			"  from accumulate( $Triple_1 : Triple( $CN : subject," +
+    			"    predicate == \"<http://deductions.sf.net/samples/princing.n3p.n3#number>\", $N : object )," +
+    			"      collectList( $N ) )\n" +
+    			"  $NUMBER : Number() from accumulate(" +
+    			"    $NUMBER_STRING_ : String() from $LIST , sum( Double.parseDouble( $NUMBER_STRING_)) )\n" );
+    	rule.append("then\n");
+    	rule.append("  System.out.println(\"ok\");\n");
+    	rule.append("end\n");
+    	
+		System.setProperty("drools.dialect.mvel.strict", "false");
+		final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+		conf.setAssertBehaviour( AssertBehaviour.EQUALITY );
+		RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
+		
+    	StatefulSession ss = ruleBase.newStatefulSession();
+    	// To reproduce, Need to have 3 object asserted (not less) :
+    	ss.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN1>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "200" ) );
+    	ss.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN2>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100" ) );
+    	ss.insert( new Triple( "<http://deductions.sf.net/samples/princing.n3p.n3#CN3>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100" ) );
+    	ss.insert( new Triple( "<CN4>", "<number>", "100" ) );
+
+    	final PackageBuilder builder = new PackageBuilder();
+    	builder.addPackageFromDrl( new StringReader( rule.toString() ) );
+    	final Package pkg = builder.getPackage();
+    	ruleBase.addPackage( pkg );
+    	ss.fireAllRules();
     }
 }
