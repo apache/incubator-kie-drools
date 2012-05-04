@@ -35,7 +35,6 @@ public class DescriptorUtils {
     }
 
     public static void executeSetter(PropertyDescriptor propertyDescriptor, Object bean, Object value) {
-        // TODO generated
         try {
             propertyDescriptor.getWriteMethod().invoke(bean, value);
         } catch (IllegalAccessException e) {

@@ -109,7 +109,7 @@ public class GenericReverseChainedChangePartMove implements Move {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        return entitiesSubChain;  // TODO generated
+        return entitiesSubChain;
     }
 
     public Collection<? extends Object> getPlanningValues() {
