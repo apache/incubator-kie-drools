@@ -32,6 +32,7 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
+import org.drools.planner.benchmark.core.statistic.twitterbootstrap.TwitterBootstrapUtils;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
@@ -64,6 +65,7 @@ public class PlannerStatistic {
     }
 
     public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
+        TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(plannerBenchmark.getUnifiedProblemBenchmarkList().size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");

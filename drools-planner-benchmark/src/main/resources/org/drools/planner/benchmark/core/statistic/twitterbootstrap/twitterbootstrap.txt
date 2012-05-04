@@ -1,0 +1,9 @@
+Twitter bootstrap
+=================
+
+The twitter bootstrap library is included in drools-planner-benchmark,
+TODO: Remove inclusion as soon as it's available as a dependency on maven central.
+
+Version: 2.0.3
+Downloaded from: http://twitter.github.com/bootstrap/
+License: Apache License v2.0 (just like Drools Planner)
