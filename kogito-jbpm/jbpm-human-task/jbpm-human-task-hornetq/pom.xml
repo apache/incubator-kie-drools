@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-core</artifactId>
-            <version>5.3.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.hornetq</groupId>
@@ -26,14 +25,13 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-human-task-core</artifactId>
-            <version>5.3.0-SNAPSHOT</version>
             <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.2.0.Final</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
