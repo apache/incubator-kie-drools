@@ -91,12 +91,12 @@ public class ProblemBenchmark {
         this.singleBenchmarkList = singleBenchmarkList;
     }
 
-    public SingleBenchmark getWinningSingleBenchmark() {
-        return winningSingleBenchmark;
+    public Integer getFailureCount() {
+        return failureCount;
     }
 
-    public void setWinningSingleBenchmark(SingleBenchmark winningSingleBenchmark) {
-        this.winningSingleBenchmark = winningSingleBenchmark;
+    public SingleBenchmark getWinningSingleBenchmark() {
+        return winningSingleBenchmark;
     }
 
     // ************************************************************************
@@ -165,6 +165,14 @@ public class ProblemBenchmark {
             }
             singleBenchmark.setWinningScoreDifference(singleBenchmark.getScore().subtract(winningSingleBenchmark.getScore()));
         }
+    }
+
+    public boolean hasFailure() {
+        return failureCount > 0;
+    }
+
+    public boolean hasAnySuccess() {
+        return singleBenchmarkList.size() - failureCount > 0;
     }
 
     @Override

@@ -280,10 +280,14 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         determineRanking();
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
         plannerStatistic.writeStatistics(solverBenchmarkList);
-        logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
-                winningSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
-        if (failureCount > 0) {
-            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ").",
+        if (failureCount == 0) {
+            logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
+                    winningSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
+        } else {
+            logger.info("Benchmarking failed: failureCount ({}), statistic html overview ({}).",
+                    failureCount, plannerStatistic.getHtmlOverviewFile().getAbsolutePath());
+            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
+                    " The first exception is chained.",
                     firstFailureThrowable);
         }
     }

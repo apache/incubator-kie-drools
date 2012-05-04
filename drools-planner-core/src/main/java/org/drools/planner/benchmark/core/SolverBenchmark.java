@@ -72,6 +72,14 @@ public class SolverBenchmark {
         this.singleBenchmarkList = singleBenchmarkList;
     }
 
+    public Integer getFailureCount() {
+        return failureCount;
+    }
+
+    public Score getTotalScore() {
+        return totalScore;
+    }
+
     public Integer getRanking() {
         return ranking;
     }
@@ -111,10 +119,6 @@ public class SolverBenchmark {
 
     public boolean isRankingBest() {
         return ranking == 0;
-    }
-
-    public Score getTotalScore() {
-        return totalScore;
     }
 
     public Score getAverageScore() {
