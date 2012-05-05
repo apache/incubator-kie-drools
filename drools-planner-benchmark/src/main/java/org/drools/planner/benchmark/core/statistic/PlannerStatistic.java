@@ -327,17 +327,15 @@ public class PlannerStatistic {
     private CharSequence writeBestScoreSummaryTable(List<SolverBenchmark> solverBenchmarkList) {
         StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
         htmlFragment.append("  <h2>Best score summary table</h2>\n");
-        htmlFragment.append("  <table border=\"1\">\n");
+        htmlFragment.append("  <table class=\"table table-striped table-bordered\">\n");
         htmlFragment.append("    <tr><th>Solver</th>");
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             htmlFragment.append("<th>").append(problemBenchmark.getName()).append("</th>");
         }
         htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
-        boolean oddLine = true;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            String backgroundColor = solverBenchmark.isRankingBest() ? "Yellow" : oddLine ? "White" : "LightGray";
-            htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
-                    .append(solverBenchmark.getName()).append("</th>");
+            htmlFragment.append("    <tr>");
+            htmlFragment.append("<th>").append(solverBenchmark.getName()).append("</th>");
             for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
                 SingleBenchmark singleBenchmark = null;
                 for (SingleBenchmark possibleSingleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -349,16 +347,22 @@ public class PlannerStatistic {
                 if (singleBenchmark == null) {
                     htmlFragment.append("<td/>");
                 } else if (!singleBenchmark.isSuccess()) {
-                    htmlFragment.append("<td>failed</td>");
+                    htmlFragment.append("<td><span class=\"label warning\">Failed</span></td>");
                 } else {
                     Score score = singleBenchmark.getScore();
                     htmlFragment.append("<td>").append(score.toString()).append("</td>");
                 }
             }
             htmlFragment.append("<td>").append(solverBenchmark.getAverageScore()).append("</td>");
-            htmlFragment.append("<td>").append(solverBenchmark.getRanking()).append("</td>");
+            Integer ranking = solverBenchmark.getRanking();
+            if (ranking == null) {
+                htmlFragment.append("<td/>");
+            } else if (solverBenchmark.isRankingBest()) {
+                htmlFragment.append("<td><span class=\"label label-success\">").append(ranking).append("</span></td>");
+            } else {
+                htmlFragment.append("<td><span class=\"label\">").append(ranking).append("</span></td>");
+            }
             htmlFragment.append("</tr>\n");
-            oddLine = !oddLine;
         }
         htmlFragment.append("  </table>\n");
         return htmlFragment.toString();
@@ -368,9 +372,17 @@ public class PlannerStatistic {
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
-            writer.append("<html>\n");
+            writer.append("<!DOCTYPE html>\n");
+            writer.append("<html lang=\"en\">\n");
             writer.append("<head>\n");
             writer.append("  <title>Statistic ").append(plannerBenchmark.getName()).append("</title>\n");
+            writer.append("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+            writer.append("  <link href=\"css/bootstrap.css\" rel=\"stylesheet\">\n");
+            writer.append("  <link href=\"css/bootstrap-responsive.css\" rel=\"stylesheet\">\n");
+            writer.append("  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->\n");
+            writer.append("  <!--[if lt IE 9]>\n");
+            writer.append("    <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n");
+            writer.append("  <![endif]-->\n");
             writer.append("</head>\n");
             writer.append("<body>\n");
             writer.append(htmlFragment);

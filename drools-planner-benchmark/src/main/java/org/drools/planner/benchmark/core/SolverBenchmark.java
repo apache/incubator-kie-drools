@@ -117,6 +117,10 @@ public class SolverBenchmark {
         }
     }
 
+    public boolean hasAnySuccess() {
+        return singleBenchmarkList.size() - failureCount > 0;
+    }
+
     public boolean isRankingBest() {
         return ranking == 0;
     }
