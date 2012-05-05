@@ -36,6 +36,9 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     protected final ProblemBenchmark problemBenchmark;
     protected final ProblemStatisticType problemStatisticType;
 
+    protected File csvStatisticFile = null;
+    protected File graphStatisticFile = null;
+
     protected AbstractProblemStatistic(ProblemBenchmark problemBenchmark, ProblemStatisticType problemStatisticType) {
         this.problemBenchmark = problemBenchmark;
         this.problemStatisticType = problemStatisticType;
@@ -53,19 +56,24 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
         return problemBenchmark.getName() + "_" + problemStatisticType.name();
     }
 
-    public CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
-        StringBuilder htmlFragment = new StringBuilder();
-        htmlFragment.append("    <h3>").append(problemStatisticType.toString()).append("</h3>\n");
-        htmlFragment.append(writeCsvStatistic(statisticDirectory, problemBenchmark));
-        htmlFragment.append(writeGraphStatistic(statisticDirectory, problemBenchmark));
-        return htmlFragment;
+    public String getCsvFilePath() {
+        return csvStatisticFile.getName();
     }
 
-    protected abstract CharSequence writeCsvStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark);
+    public String getGraphFilePath() {
+        return graphStatisticFile.getName();
+    }
 
-    protected abstract CharSequence writeGraphStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark);
+    public void writeStatistic(File statisticDirectory) {
+        writeCsvStatistic(statisticDirectory);
+        writeGraphStatistic(statisticDirectory);
+    }
 
-    public static class ProblemStatisticCsv {
+    protected abstract void writeCsvStatistic(File statisticDirectory);
+
+    protected abstract void writeGraphStatistic(File statisticDirectory);
+
+    public class ProblemStatisticCsv {
 
         private Map<Long, ProblemStatisticCsvLine> timeToLineMap = new HashMap<Long, ProblemStatisticCsvLine>();
 
@@ -91,7 +99,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             return line;
         }
 
-        public CharSequence writeCsvStatisticFile(File csvStatisticFile, ProblemBenchmark problemBenchmark) {
+        public void writeCsvStatisticFile() {
             List<ProblemStatisticCsvLine> lines = new ArrayList<ProblemStatisticCsvLine>(timeToLineMap.values());
             Collections.sort(lines);
             Writer writer = null;
@@ -119,9 +127,6 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             } finally {
                 IOUtils.closeQuietly(writer);
             }
-            return "    <div class=\"btn-group\">\n"
-                    + "      <button class=\"btn\" onclick=\"window.location.href='" + csvStatisticFile.getName() + "'\">CVS file</button>\n"
-                    + "    </div>\n";
         }
 
     }

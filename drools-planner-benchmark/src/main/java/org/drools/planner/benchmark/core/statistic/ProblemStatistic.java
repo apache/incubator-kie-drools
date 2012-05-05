@@ -45,9 +45,17 @@ public interface ProblemStatistic {
 
     /**
      * @param statisticDirectory never null
-     * @param problemBenchmark never null
-     * @return a htmFragment, never null
      */
-    CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark);
+    void writeStatistic(File statisticDirectory);
+
+    /**
+     * @return never null, relative to the statisticDirectory
+     */
+    String getCsvFilePath();
+
+    /**
+     * @return never null, relative to the statisticDirectory
+     */
+    String getGraphFilePath();
 
 }

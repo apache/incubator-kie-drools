@@ -64,7 +64,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected CharSequence writeCsvStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeCsvStatistic(File statisticDirectory) {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
@@ -77,11 +77,11 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
                 csv.addPoint(singleBenchmark, timeMillisSpend, value);
             }
         }
-        File csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "MemoryUseStatistic.csv");
-        return csv.writeCsvStatisticFile(csvStatisticFile, problemBenchmark);
+        csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "MemoryUseStatistic.csv");
+        csv.writeCsvStatisticFile();
     }
 
-    protected CharSequence writeGraphStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeGraphStatistic(File statisticDirectory) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
@@ -107,7 +107,7 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "MemoryUseStatistic.png");
+        graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "MemoryUseStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);
@@ -117,7 +117,6 @@ public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
     }
 
 }

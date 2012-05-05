@@ -67,7 +67,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     // ************************************************************************
 
     @Override
-    public CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    public void writeStatistic(File statisticDirectory) {
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             ScoreDefinition newScoreDefinition = singleBenchmark.getSolverBenchmark().getSolverConfig()
                     .getScoreDirectorFactoryConfig().buildScoreDefinition();
@@ -80,10 +80,10 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 }
             }
         }
-        return super.writeStatistic(statisticDirectory, problemBenchmark);
+        super.writeStatistic(statisticDirectory);
     }
 
-    protected CharSequence writeCsvStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeCsvStatistic(File statisticDirectory) {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
@@ -99,11 +99,11 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 }
             }
         }
-        File csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.csv");
-        return csv.writeCsvStatisticFile(csvStatisticFile, problemBenchmark);
+        csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.csv");
+        csv.writeCsvStatisticFile();
     }
 
-    protected CharSequence writeGraphStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeGraphStatistic(File statisticDirectory) {
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
@@ -139,7 +139,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.png");
+        graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);
@@ -149,7 +149,6 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
     }
 
 }

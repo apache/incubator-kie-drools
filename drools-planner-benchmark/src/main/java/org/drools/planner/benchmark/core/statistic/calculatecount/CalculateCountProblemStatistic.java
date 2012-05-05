@@ -64,7 +64,7 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected CharSequence writeCsvStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeCsvStatistic(File statisticDirectory) {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
@@ -74,11 +74,11 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
                 csv.addPoint(singleBenchmark, timeMillisSpend, point.getCalculateCountPerSecond());
             }
         }
-        File csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.csv");
-        return csv.writeCsvStatisticFile(csvStatisticFile, problemBenchmark);
+        csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.csv");
+        csv.writeCsvStatisticFile();
     }
 
-    protected CharSequence writeGraphStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
+    protected void writeGraphStatistic(File statisticDirectory) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
@@ -101,7 +101,7 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " calculate count statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.png");
+        graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);
@@ -111,7 +111,6 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
     }
 
 }

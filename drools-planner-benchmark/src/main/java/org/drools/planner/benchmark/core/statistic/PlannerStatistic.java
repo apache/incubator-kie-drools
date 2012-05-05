@@ -65,12 +65,19 @@ public class PlannerStatistic {
     }
 
     public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
+        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+            if (problemBenchmark.hasAnySuccess()) {
+                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+                    problemStatistic.writeStatistic(statisticDirectory);
+                }
+            }
+        }
         TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(plannerBenchmark.getUnifiedProblemBenchmarkList().size() * 160);
 
 
-
+        // TODO FIX 40px lost on anchors bug
         htmlFragment.append("  <div class=\"navbar navbar-fixed-top\">\n");
         htmlFragment.append("    <div class=\"navbar-inner\">\n");
         htmlFragment.append("      <div class=\"container\">\n");
@@ -125,8 +132,14 @@ public class PlannerStatistic {
                     htmlFragment.append("        <div class=\"tab-pane").append(firstRow ? " active" : "")
                             .append("\" id=\"problemStatistic_")
                             .append(problemStatistic.getAnchorId()) .append("\">\n");
-                    htmlFragment.append(
-                            problemStatistic.writeStatistic(statisticDirectory, problemBenchmark));
+                    htmlFragment.append("          <h3>").append(problemStatistic.getProblemStatisticType())
+                            .append("</h3>\n");
+                    htmlFragment.append("          <div class=\"btn-group\">\n");
+                    htmlFragment.append("            <button class=\"btn\" onclick=\"window.location.href='")
+                            .append(problemStatistic.getCsvFilePath()).append("'\">CVS file</button>\n");
+                    htmlFragment.append("          </div>\n");
+                    htmlFragment.append("          <img src=\"")
+                            .append(problemStatistic.getGraphFilePath()).append("\"/>\n");
                     htmlFragment.append("        </div>\n");
                     firstRow = false;
                 }
