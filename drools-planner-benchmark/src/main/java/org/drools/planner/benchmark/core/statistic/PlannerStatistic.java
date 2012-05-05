@@ -68,18 +68,39 @@ public class PlannerStatistic {
         TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(plannerBenchmark.getUnifiedProblemBenchmarkList().size() * 160);
-        htmlFragment.append("  <h1>Summary</h1>\n");
+
+
+
+        htmlFragment.append("  <div class=\"navbar navbar-fixed-top\">\n");
+        htmlFragment.append("    <div class=\"navbar-inner\">\n");
+        htmlFragment.append("      <div class=\"container\">\n");
+        htmlFragment.append("        <ul class=\"nav\">\n");
+        htmlFragment.append("          <li><a href=\"#summary\">Summary</a></li>\n");
+        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
+            htmlFragment.append("          <li><a href=\"#").append(problemBenchmark.getName()).append("\">")
+                    .append(problemBenchmark.getName()).append("</a></li>\n");
+        }
+        htmlFragment.append("        </ul>\n");
+        htmlFragment.append("      </div>\n");
+        htmlFragment.append("    </div>\n");
+        htmlFragment.append("  </div>\n");
+
+
+        htmlFragment.append("  <section id=\"summary\">\n");
+        htmlFragment.append("    <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeWinningScoreDifferenceSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeTimeSpendSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeScalabilitySummaryChart(solverBenchmarkList));
         htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
+        htmlFragment.append("  </section>\n");
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("  <h2>").append(problemBenchmark.getName()).append("</h2>\n");
+            htmlFragment.append("  <section id=\"").append(problemBenchmark.getName()).append("\">\n");
+            htmlFragment.append("    <h2>").append(problemBenchmark.getName()).append("</h2>\n");
             if (problemBenchmark.hasFailure()) {
-                htmlFragment.append("  <p>This has ").append(problemBenchmark.getFailureCount())
+                htmlFragment.append("    <p>This has ").append(problemBenchmark.getFailureCount())
                         .append(" failures.</p>\n");
             }
             if (problemBenchmark.hasAnySuccess()) {
@@ -88,6 +109,7 @@ public class PlannerStatistic {
                             problemStatistic.writeStatistic(statisticDirectory, problemBenchmark));
                 }
             }
+            htmlFragment.append("  </section>\n");
         }
         writeHtmlOverview(htmlFragment);
     }
@@ -138,7 +160,7 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <h2>Best score summary chart</h2>\n"
+        return "    <h2>Best score summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
@@ -188,7 +210,7 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <h2>Winning score difference summary chart</h2>\n"
+        return "    <h2>Winning score difference summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
@@ -233,7 +255,7 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <h2>Time spend summary chart</h2>\n"
+        return "    <h2>Time spend summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
@@ -277,7 +299,7 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <h2>Scalability summary chart</h2>\n"
+        return "    <h2>Scalability summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
@@ -320,15 +342,15 @@ public class PlannerStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <h2>Average calculate count summary chart</h2>\n"
+        return "    <h2>Average calculate count summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
     private CharSequence writeBestScoreSummaryTable(List<SolverBenchmark> solverBenchmarkList) {
         StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
-        htmlFragment.append("  <h2>Best score summary table</h2>\n");
-        htmlFragment.append("  <table class=\"table table-striped table-bordered\">\n");
-        htmlFragment.append("    <tr><th>Solver</th>");
+        htmlFragment.append("    <h2>Best score summary table</h2>\n");
+        htmlFragment.append("    <table class=\"table table-striped table-bordered\">\n");
+        htmlFragment.append("      <tr><th>Solver</th>");
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             htmlFragment.append("<th>").append(problemBenchmark.getName()).append("</th>");
         }
@@ -358,13 +380,13 @@ public class PlannerStatistic {
             if (ranking == null) {
                 htmlFragment.append("<td/>");
             } else if (solverBenchmark.isRankingBest()) {
-                htmlFragment.append("<td><span class=\"label label-success\">").append(ranking).append("</span></td>");
+                htmlFragment.append("<td><span class=\"badge badge-success\">").append(ranking).append("</span></td>");
             } else {
-                htmlFragment.append("<td><span class=\"label\">").append(ranking).append("</span></td>");
+                htmlFragment.append("<td><span class=\"badge\">").append(ranking).append("</span></td>");
             }
             htmlFragment.append("</tr>\n");
         }
-        htmlFragment.append("  </table>\n");
+        htmlFragment.append("    </table>\n");
         return htmlFragment.toString();
     }
 

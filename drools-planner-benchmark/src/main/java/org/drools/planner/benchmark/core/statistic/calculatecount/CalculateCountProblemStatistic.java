@@ -111,7 +111,7 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
+        return "    <img src=\"" + graphStatisticFile.getName() + "\"/>\n";
     }
 
 }

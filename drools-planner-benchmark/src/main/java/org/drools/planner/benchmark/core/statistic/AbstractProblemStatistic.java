@@ -45,7 +45,7 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
     public CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
         StringBuilder htmlFragment = new StringBuilder();
-        htmlFragment.append("  <h3>").append(problemStatisticType.toString()).append("</h3>\n");
+        htmlFragment.append("    <h3>").append(problemStatisticType.toString()).append("</h3>\n");
         htmlFragment.append(writeCsvStatistic(statisticDirectory, problemBenchmark));
         htmlFragment.append(writeGraphStatistic(statisticDirectory, problemBenchmark));
         return htmlFragment;
@@ -109,7 +109,9 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             } finally {
                 IOUtils.closeQuietly(writer);
             }
-            return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
+            return "    <div class=\"btn-group\">"
+                    + "      <button class=\"btn\" onclick=\"window.location.href='" + csvStatisticFile.getName() + "'\">CVS file</button>\n"
+                    + "    </div>";
         }
 
     }
