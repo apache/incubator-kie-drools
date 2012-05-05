@@ -52,8 +52,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
 
-    public CalculateCountProblemStatistic() {
-        super(ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public CalculateCountProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
     }
 
     public SingleStatistic createSingleStatistic(Solver solver) {

@@ -54,8 +54,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
 
     private ScoreDefinition scoreDefinition = null;
 
-    public BestScoreProblemStatistic() {
-        super(ProblemStatisticType.BEST_SOLUTION_CHANGED);
+    public BestScoreProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.BEST_SOLUTION_CHANGED);
     }
 
     public SingleStatistic createSingleStatistic(Solver solver) {

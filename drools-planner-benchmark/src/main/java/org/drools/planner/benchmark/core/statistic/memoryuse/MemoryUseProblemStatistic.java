@@ -52,8 +52,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 
-    public MemoryUseProblemStatistic() {
-        super(ProblemStatisticType.MEMORY_USE);
+    public MemoryUseProblemStatistic(ProblemBenchmark problemBenchmark) {
+        super(problemBenchmark, ProblemStatisticType.MEMORY_USE);
     }
 
     public SingleStatistic createSingleStatistic(Solver solver) {

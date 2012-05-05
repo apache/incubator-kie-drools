@@ -33,14 +33,24 @@ import org.drools.planner.benchmark.core.SingleBenchmark;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {
 
-    protected ProblemStatisticType problemStatisticType;
+    protected final ProblemBenchmark problemBenchmark;
+    protected final ProblemStatisticType problemStatisticType;
 
-    protected AbstractProblemStatistic(ProblemStatisticType problemStatisticType) {
+    protected AbstractProblemStatistic(ProblemBenchmark problemBenchmark, ProblemStatisticType problemStatisticType) {
+        this.problemBenchmark = problemBenchmark;
         this.problemStatisticType = problemStatisticType;
+    }
+
+    public ProblemBenchmark getProblemBenchmark() {
+        return problemBenchmark;
     }
 
     public ProblemStatisticType getProblemStatisticType() {
         return problemStatisticType;
+    }
+
+    public String getAnchorId() {
+        return problemBenchmark.getName() + "_" + problemStatisticType.name();
     }
 
     public CharSequence writeStatistic(File statisticDirectory, ProblemBenchmark problemBenchmark) {
@@ -109,9 +119,9 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
             } finally {
                 IOUtils.closeQuietly(writer);
             }
-            return "    <div class=\"btn-group\">"
+            return "    <div class=\"btn-group\">\n"
                     + "      <button class=\"btn\" onclick=\"window.location.href='" + csvStatisticFile.getName() + "'\">CVS file</button>\n"
-                    + "    </div>";
+                    + "    </div>\n";
         }
 
     }

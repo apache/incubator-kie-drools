@@ -32,6 +32,11 @@ public interface ProblemStatistic {
     ProblemStatisticType getProblemStatisticType();
 
     /**
+     * @return never null
+     */
+    String getAnchorId();
+
+    /**
      * This method is thread-safe.
      * @param solver never null
      * @return never null

@@ -77,7 +77,7 @@ public class PlannerStatistic {
         htmlFragment.append("        <ul class=\"nav\">\n");
         htmlFragment.append("          <li><a href=\"#summary\">Summary</a></li>\n");
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("          <li><a href=\"#").append(problemBenchmark.getName()).append("\">")
+            htmlFragment.append("          <li><a href=\"#problem_").append(problemBenchmark.getName()).append("\">")
                     .append(problemBenchmark.getName()).append("</a></li>\n");
         }
         htmlFragment.append("        </ul>\n");
@@ -95,19 +95,43 @@ public class PlannerStatistic {
         htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
         htmlFragment.append("  </section>\n");
-        htmlFragment.append("  <h1>Statistics</h1>\n");
+        htmlFragment.append("  <h1>Solver benchmarks</h1>\n");
+        htmlFragment.append("  <p>TODO</p>\n");
+        htmlFragment.append("  <h1>Problem benchmarks</h1>\n");
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("  <section id=\"").append(problemBenchmark.getName()).append("\">\n");
-            htmlFragment.append("    <h2>").append(problemBenchmark.getName()).append("</h2>\n");
+            htmlFragment.append("  <section id=\"problem_").append(problemBenchmark.getName()).append("\">\n");
+            htmlFragment.append("    <div class=\"page-header\">\n");
+            htmlFragment.append("      <h2>").append(problemBenchmark.getName()).append("</h2>\n");
+            htmlFragment.append("    </div>\n");
             if (problemBenchmark.hasFailure()) {
                 htmlFragment.append("    <p>This has ").append(problemBenchmark.getFailureCount())
                         .append(" failures.</p>\n");
             }
-            if (problemBenchmark.hasAnySuccess()) {
+            if (problemBenchmark.hasAnySuccess() && problemBenchmark.getProblemStatisticList().size() > 0) {
+                htmlFragment.append("    <div class=\"tabbable\">\n");
+                htmlFragment.append("      <ul class=\"nav nav-tabs\">\n");
+                boolean firstRow = true;
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+                    htmlFragment.append("        <li").append(firstRow ? " class=\"active\"" : "")
+                            .append("><a href=\"#problemStatistic_").append(problemStatistic.getAnchorId())
+                            .append("\" data-toggle=\"tab\">").append(problemStatistic.getProblemStatisticType())
+                            .append("</a></li>\n");
+                    firstRow = false;
+                }
+                htmlFragment.append("      </ul>\n");
+                htmlFragment.append("      <div class=\"tab-content\">\n");
+                firstRow = true;
+                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
+                    htmlFragment.append("        <div class=\"tab-pane").append(firstRow ? " active" : "")
+                            .append("\" id=\"problemStatistic_")
+                            .append(problemStatistic.getAnchorId()) .append("\">\n");
                     htmlFragment.append(
                             problemStatistic.writeStatistic(statisticDirectory, problemBenchmark));
+                    htmlFragment.append("        </div>\n");
+                    firstRow = false;
                 }
+                htmlFragment.append("      </div>\n");
+                htmlFragment.append("    </div>\n");
             }
             htmlFragment.append("  </section>\n");
         }
@@ -408,6 +432,8 @@ public class PlannerStatistic {
             writer.append("</head>\n");
             writer.append("<body>\n");
             writer.append(htmlFragment);
+            writer.append("  <script src=\"js/jquery.js\"></script>\n");
+            writer.append("  <script src=\"js/bootstrap.js\"></script>\n");
             writer.append("</body>\n");
             writer.append("</html>\n");
         } catch (IOException e) {

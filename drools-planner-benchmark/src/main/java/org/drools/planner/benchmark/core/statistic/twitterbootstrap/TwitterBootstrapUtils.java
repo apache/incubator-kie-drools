@@ -37,6 +37,8 @@ public class TwitterBootstrapUtils {
         copyResource(statisticDirectory, "img/glyphicons-halflings.png");
         copyResource(statisticDirectory, "js/bootstrap.js");
         copyResource(statisticDirectory, "js/bootstrap.min.js");
+        copyResource(statisticDirectory, "js/jquery.js");
+        copyResource(statisticDirectory, "js/jquery.min.js");
     }
 
     private static void copyResource(File statisticDirectory, String twitterBootstrapResource) {
