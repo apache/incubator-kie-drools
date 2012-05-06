@@ -26,19 +26,19 @@ import org.apache.commons.io.IOUtils;
 
 public class TwitterBootstrapUtils {
 
-    private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/statistic/twitterbootstrap/";
+    private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/statistic/";
 
     public static void copyResourcesTo(File statisticDirectory) {
-        copyResource(statisticDirectory, "css/bootstrap-responsive.css");
-        copyResource(statisticDirectory, "css/bootstrap-responsive.min.css");
-        copyResource(statisticDirectory, "css/bootstrap.css");
-        copyResource(statisticDirectory, "css/bootstrap.min.css");
-        copyResource(statisticDirectory, "img/glyphicons-halflings-white.png");
-        copyResource(statisticDirectory, "img/glyphicons-halflings.png");
-        copyResource(statisticDirectory, "js/bootstrap.js");
-        copyResource(statisticDirectory, "js/bootstrap.min.js");
-        copyResource(statisticDirectory, "js/jquery.js");
-        copyResource(statisticDirectory, "js/jquery.min.js");
+        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.css");
+        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.min.css");
+        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap.css");
+        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap.min.css");
+        copyResource(statisticDirectory, "twitterbootstrap/img/glyphicons-halflings-white.png");
+        copyResource(statisticDirectory, "twitterbootstrap/img/glyphicons-halflings.png");
+        copyResource(statisticDirectory, "twitterbootstrap/js/bootstrap.js");
+        copyResource(statisticDirectory, "twitterbootstrap/js/bootstrap.min.js");
+        copyResource(statisticDirectory, "twitterbootstrap/js/jquery.js");
+        copyResource(statisticDirectory, "twitterbootstrap/js/jquery.min.js");
     }
 
     private static void copyResource(File statisticDirectory, String twitterBootstrapResource) {
