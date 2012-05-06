@@ -279,7 +279,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         determineRanking();
         PlannerStatistic plannerStatistic = new PlannerStatistic(this);
-        plannerStatistic.writeStatistics(solverBenchmarkList);
+        plannerStatistic.writeStatistics();
         if (failureCount == 0) {
             logger.info("Benchmarking ended: winning solverBenchmark ({}), statistic html overview ({}).",
                     winningSolverBenchmark.getName(), plannerStatistic.getHtmlOverviewFile().getAbsolutePath());

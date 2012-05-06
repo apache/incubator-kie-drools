@@ -99,12 +99,12 @@ public class PlannerStatistic {
         return averageCalculateCountSummaryFile;
     }
 
-    public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) { // TODO remove param solverBenchmarkList
-        writeBestScoreSummaryChart(solverBenchmarkList);
-        writeWinningScoreDifferenceSummaryChart(solverBenchmarkList);
-        writeTimeSpendSummaryChart(solverBenchmarkList);
-        writeScalabilitySummaryChart(solverBenchmarkList);
-        writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList);
+    public void writeStatistics() { // TODO remove param solverBenchmarkList
+        writeBestScoreSummaryChart();
+        writeWinningScoreDifferenceSummaryChart();
+        writeTimeSpendSummaryChart();
+        writeScalabilitySummaryChart();
+        writeAverageCalculateCountPerSecondSummaryChart();
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
@@ -112,12 +112,12 @@ public class PlannerStatistic {
                 }
             }
         }
-        writeStatisticsWebsite(solverBenchmarkList);
+        writeStatisticsWebsite();
     }
 
-    private void writeBestScoreSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeBestScoreSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -163,9 +163,9 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeWinningScoreDifferenceSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeWinningScoreDifferenceSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
                     .buildScoreDefinition();
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -212,9 +212,9 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeTimeSpendSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeTimeSpendSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
                     long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
@@ -255,13 +255,13 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeScalabilitySummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeScalabilitySummaryChart() {
         NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Time spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
@@ -297,12 +297,12 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeAverageCalculateCountPerSecondSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeAverageCalculateCountPerSecondSummaryChart() {
         NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Average calculate count per second");
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+        for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
             XYSeries series = new XYSeries(solverBenchmark.getName());
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
@@ -339,7 +339,7 @@ public class PlannerStatistic {
         }
     }
 
-    private void writeStatisticsWebsite(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeStatisticsWebsite() {
         TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
 
         Configuration freemarkerCfg = new Configuration();
