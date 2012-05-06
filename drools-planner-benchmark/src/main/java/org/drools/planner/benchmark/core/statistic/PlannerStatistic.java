@@ -54,9 +54,15 @@ import org.jfree.ui.TextAnchor;
 
 public class PlannerStatistic {
 
-    private final DefaultPlannerBenchmark plannerBenchmark;
-    private final File statisticDirectory;
-    private final File htmlOverviewFile;
+    protected final DefaultPlannerBenchmark plannerBenchmark;
+    protected final File statisticDirectory;
+    protected final File htmlOverviewFile;
+
+    protected File bestScoreSummaryFile = null;
+    protected File winningScoreDifferenceSummaryFile = null;
+    protected File timeSpendSummaryFile = null;
+    protected File scalabilitySummaryFile = null;
+    protected File averageCalculateCountSummaryFile = null;
 
     public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
@@ -65,6 +71,12 @@ public class PlannerStatistic {
     }
 
     public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
+        writeBestScoreSummaryChart(solverBenchmarkList);
+        writeWinningScoreDifferenceSummaryChart(solverBenchmarkList);
+        writeTimeSpendSummaryChart(solverBenchmarkList);
+        writeScalabilitySummaryChart(solverBenchmarkList);
+        writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList);
+        writeBestScoreSummaryTable(solverBenchmarkList);
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
@@ -95,11 +107,16 @@ public class PlannerStatistic {
 
         htmlFragment.append("  <section id=\"summary\">\n");
         htmlFragment.append("    <h1>Summary</h1>\n");
-        htmlFragment.append(writeBestScoreSummaryChart(solverBenchmarkList));
-        htmlFragment.append(writeWinningScoreDifferenceSummaryChart(solverBenchmarkList));
-        htmlFragment.append(writeTimeSpendSummaryChart(solverBenchmarkList));
-        htmlFragment.append(writeScalabilitySummaryChart(solverBenchmarkList));
-        htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
+        htmlFragment.append("    <h2>Best score summary chart</h2>\n");
+        htmlFragment.append("    <img src=\"").append(bestScoreSummaryFile.getName()).append("\"/>\n");
+        htmlFragment.append("    <h2>Winning score difference summary chart</h2>\n");
+        htmlFragment.append("    <img src=\"").append(winningScoreDifferenceSummaryFile.getName()).append("\"/>\n");
+        htmlFragment.append("    <h2>Time spend summary chart</h2>\n");
+        htmlFragment.append("    <img src=\"").append(timeSpendSummaryFile.getName()).append("\"/>\n");
+        htmlFragment.append("    <h2>Scalability summary chart</h2>\n");
+        htmlFragment.append("    <img src=\"").append(scalabilitySummaryFile.getName()).append("\"/>\n");
+        htmlFragment.append("    <h2>Average calculate count summary chart</h2>\n");
+        htmlFragment.append("    <img src=\"").append(averageCalculateCountSummaryFile.getName()).append("\"/>\n");
         htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
         htmlFragment.append("  </section>\n");
         htmlFragment.append("  <h1>Solver benchmarks</h1>\n");
@@ -151,7 +168,7 @@ public class PlannerStatistic {
         writeHtmlOverview(htmlFragment);
     }
 
-    private CharSequence writeBestScoreSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeBestScoreSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
@@ -187,21 +204,19 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Best score summary (higher score is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(statisticDirectory, "bestScoreSummary.png");
+        bestScoreSummaryFile = new File(statisticDirectory, "bestScoreSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(chartSummaryFile);
+            out = new FileOutputStream(bestScoreSummaryFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing bestScoreSummaryFile: " + bestScoreSummaryFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <h2>Best score summary chart</h2>\n"
-                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
-    private CharSequence writeWinningScoreDifferenceSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeWinningScoreDifferenceSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDirectorFactoryConfig()
@@ -237,21 +252,20 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Winning score difference summary (higher is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(statisticDirectory, "winningScoreDifferenceSummary.png");
+        winningScoreDifferenceSummaryFile = new File(statisticDirectory, "winningScoreDifferenceSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(chartSummaryFile);
+            out = new FileOutputStream(winningScoreDifferenceSummaryFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing winningScoreDifferenceSummaryFile: "
+                    + winningScoreDifferenceSummaryFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <h2>Winning score difference summary chart</h2>\n"
-                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
-    private CharSequence writeTimeSpendSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeTimeSpendSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
@@ -282,21 +296,19 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(statisticDirectory, "timeSpendSummary.png");
+        timeSpendSummaryFile = new File(statisticDirectory, "timeSpendSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(chartSummaryFile);
+            out = new FileOutputStream(timeSpendSummaryFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing timeSpendSummaryFile: " + timeSpendSummaryFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <h2>Time spend summary chart</h2>\n"
-                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
-    private CharSequence writeScalabilitySummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeScalabilitySummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Time spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
@@ -326,21 +338,19 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(statisticDirectory, "scalabilitySummary.png");
+        scalabilitySummaryFile = new File(statisticDirectory, "scalabilitySummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(chartSummaryFile);
+            out = new FileOutputStream(scalabilitySummaryFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing scalabilitySummaryFile: " + scalabilitySummaryFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <h2>Scalability summary chart</h2>\n"
-                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
-    private CharSequence writeAverageCalculateCountPerSecondSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+    private void writeAverageCalculateCountPerSecondSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
         NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Average calculate count per second");
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
@@ -369,18 +379,17 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(statisticDirectory, "averageCalculateCountSummary.png");
+        averageCalculateCountSummaryFile = new File(statisticDirectory, "averageCalculateCountSummary.png");
         OutputStream out = null;
         try {
-            out = new FileOutputStream(chartSummaryFile);
+            out = new FileOutputStream(averageCalculateCountSummaryFile);
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+            throw new IllegalArgumentException("Problem writing averageCalculateCountSummaryFile: "
+                    + averageCalculateCountSummaryFile, e);
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "    <h2>Average calculate count summary chart</h2>\n"
-                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
     private CharSequence writeBestScoreSummaryTable(List<SolverBenchmark> solverBenchmarkList) {
