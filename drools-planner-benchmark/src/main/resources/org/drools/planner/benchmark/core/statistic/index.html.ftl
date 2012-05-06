@@ -89,8 +89,47 @@
         <h2>Scalability summary chart</h2>
         <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
 
-        <h2>Average calculate count summary chart</h2>
-        <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
+        <h2>Average calculate count summary</h2>
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#summary_averageCalculateCount_chart" data-toggle="tab">Chart</a>
+                </li>
+                <li>
+                    <a href="#summary_averageCalculateCount_table" data-toggle="tab">Table</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="summary_averageCalculateCount_chart">
+                    <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
+                </div>
+                <div class="tab-pane" id="summary_averageCalculateCount_table">
+                    <table class="table table-striped table-bordered">
+                        <tr>
+                            <th>Solver</th>
+                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                            <th>${problemBenchmark.name}</th>
+                        </#list>
+                        </tr>
+                    <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                        <tr>
+                            <th>${solverBenchmark.name}</th>
+                            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                <#if !singleBenchmark??>
+                                    <td></td>
+                                <#elseif !singleBenchmark.success>
+                                    <td><span class="label warning">Failed</span></td>
+                                <#else>
+                                    <td>${singleBenchmark.averageCalculateCountPerSecond}/sec</td>
+                                </#if>
+                            </#list>
+                        </tr>
+                    </#list>
+                    </table>
+                </div>
+            </div>
+        </div>
     </section>
 
     <h1>Solver benchmarks</h1>
