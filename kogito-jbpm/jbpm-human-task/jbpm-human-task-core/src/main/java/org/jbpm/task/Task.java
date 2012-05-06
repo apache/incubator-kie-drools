@@ -24,16 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Version;
+import javax.persistence.*;
 
 import org.jbpm.task.utils.CollectionUtils;
 
@@ -86,7 +77,9 @@ public class Task implements Externalizable {
     @JoinColumn(name = "Task_Id", nullable = true)
     private List<SubTasksStrategy> subTaskStrategies = Collections.emptyList();
     
-    private boolean archived = false;
+    @Basic
+    private Short archived = 0;
+    
 
     public Task() {
     }
@@ -94,7 +87,7 @@ public class Task implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
         out.writeInt( priority );
-        out.writeBoolean( archived );
+        out.writeShort( archived );
         CollectionUtils.writeI18NTextList( names, out );
         CollectionUtils.writeI18NTextList( subjects, out );
         CollectionUtils.writeI18NTextList( descriptions, out );
@@ -138,7 +131,7 @@ public class Task implements Externalizable {
                                             ClassNotFoundException {
         id = in.readLong();
         priority = in.readInt();
-        archived = in.readBoolean();
+        archived = in.readShort();
         names = CollectionUtils.readI18NTextList( in );
         subjects = CollectionUtils.readI18NTextList( in );
         descriptions = CollectionUtils.readI18NTextList( in );
@@ -183,12 +176,19 @@ public class Task implements Externalizable {
         this.id = id;
     }
 
-    public boolean isArchived() {
-        return archived;
+     public Boolean isArchived() {
+        if (archived == null) {
+            return null;
+        }
+        return (archived == 1) ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    public void setArchived(boolean archived) {
-        this.archived = archived;
+    public void setArchived(Boolean archived) {
+        if (archived == null) {
+            this.archived = null;
+        } else {
+            this.archived = (archived == true) ? new Short("1") : new Short("0");
+        }
     }
     
     public int getVersion() {
