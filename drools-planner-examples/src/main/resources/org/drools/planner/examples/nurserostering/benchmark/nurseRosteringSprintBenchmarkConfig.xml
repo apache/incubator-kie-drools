@@ -54,7 +54,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>pillarPart210</name>
+    <name>pillarPart300</name>
     <solver>
       <localSearch>
         <selector>
@@ -73,7 +73,7 @@
           <planningEntityTabuSize>11</planningEntityTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>210</minimalAcceptedSelection>
+          <minimalAcceptedSelection>300</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
