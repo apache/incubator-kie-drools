@@ -53,10 +53,15 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <!-- Benchmarker statistic graphs -->
+    <!-- Benchmarker statistics -->
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.19</version>
     </dependency>
   </dependencies>
 

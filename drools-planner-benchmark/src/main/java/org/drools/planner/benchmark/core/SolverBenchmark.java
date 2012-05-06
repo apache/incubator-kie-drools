@@ -140,4 +140,17 @@ public class SolverBenchmark {
         return scoreList;
     }
 
+    /**
+     * @param problemBenchmark never null
+     * @return sometimes null
+     */
+    public SingleBenchmark findSingleBenchmark(ProblemBenchmark problemBenchmark) {
+        for (SingleBenchmark singleBenchmark : singleBenchmarkList) {
+            if (problemBenchmark.equals(singleBenchmark.getProblemBenchmark())) {
+                return singleBenchmark;
+            }
+        }
+        return null;
+    }
+
 }

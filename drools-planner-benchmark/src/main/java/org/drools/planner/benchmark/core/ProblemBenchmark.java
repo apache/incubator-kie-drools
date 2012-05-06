@@ -175,6 +175,10 @@ public class ProblemBenchmark {
         return singleBenchmarkList.size() - failureCount > 0;
     }
 
+    public boolean hasAnyProblemStatistic() {
+        return problemStatisticList.size() > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

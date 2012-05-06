@@ -24,9 +24,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
@@ -70,13 +75,36 @@ public class PlannerStatistic {
         htmlOverviewFile = new File(statisticDirectory, "index.html");
     }
 
-    public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) {
+    public DefaultPlannerBenchmark getPlannerBenchmark() {
+        return plannerBenchmark;
+    }
+
+    public File getBestScoreSummaryFile() {
+        return bestScoreSummaryFile;
+    }
+
+    public File getWinningScoreDifferenceSummaryFile() {
+        return winningScoreDifferenceSummaryFile;
+    }
+
+    public File getTimeSpendSummaryFile() {
+        return timeSpendSummaryFile;
+    }
+
+    public File getScalabilitySummaryFile() {
+        return scalabilitySummaryFile;
+    }
+
+    public File getAverageCalculateCountSummaryFile() {
+        return averageCalculateCountSummaryFile;
+    }
+
+    public void writeStatistics(List<SolverBenchmark> solverBenchmarkList) { // TODO remove param solverBenchmarkList
         writeBestScoreSummaryChart(solverBenchmarkList);
         writeWinningScoreDifferenceSummaryChart(solverBenchmarkList);
         writeTimeSpendSummaryChart(solverBenchmarkList);
         writeScalabilitySummaryChart(solverBenchmarkList);
         writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList);
-        writeBestScoreSummaryTable(solverBenchmarkList);
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
@@ -84,88 +112,7 @@ public class PlannerStatistic {
                 }
             }
         }
-        TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
-        // 2 lines at 80 chars per line give a max of 160 per entry
-        StringBuilder htmlFragment = new StringBuilder(plannerBenchmark.getUnifiedProblemBenchmarkList().size() * 160);
-
-
-        // TODO FIX 40px lost on anchors bug
-        htmlFragment.append("  <div class=\"navbar navbar-fixed-top\">\n");
-        htmlFragment.append("    <div class=\"navbar-inner\">\n");
-        htmlFragment.append("      <div class=\"container\">\n");
-        htmlFragment.append("        <ul class=\"nav\">\n");
-        htmlFragment.append("          <li><a href=\"#summary\">Summary</a></li>\n");
-        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("          <li><a href=\"#problem_").append(problemBenchmark.getName()).append("\">")
-                    .append(problemBenchmark.getName()).append("</a></li>\n");
-        }
-        htmlFragment.append("        </ul>\n");
-        htmlFragment.append("      </div>\n");
-        htmlFragment.append("    </div>\n");
-        htmlFragment.append("  </div>\n");
-
-
-        htmlFragment.append("  <section id=\"summary\">\n");
-        htmlFragment.append("    <h1>Summary</h1>\n");
-        htmlFragment.append("    <h2>Best score summary chart</h2>\n");
-        htmlFragment.append("    <img src=\"").append(bestScoreSummaryFile.getName()).append("\"/>\n");
-        htmlFragment.append("    <h2>Winning score difference summary chart</h2>\n");
-        htmlFragment.append("    <img src=\"").append(winningScoreDifferenceSummaryFile.getName()).append("\"/>\n");
-        htmlFragment.append("    <h2>Time spend summary chart</h2>\n");
-        htmlFragment.append("    <img src=\"").append(timeSpendSummaryFile.getName()).append("\"/>\n");
-        htmlFragment.append("    <h2>Scalability summary chart</h2>\n");
-        htmlFragment.append("    <img src=\"").append(scalabilitySummaryFile.getName()).append("\"/>\n");
-        htmlFragment.append("    <h2>Average calculate count summary chart</h2>\n");
-        htmlFragment.append("    <img src=\"").append(averageCalculateCountSummaryFile.getName()).append("\"/>\n");
-        htmlFragment.append(writeBestScoreSummaryTable(solverBenchmarkList));
-        htmlFragment.append("  </section>\n");
-        htmlFragment.append("  <h1>Solver benchmarks</h1>\n");
-        htmlFragment.append("  <p>TODO</p>\n");
-        htmlFragment.append("  <h1>Problem benchmarks</h1>\n");
-        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("  <section id=\"problem_").append(problemBenchmark.getName()).append("\">\n");
-            htmlFragment.append("    <div class=\"page-header\">\n");
-            htmlFragment.append("      <h2>").append(problemBenchmark.getName()).append("</h2>\n");
-            htmlFragment.append("    </div>\n");
-            if (problemBenchmark.hasFailure()) {
-                htmlFragment.append("    <p>This has ").append(problemBenchmark.getFailureCount())
-                        .append(" failures.</p>\n");
-            }
-            if (problemBenchmark.hasAnySuccess() && problemBenchmark.getProblemStatisticList().size() > 0) {
-                htmlFragment.append("    <div class=\"tabbable\">\n");
-                htmlFragment.append("      <ul class=\"nav nav-tabs\">\n");
-                boolean firstRow = true;
-                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                    htmlFragment.append("        <li").append(firstRow ? " class=\"active\"" : "")
-                            .append("><a href=\"#problemStatistic_").append(problemStatistic.getAnchorId())
-                            .append("\" data-toggle=\"tab\">").append(problemStatistic.getProblemStatisticType())
-                            .append("</a></li>\n");
-                    firstRow = false;
-                }
-                htmlFragment.append("      </ul>\n");
-                htmlFragment.append("      <div class=\"tab-content\">\n");
-                firstRow = true;
-                for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                    htmlFragment.append("        <div class=\"tab-pane").append(firstRow ? " active" : "")
-                            .append("\" id=\"problemStatistic_")
-                            .append(problemStatistic.getAnchorId()) .append("\">\n");
-                    htmlFragment.append("          <h3>").append(problemStatistic.getProblemStatisticType())
-                            .append("</h3>\n");
-                    htmlFragment.append("          <div class=\"btn-group\">\n");
-                    htmlFragment.append("            <button class=\"btn\" onclick=\"window.location.href='")
-                            .append(problemStatistic.getCsvFilePath()).append("'\">CVS file</button>\n");
-                    htmlFragment.append("          </div>\n");
-                    htmlFragment.append("          <img src=\"")
-                            .append(problemStatistic.getGraphFilePath()).append("\"/>\n");
-                    htmlFragment.append("        </div>\n");
-                    firstRow = false;
-                }
-                htmlFragment.append("      </div>\n");
-                htmlFragment.append("    </div>\n");
-            }
-            htmlFragment.append("  </section>\n");
-        }
-        writeHtmlOverview(htmlFragment);
+        writeStatisticsWebsite(solverBenchmarkList);
     }
 
     private void writeBestScoreSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
@@ -392,74 +339,28 @@ public class PlannerStatistic {
         }
     }
 
-    private CharSequence writeBestScoreSummaryTable(List<SolverBenchmark> solverBenchmarkList) {
-        StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
-        htmlFragment.append("    <h2>Best score summary table</h2>\n");
-        htmlFragment.append("    <table class=\"table table-striped table-bordered\">\n");
-        htmlFragment.append("      <tr><th>Solver</th>");
-        for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-            htmlFragment.append("<th>").append(problemBenchmark.getName()).append("</th>");
-        }
-        htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            htmlFragment.append("    <tr>");
-            htmlFragment.append("<th>").append(solverBenchmark.getName()).append("</th>");
-            for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
-                SingleBenchmark singleBenchmark = null;
-                for (SingleBenchmark possibleSingleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
-                    if (problemBenchmark.equals(possibleSingleBenchmark.getProblemBenchmark())) {
-                        singleBenchmark = possibleSingleBenchmark;
-                        break;
-                    }
-                }
-                if (singleBenchmark == null) {
-                    htmlFragment.append("<td/>");
-                } else if (!singleBenchmark.isSuccess()) {
-                    htmlFragment.append("<td><span class=\"label warning\">Failed</span></td>");
-                } else {
-                    Score score = singleBenchmark.getScore();
-                    htmlFragment.append("<td>").append(score.toString()).append("</td>");
-                }
-            }
-            htmlFragment.append("<td>").append(solverBenchmark.getAverageScore()).append("</td>");
-            Integer ranking = solverBenchmark.getRanking();
-            if (ranking == null) {
-                htmlFragment.append("<td/>");
-            } else if (solverBenchmark.isRankingBest()) {
-                htmlFragment.append("<td><span class=\"badge badge-success\">").append(ranking).append("</span></td>");
-            } else {
-                htmlFragment.append("<td><span class=\"badge\">").append(ranking).append("</span></td>");
-            }
-            htmlFragment.append("</tr>\n");
-        }
-        htmlFragment.append("    </table>\n");
-        return htmlFragment.toString();
-    }
+    private void writeStatisticsWebsite(List<SolverBenchmark> solverBenchmarkList) {
+        TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
 
-    private void writeHtmlOverview(CharSequence htmlFragment) {
+        Configuration freemarkerCfg = new Configuration();
+        freemarkerCfg.setDefaultEncoding("UTF-8");
+        freemarkerCfg.setClassForTemplateLoading(PlannerStatistic.class, "");
+
+        String templateFilename = "index.ftl";
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("plannerStatistic", this);
+
         Writer writer = null;
         try {
+            Template template = freemarkerCfg.getTemplate(templateFilename);
             writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
-            writer.append("<!DOCTYPE html>\n");
-            writer.append("<html lang=\"en\">\n");
-            writer.append("<head>\n");
-            writer.append("  <title>Statistic ").append(plannerBenchmark.getName()).append("</title>\n");
-            writer.append("  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
-            writer.append("  <link href=\"css/bootstrap.css\" rel=\"stylesheet\">\n");
-            writer.append("  <link href=\"css/bootstrap-responsive.css\" rel=\"stylesheet\">\n");
-            writer.append("  <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->\n");
-            writer.append("  <!--[if lt IE 9]>\n");
-            writer.append("    <script src=\"http://html5shim.googlecode.com/svn/trunk/html5.js\"></script>\n");
-            writer.append("  <![endif]-->\n");
-            writer.append("</head>\n");
-            writer.append("<body>\n");
-            writer.append(htmlFragment);
-            writer.append("  <script src=\"js/jquery.js\"></script>\n");
-            writer.append("  <script src=\"js/bootstrap.js\"></script>\n");
-            writer.append("</body>\n");
-            writer.append("</html>\n");
+            template.process(model, writer);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing htmlOverviewFile: " + htmlOverviewFile, e);
+            throw new IllegalArgumentException("Can not read templateFilename (" + templateFilename
+                    + ") or write htmlOverviewFile (" + htmlOverviewFile + ").", e);
+        } catch (TemplateException e) {
+            throw new IllegalArgumentException("Can not process Freemarker templateFilename (" + templateFilename
+                    + ") to htmlOverviewFile (" + htmlOverviewFile + ").", e);
         } finally {
             IOUtils.closeQuietly(writer);
         }
