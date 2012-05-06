@@ -146,6 +146,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.unifiedProblemBenchmarkList = unifiedProblemBenchmarkList;
     }
 
+    public Integer getFailureCount() {
+        return failureCount;
+    }
+
     // ************************************************************************
     // Benchmark methods
     // ************************************************************************
@@ -320,6 +324,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             ranking++;
         }
         winningSolverBenchmark = sortedSolverBenchmarkList.get(0);
+    }
+
+    public boolean hasFailure() {
+        return failureCount > 0;
     }
 
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666

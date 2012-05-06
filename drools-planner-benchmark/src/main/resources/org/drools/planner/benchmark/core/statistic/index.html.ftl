@@ -27,6 +27,11 @@
 <div class="container">
     <section id="summary">
         <h1>Summary</h1>
+        <#if plannerStatistic.plannerBenchmark.hasFailure()>
+            <div class="alert alert-error">
+                <p>${plannerStatistic.plannerBenchmark.failureCount} benchmarks have failed!</p>
+            </div>
+        </#if>
 
         <h2>Best score summary</h2>
         <div class="tabbable">
@@ -65,7 +70,11 @@
                                     <td>${singleBenchmark.score}</td>
                                 </#if>
                             </#list>
-                            <td>${solverBenchmark.averageScore}</td>
+                            <#if !solverBenchmark.averageScore??>
+                                <td></td>
+                            <#else>
+                                <td>${solverBenchmark.averageScore}</td>
+                            </#if>
                             <#if !solverBenchmark.ranking??>
                                 <td></td>
                             <#elseif solverBenchmark.rankingBest>
@@ -143,7 +152,9 @@
             <h2>${problemBenchmark.name}</h2>
         </div>
         <#if problemBenchmark.hasFailure()>
-            <p>This has ${problemBenchmark.failureCount} failures.</p>
+            <div class="alert alert-error">
+                <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
+            </div>
         </#if>
         <#if problemBenchmark.hasAnySuccess() && problemBenchmark.hasAnyProblemStatistic()>
             <div class="tabbable">
