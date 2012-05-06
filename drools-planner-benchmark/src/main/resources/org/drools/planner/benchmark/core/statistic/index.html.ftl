@@ -28,8 +28,57 @@
     <section id="summary">
         <h1>Summary</h1>
 
-        <h2>Best score summary chart</h2>
-        <img src="${plannerStatistic.bestScoreSummaryFile.name}"/>
+        <h2>Best score summary</h2>
+        <div class="tabbable">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#summary_bestScore_chart" data-toggle="tab">Chart</a>
+                </li>
+                <li>
+                    <a href="#summary_bestScore_table" data-toggle="tab">Table</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="summary_bestScore_chart">
+                    <img src="${plannerStatistic.bestScoreSummaryFile.name}"/>
+                </div>
+                <div class="tab-pane" id="summary_bestScore_table">
+                    <table class="table table-striped table-bordered">
+                        <tr>
+                            <th>Solver</th>
+                        <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                            <th>${problemBenchmark.name}</th>
+                        </#list>
+                            <th>Average</th>
+                            <th>Ranking</th>
+                        </tr>
+                    <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                        <tr>
+                            <th>${solverBenchmark.name}</th>
+                            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                <#if !singleBenchmark??>
+                                    <td></td>
+                                <#elseif !singleBenchmark.success>
+                                    <td><span class="label warning">Failed</span></td>
+                                <#else>
+                                    <td>${singleBenchmark.score}</td>
+                                </#if>
+                            </#list>
+                            <td>${solverBenchmark.averageScore}</td>
+                            <#if !solverBenchmark.ranking??>
+                                <td></td>
+                            <#elseif solverBenchmark.rankingBest>
+                                <td><span class="badge badge-success">${solverBenchmark.ranking}</span></td>
+                            <#else>
+                                <td><span class="badge">${solverBenchmark.ranking}</span></td>
+                            </#if>
+                        </tr>
+                    </#list>
+                    </table>
+                </div>
+            </div>
+        </div>
 
         <h2>Winning score difference summary chart</h2>
         <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
@@ -42,41 +91,6 @@
 
         <h2>Average calculate count summary chart</h2>
         <img src="${plannerStatistic.averageCalculateCountSummaryFile.name}"/>
-
-        <h2>Best score summary table</h2>
-        <table class="table table-striped table-bordered">
-            <tr>
-                <th>Solver</th>
-            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                <th>${problemBenchmark.name}</th>
-            </#list>
-                <th>Average</th>
-                <th>Ranking</th>
-            </tr>
-        <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-            <tr>
-                <th>${solverBenchmark.name}</th>
-                <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                    <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
-                    <#if !singleBenchmark??>
-                        <td></td>
-                    <#elseif !singleBenchmark.success>
-                        <td><span class="label warning">Failed</span></td>
-                    <#else>
-                        <td>${singleBenchmark.score}</td>
-                    </#if>
-                </#list>
-                <td>${solverBenchmark.averageScore}</td>
-                <#if !solverBenchmark.ranking??>
-                    <td></td>
-                <#elseif solverBenchmark.rankingBest>
-                    <td><span class="badge badge-success">${solverBenchmark.ranking}</span></td>
-                <#else>
-                    <td><span class="badge">${solverBenchmark.ranking}</span></td>
-                </#if>
-            </tr>
-        </#list>
-        </table>
     </section>
 
     <h1>Solver benchmarks</h1>
