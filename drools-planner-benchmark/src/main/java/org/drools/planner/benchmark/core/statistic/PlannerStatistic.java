@@ -99,7 +99,7 @@ public class PlannerStatistic {
         return averageCalculateCountSummaryFile;
     }
 
-    public void writeStatistics() { // TODO remove param solverBenchmarkList
+    public void writeStatistics() {
         writeBestScoreSummaryChart();
         writeWinningScoreDifferenceSummaryChart();
         writeTimeSpendSummaryChart();
