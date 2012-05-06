@@ -346,7 +346,7 @@ public class PlannerStatistic {
         freemarkerCfg.setDefaultEncoding("UTF-8");
         freemarkerCfg.setClassForTemplateLoading(PlannerStatistic.class, "");
 
-        String templateFilename = "index.ftl";
+        String templateFilename = "index.html.ftl";
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("plannerStatistic", this);
 
