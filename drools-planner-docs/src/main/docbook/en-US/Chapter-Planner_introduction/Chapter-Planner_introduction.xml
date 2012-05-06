@@ -323,6 +323,14 @@ $ runExamples.bat</programlisting>
       <para>If you're still using ant (without ivy), copy all the jars from the download zip's
       <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
       jars.</para>
+
+      <note>
+        <para>The download zip's <filename>binaries</filename> directory contains far more jars then
+        <literal>drools-planner-core</literal> actually uses. It also contains the jars used by other modules, such as
+        <literal>drools-planner-benchmark</literal>.</para>
+        <para>Check the maven repository <filename>pom.xml</filename> files to determine the minimal dependency set for
+        a specific version of a specific module.</para>
+      </note>
     </section>
 
     <section>
