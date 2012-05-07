@@ -58,7 +58,7 @@
             <descriptor>src/main/assembly/bin.xml</descriptor>
             <descriptor>src/main/assembly/src.xml</descriptor>
             <descriptor>src/main/assembly/gwt-console.xml</descriptor>
-            <descriptor>src/main/assembly/form-builder.xml</descriptor>
+            <!--descriptor>src/main/assembly/form-builder.xml</descriptor-->
             <descriptor>src/main/assembly/human-task-war.xml</descriptor>
             <descriptor>src/main/assembly/installer.xml</descriptor>
             <descriptor>src/main/assembly/docs-build.xml</descriptor>
