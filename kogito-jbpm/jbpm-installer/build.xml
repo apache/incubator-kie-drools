@@ -299,14 +299,14 @@
   	<echo message="Checking Form Builder download ..." />
   	<condition property="form.builder.not.available">
   	  <not>
-  		<available file="${install.home}/lib/jbpm-form-builder.war" />
+  		<available file="${install.home}/lib/jbpm-${jBPM.version}-form-builder.war" />
   	  </not>
     </condition>
   </target>
   <target name="download.form.builder" depends="download.form.builder.check" if="form.builder.not.available">
   	<echo message="Getting Form Builder ..." />
   	<mkdir dir="${install.home}/lib"/>
-  	<get src="${form.builder.url}" dest="${install.home}/lib/jbpm-form-builder.war" />
+  	<get src="${form.builder.url}" dest="${install.home}/lib/jbpm-${jBPM.version}-form-builder.war" />
   </target>
 	
   <!-- Download jBPM human task server war -->
@@ -489,7 +489,7 @@
   <target name="install.form.builder.into.jboss" depends="download.form.builder">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-form-builder-war"/>
-    <unzip src="${install.home}/lib/jbpm-form-builder.war" dest="${install.home}/target/jbpm-form-builder-war" />
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-form-builder.war" dest="${install.home}/target/jbpm-form-builder-war" />
     <copy file="${install.home}/auth/users.properties"
           tofile="${install.home}/target/jbpm-form-builder-war/WEB-INF/classes/users.properties" 
           overwrite="true" />
@@ -503,8 +503,8 @@
           tofile="${jboss.server.conf.dir}/roles.properties" 
           overwrite="true" />
     <zip basedir="${install.home}/target/jbpm-form-builder-war"
-         destfile="${install.home}/target/jbpm-form-builder.war" />
-    <copy file="${install.home}/target/jbpm-form-builder.war" 
+         destfile="${install.home}/target/jbpm-${jBPM.version}-form-builder.war" />
+    <copy file="${install.home}/target/jbpm-${jBPM.version}-form-builder.war" 
           tofile="${jboss.server.deploy.dir}/jbpm-form-builder.war" 
           overwrite="true" />
     <delete dir="${install.home}/target" />
