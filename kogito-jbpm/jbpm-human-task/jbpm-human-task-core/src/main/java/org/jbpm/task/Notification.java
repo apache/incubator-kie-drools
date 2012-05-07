@@ -32,13 +32,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 
 import org.jbpm.task.utils.CollectionUtils;
 
 @Entity
+@SequenceGenerator(name="notificationIdSeq", sequenceName="NOTIFICATION_ID_SEQ", allocationSize=1)
 public class Notification implements Externalizable  {
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="notificationIdSeq")
     private long                             id;
 
     @OneToMany(cascade = CascadeType.ALL)

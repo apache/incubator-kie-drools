@@ -30,16 +30,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 
 import org.jbpm.task.utils.CollectionUtils;
 
 @Entity
-public class Escalation
-    implements
-    Externalizable {
+@SequenceGenerator(name="escalationIdSeq", sequenceName="ESCALATION_ID_SEQ", allocationSize=1)
+public class Escalation implements Externalizable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="escalationIdSeq")
     private long                    id;
 
     private String                  name;

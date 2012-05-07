@@ -28,10 +28,11 @@ import javax.persistence.*;
 import org.jbpm.task.utils.CollectionUtils;
 
 @Entity
+@SequenceGenerator(name="deadlineIdSeq", sequenceName="DEADLINE_ID_SEQ", allocationSize=1)
 public class Deadline implements Externalizable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="deadlineIdSeq")
     private long id;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "Deadline_Documentation_Id", nullable = true)

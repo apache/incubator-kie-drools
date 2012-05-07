@@ -5,15 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
 @Entity
+@SequenceGenerator(name="procInstEventIdSeq", sequenceName="PROC_INST_EVENT_ID_SEQ", allocationSize=1)
 public class ProcessInstanceEventInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="procInstEventIdSeq")
     private long   id;
 
     @Version

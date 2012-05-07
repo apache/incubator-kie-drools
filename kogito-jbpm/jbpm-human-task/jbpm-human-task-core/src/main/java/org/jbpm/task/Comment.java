@@ -28,13 +28,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "task_comment")
+@SequenceGenerator(name="commentIdSeq", sequenceName="COMMENT_ID_SEQ", allocationSize=1)
 public class Comment implements Externalizable  {
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="commentIdSeq")
     private long id;
 
     @Lob
