@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.jboss.org/drools" typeLanguage="http://www.java.com/javaTypes">
+  <itemDefinition id="_varIdItem" structureRef="java.lang.String"/>
+  <itemDefinition id="_varNameItem" structureRef="java.lang.String"/>
+  <process id="IntermediateCatchEventConditionFilterByProcessInstance" tns:packageName="defaultPackage" name="IntermediateCatchEventConditionFilterByProcessInstance" isExecutable="true" processType="Private">
+    <property id="personId" itemSubjectRef="_varIdItem"/>
+    <property id="varName" itemSubjectRef="_varNameItem"/>
+    <startEvent id="__1" name="Start">
+      <outgoing>__1-_2</outgoing>
+    </startEvent>
+    <scriptTask id="_2" name="Started">
+      <incoming>__1-_2</incoming>
+      <outgoing>_2-_18</outgoing>
+      <script>System.out.println(&quot;Started for person: &quot; + kcontext.getVariable(&quot;personId&quot;));</script>
+    </scriptTask>
+    <intermediateCatchEvent id="_18" name="Proceed">
+      <incoming>_2-_18</incoming>
+      <outgoing>_18-_9</outgoing>
+      <conditionalEventDefinition id="ConditionalEventDefinition_1">
+        <condition xsi:type="tFormalExpression" id="FormalExpression_1" language="http://www.jboss.org/drools/rule">
+        
+        p: org.drools.runtime.process.WorkflowProcessInstance()
+        personId: Long() from p.getVariable(&quot;personId&quot;)
+        org.jbpm.bpmn2.objects.Person(id == personId, name == &quot;John&quot;)
+        
+        </condition>
+      </conditionalEventDefinition>
+    </intermediateCatchEvent>
+    <endEvent id="_3" name="End">
+      <incoming>_9-_3</incoming>
+      <terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </endEvent>
+    <scriptTask id="_9" name="Proceeded">
+      <incoming>_18-_9</incoming>
+      <outgoing>_9-_3</outgoing>
+      <script>System.out.println(&quot;Proceeded for person: &quot; + kcontext.getVariable(&quot;personId&quot;));</script>
+    </scriptTask>
+    <sequenceFlow id="__1-_2" sourceRef="__1" targetRef="_2"/>
+    <sequenceFlow id="_2-_18" sourceRef="_2" targetRef="_18"/>
+    <sequenceFlow id="_9-_3" sourceRef="_9" targetRef="_3"/>
+    <sequenceFlow id="_18-_9" sourceRef="_18" targetRef="_9"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="IntermediateCatchEventConditionFilterByProcessInstance">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="__1" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="16.0" y="19.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="_2" isHorizontal="true">
+        <dc:Bounds height="55.0" width="85.0" x="96.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="_18" isHorizontal="true">
+        <dc:Bounds height="32.0" width="32.0" x="213.0" y="27.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="_3" isHorizontal="true">
+        <dc:Bounds height="48.0" width="48.0" x="394.0" y="19.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_2" bpmnElement="_9" isHorizontal="true">
+        <dc:Bounds height="55.0" width="85.0" x="277.0" y="16.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="__1-_2" sourceElement="BPMNShape_StartEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="64.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="96.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="_2-_18" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="181.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="213.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="_9-_3" sourceElement="BPMNShape_ScriptTask_2" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="362.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="394.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="_18-_9" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_ScriptTask_2">
+        <di:waypoint xsi:type="dc:Point" x="245.0" y="43.0"/>
+        <di:waypoint xsi:type="dc:Point" x="277.0" y="43.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

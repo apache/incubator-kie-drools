@@ -18,10 +18,11 @@ package org.jbpm.bpmn2.objects;
 
 import java.io.Serializable;
 
+
 public class Person implements Serializable {
     
 	private static final long serialVersionUID = 5L;
-	
+	private Long id;
 	private String name;
 
     public String getName() {
@@ -32,4 +33,11 @@ public class Person implements Serializable {
         this.name = name;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 }
