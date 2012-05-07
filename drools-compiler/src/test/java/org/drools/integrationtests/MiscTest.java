@@ -10949,4 +10949,58 @@ public class MiscTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
         assertTrue(kbuilder.hasErrors());
     }
+
+    @Test
+    public void testDeclaredTypesDefaultHashCode() {
+        // JBRULES-3481
+        String str = "package com.sample\n" +
+                "\n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Bean\n" +
+                " id : int \n" +
+                "end\n" +
+                "\n" +
+                "declare KeyedBean\n" +
+                " id : int @key \n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule Create\n" +
+                "when\n" +
+                "then\n" +
+                " list.add( new Bean(1) ); \n" +
+                " list.add( new Bean(2) ); \n" +
+                " list.add( new KeyedBean(1) ); \n" +
+                " list.add( new KeyedBean(1) ); \n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertFalse( list.get( 0 ).hashCode() == 34 );
+        assertFalse( list.get( 1 ).hashCode() == 34 );
+        assertFalse( list.get( 0 ).hashCode() == list.get( 1 ).hashCode() );
+        assertNotSame( list.get( 0 ), list.get( 1 ) );
+        assertFalse( list.get( 0 ).equals( list.get( 1 ) ) );
+
+        assertTrue( list.get( 2 ).hashCode() == 32 );
+        assertTrue( list.get( 3 ).hashCode() == 32 );
+        assertNotSame( list.get( 2 ), list.get( 3 ) );
+        assertTrue( list.get( 2 ).equals( list.get( 3 ) ) );
+
+    }
 }
