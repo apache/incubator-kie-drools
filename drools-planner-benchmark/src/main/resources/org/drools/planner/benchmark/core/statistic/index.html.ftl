@@ -31,8 +31,8 @@
             <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
         </div>
         <div class="span10">
+            <h1>Planner benchmark report</h1>
             <section id="summary">
-                <h1>Planner benchmark report</h1>
                 <h1>Summary</h1>
             <#if plannerStatistic.plannerBenchmark.hasFailure()>
                 <div class="alert alert-error">
