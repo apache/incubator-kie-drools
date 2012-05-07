@@ -175,7 +175,7 @@
                             <#list problemBenchmark.problemStatisticList as problemStatistic>
                                 <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
                                     <div class="btn-group">
-                                        <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'">CVS file</button>
+                                        <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'"><i class="icon-download"></i> CVS file</button>
                                     </div>
                                     <img src="${problemStatistic.graphFilePath}"/>
                                 </div>
