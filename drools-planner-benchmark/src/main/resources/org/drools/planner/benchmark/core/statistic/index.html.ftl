@@ -6,6 +6,7 @@
     <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="website/css/benchmarkReport.css" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -28,9 +29,13 @@
             </ul>
         </div>
         <div class="span10">
-            <h1>Planner benchmark report</h1>
+            <header class="main-page-header">
+                <h1>Planner benchmark report</h1>
+            </header>
             <section id="summary">
-                <h1>Summary</h1>
+                <div class="page-header">
+                    <h1>Summary</h1>
+                </div>
             <#if plannerStatistic.plannerBenchmark.hasAnyFailure()>
                 <div class="alert alert-error">
                     <p>${plannerStatistic.plannerBenchmark.failureCount} benchmarks have failed!</p>
@@ -148,12 +153,12 @@
             <h1>Solver benchmarks</h1>
             <p>TODO</p>
 
-            <h1>Problem benchmarks</h1>
+            <div class="page-header">
+                <h1>Problem benchmarks</h1>
+            </div>
         <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
             <section id="problem_${problemBenchmark.name}">
-                <div class="page-header">
-                    <h2>${problemBenchmark.name}</h2>
-                </div>
+                <h2>${problemBenchmark.name}</h2>
                 <#if problemBenchmark.hasAnyFailure()>
                     <div class="alert alert-error">
                         <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
@@ -187,7 +192,9 @@
             </section>
         </#list>
             <section id="benchmarkInformation">
-                <h1>Benchmark information</h1>
+                <div class="page-header">
+                    <h1>Benchmark information</h1>
+                </div>
                 <table class="table table-striped">
                     <tr>
                         <th>startingTimestamp</th>
