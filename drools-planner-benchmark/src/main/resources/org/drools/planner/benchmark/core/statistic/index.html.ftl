@@ -67,7 +67,7 @@
                                     <th>Ranking</th>
                                 </tr>
                             <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                <tr>
+                                <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                     <th>${solverBenchmark.name}</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
@@ -102,7 +102,46 @@
                 <img src="${plannerStatistic.winningScoreDifferenceSummaryFile.name}"/>
 
                 <h2>Time spend summary chart</h2>
-                <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a href="#summary_timeSpend_chart" data-toggle="tab">Chart</a>
+                        </li>
+                        <li>
+                            <a href="#summary_timeSpend_table" data-toggle="tab">Table</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="summary_timeSpend_chart">
+                            <img src="${plannerStatistic.timeSpendSummaryFile.name}"/>
+                        </div>
+                        <div class="tab-pane" id="summary_timeSpend_table">
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th>Solver</th>
+                                <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                    <th>${problemBenchmark.name}</th>
+                                </#list>
+                                </tr>
+                            <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
+                                <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
+                                    <th>${solverBenchmark.name}</th>
+                                    <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                                        <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>
+                                        <#if !singleBenchmark??>
+                                            <td></td>
+                                        <#elseif !singleBenchmark.success>
+                                            <td><span class="label warning">Failed</span></td>
+                                        <#else>
+                                            <td>${singleBenchmark.timeMillisSpend} ms</td>
+                                        </#if>
+                                    </#list>
+                                </tr>
+                            </#list>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
                 <h2>Scalability summary chart</h2>
                 <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
@@ -130,7 +169,7 @@
                                 </#list>
                                 </tr>
                             <#list plannerStatistic.plannerBenchmark.solverBenchmarkList as solverBenchmark>
-                                <tr>
+                                <tr<#if solverBenchmark.rankingBest> class="rankingBest"</#if>>
                                     <th>${solverBenchmark.name}</th>
                                     <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                                         <#assign singleBenchmark = solverBenchmark.findSingleBenchmark(problemBenchmark)>

@@ -22,3 +22,10 @@
     padding-bottom: 17px;
     border-bottom: 2px solid #dddddd;
 }
+
+.rankingBest th {
+    background-color: #dff0d8 !important
+}
+.rankingBest td {
+    background-color: #dff0d8 !important
+}
