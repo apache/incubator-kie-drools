@@ -2116,4 +2116,68 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 9.0,
                 results.get( 0 ) );
     }
+
+    @Test(timeout = 5000)
+    public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
+        // JBRULES-3488
+        String rule = "package org.drools.test;\n" +
+        "import org.drools.integrationtests.AccumulateTest.Triple;\n" +
+        "rule \"accumulate 2 times\"\n" +
+        "when\n" +
+        "  $LIST : java.util.List( )" +
+                "  from accumulate( $Triple_1 : Triple( $CN : subject," +
+                "    predicate == \"<http://deductions.sf.net/samples/princing.n3p.n3#number>\", $N : object )," +
+                "      collectList( $N ) )\n" +
+                "  $NUMBER : Number() from accumulate(" +
+                "    $NUMBER_STRING_ : String() from $LIST , sum( Double.parseDouble( $NUMBER_STRING_)) )\n" +
+        "then\n" +
+        "  System.out.println(\"ok\");\n" +
+        "end\n";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        // To reproduce, Need to have 3 object asserted (not less) :
+        ksession.insert(new Triple("<http://deductions.sf.net/samples/princing.n3p.n3#CN1>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "200"));
+        ksession.insert(new Triple("<http://deductions.sf.net/samples/princing.n3p.n3#CN2>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100"));
+        ksession.insert(new Triple("<http://deductions.sf.net/samples/princing.n3p.n3#CN3>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100"));
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ksession.fireAllRules();
+    }
+
+    public static class Triple {
+        private String subject;
+        private String predicate;
+        private String object;
+
+        /** for javabeans */
+        public Triple() {}
+
+        public Triple(String subject, String predicate, String object) {
+            this.subject = subject;
+            this.predicate = predicate;
+            this.object = object;
+            // System.out.print(">>> inst. " + toString() );
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public String getPredicate() {
+            return predicate;
+        }
+
+        public String getObject() {
+            return object;
+        }
+    }
+
 }

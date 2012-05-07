@@ -10975,13 +10975,7 @@ public class MiscTest extends CommonTestMethodBase {
                 " list.add( new KeyedBean(1) ); \n" +
                 "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
