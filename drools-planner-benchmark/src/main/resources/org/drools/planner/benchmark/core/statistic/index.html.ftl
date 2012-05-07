@@ -212,6 +212,10 @@
                         <th>failureCount</th>
                         <td>${plannerStatistic.plannerBenchmark.failureCount}</td>
                     </tr>
+                    <tr>
+                        <th>plannerVersion</th>
+                        <td>${plannerStatistic.plannerBenchmark.plannerVersion!}</td>
+                    </tr>
                 </table>
             </section>
         </div>

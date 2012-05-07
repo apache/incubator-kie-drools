@@ -37,6 +37,7 @@ import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.planner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.drools.planner.benchmark.api.PlannerBenchmark;
 import org.drools.planner.benchmark.core.statistic.PlannerStatistic;
+import org.drools.planner.config.SolverFactory;
 import org.drools.planner.core.Solver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
     private Date startingTimestamp;
+    private String plannerVersion;
     private ExecutorService executorService;
     private Integer failureCount;
     private Throwable firstFailureThrowable;
@@ -129,6 +131,13 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return startingTimestamp;
     }
 
+    /**
+     * @return sometimes null (only during development)
+     */
+    public String getPlannerVersion() {
+        return plannerVersion;
+    }
+
     public Integer getFailureCount() {
         return failureCount;
     }
@@ -150,6 +159,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalArgumentException(
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
         }
+        plannerVersion = SolverFactory.class.getPackage().getImplementationVersion();
         initBenchmarkDirectoryAndSubdirs();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
             solverBenchmark.benchmarkingStarted();
