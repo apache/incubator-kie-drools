@@ -35,7 +35,7 @@ public class SolverBenchmark {
     private List<ProblemBenchmark> problemBenchmarkList = null;
     private List<SingleBenchmark> singleBenchmarkList = null;
 
-    private Integer failureCount = null;
+    private int failureCount = -1;
     private Score totalScore = null;
     // Ranking starts from 0
     private Integer ranking = null;
@@ -72,7 +72,7 @@ public class SolverBenchmark {
         this.singleBenchmarkList = singleBenchmarkList;
     }
 
-    public Integer getFailureCount() {
+    public int getFailureCount() {
         return failureCount;
     }
 
@@ -121,8 +121,12 @@ public class SolverBenchmark {
         return singleBenchmarkList.size() - failureCount > 0;
     }
 
+    public boolean hasFailure() {
+        return failureCount > 0;
+    }
+
     public boolean isRankingBest() {
-        return ranking == 0;
+        return ranking != null && ranking.intValue() == 0;
     }
 
     public Score getAverageScore() {
