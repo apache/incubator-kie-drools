@@ -171,8 +171,6 @@
                     <#assign firstRow = true>
                     <#list problemBenchmark.problemStatisticList as problemStatistic>
                         <div class="tab-pane<#if firstRow> active</#if>" id="problemStatistic_${problemStatistic.anchorId}">
-                            <h3>${problemStatistic.problemStatisticType}</h3>
-
                             <div class="btn-group">
                                 <button class="btn" onclick="window.location.href='${problemStatistic.csvFilePath}'">CVS file</button>
                             </div>
