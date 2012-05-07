@@ -12,24 +12,20 @@
     <![endif]-->
 </head>
 <body>
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <ul class="nav">
-                <li><a href="#summary">Summary</a></li>
-            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
-                <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
-            </#list>
-                <li><a href="#benchmarkInformation">Benchmark information</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
 
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span2">
             <a href="http://www.jboss.org/drools/drools-planner"><img src="website/img/droolsPlannerLogo.png" alt="Drools Planner"/></a>
+            <ul class="nav nav-list">
+                <li><a href="#summary">Summary</a></li>
+                <li class="divider"></li>
+            <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
+                <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
+            </#list>
+                <li class="divider"></li>
+                <li><a href="#benchmarkInformation">Benchmark information</a></li>
+            </ul>
         </div>
         <div class="span10">
             <h1>Planner benchmark report</h1>
@@ -42,7 +38,6 @@
             </#if>
 
                 <h2>Best score summary</h2>
-
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active">
@@ -108,7 +103,6 @@
                 <img src="${plannerStatistic.scalabilitySummaryFile.name}"/>
 
                 <h2>Average calculate count summary</h2>
-
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
                         <li class="active">
@@ -152,7 +146,6 @@
             </section>
 
             <h1>Solver benchmarks</h1>
-
             <p>TODO</p>
 
             <h1>Problem benchmarks</h1>
