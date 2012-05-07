@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
@@ -37,7 +36,6 @@ import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
-import org.drools.planner.benchmark.core.statistic.twitterbootstrap.TwitterBootstrapUtils;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
@@ -340,7 +338,7 @@ public class PlannerStatistic {
     }
 
     private void writeStatisticsWebsite() {
-        TwitterBootstrapUtils.copyResourcesTo(statisticDirectory);
+        WebsiteResourceUtils.copyResourcesTo(statisticDirectory);
 
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");

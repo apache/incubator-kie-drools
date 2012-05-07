@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.core.statistic.twitterbootstrap;
+package org.drools.planner.benchmark.core.statistic;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,11 +24,12 @@ import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
 
-public class TwitterBootstrapUtils {
+public class WebsiteResourceUtils {
 
     private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/statistic/";
 
     public static void copyResourcesTo(File statisticDirectory) {
+        // Twitter Bootstrap
         copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.css");
         copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.min.css");
         copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap.css");
@@ -39,23 +40,25 @@ public class TwitterBootstrapUtils {
         copyResource(statisticDirectory, "twitterbootstrap/js/bootstrap.min.js");
         copyResource(statisticDirectory, "twitterbootstrap/js/jquery.js");
         copyResource(statisticDirectory, "twitterbootstrap/js/jquery.min.js");
+        // Website resources
+        copyResource(statisticDirectory, "website/img/droolsPlannerLogo.png");
     }
 
-    private static void copyResource(File statisticDirectory, String twitterBootstrapResource) {
-        File outputFile = new File(statisticDirectory, twitterBootstrapResource);
+    private static void copyResource(File statisticDirectory, String websiteResource) {
+        File outputFile = new File(statisticDirectory, websiteResource);
         InputStream in = null;
         OutputStream out = null;
         try {
-            in = TwitterBootstrapUtils.class.getResourceAsStream(RESOURCE_NAMESPACE + twitterBootstrapResource);
+            in = WebsiteResourceUtils.class.getResourceAsStream(RESOURCE_NAMESPACE + websiteResource);
             if (in == null) {
-                throw new IllegalStateException("The twitterBootstrapResource (" + twitterBootstrapResource
+                throw new IllegalStateException("The websiteResource (" + websiteResource
                         + ") does not exist.");
             }
             outputFile.getParentFile().mkdirs();
             out = new FileOutputStream(outputFile);
             IOUtils.copy(in, out);
         } catch (IOException e) {
-            throw new IllegalStateException("Could not copy twitterBootstrapResource (" + twitterBootstrapResource
+            throw new IllegalStateException("Could not copy websiteResource (" + websiteResource
                     + ") to outputFile (" + outputFile + ").", e);
         } finally {
             IOUtils.closeQuietly(in);
@@ -63,7 +66,7 @@ public class TwitterBootstrapUtils {
         }
     }
 
-    private TwitterBootstrapUtils() {
+    private WebsiteResourceUtils() {
     }
 
 }
