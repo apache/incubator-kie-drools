@@ -31,14 +31,14 @@ public class WorstScoreSolverBenchmarkRankingComparatorTest {
     @Test
     public void normal() {
         WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
-        SolverBenchmark a = new SolverBenchmark();
+        SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(aSingleBenchmarkList, -100);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -2001);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
-        SolverBenchmark b = new SolverBenchmark();
+        SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(bSingleBenchmarkList, -900);
         addPlannerBenchmarkResult(bSingleBenchmarkList, -2000);
@@ -52,14 +52,14 @@ public class WorstScoreSolverBenchmarkRankingComparatorTest {
     @Test
     public void worstIsEqual() {
         WorstScoreSolverBenchmarkRankingComparator comparator = new WorstScoreSolverBenchmarkRankingComparator();
-        SolverBenchmark a = new SolverBenchmark();
+        SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(aSingleBenchmarkList, -101);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -2000);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
-        SolverBenchmark b = new SolverBenchmark();
+        SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(bSingleBenchmarkList, -100);
         addPlannerBenchmarkResult(bSingleBenchmarkList, -2000);

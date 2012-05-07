@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
 import org.drools.planner.benchmark.api.ProblemIO;
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.SingleBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.benchmark.core.SolverBenchmark;
@@ -82,18 +83,19 @@ public class ProblemBenchmarksConfig {
     // Builder methods
     // ************************************************************************
 
-    public List<ProblemBenchmark> buildProblemBenchmarkList(List<ProblemBenchmark> unifiedProblemBenchmarkList,
+    public List<ProblemBenchmark> buildProblemBenchmarkList(DefaultPlannerBenchmark plannerBenchmark,
             SolverBenchmark solverBenchmark) {
         validate(solverBenchmark);
         ProblemIO problemIO = buildProblemIO();
-        List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(
-                inputSolutionFileList.size());
+        List<ProblemBenchmark> problemBenchmarkList = new ArrayList<ProblemBenchmark>(inputSolutionFileList.size());
+        List<ProblemBenchmark> unifiedProblemBenchmarkList = plannerBenchmark.getUnifiedProblemBenchmarkList();
         for (File inputSolutionFile : inputSolutionFileList) {
             if (!inputSolutionFile.exists()) {
                 throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
             }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
-            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(problemIO, inputSolutionFile);
+            ProblemBenchmark newProblemBenchmark = buildProblemBenchmark(plannerBenchmark,
+                    problemIO, inputSolutionFile);
             ProblemBenchmark problemBenchmark;
             int index = unifiedProblemBenchmarkList.indexOf(newProblemBenchmark);
             if (index < 0) {
@@ -142,8 +144,9 @@ public class ProblemBenchmarksConfig {
         }
     }
 
-    private ProblemBenchmark buildProblemBenchmark(ProblemIO problemIO, File inputSolutionFile) {
-        ProblemBenchmark problemBenchmark = new ProblemBenchmark();
+    private ProblemBenchmark buildProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark,
+            ProblemIO problemIO, File inputSolutionFile) {
+        ProblemBenchmark problemBenchmark = new ProblemBenchmark(plannerBenchmark);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
         problemBenchmark.setName(name);
         problemBenchmark.setProblemIO(problemIO);

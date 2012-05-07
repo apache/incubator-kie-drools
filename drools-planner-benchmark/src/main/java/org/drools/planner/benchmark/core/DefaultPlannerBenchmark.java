@@ -49,9 +49,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
-    private File benchmarkInstanceDirectory = null;
-    private File outputSolutionFilesDirectory = null;
-    private File statisticDirectory = null;
+    private File benchmarkReportDirectory = null;
     private Comparator<SolverBenchmark> solverBenchmarkRankingComparator = null;
     private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
 
@@ -75,28 +73,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.benchmarkDirectory = benchmarkDirectory;
     }
 
-    public File getBenchmarkInstanceDirectory() {
-        return benchmarkInstanceDirectory;
-    }
-
-    public void setBenchmarkInstanceDirectory(File benchmarkInstanceDirectory) {
-        this.benchmarkInstanceDirectory = benchmarkInstanceDirectory;
-    }
-
-    public File getOutputSolutionFilesDirectory() {
-        return outputSolutionFilesDirectory;
-    }
-
-    public void setOutputSolutionFilesDirectory(File outputSolutionFilesDirectory) {
-        this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
-    }
-
-    public File getStatisticDirectory() {
-        return statisticDirectory;
-    }
-
-    public void setStatisticDirectory(File statisticDirectory) {
-        this.statisticDirectory = statisticDirectory;
+    public File getBenchmarkReportDirectory() {
+        return benchmarkReportDirectory;
     }
 
     public Comparator<SolverBenchmark> getSolverBenchmarkRankingComparator() {
@@ -159,10 +137,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     // Benchmark methods
     // ************************************************************************
 
-    public String getName() {
-        return benchmarkInstanceDirectory.getName();
-    }
-
     public void benchmark() {
         benchmarkingStarted();
         warmUp();
@@ -181,7 +155,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             solverBenchmark.benchmarkingStarted();
         }
         for (ProblemBenchmark problemBenchmark : unifiedProblemBenchmarkList) {
-            problemBenchmark.setOutputSolutionFilesDirectory(outputSolutionFilesDirectory);
             problemBenchmark.benchmarkingStarted();
         }
         executorService = Executors.newFixedThreadPool(parallelBenchmarkCount);
@@ -197,19 +170,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
         benchmarkDirectory.mkdirs();
-        if (benchmarkInstanceDirectory == null) {
-            String timestampDirectory = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
-            benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
-        }
-        benchmarkInstanceDirectory.mkdirs();
-        if (outputSolutionFilesDirectory == null) {
-            outputSolutionFilesDirectory = new File(benchmarkInstanceDirectory, "output");
-        }
-        outputSolutionFilesDirectory.mkdirs();
-        if (statisticDirectory == null) {
-            statisticDirectory = new File(benchmarkInstanceDirectory, "statistic");
-        }
-        statisticDirectory.mkdirs();
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
+        benchmarkReportDirectory = new File(benchmarkDirectory, timestamp);
+        benchmarkReportDirectory.mkdirs();
     }
 
     private void warmUp() {
@@ -345,7 +308,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
 //    public void writeBenchmarkResult(XStream xStream) {
-//        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
+//        File benchmarkResultFile = new File(benchmarkReportDirectory, "benchmarkResult.xml");
 //        OutputStreamWriter writer = null;
 //        try {
 //            writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "UTF-8");

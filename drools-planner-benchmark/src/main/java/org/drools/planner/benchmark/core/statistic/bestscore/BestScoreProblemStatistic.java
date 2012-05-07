@@ -67,7 +67,7 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
     // ************************************************************************
 
     @Override
-    public void writeStatistic(File statisticDirectory) {
+    public void writeStatistic() {
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             ScoreDefinition newScoreDefinition = singleBenchmark.getSolverBenchmark().getSolverConfig()
                     .getScoreDirectorFactoryConfig().buildScoreDefinition();
@@ -80,10 +80,10 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 }
             }
         }
-        super.writeStatistic(statisticDirectory);
+        super.writeStatistic();
     }
 
-    protected void writeCsvStatistic(File statisticDirectory) {
+    protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             BestScoreSingleStatistic singleStatistic = (BestScoreSingleStatistic)
@@ -99,11 +99,12 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
                 }
             }
         }
-        csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.csv");
+        csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
+                problemBenchmark.getName() + "BestScoreStatistic.csv");
         csv.writeCsvStatisticFile();
     }
 
-    protected void writeGraphStatistic(File statisticDirectory) {
+    protected void writeGraphStatistic() {
         NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
@@ -139,7 +140,8 @@ public class BestScoreProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "BestScoreStatistic.png");
+        graphStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
+                problemBenchmark.getName() + "BestScoreStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);

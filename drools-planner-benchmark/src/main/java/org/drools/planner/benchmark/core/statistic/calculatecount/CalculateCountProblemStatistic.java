@@ -64,7 +64,7 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
     // Write methods
     // ************************************************************************
 
-    protected void writeCsvStatistic(File statisticDirectory) {
+    protected void writeCsvStatistic() {
         ProblemStatisticCsv csv = new ProblemStatisticCsv();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
@@ -74,11 +74,12 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
                 csv.addPoint(singleBenchmark, timeMillisSpend, point.getCalculateCountPerSecond());
             }
         }
-        csvStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.csv");
+        csvStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
+                problemBenchmark.getName() + "CalculateCountStatistic.csv");
         csv.writeCsvStatisticFile();
     }
 
-    protected void writeGraphStatistic(File statisticDirectory) {
+    protected void writeGraphStatistic() {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (SingleBenchmark singleBenchmark : problemBenchmark.getSingleBenchmarkList()) {
             CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
@@ -101,7 +102,8 @@ public class CalculateCountProblemStatistic extends AbstractProblemStatistic {
         JFreeChart chart = new JFreeChart(problemBenchmark.getName() + " calculate count statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        graphStatisticFile = new File(statisticDirectory, problemBenchmark.getName() + "CalculateCountStatistic.png");
+        graphStatisticFile = new File(problemBenchmark.getProblemReportDirectory(),
+                problemBenchmark.getName() + "CalculateCountStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);

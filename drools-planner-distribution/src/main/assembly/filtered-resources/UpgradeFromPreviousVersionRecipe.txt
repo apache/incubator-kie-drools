@@ -1958,3 +1958,15 @@ After in pom.xml:
 And resync your IDE (IntelliJ, Eclipse, NetBeans) from the pom.xml files.
 If you're still using ANT, add the drools-planner-benchmark-?.jar
 and adjust your ANT script and your IDE's classpath accordingly.
+
+[MINOR] The benchmarker configuration no longer supports benchmarkInstanceDirectory, outputSolutionFilesDirectory
+or statisticDirectory. If you were using any of these usefully, let us know how by filing a jira issue.
+The statistics subdirectory has been removed.
+The index.html file is now available in the benchmarkReportDirectory.
+The entire benchmarkReportDirectory has been restructured into a nicer form.
+Before in *BenchmarkConfig.xml:
+    <benchmarkInstanceDirectory>...</>
+Before in *BenchmarkConfig.xml:
+    <outputSolutionFilesDirectory>...</>
+Before in *BenchmarkConfig.xml:
+    <statisticDirectory>...</>

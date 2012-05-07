@@ -57,21 +57,21 @@ public abstract class AbstractProblemStatistic implements ProblemStatistic {
     }
 
     public String getCsvFilePath() {
-        return csvStatisticFile.getName();
+        return problemBenchmark.getProblemReportDirectory().getName() + "/" + csvStatisticFile.getName();
     }
 
     public String getGraphFilePath() {
-        return graphStatisticFile.getName();
+        return problemBenchmark.getProblemReportDirectory().getName() + "/" + graphStatisticFile.getName();
     }
 
-    public void writeStatistic(File statisticDirectory) {
-        writeCsvStatistic(statisticDirectory);
-        writeGraphStatistic(statisticDirectory);
+    public void writeStatistic() {
+        writeCsvStatistic();
+        writeGraphStatistic();
     }
 
-    protected abstract void writeCsvStatistic(File statisticDirectory);
+    protected abstract void writeCsvStatistic();
 
-    protected abstract void writeGraphStatistic(File statisticDirectory);
+    protected abstract void writeGraphStatistic();
 
     public class ProblemStatisticCsv {
 

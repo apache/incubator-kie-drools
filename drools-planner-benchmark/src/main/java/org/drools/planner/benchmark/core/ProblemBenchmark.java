@@ -30,11 +30,13 @@ import org.drools.planner.core.solution.Solution;
  */
 public class ProblemBenchmark {
 
+    private final DefaultPlannerBenchmark plannerBenchmark;
+
     private String name = null;
 
     private ProblemIO problemIO = null;
     private File inputSolutionFile = null;
-    private File outputSolutionFilesDirectory = null;
+    private File problemReportDirectory = null;
 
     private List<ProblemStatistic> problemStatisticList = null;
 
@@ -42,6 +44,10 @@ public class ProblemBenchmark {
 
     private Integer failureCount = null;
     private SingleBenchmark winningSingleBenchmark = null;
+
+    public ProblemBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+        this.plannerBenchmark = plannerBenchmark;
+    }
 
     public String getName() {
         return name;
@@ -63,16 +69,12 @@ public class ProblemBenchmark {
         return inputSolutionFile;
     }
 
+    public File getProblemReportDirectory() {
+        return problemReportDirectory;
+    }
+
     public void setInputSolutionFile(File inputSolutionFile) {
         this.inputSolutionFile = inputSolutionFile;
-    }
-
-    public File getOutputSolutionFilesDirectory() {
-        return outputSolutionFilesDirectory;
-    }
-
-    public void setOutputSolutionFilesDirectory(File outputSolutionFilesDirectory) {
-        this.outputSolutionFilesDirectory = outputSolutionFilesDirectory;
     }
 
     public List<ProblemStatistic> getProblemStatisticList() {
@@ -104,6 +106,8 @@ public class ProblemBenchmark {
     // ************************************************************************
 
     public void benchmarkingStarted() {
+        problemReportDirectory = new File(plannerBenchmark.getBenchmarkReportDirectory(), name);
+        problemReportDirectory.mkdirs();
     }
 
     public long warmUp(long startingTimeMillis, long warmUpTimeMillisSpend, long timeLeft) {
@@ -134,7 +138,7 @@ public class ProblemBenchmark {
 
     public void writeSolution(SingleBenchmark singleBenchmark, Solution outputSolution) {
         String filename = singleBenchmark.getName() + "." + problemIO.getFileExtension();
-        File outputSolutionFile = new File(outputSolutionFilesDirectory, filename);
+        File outputSolutionFile = new File(problemReportDirectory, filename);
         problemIO.write(outputSolution, outputSolutionFile);
     }
 

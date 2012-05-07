@@ -18,6 +18,7 @@ package org.drools.planner.benchmark.core.statistic;
 
 import java.io.File;
 
+import org.drools.planner.benchmark.core.DefaultPlannerBenchmark;
 import org.drools.planner.benchmark.core.ProblemBenchmark;
 import org.drools.planner.core.Solver;
 
@@ -43,18 +44,17 @@ public interface ProblemStatistic {
      */
     SingleStatistic createSingleStatistic(Solver solver);
 
-    /**
-     * @param statisticDirectory never null
-     */
-    void writeStatistic(File statisticDirectory);
+    void writeStatistic();
 
     /**
-     * @return never null, relative to the statisticDirectory
+     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
+     * (not {@link ProblemBenchmark#problemReportDirectory})
      */
     String getCsvFilePath();
 
     /**
-     * @return never null, relative to the statisticDirectory
+     * @return never null, relative to the {@link DefaultPlannerBenchmark#benchmarkReportDirectory}
+     * (not {@link ProblemBenchmark#problemReportDirectory})
      */
     String getGraphFilePath();
 

@@ -28,6 +28,8 @@ import org.drools.planner.core.score.Score;
  */
 public class SolverBenchmark {
 
+    private final DefaultPlannerBenchmark plannerBenchmark;
+
     private String name = null;
 
     private SolverConfig solverConfig = null;
@@ -39,6 +41,10 @@ public class SolverBenchmark {
     private Score totalScore = null;
     // Ranking starts from 0
     private Integer ranking = null;
+
+    public SolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+        this.plannerBenchmark = plannerBenchmark;
+    }
 
     public String getName() {
         return name;

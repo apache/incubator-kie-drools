@@ -28,24 +28,24 @@ public class WebsiteResourceUtils {
 
     private static final String RESOURCE_NAMESPACE = "/org/drools/planner/benchmark/core/statistic/";
 
-    public static void copyResourcesTo(File statisticDirectory) {
+    public static void copyResourcesTo(File benchmarkReportDirectory) {
         // Twitter Bootstrap
-        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.css");
-        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap-responsive.min.css");
-        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap.css");
-        copyResource(statisticDirectory, "twitterbootstrap/css/bootstrap.min.css");
-        copyResource(statisticDirectory, "twitterbootstrap/img/glyphicons-halflings-white.png");
-        copyResource(statisticDirectory, "twitterbootstrap/img/glyphicons-halflings.png");
-        copyResource(statisticDirectory, "twitterbootstrap/js/bootstrap.js");
-        copyResource(statisticDirectory, "twitterbootstrap/js/bootstrap.min.js");
-        copyResource(statisticDirectory, "twitterbootstrap/js/jquery.js");
-        copyResource(statisticDirectory, "twitterbootstrap/js/jquery.min.js");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap-responsive.css");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap-responsive.min.css");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap.css");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/css/bootstrap.min.css");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/img/glyphicons-halflings-white.png");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/img/glyphicons-halflings.png");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/js/bootstrap.js");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/js/bootstrap.min.js");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/js/jquery.js");
+        copyResource(benchmarkReportDirectory, "twitterbootstrap/js/jquery.min.js");
         // Website resources
-        copyResource(statisticDirectory, "website/img/droolsPlannerLogo.png");
+        copyResource(benchmarkReportDirectory, "website/img/droolsPlannerLogo.png");
     }
 
-    private static void copyResource(File statisticDirectory, String websiteResource) {
-        File outputFile = new File(statisticDirectory, websiteResource);
+    private static void copyResource(File benchmarkReportDirectory, String websiteResource) {
+        File outputFile = new File(benchmarkReportDirectory, websiteResource);
         InputStream in = null;
         OutputStream out = null;
         try {

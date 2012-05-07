@@ -31,14 +31,14 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest {
     @Test
     public void normal() {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
-        SolverBenchmark a = new SolverBenchmark();
+        SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(aSingleBenchmarkList, -1000);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -400);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
-        SolverBenchmark b = new SolverBenchmark();
+        SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(bSingleBenchmarkList, -1000);
         addPlannerBenchmarkResult(bSingleBenchmarkList, -200);
@@ -52,14 +52,14 @@ public class TotalScoreSolverBenchmarkRankingComparatorTest {
     @Test
     public void totalIsEqual() {
         TotalScoreSolverBenchmarkRankingComparator comparator = new TotalScoreSolverBenchmarkRankingComparator();
-        SolverBenchmark a = new SolverBenchmark();
+        SolverBenchmark a = new SolverBenchmark(null);
         List<SingleBenchmark> aSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(aSingleBenchmarkList, -1005);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -200);
         addPlannerBenchmarkResult(aSingleBenchmarkList, -30);
         a.setSingleBenchmarkList(aSingleBenchmarkList);
         a.benchmarkingEnded();
-        SolverBenchmark b = new SolverBenchmark();
+        SolverBenchmark b = new SolverBenchmark(null);
         List<SingleBenchmark> bSingleBenchmarkList = new ArrayList<SingleBenchmark>();
         addPlannerBenchmarkResult(bSingleBenchmarkList, -1000);
         addPlannerBenchmarkResult(bSingleBenchmarkList, -200);

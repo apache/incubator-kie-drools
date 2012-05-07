@@ -59,7 +59,6 @@ import org.jfree.ui.TextAnchor;
 public class PlannerStatistic {
 
     protected final DefaultPlannerBenchmark plannerBenchmark;
-    protected final File statisticDirectory;
     protected final File htmlOverviewFile;
 
     protected File bestScoreSummaryFile = null;
@@ -70,8 +69,7 @@ public class PlannerStatistic {
 
     public PlannerStatistic(DefaultPlannerBenchmark plannerBenchmark) {
         this.plannerBenchmark = plannerBenchmark;
-        this.statisticDirectory = plannerBenchmark.getStatisticDirectory();
-        htmlOverviewFile = new File(statisticDirectory, "index.html");
+        htmlOverviewFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "index.html");
     }
 
     public DefaultPlannerBenchmark getPlannerBenchmark() {
@@ -107,7 +105,7 @@ public class PlannerStatistic {
         for (ProblemBenchmark problemBenchmark : plannerBenchmark.getUnifiedProblemBenchmarkList()) {
             if (problemBenchmark.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmark.getProblemStatisticList()) {
-                    problemStatistic.writeStatistic(statisticDirectory);
+                    problemStatistic.writeStatistic();
                 }
             }
         }
@@ -150,7 +148,7 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Best score summary (higher score is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        bestScoreSummaryFile = new File(statisticDirectory, "bestScoreSummary.png");
+        bestScoreSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "bestScoreSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(bestScoreSummaryFile);
@@ -198,7 +196,8 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Winning score difference summary (higher is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        winningScoreDifferenceSummaryFile = new File(statisticDirectory, "winningScoreDifferenceSummary.png");
+        winningScoreDifferenceSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
+                "winningScoreDifferenceSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(winningScoreDifferenceSummaryFile);
@@ -245,7 +244,7 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        timeSpendSummaryFile = new File(statisticDirectory, "timeSpendSummary.png");
+        timeSpendSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "timeSpendSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(timeSpendSummaryFile);
@@ -291,7 +290,7 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        scalabilitySummaryFile = new File(statisticDirectory, "scalabilitySummary.png");
+        scalabilitySummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(), "scalabilitySummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(scalabilitySummaryFile);
@@ -336,7 +335,8 @@ public class PlannerStatistic {
         JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        averageCalculateCountSummaryFile = new File(statisticDirectory, "averageCalculateCountSummary.png");
+        averageCalculateCountSummaryFile = new File(plannerBenchmark.getBenchmarkReportDirectory(),
+                "averageCalculateCountSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(averageCalculateCountSummaryFile);
@@ -350,7 +350,7 @@ public class PlannerStatistic {
     }
 
     private void writeStatisticsWebsite() {
-        WebsiteResourceUtils.copyResourcesTo(statisticDirectory);
+        WebsiteResourceUtils.copyResourcesTo(plannerBenchmark.getBenchmarkReportDirectory());
 
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
