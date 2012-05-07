@@ -56,11 +56,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private SolverBenchmarkRankingWeightFactory solverBenchmarkRankingWeightFactory = null;
 
     private int parallelBenchmarkCount = -1;
-    private Long warmUpTimeMillisSpend = null;
+    private long warmUpTimeMillisSpend = 0L;
 
     private List<SolverBenchmark> solverBenchmarkList = null;
     private List<ProblemBenchmark> unifiedProblemBenchmarkList = null;
 
+    private Date startingTimestamp;
     private ExecutorService executorService;
     private Integer failureCount;
     private Throwable firstFailureThrowable;
@@ -122,11 +123,11 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         this.parallelBenchmarkCount = parallelBenchmarkCount;
     }
 
-    public Long getWarmUpTimeMillisSpend() {
+    public long getWarmUpTimeMillisSpend() {
         return warmUpTimeMillisSpend;
     }
 
-    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
+    public void setWarmUpTimeMillisSpend(long warmUpTimeMillisSpend) {
         this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
     }
 
@@ -144,6 +145,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     public void setUnifiedProblemBenchmarkList(List<ProblemBenchmark> unifiedProblemBenchmarkList) {
         this.unifiedProblemBenchmarkList = unifiedProblemBenchmarkList;
+    }
+
+    public Date getStartingTimestamp() {
+        return startingTimestamp;
     }
 
     public Integer getFailureCount() {
@@ -166,6 +171,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     public void benchmarkingStarted() {
+        startingTimestamp = new Date();
         if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
             throw new IllegalArgumentException(
                     "The solverBenchmarkList (" + solverBenchmarkList + ") cannot be empty.");
@@ -192,7 +198,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         benchmarkDirectory.mkdirs();
         if (benchmarkInstanceDirectory == null) {
-            String timestampDirectory = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
+            String timestampDirectory = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(startingTimestamp);
             benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
         }
         benchmarkInstanceDirectory.mkdirs();
@@ -207,7 +213,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     private void warmUp() {
-        if (warmUpTimeMillisSpend != null) {
+        if (warmUpTimeMillisSpend > 0L) {
             logger.info("================================================================================");
             logger.info("Warming up");
             logger.info("================================================================================");

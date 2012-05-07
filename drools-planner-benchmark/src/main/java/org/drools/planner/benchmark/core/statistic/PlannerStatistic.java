@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 
@@ -342,6 +343,8 @@ public class PlannerStatistic {
 
         Configuration freemarkerCfg = new Configuration();
         freemarkerCfg.setDefaultEncoding("UTF-8");
+        // TODO Benchmark reports should be interchangeable? If yes, also fix the locale for the charts
+        // freemarkerCfg.setLocale(Locale.US);
         freemarkerCfg.setClassForTemplateLoading(PlannerStatistic.class, "");
 
         String templateFilename = "index.html.ftl";

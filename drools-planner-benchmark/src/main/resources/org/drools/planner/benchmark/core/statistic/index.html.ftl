@@ -19,6 +19,7 @@
             <#list plannerStatistic.plannerBenchmark.unifiedProblemBenchmarkList as problemBenchmark>
                 <li><a href="#problem_${problemBenchmark.name}">${problemBenchmark.name}</a></li>
             </#list>
+                <li><a href="#benchmarkInformation">Benchmark information</a></li>
             </ul>
         </div>
     </div>
@@ -190,6 +191,27 @@
                 </#if>
             </section>
         </#list>
+            <section id="benchmarkInformation">
+                <h1>Benchmark information</h1>
+                <table class="table table-striped">
+                    <tr>
+                        <th>startingTimestamp</th>
+                        <td>${plannerStatistic.plannerBenchmark.startingTimestamp?datetime}</td>
+                    </tr>
+                    <tr>
+                        <th>parallelBenchmarkCount</th>
+                        <td>${plannerStatistic.plannerBenchmark.parallelBenchmarkCount}</td>
+                    </tr>
+                    <tr>
+                        <th>warmUpTimeMillisSpend</th>
+                        <td>${plannerStatistic.plannerBenchmark.warmUpTimeMillisSpend}</td>
+                    </tr>
+                    <tr>
+                        <th>failureCount</th>
+                        <td>${plannerStatistic.plannerBenchmark.failureCount}</td>
+                    </tr>
+                </table>
+            </section>
         </div>
     </div>
 </div>

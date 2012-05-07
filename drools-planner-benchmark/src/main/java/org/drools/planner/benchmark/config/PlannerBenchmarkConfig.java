@@ -381,11 +381,7 @@ public class PlannerBenchmarkConfig {
         return resolvedParallelBenchmarkCount;
     }
 
-    protected Long calculateWarmUpTimeMillisSpendTotal() {
-        if (warmUpTimeMillisSpend == null && warmUpSecondsSpend == null && warmUpMinutesSpend == null
-                && warmUpHoursSpend == null) {
-            return null;
-        }
+    protected long calculateWarmUpTimeMillisSpendTotal() {
         long warmUpTimeMillisSpendTotal = 0L;
         if (warmUpTimeMillisSpend != null) {
             warmUpTimeMillisSpendTotal += warmUpTimeMillisSpend;
