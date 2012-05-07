@@ -218,6 +218,9 @@ public class PlannerStatistic {
                 if (singleBenchmark.isSuccess()) {
                     long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
                     String solverLabel = solverBenchmark.getName();
+                    if (solverBenchmark.isRankingBest()) {
+                        solverLabel += " (winner)";
+                    }
                     String planningProblemLabel = singleBenchmark.getProblemBenchmark().getName();
                     dataset.addValue(timeMillisSpend, solverLabel, planningProblemLabel);
                 }
@@ -261,7 +264,11 @@ public class PlannerStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
-            XYSeries series = new XYSeries(solverBenchmark.getName());
+            String solverLabel = solverBenchmark.getName();
+            if (solverBenchmark.isRankingBest()) {
+                solverLabel += " (winner)";
+            }
+            XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
                     long problemScale = singleBenchmark.getProblemScale();
@@ -302,7 +309,11 @@ public class PlannerStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
         for (SolverBenchmark solverBenchmark : plannerBenchmark.getSolverBenchmarkList()) {
-            XYSeries series = new XYSeries(solverBenchmark.getName());
+            String solverLabel = solverBenchmark.getName();
+            if (solverBenchmark.isRankingBest()) {
+                solverLabel += " (winner)";
+            }
+            XYSeries series = new XYSeries(solverLabel);
             for (SingleBenchmark singleBenchmark : solverBenchmark.getSingleBenchmarkList()) {
                 if (singleBenchmark.isSuccess()) {
                     long problemScale = singleBenchmark.getProblemScale();
