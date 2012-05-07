@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.name}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.name}</title>
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
