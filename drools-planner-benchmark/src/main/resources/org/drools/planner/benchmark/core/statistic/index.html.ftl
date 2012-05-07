@@ -30,7 +30,7 @@
         </div>
         <div class="span10">
             <header class="main-page-header">
-                <h1>Planner benchmark report</h1>
+                <h1>Benchmark report</h1>
             </header>
             <section id="summary">
                 <div class="page-header">
