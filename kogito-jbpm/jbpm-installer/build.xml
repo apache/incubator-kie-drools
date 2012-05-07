@@ -523,9 +523,9 @@
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-human-task-war"/>
     <unzip src="${install.home}/lib/jbpm-human-task-war-${jBPM.version}.war" dest="${install.home}/target/jbpm-human-task-war" />
-  	<!-- remove hornetq related libs as they are referenced from jboss module -->
+  	<!-- remove netty related libs as they don't deploy on as7 -->
     <delete>
-      <fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/" includes="hornetq*.jar,netty*.jar" />
+      <fileset dir="${install.home}/target/jbpm-human-task-war/WEB-INF/lib/" includes="netty*.jar" />
     </delete>
   	<copy file="${install.home}/task-service/resources/war/web.xml" 
   	          tofile="${install.home}/target/jbpm-human-task-war/WEB-INF/web.xml" 

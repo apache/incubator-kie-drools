@@ -82,7 +82,7 @@
             <configuration>
                 <archive>
                     <manifestEntries>
-                        <Dependencies>org.hornetq</Dependencies>
+                        <Dependencies>org.jboss.netty</Dependencies>
                     </manifestEntries>
                 </archive>
                </configuration>
