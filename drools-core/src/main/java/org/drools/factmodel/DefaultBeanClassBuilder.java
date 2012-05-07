@@ -16,6 +16,7 @@
 
 package org.drools.factmodel;
 
+import org.drools.definition.type.FactField;
 import org.drools.factmodel.traits.TraitableBean;
 import org.mvel2.asm.*;
 
@@ -224,10 +225,20 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
     }
 
     protected void buildEqualityMethods(ClassWriter cw, ClassDefinition classDef) {
-        this.buildEquals( cw,
-                classDef );
-        this.buildHashCode( cw,
-                classDef );
+        boolean hasKey = false;
+        for ( FactField fld : classDef.getFields() ) {
+            if ( fld.isKey() ) {
+                hasKey = true;
+                break;
+            }
+        }
+
+        if (hasKey) {
+            this.buildEquals( cw,
+                    classDef );
+            this.buildHashCode( cw,
+                    classDef );
+        }
     }
 
     protected void buildFields(ClassWriter cw, ClassDefinition classDef) {
