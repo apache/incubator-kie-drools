@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Statistic ${plannerStatistic.plannerBenchmark.name}</title>
+    <title>Planner benchmark report ${plannerStatistic.plannerBenchmark.name}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="twitterbootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="twitterbootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -32,6 +32,7 @@
         </div>
         <div class="span10">
             <section id="summary">
+                <h1>Planner benchmark report</h1>
                 <h1>Summary</h1>
             <#if plannerStatistic.plannerBenchmark.hasFailure()>
                 <div class="alert alert-error">
