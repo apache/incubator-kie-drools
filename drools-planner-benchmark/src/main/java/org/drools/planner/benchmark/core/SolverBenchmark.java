@@ -127,7 +127,7 @@ public class SolverBenchmark {
         return singleBenchmarkList.size() - failureCount > 0;
     }
 
-    public boolean hasFailure() {
+    public boolean hasAnyFailure() {
         return failureCount > 0;
     }
 

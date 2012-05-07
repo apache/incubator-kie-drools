@@ -171,7 +171,7 @@ public class ProblemBenchmark {
         }
     }
 
-    public boolean hasFailure() {
+    public boolean hasAnyFailure() {
         return failureCount > 0;
     }
 

@@ -270,7 +270,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         // Do not rank a SolverBenchmark that has a failure
         for (Iterator<SolverBenchmark> it = rankedSolverBenchmarkList.iterator(); it.hasNext(); ) {
             SolverBenchmark solverBenchmark = it.next();
-            if (solverBenchmark.hasFailure()) {
+            if (solverBenchmark.hasAnyFailure()) {
                 it.remove();
             }
         }
@@ -302,7 +302,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         winningSolverBenchmark = rankedSolverBenchmarkList.isEmpty() ? null : rankedSolverBenchmarkList.get(0);
     }
 
-    public boolean hasFailure() {
+    public boolean hasAnyFailure() {
         return failureCount > 0;
     }
 

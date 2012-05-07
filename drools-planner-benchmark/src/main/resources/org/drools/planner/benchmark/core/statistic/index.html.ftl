@@ -35,7 +35,7 @@
             <h1>Planner benchmark report</h1>
             <section id="summary">
                 <h1>Summary</h1>
-            <#if plannerStatistic.plannerBenchmark.hasFailure()>
+            <#if plannerStatistic.plannerBenchmark.hasAnyFailure()>
                 <div class="alert alert-error">
                     <p>${plannerStatistic.plannerBenchmark.failureCount} benchmarks have failed!</p>
                 </div>
@@ -161,7 +161,7 @@
                 <div class="page-header">
                     <h2>${problemBenchmark.name}</h2>
                 </div>
-                <#if problemBenchmark.hasFailure()>
+                <#if problemBenchmark.hasAnyFailure()>
                     <div class="alert alert-error">
                         <p>${problemBenchmark.failureCount} benchmarks have failed!</p>
                     </div>
