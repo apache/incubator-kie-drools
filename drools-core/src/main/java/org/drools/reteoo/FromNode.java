@@ -455,7 +455,7 @@ public class FromNode extends LeftTupleSource
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
             for ( RightTuple rightTuples : matches.values() ) {
-                for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
+                for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuple ) ) {
                     boolean isAllowed = true;
                     if ( this.alphaConstraints != null ) {
                         // First alpha node filters
