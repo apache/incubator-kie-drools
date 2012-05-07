@@ -2,7 +2,7 @@
 <assembly>
   <id>human-task-war</id>
   <formats>
-    <format>war</format>
+    <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
   <dependencySets>
@@ -11,7 +11,7 @@
         <include>org.jbpm:jbpm-human-task-war:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
-      <unpack>true</unpack>
+      <unpack>false</unpack>
     </dependencySet>
   </dependencySets>
 </assembly>
