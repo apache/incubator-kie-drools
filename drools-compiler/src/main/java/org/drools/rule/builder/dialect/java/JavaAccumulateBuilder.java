@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -129,6 +131,7 @@ public class JavaAccumulateBuilder
         final List<AccumulateFunctionCallDescr> funcCalls = accumDescr.getFunctions();
         // list of available source declarations
         final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         // the accumulator array
         Accumulator[] accumulators = new Accumulator[funcCalls.size()];
@@ -313,6 +316,7 @@ public class JavaAccumulateBuilder
             declarations[i] = decls.get( it.next() );
         }
         final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         final Map<String, Object> map = createVariableContext( className,
                                                                null,
