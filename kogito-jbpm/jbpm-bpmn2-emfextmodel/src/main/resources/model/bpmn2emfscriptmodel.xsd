@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema 
+  targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  elementFormDefault="qualified" 
+  xmlns="http://www.w3.org/2001/XMLSchema">
+  
+  <element name="script" type="string"/>
+  
+</schema>

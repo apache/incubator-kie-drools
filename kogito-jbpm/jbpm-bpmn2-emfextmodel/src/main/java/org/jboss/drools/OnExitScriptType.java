@@ -38,7 +38,7 @@ public interface OnExitScriptType extends EObject {
 	 * @see #setScript(String)
 	 * @see org.jboss.drools.DroolsPackage#getOnExitScriptType_Script()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.String" required="true"
-	 *        extendedMetaData="kind='element' name='script' namespace='##targetNamespace'"
+	 *        extendedMetaData="kind='element' name='script' namespace='http://www.omg.org/spec/BPMN/20100524/MODEL'"
 	 * @generated
 	 */
 	String getScript();
