@@ -36,7 +36,7 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
     }
 
     private void init(){
-        setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient()));
+        setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient("HTWorkItemHandler")));
         if(getPort() <= 0){
             setPort(5446);
         }

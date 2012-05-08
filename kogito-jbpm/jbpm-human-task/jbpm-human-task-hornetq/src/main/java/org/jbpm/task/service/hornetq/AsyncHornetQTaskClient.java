@@ -17,12 +17,17 @@ package org.jbpm.task.service.hornetq;
 
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.TaskClientConnector;
 
 
 public class AsyncHornetQTaskClient extends TaskClient {
 
     public AsyncHornetQTaskClient() {
-        super(new HornetQTaskClientConnector("client 1",
+        this("hornetq client 1");
+    }
+
+    public AsyncHornetQTaskClient(String name) {
+        super(new HornetQTaskClientConnector(name,
         					new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
     }
 }

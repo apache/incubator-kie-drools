@@ -117,7 +117,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
             if(!connected){
                 connected = client.connect(ipAddress, port);
                 if (!connected) {
-                    throw new IllegalArgumentException("Could not connect task client");
+                    throw new IllegalArgumentException("Could not connect task client: on ip: "+ipAddress +" - port: "+port);
                 }
                 registerTaskEvents();
             }else{

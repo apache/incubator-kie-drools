@@ -11,7 +11,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 
 public class EvaluationExample {
 	
@@ -28,7 +28,9 @@ public class EvaluationExample {
 			    	  }
 			      }
 			    });
-			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());
+            HornetQHTWorkItemHandler hornetQHTWorkItemHandler = new HornetQHTWorkItemHandler(ksession);
+            hornetQHTWorkItemHandler.setPort(5445);
+			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", hornetQHTWorkItemHandler);
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("employee", "krisv");

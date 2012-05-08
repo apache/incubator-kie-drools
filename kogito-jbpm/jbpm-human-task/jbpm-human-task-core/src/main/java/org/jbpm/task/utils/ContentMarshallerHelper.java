@@ -29,7 +29,6 @@ import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
-import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.service.ContentData;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class ContentMarshallerHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContentMarshallerHelper.class);
 
     public static ContentData marshal(Object o, ContentMarshallerContext marshallerContext, Environment env) {
         ObjectMarshallingStrategy[] strats = null;
