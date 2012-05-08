@@ -32,6 +32,7 @@ public class SessionInfo {
     private Date               lastModificationDate;
     
     @Lob
+    @Column(length=2147483647)
     private byte[]             rulesByteArray;
 
     @Transient
