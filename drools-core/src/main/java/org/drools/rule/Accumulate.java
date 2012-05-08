@@ -29,6 +29,7 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.spi.Accumulator;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Tuple;
@@ -335,7 +336,8 @@ public class Accumulate extends ConditionalElement
     private Declaration[] getInnerDeclarationCache() {
         if( this.innerDeclarationCache == null ) {
             Map<String, Declaration> innerDeclarations = this.source.getInnerDeclarations();
-            this.innerDeclarationCache = innerDeclarations.values().toArray( new Declaration[innerDeclarations.size()] ); 
+            this.innerDeclarationCache = innerDeclarations.values().toArray( new Declaration[innerDeclarations.size()] );
+            Arrays.sort( this.innerDeclarationCache, RuleTerminalNode.SortDeclarations.instance );
         }
         return this.innerDeclarationCache;
     }

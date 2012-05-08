@@ -43,6 +43,8 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.Variable;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -2180,4 +2182,49 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
+    @Test
+    public void testAccumulateWithVarsOutOfHashOrder() throws Exception {
+        // JBRULES-3494
+        String rule = "package com.sample;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "declare MessageHolder\n" +
+                "  id : String\n" +
+                "  msg: String\n" +
+                "end\n" +
+                "\n" +
+                "query getResults( String $mId, List $holders )\n" +
+                "  accumulate(  \n" +
+                "    $holder  : MessageHolder( id == $mId, $ans : msg ),\n" +
+                "    $holders : collectList( $holder )\n" +
+                "  ) \n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new MessageHolder( \"1\", \"x\" ) );\n" +
+                "end\n";
+
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        ksession.fireAllRules();
+
+        QueryResults res = ksession.getQueryResults( "getResults", "1", Variable.v );
+        assertEquals( 1, res.size() );
+
+        Object o = res.iterator().next().get( "$holders" );
+        assertTrue( o instanceof List );
+        assertEquals( 1, ((List) o).size() );
+    }
 }
