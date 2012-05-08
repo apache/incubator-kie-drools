@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<project name="Drools" basedir="." default="usage">
+<project name="jBPM" basedir="." default="usage">
 
   <target name="usage">
-    <echo>ant -f update-version.xml -Dcurrent="5.0-SNAPSHOT" -Dnew="5.0.0" -Dosgi.current="5.0.0.SNAPSHOT" -Dosgi.new="5.0.0" updateVersion</echo>
+    <echo>ant -f update-version.xml -Dcurrent="5.2.0-SNAPSHOT" -Dnew="5.3.0-SNAPSHOT" -Dosgi.current="5.2.0.SNAPSHOT" -Dosgi.new="5.3.0.SNAPSHOT" updateVersion</echo>
   </target>
 
   <target name="updateVersion" depends="checkProps, error" unless="propsNotSet">
@@ -12,7 +12,7 @@
       <fileset dir="." includes="pom.xml, 
                                  jbpm-*/pom.xml, 
                                  jbpm-gwt/**/pom.xml,
-                                 jbpm-docs/**/pom.xml"/>
+                                 jbpm-human-task/**/pom.xml"/>
     </replaceregexp>
   	<replaceregexp match="&lt;jbpm.osgi.version&gt;${osgi.current}&lt;/jbpm.osgi.version&gt;"
   	               replace="&lt;jbpm.osgi.version&gt;${osgi.new}&lt;/jbpm.osgi.version&gt;" 
