@@ -14,6 +14,11 @@
                                  jbpm-gwt/**/pom.xml,
                                  jbpm-human-task/**/pom.xml"/>
     </replaceregexp>
+  	<replaceregexp match="&lt;jbpm.version&gt;${current}&lt;/jbpm.version&gt;"
+  	               replace="&lt;jbpm.version&gt;${new}&lt;/jbpm.version&gt;" 
+  	               byline="true">
+  	  <fileset dir="." includes="pom.xml"/>
+  	</replaceregexp>
   	<replaceregexp match="&lt;jbpm.osgi.version&gt;${osgi.current}&lt;/jbpm.osgi.version&gt;"
   	               replace="&lt;jbpm.osgi.version&gt;${osgi.new}&lt;/jbpm.osgi.version&gt;" 
   	               byline="true">
