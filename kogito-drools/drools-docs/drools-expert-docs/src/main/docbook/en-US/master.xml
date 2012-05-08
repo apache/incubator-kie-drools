@@ -33,13 +33,11 @@
   </preface>
 
   <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
-  <xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />
-  <xi:include href="Chapter-Theory/Chapter-Theory.xml" />
-  <xi:include href="Chapter-User_Guide/Chapter-User_Guide.xml" />
-  <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />
-  <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />
+  <xi:include href="Chapter-UserGuide/Chapter-UserGuide.xml" />
+  <xi:include href="Chapter-ApiReference/Chapter-ApiReference.xml" />
+  <xi:include href="Chapter-LanguageReference/Chapter-LanguageReference.xml" />
   <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
-  <xi:include href="Chapter-IDE/Chapter-QuickStart.xml" />
+  <xi:include href="Chapter-IDE/Chapter-IDE.xml" />
   <xi:include href="Chapter-Examples/Chapter-Examples.xml" />
 
 </book>
