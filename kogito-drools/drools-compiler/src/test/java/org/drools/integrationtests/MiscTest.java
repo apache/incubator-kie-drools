@@ -10997,4 +10997,5 @@ public class MiscTest extends CommonTestMethodBase {
         assertTrue( list.get( 2 ).equals( list.get( 3 ) ) );
 
     }
+
 }
