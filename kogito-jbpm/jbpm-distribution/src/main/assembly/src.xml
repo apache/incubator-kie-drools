@@ -12,6 +12,7 @@
       <includes>
         <include>jbpm-bam/**</include>	  
         <include>jbpm-bpmn2/**</include>	
+        <include>jbpm-bpmn2-emfextmodel/**</include>	
         <include>jbpm-distribution/**</include>
         <include>jbpm-docs/**</include>
         <include>jbpm-examples/**</include>
