@@ -22,7 +22,16 @@
     STREAM mode works.</para>
   </important>
 
-  <xi:include href="Section-SlidingWindows_SlidingTimeWindows.xml" />
+  <important>
+    <para>Sliding windows start to match immediately and defining a sliding
+    window does not imply that the rule has to wait for the sliding window to
+    be "full" in order to match. For instance, a rule that calculates the
+    average of an event property on a window:length(10) will start calculating
+    the average immediately, and it will start at 0 (zero) for no-events, and
+    will update the average as events arrive one by one.</para>
+  </important>
 
-  <xi:include href="Section-SlidingWindows_SlidingLengthWindows.xml" />
+  <xi:include href="Section-SlidingWindows_SlidingTimeWindows.xml"/>
+
+  <xi:include href="Section-SlidingWindows_SlidingLengthWindows.xml"/>
 </section>
