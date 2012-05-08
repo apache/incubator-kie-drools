@@ -594,4 +594,105 @@ declare LongTermStudent extends Student
     course : String
 end</programlisting>
   </section>
+
+  <section>
+    <title>Traits</title>
+
+    <para>The same fact may have multiple dynamic types which do not fit naturally in a class hierarchy.
+    Traits allow to model this very common scenario. A trait is an interface that can be applied (and eventually
+    removed) to an individual object at runtime. To create a trait out of an interface, one has to add a @format(trait)
+    annotation to its declaration in DRL as in the following example:</para>
+
+    <programlisting>declare GoldenCustomer
+    @format(trait)
+    // fields will map to getters/setters
+    code     : String
+    balance  : long
+    discount : int
+    maxExpense : long
+end</programlisting>
+
+    <para>In order to apply a trait to an object, we provide the new don keyword, which can be used as simply as this:</para>
+
+    <programlisting>when
+    $c : Customer()
+then
+    GoldenCustomer gc = don( $c, Customer.class );
+end</programlisting>
+
+    <para>when a core object dons a trait, a proxy class is created on the fly (one such class will be generated lazily for each
+    core/trait class combination). The proxy instance, which wraps the core object and implements the trait interface, is inserted
+    automatically and will possibly activate other rules. An immediate advantage of declaring and using interfaces, getting the
+    implementation proxy for free from the engine, is that multiple inheritance hierarchies can be exploited when writing rules.
+    The core classes, however, need not implement any of those interfaces statically, also facilitating the use of legacy classes as
+    cores. In fact, any object can don a trait. For efficiency reasons, however, one can add the @Traitable annotation to a declared
+    bean class to reduce the amount of glue code that the compiler will have to generate. This is optional and will not change the
+    behavior of the engine:</para>
+
+    <programlisting>declare Customer
+    @Traitable
+    code    : String
+    balance : long
+end</programlisting>
+
+    <para>The only connection between core classes and trait interfaces is at the proxy level, a trait is not specifically tied to a
+    core class. This means that the same trait can be applied to totally different objects. For this reason, the trait does not
+    transparently expose the fields of its core object. So, when writing a rule using a trait interface, only the fields of the interface
+    will be available, as usual. However, any field in the interface that corresponds to a core object field, will be mapped by the proxy class:</para>
+
+    <programlisting>when
+    $o: OrderItem( $p : price, $code : custCode )
+    $c: GoldenCustomer( code == $code, $a : balance, $d: discount )
+then
+    $c.setBalance( $a - $p*$d );
+end</programlisting>
+
+    <para>In this case, the code and balance would be read from the underlying Customer object. Likewise, the setAccount will modify the
+    underlying object, preserving a strongly typed access to the data structures. Now, one might wonder what happens when a core class
+    does NOT provide the implementation for a field defined in an interface. We call hard fields those trait fields which are also core fields
+    and thus readily available, while we define soft those fields which are NOT provided by the core class. Hidden fields, instead, are fields
+    in the core class not exposed by the interface.</para>
+
+    <para>So, while hard field management is intuitive, there remains the problem of soft and hidden fields. The solution we have adopted
+    is to use a two-part proxy. Internally, proxies are formed by a proper proxy and a wrapper. The former implements the interface, while
+    the latter manages the core object fields, implementing a name/value map to supports soft fields. The proxy, then, uses both the core
+    object and the map wrapper to implement the interface, as needed. So, you can write:</para>
+
+    <programlisting>when
+    $sc : GoldenCustomer( $c : code, // hard getter
+                          $maxExpense : maxExpense > 1000 // soft getter
+    )
+then
+    $sc.setDiscount( ... ); // soft setter
+end</programlisting>
+
+    <para>The wrapper, then, provides a looser form of typing when writing rules. However, it has also other uses. The wrapper is specific
+        to the object it wraps, regardless of how many traits have been attached to an object: all the proxies on the same object will share the
+        same wrapper. Secondly, the wrapper also contains a back-reference to all proxies attached to the wrapped object, effectively allowing
+        traits to see each other. To this end, we have provided the new isA operator:</para>
+
+    <programlisting>$sc : GoldenCustomer( $maxExpense : maxExpense > 1000,
+                      this isA "SeniorCustomer"
+)</programlisting>
+
+    <para>Eventually, the business logic may require that a trait is removed from a wrapped object. To this end, we provide two options.
+        The first is a "logical don", which will result in a logical insertion of the proxy resulting from the traiting operation:</para>
+
+    <programlisting>then
+    don( $x, // core object
+         Customer.class, // trait class
+         true // optional flag for logical insertion
+    )
+    </programlisting>
+
+    <para>The second is the use of the shed keyword, which causes the retraction of the proxy corresponding to the given argument type:</para>
+
+    <programlisting>then
+    Thing t = shed( $x, GoldenCustomer.class )</programlisting>
+
+    <para>This operation returns another proxy implementing the org.drools.factmodel.traits.Thing interface, where the getFields() and getCore()
+    methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition to any others specified).
+    This allows to preserve the wrapper with the soft fields which would otherwise be lost.</para>
+  </section>
+
 </section>
