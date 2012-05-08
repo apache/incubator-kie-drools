@@ -46,8 +46,11 @@ public class WorkItemInfo  {
     private Date   creationDate;
     private long   processInstanceId;
     private long   state;
-    private @Lob
-    byte[]         workItemByteArray;
+    
+    @Lob
+    @Column(length=2147483647)
+    private byte[] workItemByteArray;
+    
     private @Transient
     WorkItem       workItem;
 
