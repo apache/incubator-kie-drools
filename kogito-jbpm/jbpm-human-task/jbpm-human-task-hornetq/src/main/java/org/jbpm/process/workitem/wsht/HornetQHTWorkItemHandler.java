@@ -27,16 +27,26 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
 
     public HornetQHTWorkItemHandler(KnowledgeRuntime session) {
         super(session);
-        init();
+        init("HTWorkItemHandler");
     }
 
+    public HornetQHTWorkItemHandler(String connectorName, KnowledgeRuntime session) {
+        super(session);
+        init(connectorName);
+    }
+    
     public HornetQHTWorkItemHandler(KnowledgeRuntime session, OnErrorAction action) {
         super(session, action);
-        init();
+        init("HTWorkItemHandler");
+    }
+    
+    public HornetQHTWorkItemHandler(String connectorName, KnowledgeRuntime session, OnErrorAction action) {
+        super(session, action);
+        init(connectorName);
     }
 
-    private void init(){
-        setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient("HTWorkItemHandler")));
+    private void init(String connectorName){
+        setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient(connectorName)));
         if(getPort() <= 0){
             setPort(5446);
         }

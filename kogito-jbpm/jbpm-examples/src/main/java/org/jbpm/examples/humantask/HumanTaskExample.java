@@ -68,14 +68,14 @@ public class HumanTaskExample {
 
             taskClient.complete(task1.getId(), "sales-rep", contentData);
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
 
             // "krisv" approves result
             TaskSummary task2 = taskClient.getTasksAssignedAsPotentialOwner("krisv", "en-UK").get(0);
             System.out.println("krisv executing task " + task2.getName() + "(" + task2.getId() + ": " + task2.getDescription() + ")");
             taskClient.start(task2.getId(), "krisv");
 
-            Thread.sleep(1000);
+            
             
             results = new HashMap<String, Object>();
             results.put("outcome", "Agree");
@@ -84,7 +84,7 @@ public class HumanTaskExample {
 
             taskClient.complete(task2.getId(), "krisv", contentData);
 
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             // "john" as manager reviews request
 
             groups = new ArrayList<String>();
@@ -95,7 +95,7 @@ public class HumanTaskExample {
 
             
             taskClient.claim(task3.getId(), "john", groups);
-            Thread.sleep(1000);
+            
             taskClient.start(task3.getId(), "john");
 
             results = new HashMap<String, Object>();
@@ -128,11 +128,12 @@ public class HumanTaskExample {
 
             taskClient.complete(task4.getId(), "sales-rep", null);
 
+            
+            Thread.sleep(2000);
             taskClient.disconnect();
             hornetQHTWorkItemHandler.dispose();
-            Thread.sleep(1000);
-            
             logger.close();
+            System.exit(0);
         } catch (Throwable t) {
             t.printStackTrace();
         }
