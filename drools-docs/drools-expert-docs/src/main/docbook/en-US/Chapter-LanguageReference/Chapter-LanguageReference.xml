@@ -4,9 +4,18 @@
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Authoring</title>
+  <title>Rule Language Reference</title>
 
-  <xi:include href="Section-Decision_Tables.xml" />
-  <xi:include href="Section-Templates.xml" />
+  <xi:include href="Section-Overview.xml" />
+  <xi:include href="Section-Keywords.xml" />
+  <xi:include href="Section-Comments.xml" />
+  <xi:include href="Section-ErrorMessages.xml" />
+  <xi:include href="Section-Package.xml" />
+  <xi:include href="Section-Function.xml" />
+  <xi:include href="Section-TypeDeclaration.xml" />
+  <xi:include href="Section-Rule.xml" />
+  <xi:include href="Section-Query.xml" />
+  <xi:include href="Section-DSL.xml" />
+  <xi:include href="Section-XML.xml" />
 
 </chapter>

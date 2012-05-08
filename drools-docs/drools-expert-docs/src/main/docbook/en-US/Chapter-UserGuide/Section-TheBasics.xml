@@ -476,4 +476,124 @@ ksession.fireAllRules();</programlisting>
     you can start to see the value and power of a declarative rule
     system.</para>
   </section>
+
+  <section>
+    <title>Methods versus Rules</title>
+
+    <para>People often confuse methods and rules, and new rule users regular
+    ask, "How do I call a rule?" After the last section, you are now feeling
+    like a rule expert and the answer to that is obvious, but let's summarize
+    the differences nonetheless.</para>
+
+    <programlisting language="java">public void helloWorld(Person person) {
+    if ( person.getName().equals( "Chuck" ) ) {
+        System.out.println( "Hello Chuck" );
+    }
+}</programlisting>
+
+    <itemizedlist>
+      <listitem>
+        <para>Methods are called directly.</para>
+      </listitem>
+
+      <listitem>
+        <para>Specific instances are passed.</para>
+      </listitem>
+
+      <listitem>
+        <para>One call results in a single execution.</para>
+      </listitem>
+    </itemizedlist>
+
+    <programlisting>rule "Hello World"
+    when
+        Person( name == "Chuck" )
+    then
+        System.out.println( "Hello Chuck" );
+        end</programlisting>
+
+    <itemizedlist>
+      <listitem>
+        <para>Rules execute by matching against any data as long it is
+        inserted into the engine.</para>
+      </listitem>
+
+      <listitem>
+        <para>Rules can never be called directly.</para>
+      </listitem>
+
+      <listitem>
+        <para>Specific instances cannot be passed to a rule.</para>
+      </listitem>
+
+      <listitem>
+        <para>Depending on the matches, a rule may fire once or several times,
+        or not at all.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Cross Products</title>
+
+    <para>Earlier the term "cross product" was mentioned, which is the result
+    of a join. Imagine for a moment that the data from the fire alarm example
+    were used in combination with the following rule where there ar no field
+    constraints:</para>
+
+    <programlisting>rule
+when
+    $room : Room()
+    $sprinkler : Sprinkler()
+then
+    System.out.println( "room:" + $room.getName() +
+                        " sprinkler:" + $sprinkler.getRoom().getName() );
+end</programlisting>
+
+    <para>In SQL terms this would be like doing <code>select * from Room,
+    Sprinkler</code> and every row in the Room table would be joined with
+    every row in the Sprinkler table resulting in the following output:</para>
+
+    <programlisting>room:office sprinkler:office
+room:office sprinkler:kitchen
+room:office sprinkler:livingroom
+room:office sprinkler:bedroom
+room:kitchen sprinkler:office
+room:kitchen sprinkler:kitchen
+room:kitchen sprinkler:livingroom
+room:kitchen sprinkler:bedroom
+room:livingroom sprinkler:office
+room:livingroom sprinkler:kitchen
+room:livingroom sprinkler:livingroom
+room:livingroom sprinkler:bedroom
+room:bedroom sprinkler:office
+room:bedroom sprinkler:kitchen
+room:bedroom sprinkler:livingroom
+room:bedroom sprinkler:bedroom</programlisting>
+
+    <para>These cross products can obviously become huge, and they may very
+    well contain spurious data. The size of cross products is often the source
+    of performance problems for new rule authors. From this it can be seen
+    that it's always desirable to constrain the cross products, which is done
+    with the variable constraint.</para>
+
+    <programlisting>rule
+when
+    $room : Room()
+    $sprinkler : Sprinkler( room == $room )
+then
+    System.out.println( "room:" + $room.getName() +
+                        " sprinkler:" + $sprinkler.getRoom().getName() );
+end</programlisting>
+
+    <para>This results in just four rows of data, with the correct Sprinkler
+    for each Room. In SQL (actually HQL) the corresponding query would be
+    <code>select * from Room, Sprinkler where Room ==
+    Sprinkler.room</code>.</para>
+
+    <programlisting>room:office sprinkler:office
+room:kitchen sprinkler:kitchen
+room:livingroom sprinkler:livingroom
+room:bedroom sprinkler:bedroom</programlisting>
+  </section>
 </section>

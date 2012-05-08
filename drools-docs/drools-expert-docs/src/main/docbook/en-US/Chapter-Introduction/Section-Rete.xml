@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Rete Algorithm</title>
+
+  <para>The <emphasis>Rete</emphasis> algorithm was invented by Dr. Charles
+  Forgy and documented in his PhD thesis in 1978-79. A simplified version of
+  the paper was published in 1982 (<ulink
+  url="http://citeseer.ist.psu.edu/context/505087/0">http://citeseer.ist.psu.edu/context/505087/0</ulink>).
+  The latin word "rete" means "net" or "network". The Rete algorithm can be
+  broken into 2 parts: rule compilation and runtime execution.</para>
+
+  <para>The compilation algorithm describes how the Rules in the Production
+  Memory are processed to generate an efficient discrimination network. In
+  non-technical terms, a discrimination network is used to filter data as it
+  propagates through the network. The nodes at the top of the network would
+  have many matches, and as we go down the network, there would be fewer
+  matches. At the very bottom of the network are the terminal nodes. In Dr.
+  Forgy's 1982 paper, he described 4 basic nodes: root, 1-input, 2-input and
+  terminal.</para>
+
+  <figure>
+    <title>Rete Nodes</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" contentdepth="244" contentwidth="392"
+                   fileref="images/Chapter-Rule_Engine/Rete_Nodes.png"
+                   format=""/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The root node is where all objects enter the network. From there, it
+  immediately goes to the ObjectTypeNode. The purpose of the ObjectTypeNode is
+  to make sure the engine doesn't do more work than it needs to. For example,
+  say we have 2 objects: Account and Order. If the rule engine tried to
+  evaluate every single node against every object, it would waste a lot of
+  cycles. To make things efficient, the engine should only pass the object to
+  the nodes that match the object type. The easiest way to do this is to
+  create an ObjectTypeNode and have all 1-input and 2-input nodes descend from
+  it. This way, if an application asserts a new Account, it won't propagate to
+  the nodes for the Order object. In Drools when an object is asserted it
+  retrieves a list of valid ObjectTypesNodes via a lookup in a HashMap from
+  the object's Class; if this list doesn't exist it scans all the
+  ObjectTypeNodes finding valid matches which it caches in the list. This
+  enables Drools to match against any Class type that matches with an
+  <literal>instanceof</literal> check.</para>
+
+  <figure>
+    <title>ObjectTypeNodes</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Engine/Object_Type_Nodes.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>ObjectTypeNodes can propagate to AlphaNodes, LeftInputAdapterNodes and
+  BetaNodes. AlphaNodes are used to evaluate literal conditions. Although the
+  1982 paper only covers equality conditions, many RETE implementations
+  support other operations. For example, <code>Account.name == "Mr
+  Trout"</code> is a literal condition. When a rule has multiple literal
+  conditions for a single object type, they are linked together. This means
+  that if an application asserts an Account object, it must first satisfy the
+  first literal condition before it can proceed to the next AlphaNode. In Dr.
+  Forgy's paper, he refers to these as IntraElement conditions. The following
+  diagram shows the AlphaNode combinations for Cheese( name == "cheddar",
+  strength == "strong" ):</para>
+
+  <figure>
+    <title>AlphaNodes</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Engine/Alpha_Nodes.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Drools extends Rete by optimizing the propagation from ObjectTypeNode
+  to AlphaNode using hashing. Each time an AlphaNode is added to an
+  ObjectTypeNode it adds the literal value as a key to the HashMap with the
+  AlphaNode as the value. When a new instance enters the ObjectType node,
+  rather than propagating to each AlphaNode, it can instead retrieve the
+  correct AlphaNode from the HashMap,thereby avoiding unnecessary literal
+  checks.</para>
+
+  <para>There are two two-input nodes, JoinNode and NotNode, and both are
+  types of BetaNodes. BetaNodes are used to compare 2 objects, and their
+  fields, to each other. The objects may be the same or different types. By
+  convention we refer to the two inputs as left and right. The left input for
+  a BetaNode is generally a list of objects; in Drools this is a Tuple. The
+  right input is a single object. Two Nodes can be used to implement 'exists'
+  checks. BetaNodes also have memory. The left input is called the Beta Memory
+  and remembers all incoming tuples. The right input is called the Alpha
+  Memory and remembers all incoming objects. Drools extends Rete by performing
+  indexing on the BetaNodes. For instance, if we know that a BetaNode is
+  performing a check on a String field, as each object enters we can do a hash
+  lookup on that String value. This means when facts enter from the opposite
+  side, instead of iterating over all the facts to find valid joins, we do a
+  lookup returning potentially valid candidates. At any point a valid join is
+  found the Tuple is joined with the Object; which is referred to as a partial
+  match; and then propagated to the next node.</para>
+
+  <figure>
+    <title>JoinNode</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Engine/Join_Node.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>To enable the first Object, in the above case Cheese, to enter the
+  network we use a LeftInputNodeAdapter - this takes an Object as an input and
+  propagates a single Object Tuple.</para>
+
+  <para>Terminal nodes are used to indicate a single rule having matched all
+  its conditions; at this point we say the rule has a full match. A rule with
+  an 'or' conditional disjunctive connective results in subrule generation for
+  each possible logically branch; thus one rule can have multiple terminal
+  nodes.</para>
+
+  <para>Drools also performs node sharing. Many rules repeat the same
+  patterns, and node sharing allows us to collapse those patterns so that they
+  don't have to be re-evaluated for every single instance. The following two
+  rules share the first pattern, but not the last:</para>
+
+  <programlisting>rule
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese == $cheddar )
+then
+    System.out.println( $person.getName() + " likes cheddar" );
+end</programlisting>
+
+  <programlisting>rule
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese != $cheddar )
+then
+    System.out.println( $person.getName() + " does not like cheddar" );
+end</programlisting>
+
+  <para>As you can see below, the compiled Rete network shows that the alpha
+  node is shared, but the beta nodes are not. Each beta node has its own
+  TerminalNode. Had the second pattern been the same it would have also been
+  shared.</para>
+
+  <figure>
+    <title>Node Sharing</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Rule_Engine/Node_Sharing.png"
+                   format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+</section>
