@@ -7,7 +7,183 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>A Little Theory</title>
+  <title>Execution Control</title>
+
+  <section>
+    <title>Agenda</title>
+
+    <para>The Agenda is a <emphasis>Rete</emphasis> feature. During actions on
+    the <code>WorkingMemory</code>, rules may become fully matched and
+    eligible for execution; a single Working Memory Action can result in
+    multiple eligible rules. When a rule is fully matched an Activation is
+    created, referencing the rule and the matched facts, and placed onto the
+    Agenda. The Agenda controls the execution order of these Activations using
+    a Conflict Resolution strategy.</para>
+
+    <para>The engine cycles repeatedly through two phases:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Working Memory Actions. This is where most of the work takes
+        place, either in the Consequence (the RHS itself) or the main Java
+        application process. Once the Consequence has finished or the main
+        Java application process calls <code>fireAllRules()</code> the engine
+        switches to the Agenda Evaluation phase.</para>
+      </listitem>
+
+      <listitem>
+        <para>Agenda Evaluation. This attempts to select a rule to fire. If no
+        rule is found it exits, otherwise it fires the found rule, switching
+        the phase back to Working Memory Actions.</para>
+      </listitem>
+    </orderedlist>
+
+    <figure>
+      <title>Two Phase Execution</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Rule_Engine/Two_Phase.png"
+                     format="PNG" width="100%"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The process repeats until the agenda is clear, in which case control
+    returns to the calling application. When Working Memory Actions are taking
+    place, no rules are being fired.</para>
+
+    <figure>
+      <title>Agenda</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-User_Guide/Agenda.png" format=""/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>Conflict Resolution</title>
+
+      <para>Conflict resolution is required when there are multiple rules on
+      the agenda. (The basics to this are covered in chapter "Quick Start".)
+      As firing a rule may have side effects on the working memory, the rule
+      engine needs to know in what order the rules should fire (for instance,
+      firing ruleA may cause ruleB to be removed from the agenda).</para>
+
+      <para>The default conflict resolution strategies employed by Drools are:
+      Salience and LIFO (last in, first out).</para>
+
+      <para>The most visible one is <emphasis>salience</emphasis> (or
+      priority), in which case a user can specify that a certain rule has a
+      higher priority (by giving it a higher number) than other rules. In that
+      case, the rule with higher salience will be preferred. LIFO priorities
+      are based on the assigned Working Memory Action counter value, with all
+      rules created during the same action receiving the same value. The
+      execution order of a set of firings with the same priority value is
+      arbitrary.</para>
+
+      <para>As a general rule, it is a good idea not to count on rules firing
+      in any particular order, and to author the rules without worrying about
+      a "flow". However when a flow is needed a number of possibilities exist,
+      including but not limited to: agenda groups, rule flow groups,
+      activation groups, control/semaphore facts. These are discussed in later
+      sections.</para>
+
+      <para>Drools 4.0 supported custom conflict resolution strategies; while
+      this capability still exists in Drools it has not yet been exposed to
+      the end user via knowledge-api in Drools 5.0.</para>
+    </section>
+
+    <section>
+      <title>AgendaGroup</title>
+
+      <figure>
+        <title>AgendaGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/AgendaGroup.png"
+                       format=""/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Agenda groups are a way to partition rules (activations, actually)
+      on the agenda. At any one time, only one group has "focus" which means
+      that activations for rules in that group only will take effect. You can
+      also have rules with "auto focus" which means that the focus is taken
+      for its agenda group when that rule's conditions are true.</para>
+
+      <para>Agenda groups are known as "modules" in CLIPS terminology. While
+      it best to design rules that do not need control flow, this is not
+      always possible. Agenda groups provide a handy way to create a "flow"
+      between grouped rules. You can switch the group which has focus either
+      from within the rule engine, or via the API. If your rules have a clear
+      need for multiple "phases" or "sequences" of processing, consider using
+      agenda-groups for this purpose.</para>
+
+      <para>Each time <code>setFocus()</code> is called it pushes that Agenda
+      Group onto a stack. When the focus group is empty it is popped from the
+      stack and the focus group that is now on top evaluates. An Agenda Group
+      can appear in multiple locations on the stack. The default Agenda Group
+      is "MAIN", with all rules which do not specify an Agenda Group being in
+      this group. It is also always the first group on the stack, given focus
+      initially, by default.</para>
+
+      <programlisting language="java">ksession.getAgenda().getAgendaGroup( "Group A" ).setFocus();</programlisting>
+    </section>
+
+    <section>
+      <title>ActivationGroup</title>
+
+      <figure>
+        <title>ActivationGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/ActivationGroup.png"
+                       format=""/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>An activation group is a set of rules bound together by the same
+      "activation-group" rule attribute. In this group only one rule can fire,
+      and after that rule has fired all the other rules are cancelled from the
+      agenda. The <code>clear()</code> method can be called at any time, which
+      cancels all of the activations before one has had a chance to
+      fire.</para>
+
+      <programlisting language="java">ksession.getAgenda().getActivationGroup( "Group B" ).clear();</programlisting>
+    </section>
+
+    <section>
+      <title>RuleFlowGroup</title>
+
+      <figure>
+        <title>RuleFlowGroup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-User_Guide/RuleFlowGroup.png"
+                       format=""/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A rule flow group is a group of rules associated by the
+      "ruleflow-group" rule attribute. These rules can only fire when the
+      group is activate. The group itself can only become active when the
+      elaboration of the ruleflow diagram reaches the node representing the
+      group. Here too, the <code>clear()</code> method can be called at any
+      time to cancels all activations still remaining on the Agenda.</para>
+
+      <programlisting language="java">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting>
+    </section>
+  </section>
 
   <section>
     <title>Methods versus Rules</title>
@@ -173,7 +349,7 @@ public AccountPeriod {
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Quick_Start/tables1.png"
-                     width="100%"></imagedata>
+                     width="100%"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -222,7 +398,7 @@ end</programlisting></td>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables2.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables2.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -242,7 +418,7 @@ end</programlisting></td>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables7.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables7.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -255,7 +431,7 @@ end</programlisting></td>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables3.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables3.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -269,7 +445,7 @@ end</programlisting></td>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables4.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables4.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -281,7 +457,7 @@ end</programlisting></td>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables5.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables5.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -323,7 +499,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Quick_Start/tables6.png"></imagedata>
+          <imagedata fileref="images/Chapter-Quick_Start/tables6.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -377,7 +553,7 @@ where acc.accountNo == cf.accountNo and
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Quick_Start/ruleflow.png"></imagedata>
+        <imagedata fileref="images/Chapter-Quick_Start/ruleflow.png"/>
       </imageobject>
     </mediaobject>
 
@@ -458,7 +634,7 @@ IsAdult( person == $p )</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Quick_Start/monolithic.png"></imagedata>
+        <imagedata fileref="images/Chapter-Quick_Start/monolithic.png"/>
       </imageobject>
     </mediaobject>
 
@@ -486,7 +662,7 @@ IsAdult( person == $p )</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Quick_Start/InferIsAdult.png"></imagedata>
+        <imagedata fileref="images/Chapter-Quick_Start/InferIsAdult.png"/>
       </imageobject>
     </mediaobject>
 
@@ -499,7 +675,7 @@ IsAdult( person == $p )</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Quick_Start/IssueIdCard.png"></imagedata>
+        <imagedata fileref="images/Chapter-Quick_Start/IssueIdCard.png"/>
       </imageobject>
     </mediaobject>
 
@@ -519,7 +695,7 @@ IsAdult( person == $p )</programlisting>
     <para>So a general rule or thumb when doing your knowledge engineering
     is:</para>
 
-    <para></para>
+    <para/>
 
     <itemizedlist>
       <listitem>

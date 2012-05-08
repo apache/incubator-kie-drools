@@ -4,9 +4,12 @@
          xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>The Rule Engine</title>
+  <title>Introduction</title>
 
-  <xi:include href="Section-What_is_a_Rule_Engine.xml" />
+  <xi:include href="Section-AIKnowledgeRepresentation.xml" />
+  
   <xi:include href="Section-Why_use_a_Rule_Engine.xml" />
+  
+  <xi:include href="Section-Rete.xml" />
 
 </chapter>    

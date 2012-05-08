@@ -30,7 +30,10 @@
   <xi:include href="Section-HonestPoliticianExample.xml" />
   <xi:include href="Section-SudokuExample.xml" />
   <xi:include href="Section-NumberGuessExample.xml" />
-  <xi:include href="Section-MannersExample.xml" />
   <xi:include href="Section-ConwaysGameOfLifeExample.xml" />
+  <xi:include href="Section-PongExample.xml" />
+  <xi:include href="Section-TextAdventureExample.xml" />
+  <xi:include href="Section-WumpusWorldExample.xml" />  
+  <xi:include href="Section-MannersExample.xml" />
 
 </chapter>
