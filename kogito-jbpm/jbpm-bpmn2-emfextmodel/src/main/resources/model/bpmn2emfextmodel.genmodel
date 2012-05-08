@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/jbpm-bpmn2-emfextmodel/src/main/java"
+    editDirectory="/jbpm-bpmn2-emfextmodel.edit/src/main/java" editorDirectory="/jbpm-bpmn2-emfextmodel.editor/src/main/java"
+    modelPluginID="jbpm-bpmn2-emfextmodel" modelName="Bpmn2emfextmodel" testsDirectory="/jbpm-bpmn2-emfextmodel.tests/src/test/java"
+    importerID="org.eclipse.xsd.ecore.importer" copyrightFields="false">
+  <foreignModel>bpmn2emfextmodel.xsd</foreignModel>
+  <genPackages prefix="Drools" basePackage="org.jboss" resource="XML" disposableProviderFactory="true"
+      ecorePackage="drools.ecore#/">
+    <genDataTypes ecoreDataType="drools.ecore#//PackageNameType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//PriorityType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//RuleFlowGroupType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//TaskNameType"/>
+    <genDataTypes ecoreDataType="drools.ecore#//VersionType"/>
+    <genClasses ecoreClass="drools.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/global"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/import"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onEntryScript"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference drools.ecore#//DocumentRoot/onExitScript"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/priority"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/ruleFlowGroup"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/taskName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//DocumentRoot/version"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//GlobalType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GlobalType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//GlobalType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//ImportType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//ImportType/name"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//OnEntryScriptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/script"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnEntryScriptType/scriptFormat"/>
+    </genClasses>
+    <genClasses ecoreClass="drools.ecore#//OnExitScriptType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/script"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute drools.ecore#//OnExitScriptType/scriptFormat"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Model" basePackage="org.omg.spec.bpmn._20100524" resource="XML"
+      disposableProviderFactory="true" ecorePackage="model.ecore#/">
+    <genClasses ecoreClass="model.ecore#//DocumentRoot">
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//DocumentRoot/mixed"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference model.ecore#//DocumentRoot/xMLNSPrefixMap"/>
+      <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference model.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//DocumentRoot/script"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
