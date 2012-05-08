@@ -9,7 +9,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Running</title>
 
-  <para></para>
+  <para/>
 
   <section>
     <title>KnowledgeBase</title>
@@ -20,8 +20,8 @@
     data; instead, sessions are created from the <code>KnowledgeBase</code>
     into which data can be inserted and from which process instances may be
     started. Creating the <code>KnowledgeBase</code> can be heavy, whereas
-    session creation is very light, so it is recommended that KnowledgeBases be
-    cached where possible to allow for repeated session creation.</para>
+    session creation is very light, so it is recommended that KnowledgeBases
+    be cached where possible to allow for repeated session creation.</para>
 
     <example>
       <title>Creating a new KnowledgeBase</title>
@@ -42,7 +42,7 @@
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/StatefulKnowledgeSession.png"
-                     format="" width="100%"></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -86,7 +86,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEntryPoint.png"></imagedata>
+            <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEntryPoint.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -195,7 +195,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/WorkingMemory.png"
-                       format="" width="100%"></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -218,7 +218,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/Chapter-User_Guide/QueryResults.png"
-                         format=""></imagedata>
+                         format=""/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -229,7 +229,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
           <mediaobject>
             <imageobject>
               <imagedata fileref="images/Chapter-User_Guide/QueryResultsRow.png"
-                         format=""></imagedata>
+                         format=""/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -310,7 +310,7 @@ query.dispose() // make sure you call dispose when you want the query to close</
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntime.png"
-                       format=""></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -356,7 +356,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/StatefulRuleSession.png"
-                       format=""></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -371,7 +371,7 @@ ksession.setGlobal("list", list);           </programlisting>
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-User_Guide/AgendaFilter.png"
-                         format="PNG"></imagedata>
+                         format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
@@ -430,7 +430,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Rule_Engine/Two_Phase.png"
-                     format="PNG" width="100%"></imagedata>
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -444,7 +444,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/Agenda.png" format=""></imagedata>
+          <imagedata fileref="images/Chapter-User_Guide/Agenda.png" format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -491,7 +491,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/AgendaGroup.png"
-                       format=""></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -530,7 +530,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/ActivationGroup.png"
-                       format=""></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -554,7 +554,7 @@ ksession.setGlobal("list", list);           </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-User_Guide/RuleFlowGroup.png"
-                       format=""></imagedata>
+                       format=""/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -590,7 +590,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEventManager.png"
-                     format=""></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -605,7 +605,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEventManager.png"
-                     format="" width="100%"></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -646,7 +646,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEvent.png"
-                     format=""></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -722,7 +722,7 @@ ksession.setGlobal("list", list);           </programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeLoggerFactory.png"
-                     format="" width="100%"></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -762,7 +762,7 @@ logger.close();</programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/StatelessKnowledgeSession.png"
-                     format="" width="100%"></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -1010,7 +1010,7 @@ results.getValue( "Get People" );</programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/CommandExecutor.png"
-                     format=""></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -1021,7 +1021,7 @@ results.getValue( "Get People" );</programlisting>
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/ExecutionResults.png"
-                     format=""></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -1455,7 +1455,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-User_Guide/MarshallerFactory.png"
-                     format="" width="100%"></imagedata>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -1684,7 +1684,7 @@ ds.init();
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-User_Guide/clips-shell.png"></imagedata>
+        <imagedata fileref="images/Chapter-User_Guide/clips-shell.png"/>
       </imageobject>
     </mediaobject>
 

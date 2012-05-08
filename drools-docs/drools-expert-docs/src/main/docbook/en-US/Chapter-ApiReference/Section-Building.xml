@@ -14,7 +14,8 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-User_Guide/builder.png"/>
+        <!-- HACK remove me when https://issues.jboss.org/browse/PRESSGANG-81 is fixed -->      
+        <imagedata fileref="images/Chapter-User_Guide/builder.png" width="75%"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -39,8 +40,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"
-                     width="100%"/>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilder.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -53,8 +53,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"
-                     width="100%"/>
+          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBuilderFactory.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -101,16 +100,16 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilder
 
     <para>It is a best practice to always check the compilation results after
     a change an addition. The KnowledgeBuilder can report compilation results
-    of 3 different severities: ERROR, WARNING and INFO. </para>
+    of 3 different severities: ERROR, WARNING and INFO.</para>
 
     <para>An ERROR indicates that the compilation of the resources failed and
     you should not add more resources or retrieve the Knowledge Packages if
     there are errors. <code>getKnowledgePackages()</code> returns an empty
-    list if there are errors. </para>
+    list if there are errors.</para>
 
     <para>WARNING and INFO results can be ignored, but are available for
-    inspection nonetheless. <code>hasErrors()</code> method after an addition.
-    </para>
+    inspection nonetheless. <code>hasErrors()</code> method after an
+    addition.</para>
 
     <para>To check and retrieve the building results for a list of severities,
     the KnowledgeBuilder interface offers a couple methods:</para>
@@ -187,7 +186,6 @@ if( kbuilder.hasErrors() ) {
 Collection&lt;KnowledgePackage&gt; kpkgs = kbuilder.getKnowledgePackages();
 </programlisting>
     </example>
-
     <para>The KnowledgeBuilder also has a batch mode, with a fluent interface, that
     allows to build multiple DRLs at once as in the following example:</para>
 
@@ -220,7 +218,6 @@ if ( kbuilder.hasErrors() ) {
 }
       </programlisting>
     </example>
-
   </section>
 
   <section>
@@ -399,7 +396,7 @@ if ( kbuilder.hasErrors() ) {
     of an existing rule is added to a package, the default behavior is to
     replace the old rule by the new rule and report it as an INFO. This is
     probably ideal for most use cases, but in some deployements, the user
-    might want to prevent the rule update and report it as an error. </para>
+    might want to prevent the rule update and report it as an error.</para>
 
     <para>Changing the default severity for a result type is the same as
     configuring any other option in Drools and can be done either by API
