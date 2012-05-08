@@ -53,7 +53,10 @@
         <listitem>Install the Drools Eclipse plugin</listitem>
       </itemizedlist>
     </para>
-
+    <note>
+      <para>Guvnor (from version 5.4) requires JBoss EAP 5 to run properly, 
+	this only applies if installation is ran in AS5 configuration mode.</para>
+    </note>
     <para>This could take a while (REALLY, not kidding, we are downloading an application server
     and Eclipse installation, even if you downloaded the full installer).  The script however always
     shows which file it is downloading (you could for example check whether it is still downloading
