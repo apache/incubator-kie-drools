@@ -644,6 +644,31 @@ KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);
     }</programlisting>
     </section>
 
+    <section>
+      <title>UnMatch Listener for Compensation Actions</title>
+
+      <para>It is now possible to register an UnMatch listener on the Agenda in order to be notified
+      when a given activation gets unmatched and take the appropriate compensation actions, as in the follwing example:
+      </para>
+
+      <programlisting language="java">AgendaItem item = ( AgendaItem ) knowledgeHelper.getActivation();
+final Cheese cheese = ( Cheese ) item.getTuple().getHandle().getObject();
+final int oldPrice = cheese.getPrice();
+cheese.setPrice( 100 );
+
+item.setActivationUnMatchListener( new ActivationUnMatchListener() {
+
+    public void unMatch( org.drools.runtime.rule.WorkingMemory wm,
+                         org.drools.runtime.rule.Activation activation ) {
+        cheese.setPrice( oldPrice );
+    }
+} );</programlisting>
+
+      <para>Note that, at the moment, this is an internal impelmentation, that will be eventually
+      moved to a stable API in the future. This is why it is only present in our internal API and
+      so you need to explicitly cast to AgendaItem in order to be able to use it.</para>
+    </section>
+
   </section>
 
   <section xml:id="releaseNotes_5.4.0_Fusion">
