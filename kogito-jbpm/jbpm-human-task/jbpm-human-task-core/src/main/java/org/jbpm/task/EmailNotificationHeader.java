@@ -52,7 +52,7 @@ public class EmailNotificationHeader implements Externalizable {
     
     private String subject;
     
-    @Lob
+    @Lob @Column(length=65535)
     private String body;
     
     public void writeExternal(ObjectOutput out) throws IOException {
