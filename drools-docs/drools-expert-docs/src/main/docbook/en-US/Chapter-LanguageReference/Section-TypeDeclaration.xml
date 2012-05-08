@@ -16,7 +16,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Rule_Language/meta_data.png"
-                   format="PNG"></imagedata>
+                   format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -28,7 +28,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Rule_Language/type_declaration.png"
-                   format="PNG"></imagedata>
+                   format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -63,7 +63,9 @@
 
     <para>To declare a new type, all you need to do is use the keyword
     <literal>declare</literal>, followed by the list of fields, and the
-    keyword <literal>end</literal>.</para>
+    keyword <literal>end</literal>. A new fact must have a list of fields,
+    otherwise the engine will look for an existing fact class in the classpath
+    and raise an error if not found.</para>
 
     <example>
       <title>Declaring a new fact type: Address</title>
@@ -296,8 +298,8 @@ end</programlisting>
       <section>
         <title>@propertyReactive</title>
 
-        <para>Make this type property reactive. See Fine grained property change
-        listeners section for details.</para>
+        <para>Make this type property reactive. See Fine grained property
+        change listeners section for details.</para>
       </section>
     </section>
 
@@ -342,8 +344,8 @@ end
         hashCode() methods that will check the firstName and lastName
         attributes to determine if two instances of Person are equal to each
         other, but will not check the age attribute. It will also generate a
-        constructor taking firstName and lastName as parameters, allowing
-        one to create instances with a code like this:</para>
+        constructor taking firstName and lastName as parameters, allowing one
+        to create instances with a code like this:</para>
 
         <example>
           <title>creating an instance using the key constructor</title>
