@@ -382,6 +382,8 @@ public class RuleBuilder {
             MVELObjectExpression period = null;
             if ( tok.hasMoreTokens() ) {
                 period = MVELObjectExpressionBuilder.build( tok.nextToken().trim(), context );
+            } else {
+                period = MVELObjectExpressionBuilder.build( "0", context );
             }
 
             timer = new ExpressionIntervalTimer( startDate, endDate, repeatLimit, times, period );
