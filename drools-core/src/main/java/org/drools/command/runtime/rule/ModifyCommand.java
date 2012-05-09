@@ -112,7 +112,7 @@ public class ModifyCommand
                 sbuilder.append( "," );
             }
             if (ALLOW_MODIFY_EXPRESSIONS) {
-                sbuilder.append( setter.getAccessor() + " = " + setter.getValue() + "\n" );
+                sbuilder.append( setter.getAccessor() + " = '" + setter.getValue() + "'\n" );
             } else {
                 sbuilder.append( setter.getAccessor() + " = '" + setter.getValue().replace("\"", "") + "'\n" );
             }

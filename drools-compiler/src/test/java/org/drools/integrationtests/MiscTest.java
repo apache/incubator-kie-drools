@@ -120,6 +120,8 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.DefaultPackageNameOption;
+import org.drools.command.CommandFactory;
+import org.drools.command.Setter;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -10249,5 +10251,29 @@ public class MiscTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         ksession.dispose();
+    }
+
+    @Test
+    public void testModifyCommand() {
+        // JBRULES-3377
+        String str = "rule \"sample rule\"\n" +
+                "   when\n" +
+                "   then\n" +
+                "       System.out.println(\"\\\"Hello world!\\\"\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p1 = new Person("John", "nobody", 25);
+        ksession.execute(CommandFactory.newInsert(p1));
+        org.drools.runtime.rule.FactHandle fh = ksession.getFactHandle(p1);
+
+        Person p = new Person("Frank", "nobody", 30);
+        List<Setter> setterList = new ArrayList<Setter>();
+        setterList.add(CommandFactory.newSetter("age", String.valueOf(p.getAge())));
+        setterList.add(CommandFactory.newSetter("name", p.getName()));
+        setterList.add(CommandFactory.newSetter("likes", p.getLikes()));
+        ksession.execute(CommandFactory.newModify(fh, setterList));
     }
 }
