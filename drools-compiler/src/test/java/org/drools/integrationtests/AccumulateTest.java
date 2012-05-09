@@ -8,8 +8,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.Cheese;
@@ -45,6 +47,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.Variable;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -2226,5 +2229,109 @@ public class AccumulateTest extends CommonTestMethodBase {
         Object o = res.iterator().next().get( "$holders" );
         assertTrue( o instanceof List );
         assertEquals( 1, ((List) o).size() );
+    }
+
+    @Test @Ignore
+    public void testAccumulateWithWindow() {
+        String str = "global java.util.Map map;\n" +
+                " \n" +
+                "declare Double\n" +
+                "@role(event)\n" +
+                "end\n" +
+                " \n" +
+                "declare window Streem\n" +
+                "    Double() over window:length( 10 )\n" +
+                "end\n" +
+                " \n" +
+                "rule \"See\"\n" +
+                "when\n" +
+                "    $a : Double() from accumulate (\n" +
+                "        $d: Double()\n" +
+                "            from window Streem,\n" +
+                "        sum( $d )\n" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println( \"We have a sum \" + $a );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map res = new HashMap();
+        ksession.setGlobal( "map", res );
+        ksession.fireAllRules();
+
+        for ( int j = 0; j < 33; j++ ) {
+            ksession.insert(1.0 * j);
+            ksession.fireAllRules();
+        }
+    }
+
+    @Test @Ignore
+    public void testAccumulateWithEntryPoint() {
+        String str = "global java.util.Map map;\n" +
+                " \n" +
+                "declare Double\n" +
+                "@role(event)\n" +
+                "end\n" +
+                " \n" +
+                "rule \"See\"\n" +
+                "when\n" +
+                "    $a : Double() from accumulate (\n" +
+                "        $d: Double()\n" +
+                "            from entry-point data,\n" +
+                "        sum( $d )\n" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println( \"We have a sum \" + $a );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map res = new HashMap();
+        ksession.setGlobal( "map", res );
+        ksession.fireAllRules();
+
+        for ( int j = 0; j < 33; j++ ) {
+            ksession.getWorkingMemoryEntryPoint( "data" ).insert(1.0 * j);
+            ksession.fireAllRules();
+        }
+    }
+
+    @Test @Ignore
+    public void testAccumulateWithWindowAndEntryPoint() {
+        String str = "global java.util.Map map;\n" +
+                " \n" +
+                "declare Double\n" +
+                "@role(event)\n" +
+                "end\n" +
+                " \n" +
+                "declare window Streem\n" +
+                "    Double() over window:length( 10 ) from entry-point data\n" +
+                "end\n" +
+                " \n" +
+                "rule \"See\"\n" +
+                "when\n" +
+                "    $a : Double() from accumulate (\n" +
+                "        $d: Double()\n" +
+                "            from window Streem,\n" +
+                "        sum( $d )\n" +
+                "    )\n" +
+                "then\n" +
+                "    System.out.println( \"We have a sum \" + $a );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map res = new HashMap();
+        ksession.setGlobal( "map", res );
+        ksession.fireAllRules();
+
+        for ( int j = 0; j < 33; j++ ) {
+            ksession.getWorkingMemoryEntryPoint( "data" ).insert(1.0 * j);
+            ksession.fireAllRules();
+        }
     }
 }
