@@ -383,4 +383,10 @@ public final class ClassUtils {
         return os.toUpperCase().contains( "WINDOWS" );
        
     }
+
+    public static boolean isOSX() {
+        String os =  System.getProperty("os.name");
+        return os.toUpperCase().contains( "MAC OS X" );
+
+    }
 }
