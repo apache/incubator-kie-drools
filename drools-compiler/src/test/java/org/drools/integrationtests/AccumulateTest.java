@@ -2231,7 +2231,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertEquals( 1, ((List) o).size() );
     }
 
-    @Test @Ignore
+    @Test
     public void testAccumulateWithWindow() {
         String str = "global java.util.Map map;\n" +
                 " \n" +
@@ -2267,7 +2267,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test 
     public void testAccumulateWithEntryPoint() {
         String str = "global java.util.Map map;\n" +
                 " \n" +
@@ -2299,7 +2299,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test 
     public void testAccumulateWithWindowAndEntryPoint() {
         String str = "global java.util.Map map;\n" +
                 " \n" +

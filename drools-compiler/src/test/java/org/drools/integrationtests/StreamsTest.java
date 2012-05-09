@@ -613,6 +613,49 @@ public class StreamsTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testWindowDeclaration2() throws Exception {
+        String drl = "package org.drools\n" +
+                     "declare Double\n" + 
+                     "    @role(event)\n" + 
+                     "end\n" + 
+                     "declare window Streem\n" + 
+                     "    Double() over window:length( 10 ) from entry-point data\n" + 
+                     "end\n" + 
+                     "rule \"See\"\n" + 
+                     "when\n" + 
+                     "    $sum : Double() from accumulate (\n" + 
+                     "        $d: Double()\n" + 
+                     "            from window Streem,\n" + 
+                     "        sum( $d )\n" + 
+                     "    )\n" + 
+                     "then\n" + 
+                     "end";
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf,
+                                                          drl);
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        AgendaEventListener ael = mock(AgendaEventListener.class);
+        ksession.addEventListener(ael);
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("data");
+        ep.insert(Double.valueOf( 10 )); 
+        ep.insert(Double.valueOf( 11 )); 
+        ep.insert(Double.valueOf( 12 )); 
+
+        ksession.fireAllRules();
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass(org.drools.event.rule.AfterActivationFiredEvent.class);
+        verify(ael,
+               times(1)).afterActivationFired(captor.capture());
+
+        AfterActivationFiredEvent aafe = captor.getValue();
+        Assert.assertThat(((Number) aafe.getActivation().getDeclarationValue("$sum")).intValue(),
+                          is(33));
+    }
+    
+    @Test
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
         String str = "package org.drools.test\n" +
