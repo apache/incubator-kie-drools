@@ -46,7 +46,7 @@
     <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
     <jbpm.version>5.4.0-SNAPSHOT</jbpm.version>
     <jbpm.osgi.version>5.4.0.SNAPSHOT</jbpm.osgi.version>
-    <console.version>2.3.1-SNAPSHOT</console.version>
+    <console.version>2.3.2-SNAPSHOT</console.version>
   </properties>
 
   <repositories>
