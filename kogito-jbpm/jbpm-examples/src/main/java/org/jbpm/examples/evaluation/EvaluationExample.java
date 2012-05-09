@@ -24,7 +24,6 @@ public class EvaluationExample {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             final KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
             final HornetQHTWorkItemHandler hornetQHTWorkItemHandler = new HornetQHTWorkItemHandler(ksession);
-            hornetQHTWorkItemHandler.setPort(5445);
             Runtime.getRuntime().addShutdownHook(new Thread() {
 
                 public void run() {

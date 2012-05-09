@@ -37,7 +37,7 @@ public class ClaimTaskTwiceHornetQAsyncTest extends ClaimTaskTwiceTest {
         super.setUp();
         
         // HornetQ setup
-        server = new HornetQTaskServer(taskService, 5446);
+        server = new HornetQTaskServer(taskService, 5445);
         Thread thread = new Thread(server);
         thread.start();
         System.out.println("Waiting for the HornetQTask Server to come up");
@@ -54,7 +54,7 @@ public class ClaimTaskTwiceHornetQAsyncTest extends ClaimTaskTwiceTest {
 
     protected TaskService createClient(String clientName) { 
         TaskClient taskClient = new AsyncHornetQTaskClient();
-        taskClient.connect("127.0.0.1", 5446);
+        taskClient.connect("127.0.0.1", 5445);
         
         TaskService client = new SyncTaskServiceWrapper(taskClient);
         return client;

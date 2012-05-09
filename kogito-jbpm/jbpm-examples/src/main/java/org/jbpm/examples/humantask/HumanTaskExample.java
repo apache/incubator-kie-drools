@@ -34,7 +34,6 @@ public class HumanTaskExample {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
             HornetQHTWorkItemHandler hornetQHTWorkItemHandler = new HornetQHTWorkItemHandler(ksession);
-            hornetQHTWorkItemHandler.setPort(5445);
             ksession.getWorkItemManager().registerWorkItemHandler("Human Task", hornetQHTWorkItemHandler);
             // start a new process instance
             Map<String, Object> params = new HashMap<String, Object>();

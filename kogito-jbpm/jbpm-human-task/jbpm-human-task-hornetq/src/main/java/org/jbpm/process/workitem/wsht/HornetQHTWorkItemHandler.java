@@ -48,7 +48,7 @@ public class HornetQHTWorkItemHandler extends GenericHTWorkItemHandler{
     private void init(String connectorName){
         setClient(new SyncTaskServiceWrapper(new AsyncHornetQTaskClient(connectorName)));
         if(getPort() <= 0){
-            setPort(5446);
+            setPort(5445);
         }
         if(getIpAddress() == null || getIpAddress().equals("")){
             setIpAddress("127.0.0.1");

@@ -67,7 +67,7 @@ public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
     private static final Logger logger = LoggerFactory.getLogger(CommandBasedHornetQWSHumanTaskHandler.class);
     
 	private String ipAddress = "127.0.0.1";
-	private int port = 5446;
+	private int port = 5445;
 	
 	private TaskClient client;
 	private KnowledgeRuntime session;

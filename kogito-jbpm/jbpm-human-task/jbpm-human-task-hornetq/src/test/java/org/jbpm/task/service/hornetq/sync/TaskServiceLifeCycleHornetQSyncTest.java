@@ -26,7 +26,7 @@ public class TaskServiceLifeCycleHornetQSyncTest extends TaskServiceLifeCycleBas
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		server = new HornetQTaskServer(taskService, 5446);
+		server = new HornetQTaskServer(taskService, 5445);
 		Thread thread = new Thread(server);
 		thread.start();
 		System.out.println("Waiting for the HornetQTask Server to come up");
@@ -36,7 +36,7 @@ public class TaskServiceLifeCycleHornetQSyncTest extends TaskServiceLifeCycleBas
         }
 
 		client = new SyncTaskServiceWrapper(new AsyncHornetQTaskClient());
-		client.connect("127.0.0.1", 5446);
+		client.connect("127.0.0.1", 5445);
 	}
 
 	protected void tearDown() throws Exception {

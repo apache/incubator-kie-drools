@@ -17,7 +17,6 @@ package org.jbpm.process.workitem.wsht.hornetq.sync;
 
 import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
-import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.HornetQTaskServer;
 
@@ -28,7 +27,7 @@ public class HornetQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseSyncTest
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        server = new HornetQTaskServer(taskService, 5446);
+        server = new HornetQTaskServer(taskService, 5445);
         Thread thread = new Thread(server);
         thread.start();
         System.out.println("Waiting for the HornetQTask Server to come up");
@@ -36,7 +35,7 @@ public class HornetQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseSyncTest
             System.out.print(".");
             Thread.sleep(50);
         }   
-        HornetQHTWorkItemHandler handler = new HornetQHTWorkItemHandler(new TestStatefulKnowledgeSession());
+        HornetQHTWorkItemHandler handler = new HornetQHTWorkItemHandler(ksession);
         setClient(handler.getClient());
         setHandler(handler);
     }

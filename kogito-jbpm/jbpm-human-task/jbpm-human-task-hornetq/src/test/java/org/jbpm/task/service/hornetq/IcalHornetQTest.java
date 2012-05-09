@@ -33,7 +33,7 @@
 //        setEmailHost(props.getProperty("host", "locahost"));
 //        setEmailPort(props.getProperty("port", "2345"));        
 //        
-//        server = new HornetQTaskServer(taskService, 5446);
+//        server = new HornetQTaskServer(taskService, 5445);
 //        Thread thread = new Thread(server);
 //        thread.start();
 //		System.out.println("Waiting for the HornetQTask Server to come up");
@@ -43,7 +43,7 @@
 //        }
 //
 //        client = new AsyncHornetQTaskClient();
-//        client.connect("127.0.0.1", 5446);
+//        client.connect("127.0.0.1", 5445);
 //
 //        setWiser(new Wiser());
 //        getWiser().setHostname(getEmailHost());

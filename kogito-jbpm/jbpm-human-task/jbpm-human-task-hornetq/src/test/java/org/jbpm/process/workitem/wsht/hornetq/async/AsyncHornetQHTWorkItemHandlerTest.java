@@ -29,7 +29,7 @@ public class AsyncHornetQHTWorkItemHandlerTest extends WSHumanTaskHandlerBaseAsy
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        server = new HornetQTaskServer(taskService, 5446);
+        server = new HornetQTaskServer(taskService, 5445);
         Thread thread = new Thread(server);
         thread.start();
         System.out.println("Waiting for the HornetQTask Server to come up");
