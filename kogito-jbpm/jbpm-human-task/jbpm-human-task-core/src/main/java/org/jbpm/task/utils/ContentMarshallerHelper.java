@@ -51,15 +51,17 @@ public class ContentMarshallerHelper {
         if (o instanceof Map) {
             for (Object key : ((Map) o).keySet()) {
                 Object value = ((Map) o).get(key);
-                MarshalledContentWrapper marshalledValue = null;
-                for (ObjectMarshallingStrategy strat : strats) {
-                    //Use the first strategy that accept the Object based on the order of the provided strategies
-                    if (strat.accept(value)) {
-                        marshalledValue = marshalSingle(strat, marshallerContext, value);
-                        break;
-                    }
+                if (value != null) {
+	                MarshalledContentWrapper marshalledValue = null;
+	                for (ObjectMarshallingStrategy strat : strats) {
+	                    //Use the first strategy that accept the Object based on the order of the provided strategies
+	                    if (strat.accept(value)) {
+	                        marshalledValue = marshalSingle(strat, marshallerContext, value);
+	                        break;
+	                    }
+	                }
+	                ((Map) o).put(key, marshalledValue);
                 }
-                ((Map) o).put(key, marshalledValue);
             }
         }
         MarshalledContentWrapper marshalled = null;

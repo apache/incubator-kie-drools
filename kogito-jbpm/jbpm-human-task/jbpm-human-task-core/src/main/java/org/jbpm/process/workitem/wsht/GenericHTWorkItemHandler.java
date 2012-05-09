@@ -44,7 +44,6 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
     private TaskService client;
     private String ipAddress;
     private int port;
-    private WorkItemManager manager;
     private boolean local = false;
     private boolean connected = false;
     
@@ -120,8 +119,8 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                     throw new IllegalArgumentException("Could not connect task client: on ip: "+ipAddress +" - port: "+port);
                 }
                 registerTaskEvents();
-            }else{
-                logger.warn(" Task Service Client was already connected, just saying ... ");
+//            }else{
+//                logger.warn(" Task Service Client was already connected, just saying ... ");
             }
         }
     }
@@ -139,25 +138,20 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        this.manager = manager;
         Task task = createTaskBasedOnWorkItemParams(workItem);
         ContentData content = createTaskContentBasedOnWorkItemParams(workItem);
         connect();
         try {
             client.addTask(task, content);
-
         } catch (Exception e) {
-
             if (action.equals(OnErrorAction.ABORT)) {
-                this.manager.abortWorkItem(workItem.getId());
-
+                manager.abortWorkItem(workItem.getId());
             } else if (action.equals(OnErrorAction.RETHROW)) {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else {
                     throw new RuntimeException(e);
                 }
-
             } else if (action.equals(OnErrorAction.LOG)) {
                 StringBuffer logMsg = new StringBuffer();
                 logMsg.append(new Date() + ": Error when creating task on task server for work item id " + workItem.getId());
@@ -214,7 +208,7 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                     Object result = ContentMarshallerHelper.unmarshall(task.getTaskData().getDocumentType(), content.getContent(), marshallerContext, session.getEnvironment());
                     results.put("Result", result);
                     if (result instanceof Map) {
-                        Map<?, ?> map = (Map) result;
+                        Map<?, ?> map = (Map<?, ?>) result;
                         for (Map.Entry<?, ?> entry : map.entrySet()) {
                             if (entry.getKey() instanceof String) {
                                 results.put((String) entry.getKey(), entry.getValue());
@@ -222,12 +216,12 @@ public class GenericHTWorkItemHandler extends AbstractHTWorkItemHandler {
                         }
                     }
 
-                    manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+                    session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
                 } else {
-                    manager.completeWorkItem(workItemId, results);
+                	session.getWorkItemManager().completeWorkItem(workItemId, results);
                 }
             } else {
-                manager.abortWorkItem(workItemId);
+            	session.getWorkItemManager().abortWorkItem(workItemId);
             }
         }
     }

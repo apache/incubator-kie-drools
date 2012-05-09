@@ -11,7 +11,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.HornetQHTWorkItemHandler;
 
 /**
  * This is a sample file to launch a process.
@@ -22,9 +22,8 @@ public class ProcessTest {
 		try {
 			// load up the knowledge base
 			KnowledgeBase kbase = readKnowledgeBase();
-			StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+			StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 			KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger(ksession, "test", 1000);
-			ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("employee", "krisv");
@@ -42,5 +41,15 @@ public class ProcessTest {
 		kbuilder.add(ResourceFactory.newClassPathResource("Evaluation.bpmn"), ResourceType.BPMN2);
 		return kbuilder.newKnowledgeBase();
 	}
+	
+	private static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+		HornetQHTWorkItemHandler humanTaskHandler = new HornetQHTWorkItemHandler(ksession);
+		humanTaskHandler.setIpAddress("127.0.0.1");
+		humanTaskHandler.setPort(5445);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
+		return ksession;
+	}
 
+	
 }
