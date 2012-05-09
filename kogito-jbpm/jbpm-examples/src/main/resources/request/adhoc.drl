@@ -4,9 +4,9 @@ import org.drools.runtime.process.WorkflowProcessInstance
 
 rule "Automatically review large requests"
     when
-        r: Request( amount > 500 )
+        r: Request( $id: id, amount > 500 )
         p: WorkflowProcessInstance()
-        String( this == r.id ) from p.getVariable("request")
+        String( this == $id ) from p.getVariable("request")
     then
         System.out.println("Automatically triggering the review process due to large amount");
         kcontext.getKnowledgeRuntime().signalEvent("Review", null, p.getId());
