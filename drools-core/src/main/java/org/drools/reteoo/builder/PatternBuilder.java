@@ -47,6 +47,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.WindowReference;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -135,7 +136,9 @@ public class PatternBuilder
             builder.build( context, utils, source );
         }
 
-        if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT || ! behaviors.isEmpty() ) {
+        if ( pattern.getSource() == null || 
+                ( !( pattern.getSource() instanceof WindowReference ) && 
+                  ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT || ! behaviors.isEmpty() ) ) ){
             attachObjectTypeNode( context,
                                   utils,
                                   pattern );
@@ -155,7 +158,7 @@ public class PatternBuilder
             alphaConstraints.clear();
         }
 
-        if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+        if ( context.getObjectSource() != null ) {
             attachAlphaNodes( context,
                               utils,
                               pattern,
