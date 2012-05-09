@@ -1,7 +1,5 @@
 package org.drools.agent;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -14,10 +12,12 @@ import org.junit.Test;
 
 public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
-    private int resourceChangeNotificationCount = 0;
+    private volatile int resourceChangeNotificationCount = 0;
 
     @Test
     public void testMonitorResourceChangeEvents() throws Exception {
+        resourceChangeNotificationCount = 0;
+
         //create a basic dsl file
         this.fileManager.write("myExpander.dsl", this.createCommonDSL(null));
 
@@ -43,8 +43,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
         //Agent: take care of them!
         this.applyChangeSet(kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-        resourceChangeNotificationCount = 0;
-        
+
         //the dsl is now modified.
         this.fileManager.write("myExpander.dsl", this.createCommonDSL("name == \"John\""));
 
@@ -95,6 +94,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
     @Test
     public void testDispose() throws Exception {
+        resourceChangeNotificationCount = 0;
 
         //create a basic dsl file
         this.fileManager.write("myExpander.dsl", this.createCommonDSL(null));
@@ -120,8 +120,6 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
         //Agent: take care of them!
         this.applyChangeSet(kagent,ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-
-        resourceChangeNotificationCount = 0;
 
         //the dsl is now modified.
         this.fileManager.write("myExpander.dsl", this.createCommonDSL("name == \"John\""));
