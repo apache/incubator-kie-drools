@@ -82,7 +82,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             } else {
                 typeName = clazzName.toCharArray();
             }
-            
+
             final StringTokenizer izer = new StringTokenizer(clazzName, ".");
             packageName = new char[izer.countTokens() - 1][];
             for (int i = 0; i < packageName.length; i++) {
@@ -114,7 +114,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         }
     }
 
-    
+
     public org.drools.commons.jci.compilers.CompilationResult compile(
             final String[] pSourceFiles,
             final ResourceReader pReader,
@@ -124,13 +124,13 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             ) {
 
         final Map settingsMap = new EclipseJavaCompilerSettings(pSettings).toNativeSettings();
-        
+
         final Collection problems = new ArrayList();
-        
+
         final ICompilationUnit[] compilationUnits = new ICompilationUnit[pSourceFiles.length];
         for (int i = 0; i < compilationUnits.length; i++) {
             final String sourceFile = pSourceFiles[i];
-            
+
             if (pReader.isAvailable(sourceFile)) {
                 compilationUnits[i] = new CompilationUnit(pReader, sourceFile);
             } else {
@@ -165,7 +165,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     public boolean isError() {
                         return true;
                     }
-                    
+
                     public String toString() {
                         return getMessage();
                     }
@@ -174,7 +174,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 if (problemHandler != null) {
                     problemHandler.handle(problem);
                 }
-                
+
                 problems.add(problem);
             }
         }
@@ -184,7 +184,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             problems.toArray(result);
             return new org.drools.commons.jci.compilers.CompilationResult(result);
         }
-        
+
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
         final IProblemFactory problemFactory = new DefaultProblemFactory(Locale.getDefault());
         final INameEnvironment nameEnvironment = new INameEnvironment() {
@@ -209,7 +209,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     result.append(pPackageName[i]);
                     result.append('.');
                 }
-                
+
 //                log.debug("finding typeName=" + new String(typeName) + " packageName=" + result.toString());
 
                 result.append(pTypeName);
@@ -219,7 +219,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             private NameEnvironmentAnswer findType( final String pClazzName ) {
 
                 final String resourceName = ClassUtils.convertClassToResourcePath(pClazzName);
-                
+
                 final byte[] clazzBytes = pStore.read( resourceName );
                 if (clazzBytes != null) {
                     try {
@@ -231,13 +231,13 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
                 InputStream is = null;
                 ByteArrayOutputStream baos = null;
-                try {                    
+                try {
                     is = pClassLoader.getResourceAsStream(resourceName);
                     if (is == null) {
                         return null;
                     }
-                    
-                    if ( ClassUtils.isWindows() ) {
+
+                    if ( ClassUtils.isWindows() || ClassUtils.isOSX() ) {
                         // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process
                         try {
                             pClassLoader.loadClass( pClazzName );
@@ -292,7 +292,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 // FIXME: this should not be tied to the extension
                 final String javaSource = pClazzName.replace('.', '/') + ".java";
                 final String classSource = pClazzName.replace('.', '/') + ".class";
-                return pReader.isAvailable(javaSource) || pReader.isAvailable(classSource); 
+                return pReader.isAvailable(javaSource) || pReader.isAvailable(classSource);
             }
 
             private boolean isPackage( final String pClazzName ) {
@@ -300,22 +300,23 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 try {
                     is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
 
-                    if ( ClassUtils.isWindows() ) {
-                        // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process                    
-                        if ( is != null ) {
+                    if (is != null) {
+                        if (ClassUtils.isWindows() || ClassUtils.isOSX()) {
+                            // check it really is a class, this issue is due to windows case sensitivity issues for the class org.drools.Process and path org/droosl/process
+
                             try {
-                                Class cls = pClassLoader.loadClass( pClazzName );
-                                if ( cls != null ) {
+                                Class cls = pClassLoader.loadClass(pClazzName);
+                                if (cls != null) {
                                     return true;
                                 }
-                            } catch ( ClassNotFoundException e ) {
+                            } catch (ClassNotFoundException e) {
                                 return true;
-                            } catch ( NoClassDefFoundError e ) {
+                            } catch (NoClassDefFoundError e) {
                                 return true;
-                            }        
+                            }
                         }
                     }
-                    boolean result = is == null && !isSourceAvailable(pClazzName, pReader); 
+                    boolean result = is == null && !isSourceAvailable(pClazzName, pReader);
                     return result;
                 } finally {
                     if ( is != null ) {
@@ -338,9 +339,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         result.append(parentPackageName[i]);
                     }
                 }
-                
+
 //                log.debug("isPackage parentPackageName=" + result.toString() + " packageName=" + new String(packageName));
-                
+
                 if (parentPackageName != null && parentPackageName.length > 0) {
                     result.append('.');
                 }
