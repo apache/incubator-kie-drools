@@ -70,17 +70,19 @@ public class SolutionDescriptor {
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
             propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
             Method propertyGetter = propertyDescriptor.getReadMethod();
-            if (propertyGetter.isAnnotationPresent(PlanningEntityProperty.class)) {
-                noPlanningEntityPropertyAnnotation = false;
-                entityPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
-            } else if (propertyGetter.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
-                noPlanningEntityPropertyAnnotation = false;
-                if (!Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a PlanningEntityCollection annotated property ("
-                            + propertyDescriptor.getName() + ") that does not return a Collection.");
+            if (propertyGetter != null) {
+                if (propertyGetter.isAnnotationPresent(PlanningEntityProperty.class)) {
+                    noPlanningEntityPropertyAnnotation = false;
+                    entityPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+                } else if (propertyGetter.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
+                    noPlanningEntityPropertyAnnotation = false;
+                    if (!Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
+                        throw new IllegalStateException("The solutionClass (" + solutionClass
+                                + ") has a PlanningEntityCollection annotated property ("
+                                + propertyDescriptor.getName() + ") that does not return a Collection.");
+                    }
+                    entityCollectionPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
                 }
-                entityCollectionPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
             }
         }
         if (noPlanningEntityPropertyAnnotation) {
