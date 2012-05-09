@@ -494,6 +494,9 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation) {
             if (exp.firstExpression != null) {
                 jitExpression(exp.firstExpression, Object.class);
+                if (exp.firstExpression instanceof FixedExpression) {
+                    firstInvocation = false;
+                }
             }
             Iterator<Invocation> invocations = exp.invocations.iterator();
             Class<?> currentClass = jitInvocation(invocations.next(), Object.class, firstInvocation);
