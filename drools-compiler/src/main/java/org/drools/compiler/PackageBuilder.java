@@ -611,7 +611,7 @@ public class PackageBuilder {
         }
 
         if ( ResourceType.DRF.equals( ( (InternalResource) resource ).getResourceType() ) ) {
-            this.results.add( new DeprecatedResourceTypeWarning(resource, "RF") );
+            this.results.add( new DeprecatedResourceTypeWarning("RF") );
         }
 
         this.resource = resource;

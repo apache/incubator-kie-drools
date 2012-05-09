@@ -7,12 +7,7 @@ public class DeprecatedResourceTypeWarning extends DroolsWarning {
 
     private final String deprecatedFormat;
 
-    public DeprecatedResourceTypeWarning(Resource resource) {
-        this(resource, ((InternalResource) resource).getResourceType().getName());
-    }
-
-    public DeprecatedResourceTypeWarning(Resource resource, String deprecatedFormat) {
-        super(resource);
+    public DeprecatedResourceTypeWarning(String deprecatedFormat) {
         this.deprecatedFormat = deprecatedFormat;
     }
 
