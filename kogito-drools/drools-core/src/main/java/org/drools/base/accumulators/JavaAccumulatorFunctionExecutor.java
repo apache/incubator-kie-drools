@@ -105,11 +105,11 @@ public class JavaAccumulatorFunctionExecutor
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
         final Object value = this.expression.evaluate( handle.getObject(),
-                                                                            leftTuple,
-                                                                            declarations,
-                                                                            innerDeclarations,
-                                                                            workingMemory,
-                                                                            workingMemoryContext ).getValue();
+                                                       leftTuple,
+                                                       declarations,
+                                                       innerDeclarations,
+                                                       workingMemory,
+                                                       workingMemoryContext ).getValue();
         if ( this.function.supportsReverse() ) {
             ((JavaAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
                                                                            value );

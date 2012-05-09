@@ -16,6 +16,9 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,18 +43,17 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
-import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.rule.builder.util.PackageBuilderUtil;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.InternalReadAccessor;
-import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
 /**
  * A builder for the java dialect accumulate version
@@ -89,10 +91,7 @@ public class JavaAccumulateBuilder
             return null;
         }
 
-        final boolean readLocalsFromTuple = accumDescr.isMultiPattern() || accumDescr.getInputPattern().getSource() != null ||
-                source instanceof QueryElement ||
-                source.getNestedElements().size() > 1 || 
-                ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
+        final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple( accumDescr, source );
         
         Map<String, Declaration> declsInScope = context.getDeclarationResolver().getDeclarations( context.getRule() );
         Map<String, Class< ? >> declCls = DeclarationScopeResolver.getDeclarationClasses( declsInScope );

@@ -41,11 +41,11 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
-import org.drools.rule.QueryElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.rule.builder.util.PackageBuilderUtil;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
@@ -105,10 +105,7 @@ public class MVELAccumulateBuilder
 
             Accumulator[] accumulators = null;
 
-            final boolean readLocalsFromTuple = accumDescr.isMultiPattern() || accumDescr.getInputPattern().getSource() != null ||
-                    source instanceof QueryElement ||
-                    source.getNestedElements().size() > 1 || 
-                    ( source.getNestedElements().size() == 1 && source.getNestedElements().get( 0 ) instanceof QueryElement );
+            final boolean readLocalsFromTuple = PackageBuilderUtil.isReadLocalsFromTuple( accumDescr, source );
             
             if ( accumDescr.isExternalFunction() ) {
                 // uses accumulate functions
