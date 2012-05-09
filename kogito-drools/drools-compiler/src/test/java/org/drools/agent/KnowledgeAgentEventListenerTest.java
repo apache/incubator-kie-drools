@@ -1,7 +1,5 @@
 package org.drools.agent;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +22,19 @@ import org.junit.Test;
 
 public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
-    private final Object     lock = new Object();
     private volatile boolean changeSetApplied;
-    private boolean          compilationErrors;
-    private boolean          kbaseUpdated;
-    private int              beforeChangeSetProcessed;
-    private int              afterChangeSetProcessed;
-    private int              beforeChangeSetApplied;
-    private int              afterChangeSetApplied;
-    private int              beforeResourceProcessed;
-    private int              afterResourceProcessed;
+    private volatile boolean compilationErrors;
+    private volatile boolean kbaseUpdated;
+    private volatile int     beforeChangeSetProcessed;
+    private volatile int     afterChangeSetProcessed;
+    private volatile int     beforeChangeSetApplied;
+    private volatile int     afterChangeSetApplied;
+    private volatile int     beforeResourceProcessed;
+    private volatile int     afterResourceProcessed;
 
     @Test
     public void testEventListenerWithIncrementalChangeSet() throws Exception {
+        this.resetEventCounters();
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
 
@@ -214,6 +212,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
     @Test
     public void testEventListenerWithoutIncrementalChangeSet() throws Exception {
+        this.resetEventCounters();
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
 
@@ -431,12 +430,9 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
                 beforeChangeSetApplied++;
             }
 
-            public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
+            public synchronized void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
                 afterChangeSetApplied++;
-                synchronized ( lock ) {
-                    changeSetApplied = true;
-                    lock.notifyAll();
-                }
+                changeSetApplied = true;
             }
 
             public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
