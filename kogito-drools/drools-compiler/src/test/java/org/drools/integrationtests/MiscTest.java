@@ -10998,4 +10998,22 @@ public class MiscTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testJittingConstraintWithInvocationOnLiteral() {
+        String str = "package com.sample\n" +
+                "import org.drools.Person\n" +
+                "rule XXX when\n" +
+                "  Person( name.toString().toLowerCase().contains( \"mark\".toString().toLowerCase() ) )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Person("mark", 37));
+        ksession.insert(new Person("mario", 38));
+
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
 }
