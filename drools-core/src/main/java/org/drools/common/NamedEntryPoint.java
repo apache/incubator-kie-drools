@@ -378,8 +378,8 @@ public class NamedEntryPoint
                        final long mask,
                        final Activation activation) throws FactException {
         try {
-            this.ruleBase.readLock();
             this.lock.lock();
+            this.ruleBase.readLock();
             this.wm.startOperation();
             this.ruleBase.executeQueuedActions();
             
@@ -488,8 +488,8 @@ public class NamedEntryPoint
            }           
         } finally {
             this.wm.endOperation();
-            this.lock.unlock();
             this.ruleBase.readUnlock();
+            this.lock.unlock();
         }
     }
 
@@ -510,8 +510,8 @@ public class NamedEntryPoint
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }
         try {
-            this.ruleBase.readLock();
             this.lock.lock();
+            this.ruleBase.readLock();
             this.wm.startOperation();
             this.ruleBase.executeQueuedActions();
 
@@ -600,8 +600,8 @@ public class NamedEntryPoint
             }            
         } finally {
             this.wm.endOperation();
-            this.lock.unlock();
             this.ruleBase.readUnlock();
+            this.lock.unlock();
         }
     }
 
