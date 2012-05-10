@@ -51,6 +51,8 @@ import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.tools.jxc.gen.config.Config;
+
 public class SingleSessionCommandService
     implements
     org.drools.command.SingleSessionCommandService {
@@ -242,6 +244,11 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
 
+        // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled. 
+        // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set), 
+        //  they will retrieve a null commandService (instead of a reference to this) and fail.
+        ((SessionConfiguration) conf).getTimerJobFactoryManager().setCommandService(this);
+
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
         this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
                                                              this.ksession );
@@ -261,8 +268,6 @@ public class SingleSessionCommandService
         }
 
         this.commandService = new DefaultCommandService( kContext );
-
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
     }
 
     public void initTransactionManager(Environment env) {

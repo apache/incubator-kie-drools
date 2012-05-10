@@ -8,13 +8,13 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.Trigger;
-import org.drools.time.impl.JDKTimerService.JDKJobHandle;
 
 public class DefaultTimerJobInstance
     implements
     Callable<Void>,
     Comparable<DefaultTimerJobInstance>,
     TimerJobInstance {
+    
     private final Job                         job;
     private final Trigger                     trigger;
     private final JobContext                  ctx;
@@ -39,19 +39,26 @@ public class DefaultTimerJobInstance
     }    
 
     public Void call() throws Exception {
-        this.trigger.nextFireTime(); // need to pop
-        if ( handle.isCancel() ) {
-            return null;
-        }
-        this.job.execute( this.ctx );
-        if ( handle.isCancel() ) {
-            return null;
-        }
+        try { 
+            this.trigger.nextFireTime(); // need to pop
+            if ( handle.isCancel() ) {
+                return null;
+            }
+            this.job.execute( this.ctx );
+            if ( handle.isCancel() ) {
+                return null;
+            }
 
-        // our triggers allow for flexible rescheduling
-        Date date = this.trigger.hasNextFireTime();
-        if ( date != null ) {
-            scheduler.internalSchedule( this );
+            // our triggers allow for flexible rescheduling
+            Date date = this.trigger.hasNextFireTime();
+            if ( date != null ) {
+                scheduler.internalSchedule( this );
+            }
+        }
+        catch(Exception e) { 
+            System.out.println("Unable to execute timer job!" );
+            e.printStackTrace();
+            throw e;
         }
 
         return null;
