@@ -34,6 +34,8 @@ import org.drools.time.Trigger;
 import org.drools.time.impl.DefaultTimerJobInstance;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.time.impl.TimerJobInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A default Scheduler implementation that uses the
@@ -42,6 +44,8 @@ import org.drools.time.impl.TimerJobInstance;
  */
 public class JpaJDKTimerService extends JDKTimerService {
 
+    private static Logger logger = LoggerFactory.getLogger( JpaTimerJobInstance.class );
+    
     private CommandService              commandService;
 
     private Map<Long, TimerJobInstance> timerInstances;
@@ -96,8 +100,14 @@ public class JpaJDKTimerService extends JDKTimerService {
         }
 
         public Void call() throws Exception {
-            JDKCallableJobCommand command = new JDKCallableJobCommand( this );
-            commandService.execute( command );
+            try { 
+                JDKCallableJobCommand command = new JDKCallableJobCommand( this );
+                commandService.execute( command );
+            } catch(Exception e ) { 
+                logger.error("Unable to execute job!", e);
+                throw e;
+            }
+            
             return null;
         }
 
