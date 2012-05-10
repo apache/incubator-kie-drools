@@ -13,4 +13,5 @@
 /META-INF
 
 # test files
-/JPADroolsFlow.*.db
+/*.db
+/btm*log
