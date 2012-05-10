@@ -595,30 +595,28 @@ public class ConditionAnalyzer {
     }
 
     public static class FixedExpression implements Expression {
-        final TypedValue typedValue;
-
-        FixedExpression(TypedValue value) {
-            this.typedValue = value;
-        }
+        private final Class<?> type;
+        private final Object value;
 
         FixedExpression(Class<?> type, Object value) {
-            this(new TypedValue(type, value));
+            this.type = type == CharSequence.class ? String.class : type;
+            this.value = value;
         }
 
         public String toString() {
-            return typedValue.toString();
+            return type.getSimpleName() + " " + value;
         }
 
         public boolean canBeNull() {
-            return typedValue.value == null;
+            return value == null;
         }
 
         public Class<?> getType() {
-            return typedValue.type;
+            return type;
         }
 
         public Object getValue() {
-            return typedValue.value;
+            return value;
         }
     }
 
@@ -939,20 +937,6 @@ public class ConditionAnalyzer {
 
         public Class<?> getReturnType() {
             return field.getType();
-        }
-    }
-
-    public static class TypedValue {
-        Class<?> type;
-        Object value;
-
-        TypedValue(Class<?> type, Object value) {
-            this.type = type;
-            this.value = value;
-        }
-
-        public String toString() {
-            return type.getSimpleName() + " " + value;
         }
     }
 
