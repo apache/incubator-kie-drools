@@ -24,9 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Vector;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.CommonTestMethodBase;
+import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -66,13 +74,98 @@ import static org.mockito.Mockito.*;
 /**
  * This is a test case for multi-thred issues
  */
-public class MultithreadTest {
+public class MultithreadTest extends CommonTestMethodBase {
 
     @Test @Ignore
     public void testDummy() {
         
     }
-    
+
+    @Test(timeout = 10000)
+    public void testConcurrentInsertions() {
+        String str = "import org.drools.integrationtests.MultithreadTest.Bean\n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a : Bean( seed != 1 )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int OBJECT_NR = 1000;
+        final int THREAD_NR = 4;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    try {
+                        FactHandle[] facts = new FactHandle[OBJECT_NR];
+                        for (int i = 0; i < OBJECT_NR; i++) facts[i] = ksession.insert(new Bean(i));
+                        ksession.fireAllRules();
+                        for (FactHandle fact : facts) ksession.retract(fact);
+                        ksession.fireAllRules();
+                        return true;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        assertTrue(success);
+        ksession.dispose();
+    }
+
+    public static class Bean {
+
+        private int seed;
+
+        public Bean(int seed) {
+            this.seed = seed;
+        }
+
+        public int getSeed() {
+            return seed;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof Bean)) return false;
+            return seed == ((Bean)other).seed;
+        }
+
+        @Override
+        public int hashCode() {
+            return seed;
+        }
+
+        @Override
+        public String toString() {
+            return "Bean nr. " + seed;
+        }
+    }
+
     // FIXME
 //    
 //    public void testRuleBaseConcurrentCompilation() {
