@@ -230,28 +230,6 @@ public abstract class AbstractScoreDirector<F extends ScoreDirectorFactory> impl
         return trailingEntities.get(0);
     }
 
-    /**
-     * Use {@link #getTrailingEntity} instead.
-     * @param variableDescriptor never null
-     * @return never null
-     */
-    @Deprecated
-    public Map<Object, List<Object>> getVariableToEntitiesMap(PlanningVariableDescriptor variableDescriptor) {
-        List<Object> entityList = variableDescriptor.getPlanningEntityDescriptor().extractEntities(
-                workingSolution);
-        Map<Object, List<Object>> variableToEntitiesMap = new HashMap<Object, List<Object>>(entityList.size());
-        for (Object entity : entityList) {
-            Object variable = variableDescriptor.getValue(entity);
-            List<Object> subEntities = variableToEntitiesMap.get(variable);
-            if (subEntities == null) {
-                subEntities = new ArrayList<Object>();
-                variableToEntitiesMap.put(variable, subEntities);
-            }
-            subEntities.add(entity);
-        }
-        return variableToEntitiesMap;
-    }
-
     public void assertWorkingScore(Score workingScore) {
         ScoreDirector uncorruptedScoreDirector = scoreDirectorFactory.buildScoreDirector();
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
