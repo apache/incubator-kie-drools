@@ -986,4 +986,39 @@ logger.close();</programlisting>
       </figure>
     </section>
   </section>
+
+  <section>
+    <title>Preferences</title>
+
+    <para>The rules IDE also comes with a set of customizable preferences.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-IDE/preferences.png" format="PNG" width=""></imagedata>
+      </imageobject>
+    </mediaobject>
+
+    <para>In particular they allow to configure the following options:</para>
+
+    <orderedlist>
+      <listitem>
+        <para><emphasis>Automatically reparse all rules if a Java resource is changed</emphasis>:
+        triggers a rebuilding of all the rules when a Java class is modified</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis>Allow cross reference in DRL files</emphasis>:
+        makes it possible to have a resource in a DRL file referencing another resource defined
+        in a different file. For example you could have a rule in a file using a type declared in
+        another file. Note that by enabling this option it will no longer possible to declare
+        the same resource (i.e. two rule with the same name in the same package) in two different DRL files.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis>Internal Drools classes use</emphasis>:
+        allows, disallows or discourages (generating warning) the use of Drools classes not exposed in
+        the public API</para>
+      </listitem>
+    </orderedlist>
+  </section>
 </chapter>
