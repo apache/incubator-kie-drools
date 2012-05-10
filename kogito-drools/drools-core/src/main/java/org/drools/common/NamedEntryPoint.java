@@ -168,8 +168,8 @@ public class NamedEntryPoint
                 return handle;
             }
             try {
-                this.ruleBase.readLock();
                 this.lock.lock();
+                this.ruleBase.readLock();
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
 
@@ -302,8 +302,8 @@ public class NamedEntryPoint
                         typeConf );
 
             } finally {
-                this.lock.unlock();
                 this.ruleBase.readUnlock();
+                this.lock.unlock();
             }
             return handle;
         } finally {
