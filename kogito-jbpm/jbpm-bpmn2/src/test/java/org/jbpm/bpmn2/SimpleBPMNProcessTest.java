@@ -63,6 +63,7 @@ import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.instance.impl.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -1950,6 +1951,22 @@ public class SimpleBPMNProcessTest extends JbpmBpmn2TestCase {
 		ProcessInstance processInstance = ksession.startProcess("Composite");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testBusinessRuleTask() throws Exception {
+	    Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
+	    resources.put("BPMN2-BusinessRuleTask.bpmn2", ResourceType.BPMN2);
+	    resources.put("BPMN2-BusinessRuleTask.drl", ResourceType.DRL);
+        KnowledgeBase kbase = createKnowledgeBase(resources);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ProcessInstance processInstance = ksession
+                .startProcess("BPMN2-BusinessRuleTask");
+        
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+
+    }
 
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBaseFactory

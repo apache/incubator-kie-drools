@@ -1,0 +1,12 @@
+package defaultPackge
+
+
+import org.drools.runtime.process.WorkflowProcessInstance;
+
+rule "Your First Rule" ruleflow-group "MyRuleFlow"
+    when
+        WorkflowProcessInstance()
+    then
+        System.out.println("Hello");
+
+end
