@@ -276,7 +276,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory extends AbstractMoveFactor
         }
 
         public void remove() {
-            throw new UnsupportedOperationException("Remove not supported.");
+            throw new UnsupportedOperationException("Remove is not supported.");
         }
 
         public boolean isLastNextWasLeft() {
