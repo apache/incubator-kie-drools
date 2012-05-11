@@ -99,20 +99,20 @@ end</programlisting>
 
       <para>As before we can provide a more robust application with a
       separation of concerns using inference. Notice this time we don't just
-      insert the inferred object, we use "logicalInsert":</para>
+      insert the inferred object, we use "insertLogical":</para>
 
       <programlisting>rule "Infer Child" when
-  $p : Person( age &lt; 16 )
+    $p : Person( age &lt; 16 )
 then
-    logicalInsert( new IsChild( $p ) )
+    insertLogical( new IsChild( $p ) )
 end
 rule "Infer Adult" when
-  $p : Person( age &gt;= 16 )
+    $p : Person( age &gt;= 16 )
 then
-    logicalInsert( new IsAdult( $p ) )
+    insertLogical( new IsAdult( $p ) )
 end</programlisting>
 
-      <para>A "logicalInsert" is part of the Drools Truth Maintenance System
+      <para>A "insertLogical" is part of the Drools Truth Maintenance System
       (TMS). Here the fact is logically inserted, this fact is dependant on
       the truth of the "when" clause. It means that when the rule becomes
       false the fact is automatically retracted. This works particularly well
@@ -129,14 +129,14 @@ end</programlisting>
   $p : Person( )
        IsChild( person == $p )
 then
-  logicalInsert(new ChildBusPass( $p ) );
+    insertLogical(new ChildBusPass( $p ) );
 end
  
 rule "Issue Adult Bus Pass" when
   $p : Person( age &gt;= 16 )
        IsAdult( person =$p )
 then
-  logicalInsert(new AdultBusPass( $p ) );
+    insertLogical(new AdultBusPass( $p ) );
 end</programlisting>
 
       <para>Now when the person changes from being 15 to 16, not only is the
